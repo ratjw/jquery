@@ -1,0 +1,284 @@
+table {
+	border-right: solid 1px slategray;
+	width: auto;
+	table-layout: fixed;	/*make cell width = first row specified*/
+	overflow: hidden;
+	border-collapse: collapse;
+}
+
+th {
+	font-size: 16px;
+	font-weight: bold;
+	background-color: steelblue;
+	color: papayawhip;
+	border-left: solid 1px silver;
+	border-top: solid 1px silver;
+	border-bottom: solid 1px silver;
+	height: 40px;
+}
+
+td {
+	empty-cells:show;
+	font-size: 16px;
+	border-left: solid 1px silver;
+	border-bottom: solid 1px silver;
+}
+
+td#editmode, #queuetbl td#editmode { background-color: fuchsia; }	/* editing cell */
+tr#findrow, #queuetbl tr#findrow { background-color: skyblue; }	/* match row */
+tr#movemode, #queuetbl tr#movemode { background-color: teal; }	/* pre-move row */
+tr#copymode, #queuetbl tr#copymode { background-color: teal; }	/* pre-copy row */
+
+tr {
+	background-repeat: no-repeat;
+	background-position: 300px;
+}
+
+tr.sunday, td.sunday { background-color: #FFE0E7; }
+tr.monday, td.monday { background-color: #FFFFDD; }
+tr.tuesday, td.tuesday { background-color: #FFF0F7; }
+tr.wednesday, td.wednesday { background-color: #CCFFCC; }
+tr.thursday, td.thursday { background-color: #FFEECC; }
+tr.friday, td.friday { background-color: #CCEEFF; }
+tr.saturday, td.saturday { background-color: #EECCFF; }
+
+td.sun { background-color: hotpink; }
+td.mon { background-color: gold; }
+td.tue { background-color: pink; }
+td.wed { background-color: palegreen; }
+td.thu { background-color: orange; }
+td.fri { background-color: skyblue; }
+td.sat { background-color: violet; }
+
+td.sun:before { content: "อาทิตย์ "; }
+td.mon:before { content: "จันทร์ "; }
+td.tue:before { content: "อังคาร "; }
+td.wed:before { content: "พุธ "; }
+td.thu:before { content: "พฤหัส "; }
+td.fri:before { content: "ศุกร์ "; }
+td.sat:before { content: "เสาร์ "; }
+
+#login {
+	width:300px; 
+	margin-left:auto; 
+	margin-right:auto; 
+	text-align:center; 
+	background-color:papayawhip; 
+	border:2px solid slategray;
+}
+
+.smallpic {
+	position: fixed;
+	display:none;
+	z-index: 1;
+	color: green;
+	background-color: papayawhip;
+	border: 2px solid slategray;
+	padding: 5px;
+	overflow-x: hidden;
+	overflow-y: hidden;
+}
+
+#icdname {
+	text-align:"left";
+	overflow-x: "hidden";
+	overflow-y: "scroll";
+	height: "auto";
+}
+
+.divindiv {
+	position: absolute;
+	display:none;
+	z-index: 1;
+	color: green;
+	background-color: papayawhip;
+	border: 2px solid slategray;
+	padding: 5px;
+	overflow-x: hidden;
+	overflow-y: hidden;
+}
+
+#paperdiv {
+	position: fixed;
+	display:none;
+	z-index: 1;
+	color: black;
+	background-color: white;
+	border: 2px solid slategray;
+	padding-top: 70px;
+	padding-right: 30px;
+	padding-bottom: 70px;
+	padding-left: 50px;
+	overflow-x: hidden;
+	overflow-y: hidden;
+}
+
+#alert {
+	position: fixed;
+	display:none;
+	z-index: 1;
+	top:25%;
+	left:40%;
+	width: 300px;
+	height:200px;
+	line-height: 180px;
+	background-color: papayawhip;
+	border: 2px solid slategray;
+	text-align:center;
+	font-weight: bold;
+	font-size: 24px;
+	color: green;
+}
+
+span {
+	display:inline-block; 
+}
+
+div#divdmy span, div#divname span { display:inline; }
+
+a {
+	text-decoration: none;
+	display: block;
+}
+
+a:hover {
+	color: white;
+	background-color: steelblue;
+	background-size:auto;
+}
+
+div#equip, div#setor { font-size: 16px; }
+
+input#equip, input#oequip { 
+	font-size: 16px; 
+	border-top: 0px; 
+	border-left: 0px; 
+	border-color: rgb(160, 160, 160); 
+}
+
+#setor td {
+	font-size: 1em; 
+}
+
+#queuetbl {
+	background-color: white;
+}
+
+#queuetbl th {
+	font-size: 14px;
+	height: 25px;
+}
+
+#queuetbl td {
+	font-size: 14px;
+	color: black;
+}
+
+#calendar, #qcalendar {
+	padding-left: 20px;
+}
+
+#calendarin, #qcalendarin {
+	overflow-x: hidden;
+	overflow-y: scroll;
+	height: 600px;
+}
+
+table.calendartable  {
+	table-layout: fixed;
+	overflow: scroll;
+	border-collapse: collapse;
+	border-right: solid 1px slategray;
+	width: 500px;
+}
+
+table.calendartable th {
+	font-size: 16px;
+	font-weight: bold;
+	color: papayawhip;
+	background-color: steelblue;
+	text-align: center;
+	border-left: solid 1px silver;
+	border-top: solid 1px silver;
+	border-bottom: solid 1px silver;
+	width: 70px;
+	height: 30px;
+}
+
+table.calendartable td {
+	empty-cells:show;
+	font-size: 16px;
+	color: black;
+	background-color: #eeeeee;
+	text-align: left;
+	vertical-align: text-top;
+	border-color: #000000; 
+	border-left: solid 1px silver;
+	border-bottom: solid 1px silver;
+	height: 30px;
+}
+
+table.calendartable td.calendarsun { background-color: #ffbbcc; }
+table.calendartable td.calendarsat { background-color: #ccbbff; }
+table.calendartable td.calendarday { background-color: #ffffff; }
+table.calendartable td.calendartoday { background-color: fuchsia; }
+table.calendartable td.calpremoveday { background-color: teal; }
+table.calendartable td:hover { background-color: #00CC00; }
+
+#labwrapper {
+	width: auto;
+	border: 1px solid slategray;
+	overflow: hidden;
+}
+#labdateheadbody {
+	width: 120px;
+	float: left;
+	overflow: hidden;
+}
+.labheader {		/*both labdate and labresult*/
+	height: 40px;
+	line-height: 40px;
+	text-align: center;
+	vertical-align: middle;
+	font-size: 16px;
+	font-weight: bold;
+	background-color: steelblue;
+	color: papayawhip;
+	border-left: solid 1px silver;
+	border-top: solid 1px silver;
+	border-bottom: solid 1px silver;
+}
+#labdate {
+	border: 1px solid slategray;
+	overflow-x: hidden;
+	overflow-y: auto;
+}
+.labeachdate {
+	height: 20px;
+	font-size: 14px;
+	white-space: nowrap;
+	overflow: hidden;
+}
+.labeachdate:hover {
+	background-color: #00CC00;
+}
+#labresultheadbody {
+	float: left;
+	overflow: hidden;
+}
+#labresult {
+	width: auto;
+	height: auto;
+	border: 1px solid slategray;
+	overflow: auto;
+}
+#labtext {
+	width: 700px;		/*labframe width - padding left - padding right*/
+	height: 450px;		/*labframe height - padding top - padding bottom*/
+	padding: 50px;
+	overflow: auto;
+}
+#labiframe {
+	width: 800px;
+	height: 550px;
+}
