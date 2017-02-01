@@ -72,12 +72,12 @@
 	}
 	document.getElementById("menudiv").style.height = ""
 	document.getElementById("menudiv").style.display = ""
-	stopeditmode()
+	stopEditmode()
 }
 
 function addnewrow(rowmain)
 {
-	stopeditmode()	//editmode of FirstColumn Cell was started by popup
+	stopEditmode()	//editmode of FirstColumn Cell was started by popup
 	if (rowmain.cells[QN].innerHTML)	//not empty
 	{
 		var table = document.getElementById("tbl")
@@ -121,7 +121,7 @@ function deleteblankrow(rowmain)
 
 function premovecase(rowmain, qn)
 {
-	stopeditmode()	//editmode of FirstColumn was started by popup
+	stopEditmode()	//editmode of FirstColumn was started by popup
 	rowmain.id = "movemode"	//start "movemode" of the "row"
 	document.getElementById("menudiv").style.display = ""
 //	MoveCalendar(rowmain.cells[OPDATE].innerHTML.numDate(), qn)	//show calendar for date selection
@@ -129,7 +129,7 @@ function premovecase(rowmain, qn)
 
 function premovetoWaitingList(rowmain, staffname)
 {
-	stopeditmode()	//editmode of FirstColumn was started by popup
+	stopEditmode()	//editmode of FirstColumn was started by popup
 	rowmain.id = "movemode"	//start "movemode" of the "row"
 	document.getElementById("menudiv").style.display = ""
 	staffqueue(staffname)
@@ -159,7 +159,7 @@ function movecaseQbookToQbook(QNfrom, OpDateTo)
 			updateQBOOKFILL()
 			refillall()
 		}
-		stopeditmode()
+		stopEditmode()
 		table.style.cursor = 'default'
 	}	
 }
@@ -194,7 +194,7 @@ function movecaseQwaitToQbook(movemode, OpDateTo)
 			refillall()
 		}
 		document.getElementById("queuediv").style.display = ""
-		stopeditmode()
+		stopEditmode()
 		table.style.cursor = 'default'
 	}	
 }
@@ -219,7 +219,7 @@ function movetoQbook(movemode, pointDate)
 
 function precopycase(rowmain, qn)
 {
-	stopeditmode()	//editmode of FirstColumn was started by popup
+	stopEditmode()	//editmode of FirstColumn was started by popup
 	rowmain.id = "copymode"	//start "copymode" of the "row"
 	document.getElementById("menudiv").style.display = ""
 //	MoveCalendar(rowmain.cells[OPDATE].innerHTML.numDate(), qn)	//show calendar for date selection
@@ -261,7 +261,7 @@ function copycase(OpDateTo)
 			updateQBOOK(response);
 			refillall()
 		}
-		stopeditmode()
+		stopEditmode()
 		table.style.cursor = 'default'
 	}	
 }

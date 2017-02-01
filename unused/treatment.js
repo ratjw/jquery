@@ -432,7 +432,7 @@ function saveRx(point, qn, affirm)
 
 function cancel()
 {
-	stopeditmode()
+	stopEditmode()
 	document.getElementById('searchicd').style.display = ""
 }
 
@@ -443,7 +443,7 @@ function oksaveDxRx()
 }
 
 function saveDxRx(affirm)
-{	//from oksaveDxRx, hidepopup, hidepopupqueue
+{	//from oksaveDxRx, hidePopup, hidePopupqueue
 	var point = $("#editmode").get(0)
 	var qn = $("#editmode").closest("tr").children("td").eq(QN).html()
 	var cindex = $("#editmode").closest("td").index()
@@ -473,7 +473,7 @@ function searchicd(diagtreat)
 		if (!response || response.charAt(0) != "[")
 		{
 			alert("Failed! searching ICD \n" + response)
-			hidepopup()
+			hidePopup()
 		}
 		else
 		{

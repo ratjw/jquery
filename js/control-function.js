@@ -370,7 +370,7 @@ function isEmpty(map) {
 	return true;
 }
 
-function stopeditmode()
+function stopEditmode()
 {
 	while (document.getElementById("editcell"))
 		document.getElementById("editcell").id = ""
@@ -407,7 +407,7 @@ function popup(pointing)
 	menu.style.left = xpos + 'px'
 }
 
-function hidepopup()
+function hidePopup()
 {
 	var div = $("body").children("div")
 	for (var i=0; i<div.length; i++)
@@ -415,7 +415,7 @@ function hidepopup()
 			$(div[i]).fadeOut()
 }
 
-function hidepopupqueue()
+function hidePopupqueue()
 {
 	var edit = document.getElementById("editmode")
 	if (edit)

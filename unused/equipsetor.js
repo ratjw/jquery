@@ -469,7 +469,7 @@ function cancelset()
 {
 	document.getElementById("paperdiv").style.display = ""
 	document.getElementById("menudiv").style.display = ""	//menudiv from click FirstColumn
-	stopeditmode()
+	stopEditmode()
 }
 
 function doSet_OR(qn)

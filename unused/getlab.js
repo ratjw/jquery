@@ -57,5 +57,5 @@ function labresult(laburl)
 function labclose()
 {
 	document.getElementById("menudiv").style.display = ""
-	stopeditmode()
+	stopEditmode()
 }

@@ -8,10 +8,10 @@ function clicktable()
 	if (MOUSEDOWNCELL.id == "editcell")
 		return
 
-	savepreviouscell()
-	hidepopup()
-	stopeditmode()
-	savepresentcell(MOUSEDOWNCELL)
+	savePreviouscell()
+	hidePopup()
+	stopEditmode()
+	storePresentcell(MOUSEDOWNCELL)
 }
 
 function editing(e)
@@ -20,12 +20,12 @@ function editing(e)
 	if (keycode == 27)
 	{
 		$("#editcell").html(PREVIOUSCELLCONTENT)
-		hidepopup()
+		hidePopup()
 		window.focus()
 	}
 }
 
-function savepreviouscell() 
+function savePreviouscell() 
 {
 	var editcell
 
@@ -73,6 +73,8 @@ function saveContent(column, content)
 	var qn = $(rowtr).eq(QN).html()
 
 	$("#tbl").css("cursor", "wait")
+	if (content == PREVIOUSCELLCONTENT)
+		return
 	content = content.replace(/<br>/g,"")
 
 	if (qn)
@@ -104,13 +106,13 @@ function saveContent(column, content)
 			updateQBOOKFILL()
 			fillselect(opdate)
 		}
-//		stopeditmode()
-//		hidepopup()
+//		stopEditmode()
+//		hidePopup()
 		$("#tbl").css("cursor", "")
 	}
 }
 
-function savepresentcell(pointing)
+function storePresentcell(pointing)
 {  
 	var cindex = $(pointing).closest("td").index()
 	var rowtr = $(pointing).closest("tr")

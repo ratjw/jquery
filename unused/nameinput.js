@@ -73,7 +73,7 @@ function getByName(e)
 				menu.style.display = ""
 				menu.style.height = ""
 				menu.style.overflow = ""
-				stopeditmode()
+				stopEditmode()
 
 				Ajax(MYSQLIPHP, 'nosqlReturnbook', updateQBOOKByName)	//To reload Qbook
 
@@ -214,7 +214,7 @@ function getByNAMEqueue(e)
 				menu.style.display = ""
 				menu.style.height = ""
 				menu.style.overflow = ""
-				stopeditmode()
+				stopEditmode()
 
 				Ajax(MYSQLIPHP, 'nosqlReturnbook', updateQBOOKQWAIT)	//To reload Qbook
 

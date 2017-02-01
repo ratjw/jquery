@@ -293,7 +293,7 @@ function sinceCalendar(pointing, qn)
 				updateQBOOK(response)
 				pointing.innerHTML = sincedate.thDate()
 			}
-			stopeditmode()
+			stopEditmode()
 			xqcalendar()
 			table.style.cursor = 'default'
 		}	

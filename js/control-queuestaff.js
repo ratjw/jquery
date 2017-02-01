@@ -85,7 +85,7 @@ function xqueue()
 {
 	document.getElementById("queuediv").style.display = ""
 	document.getElementById("menudiv").style.display = ""
-	stopeditmode()
+	stopEditmode()
 }
 
 function changestaff(that, staffname)
@@ -111,7 +111,7 @@ function changestaff(that, staffname)
 	overlayq.style.left = that.offsetLeft +"px"
 	if (qdiv.offsetHeight < overlayq.offsetHeight + 25)	//div head height = 25px
 		qdiv.style.height = overlayq.offsetHeight + 25 +"px"
-	stopeditmode()
+	stopEditmode()
 }
 
 function Qclicktable(event)
@@ -148,8 +148,8 @@ function Qclicktable(event)
 	//checkpoint#6 : click TD not in editing area, disable elsewhere editing area
 	if (document.getElementById("editmode"))	//td only one id is "editmode"
 	{
-		hidepopupqueue()
-		stopeditmode()
+		hidePopupqueue()
+		stopEditmode()
 		return
 	}	
 	var table = document.getElementById("queuetbl")
@@ -164,15 +164,15 @@ function Qclicktable(event)
 	if (movemode)
 	{
 		movetoQwait(movemode, pointQnum)
-		stopeditmode()
+		stopEditmode()
 		return
 	}
 
 	//checkpoint#8 : click not in editing area, disable elsewhere editing area
 	if (checkpopup(pointing))	//any popup other than pointing at
 	{
-		hidepopupqueue()
-		stopeditmode()
+		hidePopupqueue()
+		stopEditmode()
 		return
 	}	
 
@@ -182,7 +182,7 @@ function Qclicktable(event)
 		if ((document.getElementById("queuespan").innerHTML == "staffname") || 
 			(cindex != QWAITNUM && cindex != QHN && cindex != QNAME))
 		{	//allow : fillSetTable, HNinput
-			stopeditmode()
+			stopEditmode()
 			window.focus()
 			return
 		}
@@ -294,7 +294,7 @@ function QFirstColumn(saveval, rownum)
 
 function qaddrow(rowmain, saveval)
 {
-	stopeditmode()	//editmode of qFirstColumn Cell was started by Qtable
+	stopEditmode()	//editmode of qFirstColumn Cell was started by Qtable
 	if (rowmain.cells[QQN].innerHTML)
 	{
 		var table = document.getElementById("queuetbl")
@@ -331,12 +331,12 @@ function qdeletecase(rowmain, qn)
 			updateQBOOK(response);
 			staffqueue(staffname)
 	}
-	stopeditmode()	//editmode of qFirstColumn Cell was started by Qtable
+	stopEditmode()	//editmode of qFirstColumn Cell was started by Qtable
 }
 
 function qpremovecase(rowmain)
 {
-	stopeditmode()	//editmode of qFirstColumn was started by Qtable
+	stopEditmode()	//editmode of qFirstColumn was started by Qtable
 	rowmain.id = "movemode"	//start "movemode" of the "row"
 	document.getElementById("overlayqueue").style.display = ""
 }
@@ -346,7 +346,7 @@ function qpremovetoOpDate(rowmain)
 	var queuedivin = document.getElementById("queuedivin")
 	var table = document.getElementById("queuetbl")
 
-	stopeditmode()	//editmode of qFirstColumn was started by Qtable
+	stopEditmode()	//editmode of qFirstColumn was started by Qtable
 	rowmain.id = "movemode"	//start "movemode" of the "row"
 	document.getElementById("overlayqueue").style.display = ""
 	for (var i=1; i<table.rows.length; i++)
@@ -385,7 +385,7 @@ function movecaseQwaitToQwait(WaitNumTo)
 
 	if (WNfrom == WaitNumTo)
 	{
-		stopeditmode()
+		stopEditmode()
 		return
 	}
 
@@ -409,7 +409,7 @@ function movecaseQwaitToQwait(WaitNumTo)
 			staffqueue(staffname)
 			table.rows[WaitNumTo].scrollIntoView(false)
 		}
-		stopeditmode()
+		stopEditmode()
 		table.style.cursor = 'default'
 	}	
 }
@@ -441,7 +441,7 @@ function movecaseQbookToQwait(QNfrom, pointQnum)
 			table.rows[pointQnum].scrollIntoView(false)
 			refillall()
 		}
-		stopeditmode()
+		stopEditmode()
 		table.style.cursor = 'default'
 	}	
 }
@@ -505,7 +505,7 @@ function getByHNqueue(e)
 				menu.style.display = ""
 				menu.style.height = ""
 				menu.style.overflow = ""
-				stopeditmode()
+				stopEditmode()
 
 				Ajax(MYSQLIPHP, 'nosqlReturnbook', updateQBOOKQWAIT)	//To reload Qbook
 
@@ -584,7 +584,7 @@ function qphone(textbox, pointing, qn)
 			e = e || window.event
 			txtarea.value = txtarea.value.replace("\n", "")
 			savetel(false)
-			stopeditmode()
+			stopEditmode()
 			textbox.style.display = ""
 		}
 	}

@@ -150,7 +150,7 @@ function SaveConsult (Staffid, Staffname, Firstday, action)
 			}
 		}
 		document.getElementById("menudiv").style.display = ""
-		stopeditmode()
+		stopEditmode()
 	}
 }
 
@@ -512,7 +512,7 @@ function SaveAbsent(saveval,ABOPDATE,indexrow)
 	if (sql1 == "" && sql2 == "")
 	{
 		document.getElementById("menudiv").style.display = ""
-		stopeditmode()
+		stopEditmode()
 		return
 	}
 	sqlstring = "sqlReturnSEOU="+ sql1 + sql2
@@ -537,7 +537,7 @@ function SaveAbsent(saveval,ABOPDATE,indexrow)
 				table.rows[indexrow].cells[ABSENT].innerHTML = txt;
 		}
 		document.getElementById("menudiv").style.display = ""
-		stopeditmode()
+		stopEditmode()
 	}
 
 	Ajax(MYSQLIPHP, sqlstring, callbackAb);
