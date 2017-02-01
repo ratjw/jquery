@@ -39,6 +39,11 @@ var QTREATMENT	= 7;
 var QTEL		= 8;
 var QQN			= 9;
 
+var MOUSEDOWNCELL
+var MOUSEUPCELL
+var MOUSECLICKCELL
+var PREVIOUSCELLCONTENT
+
 var NAMEOFDAYTHAI	= ["อาทิตย์", "จันทร์", "อังคาร", "พุธ", "พฤหัส", "ศุกร์", "เสาร์"];
 var NAMEOFDAYABBR	= ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];	//for row color
 

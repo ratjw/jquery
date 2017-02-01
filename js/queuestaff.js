@@ -507,12 +507,12 @@ function getByHNqueue(e)
 				menu.style.overflow = ""
 				stopeditmode()
 
-				Ajax(MYSQLIPHP, 'nosqlReturnQbook', updateQBOOKQWAIT)	//To reload Qbook
+				Ajax(MYSQLIPHP, 'nosqlReturnbook', updateQBOOKQWAIT)	//To reload Qbook
 
 				function updateQBOOKQWAIT(response)
 				{
 					if (!response || response.indexOf("DBfailed") != -1)
-						alert("Failed! nosqlReturnQbook" + response)
+						alert("Failed! nosqlReturnbook" + response)
 					else
 					{
 						updateQBOOK(response)

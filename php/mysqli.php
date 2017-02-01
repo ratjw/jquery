@@ -10,11 +10,7 @@ $str="UPDATE book SET diagnosis = 'No DMNo HTHIV -veNo AntiplateletNo Anticoagà¹
 echo sqlexecute($mysqli, $str);
 exit;
 */
-	if (isset($_GET['startup']))
-	{
-		echo json_encode(book($mysqli));
-	}
-	else if (isset($_GET['nosqlReturnbook']))
+	if (isset($_GET['nosqlReturnbook']))
 	{
 		echo json_encode(book($mysqli));
 	}

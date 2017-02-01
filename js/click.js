@@ -1,7 +1,26 @@
-function clicktable(event)
+function clicktable()
 {
+//	if (MOUSEDOWNCELL != MOUSEUPCELL)
+//		return
+
+//	var pointing = whichElement(event)
+//	if (pointing.id == "editcell")
+	if (MOUSEDOWNCELL.id == "editcell")
+		return
+
 	savepreviouscell()
-	savepresentcell(event)
+	savepresentcell(MOUSEDOWNCELL)
+}
+
+function editing(e)
+{
+	var keycode = getkeycode(e)
+	if (keycode == 27)
+	{
+		$("#editcell").html(PREVIOUSCELLCONTENT)
+//		hidepopup()
+//		window.focus()
+	}
 }
 
 function savepreviouscell() 
@@ -48,48 +67,22 @@ function savepreviouscell()
 //	stopeditmode()
 }
 
-function savepresentcell(event)
+function savepresentcell(pointing)
 {  
-	var pointing = whichElement(event)
-	pointing.id = "editcell"
-
 	var cindex = $(pointing).closest("td").index()
 	var rowtr = $(pointing).closest("tr")
 	var rindex = $(rowtr).index()
 	var qn = $(rowtr).children("td").eq(QN).html()
 
-	switch(cindex)
+	pointing.id = "editcell"
+	if (cindex =  OPDATE)
 	{
-		case OPDATE:
-			fillSetTable(rindex, pointing)
-			popup (pointing);
-			break
-		case OPROOM:
-		case OPTIME:
-		case STAFFNAME:
-			contentAt(pointing)
-			break
-		case HN:
-			break
-		case NAME:
-			break
-		case AGE:
-			break
-		case DIAGNOSIS:
-		case TREATMENT:
-		case TEL:
-			contentAt(pointing, qn)
-			break
+		fillSetTable(rindex, pointing)
+		popup (pointing);
 	}
-}
-
-function contentAt(pointing) 
-{  
-	var contentval = pointing.innerHTML
-
-	var getContent = function()
+	else
 	{
-		return contentval
+		PREVIOUSCELLCONTENT = pointing.innerHTML
 	}
 }
 
@@ -102,10 +95,19 @@ function saveContent(column, content)
 	$("#tbl").css("cursor", "'wait'")
 	content = content.replace(/<br>/g,"")
 
-	var sqlstring = "sqlReturnbook=UPDATE book SET "
-	sqlstring += column +" = '"+ content
-	sqlstring += "', editor='"+ THISUSER
-	sqlstring += "' WHERE qn = "+ qn +";"
+	if (qn)
+	{
+		var sqlstring = "sqlReturnbook=UPDATE book SET "
+		sqlstring += column +" = '"+ content
+		sqlstring += "', editor='"+ THISUSER
+		sqlstring += "' WHERE qn = "+ qn +";"
+	}
+	else
+	{
+		var sqlstring = "sqlReturnbook=INSERT INTO book ("
+		sqlstring += "opdate, "+ column +", editor) VALUES ('"
+		sqlstring += opdate +"', '"+ content +"', '"+ THISUSER +"');"
+	}
 
 	Ajax(MYSQLIPHP, sqlstring, callbacksaveContent);
 
@@ -114,7 +116,7 @@ function saveContent(column, content)
 		if (!response || response.indexOf("DBfailed") != -1)
 		{
 			alert("Failed! update database \n\n Restore previous value\n\n" + response)
-			$("#editcell").html(getContent())
+			$("#editcell").html(PREVIOUSCELLCONTENT)
 		}
 		else
 		{
@@ -202,7 +204,13 @@ function fillSetTable(rownum, pointing)
 function saveHNinput(editcell, content)
 {
 	var opdate = $(editcell).parents('tr').children("td" ).eq(OPDATE).html().numDate()
+	var qn = $(editcell).parents('tr').children("td" ).eq(QN).html()
 
+	if (qn)
+	{
+		$(editcell).html(PREVIOUSCELLCONTENT)
+		return
+	}
 	var sqlstring = "hn=" + content
 	sqlstring += "&opdate="+ opdate
 	sqlstring += "&username="+ THISUSER

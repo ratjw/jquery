@@ -183,16 +183,6 @@ function getkeycode(e)
 		return false;
 }
 
-function editing(e)
-{
-	var keycode = getkeycode(e)
-	if (keycode == 27)
-	{
-		hidepopup()
-		window.focus()
-	}
-}
-
 function gettable(pointing)
 {
 	if (pointing)	//to ignore pointing null

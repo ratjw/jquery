@@ -10,25 +10,20 @@ must come *after* these tags -->
 <link href="css/CSS.css" rel="stylesheet">
 <link href="css/NoMoreTable.css" rel="stylesheet">
 <link href="css/jquery.mobile-1.4.5.css" rel="stylesheet" />
-<script src="css/jquery.mobile-1.4.5.min.js"></script>
+<script src="js/jquery.mobile-1.4.5.min.js"></script>
 <script src="js/jquery-3.1.1.min.js"></script>
 <script src="js/click.js"></script>
 <script src="js/constant.js"></script>
-<script src="js/diagnosis.js"></script>
 <script src="js/edit.js"></script>
-<script src="js/equipsetor.js"></script>
 <script src="js/fill.js"></script>
-<script src="js/find.js"></script>
 <script src="js/fingermouse.js"></script>
 <script src="js/function.js"></script>
-<script src="js/ManageSEOU.js"></script>
 <script src="js/queuestaff.js"></script>
 <script src="js/start.js"></script>
-<script src="js/treatment.js"></script>
 </HEAD>
 <BODY>
 
-<TABLE id="tbl"  data-role="table" class="ui-responsive" style="display:none" onclick="clicktable()">
+<TABLE id="tbl"  data-role="table" class="ui-responsive" style="display:none">
  <TBODY class="cf">
    <TR>
     <th style="width:8%">วันผ่าตัด</th>

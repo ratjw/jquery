@@ -1,11 +1,15 @@
 function loadtable(userid)
 {
-	Ajax(MYSQLIPHP, "startup", loading);
+	Ajax(MYSQLIPHP, "nosqlReturnbook", loading);
 
 	THISUSER = userid
 	$("#login").remove()
-	document.getElementById("tbl").style.display = ""
-	document.oncontextmenu = function() { window.focus; return false }	//??can right click if on div??
+	var table = document.getElementById("tbl")
+	table.style.display = ""
+	table.onmousedown = function() { MOUSEDOWNCELL = whichElement(event); clicktable() }
+	table.onmouseup = function() { MOUSEUPCELL = whichElement(event) }
+	table.onclick = function() { MOUSECLICKCELL = whichElement(event) }
+	document.oncontextmenu = function() { window.focus; return false }
 	document.onkeyup = function(e) { editing(e) }	//for Esc key to cancel any popup
 	swipefinger();
 	initMouseWheel();

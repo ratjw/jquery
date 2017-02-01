@@ -337,10 +337,10 @@ function filldata(qbook, rowi, q)
 	rowi.cells[OPTIME].innerHTML = qbook[q].optime? qbook[q].optime : ""
 	rowi.cells[STAFFNAME].innerHTML = qbook[q].staffname? qbook[q].staffname : ""
 	rowi.cells[HN].innerHTML = qbook[q].hn? qbook[q].hn : ""
-	rowi.cells[NAME].innerHTML = qbook[q].patientname? qbook[q].patientname : ""
+	rowi.cells[NAME].innerHTML = qbook[q].patient? qbook[q].patient : ""
 	rowi.cells[AGE].innerHTML = qbook[q].dob? qbook[q].dob.getAge(qbook[q].opdate) : ""
-	rowi.cells[DIAGNOSIS].innerHTML = dxstring(qbook, q)
-	rowi.cells[TREATMENT].innerHTML = rxstring(qbook, q)
+	rowi.cells[DIAGNOSIS].innerHTML = qbook[q].diagnosis? qbook[q].diagnosis : ""
+	rowi.cells[TREATMENT].innerHTML = qbook[q].treatment? qbook[q].treatment : ""
 	rowi.cells[TEL].innerHTML = qbook[q].tel? qbook[q].tel : ""
 	rowi.cells[QN].innerHTML = qbook[q].qn
 }
