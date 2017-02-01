@@ -197,7 +197,7 @@ function gettable(pointing)
 	}
 }
 
-function getfirstrowinview(table, qbook)
+function getfirstrowinview(table, book)
 {
 	var yscroll = Yscrolled()
 	var q = 0
@@ -207,7 +207,7 @@ function getfirstrowinview(table, qbook)
 	while ((table.rows[i].offsetTop < yscroll) || (table.rows[i].cells[QN].innerHTML == ""))
 		i++
 	qn = table.rows[i].cells[QN].innerHTML
-	while ((qbook[q].qn != qn) && (q < qbook.length-1 ))
+	while ((book[q].qn != qn) && (q < book.length-1 ))
 		q++		//find q of the first row in view
 	return q
 }
@@ -409,19 +409,6 @@ function popup(pointing)
 
 function hidepopup()
 {
-	var edit
-	if (edit = document.getElementById("editmode"))
-	{
-		if (edit.cellIndex == HN)
-			edit.innerHTML = edit.firstChild.nodeValue? edit.firstChild.nodeValue : ""	//This also kills "INPUT"
-		else if (edit.cellIndex == NAME)
-			edit.innerHTML = ""	//This also kills "INPUT"
-		else if (edit.cellIndex == TEL)
-			savetel(true)
-		else if (document.getElementById('searchicd').style.display == 'block')
-			saveDxRx(true)
-		edit.id = ""
-	}
 	var div = $("body").children("div")
 	for (var i=0; i<div.length; i++)
 		if ($(div[i]).css("display") == "block")

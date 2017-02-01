@@ -64,26 +64,6 @@ function savepreviouscell()
 			saveContent("tel", content)
 			break
 	}
-	editcell.id = ""
-}
-
-function savepresentcell(pointing)
-{  
-	var cindex = $(pointing).closest("td").index()
-	var rowtr = $(pointing).closest("tr")
-	var rindex = $(rowtr).index()
-	var qn = $(rowtr).children("td").eq(QN).html()
-
-	pointing.id = "editcell"
-	if (cindex ==  OPDATE)
-	{
-		fillSetTable(rindex, pointing)
-		popup (pointing);
-	}
-	else
-	{
-		PREVIOUSCELLCONTENT = pointing.innerHTML
-	}
 }
 
 function saveContent(column, content)
@@ -130,6 +110,25 @@ function saveContent(column, content)
 	}
 }
 
+function savepresentcell(pointing)
+{  
+	var cindex = $(pointing).closest("td").index()
+	var rowtr = $(pointing).closest("tr")
+	var rindex = $(rowtr).index()
+	var qn = $(rowtr).children("td").eq(QN).html()
+
+	pointing.id = "editcell"
+	if (cindex ==  OPDATE)
+	{
+		fillSetTable(rindex, pointing)
+		popup (pointing);
+	}
+	else
+	{
+		PREVIOUSCELLCONTENT = pointing.innerHTML
+	}
+}
+
 function fillSetTable(rownum, pointing)
 {
 	var table = document.getElementById("tbl")
@@ -146,15 +145,14 @@ function fillSetTable(rownum, pointing)
 	var menu = document.getElementById("menudiv")
 	var i = 0
 
-	pointing.id = "editmode"
 	while (NAMEOFDAYFULL[i] != opday)
 		i++
 	opday = NAMEOFDAYTHAI[i]
 
 	casename = casename.substring(0, casename.indexOf(' '))
-	Set[0] = queue? "เพิ่ม case ผ่าตัด " + opdateth : ""
+	Set[0] = ""		//queue? "เพิ่ม case ผ่าตัด " + opdateth : ""
 	Set[1] = queue? "ลบ case ผ่าตัด " + casename : ""
-	Set[2] = check(opdate, queue)? "ลบช่องว่าง" : ""
+	Set[2] = check(opdate, queue)? "Delete Blank Row" : ""
 	Set[3] = ""		//queue? "Move case " + casename +" ไปวันอื่น" : ""
 	Set[4] = ""		//queue? "Move case " + casename +" ไป Waiting List" : ""
 	Set[5] = ""		//queue? "Copy case " + casename : ""
@@ -163,12 +161,13 @@ function fillSetTable(rownum, pointing)
 	Set[8] = (STATE[0] != "FILLSTAFF")? (staffname? "คิวผ่าตัด " + staffname : "") : ""
 	Set[9] = ""		//"หาคำ"
 	Set[10] = ""	//queue? "เครื่องมือผ่าตัด/set OR" : ""
-	Set[11] = queue? "PACS" : "" 
+	Set[11] = ""	//queue? "PACS" : "" 
 	Set[12] = ""	//queue? "LABs" : ""
 	Set[13] = ""	//"จัดการข้อมูล"
 	Set[14] = ""	//"ปฏิทิน consult"
 	Set[15] = queue? "ประวัติการแก้ไข " + casename : ""
 	Set[16] = "Waiting List"
+
 	menu.innerHTML = ''
 	for (each=0; each<Set.length; each++)
 	{
@@ -227,7 +226,7 @@ function saveHNinput(editcell, content)
 			alert("Failed! book($mysqli)" + response)
 		else if (response.indexOf("{") != -1)
 		{	//Only one patient
-			var qname = JSON.parse(response)	//convert JSON string into JSON object
+/*			var qname = JSON.parse(response)	//convert JSON string into JSON object
 			var name = qname.initial_name + qname.first_name +" "+ qname.last_name
 			var cells = $(editcell).parents('tr').children("td" )
 			var opdate = $(cells).eq(OPDATE).html().numDate()	//convert Thai date to MySQL date
@@ -236,8 +235,10 @@ function saveHNinput(editcell, content)
 			$(cells).eq(HN).html(qname.hn);
 			$(cells).eq(NAME).html(name);
 			$(cells).eq(AGE).html(age);
+*/
 			updateQBOOK(response)
 			updateQBOOKFILL()
+			fillselect(opdate)
 		}
 	}
 }

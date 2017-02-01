@@ -331,18 +331,18 @@ function makenextrow(i, date)
 	return rowi
 }
 
-function filldata(qbook, rowi, q)
+function filldata(book, rowi, q)
 {
-	rowi.cells[OPROOM].innerHTML = qbook[q].oproom? qbook[q].oproom : ""
-	rowi.cells[OPTIME].innerHTML = qbook[q].optime? qbook[q].optime : ""
-	rowi.cells[STAFFNAME].innerHTML = qbook[q].staffname? qbook[q].staffname : ""
-	rowi.cells[HN].innerHTML = qbook[q].hn? qbook[q].hn : ""
-	rowi.cells[NAME].innerHTML = qbook[q].patient? qbook[q].patient : ""
-	rowi.cells[AGE].innerHTML = qbook[q].dob? qbook[q].dob.getAge(qbook[q].opdate) : ""
-	rowi.cells[DIAGNOSIS].innerHTML = qbook[q].diagnosis? qbook[q].diagnosis : ""
-	rowi.cells[TREATMENT].innerHTML = qbook[q].treatment? qbook[q].treatment : ""
-	rowi.cells[TEL].innerHTML = qbook[q].tel? qbook[q].tel : ""
-	rowi.cells[QN].innerHTML = qbook[q].qn
+	rowi.cells[OPROOM].innerHTML = book[q].oproom? book[q].oproom : ""
+	rowi.cells[OPTIME].innerHTML = book[q].optime? book[q].optime : ""
+	rowi.cells[STAFFNAME].innerHTML = book[q].staffname? book[q].staffname : ""
+	rowi.cells[HN].innerHTML = book[q].hn? book[q].hn : ""
+	rowi.cells[NAME].innerHTML = book[q].patient? book[q].patient : ""
+	rowi.cells[AGE].innerHTML = book[q].dob? book[q].dob.getAge(book[q].opdate) : ""
+	rowi.cells[DIAGNOSIS].innerHTML = book[q].diagnosis? book[q].diagnosis : ""
+	rowi.cells[TREATMENT].innerHTML = book[q].treatment? book[q].treatment : ""
+	rowi.cells[TEL].innerHTML = book[q].tel? book[q].tel : ""
+	rowi.cells[QN].innerHTML = book[q].qn
 }
 
 function filldeleterow(rowmain, opdate, qn)		

@@ -276,7 +276,7 @@ function sinceCalendar(pointing, qn)
 		var sql = ""
 
 		table.style.cursor = 'wait'
-		sql = "sqlReturnQbook=UPDATE qbook SET opdate='" + sincedate
+		sql = "sqlReturnbook=UPDATE book SET opdate='" + sincedate
 		sql += "', editor='"+ THISUSER
 		sql += "' WHERE qn="+ qn +";"
 

@@ -95,7 +95,8 @@ function addnewrow(rowmain)
 
 function deletecase(rowmain, opdate, qn)
 {
-	var sql = "sqlReturnQbook=UPDATE qbook SET waitnum=0 WHERE qn="+ qn +";"
+	//not actually delete the case but set waitnum=0
+	var sql = "sqlReturnbook=UPDATE book SET waitnum=0 WHERE qn="+ qn +";"
 
 	Ajax(MYSQLIPHP, sql, callbackdeleterow)
 
@@ -140,7 +141,7 @@ function movecaseQbookToQbook(QNfrom, OpDateTo)
 	var sql = ""
 
 	table.style.cursor = 'wait'
-	sql = "sqlReturnQbook=UPDATE qbook SET opdate='" + OpDateTo
+	sql = "sqlReturnbook=UPDATE book SET opdate='" + OpDateTo
 	sql += "', editor='"+ THISUSER
 	sql += "' WHERE qn="+ QNfrom +";"
 
@@ -172,10 +173,10 @@ function movecaseQwaitToQbook(movemode, OpDateTo)
 	var sql = ""
 
 	table.style.cursor = 'wait'
-	sql = "sqlReturnQbook=UPDATE qbook SET waitnum=null, opdate='" + OpDateTo
+	sql = "sqlReturnbook=UPDATE book SET waitnum=null, opdate='" + OpDateTo
 	sql += "', editor='"+ THISUSER
 	sql += "' WHERE qn="+ QNfrom +";"
-	sql += "UPDATE qbook SET waitnum=waitnum"+ encodeURIComponent("-")
+	sql += "UPDATE book SET waitnum=waitnum"+ encodeURIComponent("-")
 	sql += "1 WHERE waitnum>=" + waitnum
 	sql += " AND staffname='"+ staffname +"';"
 
@@ -239,7 +240,7 @@ function copycase(OpDateTo)
 		q++
 	teltext = QBOOKFILL[q].tel
 	table.style.cursor = 'wait'
-	sql = "sqlReturnQbook=INSERT INTO qbook SET opdate='" + OpDateTo
+	sql = "sqlReturnbook=INSERT INTO book SET opdate='" + OpDateTo
 	sql += "', staffname='"+ QBOOKFILL[q].staffname
 	sql += "', hn='"+ HNFrom
 	sql += "', tel='"+ teltext

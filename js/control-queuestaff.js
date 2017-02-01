@@ -67,18 +67,18 @@ function makenextrowqueue(table, i)
 	return rowi
 }
 
-function filldataqueue(qbook, rowi, q)
+function filldataqueue(book, rowi, q)
 {
-	rowi.cells[QWAITNUM].innerHTML = qbook[q].waitnum
-	rowi.cells[QSINCE].innerHTML = qbook[q].opdate.thDate()
-	rowi.cells[QSTAFFNAME].innerHTML = qbook[q].staffname
-	rowi.cells[QHN].innerHTML = qbook[q].hn
-	rowi.cells[QNAME].innerHTML = qbook[q].patientname
-	rowi.cells[QAGE].innerHTML = qbook[q].dob.getAge()
-	rowi.cells[QDIAGNOSIS].innerHTML = dxstring(qbook, q)
-	rowi.cells[QTREATMENT].innerHTML = rxstring(qbook, q)
-	rowi.cells[QTEL].innerHTML = qbook[q].tel
-	rowi.cells[QQN].innerHTML = qbook[q].qn
+	rowi.cells[QWAITNUM].innerHTML = book[q].waitnum
+	rowi.cells[QSINCE].innerHTML = book[q].opdate.thDate()
+	rowi.cells[QSTAFFNAME].innerHTML = book[q].staffname
+	rowi.cells[QHN].innerHTML = book[q].hn
+	rowi.cells[QNAME].innerHTML = book[q].patientname
+	rowi.cells[QAGE].innerHTML = book[q].dob.getAge()
+	rowi.cells[QDIAGNOSIS].innerHTML = dxstring(book, q)
+	rowi.cells[QTREATMENT].innerHTML = rxstring(book, q)
+	rowi.cells[QTEL].innerHTML = book[q].tel
+	rowi.cells[QQN].innerHTML = book[q].qn
 }
 
 function xqueue()
@@ -317,8 +317,8 @@ function qdeletecase(rowmain, qn)
 {
 	var waitnum = rowmain.cells[QWAITNUM].innerHTML
 	var staffname = rowmain.cells[QSTAFFNAME].innerHTML
-	var sql = "sqlReturnQbook=UPDATE qbook SET waitnum=0 WHERE qn="+ qn +";"
-	sql += "UPDATE qbook SET waitnum=waitnum"+ encodeURIComponent("-")
+	var sql = "sqlReturnbook=UPDATE book SET waitnum=0 WHERE qn="+ qn +";"
+	sql += "UPDATE book SET waitnum=waitnum"+ encodeURIComponent("-")
 	sql += "1 WHERE waitnum>"+ waitnum +";"
 
 	Ajax(MYSQLIPHP, sql, qcallbackdeleterow)
@@ -603,7 +603,7 @@ function qphone(textbox, pointing, qn)
 		txt = txt.replace(/\'/g, "&#39;")	// double quotes (&#34;) or (&quot); and single quotes (&#39;)
 		txt = txt.replace(/\\/g, "\\\\")
 		txt = encodeURIComponent(txt)	//encode '&' keyed in
-		var sqlstring = "sqlReturnQbook=UPDATE qbook SET tel='"+ txt
+		var sqlstring = "sqlReturnbook=UPDATE book SET tel='"+ txt
 		sqlstring += "', editor = '"+ THISUSER
 		sqlstring += "' WHERE qn = " + qn +";"
 

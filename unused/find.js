@@ -269,7 +269,7 @@ function findeqstring(what, where)
 	return 0
 }
 
-function prehilite(qbook, q)
+function prehilite(book, q)
 {
 	var table = document.getElementById("tbl")
 	var cols = table.rows[0].cells.length
@@ -278,18 +278,18 @@ function prehilite(qbook, q)
 	if (STATE[0] == "FILLUP")
 	{
 		i = table.rows.length - 1
-		while (i && (table.rows[i].cells[QN].innerHTML != qbook[q].qn))
+		while (i && (table.rows[i].cells[QN].innerHTML != book[q].qn))
 			i--
 		if (i == 0)
 		{
-			fillupfind(qbook[q])	//display the specific week
-			hilite(qbook[q].qn)
+			fillupfind(book[q])	//display the specific week
+			hilite(book[q].qn)
 			return
 		}
 	}
 	decolorfindrow()
 	removehilite()
-	hilite(qbook[q].qn)
+	hilite(book[q].qn)
 }
 
 function hilitefillext()	//from fillext when scroll up/down

@@ -408,7 +408,7 @@ function Checklistequip(qn)
 	if (!sql)
 		return
 
-	Ajax(MYSQLIPHP, "sqlReturnQbook="+ sql, callbackEq);
+	Ajax(MYSQLIPHP, "sqlReturnbook="+ sql, callbackEq);
 
 	function callbackEq(response)
 	{

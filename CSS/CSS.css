@@ -24,10 +24,10 @@ td {
 	border-bottom: solid 1px silver;
 }
 
-td#editmode, #queuetbl td#editmode { background-color: fuchsia; }	/* editing cell */
-tr#findrow, #queuetbl tr#findrow { background-color: skyblue; }	/* match row */
-tr#movemode, #queuetbl tr#movemode { background-color: teal; }	/* pre-move row */
-tr#copymode, #queuetbl tr#copymode { background-color: teal; }	/* pre-copy row */
+td#editcell { background-color: lavender; }	/* editing cell */
+tr#findrow { background-color: skyblue; }	/* match row */
+tr#movemode { background-color: teal; }	/* pre-move row */
+tr#copymode { background-color: teal; }	/* pre-copy row */
 
 tr {
 	background-repeat: no-repeat;

@@ -1,5 +1,5 @@
 
-function treatment(pointing, qn, qbook)
+function treatment(pointing, qn, book)
 {
 	var allicds = document.getElementById('searchicd')
 	var icdname = document.getElementById("icdname")
@@ -17,11 +17,11 @@ function treatment(pointing, qn, qbook)
 	allicds.style.overflow = 'hidden'
 	newicd.innerHTML = ""	//remove all newicd
 	q = 0
-	while ((q<qbook.length) && (qbook[q].qn != qn)) 
+	while ((q<book.length) && (book[q].qn != qn)) 
 		q++
-	if (q == qbook.length)
+	if (q == book.length)
 		return
-	subicd = qbook[q].treatment
+	subicd = book[q].treatment
 	if (pointing.innerHTML != "")
 	{
 		for (var i=0, j=0; i<subicd.length; i++)
@@ -401,7 +401,7 @@ function saveRx(point, qn, affirm)
 		if (!confirm("Save the change?"))
 			return
 
-	sql = "sqlReturnQbook="+ sql
+	sql = "sqlReturnbook="+ sql
 
 	Ajax(MYSQLIPHP, sql, callbackrx);
 
@@ -416,16 +416,16 @@ function saveRx(point, qn, affirm)
 			if ($(point).closest("table").attr("id") == "queuetbl")
 			{
 				updateQWAITFILL($(point).parents('tr').children("td" ).eq(STAFFNAME).html())
-				qbook = QWAITFILL
+				book = QWAITFILL
 			}
 			else
 			{
-				qbook = QBOOKFILL
+				book = QBOOKFILL
 			}
-			for (q=0; q<qbook.length; q++)
-				if (qbook[q].qn == qn)
+			for (q=0; q<book.length; q++)
+				if (book[q].qn == qn)
 					break
-			point.innerHTML = rxstring(qbook, q)
+			point.innerHTML = rxstring(book, q)
 		}
 	}
 }

@@ -170,7 +170,7 @@ function editDXRX9()
 			var tabledxrx = "qbookdx"
 		}
 
-		sqlstring = "sqlReturnQbook=UPDATE "+ vftable.value +" SET code= '"+ vcode.value  +"', "+ mode +"='"+ vdxrx.value +"'"		  //// chok for new chain dxrx
+		sqlstring = "sqlReturnbook=UPDATE "+ vftable.value +" SET code= '"+ vcode.value  +"', "+ mode +"='"+ vdxrx.value +"'"		  //// chok for new chain dxrx
 		sqlstring +=" WHERE code='"+ vchidden.value  +"' and "+ mode +" ='"+ vdxhidden.value +"'; "
 		sqlstring += "UPDATE "+ tabledxrx +" SET code= '"+ vcode.value  +"', "+ mode +"='"+ vdxrx.value +"'" //// chok for new chain dxrx
 		sqlstring +=" WHERE code='"+ vchidden.value  +"' and "+ mode +" ='"+ vdxhidden.value +"'; "
@@ -212,7 +212,7 @@ function DelDXRX9()
 			var mode = "diagnosis"
 			var tabledxrx = "qbookdx"
 		}
-		var sqlstring ="sqlReturnQbook=DELETE FROM "+ vftable.value +" WHERE code='"+ vchidden.value  +"' and "+ mode +"='"+ vdxhidden.value +"';" 
+		var sqlstring ="sqlReturnbook=DELETE FROM "+ vftable.value +" WHERE code='"+ vchidden.value  +"' and "+ mode +"='"+ vdxhidden.value +"';" 
 		sqlstring += "DELETE FROM "+ tabledxrx +" WHERE code='"+ vchidden.value  +"' and "+ mode +"='"+ vdxhidden.value +"';" 
 		sqlstring += "&username="+ THISUSER ;
 

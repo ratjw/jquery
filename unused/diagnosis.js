@@ -1,4 +1,4 @@
-function diagnosis(pointing, qn, qbook)
+function diagnosis(pointing, qn, book)
 {
 	var allicds = document.getElementById('searchicd')
 	var icdname = document.getElementById("icdname")
@@ -20,11 +20,11 @@ function diagnosis(pointing, qn, qbook)
 	allicds.style.overflow = 'hidden'
 	newicd.innerHTML = ""	//remove all newicd
 	q = 0
-	while ((q<qbook.length) && (qbook[q].qn != qn)) 
+	while ((q<book.length) && (book[q].qn != qn)) 
 		q++
-	if (q == qbook.length)
+	if (q == book.length)
 		return
-	subicd = qbook[q].diagnosis
+	subicd = book[q].diagnosis
 	showUnderMed(subicd)
 	if (pointing.innerHTML != "")
 	{
@@ -384,7 +384,7 @@ function saveDx(point, qn, affirm)
 		if (!confirm("Save the change?"))
 			return
 
-	sql = "sqlReturnQbook="+ sql
+	sql = "sqlReturnbook="+ sql
 
 	Ajax(MYSQLIPHP, sql, callbackdx);
 
@@ -399,16 +399,16 @@ function saveDx(point, qn, affirm)
 			if ($(point).closest("table").attr("id") == "queuetbl")
 			{
 				updateQWAITFILL($(point).closest("tr").children("td" ).eq(STAFFNAME).html())
-				qbook = QWAITFILL
+				book = QWAITFILL
 			}
 			else
 			{
-				qbook = QBOOKFILL
+				book = QBOOKFILL
 			}
-			for (q=0; q<qbook.length; q++)
-				if (qbook[q].qn == qn)
+			for (q=0; q<book.length; q++)
+				if (book[q].qn == qn)
 					break
-			point.innerHTML = dxstring(qbook, q)
+			point.innerHTML = dxstring(book, q)
 		}
 	}
 }
