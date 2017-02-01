@@ -372,14 +372,12 @@ function isEmpty(map) {
 
 function stopeditmode()
 {
-	while (document.getElementById("keyin"))
-		$("#keyin").remove();
-	while (document.getElementById("editmode"))
-		document.getElementById("editmode").id = ""
-	while (document.getElementById("movemode"))
-		document.getElementById("movemode").id = ""
-	while (document.getElementById("copymode"))
-		document.getElementById("copymode").id = ""
+	while (document.getElementById("editcell"))
+		document.getElementById("editcell").id = ""
+//	while (document.getElementById("movemode"))
+//		document.getElementById("movemode").id = ""
+//	while (document.getElementById("copymode"))
+//		document.getElementById("copymode").id = ""
 }
 
 function popup(pointing)

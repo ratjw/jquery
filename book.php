@@ -11,15 +11,15 @@ must come *after* these tags -->
 <link href="css/NoMoreTable.css" rel="stylesheet">
 <link href="css/jquery.mobile-1.4.5.css" rel="stylesheet" />
 <script src="js/jquery.mobile-1.4.5.min.js"></script>
-<script src="js/jquery-3.1.1.min.js"></script>
-<script src="js/click.js"></script>
-<script src="js/constant.js"></script>
-<script src="js/edit.js"></script>
-<script src="js/fill.js"></script>
-<script src="js/fingermouse.js"></script>
-<script src="js/function.js"></script>
-<script src="js/queuestaff.js"></script>
-<script src="js/start.js"></script>
+<script src="js/jquery-3.1.1.js"></script>
+<script src="js/control-click.js"></script>
+<script src="js/control-edit.js"></script>
+<script src="js/control-fingermouse.js"></script>
+<script src="js/control-function.js"></script>
+<script src="js/control-queuestaff.js"></script>
+<script src="js/model-constant.js"></script>
+<script src="js/model-start.js"></script>
+<script src="js/view-fill.js"></script>
 </HEAD>
 <BODY>
 

@@ -32,7 +32,7 @@ function fillupscroll(direction)
 {
 	STATE[0] = "FILLUP"
 	fillext(direction)
-	hilitefillext()
+//	hilitefillext()
 }
 
 function fillupfind(locationrow)
@@ -343,76 +343,6 @@ function filldata(qbook, rowi, q)
 	rowi.cells[TREATMENT].innerHTML = qbook[q].treatment? qbook[q].treatment : ""
 	rowi.cells[TEL].innerHTML = qbook[q].tel? qbook[q].tel : ""
 	rowi.cells[QN].innerHTML = qbook[q].qn
-}
-
-function dxstring(qbook, q)
-{
-	var i
-	var diagEach
-	var diagString = ""
-	var diagUnder = ""
-	var diagAll = qbook[q].diagnosis
-
-	if (isEmpty(diagAll)) return diagString
-	for (i=0; i<diagAll.length; i++)
-	{
-		if (diagAll[i].code)
-		{
-			diagEach = diagAll[i].diagnosis
-			if (diagEach.length > 25)
-				diagEach = diagEach.substr(0, 25) +"..."
-			diagString += diagAll[i].code +" : "+ diagEach
-			if (diagAll[i].side)
-			{
-				if (diagAll[i].side == "R")
-					diagString += " right"
-				else if (diagAll[i].side == "L")
-					diagString += " left"
-				else if (diagAll[i].side == "B")
-					diagString += " bilateral"
-			}
-			if (diagAll[i].level)
-			{
-				diagString += " "+ diagAll[i].level
-			}
-			diagString += "<br>"
-		}
-		else
-			diagUnder += diagAll[i].diagnosis +"<br>"
-	}
-	return (diagString + diagUnder).replace(/<br>$/, "")
-}
-
-function rxstring(qbook, q)
-{
-	var i
-	var treatEach
-	var treatString = ""
-	var treatUnder = ""
-	var treatAll = qbook[q].treatment
-
-	if (isEmpty(treatAll)) return treatString
-	for (i=0; i<treatAll.length; i++)
-	{
-		treatEach = treatAll[i].treatment
-		if (treatEach.length > 25)
-			treatEach = treatEach.substr(0, 25) +"..."
-		treatString += treatAll[i].code +" : "+ treatEach
-		switch (treatAll[i].side)
-		{
-			case "R":
-				treatString += " right"
-				break
-			case "L":
-				treatString += " left"
-				break
-			case "B":
-				treatString += " bilateral"
-		}
-		treatString += treatAll[i].level? " "+ treatAll[i].level : ""
-		treatString += "<br>"
-	}
-	return treatString.replace(/<br>$/, "")
 }
 
 function filldeleterow(rowmain, opdate, qn)		

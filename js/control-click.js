@@ -9,6 +9,8 @@ function clicktable()
 		return
 
 	savepreviouscell()
+	hidepopup()
+	stopeditmode()
 	savepresentcell(MOUSEDOWNCELL)
 }
 
@@ -18,8 +20,8 @@ function editing(e)
 	if (keycode == 27)
 	{
 		$("#editcell").html(PREVIOUSCELLCONTENT)
-//		hidepopup()
-//		window.focus()
+		hidepopup()
+		window.focus()
 	}
 }
 
@@ -63,8 +65,6 @@ function savepreviouscell()
 			break
 	}
 	editcell.id = ""
-//	hidepopup()
-//	stopeditmode()
 }
 
 function savepresentcell(pointing)
@@ -75,7 +75,7 @@ function savepresentcell(pointing)
 	var qn = $(rowtr).children("td").eq(QN).html()
 
 	pointing.id = "editcell"
-	if (cindex =  OPDATE)
+	if (cindex ==  OPDATE)
 	{
 		fillSetTable(rindex, pointing)
 		popup (pointing);
@@ -92,7 +92,7 @@ function saveContent(column, content)
 	var opdate = $(rowtr).eq(OPDATE).html().numDate()
 	var qn = $(rowtr).eq(QN).html()
 
-	$("#tbl").css("cursor", "'wait'")
+	$("#tbl").css("cursor", "wait")
 	content = content.replace(/<br>/g,"")
 
 	if (qn)
@@ -122,14 +122,11 @@ function saveContent(column, content)
 		{
 			updateQBOOK(response);
 			updateQBOOKFILL()
-			if ($(rowtr).eq(OPROOM).html() && $(rowtr).eq(OPTIME).html())
-			{	//to rearrange rows
-				fillselect(opdate)
-			}
+			fillselect(opdate)
 		}
-		stopeditmode()
-		hidepopup()
-		document.getElementById("tbl").style.cursor = ''
+//		stopeditmode()
+//		hidepopup()
+		$("#tbl").css("cursor", "")
 	}
 }
 
@@ -203,17 +200,22 @@ function fillSetTable(rownum, pointing)
 
 function saveHNinput(editcell, content)
 {
-	var opdate = $(editcell).parents('tr').children("td" ).eq(OPDATE).html().numDate()
-	var qn = $(editcell).parents('tr').children("td" ).eq(QN).html()
+	var rowtr = $(editcell).closest("tr").children("td")
+	var opdate = rowtr.eq(OPDATE).html().numDate()
+	var patient = rowtr.eq(NAME).html()
+	var qn = rowtr.eq(QN).html()
 
-	if (qn)
+	if (patient)
 	{
 		$(editcell).html(PREVIOUSCELLCONTENT)
 		return
 	}
+
 	var sqlstring = "hn=" + content
 	sqlstring += "&opdate="+ opdate
+	sqlstring += "&qn="+ qn
 	sqlstring += "&username="+ THISUSER
+
 
 	Ajax(GETNAMEHN, sqlstring, callbackgetByHN)
 
