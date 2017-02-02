@@ -40,14 +40,22 @@ function editing(e)
 
 function findNextcell(editcell) 
 {
+	var lastcell = $('#tbl tr:last-child td:last-child')
 	var nextcell = $(editcell).next()	//always has QN cell as the last one
 	while (!nextcell.get(0).isContentEditable)
 	{
+		if (nextcell == lastcell)
+		{
+			event.preventDefault()
+			return false
+		}
 		var previous = nextcell
 		nextcell = $(nextcell).next()
 		if (!$(nextcell).get(0))
 		{
-			nextcell = $(previous).parent().next().find('td').eq(1)
+			nextcell = $(previous).parent().next("tr").children().eq(1)
+			if ($(nextcell).get(0).nodeName == "TH")
+				nextcell = $(nextcell).parent().next("tr").children().eq(1)
 		}
 	}		
 	return $(nextcell).get(0)
