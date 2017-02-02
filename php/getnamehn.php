@@ -1,11 +1,10 @@
 ﻿<?php
+require_once "book.php";
+
 	$hn = $username = $waitnum = $staffname = "";
 
 	extract($_GET);
 
-	$host = "appcenter/webservice/patientservice.wsdl";
-	if($socket =@ fsockopen($host, 80, $errno, $errstr, 30)) {
-		fclose($socket);
 		$wsdl="http://appcenter/webservice/patientservice.wsdl";
 		$client = new SoapClient($wsdl);
 		$resultx = $client->Get_demographic_short($hn);
@@ -14,7 +13,7 @@
 			$resulty = $resulty->children();	//numeric array
 		$resultj = json_encode($resulty);		//use json encode-decode
 		$resultz = json_decode($resultj,true);	//to make assoc array
-	} else {
+/*
 		$waitnum="1";
 		//$opdate="2014-07-23";
 		//$staffname="001198";
@@ -26,12 +25,19 @@
 		$resultz["last_name"] = "Surname";
 		$resultz["dob"] = "2001-01-01";
 		$resultz["gender"] = "M";
-	}
-
+*/
 	$mysqli = new mysqli("localhost", "root", "zaq12wsx", "neurosurgery");
 	if ($mysqli->connect_errno)
 		exit("Connect failed: %s\n". $mysqli->connect_error);
 
+		$wsdl="http://appcenter/webservice/patientservice.wsdl";
+		$client = new SoapClient($wsdl);
+		$resultx = $client->Get_demographic_short($hn);
+		$resulty = simplexml_load_string($resultx);
+		while ($resulty->children())
+			$resulty = $resulty->children();	//numeric array
+		$resultj = json_encode($resulty);		//use json encode-decode
+		$resultz = json_decode($resultj,true);	//to make assoc array
 	$resultz["hn"] = $hn;
 	$resultz["qn"] = $qn;
 
@@ -42,7 +48,10 @@
 	elseif (empty($resultz["dob"]))
 		echo "DBfailed No dob for this hn";
 	else
-		echo json_encode(newqn($resultz, $opdate, $username, $waitnum, $staffname));
+	{
+		newqn($resultz, $opdate, $username, $waitnum, $staffname);
+		echo json_encode(book($mysqli));
+	}
 
 function newqn($resultz, $opdate, $username, $waitnum, $staffname)
 {
@@ -53,9 +62,6 @@ function newqn($resultz, $opdate, $username, $waitnum, $staffname)
 
 	$qn = 0;
 	extract($resultz);	//$hn, $initial_name, $first_name, $last_name, $dob, $gender, $qn
-//echo "..".$qn."..";
-//exit;
-//$qn=3;
 	if ($qn)
 	{
 		$sql = "UPDATE book SET hn='$hn', patient='$initial_name"."$first_name"." "."$last_name',";

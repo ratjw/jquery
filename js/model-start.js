@@ -6,9 +6,9 @@ function loadtable(userid)
 	$("#login").remove()
 	var table = document.getElementById("tbl")
 	table.style.display = ""
-	table.onmousedown = function() { MOUSEDOWNCELL = whichElement(event); clicktable() }
-	table.onmouseup = function() { MOUSEUPCELL = whichElement(event) }
-	table.onclick = function() { MOUSECLICKCELL = whichElement(event) }
+	table.onmousedown = function(event) { MOUSEDOWNCELL = whichElement(event); clicktable(event) }
+	table.onmouseup = function(event) { MOUSEUPCELL = whichElement(event) }
+	table.onclick = function(event) { MOUSECLICKCELL = whichElement(event) }
 	document.oncontextmenu = function() { window.focus; return false }
 	document.onkeyup = function(e) { editing(e) }	//for Esc key to cancel any popup
 	swipefinger();
@@ -23,47 +23,47 @@ function loading(response)
 {
 	if (response && response.indexOf("[") != -1)
 	{
-		updateQBOOK(response);	//eval response into QBOOK and ALLLISTS
+		updateBOOK(response);	//eval response into BOOK and ALLLISTS
 		fillupstart();
 	}
 	else
-		alert("Cannot load QBOOK");
+		alert("Cannot load BOOK");
 }
 
-function updateQBOOK(response)
+function updateBOOK(response)
 {
 	var temp = JSON.parse(response)
 
-	QBOOK = temp.QBOOK? temp.QBOOK : []
-	TIMESTAMP = temp.QTIME? temp.QTIME : ""	//last update time of QBOOK in server
+	BOOK = temp.BOOK? temp.BOOK : []
+	TIMESTAMP = temp.QTIME? temp.QTIME : ""	//last update time of BOOK in server
 	QWAIT = temp.QWAIT? temp.QWAIT : []
 	ALLLISTS = temp.STAFF? temp.STAFF : []
 }
 
-function updateQBOOKFILL()
+function updateBOOKFILL()
 {
 	var q, k
 
 	if (STATE[0] == "FILLUP")
 	{
-		QBOOKFILL = QBOOK
+		BOOKFILL = BOOK
 	}
 	else if (STATE[0] == "FILLDAY")
 	{
-		QBOOKFILL = []
-		for (q=0; q < QBOOK.length; q++)
+		BOOKFILL = []
+		for (q=0; q < BOOK.length; q++)
 		{
-			k = QBOOK[q].opdate.mysqltojsdate().getDay()
+			k = BOOK[q].opdate.mysqltojsdate().getDay()
 			if (k == STATE[1] || k == 0)
-				QBOOKFILL.push(QBOOK[q])
+				BOOKFILL.push(BOOK[q])
 		}
 	}
 	else if (STATE[0] == "FILLSTAFF")
 	{
-		QBOOKFILL = []
-		for (q=0; q < QBOOK.length; q++)
-			if (QBOOK[q].staffname == STATE[1])
-				QBOOKFILL.push(QBOOK[q])
+		BOOKFILL = []
+		for (q=0; q < BOOK.length; q++)
+			if (BOOK[q].staffname == STATE[1])
+				BOOKFILL.push(BOOK[q])
 	}
 }
 
@@ -96,7 +96,7 @@ function updating()
 	{
 		if (response && response.indexOf("opdate") != -1)	//there is new entry after TIMESTAMP
 		{
-			updateQBOOK(response);
+			updateBOOK(response);
 			refillall()
 		}
 		clearTimeout(TIMER);
@@ -114,7 +114,7 @@ function refillall()
 {	//called from : updatingback, callbackmove
 	var foundqn
 
-	//QBOOKFILL will be updated in each fill
+	//BOOKFILL will be updated in each fill
 	if (document.getElementById("findrow"))
 		foundqn = document.getElementById("findrow").cells[QN].innerHTML
 	if (STATE[0] == "FILLUP")

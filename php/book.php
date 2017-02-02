@@ -46,7 +46,7 @@ function book($mysqli)
 	while ($rowi = $result->fetch_row())
 		$dats["staff"][] = $rowi;
 
-	$allarray["QBOOK"] = $data;
+	$allarray["BOOK"] = $data;
 	$allarray["QTIME"] = $datu;
 	$allarray["QWAIT"] = $dati;
 	$allarray["STAFF"] = $dats;

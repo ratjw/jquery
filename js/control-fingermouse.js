@@ -160,7 +160,7 @@ addEventListener(document, "touchstart", function(e) {
   }, Modernizr.passiveeventlisteners ? {passive: true} : false);
 D
 	//only in fillup state is processed
-	//In fillday and fillstaff states, the table is the entire QBOOK
+	//In fillday and fillstaff states, the table is the entire BOOK
 */
 	if (STATE[0] == "FILLUP")
 	{ 

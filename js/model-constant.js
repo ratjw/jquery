@@ -4,8 +4,8 @@ var ICDPHP			= "php/icd.php";
 var MYSQLIPHP		= "php/mysqli.php";
 var MYSQL_ALLOR		= "php/mysql_allor.php";
 
-var QBOOK		= {};
-var QBOOKFILL	= [];	//fillup, fillstaff, fillday
+var BOOK		= {};
+var BOOKFILL	= [];	//fillup, fillstaff, fillday
 var QWAIT		= {};
 var QWAITFILL	= [];
 var ALLLISTS	= {};

@@ -3,9 +3,9 @@ function fillupstart()
 {	//Display all cases in each day of 5 weeks
 	STATE[0] = "FILLUP"
 	STATE[1] = getSunday()
-	if (QBOOK.length == 0)
-		QBOOK.push({"opdate" : getSunday()})
-	QBOOKFILL = QBOOK	//also begin QBOOKFILL
+	if (BOOK.length == 0)
+		BOOK.push({"opdate" : getSunday()})
+	BOOKFILL = BOOK	//also begin BOOKFILL
 	fillnew()
 }
 
@@ -16,7 +16,7 @@ function filluprefill()
 	//Start at the same week : update inside the table
 
 	STATE[0] = "FILLUP"
-	updateQBOOKFILL()
+	updateBOOKFILL()
 	fillnew()
 }
 
@@ -24,7 +24,7 @@ function fillupnormal()
 {	//from selecting firstcolumn menu change STATE to fillup from fillday or fillstaff
 
 	STATE[0] = "FILLUP"
-	QBOOKFILL = QBOOK	//changed to fillup from fillday or fillstaff
+	BOOKFILL = BOOK	//changed to fillup from fillday or fillstaff
 	fillnew()
 }
 
@@ -37,7 +37,7 @@ function fillupscroll(direction)
 
 function fillupfind(locationrow)
 {	//from locating show(di), prehilite
-	//locationrow = QBOOKFILL[q]
+	//locationrow = BOOKFILL[q]
 
 	STATE[0] = "FILLUP"
 	STATE[1] = getSunday(locationrow.opdate)
@@ -73,9 +73,9 @@ function refill()
 		var begindate = at? STATE[1].nextdays(numweeks*7) : STATE[1]
 		numweeks++
 		
-		//Find OPDATE of FIRSTROW from the start of QBOOKFILL
+		//Find OPDATE of FIRSTROW from the start of BOOKFILL
 		q = 0
-		while (QBOOKFILL[q] && (QBOOKFILL[q].opdate < begindate))
+		while (BOOKFILL[q] && (BOOKFILL[q].opdate < begindate))
 			q++
 
 		rundate = begindate
@@ -83,12 +83,12 @@ function refill()
 		i = at
 		while (rundate < lastday)
 		{
-			while (q < QBOOKFILL.length && rundate == QBOOKFILL[q].opdate)
+			while (q < BOOKFILL.length && rundate == BOOKFILL[q].opdate)
 			{
 				i++
 				rowi = makenextrow(i, rundate)
 				makedate = rundate
-				filldata(QBOOKFILL, rowi, q)
+				filldata(BOOKFILL, rowi, q)
 				q++
 			}
 			if (rundate != makedate)
@@ -115,10 +115,10 @@ function fillext(di)
 	if (di == -1)
 	{
 		begindate = STATE[1]
-		if ((QBOOKFILL[0]) &&
-			(begindate < QBOOKFILL[0].opdate) && 
+		if ((BOOKFILL[0]) &&
+			(begindate < BOOKFILL[0].opdate) && 
 			(begindate <= getSunday()))
-			return		//being in the beginning of QBOOKFILL
+			return		//being in the beginning of BOOKFILL
 		begindate = begindate.nextdays(di*7)
 		STATE[1] = begindate
 
@@ -148,19 +148,19 @@ function fillday()
 	var date = ""
 	var opday = STATE[1]
 	var makedate
-	var temp = QBOOKFILL
+	var temp = BOOKFILL
 
-	//make virtual QBOOK of only this day
-	QBOOKFILL = []
-	for (q=0; q < QBOOK.length; q++)
+	//make virtual BOOK of only this day
+	BOOKFILL = []
+	for (q=0; q < BOOK.length; q++)
 	{
-		k = QBOOK[q].opdate.mysqltojsdate().getDay()
+		k = BOOK[q].opdate.mysqltojsdate().getDay()
 		if (k == opday)
-			QBOOKFILL.push(QBOOK[q])
+			BOOKFILL.push(BOOK[q])
 	}
-	if (QBOOKFILL.length == 0)
+	if (BOOKFILL.length == 0)
 	{
-		QBOOKFILL = temp
+		BOOKFILL = temp
 	$("#alert").text("ไม่มี case วัน" + NAMEOFDAYTHAI[STATE[1]]);
 	$("#alert").fadeIn();
 		return
@@ -171,17 +171,17 @@ function fillday()
 	while (table.rows[1])
 		table.deleteRow(-1) 
 
-	date = QBOOK[0].opdate	//Beginning of entire original QBOOK
+	date = BOOK[0].opdate	//Beginning of entire original BOOK
 	k = date.mysqltojsdate().getDay()
 
 	//i for number of rows in growing table
 	i=0
 
-	//q for walking on QBOOKFILL rows
-	for (q=0; q < QBOOKFILL.length; q++)
+	//q for walking on BOOKFILL rows
+	for (q=0; q < BOOKFILL.length; q++)
 	{	
-		while (date < QBOOKFILL[q].opdate)
-		{	//step over each day that is not in QBOOKFILL
+		while (date < BOOKFILL[q].opdate)
+		{	//step over each day that is not in BOOKFILL
 			if (date != makedate)
 			{
 				if (k%7 == opday)
@@ -202,7 +202,7 @@ function fillday()
 		i++
 		rowi = makenextrow(i, date)
 		makedate = date
-		filldata(QBOOKFILL, rowi, q)
+		filldata(BOOKFILL, rowi, q)
 	}
 	q = i+5		//make extra 5 rows
 	while (i < q)
@@ -237,26 +237,26 @@ function fillstaff()
 
 	STATE[0] = "FILLSTAFF"
 
-	//make temp QBOOK of only this staff
-	QBOOKFILL = []
-	for (q=0; q < QBOOK.length; q++)
-		if (QBOOK[q].staffname == STATE[1])
-			QBOOKFILL.push(QBOOK[q])
+	//make temp BOOK of only this staff
+	BOOKFILL = []
+	for (q=0; q < BOOK.length; q++)
+		if (BOOK[q].staffname == STATE[1])
+			BOOKFILL.push(BOOK[q])
 
 	//determine opday of this staff
-	for (q=0; q < QBOOKFILL.length; q++)
-		opday[QBOOKFILL[q].opdate.mysqltojsdate().getDay()]++
+	for (q=0; q < BOOKFILL.length; q++)
+		opday[BOOKFILL[q].opdate.mysqltojsdate().getDay()]++
 	opday = opday.indexOf(Math.max.apply(null, opday))
 
 	//delete previous table to fresh start every time
 	while (table.rows[1])
 		table.deleteRow(-1) 
 
-	date = QBOOK[0].opdate	//entire original QBOOK
+	date = BOOK[0].opdate	//entire original BOOK
 	k = date.mysqltojsdate().getDay()
-	for (i=0,q=0; q < QBOOKFILL.length; q++)
+	for (i=0,q=0; q < BOOKFILL.length; q++)
 	{
-		while (date < QBOOKFILL[q].opdate)
+		while (date < BOOKFILL[q].opdate)
 		{
 			if (date != makedate)
 			{
@@ -278,7 +278,7 @@ function fillstaff()
 		i++
 		rowi = makenextrow(i, date)
 		makedate = date
-		filldata(QBOOKFILL, rowi, q)
+		filldata(BOOKFILL, rowi, q)
 	}
 	q = i
 	while (i < q+6)
@@ -356,14 +356,14 @@ function fillselect(opdate)
 	var table = document.getElementById("tbl")
 
 	var q = 0
-	while (q < QBOOKFILL.length && (QBOOKFILL[q].opdate < opdate))
-		q++	//seek opdate in QBOOKFILL
+	while (q < BOOKFILL.length && (BOOKFILL[q].opdate < opdate))
+		q++	//seek opdate in BOOKFILL
 	var i = 0
 	while (table.rows[i].cells[OPDATE].innerHTML.numDate() != opdate)
 		i++	//seek opdate in main table
-	while ((q < QBOOKFILL.length) && (opdate == QBOOKFILL[q].opdate))
+	while ((q < BOOKFILL.length) && (opdate == BOOKFILL[q].opdate))
 	{	//refill only that opdate cases
-		filldata(QBOOKFILL, table.rows[i], q)
+		filldata(BOOKFILL, table.rows[i], q)
 		q++
 		i++
 	}

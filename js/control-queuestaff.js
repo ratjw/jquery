@@ -328,7 +328,7 @@ function qdeletecase(rowmain, qn)
 		if (!response || response.indexOf("DBfailed") != -1)
 			alert ("Delete & Refresh failed!\n" + response)
 		else
-			updateQBOOK(response);
+			updateBOOK(response);
 			staffqueue(staffname)
 	}
 	stopEditmode()	//editmode of qFirstColumn Cell was started by Qtable
@@ -363,7 +363,7 @@ function movetoQwait(movemode, pointQnum)
 
 	if (fromtable.id == "tbl")
 	{
-		movecaseQbookToQwait(movemode.cells[QN].innerHTML, pointQnum)
+		movecaseBookToQwait(movemode.cells[QN].innerHTML, pointQnum)
 	}
 	else if (fromtable.id == "queuetbl")
 	{
@@ -405,7 +405,7 @@ function movecaseQwaitToQwait(WaitNumTo)
 			alert ("Move failed!\n" + response)
 		else
 		{
-			updateQBOOK(response);
+			updateBOOK(response);
 			staffqueue(staffname)
 			table.rows[WaitNumTo].scrollIntoView(false)
 		}
@@ -414,7 +414,7 @@ function movecaseQwaitToQwait(WaitNumTo)
 	}	
 }
 
-function movecaseQbookToQwait(QNfrom, pointQnum)
+function movecaseBookToQwait(QNfrom, pointQnum)
 {
 	var table = document.getElementById("queuetbl")
 	var WNfrom = null
@@ -422,7 +422,7 @@ function movecaseQbookToQwait(QNfrom, pointQnum)
 	var staffname = document.getElementById("queuespan").innerHTML
 
 	table.style.cursor = 'wait'
-	sql = "functionName=movecaseQbookToQwait"	//name of function as a variable in PHP
+	sql = "functionName=movecaseBookToQwait"	//name of function as a variable in PHP
 	sql += "&WaitNumTo="+ pointQnum
 	sql += "&staffname="+ staffname
 	sql += "&THISUSER="+ THISUSER
@@ -436,7 +436,7 @@ function movecaseQbookToQwait(QNfrom, pointQnum)
 			alert ("Move failed!\n" + response)
 		else
 		{
-			updateQBOOK(response);
+			updateBOOK(response);
 			staffqueue(staffname)
 			table.rows[pointQnum].scrollIntoView(false)
 			refillall()
@@ -507,19 +507,19 @@ function getByHNqueue(e)
 				menu.style.overflow = ""
 				stopEditmode()
 
-				Ajax(MYSQLIPHP, 'nosqlReturnbook', updateQBOOKQWAIT)	//To reload Qbook
+				Ajax(MYSQLIPHP, 'nosqlReturnbook', updateBOOKQWAIT)	//To reload book
 
-				function updateQBOOKQWAIT(response)
+				function updateBOOKQWAIT(response)
 				{
 					if (!response || response.indexOf("DBfailed") != -1)
 						alert("Failed! nosqlReturnbook" + response)
 					else
 					{
-						updateQBOOK(response)
+						updateBOOK(response)
 						if (staffname)
 							updateQWAITFILL(staffname)
 						else
-							updateQBOOKFILL()
+							updateBOOKFILL()
 					}	//new case entry tbl has no staffname but queuetbl has staffname
 				}
 			}
@@ -619,8 +619,8 @@ function qphone(textbox, pointing, qn)
 		}
 		else
 		{
-			updateQBOOK(response);
-			updateQBOOKFILL()
+			updateBOOK(response);
+			updateBOOKFILL()
 		}
 	}
 }

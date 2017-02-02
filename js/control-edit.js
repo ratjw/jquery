@@ -106,8 +106,8 @@ function deletecase(rowmain, opdate, qn)
 			alert ("Delete & Refresh failed!\n" + response)
 		else
 		{
-			updateQBOOK(response);
-			updateQBOOKFILL()
+			updateBOOK(response);
+			updateBOOKFILL()
 			filldeleterow(rowmain, opdate, qn)
 		}
 	}
@@ -135,7 +135,7 @@ function premovetoWaitingList(rowmain, staffname)
 	staffqueue(staffname)
 }
 
-function movecaseQbookToQbook(QNfrom, OpDateTo)
+function movecaseBookToBook(QNfrom, OpDateTo)
 {
 	var table = document.getElementById("tbl")
 	var sql = ""
@@ -155,8 +155,8 @@ function movecaseQbookToQbook(QNfrom, OpDateTo)
 			alert ("Move failed!\n" + response)
 		else
 		{
-			updateQBOOK(response);
-			updateQBOOKFILL()
+			updateBOOK(response);
+			updateBOOKFILL()
 			refillall()
 		}
 		stopEditmode()
@@ -164,7 +164,7 @@ function movecaseQbookToQbook(QNfrom, OpDateTo)
 	}	
 }
 
-function movecaseQwaitToQbook(movemode, OpDateTo)
+function movecaseQwaitToBook(movemode, OpDateTo)
 {
 	var table = document.getElementById("queuetbl")
 	var waitnum = movemode.cells[QWAITNUM].innerHTML
@@ -180,17 +180,17 @@ function movecaseQwaitToQbook(movemode, OpDateTo)
 	sql += "1 WHERE waitnum>=" + waitnum
 	sql += " AND staffname='"+ staffname +"';"
 
-	Ajax(MYSQLIPHP, sql, callbackmoveQwaitToQbook);
+	Ajax(MYSQLIPHP, sql, callbackmoveQwaitToBook);
 
 	document.getElementById("calendar").style.display = ""
 		
-	function callbackmoveQwaitToQbook(response)
+	function callbackmoveQwaitToBook(response)
 	{
 		if (!response || response.indexOf("DBfailed") != -1)
 			alert ("Move failed!\n" + response)
 		else
 		{
-			updateQBOOK(response);
+			updateBOOK(response);
 			refillall()
 		}
 		document.getElementById("queuediv").style.display = ""
@@ -199,7 +199,7 @@ function movecaseQwaitToQbook(movemode, OpDateTo)
 	}	
 }
 
-function movetoQbook(movemode, pointDate)
+function movetoBook(movemode, pointDate)
 {
 	var fromtable = gettable(movemode)
 	var pointDate = pointDate.numDate()
@@ -208,12 +208,12 @@ function movetoQbook(movemode, pointDate)
 	{
 		if (movemode.cells[OPDATE].innerHTML != pointDate)
 		{	//to move must click not the same day
-			movecaseQbookToQbook(movemode.cells[QN].innerHTML, pointDate)
+			movecaseBookToBook(movemode.cells[QN].innerHTML, pointDate)
 		}
 	}
 	else if (fromtable.id == "queuetbl")
 	{
-		movecaseQwaitToQbook(movemode, pointDate)
+		movecaseQwaitToBook(movemode, pointDate)
 	}
 }
 
@@ -234,19 +234,19 @@ function copycase(OpDateTo)
 	var teltext = ""
 	var sql = ""
 
-	//Find OPDATE of FIRSTROW from the start of QBOOKFILL
+	//Find OPDATE of FIRSTROW from the start of BOOKFILL
 	q = 0
-	while (QBOOKFILL[q] && (QBOOKFILL[q].qn != QNfrom))
+	while (BOOKFILL[q] && (BOOKFILL[q].qn != QNfrom))
 		q++
-	teltext = QBOOKFILL[q].tel
+	teltext = BOOKFILL[q].tel
 	table.style.cursor = 'wait'
 	sql = "sqlReturnbook=INSERT INTO book SET opdate='" + OpDateTo
-	sql += "', staffname='"+ QBOOKFILL[q].staffname
+	sql += "', staffname='"+ BOOKFILL[q].staffname
 	sql += "', hn='"+ HNFrom
 	sql += "', tel='"+ teltext
 	sql += "', editor='"+ THISUSER +"';"
-	sql += "INSERT INTO qbookdx SELECT LAST_INSERT_ID(),code,diagnosis,side,level,'"+ THISUSER
-	sql += "' FROM qbookdx WHERE qn="+ QNfrom +";"
+	sql += "INSERT INTO bookdx SELECT LAST_INSERT_ID(),code,diagnosis,side,level,'"+ THISUSER
+	sql += "' FROM bookdx WHERE qn="+ QNfrom +";"
 
 	Ajax(MYSQLIPHP, sql, callbackcopy);
 
@@ -258,7 +258,7 @@ function copycase(OpDateTo)
 			alert ("Copy failed!\n" + response)
 		else
 		{
-			updateQBOOK(response);
+			updateBOOK(response);
 			refillall()
 		}
 		stopEditmode()
@@ -275,7 +275,7 @@ function edithistory(rowmain, qn)
 {
 	if (rowmain.cells[QN].innerHTML)
 	{
-		var sql = "sqlReturnData=SELECT * FROM qbookhistory "
+		var sql = "sqlReturnData=SELECT * FROM bookhistory "
 		sql += "WHERE qn="+ qn +";"
 
 		Ajax(MYSQLIPHP, sql, callbackedithistory)

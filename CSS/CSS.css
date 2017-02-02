@@ -24,7 +24,7 @@ td {
 	border-bottom: solid 1px silver;
 }
 
-td#editcell { background-color: lavender; }	/* editing cell */
+td#editcell { background-color: white; }	/* editing cell */
 tr#findrow { background-color: skyblue; }	/* match row */
 tr#movemode { background-color: teal; }	/* pre-move row */
 tr#copymode { background-color: teal; }	/* pre-copy row */
@@ -80,10 +80,10 @@ td.sat:before { content: "เสาร์ "; }
 }
 
 #icdname {
-	text-align:"left";
-	overflow-x: "hidden";
-	overflow-y: "scroll";
-	height: "auto";
+	text-align: left;
+	overflow-x: hidden;
+	overflow-y: scroll;
+	height: auto;
 }
 
 .divindiv {

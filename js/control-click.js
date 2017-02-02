@@ -1,25 +1,39 @@
-function clicktable()
+function clicktable(event)
 {
-//	if (MOUSEDOWNCELL != MOUSEUPCELL)
-//		return
-
-//	var pointing = whichElement(event)
-//	if (pointing.id == "editcell")
+	MOUSEDOWNCELL = whichElement(event)
 	if (MOUSEDOWNCELL.id == "editcell")
 		return
 
+	if (MOUSEDOWNCELL.nodeName != "TD")
+	{
+		stopEditmode()
+		hidePopup()
+		return
+	}
+
 	savePreviouscell()
-	hidePopup()
-	stopEditmode()
 	storePresentcell(MOUSEDOWNCELL)
 }
+
+$("#mytable tr td div").bind('keydown', function(event) {
+  if(event.keyCode == 9){ //for tab key
+    var currentDiv = event.target;
+    $(currentDiv).parents("td").next("td").find("div").click();
+}});
 
 function editing(e)
 {
 	var keycode = getkeycode(e)
-	if (keycode == 27)
+	if (keycode == 9)
+	{
+		savePreviouscell()
+		var nextcell = $("#editcell").next().get(0)
+		storePresentcell(nextcell)
+	}
+	else if (keycode == 27)
 	{
 		$("#editcell").html(PREVIOUSCELLCONTENT)
+		stopEditmode()
 		hidePopup()
 		window.focus()
 	}
@@ -28,10 +42,13 @@ function editing(e)
 function savePreviouscell() 
 {
 	var editcell
-
 	if (!(editcell = document.getElementById("editcell")))
 		return
+
 	var content = editcell.innerHTML
+	if (content == PREVIOUSCELLCONTENT)
+		return
+
 	var edcindex = $(editcell).closest("td").index()
 
 	switch(edcindex)
@@ -73,8 +90,6 @@ function saveContent(column, content)
 	var qn = $(rowtr).eq(QN).html()
 
 	$("#tbl").css("cursor", "wait")
-	if (content == PREVIOUSCELLCONTENT)
-		return
 	content = content.replace(/<br>/g,"")
 
 	if (qn)
@@ -102,12 +117,10 @@ function saveContent(column, content)
 		}
 		else
 		{
-			updateQBOOK(response);
-			updateQBOOKFILL()
+			updateBOOK(response);
+			updateBOOKFILL()
 			fillselect(opdate)
 		}
-//		stopEditmode()
-//		hidePopup()
 		$("#tbl").css("cursor", "")
 	}
 }
@@ -119,15 +132,29 @@ function storePresentcell(pointing)
 	var rindex = $(rowtr).index()
 	var qn = $(rowtr).children("td").eq(QN).html()
 
-	pointing.id = "editcell"
-	if (cindex ==  OPDATE)
+	stopEditmode()
+	hidePopup()
+
+	switch(cindex)
 	{
-		fillSetTable(rindex, pointing)
-		popup (pointing);
-	}
-	else
-	{
-		PREVIOUSCELLCONTENT = pointing.innerHTML
+		case OPDATE:
+			fillSetTable(rindex, pointing)
+			pointing.id = "editcell"
+			popup (pointing);
+			break
+		case OPROOM:
+		case OPTIME:
+		case STAFFNAME:
+		case HN:
+		case DIAGNOSIS:
+		case TREATMENT:
+		case TEL:
+			PREVIOUSCELLCONTENT = pointing.innerHTML
+			pointing.id = "editcell"
+		case NAME:
+		case AGE:
+			hidePopup()
+			break
 	}
 }
 
@@ -182,17 +209,17 @@ function fillSetTable(rownum, pointing)
 	{	//Any case in this date? 
 		var q = 0
 
-		if (QBOOKFILL[0] == undefined)
+		if (BOOKFILL[0] == undefined)
 			return false
 		if (queue)
 			return false
-		while (opdate > QBOOKFILL[q].opdate)
+		while (opdate > BOOKFILL[q].opdate)
 		{
 			q++
-			if (q >= QBOOKFILL.length)
+			if (q >= BOOKFILL.length)
 				return false
 		}
-		if (opdate == QBOOKFILL[q].opdate)
+		if (opdate == BOOKFILL[q].opdate)
 			return true
 		else
 			return false
@@ -211,6 +238,8 @@ function saveHNinput(editcell, content)
 		$(editcell).html(PREVIOUSCELLCONTENT)
 		return
 	}
+	content = content.replace(/<br>/g, "")
+	content = URIcomponent(content)
 
 	var sqlstring = "hn=" + content
 	sqlstring += "&opdate="+ opdate
@@ -222,24 +251,14 @@ function saveHNinput(editcell, content)
 
 	function callbackgetByHN(response)
 	{
-		if (!response || response.indexOf("initial_name") == -1)	//no patient
+		if (!response || response.indexOf("patient") == -1)	//no patient
 			alert("Error getnamehn : "+ response)
 		else if (response.indexOf("DBfailed") != -1)
 			alert("Failed! book($mysqli)" + response)
 		else if (response.indexOf("{") != -1)
 		{	//Only one patient
-/*			var qname = JSON.parse(response)	//convert JSON string into JSON object
-			var name = qname.initial_name + qname.first_name +" "+ qname.last_name
-			var cells = $(editcell).parents('tr').children("td" )
-			var opdate = $(cells).eq(OPDATE).html().numDate()	//convert Thai date to MySQL date
-			var age = qname.dob.replace(/-/g,"/").getAge(opdate.replace(/-/g,"/"))
-			$(cells).eq(QN).html(qname.qn);
-			$(cells).eq(HN).html(qname.hn);
-			$(cells).eq(NAME).html(name);
-			$(cells).eq(AGE).html(age);
-*/
-			updateQBOOK(response)
-			updateQBOOKFILL()
+			updateBOOK(response)
+			updateBOOKFILL()
 			fillselect(opdate)
 		}
 	}
