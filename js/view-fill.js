@@ -161,8 +161,8 @@ function fillday()
 	if (BOOKFILL.length == 0)
 	{
 		BOOKFILL = temp
-	$("#alert").text("ไม่มี case วัน" + NAMEOFDAYTHAI[STATE[1]]);
-	$("#alert").fadeIn();
+		$("#alert").text("ไม่มี case วัน" + NAMEOFDAYTHAI[STATE[1]]);
+		$("#alert").fadeIn();
 		return
 	}
 	STATE[0] = "FILLDAY"

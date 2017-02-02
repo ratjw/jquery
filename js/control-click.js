@@ -15,28 +15,35 @@ function clicktable(event)
 	storePresentcell(MOUSEDOWNCELL)
 }
 
-$("#mytable tr td div").bind('keydown', function(event) {
-  if(event.keyCode == 9){ //for tab key
-    var currentDiv = event.target;
-    $(currentDiv).parents("td").next("td").find("div").click();
-}});
-
 function editing(e)
 {
 	var keycode = getkeycode(e)
 	if (keycode == 9)
 	{
 		savePreviouscell()
-		var nextcell = $("#editcell").next().get(0)
+		nextcell = findNextcell(document.getElementById("editcell"))
 		storePresentcell(nextcell)
 	}
 	else if (keycode == 27)
 	{
-		$("#editcell").html(PREVIOUSCELLCONTENT)
-		stopEditmode()
-		hidePopup()
-		window.focus()
+		if ($("#editcell").index() == OPDATE)
+		{
+			stopEditmode()
+			hidePopup()
+		}
+		else
+		{
+			$("#editcell").html(PREVIOUSCELLCONTENT)
+		}
 	}
+}
+
+function findNextcell(editcell) 
+{
+	var nextcell = $(editcell).next("td").get(0)
+	while (!nextcell.isContentEditable)
+		nextcell = $(nextcell).next("td").get(0)
+	return $(nextcell).get(0)
 }
 
 function savePreviouscell() 
@@ -133,7 +140,6 @@ function storePresentcell(pointing)
 	var qn = $(rowtr).children("td").eq(QN).html()
 
 	stopEditmode()
-	hidePopup()
 
 	switch(cindex)
 	{
@@ -141,6 +147,8 @@ function storePresentcell(pointing)
 			fillSetTable(rindex, pointing)
 			pointing.id = "editcell"
 			popup (pointing);
+			if ($("#alert").css("display") == "block")
+				$("#alert").fadeOut();
 			break
 		case OPROOM:
 		case OPTIME:
