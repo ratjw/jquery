@@ -40,9 +40,16 @@ function editing(e)
 
 function findNextcell(editcell) 
 {
-	var nextcell = $(editcell).next("td").get(0)
-	while (!nextcell.isContentEditable)
-		nextcell = $(nextcell).next("td").get(0)
+	var nextcell = $(editcell).next()	//always has QN cell as the last one
+	while (!nextcell.get(0).isContentEditable)
+	{
+		var previous = nextcell
+		nextcell = $(nextcell).next()
+		if (!$(nextcell).get(0))
+		{
+			nextcell = $(previous).parent().next().find('td').eq(1)
+		}
+	}		
 	return $(nextcell).get(0)
 }
 
