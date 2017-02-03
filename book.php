@@ -3,13 +3,12 @@
 <HEAD>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<!-- The above 3 meta tags *must* come first in the head; any other head content 
-must come *after* these tags -->
-<!-- Bootstrap -->
+<meta name="viewport" content="width=device-width">
+
 <link href="css/CSS.css" rel="stylesheet">
 <link href="css/NoMoreTable.css" rel="stylesheet">
 <link href="css/jquery.mobile-1.4.5.css" rel="stylesheet" />
+
 <script src="js/jquery.mobile-1.4.5.js"></script>
 <script src="js/jquery-3.1.1.js"></script>
 <script src="js/control-click.js"></script>
@@ -67,20 +66,7 @@ must come *after* these tags -->
 
 <div id="paperdiv" ></div>
 
-
 <div id="alert" ></div>
-
-<div id="calendar" class="smallpic">
-  <button onClick="xcalendar()">Close</button>
-  <br/>
-  <hr style="border:2px solid slategray">
-  <div id="calendarin"></div>
-  <div id="overlay" class="divindiv"></div>
-</div>
-
-<div id="teldiv" class="smallpic">
-  <textarea id="txtarea" cols="50" rows="3" maxlength="250"></textarea>
-</div>
 
 <div id="searchicd" class="smallpic">
   <div id="newicd" style="border:1px solid slategray"></div>
@@ -126,18 +112,6 @@ must come *after* these tags -->
    </TBODY>
   </TABLE>
  </div>
- <div id="qcalendar" class="smallpic">
-  <button onClick="xqcalendar()">Close</button>
-  <br/>
-  <hr style="border:2px solid slategray">
-  <div id="qcalendarin"></div>
-  <div id="qoverlay" class="divindiv"></div>
- </div>
- <div id="overlayqueue" class="divindiv"></div>
- <div id="qteldiv" class="divindiv">
-  <textarea id="qtxtarea" cols="50" rows="3" maxlength="250"></textarea>
- </div>
-</div>
 
 <DIV id="login">
 	<h3>Queue book for Neurosurgery</h3>

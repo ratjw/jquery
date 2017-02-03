@@ -201,7 +201,7 @@ function movecaseQwaitToBook(movemode, OpDateTo)
 
 function movetoBook(movemode, pointDate)
 {
-	var fromtable = gettable(movemode)
+	var fromtable = $(movemode).closest("table").get(0)
 	var pointDate = pointDate.numDate()
 
 	if (fromtable.id == "tbl")

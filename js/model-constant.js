@@ -9,9 +9,9 @@ var BOOKFILL	= [];	//fillup, fillstaff, fillday
 var QWAIT		= {};
 var QWAITFILL	= [];
 var ALLLISTS	= {};
-var STATE		= [];	//["FILLUP","2017-01-20"]	= normal (queue of everyday) used in fillup
-						//["FILLDAY","0"]			= queue of day used in fillday
-						//["FILLSTAFF","อ."]			= queue of staff used in fillstaff
+var STATE		= [];	//["FILLUP","2017-01-20"]	= show normal (queue of everyday) used in fillup
+						//["FILLDAY","0"]	(0-6)	= show queue of day used in fillday
+						//["FILLSTAFF","อ. ........."]		= show queue of staff used in fillstaff
 var STARTFILLUP	= 3;	//how many weeks to fillup in starting table
 var THISUSER	= "";
 var TIMESTAMP	= "";
@@ -39,9 +39,6 @@ var QTREATMENT	= 7;
 var QTEL		= 8;
 var QQN			= 9;
 
-var MOUSEDOWNCELL
-var MOUSEUPCELL
-var MOUSECLICKCELL
 var PREVIOUSCELLCONTENT
 
 var NAMEOFDAYTHAI	= ["อาทิตย์", "จันทร์", "อังคาร", "พุธ", "พฤหัส", "ศุกร์", "เสาร์"];
@@ -50,12 +47,10 @@ var NAMEOFDAYABBR	= ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];	//for row
 //used for 1st column color
 var NAMEOFDAYFULL	= ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
 
-//used for undermed
-var RED = "rgb(155, 255, 155)"
-var GREEN = "rgb(255, 200, 200)"
 
-//used in treatment
-var GRAY = "#D3D3D3"
+var RED = "rgb(155, 255, 155)"		//used in undermed
+var GREEN = "rgb(255, 200, 200)"	//used in undermed
+var GRAY = "#D3D3D3"				//used in treatment
 
 //used for found words color
 var COLOROFFIND	= ["red", "yellow", "pink", "green", "orange", "blue", "purple"];
@@ -64,28 +59,6 @@ var NUMMONTH	= {"มค.":"01","กพ.":"02","มีค.":"03","เมย.":"04
 					"กค.":"07","สค.":"08","กย.":"09","ตค.":"10","พย.":"11","ธค.":"12"};
 var MONTH_LABEL = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 
 					'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธ้นวาคม'];
-var TIMELIST	= ["06.00","07.00","08.00","08.30","09.00","09.30","10.00","12.00","13.00","16.00",
-					"17.00","18.00","19.00","20.00"];
-var SPECIALTY		= ["breast","cvt","gen","hepato","neurosurgery",
-						"ped","plastic","trauma","uro","vascular","all"];
-var BLOODLIST		= ["Whole blood","Packed Red Cell","Platelet Conc.","Fresh frozen plasma",
-						"Cryo removed plasma","Cryoprecipitate"];
-var BLOODVALUE		= ["WB","PRC","PC","FFP","CRP","CPP"];
-var UNITCARELIST	= ["Breast End","CVT","General Su","Hepato Pan","MD","Neuro",
-						"Ped","Plastic","Trauma","Uro","Vascular T"];
-var ANESTECHLIST	= ["GA","GA + RA","RA fail + GA","RA inadeq + GA","Spinal","Epidural","Caudal",
-						"Brachial block/IV regional","CSE","MAC","Peripheral N Bl","TIVA","LA","GA + JET",
-						"LA Standby GA","Nerve Block","Spinal Block","Regional Block"];
-var ANESTECHNUMLIST	= ["01","02","03","04","05","06","07","08","09","10","11","12","13","14","15","16","17","18"];
-var WARDLIST		= ["5SE","5SW","5NW","5NE","5NB","9SE","9NE"];
-var WARDTEXTLIST		= ["5SE หอผู้ป่วยศัลยกรรมหญิง","5SW หอผู้ป่วยศัลยกรรมชาย","5NW หอผู้ป่วยศัลยกรรมชาย-หญิง ชั้น5 (อุบัติเหตุ)","5NE หอผู้ป่วยศัลยกรรมพิเศษ",
-							"5NB หอผู้ป่วยอุบัติเหตุไฟไหม้","9SE หอผู้ป่วยศัลยกรรมชาย-หญิง ชั้น 9","9NE หอผู้ป่วยศัลยกรรมเด็ก"];
-var SPECIALTYUNIT
-var flagyear=0000;		// chok for keep value year in edit more days absent edit 28-11-2013
-var flagmonth=1;		// chok for keep value month edit more days absent edit 28-11-2013
-var flagday=1;			// chok for keep value day edit more days absent edit 28-11-2013
-var leapyear=2;			// chok for check leap year edit more days absent edit 28-11-2013
-var longperiod=false;	// chok for check get longperiod edit more days absent edit 28-11-2013
 
 var MEDLIST = [["No DM","+ DM","? DM"],//E14	 Unspecified diabetes mellitus
 				["No HD","+ HD","? HD"],//I519	 Heart disease, unspecified

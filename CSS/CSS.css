@@ -9,7 +9,7 @@ table {
 th {
 	font-size: 16px;
 	font-weight: bold;
-	background-color: steelblue;
+	background-color: #5599DD;
 	color: papayawhip;
 	border-left: solid 1px silver;
 	border-top: solid 1px silver;
@@ -34,21 +34,21 @@ tr {
 	background-position: 300px;
 }
 
-tr.sunday, td.sunday { background-color: #FFE0E7; }
-tr.monday, td.monday { background-color: #FFFFDD; }
-tr.tuesday, td.tuesday { background-color: #FFF0F7; }
-tr.wednesday, td.wednesday { background-color: #CCFFCC; }
-tr.thursday, td.thursday { background-color: #FFEECC; }
-tr.friday, td.friday { background-color: #CCEEFF; }
-tr.saturday, td.saturday { background-color: #EECCFF; }
+tr.sunday, td.sunday { background-color: #FFEEEE; }
+tr.monday, td.monday { background-color: #FFFFEE; }
+tr.tuesday, td.tuesday { background-color: #FFFEFE; }
+tr.wednesday, td.wednesday { background-color: #EEFFEE; }
+tr.thursday, td.thursday { background-color: #FFEEEE; }
+tr.friday, td.friday { background-color: #EEEEFF; }
+tr.saturday, td.saturday { background-color: #FFEEFF; }
 
-td.sun { background-color: hotpink; }
-td.mon { background-color: gold; }
-td.tue { background-color: pink; }
-td.wed { background-color: palegreen; }
-td.thu { background-color: orange; }
-td.fri { background-color: skyblue; }
-td.sat { background-color: violet; }
+td.sun { background-color: #FFDDDD; }
+td.mon { background-color: #FFFFDD; }
+td.tue { background-color: #FFEEEE; }
+td.wed { background-color: #DDFFDD; }
+td.thu { background-color: #FFEEDD; }
+td.fri { background-color: #DDDDFF; }
+td.sat { background-color: #FFDDFF; }
 
 td.sun:before { content: "อาทิตย์ "; }
 td.mon:before { content: "จันทร์ "; }
@@ -172,113 +172,4 @@ input#equip, input#oequip {
 #queuetbl td {
 	font-size: 14px;
 	color: black;
-}
-
-#calendar, #qcalendar {
-	padding-left: 20px;
-}
-
-#calendarin, #qcalendarin {
-	overflow-x: hidden;
-	overflow-y: scroll;
-	height: 600px;
-}
-
-table.calendartable  {
-	table-layout: fixed;
-	overflow: scroll;
-	border-collapse: collapse;
-	border-right: solid 1px slategray;
-	width: 500px;
-}
-
-table.calendartable th {
-	font-size: 16px;
-	font-weight: bold;
-	color: papayawhip;
-	background-color: steelblue;
-	text-align: center;
-	border-left: solid 1px silver;
-	border-top: solid 1px silver;
-	border-bottom: solid 1px silver;
-	width: 70px;
-	height: 30px;
-}
-
-table.calendartable td {
-	empty-cells:show;
-	font-size: 16px;
-	color: black;
-	background-color: #eeeeee;
-	text-align: left;
-	vertical-align: text-top;
-	border-color: #000000; 
-	border-left: solid 1px silver;
-	border-bottom: solid 1px silver;
-	height: 30px;
-}
-
-table.calendartable td.calendarsun { background-color: #ffbbcc; }
-table.calendartable td.calendarsat { background-color: #ccbbff; }
-table.calendartable td.calendarday { background-color: #ffffff; }
-table.calendartable td.calendartoday { background-color: fuchsia; }
-table.calendartable td.calpremoveday { background-color: teal; }
-table.calendartable td:hover { background-color: #00CC00; }
-
-#labwrapper {
-	width: auto;
-	border: 1px solid slategray;
-	overflow: hidden;
-}
-#labdateheadbody {
-	width: 120px;
-	float: left;
-	overflow: hidden;
-}
-.labheader {		/*both labdate and labresult*/
-	height: 40px;
-	line-height: 40px;
-	text-align: center;
-	vertical-align: middle;
-	font-size: 16px;
-	font-weight: bold;
-	background-color: steelblue;
-	color: papayawhip;
-	border-left: solid 1px silver;
-	border-top: solid 1px silver;
-	border-bottom: solid 1px silver;
-}
-#labdate {
-	border: 1px solid slategray;
-	overflow-x: hidden;
-	overflow-y: auto;
-}
-.labeachdate {
-	height: 20px;
-	font-size: 14px;
-	white-space: nowrap;
-	overflow: hidden;
-}
-.labeachdate:hover {
-	background-color: #00CC00;
-}
-#labresultheadbody {
-	float: left;
-	overflow: hidden;
-}
-#labresult {
-	width: auto;
-	height: auto;
-	border: 1px solid slategray;
-	overflow: auto;
-}
-#labtext {
-	width: 700px;		/*labframe width - padding left - padding right*/
-	height: 450px;		/*labframe height - padding top - padding bottom*/
-	padding: 50px;
-	overflow: auto;
-}
-#labiframe {
-	width: 800px;
-	height: 550px;
 }

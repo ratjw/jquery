@@ -131,11 +131,7 @@ function Qclicktable(event)
 	if (pointing.nodeName == "A")
 		return		//return to href link
 
-	//checkpoint#4 : click on qcalendar
-	if (checkCalendar(pointing))
-		return		//return to qcalendar routine
-
-	//checkpoint#5 : click on table header : dragHandler
+	//checkpoint#4 : click on table header : dragHandler
 	if (pointing.nodeName != 'TD')
 	{	//close changestaff not close QFirstColumn overlayqueue
 		var overlayq = document.getElementById("overlayqueue")
@@ -145,7 +141,7 @@ function Qclicktable(event)
 		return
 	}
 	
-	//checkpoint#6 : click TD not in editing area, disable elsewhere editing area
+	//checkpoint#5 : click TD not in editing area, disable elsewhere editing area
 	if (document.getElementById("editmode"))	//td only one id is "editmode"
 	{
 		hidePopupqueue()
@@ -160,7 +156,7 @@ function Qclicktable(event)
 	var qn = rowmain.cells[QQN].innerHTML
 	var movemode = document.getElementById("movemode")
 
-	//checkpoint#7 : previously marked QN to move
+	//checkpoint#6 : previously marked QN to move
 	if (movemode)
 	{
 		movetoQwait(movemode, pointQnum)
@@ -168,7 +164,7 @@ function Qclicktable(event)
 		return
 	}
 
-	//checkpoint#8 : click not in editing area, disable elsewhere editing area
+	//checkpoint#7 : click not in editing area, disable elsewhere editing area
 	if (checkpopup(pointing))	//any popup other than pointing at
 	{
 		hidePopupqueue()
@@ -176,7 +172,7 @@ function Qclicktable(event)
 		return
 	}	
 
-	//checkpoint#9 : click on blank row
+	//checkpoint#8 : click on blank row
 	if (rowmain.cells[QQN].innerHTML == "")
 	{
 		if ((document.getElementById("queuespan").innerHTML == "staffname") || 
@@ -359,7 +355,7 @@ function qpremovetoOpDate(rowmain)
 
 function movetoQwait(movemode, pointQnum)
 {
-	var fromtable = gettable(movemode)
+	var fromtable = $(movemode).closest("table").get(0)
 
 	if (fromtable.id == "tbl")
 	{

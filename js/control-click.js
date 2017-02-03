@@ -1,10 +1,10 @@
 function clicktable(event)
 {
-	MOUSEDOWNCELL = whichElement(event)
-	if (MOUSEDOWNCELL.id == "editcell")
+	mousedownCell = whichElement(event)
+	if (mousedownCell.id == "editcell")
 		return
 
-	if (MOUSEDOWNCELL.nodeName != "TD")
+	if (mousedownCell.nodeName != "TD")
 	{
 		stopEditmode()
 		hidePopup()
@@ -12,7 +12,7 @@ function clicktable(event)
 	}
 
 	savePreviouscell()
-	storePresentcell(MOUSEDOWNCELL)
+	storePresentcell(mousedownCell)
 }
 
 function editing(e)
@@ -40,24 +40,31 @@ function editing(e)
 
 function findNextcell(editcell) 
 {
-	var lastcell = $('#tbl tr:last-child td:last-child')
+	var lastrow = $('#tbl tr:last-child').index()
+	var lastcol = $('#tbl tr:last-child td:last-child').index()
 	var nextcell = $(editcell).next()	//always has QN cell as the last one
 	while (!nextcell.get(0).isContentEditable)
 	{
-		if (nextcell == lastcell)
+		if (nextcell.index() < lastcol)
 		{
-			event.preventDefault()
-			return false
+			nextcell = $(nextcell).next()
 		}
-		var previous = nextcell
-		nextcell = $(nextcell).next()
-		if (!$(nextcell).get(0))
+		else
 		{
-			nextcell = $(previous).parent().next("tr").children().eq(1)
-			if ($(nextcell).get(0).nodeName == "TH")
-				nextcell = $(nextcell).parent().next("tr").children().eq(1)
+			if (nextcell.parent().index() < lastrow)
+			{	//go to next row second cell
+				do {
+					nextcell = $(nextcell).parent().next("tr").children().eq(1)
+				}
+				while ($(nextcell).get(0).nodeName == "TH")	//THEAD row
+			}
+			else
+			{	//#tbl tr:last-child td:last-child
+				event.preventDefault()
+				return false
+			}
 		}
-	}		
+	}
 	return $(nextcell).get(0)
 }
 
@@ -112,8 +119,9 @@ function saveContent(column, content)
 	var qn = $(rowtr).eq(QN).html()
 
 	$("#tbl").css("cursor", "wait")
-	content = content.replace(/<br>/g,"")
-
+	content = content.replace(/<br>/g,"")	//<br> is added by Firefox
+	content = URIcomponent(content)			//take care of white space, double qoute, 
+											//single qoute, and back slash
 	if (qn)
 	{
 		var sqlstring = "sqlReturnbook=UPDATE book SET "

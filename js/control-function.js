@@ -76,44 +76,6 @@ String.prototype.getAge = function (toDate)
 	return years? ageyears : months? agemonths : agedays;
 }
 
-if (!String.prototype.trim) {	//new browsers have native trim() method
-	String.prototype.trim = String.prototype.trim || function () {
-		return this.replace(/^\s+|\s+$/g, "");
-	}
-};
-
-String.prototype.trimLeft = String.prototype.trimLeft || function () {
-    return this.replace(/^\s+/, "");
-};
-
-String.prototype.trimRight = String.prototype.trimRight || function () {
-    return this.replace(/\s+$/, "");
-};
-
-String.prototype.trimFull = String.prototype.trimFull || function () {
-    return this.replace(/(?:(?:^|\n)\s+|\s+(?:$|\n))/g, "").replace(/\s+/g, " ");
-};
-
-if (!Array.prototype.indexOf) {	//for IE < 9
-	Array.prototype.indexOf = function (obj) {
-		var len = this.length + 1;
-		while (len -= 1)
-			if (this[len - 1] === obj)
-				return len - 1;
-		return -1
-	}
-}
-/*
-???cause error in for(... in ...) loop???
-Object.prototype.getKeyByValue = function( value ) {
-    for( var prop in this ) {
-        if( this.hasOwnProperty( prop ) ) {
-             if( this[ prop ] === value )
-                 return prop;
-        }
-    }
-}
-*/
 function getSunday(date)	//get last Sunday in table view
 {
 	var today = date? date.mysqltojsdate() : new Date();
@@ -183,35 +145,6 @@ function getkeycode(e)
 		return false;
 }
 
-function gettable(pointing)
-{
-	if (pointing)	//to ignore pointing null
-	{
-		while (pointing.nodeName != "TABLE")
-		{
-			pointing = pointing.parentNode
-			if (pointing == null)
-				return null
-		}
-		return pointing
-	}
-}
-
-function getfirstrowinview(table, book)
-{
-	var yscroll = Yscrolled()
-	var q = 0
-	var i = 1
-	var qn
-
-	while ((table.rows[i].offsetTop < yscroll) || (table.rows[i].cells[QN].innerHTML == ""))
-		i++
-	qn = table.rows[i].cells[QN].innerHTML
-	while ((book[q].qn != qn) && (q < book.length-1 ))
-		q++		//find q of the first row in view
-	return q
-}
-
 function getCaretPosition (oField) 
 {
 	var iCaretPos = 0;
@@ -274,16 +207,6 @@ function Yscrolled()
 	else
 		scrolled = window.pageYOffset
 	return scrolled
-}
-
-function disabledEventPropagation(event)
-{
-	if (event.stopPropagation){
-		event.stopPropagation();
-	}
-	else if(window.event){
-		window.event.cancelBubble=true;
-	}
 }
 
 function scrollview(table, dateclicked)
@@ -358,18 +281,6 @@ Math.easeInOutQuad = function (t, b, c, d) {
 	return -c/2 * (t*(t-2) - 1) + b;
 };
 
-function isEmpty(map) {
-	if (map)
-	{
-		if (typeof map == "string")
-			return false
-		for(var key=0; key<map.length; key++) 
-			if (map[key])
-				return false;
-	}
-	return true;
-}
-
 function stopEditmode()
 {
 	while (document.getElementById("editcell"))
@@ -435,29 +346,6 @@ function hidePopupqueue()
 		if ((div[i].id != "queuediv") && ($(div[i]).css("display") == "block"))
 			$(div[i]).fadeOut();
 }
-
-function checkpopup(pointing)
-{
-	if (pointing.id == "editmode")
-		return false
-//	pointing = $(pointing).parentsUntil("body").eq(-1).get(0)//getOuterMostNode(pointing)
-	var div = document.getElementsByTagName('DIV')
-	for (var i=0; i<div.length; i++)
-		if ((div[i].style.display == "block") && (pointing.id != div[i].id))
-			return div[i]	//showing DIV and not pointing itself
-	return false
-}
-
-function checkCalendar(pointing)
-{
-	while (pointing.id != "queuediv")
-	{
-		if (pointing.id == "qcalendar")
-			return true
-		pointing = pointing.parentNode
-	}
-	return false
-}
 /*
 $(".element")
 	.draggable()
@@ -482,8 +370,6 @@ function dragHandler(event)
 	{
 		return	//bypass no "mouseup" event bug when click on scroll bar
 	}
-	if (checkCalendar(pointing))
-		return		//qcalendar not move
 	var container = $(pointing).parentsUntil("body").eq(-1).get(0)	//getOuterMostNode(pointing);
 	dragXoffset = event.clientX - container.offsetLeft;
 	dragYoffset = event.clientY - container.offsetTop;

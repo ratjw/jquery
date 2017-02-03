@@ -6,28 +6,12 @@ function loadtable(userid)
 	$("#login").remove()
 	var table = document.getElementById("tbl")
 	table.style.display = ""
-	table.onmousedown = function(event) { 
-		MOUSEDOWNCELL = whichElement(event) 
-		clicktable(event)
-	}
-	table.onmouseup = function(event) {
-		MOUSEUPCELL = whichElement(event)
-		return false
-	}
-	table.onclick = function(event) {
-		MOUSECLICKCELL = whichElement(event)
-		return false
-	}
-	document.oncontextmenu = function() {
-		window.focus
-		return false
-	}
-	document.onkeyup = function(e) {
-		editing(e)
-	}
+	table.onmousedown = clicktable
 	swipefinger();
 	initMouseWheel();
 	TIMER = setTimeout("updating()",10000);	//poke next 10 sec.
+	document.oncontextmenu = function() {	window.focus; return false }
+	document.onkeyup = function(e) { editing(e) }
 	document.onclick = countreset;
 	document.onkeydown = countreset;
 	document.onscroll = countreset;
