@@ -147,21 +147,9 @@ function MouseWheelHandler(e)
 	var tableheight = document.getElementById("tbl").offsetHeight
 	var scrolly = Yscrolled()
 
-	if (document.getElementById("calendar").style.display == "block")
-		return false
 	e = window.event || e	 // old IE support
 	delta = Math.max(-1, Math.min(1, (-e.wheelDelta || e.detail)))
-/*
-document.getElementById("tbl").style.overflow = "hidden";
-addEventListener(document, "touchstart", function(e) {
-    console.log(e.defaultPrevented);  // will be false
-    e.preventDefault();   // does nothing since the listener is passive
-    console.log(e.defaultPrevented);  // still false
-  }, Modernizr.passiveeventlisteners ? {passive: true} : false);
-D
-	//only in fillup state is processed
-	//In fillday and fillstaff states, the table is the entire BOOK
-*/
+
 	if (STATE[0] == "FILLUP")
 	{ 
 		if ((delta == -1) && (scrolly == 0))
@@ -172,27 +160,5 @@ D
 		{
 			fillupscroll(delta)
 		}
-	}
-}
-
-function stopmousewheel(e)
-{
-	document.onmousewheel = function(e) { stopWheel(e); } /* IE7, IE8 */
-	if (document.addEventListener) /* Chrome, Safari, Firefox */
-		document.addEventListener('DOMMouseScroll', stopWheel, false);
-}
-
-function stopWheel(e)
-{
-    if (!e) { e = window.event; } /* IE7, IE8, Chrome, Safari */
-	if (e.preventDefault) { e.preventDefault(); } /* Chrome, Safari, Firefox */
-	e.returnValue = false; /* IE7, IE8 */
-}
-
-function enablemouseWheel()
-{
-	document.onmousewheel = null;  /* IE7, IE8 */
-	if (document.addEventListener) { /* Chrome, Safari, Firefox */
-		document.removeEventListener('DOMMouseScroll', stopWheel, false);
 	}
 }

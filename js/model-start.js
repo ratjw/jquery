@@ -4,17 +4,14 @@ function loadtable(userid)
 
 	THISUSER = userid
 	$("#login").remove()
-	var table = document.getElementById("tbl")
-	table.style.display = ""
-	table.onmousedown = clicktable
+	document.getElementById("tbl").style.display = "block"
 	swipefinger();
 	initMouseWheel();
-	TIMER = setTimeout("updating()",10000);	//poke next 10 sec.
+	TIMER = setTimeout("updating()",10000)		//poke next 10 sec.
+	document.onkeydown = countreset
+	document.onmousedown = function(e) { countreset(); clicktable(e) }
+	document.onscroll = function(e) { countreset();  }
 	document.oncontextmenu = function() {	window.focus; return false }
-	document.onkeyup = function(e) { editing(e) }
-	document.onclick = countreset;
-	document.onkeydown = countreset;
-	document.onscroll = countreset;
 }
 
 function loading(response)

@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <HTML>
 <HEAD>
-<meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width">
+<meta charset="utf-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
 
-<link href="css/CSS.css" rel="stylesheet">
-<link href="css/NoMoreTable.css" rel="stylesheet">
-<link href="css/jquery.mobile-1.4.5.css" rel="stylesheet" />
+<link href="css/CSS.css" rel="stylesheet"/>
+<link href="css/NoMoreTable.css" rel="stylesheet"/>
+<link href="css/jquery.mobile-1.4.5.css" rel="stylesheet"/>
 
 <script src="js/jquery.mobile-1.4.5.js"></script>
 <script src="js/jquery-3.1.1.js"></script>
@@ -56,13 +56,7 @@
   </TR>
 </TABLE>
 
-<div id="editdiv" contentEditable="true" style="width: 100%; height: 100%; display:inline-block"></div>
-
 <div id="menudiv" class="smallpic"></div>
-
-<div id="AddStaff" class="smallpic"></div>
-
-<div id="AddOrlist" class="smallpic"></div>
 
 <div id="paperdiv" ></div>
 
@@ -112,6 +106,7 @@
    </TBODY>
   </TABLE>
  </div>
+</div>
 
 <DIV id="login">
 	<h3>Queue book for Neurosurgery</h3>

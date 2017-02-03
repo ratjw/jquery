@@ -33,7 +33,7 @@ function editing(e)
 		}
 		else
 		{
-			$("#editcell").html(PREVIOUSCELLCONTENT)
+			$("#editcell").html($("#editcell").data("previous"))
 		}
 	}
 }
@@ -75,7 +75,7 @@ function savePreviouscell()
 		return
 
 	var content = editcell.innerHTML
-	if (content == PREVIOUSCELLCONTENT)
+	if (content == $("#editcell").data("previous"))
 		return
 
 	var edcindex = $(editcell).closest("td").index()
@@ -143,7 +143,7 @@ function saveContent(column, content)
 		if (!response || response.indexOf("DBfailed") != -1)
 		{
 			alert("Failed! update database \n\n Restore previous value\n\n" + response)
-			$("#editcell").html(PREVIOUSCELLCONTENT)
+			$("#editcell").html($("#editcell").data("previous"))
 		}
 		else
 		{
@@ -180,7 +180,7 @@ function storePresentcell(pointing)
 		case DIAGNOSIS:
 		case TREATMENT:
 		case TEL:
-			PREVIOUSCELLCONTENT = pointing.innerHTML
+			$("#editcell").data("previous", pointing.innerHTML)
 			pointing.id = "editcell"
 		case NAME:
 		case AGE:
@@ -266,7 +266,7 @@ function saveHNinput(editcell, content)
 
 	if (patient)
 	{
-		$(editcell).html(PREVIOUSCELLCONTENT)
+		$(editcell).html($("#editcell").data("previous"))
 		return
 	}
 	content = content.replace(/<br>/g, "")
