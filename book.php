@@ -2,14 +2,14 @@
 <HTML>
 <HEAD>
 <meta charset="utf-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
-<link href="css/CSS.css" rel="stylesheet"/>
-<link href="css/NoMoreTable.css" rel="stylesheet"/>
-<link href="css/jquery.mobile-1.4.5.css" rel="stylesheet"/>
+<link href="css/CSS.css" rel="stylesheet">
+<link href="css/NoMoreTable.css" rel="stylesheet">
+<!--link href="css/jquery.mobile-1.4.5.css" rel="stylesheet"-->
 
-<script src="js/jquery.mobile-1.4.5.js"></script>
+<!--script src="js/jquery.mobile-1.4.5.js"></script-->
 <script src="js/jquery-3.1.1.js"></script>
 <script src="js/control-click.js"></script>
 <script src="js/control-edit.js"></script>
@@ -22,7 +22,7 @@
 </HEAD>
 <BODY>
 
-<TABLE id="tbl" class="ui-responsive" style="display:none">
+<TABLE id="tbl" data-role="table" class="ui-responsive" style="display:none">
  <TBODY>
    <TR>
     <th style="width:8%">วันผ่าตัด</th>

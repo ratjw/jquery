@@ -129,9 +129,7 @@ function fillext(di)
 		i = 1
 		while (table.rows[i].cells[0].tagName != "TH")
 			i++
-		document.body.scrollTop = table.rows[i].offsetTop - Yscrolled()		//Chrome, IE5, IE10++
-		document.body.scrollTop? "" : document.documentElement.scrollTop = 
-			table.rows[i].offsetTop - Yscrolled()		//IE7,8,9
+		document.body.scrollTop = table.rows[i].offsetTop
 	}
 	else if (di == +1)
 	{

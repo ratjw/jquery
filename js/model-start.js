@@ -5,13 +5,13 @@ function loadtable(userid)
 	THISUSER = userid
 	$("#login").remove()
 	document.getElementById("tbl").style.display = "block"
-	swipefinger();
-	initMouseWheel();
-	TIMER = setTimeout("updating()",10000)		//poke next 10 sec.
-	document.onkeydown = countreset
+	document.onkeydown = function(e) { countreset(); editing(e) }
 	document.onmousedown = function(e) { countreset(); clicktable(e) }
 	document.onscroll = function(e) { countreset();  }
 	document.oncontextmenu = function() {	window.focus; return false }
+	swipefinger();
+	initMouseWheel();
+	TIMER = setTimeout("updating()",10000)		//poke next 10 sec.
 }
 
 function loading(response)
