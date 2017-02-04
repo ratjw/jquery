@@ -34,7 +34,7 @@
 			scrollview(table, opdate)
 			break
 		case "7":	// queue of a day of week
-			STATE[1] = opdate.mysqltojsdate().getDay()
+			STATE[1] = (new Date(opdate)).getDay()
 			fillday()
 			scrollview(table, opdate)
 			break
@@ -72,12 +72,11 @@
 	}
 	document.getElementById("menudiv").style.height = ""
 	document.getElementById("menudiv").style.display = ""
-	stopEditmode()
+	stopEditmode()	//editmode of FirstColumn Cell was started by popup
 }
 
 function addnewrow(rowmain)
 {
-	stopEditmode()	//editmode of FirstColumn Cell was started by popup
 	if (rowmain.cells[QN].innerHTML)	//not empty
 	{
 		var table = document.getElementById("tbl")
@@ -89,8 +88,6 @@ function addnewrow(rowmain)
 		for (i=1; i<rowmain.cells.length; i++)
 			rowmain.cells[i].innerHTML = ""	
 	}
-	document.getElementById("menudiv").style.display = ""	//put out the menu
-	HNinput(rowmain.cells[HN])	//ready for new case
 }
 
 function deletecase(rowmain, opdate, qn)
@@ -121,7 +118,6 @@ function deleteblankrow(rowmain)
 
 function premovecase(rowmain, qn)
 {
-	stopEditmode()	//editmode of FirstColumn was started by popup
 	rowmain.id = "movemode"	//start "movemode" of the "row"
 	document.getElementById("menudiv").style.display = ""
 //	MoveCalendar(rowmain.cells[OPDATE].innerHTML.numDate(), qn)	//show calendar for date selection
@@ -129,7 +125,6 @@ function premovecase(rowmain, qn)
 
 function premovetoWaitingList(rowmain, staffname)
 {
-	stopEditmode()	//editmode of FirstColumn was started by popup
 	rowmain.id = "movemode"	//start "movemode" of the "row"
 	document.getElementById("menudiv").style.display = ""
 	staffqueue(staffname)

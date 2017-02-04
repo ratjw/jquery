@@ -379,14 +379,12 @@ function hilite(qn)	//only from prehilite
 {
 	var table = document.getElementById("tbl")
 	var i, j, k
-	var caretPos
 	var findstr = document.getElementById("findstr")
 	var findwhat = getstring.findwhat
 	var scrollpos
 
 	if (findwhat == null || qn == null)
 		return
-	caretPos = getCaretPosition (findstr)
 	i = table.rows.length - 1
 	while (i && (table.rows[i].cells[QN].innerHTML != qn))
 		i--
@@ -407,7 +405,6 @@ function hilite(qn)	//only from prehilite
 	window.scrollTo(0, Yscrolled())
 	scrolltoview(scrollpos, scrollpos)
 	findstr.focus()
-	setCaretPosition(findstr, caretPos)
 }
 
 function doSearch(qtext, qcolor) {

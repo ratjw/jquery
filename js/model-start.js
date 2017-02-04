@@ -48,7 +48,7 @@ function updateBOOKFILL()
 		BOOKFILL = []
 		for (q=0; q < BOOK.length; q++)
 		{
-			k = BOOK[q].opdate.mysqltojsdate().getDay()
+			k = (new Date(BOOK[q].opdate)).getDay()
 			if (k == STATE[1] || k == 0)
 				BOOKFILL.push(BOOK[q])
 		}

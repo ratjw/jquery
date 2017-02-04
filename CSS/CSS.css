@@ -77,6 +77,7 @@ td.sat:before { content: "เสาร์ "; }
 	padding: 5px;
 	overflow-x: hidden;
 	overflow-y: hidden;
+	box-shadow: 10px 20px 30px slategray;
 }
 
 #icdname {
@@ -123,11 +124,12 @@ td.sat:before { content: "เสาร์ "; }
 	height:200px;
 	line-height: 180px;
 	background-color: snow;
-	border: 2px solid slategray;
+	border: 2px solid silver;
 	text-align:center;
 	font-weight: bold;
 	font-size: 24px;
-	color: green;
+	color: slategray;
+	box-shadow: 20px 30px 40px slategray;
 }
 
 span {

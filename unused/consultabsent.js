@@ -546,8 +546,8 @@ function SaveAbsent(saveval,ABOPDATE,indexrow)
 
 function jsDateDiff(strDate1,strDate2){
 
-	var StartDate = strDate1.mysqltojsdate();
-	var EndDate = strDate2.mysqltojsdate(); 
+	var StartDate = strDate1
+	var EndDate = strDate2
 	var defDate = (EndDate.getTime() - StartDate.getTime()) / 86400000;
 	return defDate;
 }

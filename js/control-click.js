@@ -15,8 +15,6 @@ function clicktable(event)
 	storePresentcell(mousedownCell)
 }
 
-var PREVIOUS
-
 function editing(e)
 {
 	var keycode = getkeycode(e)
@@ -35,7 +33,7 @@ function editing(e)
 		}
 		else
 		{
-			$("#editcell").html(PREVIOUS/*$("#editcell").data("previous")*/)
+			$("#editcell").html($("#editcell").attr("title"))
 		}
 	}
 }
@@ -77,7 +75,7 @@ function savePreviouscell()
 		return
 
 	var content = editcell.innerHTML
-	if (content == PREVIOUS/*$("#editcell").data("previous")*/)
+	if (content == $("#editcell").attr("title"))
 		return
 
 	var edcindex = $(editcell).closest("td").index()
@@ -144,8 +142,8 @@ function saveContent(column, content)
 	{
 		if (!response || response.indexOf("DBfailed") != -1)
 		{
-			alert("Failed! update database \n\n Restore previous value\n\n" + response)
-			$("#editcell").html(PREVIOUS/*$("#editcell").data("previous")*/)
+			alert("Failed! update database \n\n" + response)
+			$("#editcell").attr("title")
 		}
 		else
 		{
@@ -181,9 +179,9 @@ function storePresentcell(pointing)
 		case HN:
 		case DIAGNOSIS:
 		case TREATMENT:
-		case TEL:
-			PREVIOUS =  pointing.innerHTML//$("#editcell").data("previous", pointing.innerHTML)
+		case TEL:			//store value in attribute "title"
 			pointing.id = "editcell"
+			$("#editcell").attr("title", pointing.innerHTML)
 		case NAME:
 		case AGE:
 			hidePopup()
@@ -212,7 +210,7 @@ function fillSetTable(rownum, pointing)
 	opday = NAMEOFDAYTHAI[i]
 
 	casename = casename.substring(0, casename.indexOf(' '))
-	Set[0] = ""		//queue? "เพิ่ม case ผ่าตัด " + opdateth : ""
+	Set[0] = queue? "เพิ่ม case วันที่ " + opdateth : ""
 	Set[1] = queue? "ลบ case ผ่าตัด " + casename : ""
 	Set[2] = check(opdate, queue)? "Delete Blank Row" : ""
 	Set[3] = ""		//queue? "Move case " + casename +" ไปวันอื่น" : ""
@@ -227,8 +225,8 @@ function fillSetTable(rownum, pointing)
 	Set[12] = ""	//queue? "LABs" : ""
 	Set[13] = ""	//"จัดการข้อมูล"
 	Set[14] = ""	//"ปฏิทิน consult"
-	Set[15] = queue? "ประวัติการแก้ไข " + casename : ""
-	Set[16] = "Waiting List"
+	Set[15] = ""	//queue? "ประวัติการแก้ไข " + casename : ""
+	Set[16] = ""	//"Waiting List"
 
 	menu.innerHTML = ''
 	for (each=0; each<Set.length; each++)
@@ -268,7 +266,7 @@ function saveHNinput(editcell, content)
 
 	if (patient)
 	{
-		$(editcell).html(PREVIOUS/*$("#editcell").data("previous")*/)
+		$(editcell).html($("#editcell").attr("title"))
 		return
 	}
 	content = content.replace(/<br>/g, "")

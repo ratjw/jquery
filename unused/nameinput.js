@@ -64,7 +64,7 @@ function getByName(e)
 				var name = qname.initial_name + qname.first_name +" "+ qname.last_name
 				var cells = $(pointing).parents('tr').children("td" )
 				var opdate = $(cells).eq(OPDATE).html().numDate()	//convert Thai date to MySQL date
-				var age = qname.dob.replace(/-/g,"/").getAge(opdate.replace(/-/g,"/"))
+				var age = qname.dob.getAge(opdate)
 				$(cells).eq(QN).html(qname.qn);
 				$(cells).eq(HN).html(qname.hn);
 				$(cells).eq(NAME).html(name);
@@ -205,7 +205,7 @@ function getByNAMEqueue(e)
 				var name = qname.initial_name + qname.first_name +" "+ qname.last_name
 				var cells = $("#editmode").parents('tr').children("td" )
 				var opdate = $(cells).eq(OPDATE).html().numDate()	//convert Thai date to MySQL date
-				var age = qname.dob.replace(/-/g,"/").getAge(opdate.replace(/-/g,"/"))
+				var age = qname.dob.getAge(opdate)
 				$(cells).eq(QN).html(qname.qn);
 				$(cells).eq(HN).html(qname.hn);
 				$(cells).eq(NAME).html(name);

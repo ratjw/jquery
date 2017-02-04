@@ -9,11 +9,6 @@ Date.prototype.MysqlDate = function ()
     return yyyy + "-" + mm + "-" + dd;
 } 
 
-String.prototype.mysqltojsdate = function ()
-{	//MySQL date (2014-05-11) to Javascript date string (2014/05/11)
-  return new Date(this.replace(/-/g, "/"));
-}
-
 String.prototype.thDate = function () 
 {	//MySQL date (2014-05-11) to Thai date (11 พค. 2557) 
 	var yyyy = parseInt(this.substr(0, 4)) + 543;
@@ -21,19 +16,19 @@ String.prototype.thDate = function ()
 	for (ThMonth in NUMMONTH)
 		if (NUMMONTH[ThMonth] == mm) 
 			break;
-	return (this.substr(8, 2) +' '+ ThMonth +' '+ yyyy);
+	return (this.substr(8, 2) +' '+ ThMonth + yyyy);
 } 
 
 String.prototype.numDate = function () 
 {	//Thai date (11 พค. 2557) to MySQL date (2014-05-11)
-    var mm = this.substring(this.indexOf(" ")+1, this.lastIndexOf(" "));
-    var yyyy = parseInt(this.substr(this.length-4, 4)) - 543;
+    var mm = this.substring(this.indexOf(" ")+1, this.length-4);
+    var yyyy = parseInt(this.substr(this.length-4)) - 543;
     return yyyy +"-"+ NUMMONTH[mm] +"-"+ this.substr(0, 2);
 } 
 
 String.prototype.nextdays = function (days)
 {	//MySQL date to be added or substract by days
-	var morrow = new Date(this.replace(/-/g, "/"));
+	var morrow = new Date(this);
 	morrow.setDate(morrow.getDate()+days);
 	return morrow.MysqlDate();
 }
@@ -42,8 +37,8 @@ String.prototype.getAge = function (toDate)
 {	//Calculate age at toDate (MySQL format) from MySQL birth date (2017-01-23)
 	if (!toDate)
 		return ""
-	var birth = new Date(this.replace(/-/g,"/"));
-	var today = new Date(toDate.replace(/-/g,"/"));
+	var birth = new Date(this);
+	var today = new Date(toDate);
 
 	if (today.getTime() - birth.getTime() < 0)
 		return "wrong date"
@@ -78,15 +73,15 @@ String.prototype.getAge = function (toDate)
 
 function getSunday(date)	//get last Sunday in table view
 {
-	var today = date? date.mysqltojsdate() : new Date();
-	today.setDate(today.getDate() - today.getDay());
+	var today = date? date : new Date();
+	today.setDate(today.getDate() - (new Date(today)).getDay());
 	return today.MysqlDate();
 }
 
 function getMonday(date)	//get last Monday 
 {
-	var today = date? date.mysqltojsdate() : new Date();
-	today.setDate(today.getDate() - ((today.getDay() + 6) % 7));	//make Monday=0, Sunday=6
+	var today = date? date : new Date();
+	today.setDate(today.getDate() - (((new Date(today)).getDay() + 6) % 7));	//make Monday=0, Sunday=6
 	return today.MysqlDate();
 }
 
@@ -143,45 +138,6 @@ function getkeycode(e)
 		return e.which;
 	else 
 		return false;
-}
-
-function getCaretPosition (oField) 
-{
-	var iCaretPos = 0;
-
-	// IE Support
-	if (document.selection) {
-		oField.focus ();
-		var oSel = document.selection.createRange ();
-
-		// Move selection start to 0 position
-		oSel.moveStart ('character', -oField.value.length);
-
-		// The caret position is selection length
-		iCaretPos = oSel.text.length;
-	}
-
-	// Firefox support
-	else if (typeof oField.selectionStart==='number')
-		iCaretPos = oField.selectionStart;
-
-	// Return results
-	return (iCaretPos);
-}
-
-function setCaretPosition(elem, caretPos) {
-    var range;
-
-    if (elem.createTextRange) {
-        range = elem.createTextRange();
-        range.move('character', caretPos);
-        range.select();
-    } else {
-        elem.focus();
-        if (elem.selectionStart !== undefined) {
-            elem.setSelectionRange(caretPos, caretPos);
-        }
-    }
 }
 
 function Xscrolled()

@@ -130,6 +130,8 @@ function fillext(di)
 		while (table.rows[i].cells[0].tagName != "TH")
 			i++
 		document.body.scrollTop = table.rows[i].offsetTop
+		document.body.scrollTop? "" : document.documentElement.scrollTop = 
+			table.rows[i].offsetTop - Yscrolled()		//IE7,8,9
 	}
 	else if (di == +1)
 	{
@@ -152,7 +154,7 @@ function fillday()
 	BOOKFILL = []
 	for (q=0; q < BOOK.length; q++)
 	{
-		k = BOOK[q].opdate.mysqltojsdate().getDay()
+		k = (new Date(BOOK[q].opdate)).getDay()
 		if (k == opday)
 			BOOKFILL.push(BOOK[q])
 	}
@@ -170,7 +172,7 @@ function fillday()
 		table.deleteRow(-1) 
 
 	date = BOOK[0].opdate	//Beginning of entire original BOOK
-	k = date.mysqltojsdate().getDay()
+	k = (new Date(date)).getDay()
 
 	//i for number of rows in growing table
 	i=0
@@ -190,7 +192,7 @@ function fillday()
 				makedate = date
 			}
 			date = date.nextdays(1)
-			k++	// = date.mysqltojsdate().getDay()
+			k++	// = (new Date(date)).getDay()
 			if (k%7 == 0 && table.rows.length != 1)
 			{	//make table head row before every Sunday
 				makeheader()
@@ -215,7 +217,7 @@ function fillday()
 			makedate = date
 		}
 		date = date.nextdays(1)
-		k++// = date.mysqltojsdate().getDay()
+		k++// = (new Date(date)).getDay()
 		if (k%7 == 0)
 		{	//make table head row before every Sunday
 			makeheader()
@@ -243,7 +245,7 @@ function fillstaff()
 
 	//determine opday of this staff
 	for (q=0; q < BOOKFILL.length; q++)
-		opday[BOOKFILL[q].opdate.mysqltojsdate().getDay()]++
+		opday[(new Date(BOOKFILL[q].opdate)).getDay()]++
 	opday = opday.indexOf(Math.max.apply(null, opday))
 
 	//delete previous table to fresh start every time
@@ -251,7 +253,7 @@ function fillstaff()
 		table.deleteRow(-1) 
 
 	date = BOOK[0].opdate	//entire original BOOK
-	k = date.mysqltojsdate().getDay()
+	k = (new Date(date)).getDay()
 	for (i=0,q=0; q < BOOKFILL.length; q++)
 	{
 		while (date < BOOKFILL[q].opdate)
@@ -266,7 +268,7 @@ function fillstaff()
 				makedate = date
 			}
 			date = date.nextdays(1)
-			k++// = date.mysqltojsdate().getDay()
+			k++// = (new Date(date)).getDay()
 			if (k%7 == 0 && table.rows.length != 1)
 			{	//make table head row before every Sunday
 				makeheader()
@@ -291,7 +293,7 @@ function fillstaff()
 			makedate = date
 		}
 		date = date.nextdays(1)
-		k++// = date.mysqltojsdate().getDay()
+		k++// = (new Date(date)).getDay()
 		if (k%7 == 0)
 		{	//make table head row before every Sunday
 			makeheader()
@@ -323,8 +325,8 @@ function makenextrow(i, date)
 	rowi = table.insertRow(i)
 	table.rows[i].innerHTML = datatitle.innerHTML
 	rowi.cells[OPDATE].innerHTML = date.thDate()
-	rowi.cells[OPDATE].className = NAMEOFDAYABBR[date.mysqltojsdate().getDay()]
-	rowi.className = NAMEOFDAYFULL[date.mysqltojsdate().getDay()]
+	rowi.cells[OPDATE].className = NAMEOFDAYABBR[(new Date(date)).getDay()]
+	rowi.className = NAMEOFDAYFULL[(new Date(date)).getDay()]
 	rowi.style.backgroundImage = holiday(date)
 	return rowi
 }
@@ -370,7 +372,7 @@ function fillselect(opdate)
 function holiday(day)
 {
 	var date = day.substring(5)
-	var dayofweek = day.mysqltojsdate().getDay()
+	var dayofweek = (new Date(day)).getDay()
 	var holidayname = ""
 
 	for (var key in HOLIDAY) 

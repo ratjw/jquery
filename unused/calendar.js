@@ -20,7 +20,7 @@ function MoveCalendar(clickdate, qn)
 	for (var k=0; k<15; k++)
 	{
 		First_Date = new Date(FirstYear, FirstMonth+k, 1);
-		First_Day = First_Date.getDay();
+		First_Day = new Date(First_Date).getDay();
 		Month = First_Date.getMonth();
 		Year = First_Date.getFullYear();
 		if (Month == 1)
@@ -101,7 +101,7 @@ function ConsultCalendar()
 	for (var k=0; k<15; k++)
 	{
 		First_Date = new Date(FirstYear, FirstMonth+k, 1);
-		First_Day = First_Date.getDay();
+		First_Day = new Date(First_Date).getDay();
 		Month = First_Date.getMonth();
 		Year = First_Date.getFullYear();
 		if (Month == 1)
@@ -214,7 +214,7 @@ function sinceCalendar(pointing, qn)
 	for (var k=0; k<15; k++)
 	{
 		First_Date = new Date(FirstYear, FirstMonth+k, 1);
-		First_Day = First_Date.getDay();
+		First_Day = new Date(First_Date).getDay();
 		Month = First_Date.getMonth();
 		Year = First_Date.getFullYear();
 		if (Month == 1)
