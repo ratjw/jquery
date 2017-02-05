@@ -1,6 +1,5 @@
-function clicktable(event)
+function clicktable(mousedownCell)
 {
-	mousedownCell = whichElement(event)
 	if (mousedownCell.id == "editcell")
 		return
 
@@ -11,22 +10,8 @@ function clicktable(event)
 		return
 	}
 
-    $("#tbl tr").draggable({
-        helper: "clone"
-    });
-
-    $("#tbl tr").droppable({
-        drop: function (event, ui) {
-            var moveto = ui.draggable.html();
-            $(this).after().html(moveto);
-
-            $(ui.draggable).remove();
-            $(ui.helper).remove();
-        }
-    });
-
-//	savePreviouscell()
-//	storePresentcell(mousedownCell)
+	savePreviouscell()
+	storePresentcell(mousedownCell)
 }
 
 function editing(e)

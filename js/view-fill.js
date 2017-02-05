@@ -345,9 +345,9 @@ function filldata(book, rowi, q)
 	rowi.cells[QN].innerHTML = book[q].qn
 }
 
-function filldeleterow(rowmain, opdate, qn)		
+function filldeleterow(rowmain)		
 {
-	for (var j=1; j<rowmain.cells.length; j++)	//delete "-3" from length-3
+	for (var j=1; j<rowmain.cells.length; j++)
 		rowmain.cells[j].innerHTML = ""
 }
 
@@ -384,6 +384,38 @@ function scrollUpDown(e)
 				fillupscroll(delta)
 			fillupscroll(delta)
 		}
+}
+
+function DragDrop(event)
+{
+   $("#tbl tr").draggable({
+        helper: "clone"
+    });
+
+    $("#tbl tr").droppable({
+        drop: function (event, ui) {
+            var patient = ui.draggable.html();
+            $(this).after().html(patient);
+
+			reArrange(ui.draggable, ui.droppable)
+        }
+    });
+}
+
+function reArrange(drag, drop)
+{
+	var prevCase = $(drag).prev().children("td").eq(OPDATE).html()
+	var thisCase = $(drag).children("td").eq(OPDATE).html()
+	var nextCase = $(drag).next().children("td").eq(OPDATE).html()
+	var qn = $(drag).children("td").eq(QN).html()
+	var opdate = $(drop).children("td").eq(OPDATE).html()
+
+	if (prevCase != thisCase && thisCase != nextCase)
+		filldeleterow(drag.get(0))
+	else
+		$(drag).remove()
+
+	movecaseBookToBook(qn, opdate)
 }
 
 function holiday(day)

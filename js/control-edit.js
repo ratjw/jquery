@@ -14,7 +14,7 @@
 			return;
 		case "1":
 			if (qn)
-				deletecase(rowmain, opdate, qn)
+				deletecase(rowmain, qn)
 			break;
 		case "2":
 			deleteblankrow(rowmain)
@@ -90,7 +90,7 @@ function addnewrow(rowmain)
 	}
 }
 
-function deletecase(rowmain, opdate, qn)
+function deletecase(rowmain, qn)
 {
 	//not actually delete the case but set waitnum=0
 	var sql = "sqlReturnbook=UPDATE book SET waitnum=0 WHERE qn="+ qn +";"
@@ -105,7 +105,7 @@ function deletecase(rowmain, opdate, qn)
 		{
 			updateBOOK(response);
 			updateBOOKFILL()
-			filldeleterow(rowmain, opdate, qn)
+			filldeleterow(rowmain)
 		}
 	}
 }
@@ -132,18 +132,14 @@ function premovetoWaitingList(rowmain, staffname)
 
 function movecaseBookToBook(QNfrom, OpDateTo)
 {
-	var table = document.getElementById("tbl")
 	var sql = ""
 
-	table.style.cursor = 'wait'
 	sql = "sqlReturnbook=UPDATE book SET opdate='" + OpDateTo
 	sql += "', editor='"+ THISUSER
 	sql += "' WHERE qn="+ QNfrom +";"
 
 	Ajax(MYSQLIPHP, sql, callbackmove);
 
-	document.getElementById("calendar").style.display = ""
-		
 	function callbackmove(response)
 	{
 		if (!response || response.indexOf("DBfailed") != -1)
@@ -154,8 +150,6 @@ function movecaseBookToBook(QNfrom, OpDateTo)
 			updateBOOKFILL()
 			refillall()
 		}
-		stopEditmode()
-		table.style.cursor = 'default'
 	}	
 }
 
