@@ -385,9 +385,8 @@ function scrollUpDown(e)
 			fillupscroll(delta)
 		}
 }
-
-function DragDrop(event)
-{
+/*
+$( function() {
    $("#tbl tr").draggable({
         helper: "clone"
     });
@@ -400,15 +399,35 @@ function DragDrop(event)
 			reArrange(ui.draggable, ui.droppable)
         }
     });
+} );
+*/
+function DragDrop(event)
+{
+	$("#tbl tr").draggable({
+		helper: "clone",
+		start : function () {
+			stopEditmode()
+			hidePopup()
+		}
+	});
+
+	$("#tbl tr").droppable({
+		drop: function (event, ui) {
+			var opdate = $(this).children("td").eq(OPDATE).html().numDate()
+			var patient = ui.draggable.html();
+			$(this).after().html(patient);
+
+			reArrange(ui.draggable, opdate)
+		}
+	});
 }
 
-function reArrange(drag, drop)
+function reArrange(drag, opdate)
 {
 	var prevCase = $(drag).prev().children("td").eq(OPDATE).html()
 	var thisCase = $(drag).children("td").eq(OPDATE).html()
 	var nextCase = $(drag).next().children("td").eq(OPDATE).html()
 	var qn = $(drag).children("td").eq(QN).html()
-	var opdate = $(drop).children("td").eq(OPDATE).html()
 
 	if (prevCase != thisCase && thisCase != nextCase)
 		filldeleterow(drag.get(0))

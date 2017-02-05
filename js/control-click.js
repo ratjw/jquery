@@ -14,9 +14,9 @@ function clicktable(mousedownCell)
 	storePresentcell(mousedownCell)
 }
 
-function editing(e)
+function editing(keycode)
 {
-	var keycode = getkeycode(e)
+//	var keycode = getkeycode(e)
 	if (keycode == 9)
 	{
 		savePreviouscell()

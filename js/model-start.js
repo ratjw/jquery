@@ -1,20 +1,24 @@
 function loadtable(userid)
 {
-	var mousedownCell
+//	var mousedownCell
 
 	Ajax(MYSQLIPHP, "nosqlReturnbook", loading);
 
 	THISUSER = userid
 	$("#login").remove()
 	$("#tbl").on('wheel', function(event) { scrollUpDown(event); return false })
-	document.getElementById("tbl").style.display = "block"
-	document.onkeydown = function(event) { countreset(); editing(event) }
-	document.onmousedown = function(event) {
-		countreset()
+	$("#tbl").css("display", "block")
+	$("#tbl").click( function(event) {
+		countreset();
 		mousedownCell = whichElement(event)
-	}
-	document.onmousemove = function(event) { DragDrop(event) }
-	document.onclick = function() { countreset(); clicktable(mousedownCell) }
+		clicktable(mousedownCell)
+	})
+	document.onkeydown = function(event) { countreset(); editing(event.which) }
+//	document.onmousedown = function(event) {
+//		countreset()
+//		DragDrop(event)
+//	}
+	document.onmousemove = function(event) { DragDrop(event); return false }
 	document.onscroll = function() { countreset() }
 	document.oncontextmenu = function() {	window.focus; return false }
 	swipefinger();
