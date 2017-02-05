@@ -18,7 +18,7 @@ function loadtable(userid)
 //		countreset()
 //		DragDrop(event)
 //	}
-	document.onmousemove = function(event) { DragDrop(event); return false }
+//	document.onmousemove = function(event) { DragDrop(event); return false }
 	document.onscroll = function() { countreset() }
 	document.oncontextmenu = function() {	window.focus; return false }
 	swipefinger();

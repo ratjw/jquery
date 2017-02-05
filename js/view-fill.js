@@ -138,6 +138,7 @@ function fillext(di)
 		makeheader()
 		fill(table.rows.length-1)
 	}
+	DragDrop(event)
 }
 
 function fillday()
@@ -224,7 +225,8 @@ function fillday()
 			i++
 		}
 	}
- }
+ 	DragDrop(event)
+}
 
 function fillstaff()
 {	//Display all cases of only one staff (staffname is in STATE)
@@ -300,6 +302,7 @@ function fillstaff()
 			i++
 		}
 	}
+//	DragDrop(event)
 }
 
 function makeheader(at)
@@ -324,6 +327,7 @@ function makenextrow(i, date)
 
 	rowi = table.insertRow(i)
 	table.rows[i].innerHTML = datatitle.innerHTML
+	rowi.className = "ui-draggable ui-draggable-handle ui-droppable"
 	rowi.cells[OPDATE].innerHTML = date.thDate()
 	rowi.cells[OPDATE].className = NAMEOFDAYABBR[(new Date(date)).getDay()]
 	rowi.className = NAMEOFDAYFULL[(new Date(date)).getDay()]
