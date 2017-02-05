@@ -5,12 +5,14 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
+<link href="css/jquery-ui.css" rel="stylesheet">
 <link href="css/CSS.css" rel="stylesheet">
 <link href="css/NoMoreTable.css" rel="stylesheet">
 <!--link href="css/jquery.mobile-1.4.5.css" rel="stylesheet"-->
 
 <!--script src="js/jquery.mobile-1.4.5.js"></script-->
-<script src="js/jquery-3.1.1.js"></script>
+<script src="js/jquery.js"></script>
+<script src="js/jquery-ui.js"></script>
 <script src="js/control-click.js"></script>
 <script src="js/control-edit.js"></script>
 <script src="js/control-fingermouse.js"></script>

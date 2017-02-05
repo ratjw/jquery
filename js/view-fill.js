@@ -369,6 +369,23 @@ function fillselect(opdate)
 	}
 }
 
+function scrollUpDown(e)
+{
+	var tableheight = $("#tbl").height()
+	var scrolly = Yscrolled()
+	var delta = e.originalEvent.deltaY;
+
+		if (STATE[0] == "FILLUP")
+		{ 
+			if ((delta < 0) && (scrolly == 0))
+				delta = -1
+			else if ((delta > 0) && (tableheight <= $("#tbl").height() + scrolly))
+				delta = +1
+				fillupscroll(delta)
+			fillupscroll(delta)
+		}
+}
+
 function holiday(day)
 {
 	var date = day.substring(5)

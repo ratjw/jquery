@@ -24,7 +24,11 @@ td {
 	border-bottom: solid 1px silver;
 }
 
-td#editcell { background-color: white; }	/* editing cell */
+td#editcell { 
+	background-color: white; 
+	box-shadow: 5px 5px 10px slategray;
+}	/* editing cell */
+
 tr#findrow { background-color: skyblue; }	/* match row */
 tr#movemode { background-color: teal; }	/* pre-move row */
 tr#copymode { background-color: teal; }	/* pre-copy row */
@@ -119,7 +123,7 @@ td.sat:before { content: "เสาร์ "; }
 	display:none;
 	z-index: 1;
 	top:25%;
-	left:40%;
+	left:30%;
 	width: 300px;
 	height:200px;
 	line-height: 180px;

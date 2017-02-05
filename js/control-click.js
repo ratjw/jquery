@@ -11,8 +11,22 @@ function clicktable(event)
 		return
 	}
 
-	savePreviouscell()
-	storePresentcell(mousedownCell)
+    $("#tbl tr").draggable({
+        helper: "clone"
+    });
+
+    $("#tbl tr").droppable({
+        drop: function (event, ui) {
+            var moveto = ui.draggable.html();
+            $(this).after().html(moveto);
+
+            $(ui.draggable).remove();
+            $(ui.helper).remove();
+        }
+    });
+
+//	savePreviouscell()
+//	storePresentcell(mousedownCell)
 }
 
 function editing(e)
