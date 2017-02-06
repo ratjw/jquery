@@ -7,6 +7,7 @@ function fillupstart()
 		BOOK.push({"opdate" : getSunday()})
 	BOOKFILL = BOOK	//also begin BOOKFILL
 	fillnew()
+	DragDrop()
 }
 
 function filluprefill()
@@ -18,6 +19,7 @@ function filluprefill()
 	STATE[0] = "FILLUP"
 	updateBOOKFILL()
 	fillnew()
+	DragDrop()
 }
 
 function fillupnormal()
@@ -26,6 +28,7 @@ function fillupnormal()
 	STATE[0] = "FILLUP"
 	BOOKFILL = BOOK	//changed to fillup from fillday or fillstaff
 	fillnew()
+	DragDrop()
 }
 
 function fillupscroll(direction)
@@ -33,6 +36,7 @@ function fillupscroll(direction)
 	STATE[0] = "FILLUP"
 	fillext(direction)
 //	hilitefillext()
+	DragDrop()
 }
 
 function fillupfind(locationrow)
@@ -42,6 +46,7 @@ function fillupfind(locationrow)
 	STATE[0] = "FILLUP"
 	STATE[1] = getSunday(locationrow.opdate)
 	fillnew()
+	DragDrop()
 }
 
 function fillnew()
@@ -106,7 +111,7 @@ function refill()
 	}
 }
 
-function fillext(di)
+function fillext(di, event)
 {
 	var begindate
 	var	i
@@ -138,7 +143,6 @@ function fillext(di)
 		makeheader()
 		fill(table.rows.length-1)
 	}
-	DragDrop(event)
 }
 
 function fillday()
@@ -302,7 +306,7 @@ function fillstaff()
 			i++
 		}
 	}
-//	DragDrop(event)
+	DragDrop(event)
 }
 
 function makeheader(at)
@@ -327,7 +331,6 @@ function makenextrow(i, date)
 
 	rowi = table.insertRow(i)
 	table.rows[i].innerHTML = datatitle.innerHTML
-	rowi.className = "ui-draggable ui-draggable-handle ui-droppable"
 	rowi.cells[OPDATE].innerHTML = date.thDate()
 	rowi.cells[OPDATE].className = NAMEOFDAYABBR[(new Date(date)).getDay()]
 	rowi.className = NAMEOFDAYFULL[(new Date(date)).getDay()]
@@ -389,22 +392,7 @@ function scrollUpDown(e)
 			fillupscroll(delta)
 		}
 }
-/*
-$( function() {
-   $("#tbl tr").draggable({
-        helper: "clone"
-    });
 
-    $("#tbl tr").droppable({
-        drop: function (event, ui) {
-            var patient = ui.draggable.html();
-            $(this).after().html(patient);
-
-			reArrange(ui.draggable, ui.droppable)
-        }
-    });
-} );
-*/
 function DragDrop(event)
 {
 	$("#tbl tr").draggable({
@@ -417,11 +405,15 @@ function DragDrop(event)
 
 	$("#tbl tr").droppable({
 		drop: function (event, ui) {
+			var prevCase = $(ui.draggable).prev().children("td").eq(OPDATE).html()
+			var thisCase = $(ui.draggable).children("td").eq(OPDATE).html()
+			var nextCase = $(ui.draggable).next().children("td").eq(OPDATE).html()
+			var qn = $(ui.draggable).children("td").eq(QN).html()
 			var opdate = $(this).children("td").eq(OPDATE).html().numDate()
-			var patient = ui.draggable.html();
-			$(this).after().html(patient);
 
-			reArrange(ui.draggable, opdate)
+			$(ui.draggable).children("td").eq(OPDATE).html(opdate)
+			$(this).after(ui.draggable);
+			movecaseBookToBook(qn, opdate)
 		}
 	});
 }

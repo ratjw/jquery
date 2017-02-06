@@ -204,7 +204,7 @@ function fillSetTable(rownum, pointing)
 	var menu = document.getElementById("menudiv")
 	var i = 0
 
-	while (NAMEOFDAYFULL[i] != opday)
+	while (opday.indexOf(NAMEOFDAYFULL[i]) == -1)
 		i++
 	opday = NAMEOFDAYTHAI[i]
 

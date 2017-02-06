@@ -1,6 +1,6 @@
  
 Date.prototype.MysqlDate = function () 
-{	//Javascript Date object to MySQL date (2014-05-11)
+{	//Javascript Date Object to MySQL date (2014-05-11)
     var yyyy = this.getFullYear();
     var mm = this.getMonth()+1;
 	mm = (mm < 10)? "0"+mm : ""+mm;
@@ -73,15 +73,15 @@ String.prototype.getAge = function (toDate)
 
 function getSunday(date)	//get last Sunday in table view
 {
-	var today = date? date : new Date();
-	today.setDate(today.getDate() - (new Date(today)).getDay());
+	var today = date? new Date(date) : new Date();
+	today.setDate(today.getDate() - today.getDay());
 	return today.MysqlDate();
 }
 
 function getMonday(date)	//get last Monday 
 {
-	var today = date? date : new Date();
-	today.setDate(today.getDate() - (((new Date(today)).getDay() + 6) % 7));	//make Monday=0, Sunday=6
+	var today = date? new Date(date) : new Date();
+	today.setDate(today.getDate() - ((today.getDay() + 6) % 7));	//make Monday=0, Sunday=6
 	return today.MysqlDate();
 }
 
