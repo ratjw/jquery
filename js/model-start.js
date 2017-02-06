@@ -11,8 +11,7 @@ function loadtable(userid)
 	})
 	$("#tbl").keydown( function (event) {
 		countreset();
-		editing(event.which)
-		return false
+		editing(event)
 	})
 	$("#tbl").scroll( function () {
 		countreset()

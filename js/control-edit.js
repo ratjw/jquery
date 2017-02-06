@@ -11,7 +11,7 @@
 	{
 		case "0":
 			addnewrow(rowmain)
-			return;
+			break;
 		case "1":
 			if (qn)
 				deletecase(rowmain, qn)
@@ -19,54 +19,39 @@
 		case "2":
 			deleteblankrow(rowmain)
 			break;
-		case "3":
-			premovecase(rowmain, qn)
-			return;
-		case "4":
-			premovetoWaitingList(rowmain, staffname)
-			return;
-		case "5":
-			precopycase(rowmain, qn)
-			return;
-		case "6":	// NORMAL
+		case "3":	// NORMAL
 			STATE[1] = getSunday(opdate)
 			fillupnormal(opdate)
 			scrollview(table, opdate)
 			break
-		case "7":	// queue of a day of week
+		case "4":	// queue of a day of week
 			STATE[1] = (new Date(opdate)).getDay()
 			fillday()
 			scrollview(table, opdate)
 			break
-		case "8":	// queue of a staff
+		case "5":	// queue of a staff
 			STATE[1] = staffname
 			fillstaff()
 			scrollview(table, opdate)
 			break
-		case "9":
+		case "6":
 			findq()
 			break;
-		case "10":
+		case "7":
 			fillEquipTable(rownum, qn)
 			break
-		case "11":
+		case "8":
 			if (hn)
 				PACS (hn)
 			break
-		case "12":
+		case "9":
 			if (hn)
 				getlab(hn)
 			break
-		case "13":
-			addUp()
-			return;
-		case "14":
-			ConsultCalendar()
-			break;
-		case "15":
+		case "10":
 			edithistory(rowmain, qn)
 			break;
-		case "16":
+		case "11":
 			staffqueue(staffname)
 			break;
 	}

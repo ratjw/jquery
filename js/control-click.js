@@ -12,16 +12,20 @@ function clicktable(mousedownCell)
 
 	savePreviouscell()
 	storePresentcell(mousedownCell)
+	mousedownCell.focus()
 }
 
-function editing(keycode)
+function editing(e)
 {
-//	var keycode = getkeycode(e)
+	var keycode = getkeycode(e)
 	if (keycode == 9)
 	{
 		savePreviouscell()
-		nextcell = findNextcell(document.getElementById("editcell"))
-		storePresentcell(nextcell)
+		if (e.shiftKey)
+			thiscell = findPrevcell($(editcell).get(0))
+		else
+			thiscell = findNextcell($(editcell).get(0))
+		storePresentcell(thiscell)
 	}
 	else if (keycode == 27)
 	{
@@ -37,14 +41,42 @@ function editing(keycode)
 	}
 }
 
+function findPrevcell(editcell) 
+{
+	var prevcell = $(editcell)
+
+	do {
+		if (prevcell.index() > 1)
+		{
+			prevcell = $(prevcell).prev()
+		}
+		else
+		{
+			if (prevcell.parent().index() > 1)
+			{	//go to prev row second-to last cell
+				do {
+					prevcell = $(prevcell).parent().prev("tr").children().eq(TEL)
+				}
+				while ($(prevcell).get(0).nodeName == "TH")	//THEAD row
+			}
+			else
+			{	//#tbl tr:1 td:1
+				event.preventDefault()
+				return false
+			}
+		}
+	} while (!prevcell.get(0).isContentEditable)
+
+	return $(prevcell).get(0)
+}
+
 function findNextcell(editcell) 
 {
+	var nextcell = $(editcell)
 	var lastrow = $('#tbl tr:last-child').index()
-	var lastcol = $('#tbl tr:last-child td:last-child').index()
-	var nextcell = $(editcell).next()	//always has QN cell as the last one
-	while (!nextcell.get(0).isContentEditable)
-	{
-		if (nextcell.index() < lastcol)
+	
+	do {
+		if (nextcell.index() < TEL)
 		{
 			nextcell = $(nextcell).next()
 		}
@@ -53,7 +85,7 @@ function findNextcell(editcell)
 			if (nextcell.parent().index() < lastrow)
 			{	//go to next row second cell
 				do {
-					nextcell = $(nextcell).parent().next("tr").children().eq(1)
+					nextcell = $(nextcell).parent().next("tr").children().eq(OPROOM)
 				}
 				while ($(nextcell).get(0).nodeName == "TH")	//THEAD row
 			}
@@ -63,7 +95,8 @@ function findNextcell(editcell)
 				return false
 			}
 		}
-	}
+	} while (!nextcell.get(0).isContentEditable)
+
 	return $(nextcell).get(0)
 }
 
@@ -212,20 +245,15 @@ function fillSetTable(rownum, pointing)
 	Set[0] = queue? "เพิ่ม case วันที่ " + opdateth : ""
 	Set[1] = queue? "ลบ case ผ่าตัด " + casename : ""
 	Set[2] = check(opdate, queue)? "Delete Blank Row" : ""
-	Set[3] = ""		//queue? "Move case " + casename +" ไปวันอื่น" : ""
-	Set[4] = ""		//queue? "Move case " + casename +" ไป Waiting List" : ""
-	Set[5] = ""		//queue? "Copy case " + casename : ""
-	Set[6] = (STATE[0] != "FILLUP")? "คิวทั้งหมด" : ""
-	Set[7] = (STATE[0] != "FILLDAY")? "คิวผ่าตัด วัน" + opday : ""
-	Set[8] = (STATE[0] != "FILLSTAFF")? (staffname? "คิวผ่าตัด " + staffname : "") : ""
-	Set[9] = ""		//"หาคำ"
-	Set[10] = ""	//queue? "เครื่องมือผ่าตัด/set OR" : ""
-	Set[11] = ""	//queue? "PACS" : "" 
-	Set[12] = ""	//queue? "LABs" : ""
-	Set[13] = ""	//"จัดการข้อมูล"
-	Set[14] = ""	//"ปฏิทิน consult"
-	Set[15] = ""	//queue? "ประวัติการแก้ไข " + casename : ""
-	Set[16] = ""	//"Waiting List"
+	Set[3] = (STATE[0] != "FILLUP")? "คิวทั้งหมด" : ""
+	Set[4] = (STATE[0] != "FILLDAY")? "คิวผ่าตัด วัน" + opday : ""
+	Set[5] = (STATE[0] != "FILLSTAFF")? (staffname? "คิวผ่าตัด " + staffname : "") : ""
+	Set[6] = ""		//"หาคำ"
+	Set[7] = ""	//queue? "เครื่องมือผ่าตัด/set OR" : ""
+	Set[8] = ""	//queue? "PACS" : "" 
+	Set[9] = ""	//queue? "LABs" : ""
+	Set[10] = ""	//queue? "ประวัติการแก้ไข " + casename : ""
+	Set[11] = ""	//"Waiting List"
 
 	menu.innerHTML = ''
 	for (each=0; each<Set.length; each++)

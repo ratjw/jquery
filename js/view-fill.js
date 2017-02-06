@@ -405,9 +405,7 @@ function DragDrop(event)
 
 	$("#tbl tr").droppable({
 		drop: function (event, ui) {
-			var prevCase = $(ui.draggable).prev().children("td").eq(OPDATE).html()
-			var thisCase = $(ui.draggable).children("td").eq(OPDATE).html()
-			var nextCase = $(ui.draggable).next().children("td").eq(OPDATE).html()
+
 			var qn = $(ui.draggable).children("td").eq(QN).html()
 			var opdate = $(this).children("td").eq(OPDATE).html().numDate()
 
@@ -416,21 +414,6 @@ function DragDrop(event)
 			movecaseBookToBook(qn, opdate)
 		}
 	});
-}
-
-function reArrange(drag, opdate)
-{
-	var prevCase = $(drag).prev().children("td").eq(OPDATE).html()
-	var thisCase = $(drag).children("td").eq(OPDATE).html()
-	var nextCase = $(drag).next().children("td").eq(OPDATE).html()
-	var qn = $(drag).children("td").eq(QN).html()
-
-	if (prevCase != thisCase && thisCase != nextCase)
-		filldeleterow(drag.get(0))
-	else
-		$(drag).remove()
-
-	movecaseBookToBook(qn, opdate)
 }
 
 function holiday(day)
