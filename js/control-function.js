@@ -130,16 +130,6 @@ function whichElement(e)
 	return targ;
 }
 
-function getkeycode(e)
-{
-	if (window.event)
-		return window.event.keyCode;
-	else if (e) 
-		return e.which;
-	else 
-		return false;
-}
-
 function Xscrolled()
 {
 	var scrolled
@@ -237,16 +227,6 @@ Math.easeInOutQuad = function (t, b, c, d) {
 	return -c/2 * (t*(t-2) - 1) + b;
 };
 
-function stopEditmode()
-{
-	while (document.getElementById("editcell"))
-		document.getElementById("editcell").id = ""
-//	while (document.getElementById("movemode"))
-//		document.getElementById("movemode").id = ""
-//	while (document.getElementById("copymode"))
-//		document.getElementById("copymode").id = ""
-}
-
 function popup(pointing)
 {
 	var xpos, ypos, xscr, yscr
@@ -274,6 +254,12 @@ function popup(pointing)
 	menu.style.left = xpos + 'px'
 }
 
+function stopEditmode()
+{
+	while (document.getElementById("editcell"))
+		document.getElementById("editcell").id = ""
+}
+
 function hidePopup()
 {
 	var div = $("body").children("div")
@@ -282,86 +268,43 @@ function hidePopup()
 			$(div[i]).fadeOut()
 }
 
-function hidePopupqueue()
+function getCaretPosition (oField) 
 {
-	var edit = document.getElementById("editmode")
-	if (edit)
-	{
-		if (edit.cellIndex == QHN)
-			edit.innerHTML = ""		//This also kills "INPUT"
-		else if (edit.cellIndex == QNAME)
-			edit.innerHTML = ""		//This also kills "INPUT"
-		else if (edit.cellIndex == QTEL)
-			savetel(true)
-		else if (document.getElementById('searchicd').style.display == 'block')
-			saveDxRx(true)
-		edit.id = ""
+	var iCaretPos = 0;
+
+	// IE Support
+	if (document.selection) {
+		oField.focus ();
+		var oSel = document.selection.createRange ();
+
+		// Move selection start to 0 position
+		oSel.moveStart ('character', -oField.value.length);
+
+		// The caret position is selection length
+		iCaretPos = oSel.text.length;
 	}
-	var div = $("body").children("div")
-	for (var i=0; i<div.length; i++)
-		if ((div[i].id != "queuediv") && ($(div[i]).css("display") == "block"))
-			$(div[i]).fadeOut();
+
+	// Firefox support
+	else if (typeof oField.selectionStart==='number')
+		iCaretPos = oField.selectionStart;
+
+	// Return results
+	return (iCaretPos);
 }
-/*
-$(".element")
-	.draggable()
-	.click(function(){
-		if ( $(this).is('.ui-draggable-dragging') ) {
-			return;
-		}
-	// click action here
-	});
-*/
-function dragHandler(event)
-{
-	var dragXoffset = 0;	// How much we've moved the element on the horozontal
-	var dragYoffset = 0;	// How much we've moved the element on the verticle
 
-	var event = event || window.event;	//for old ie
-	var pointing = whichElement(event)
-	if (pointing.nodeName == 'TD')
-		return
-	if ((pointing.id == 'queuedivin') || (pointing.id == 'calendarin') || 
-		(pointing.id == 'qcalendarin'))
-	{
-		return	//bypass no "mouseup" event bug when click on scroll bar
-	}
-	var container = $(pointing).parentsUntil("body").eq(-1).get(0)	//getOuterMostNode(pointing);
-	dragXoffset = event.clientX - container.offsetLeft;
-	dragYoffset = event.clientY - container.offsetTop;
-	document.onmouseup = clickHandler	//works when mousedown within 100 ms
+function setCaretPosition(elem, caretPos) {
+    var range;
 
-	var timer = setInterval(function(){ 
-		clearInterval(timer); 
-		container.style.cursor = 'move';
-		document.onmousemove = moveHandler;
-		document.onmouseup = cleanup;
-	}, 100);
-
-
-	function moveHandler(event)
-	{
-		event = event || window.event;	//for old ie
-		if (event.button <= 1)
-		{
-			container.style.left=event.clientX-dragXoffset+'px';
-			container.style.top=event.clientY-dragYoffset+'px';
-		}
-	}
-
-	function clickHandler()
-	{	//for close overlay menu
-		clearInterval(timer); 
-		document.getElementById("overlay").style.display = "none"
-		cleanup()
-	}
-
-	function cleanup()
-	{
-		document.onmousemove = null;
-		document.onmouseup = null;
-		container.style.cursor = "default";
-	}
+    if (elem.createTextRange) {
+        range = elem.createTextRange();
+        range.move('character', caretPos);
+        range.select();
+    } else {
+        elem.focus();
+        if (elem.selectionStart !== undefined) {
+            elem.setSelectionRange(caretPos, caretPos);
+        }
+    }
 }
 
 function URIcomponent(qoute)

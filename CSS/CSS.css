@@ -153,6 +153,47 @@ a:hover {
 	background-size:auto;
 }
 
+table.historytable  {
+	table-layout: fixed;
+	overflow: scroll;
+	border-collapse: collapse;
+	border-right: solid 1px slategray;
+	width: 500px;
+}
+
+table.historytable th {
+	font-size: 16px;
+	font-weight: bold;
+	color: papayawhip;
+	background-color: steelblue;
+	text-align: center;
+	border-left: solid 1px silver;
+	border-top: solid 1px silver;
+	border-bottom: solid 1px silver;
+	width: 70px;
+	height: 30px;
+}
+
+table.historytable td {
+	empty-cells:show;
+	font-size: 16px;
+	color: black;
+	background-color: #eeeeee;
+	text-align: left;
+	vertical-align: text-top;
+	border-color: #000000; 
+	border-left: solid 1px silver;
+	border-bottom: solid 1px silver;
+	height: 30px;
+}
+
+table.historytable td.historysun { background-color: #ffbbcc; }
+table.historytable td.historysat { background-color: #ccbbff; }
+table.historytable td.historyday { background-color: #ffffff; }
+table.historytable td.historytoday { background-color: fuchsia; }
+table.historytable td.calpremoveday { background-color: teal; }
+table.historytable td:hover { background-color: #00CC00; }
+
 div#equip, div#setor { font-size: 16px; }
 
 input#equip, input#oequip { 

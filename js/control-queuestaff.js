@@ -457,7 +457,7 @@ function HNinputqueue(pointing)
 
 function getByHNqueue(e)
 {
-	var keycode = getkeycode(e)
+	var keycode = window.event.keyCode || e.which;
 	var namehn = document.getElementById("keyin")
 	
 	namehn.value = namehn.value.replace(/<br>/g, "")
@@ -574,7 +574,7 @@ function qphone(textbox, pointing, qn)
 
 	function savetelnum(e)
 	{
-		keycode = getkeycode(e)
+		var keycode = window.event.keyCode || e.which;
 		if (keycode == 13)
 		{
 			e = e || window.event

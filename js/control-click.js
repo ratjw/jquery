@@ -1,7 +1,8 @@
-function clicktable(mousedownCell)
+function clicktable(e)
 {
+	mousedownCell = window.event.srcElement || e.target;
 	if (mousedownCell.id == "editcell")
-		return
+		return false
 
 	if (mousedownCell.nodeName != "TD")
 	{
@@ -17,7 +18,8 @@ function clicktable(mousedownCell)
 
 function editing(e)
 {
-	var keycode = getkeycode(e)
+	var keycode = window.event.keyCode || e.which;
+
 	if (keycode == 9)
 	{
 		savePreviouscell()
@@ -26,6 +28,13 @@ function editing(e)
 		else
 			thiscell = findNextcell($(editcell).get(0))
 		storePresentcell(thiscell)
+	}
+	else if (keycode == 13)
+	{
+		if (e.shiftKey || e.ctrlkey)
+			return 
+		event.preventDefault()
+		savePreviouscell()
 	}
 	else if (keycode == 27)
 	{
@@ -39,65 +48,6 @@ function editing(e)
 			$("#editcell").html($("#editcell").attr("title"))
 		}
 	}
-}
-
-function findPrevcell(editcell) 
-{
-	var prevcell = $(editcell)
-
-	do {
-		if (prevcell.index() > 1)
-		{
-			prevcell = $(prevcell).prev()
-		}
-		else
-		{
-			if (prevcell.parent().index() > 1)
-			{	//go to prev row second-to last cell
-				do {
-					prevcell = $(prevcell).parent().prev("tr").children().eq(TEL)
-				}
-				while ($(prevcell).get(0).nodeName == "TH")	//THEAD row
-			}
-			else
-			{	//#tbl tr:1 td:1
-				event.preventDefault()
-				return false
-			}
-		}
-	} while (!prevcell.get(0).isContentEditable)
-
-	return $(prevcell).get(0)
-}
-
-function findNextcell(editcell) 
-{
-	var nextcell = $(editcell)
-	var lastrow = $('#tbl tr:last-child').index()
-	
-	do {
-		if (nextcell.index() < TEL)
-		{
-			nextcell = $(nextcell).next()
-		}
-		else
-		{
-			if (nextcell.parent().index() < lastrow)
-			{	//go to next row second cell
-				do {
-					nextcell = $(nextcell).parent().next("tr").children().eq(OPROOM)
-				}
-				while ($(nextcell).get(0).nodeName == "TH")	//THEAD row
-			}
-			else
-			{	//#tbl tr:last-child td:last-child
-				event.preventDefault()
-				return false
-			}
-		}
-	} while (!nextcell.get(0).isContentEditable)
-
-	return $(nextcell).get(0)
 }
 
 function savePreviouscell() 
@@ -141,49 +91,6 @@ function savePreviouscell()
 		case TEL:
 			saveContent("tel", content)
 			break
-	}
-}
-
-function saveContent(column, content)
-{
-	var rowtr = $("#editcell").closest("tr").children("td")
-	var opdate = $(rowtr).eq(OPDATE).html().numDate()
-	var qn = $(rowtr).eq(QN).html()
-
-	$("#tbl").css("cursor", "wait")
-	content = content.replace(/<br>/g,"")	//<br> is added by Firefox
-	content = URIcomponent(content)			//take care of white space, double qoute, 
-											//single qoute, and back slash
-	if (qn)
-	{
-		var sqlstring = "sqlReturnbook=UPDATE book SET "
-		sqlstring += column +" = '"+ content
-		sqlstring += "', editor='"+ THISUSER
-		sqlstring += "' WHERE qn = "+ qn +";"
-	}
-	else
-	{
-		var sqlstring = "sqlReturnbook=INSERT INTO book ("
-		sqlstring += "opdate, "+ column +", editor) VALUES ('"
-		sqlstring += opdate +"', '"+ content +"', '"+ THISUSER +"');"
-	}
-
-	Ajax(MYSQLIPHP, sqlstring, callbacksaveContent);
-
-	function callbacksaveContent(response)
-	{
-		if (!response || response.indexOf("DBfailed") != -1)
-		{
-			alert("Failed! update database \n\n" + response)
-			$("#editcell").attr("title")
-		}
-		else
-		{
-			updateBOOK(response);
-			updateBOOKFILL()
-			fillselect(opdate)
-		}
-		$("#tbl").css("cursor", "")
 	}
 }
 
@@ -319,5 +226,106 @@ function saveHNinput(editcell, content)
 			updateBOOKFILL()
 			fillselect(opdate)
 		}
+	}
+}
+
+function findPrevcell(editcell) 
+{
+	var prevcell = $(editcell)
+
+	do {
+		if (prevcell.index() > 1)
+		{
+			prevcell = $(prevcell).prev()
+		}
+		else
+		{
+			if (prevcell.parent().index() > 1)
+			{	//go to prev row second-to last cell
+				do {
+					prevcell = $(prevcell).parent().prev("tr").children().eq(TEL)
+				}
+				while ($(prevcell).get(0).nodeName == "TH")	//THEAD row
+			}
+			else
+			{	//#tbl tr:1 td:1
+				event.preventDefault()
+				return false
+			}
+		}
+	} while (!prevcell.get(0).isContentEditable)
+
+	return $(prevcell).get(0)
+}
+
+function findNextcell(editcell) 
+{
+	var nextcell = $(editcell)
+	var lastrow = $('#tbl tr:last-child').index()
+	
+	do {
+		if (nextcell.index() < TEL)
+		{
+			nextcell = $(nextcell).next()
+		}
+		else
+		{
+			if (nextcell.parent().index() < lastrow)
+			{	//go to next row second cell
+				do {
+					nextcell = $(nextcell).parent().next("tr").children().eq(OPROOM)
+				}
+				while ($(nextcell).get(0).nodeName == "TH")	//THEAD row
+			}
+			else
+			{	//#tbl tr:last-child td:last-child
+				event.preventDefault()
+				return false
+			}
+		}
+	} while (!nextcell.get(0).isContentEditable)
+
+	return $(nextcell).get(0)
+}
+
+function saveContent(column, content)
+{
+	var rowtr = $("#editcell").closest("tr").children("td")
+	var opdate = $(rowtr).eq(OPDATE).html().numDate()
+	var qn = $(rowtr).eq(QN).html()
+
+	$("#tbl").css("cursor", "wait")
+	content = URIcomponent(content)			//take care of white space, double qoute, 
+											//single qoute, and back slash
+	if (qn)
+	{
+		var sqlstring = "sqlReturnbook=UPDATE book SET "
+		sqlstring += column +" = '"+ content
+		sqlstring += "', editor='"+ THISUSER
+		sqlstring += "' WHERE qn = "+ qn +";"
+	}
+	else
+	{
+		var sqlstring = "sqlReturnbook=INSERT INTO book ("
+		sqlstring += "opdate, "+ column +", editor) VALUES ('"
+		sqlstring += opdate +"', '"+ content +"', '"+ THISUSER +"');"
+	}
+
+	Ajax(MYSQLIPHP, sqlstring, callbacksaveContent);
+
+	function callbacksaveContent(response)
+	{
+		if (!response || response.indexOf("DBfailed") != -1)
+		{
+			alert("Failed! update database \n\n" + response)
+			$("#editcell").attr("title")
+		}
+		else
+		{
+			updateBOOK(response);
+			updateBOOKFILL()
+			fillselect(opdate)
+		}
+		$("#tbl").css("cursor", "")
 	}
 }

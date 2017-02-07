@@ -7,7 +7,7 @@ function loadtable(userid)
 	$("#tbl").css("display", "block")
 	$("#tbl").click( function (event) {
 		countreset();
-		clicktable(whichElement(event))
+		clicktable(event)
 	})
 	$("#tbl").keydown( function (event) {
 		countreset();

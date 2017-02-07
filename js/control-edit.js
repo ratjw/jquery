@@ -268,8 +268,8 @@ function edithistory(rowmain, qn)
 
 function makehistory(rowmain, response)
 {
-	var calendar = document.getElementById("calendar");
-	var calendarin = document.getElementById("calendarin");
+	var container = document.getElementById("container");
+	var containerdiv = document.getElementById("containerdiv");
 	var history
 	if (!this.JSON)
 		history = eval("("+ response +")");
@@ -278,7 +278,7 @@ function makehistory(rowmain, response)
 
 	var HTML_head = '<tr><th colspan=9>';
 
-	var HTML_String = '<table class="calendartable">';
+	var HTML_String = '<table class="historytable">';
 	HTML_String += HTML_head + rowmain.cells[HN].innerHTML + ' ' + rowmain.cells[NAME].innerHTML + '</th></tr>';
 	HTML_String += '<tr>';
 	HTML_String += '<th style="width:40px">Action</th>';
@@ -308,18 +308,18 @@ function makehistory(rowmain, response)
 	HTML_String += '</table></td></tr>';
 	HTML_String += '</table>';
 
-	calendar.style.display = "block";
-	calendar.style.overflowY = "hidden";
-	calendar.style.height = ""
-	calendar.style.width = ""
-	calendar.onmousedown = dragHandler;
-	calendarin.style.height = ""
-	calendarin.style.width = ""
-	calendarin.innerHTML = HTML_String;
-	if (calendarin.offsetHeight > $(window).height())
-	{	//<button>+<br>+<hr> is about 50px
-		calendarin.style.height = $(window).height() - 70 +"px"
-		calendarin.style.overflowX = "hidden"
-		calendarin.style.overflowY = "scroll"
+	container.style.display = "block";
+	container.style.overflowY = "hidden";
+	container.style.height = ""
+	container.style.width = ""
+	container.onmousedown = dragHandler;
+	containerdiv.style.height = ""
+	containerdiv.style.width = ""
+	containerdiv.innerHTML = HTML_String;
+	if (containerdiv.offsetHeight > $(window).height())
+	{	//<button> + <br> + <hr> is about 50px
+		containerdiv.style.height = $(window).height() - 70 +"px"
+		containerdiv.style.overflowX = "hidden"
+		containerdiv.style.overflowY = "scroll"
 	}
 }

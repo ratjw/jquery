@@ -64,6 +64,14 @@
 
 <div id="alert" ></div>
 
+<div id="container" class="smallpic">
+  <button onClick="xcontainer()">Close</button>
+  <br/>
+  <hr style="border:2px solid slategray">
+  <div id="containerdiv"></div>
+  <div id="overlay" class="divindiv"></div>
+</div>
+
 <div id="searchicd" class="smallpic">
   <div id="newicd" style="border:1px solid slategray"></div>
   <div id="oldicd" style="display:none"></div>
