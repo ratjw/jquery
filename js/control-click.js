@@ -6,7 +6,8 @@ function clicktable(e)
 
 	if (mousedownCell.nodeName != "TD")
 	{
-		stopEditmode()
+		if ($("#editcell").get(0))
+			$("#editcell").attr("id","")
 		hidePopup()
 		return
 	}
@@ -16,51 +17,17 @@ function clicktable(e)
 	mousedownCell.focus()
 }
 
-function editing(e)
-{
-	var keycode = window.event.keyCode || e.which;
-
-	if (keycode == 9)
-	{
-		savePreviouscell()
-		if (e.shiftKey)
-			thiscell = findPrevcell($(editcell).get(0))
-		else
-			thiscell = findNextcell($(editcell).get(0))
-		storePresentcell(thiscell)
-	}
-	else if (keycode == 13)
-	{
-		if (e.shiftKey || e.ctrlkey)
-			return 
-		event.preventDefault()
-		savePreviouscell()
-	}
-	else if (keycode == 27)
-	{
-		if ($("#editcell").index() == OPDATE)
-		{
-			stopEditmode()
-			hidePopup()
-		}
-		else
-		{
-			$("#editcell").html($("#editcell").attr("title"))
-		}
-	}
-}
-
 function savePreviouscell() 
 {
-	var editcell
-	if (!(editcell = document.getElementById("editcell")))
+	if (!$("#editcell").get(0))
 		return
 
-	var content = editcell.innerHTML
+	var content = $("#editcell").html()
+
 	if (content == $("#editcell").attr("title"))
 		return
 
-	var edcindex = $(editcell).closest("td").index()
+	var edcindex = $("#editcell").closest("td").index()
 
 	switch(edcindex)
 	{
@@ -70,13 +37,17 @@ function savePreviouscell()
 			saveContent("oproom", content)
 			break
 		case OPTIME:
+			if (content.indexOf(".") == -1)
+				content = content + ".00"
+			if (content.indexOf(".") == 1)
+				content = "0" + content
 			saveContent("optime", content)
 			break
 		case STAFFNAME:
 			saveContent("staffname", content)
 			break
 		case HN:
-			saveHNinput(editcell, content)
+			saveHNinput("hn", content)
 			break
 		case NAME:
 			break
@@ -101,7 +72,7 @@ function storePresentcell(pointing)
 	var rindex = $(rowtr).index()
 	var qn = $(rowtr).children("td").eq(QN).html()
 
-	stopEditmode()
+	$("#editcell").attr("id","")
 
 	switch(cindex)
 	{
@@ -156,11 +127,9 @@ function fillSetTable(rownum, pointing)
 	Set[4] = (STATE[0] != "FILLDAY")? "คิวผ่าตัด วัน" + opday : ""
 	Set[5] = (STATE[0] != "FILLSTAFF")? (staffname? "คิวผ่าตัด " + staffname : "") : ""
 	Set[6] = ""		//"หาคำ"
-	Set[7] = ""	//queue? "เครื่องมือผ่าตัด/set OR" : ""
-	Set[8] = ""	//queue? "PACS" : "" 
-	Set[9] = ""	//queue? "LABs" : ""
-	Set[10] = ""	//queue? "ประวัติการแก้ไข " + casename : ""
-	Set[11] = ""	//"Waiting List"
+	Set[7] = ""	//queue? "PACS" : "" 
+	Set[8] = ""	//queue? "ประวัติการแก้ไข " + casename : ""
+	Set[9] = ""	//"Waiting List"
 
 	menu.innerHTML = ''
 	for (each=0; each<Set.length; each++)
@@ -191,19 +160,55 @@ function fillSetTable(rownum, pointing)
 	}
 }
 
-function saveHNinput(editcell, content)
+function editing(e)
 {
-	var rowtr = $(editcell).closest("tr").children("td")
+	var keycode = window.event.keyCode || e.which;
+
+	if (keycode == 9)
+	{
+		savePreviouscell()
+		if (e.shiftKey)
+			thiscell = findPrevcell()
+		else
+			thiscell = findNextcell()
+		storePresentcell(thiscell)
+	}
+	else if (keycode == 13)
+	{
+		if (e.shiftKey || e.ctrlkey)
+			return 
+		event.preventDefault()
+		savePreviouscell()
+		thiscell = findNextcell()
+		storePresentcell(thiscell)
+		thiscell.focus()
+	}
+	else if (keycode == 27)
+	{
+		if ($("#editcell").index() == OPDATE)
+		{
+			$("editcell").attr("id","")
+			hidePopup()
+		}
+		else
+		{
+			$("#editcell").html($("#editcell").attr("title"))
+		}
+	}
+}
+
+function saveHNinput(hn, content)
+{
+	var rowtr = $("#editcell").closest("tr").children("td")
 	var opdate = rowtr.eq(OPDATE).html().numDate()
 	var patient = rowtr.eq(NAME).html()
 	var qn = rowtr.eq(QN).html()
 
 	if (patient)
 	{
-		$(editcell).html($("#editcell").attr("title"))
+		$("#editcell").html($("#editcell").attr("title"))
 		return
 	}
-	content = content.replace(/<br>/g, "")
 	content = URIcomponent(content)
 
 	var sqlstring = "hn=" + content
@@ -229,18 +234,18 @@ function saveHNinput(editcell, content)
 	}
 }
 
-function findPrevcell(editcell) 
+function findPrevcell() 
 {
-	var prevcell = $(editcell)
+	var prevcell = $("#editcell")
 
 	do {
-		if (prevcell.index() > 1)
+		if ($(prevcell).index() > 1)
 		{
 			prevcell = $(prevcell).prev()
 		}
 		else
 		{
-			if (prevcell.parent().index() > 1)
+			if ($(prevcell).parent().index() > 1)
 			{	//go to prev row second-to last cell
 				do {
 					prevcell = $(prevcell).parent().prev("tr").children().eq(TEL)
@@ -253,24 +258,24 @@ function findPrevcell(editcell)
 				return false
 			}
 		}
-	} while (!prevcell.get(0).isContentEditable)
+	} while (!$(prevcell).get(0).isContentEditable)
 
 	return $(prevcell).get(0)
 }
 
-function findNextcell(editcell) 
+function findNextcell() 
 {
-	var nextcell = $(editcell)
+	var nextcell = $("#editcell")
 	var lastrow = $('#tbl tr:last-child').index()
 	
 	do {
-		if (nextcell.index() < TEL)
+		if ($(nextcell).index() < TEL)
 		{
 			nextcell = $(nextcell).next()
 		}
 		else
 		{
-			if (nextcell.parent().index() < lastrow)
+			if ($(nextcell).parent().index() < lastrow)
 			{	//go to next row second cell
 				do {
 					nextcell = $(nextcell).parent().next("tr").children().eq(OPROOM)
@@ -283,7 +288,7 @@ function findNextcell(editcell)
 				return false
 			}
 		}
-	} while (!nextcell.get(0).isContentEditable)
+	} while (!$(nextcell).get(0).isContentEditable)
 
 	return $(nextcell).get(0)
 }
@@ -291,8 +296,8 @@ function findNextcell(editcell)
 function saveContent(column, content)
 {
 	var rowtr = $("#editcell").closest("tr").children("td")
-	var opdate = $(rowtr).eq(OPDATE).html().numDate()
-	var qn = $(rowtr).eq(QN).html()
+	var opdate = rowtr.eq(OPDATE).html().numDate()
+	var qn = rowtr.eq(QN).html()
 
 	$("#tbl").css("cursor", "wait")
 	content = URIcomponent(content)			//take care of white space, double qoute, 

@@ -156,7 +156,7 @@ function MouseWheelHandler(e)
 		{
 			fillupscroll(delta)
 		}
-		else if ((delta == +1) && (tableheight <= $(window).height() + scrolly))
+		else if ((delta == +1) && (tableheight <= window.innerHeight + scrolly))
 		{
 			fillupscroll(delta)
 		}

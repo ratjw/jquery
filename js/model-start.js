@@ -5,19 +5,17 @@ function loadtable(userid)
 	THISUSER = userid
 	$("#login").remove()
 	$("#tbl").css("display", "block")
-	$("#tbl").click( function (event) {
-		countreset();
-		clicktable(event)
-	})
 	$("#tbl").keydown( function (event) {
 		countreset();
 		editing(event)
 	})
-	$("#tbl").scroll( function () {
-		countreset()
+	$("#tbl").click( function (event) {
+		countreset();
+		clicktable(event)
 	})
-	$("#tbl").contextmenu( function ()	{
-		window.focus;
+	$("#tbl").contextmenu( function (event) {
+		countreset();
+		clicktable(event)
 		return false
 	})
 	swipefinger();
@@ -121,8 +119,6 @@ function refillall()
 	var foundqn
 
 	//BOOKFILL will be updated in each fill
-	if (document.getElementById("findrow"))
-		foundqn = document.getElementById("findrow").cells[QN].innerHTML
 	if (STATE[0] == "FILLUP")
 		filluprefill();		//display the same weeks
 	else if (STATE[0] == "FILLDAY")

@@ -13,12 +13,17 @@ function fillupstart()
 function filluprefill()
 { 	//from refillall which is called from :
 	//updatingback, callbackmove
-	//use current STATE
-	//Start at the same week : update inside the table
+	//use current STATE : update inside the table
+	//Start at the same begindate and same scrollTop
+	var topscroll = document.body.scrollTop
 
-	STATE[0] = "FILLUP"
 	updateBOOKFILL()
+/********************************************************
+************************************************************/
 	fillnew()
+	document.body.scrollTop = topscroll
+//	document.body.scrollTop? "" : document.documentElement.scrollTop = 
+//		topscroll - Yscrolled()		//IE7,8,9
 	DragDrop()
 }
 
@@ -33,19 +38,8 @@ function fillupnormal()
 
 function fillupscroll(direction)
 {
-	STATE[0] = "FILLUP"
 	fillext(direction)
 //	hilitefillext()
-	DragDrop()
-}
-
-function fillupfind(locationrow)
-{	//from locating show(di), prehilite
-	//locationrow = BOOKFILL[q]
-
-	STATE[0] = "FILLUP"
-	STATE[1] = getSunday(locationrow.opdate)
-	fillnew()
 	DragDrop()
 }
 
@@ -103,10 +97,6 @@ function refill()
 				makedate = rundate
 			}
 			rundate = rundate.nextdays(1)
-		}
-		while (i > at)	//"at" is the thead row number
-		{
-			i = i-1
 		}
 	}
 }
@@ -376,29 +366,12 @@ function fillselect(opdate)
 	}
 }
 
-function scrollUpDown(e)
-{
-	var tableheight = $("#tbl").height()
-	var scrolly = Yscrolled()
-	var delta = e.originalEvent.deltaY;
-
-		if (STATE[0] == "FILLUP")
-		{ 
-			if ((delta < 0) && (scrolly == 0))
-				delta = -1
-			else if ((delta > 0) && (tableheight <= $("#tbl").height() + scrolly))
-				delta = +1
-				fillupscroll(delta)
-			fillupscroll(delta)
-		}
-}
-
 function DragDrop(event)
 {
 	$("#tbl tr").draggable({
 		helper: "clone",
 		start : function () {
-			stopEditmode()
+			$("editcell").id = ""
 			hidePopup()
 		}
 	});
@@ -407,29 +380,30 @@ function DragDrop(event)
 		drop: function (event, ui) {
 
 			var qn = $(ui.draggable).children("td").eq(QN).html()
-			var opdate = $(this).children("td").eq(OPDATE).html().numDate()
+			var opdate = $(this).children("td").eq(OPDATE).html()
 
 			$(ui.draggable).children("td").eq(OPDATE).html(opdate)
 			$(this).after(ui.draggable);
-			movecaseBookToBook(qn, opdate)
+			movecaseBookToBook(qn, opdate.numDate())
 		}
 	});
 }
 
-function holiday(day)
+function holiday(date)
 {
-	var date = day.substring(5)
-	var dayofweek = (new Date(day)).getDay()
+	var monthdate = date.substring(5)
+	var dayofweek = (new Date(date)).getDay()
 	var holidayname = ""
 
 	for (var key in HOLIDAY) 
 	{
-		if (key == day)
-			return HOLIDAY[key]
-		if (key > day)
-			break
+		if (key == date)
+			return HOLIDAY[key]	//matched a holiday
+		if (key > date)
+			break		//not a listed holiday
+						//either a fixed or a compensation holiday
 	}
-	switch (date)
+	switch (monthdate)
 	{
 	case "12-31":
 		holidayname = "url('pic/Yearend.jpg')"

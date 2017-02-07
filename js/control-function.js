@@ -254,12 +254,6 @@ function popup(pointing)
 	menu.style.left = xpos + 'px'
 }
 
-function stopEditmode()
-{
-	while (document.getElementById("editcell"))
-		document.getElementById("editcell").id = ""
-}
-
 function hidePopup()
 {
 	var div = $("body").children("div")

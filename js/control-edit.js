@@ -38,26 +38,19 @@
 			findq()
 			break;
 		case "7":
-			fillEquipTable(rownum, qn)
-			break
-		case "8":
 			if (hn)
 				PACS (hn)
 			break
-		case "9":
-			if (hn)
-				getlab(hn)
-			break
-		case "10":
+		case "8":
 			edithistory(rowmain, qn)
 			break;
-		case "11":
+		case "9":
 			staffqueue(staffname)
 			break;
 	}
-	document.getElementById("menudiv").style.height = ""
-	document.getElementById("menudiv").style.display = ""
-	stopEditmode()	//editmode of FirstColumn Cell was started by popup
+	$("menudiv").css("height", "")
+	$("menudiv").css("display", "")
+	$("editcell").id = ""
 }
 
 function addnewrow(rowmain)
@@ -99,20 +92,6 @@ function deleteblankrow(rowmain)
 {
 	var table = document.getElementById("tbl")
 	rowmain.parentNode.removeChild(rowmain)
-}
-
-function premovecase(rowmain, qn)
-{
-	rowmain.id = "movemode"	//start "movemode" of the "row"
-	document.getElementById("menudiv").style.display = ""
-//	MoveCalendar(rowmain.cells[OPDATE].innerHTML.numDate(), qn)	//show calendar for date selection
-}
-
-function premovetoWaitingList(rowmain, staffname)
-{
-	rowmain.id = "movemode"	//start "movemode" of the "row"
-	document.getElementById("menudiv").style.display = ""
-	staffqueue(staffname)
 }
 
 function movecaseBookToBook(QNfrom, OpDateTo)
@@ -167,75 +146,8 @@ function movecaseQwaitToBook(movemode, OpDateTo)
 			updateBOOK(response);
 			refillall()
 		}
-		document.getElementById("queuediv").style.display = ""
-		stopEditmode()
-		table.style.cursor = 'default'
-	}	
-}
-
-function movetoBook(movemode, pointDate)
-{
-	var fromtable = $(movemode).closest("table").get(0)
-	var pointDate = pointDate.numDate()
-
-	if (fromtable.id == "tbl")
-	{
-		if (movemode.cells[OPDATE].innerHTML != pointDate)
-		{	//to move must click not the same day
-			movecaseBookToBook(movemode.cells[QN].innerHTML, pointDate)
-		}
-	}
-	else if (fromtable.id == "queuetbl")
-	{
-		movecaseQwaitToBook(movemode, pointDate)
-	}
-}
-
-function precopycase(rowmain, qn)
-{
-	stopEditmode()	//editmode of FirstColumn was started by popup
-	rowmain.id = "copymode"	//start "copymode" of the "row"
-	document.getElementById("menudiv").style.display = ""
-//	MoveCalendar(rowmain.cells[OPDATE].innerHTML.numDate(), qn)	//show calendar for date selection
-}
-
-function copycase(OpDateTo)
-{
-	var table = document.getElementById("tbl")
-	var CPfrom = document.getElementById("copymode")
-	var HNFrom = CPfrom.cells[HN].innerHTML
-	var QNfrom = CPfrom.cells[QN].innerHTML
-	var teltext = ""
-	var sql = ""
-
-	//Find OPDATE of FIRSTROW from the start of BOOKFILL
-	q = 0
-	while (BOOKFILL[q] && (BOOKFILL[q].qn != QNfrom))
-		q++
-	teltext = BOOKFILL[q].tel
-	table.style.cursor = 'wait'
-	sql = "sqlReturnbook=INSERT INTO book SET opdate='" + OpDateTo
-	sql += "', staffname='"+ BOOKFILL[q].staffname
-	sql += "', hn='"+ HNFrom
-	sql += "', tel='"+ teltext
-	sql += "', editor='"+ THISUSER +"';"
-	sql += "INSERT INTO bookdx SELECT LAST_INSERT_ID(),code,diagnosis,side,level,'"+ THISUSER
-	sql += "' FROM bookdx WHERE qn="+ QNfrom +";"
-
-	Ajax(MYSQLIPHP, sql, callbackcopy);
-
-	document.getElementById("calendar").style.display = ""
-		
-	function callbackcopy(response)
-	{
-		if (!response || response.indexOf("DBfailed") != -1)
-			alert ("Copy failed!\n" + response)
-		else
-		{
-			updateBOOK(response);
-			refillall()
-		}
-		stopEditmode()
+		$("queuediv").css("display", "")
+		$("editcell").id = ""
 		table.style.cursor = 'default'
 	}	
 }
