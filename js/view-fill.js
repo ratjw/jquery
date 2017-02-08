@@ -362,11 +362,11 @@ function fillselect(opdate)
 	}
 }
 
-function DragDrop(event)
+function DragDrop()
 {
 	$("#tbl tr").draggable({
 		helper: "clone",
-		revert: 'invalid',
+		revert: true,
 		start : function () {
 			$("editcell").attr("id", "")
 			hidePopup()
@@ -374,7 +374,6 @@ function DragDrop(event)
 	});
 
 	$("#tbl tr").droppable({
-		accept: "#tbl tr",
 		drop: function (event, ui) {
 
 			if (!$(this).children("td").eq(OPDATE).html())
@@ -431,7 +430,6 @@ function DragDrop(event)
 					updateBOOK(response);
 					updateBOOKFILL()
 					fillselect(opdate.numDate())
-//					refillall()
 					DragDrop()
 				}
 			}	
