@@ -96,29 +96,6 @@ function deleteblankrow(rowmain)
 	rowmain.parentNode.removeChild(rowmain)
 }
 
-function movecaseBookToBook(QNfrom, OpDateTo)
-{
-	var sql = ""
-
-	sql = "sqlReturnbook=UPDATE book SET opdate='" + OpDateTo
-	sql += "', editor='"+ THISUSER
-	sql += "' WHERE qn="+ QNfrom +";"
-
-	Ajax(MYSQLIPHP, sql, callbackmove);
-
-	function callbackmove(response)
-	{
-		if (!response || response.indexOf("DBfailed") != -1)
-			alert ("Move failed!\n" + response)
-		else
-		{
-			updateBOOK(response);
-			updateBOOKFILL()
-			refillall()
-		}
-	}	
-}
-
 function movecaseQwaitToBook(movemode, OpDateTo)
 {
 	var table = document.getElementById("queuetbl")
@@ -172,23 +149,28 @@ function edithistory(rowmain, qn)
 	function callbackedithistory(response)
 	{
 		if (!response || response.indexOf("DBfailed") != -1)
-			alert ("SELECT Data history failed!\n" + response)
+		{
+			$("#alert").text("Data history DBfailed!\n" + response);
+			$("#alert").fadeIn();
+		}
 		else if (response.indexOf("editor") == -1)
-			alert ("ไม่มีการแก้ไข")
+		{
+			$("#alert").text("ไม่มีการแก้ไข");
+			$("#alert").fadeIn();
+		}
 		else
+		{
 			makehistory(rowmain, response)
+		}
 	}
 }
 
 function makehistory(rowmain, response)
 {
+
 	var container = document.getElementById("container");
 	var containerdiv = document.getElementById("containerdiv");
-	var history
-	if (!this.JSON)
-		history = eval("("+ response +")");
-	else
-		history = JSON.parse(response);
+	var history = JSON.parse(response);
 
 	var HTML_head = '<tr><th colspan=9>';
 
@@ -222,18 +204,26 @@ function makehistory(rowmain, response)
 	HTML_String += '</table></td></tr>';
 	HTML_String += '</table>';
 
+
 	container.style.display = "block";
 	container.style.overflowY = "hidden";
 	container.style.height = ""
 	container.style.width = ""
-	container.onmousedown = dragHandler;
 	containerdiv.style.height = ""
 	containerdiv.style.width = ""
 	containerdiv.innerHTML = HTML_String;
+	container.style.top = '100px'
+	container.style.left = '100px'
 	if (containerdiv.offsetHeight > $(window).height())
 	{	//<button> + <br> + <hr> is about 50px
 		containerdiv.style.height = $(window).height() - 70 +"px"
 		containerdiv.style.overflowX = "hidden"
 		containerdiv.style.overflowY = "scroll"
 	}
+//	$("#container").draggable();
+}
+
+function drag(ev)
+{
+	ev.dataTransfer.setData("text", ev.target.id);
 }

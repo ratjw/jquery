@@ -129,7 +129,7 @@ function fillSetTable(rownum, pointing)
 	Set[5] = (STATE[0] != "FILLSTAFF")? (staffname? "คิวผ่าตัด " + staffname : "") : ""
 	Set[6] = ""		//"หาคำ"
 	Set[7] = ""	//queue? "PACS" : "" 
-	Set[8] = ""	//queue? "ประวัติการแก้ไข " + casename : ""
+	Set[8] = queue? "ประวัติการแก้ไข " + casename : ""
 	Set[9] = ""	//"Waiting List"
 
 	menu.innerHTML = ''

@@ -74,7 +74,7 @@ td.sat:before { content: "เสาร์ "; }
 .smallpic {
 	position: fixed;
 	display:none;
-	z-index: 1;
+	z-index: 10;
 	color: green;
 	background-color: papayawhip;
 	border: 2px solid slategray;

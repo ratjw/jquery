@@ -64,7 +64,7 @@
 
 <div id="alert" ></div>
 
-<div id="container" class="smallpic">
+<div id="container" class="smallpic" draggable="true" ondragstart="drag(event)" width="336" height="69">
   <button onClick="xcontainer()">Close</button>
   <br/>
   <hr style="border:2px solid slategray">
