@@ -10,23 +10,6 @@ function fillupstart()
 	DragDrop()
 }
 
-function filluprefill()
-{ 	//from refillall which is called from :
-	//updatingback, callbackmove
-	//use current STATE : update inside the table
-	//Start at the same begindate and same scrollTop
-	var topscroll = document.body.scrollTop
-
-	updateBOOKFILL()
-/********************************************************
-************************************************************/
-	fillnew()
-	document.body.scrollTop = topscroll
-//	document.body.scrollTop? "" : document.documentElement.scrollTop = 
-//		topscroll - Yscrolled()		//IE7,8,9
-	DragDrop()
-}
-
 function fillupnormal()
 {	//from selecting firstcolumn menu change STATE to fillup from fillday or fillstaff
 
@@ -36,11 +19,58 @@ function fillupnormal()
 	DragDrop()
 }
 
+function filluprefill()
+{ 	//from refillall which is called from :
+	//updatingback, callbackmove
+	//use current STATE : update inside the table
+	//Start at the same begindate and same scrollTop
+	var topscroll = document.body.scrollTop
+
+	updateBOOKFILL()
+	fillnew()
+	document.body.scrollTop = topscroll
+	DragDrop()
+}
+
 function fillupscroll(direction)
 {
 	fillext(direction)
 //	hilitefillext()
 	DragDrop()
+}
+
+function fillext(di, event)
+{
+	var begindate
+	var	i
+	var table = document.getElementById("tbl")
+
+	if (di == -1)
+	{
+		begindate = STATE[1]
+		if ((BOOKFILL[0]) &&
+			(begindate < BOOKFILL[0].opdate) && 
+			(begindate <= getSunday()))
+			return		//being in the beginning of BOOKFILL
+		begindate = begindate.nextdays(di*7)
+		STATE[1] = begindate
+
+		makeheader(0)
+		fill(0)
+
+		//count rows hidden on top of the screen
+		i = 1
+		while (table.rows[i].cells[0].tagName != "TH")
+			i++
+		document.body.scrollTop = table.rows[i].offsetTop
+		document.body.scrollTop? "" : document.documentElement.scrollTop = 
+			table.rows[i].offsetTop - Yscrolled()		//IE7,8,9
+	}
+	else if (di == +1)
+	{
+		makeheader()
+		fill(table.rows.length-1)
+	}
 }
 
 function fillnew()
@@ -98,40 +128,6 @@ function refill()
 			}
 			rundate = rundate.nextdays(1)
 		}
-	}
-}
-
-function fillext(di, event)
-{
-	var begindate
-	var	i
-	var table = document.getElementById("tbl")
-
-	if (di == -1)
-	{
-		begindate = STATE[1]
-		if ((BOOKFILL[0]) &&
-			(begindate < BOOKFILL[0].opdate) && 
-			(begindate <= getSunday()))
-			return		//being in the beginning of BOOKFILL
-		begindate = begindate.nextdays(di*7)
-		STATE[1] = begindate
-
-		makeheader(0)
-		fill(0)
-
-		//count rows hidden on top of the screen
-		i = 1
-		while (table.rows[i].cells[0].tagName != "TH")
-			i++
-		document.body.scrollTop = table.rows[i].offsetTop
-		document.body.scrollTop? "" : document.documentElement.scrollTop = 
-			table.rows[i].offsetTop - Yscrolled()		//IE7,8,9
-	}
-	else if (di == +1)
-	{
-		makeheader()
-		fill(table.rows.length-1)
 	}
 }
 
@@ -370,21 +366,75 @@ function DragDrop(event)
 {
 	$("#tbl tr").draggable({
 		helper: "clone",
+		revert: 'invalid',
 		start : function () {
-			$("editcell").id = ""
+			$("editcell").attr("id", "")
 			hidePopup()
 		}
 	});
 
 	$("#tbl tr").droppable({
+		accept: "#tbl tr",
 		drop: function (event, ui) {
 
-			var qn = $(ui.draggable).children("td").eq(QN).html()
-			var opdate = $(this).children("td").eq(OPDATE).html()
+			if (!$(this).children("td").eq(OPDATE).html())
+				return true
 
-			$(ui.draggable).children("td").eq(OPDATE).html(opdate)
-			$(this).after(ui.draggable);
-			movecaseBookToBook(qn, opdate.numDate())
+			var that_row = ui.draggable
+			var this_row = this
+			var uihelper = ui.helper
+			var prevdate
+			var nextdate
+
+			if (prevdate = $(ui.draggable).prev().children("td").eq(OPDATE).html()) 
+				prevdate = prevdate.numDate()
+			var thatdate = $(ui.draggable).children("td").eq(OPDATE).html().numDate()
+			if (nextdate = $(ui.draggable).next().children("td").eq(OPDATE).html())
+				nextdate = nextdate.numDate()
+			var thatqn = $(ui.draggable).children("td").eq(QN).html()
+
+			var thisdate = $(this).children("td").eq(OPDATE).html().numDate()
+			var thisqn = $(this).children("td").eq(QN).html()
+			var opdate = $(this).children("td").eq(OPDATE).html()	//Thai date
+
+			$(uihelper).children("td").eq(OPDATE).html(opdate)
+			$(uihelper).attr("class", $(this_row).attr("class"))
+			$(uihelper).children("td").eq(OPDATE).attr("class", $(this_row)
+						.children("td").eq(OPDATE).attr("class"))
+			$(uihelper).css("position", "")
+
+			var sql = "sqlReturnbook=UPDATE book SET opdate='" + thisdate
+			sql += "', editor='"+ THISUSER
+			sql += "' WHERE qn="+ thatqn +";"
+
+			Ajax(MYSQLIPHP, sql, callbackmove);
+
+			function callbackmove(response)
+			{
+				if (!response || response.indexOf("DBfailed") != -1)
+				{
+					alert ("Move failed!\n" + response)
+				}
+				else
+				{
+
+					if (prevdate != thatdate && thatdate != nextdate)
+						filldeleterow(that_row.get(0))
+					else
+						$(that_row).remove();				
+
+					if (thisqn)
+						$(uihelper).insertAfter(this_row);
+					else
+						$(this_row).replaceWith(uihelper);				
+
+					updateBOOK(response);
+					updateBOOKFILL()
+					fillselect(opdate.numDate())
+//					refillall()
+					DragDrop()
+				}
+			}	
 		}
 	});
 }

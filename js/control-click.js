@@ -14,6 +14,7 @@ function clicktable(e)
 
 	savePreviouscell()
 	storePresentcell(mousedownCell)
+	event.preventDefault()
 	mousedownCell.focus()
 }
 
@@ -160,23 +161,25 @@ function fillSetTable(rownum, pointing)
 	}
 }
 
-function editing(e)
+function editing(event)
 {
-	var keycode = window.event.keyCode || e.which;
+	var keycode = window.event.keyCode || event.which;
 
 	if (keycode == 9)
 	{
 		savePreviouscell()
-		if (e.shiftKey)
+		if (event.shiftKey)
 			thiscell = findPrevcell()
 		else
 			thiscell = findNextcell()
 		storePresentcell(thiscell)
+		event.preventDefault()
+		thiscell.focus()
 	}
 	else if (keycode == 13)
 	{
-		if (e.shiftKey || e.ctrlkey)
-			return 
+		if (event.shiftKey || event.ctrlKey)
+			return false
 		event.preventDefault()
 		savePreviouscell()
 		thiscell = findNextcell()
@@ -194,6 +197,8 @@ function editing(e)
 		{
 			$("#editcell").html($("#editcell").attr("title"))
 		}
+		event.preventDefault()
+		window.focus()
 	}
 }
 

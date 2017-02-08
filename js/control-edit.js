@@ -48,9 +48,9 @@
 			staffqueue(staffname)
 			break;
 	}
-	$("menudiv").css("height", "")
-	$("menudiv").css("display", "")
-	$("editcell").id = ""
+	document.getElementById("menudiv").style.height = ""
+	document.getElementById("menudiv").style.display = ""
+	document.getElementById("editcell").id = ""
 }
 
 function addnewrow(rowmain)
@@ -63,8 +63,10 @@ function addnewrow(rowmain)
 		while (table.rows[i].cells[OPDATE].innerHTML == table.rows[i-1].cells[OPDATE].innerHTML)
 			i--		
 		rowmain.parentNode.insertBefore(clone,rowmain)
+		rowmain.cells[0].id = ""
 		for (i=1; i<rowmain.cells.length; i++)
 			rowmain.cells[i].innerHTML = ""	
+		DragDrop()
 	}
 }
 

@@ -96,7 +96,7 @@ function updating()
 
 	Ajax(MYSQLIPHP, "functionName=checkupdate&time="+TIMESTAMP, updatingback);
 
-	function updatingback(response)	//only changed by concurrent another user
+	function updatingback(response)	//only changed database by checkupdate&time
 	{
 		if (response && response.indexOf("opdate") != -1)	//there is new entry after TIMESTAMP
 		{
