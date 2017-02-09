@@ -1,10 +1,6 @@
 function clicktable(event)
 {
-<<<<<<< HEAD
-	mousedownCell = event.target || window.event.srcElement;
-=======
 	mousedownCell = event.target
->>>>>>> refs/remotes/origin/master
 	if (mousedownCell.id == "editcell")
 		return false
 
