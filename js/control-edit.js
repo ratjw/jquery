@@ -49,7 +49,7 @@
 			break;
 	}
 	document.getElementById("menudiv").style.height = ""
-	document.getElementById("menudiv").style.display = ""
+	document.getElementById("menudiv").style.display = "none"
 	document.getElementById("editcell").id = ""
 }
 
@@ -169,7 +169,6 @@ function makehistory(rowmain, response)
 {
 
 	var container = document.getElementById("container");
-	var containerdiv = document.getElementById("containerdiv");
 	var history = JSON.parse(response);
 
 	var HTML_head = '<tr><th colspan=9>';
@@ -205,25 +204,12 @@ function makehistory(rowmain, response)
 	HTML_String += '</table>';
 
 
-	container.style.display = "block";
-	container.style.overflowY = "hidden";
-	container.style.height = ""
-	container.style.width = ""
-	containerdiv.style.height = ""
-	containerdiv.style.width = ""
-	containerdiv.innerHTML = HTML_String;
-	container.style.top = '100px'
-	container.style.left = '100px'
-	if (containerdiv.offsetHeight > $(window).height())
-	{	//<button> + <br> + <hr> is about 50px
-		containerdiv.style.height = $(window).height() - 70 +"px"
-		containerdiv.style.overflowX = "hidden"
-		containerdiv.style.overflowY = "scroll"
-	}
-//	$("#container").draggable();
-}
-
-function drag(ev)
-{
-	ev.dataTransfer.setData("text", ev.target.id);
+	container.innerHTML = HTML_String;
+//	  $( function() {
+ //   $( "#container" ).dialog();
+//  } );
+  //$( "#container" ).dialog();
+  $( "#container" ).dialog({
+  drag: function( event, ui ) {}
+});
 }

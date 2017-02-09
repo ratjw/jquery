@@ -162,3 +162,21 @@ function MouseWheelHandler(e)
 		}
 	}
 }
+
+function scrollUpDown()
+{
+	var tableheight = document.getElementById("tbl").offsetHeight
+	var scrolly = Yscrolled()
+
+	if (STATE[0] == "FILLUP")
+	{ 
+		if (scrolly == 0)
+		{
+			fillupscroll(-1)
+		}
+		else if (tableheight <= window.innerHeight + scrolly)
+		{
+			fillupscroll(+1)
+		}
+	}
+}

@@ -12,14 +12,16 @@ function loadtable(userid)
 	$("#tbl").click( function (event) {
 		countreset();
 		clicktable(event)
+		return false
 	})
 	$("#tbl").contextmenu( function (event) {
 		countreset();
 		clicktable(event)
 		return false
 	})
+	document.onscroll = scrollUpDown
 	swipefinger();
-	initMouseWheel();
+//	initMouseWheel();
 	TIMER = setTimeout("updating()",10000)		//poke next 10 sec.
 }
 

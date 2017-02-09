@@ -1,6 +1,6 @@
-function clicktable(e)
+function clicktable(event)
 {
-	mousedownCell = window.event.srcElement || e.target;
+	mousedownCell = event.target || window.event.srcElement;
 	if (mousedownCell.id == "editcell")
 		return false
 
@@ -74,6 +74,7 @@ function storePresentcell(pointing)
 	var qn = $(rowtr).children("td").eq(QN).html()
 
 	$("#editcell").attr("id","")
+	hidePopup()
 
 	switch(cindex)
 	{
@@ -95,7 +96,6 @@ function storePresentcell(pointing)
 			$("#editcell").attr("title", pointing.innerHTML)
 		case NAME:
 		case AGE:
-			hidePopup()
 			break
 	}
 }
