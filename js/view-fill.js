@@ -215,7 +215,7 @@ function fillday()
 			i++
 		}
 	}
- 	DragDrop(event)
+ 	DragDrop()
 }
 
 function fillstaff()
@@ -292,7 +292,7 @@ function fillstaff()
 			i++
 		}
 	}
-	DragDrop(event)
+	DragDrop()
 }
 
 function makeheader(at)

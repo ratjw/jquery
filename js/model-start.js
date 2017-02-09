@@ -21,7 +21,6 @@ function loadtable(userid)
 	})
 	document.onscroll = scrollUpDown
 	swipefinger();
-//	initMouseWheel();
 	TIMER = setTimeout("updating()",10000)		//poke next 10 sec.
 }
 

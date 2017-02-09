@@ -74,7 +74,6 @@ function storePresentcell(pointing)
 	var qn = $(rowtr).children("td").eq(QN).html()
 
 	$("#editcell").attr("id","")
-	hidePopup()
 
 	switch(cindex)
 	{
@@ -92,10 +91,12 @@ function storePresentcell(pointing)
 		case DIAGNOSIS:
 		case TREATMENT:
 		case TEL:			//store value in attribute "title"
+			hidePopup()
 			pointing.id = "editcell"
 			$("#editcell").attr("title", pointing.innerHTML)
 		case NAME:
 		case AGE:
+			hidePopup()
 			break
 	}
 }
@@ -105,7 +106,7 @@ function fillSetTable(rownum, pointing)
 	var table = document.getElementById("tbl")
 	var tcell = table.rows[rownum].cells
 	var opdateth = tcell[OPDATE].innerHTML	//Thai date
-	var opdate = opdateth.numDate()			//Thai to mysql date
+	var opdate = opdateth.numDate()		//Thai to mysql date
 	var staffname = tcell[STAFFNAME].innerHTML
 	var casename = tcell[NAME].innerHTML
 	var queue = tcell[QN].innerHTML

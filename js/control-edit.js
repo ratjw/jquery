@@ -183,6 +183,8 @@ function makehistory(rowmain, response)
 	HTML_String += '<th style="width:35px">ห้อง</th>';
 	HTML_String += '<th style="width:30px">เวลา</th>';
 	HTML_String += '<th style="width:40px">Staff</th>';
+	HTML_String += '<th style="width:100px">diagnosis</th>';
+	HTML_String += '<th style="width:100px">treatment</th>';
 	HTML_String += '<th style="width:100px">โทรศัพท์</th>';
 	HTML_String += '<th style="width:40px">editor</th>';
 	HTML_String += '</tr>';
@@ -196,6 +198,8 @@ function makehistory(rowmain, response)
 		HTML_String += '<td>' + history[j].oproom +'</td>';
 		HTML_String += '<td>' + history[j].optime +'</td>';
 		HTML_String += '<td>' + history[j].staffname +'</td>';
+		HTML_String += '<td>' + history[j].diagnosis +'</td>';
+		HTML_String += '<td>' + history[j].treatment +'</td>';
 		HTML_String += '<td>' + history[j].tel +'</td>';
 		HTML_String += '<td>' + history[j].editor +'</td>';
 		HTML_String += '</tr>';
@@ -205,11 +209,8 @@ function makehistory(rowmain, response)
 
 
 	container.innerHTML = HTML_String;
-//	  $( function() {
- //   $( "#container" ).dialog();
-//  } );
-  //$( "#container" ).dialog();
-  $( "#container" ).dialog({
-  drag: function( event, ui ) {}
-});
+
+	$( "#container" ).dialog({
+	});
 }
+
