@@ -1,6 +1,6 @@
-function clicktable(e)
+function clicktable(event)
 {
-	mousedownCell = window.event.srcElement || e.target;
+	mousedownCell = event.target
 	if (mousedownCell.id == "editcell")
 		return false
 
@@ -163,7 +163,7 @@ function fillSetTable(rownum, pointing)
 
 function editing(event)
 {
-	var keycode = window.event.keyCode || event.which;
+	var keycode = event.which
 
 	if (keycode == 9)
 	{
