@@ -1,6 +1,10 @@
 function clicktable(event)
 {
+<<<<<<< HEAD
 	mousedownCell = event.target || window.event.srcElement;
+=======
+	mousedownCell = event.target
+>>>>>>> refs/remotes/origin/master
 	if (mousedownCell.id == "editcell")
 		return false
 
@@ -163,7 +167,7 @@ function fillSetTable(rownum, pointing)
 
 function editing(event)
 {
-	var keycode = window.event.keyCode || event.which;
+	var keycode = event.which
 
 	if (keycode == 9)
 	{
