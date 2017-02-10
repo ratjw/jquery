@@ -34,16 +34,6 @@ function savePreviouscell()
 	{
 		case OPDATE:
 			break
-		case OPROOM:
-			saveContent("oproom", content)
-			break
-		case OPTIME:
-			if (content.indexOf(".") == -1)
-				content = content + ".00"
-			if (content.indexOf(".") == 1)
-				content = "0" + content
-			saveContent("optime", content)
-			break
 		case STAFFNAME:
 			saveContent("staffname", content)
 			break
@@ -84,8 +74,6 @@ function storePresentcell(pointing)
 			if ($("#alert").css("display") == "block")
 				$("#alert").fadeOut();
 			break
-		case OPROOM:
-		case OPTIME:
 		case STAFFNAME:
 		case HN:
 		case DIAGNOSIS:
@@ -284,7 +272,7 @@ function findNextcell()
 			if ($(nextcell).parent().index() < lastrow)
 			{	//go to next row second cell
 				do {
-					nextcell = $(nextcell).parent().next("tr").children().eq(OPROOM)
+					nextcell = $(nextcell).parent().next("tr").children().eq(STAFFNAME)
 				}
 				while ($(nextcell).get(0).nodeName == "TH")	//THEAD row
 			}

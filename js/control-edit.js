@@ -167,37 +167,20 @@ function edithistory(rowmain, qn)
 
 function makehistory(rowmain, response)
 {
-
-	var container = document.getElementById("container");
 	var history = JSON.parse(response);
 
-	var HTML_head = '<tr><th colspan=9>';
-
 	var HTML_String = '<table class="historytable">';
-	HTML_String += HTML_head + rowmain.cells[HN].innerHTML + ' ' + rowmain.cells[NAME].innerHTML + '</th></tr>';
 	HTML_String += '<tr>';
-	HTML_String += '<th style="width:40px">Action</th>';
-	HTML_String += '<th style="width:15px">ที่</th>';
-	HTML_String += '<th style="width:105px">Edit Date Time</th>';
-	HTML_String += '<th style="width:60px">วันผ่าตัด</th>';
-	HTML_String += '<th style="width:35px">ห้อง</th>';
-	HTML_String += '<th style="width:30px">เวลา</th>';
-	HTML_String += '<th style="width:40px">Staff</th>';
-	HTML_String += '<th style="width:100px">diagnosis</th>';
-	HTML_String += '<th style="width:100px">treatment</th>';
-	HTML_String += '<th style="width:100px">โทรศัพท์</th>';
-	HTML_String += '<th style="width:40px">editor</th>';
+	HTML_String += '<th style="width:10%">Date Time</th>';
+	HTML_String += '<th style="width:30%">Diagnosis</th>';
+	HTML_String += '<th style="width:30%">Treatment</th>';
+	HTML_String += '<th style="width:25%">Notice</th>';
+	HTML_String += '<th style="width:5%">Editor</th>';
 	HTML_String += '</tr>';
 	for (var j = 0; j < history.length; j++) 
 	{
 		HTML_String += '<tr>';
-		HTML_String += '<td>' + history[j].action +'</td>';
-		HTML_String += '<td>' + history[j].revision +'</td>';
 		HTML_String += '<td>' + history[j].editdatetime +'</td>';
-		HTML_String += '<td>' + history[j].opdate +'</td>';
-		HTML_String += '<td>' + history[j].oproom +'</td>';
-		HTML_String += '<td>' + history[j].optime +'</td>';
-		HTML_String += '<td>' + history[j].staffname +'</td>';
 		HTML_String += '<td>' + history[j].diagnosis +'</td>';
 		HTML_String += '<td>' + history[j].treatment +'</td>';
 		HTML_String += '<td>' + history[j].tel +'</td>';
@@ -207,10 +190,12 @@ function makehistory(rowmain, response)
 	HTML_String += '</table></td></tr>';
 	HTML_String += '</table>';
 
-
-	container.innerHTML = HTML_String;
-
-	$( "#container" ).dialog({
+	$("#container").html(HTML_String);
+	$("#container").dialog({
+		dialogClass: "dialog",
+		title: rowmain.cells[HN].innerHTML +' '+ rowmain.cells[NAME].innerHTML,
+		height: window.innerHeight * 70 / 100,
+		width: window.innerWidth * 70 / 100
 	});
 }
 

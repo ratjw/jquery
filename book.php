@@ -21,22 +21,21 @@
 <script src="js/model-constant.js"></script>
 <script src="js/model-start.js"></script>
 <script src="js/view-fill.js"></script>
+<script src="js/view-ui.js"></script>
 </HEAD>
 <BODY>
 
 <TABLE id="tbl" data-role="table" class="ui-responsive" style="display:none">
  <TBODY>
    <TR>
-    <th style="width:8%">วันผ่าตัด</th>
-    <th style="width:5%">ห้อง</th>
-    <th style="width:5%">เวลา</th>
+    <th style="width:10%">วันผ่าตัด</th>
     <th style="width:6%">Staff</th>
-    <th style="width:6%">HN</th>
-    <th style="width:10%">ชื่อ นามสกุล</th>
-    <th style="width:5%">อายุ</th>
+    <th style="width:5%">HN</th>
+    <th style="width:15%">ชื่อ นามสกุล</th>
+    <th style="width:4%">อายุ</th>
     <th style="width:20%">Diagnosis</th>
     <th style="width:20%">Treatment</th>
-    <th style="width:15%">โทรศัพท์</th>
+    <th style="width:20%">Note</th>
     <th style="display:none"></th>
    </TR>
  </TBODY>
@@ -45,8 +44,6 @@
 <TABLE style="display:none">	<!-- Used as cells template -->
   <TR id="datatitle">
     <td data-title="วันผ่าตัด"></td>
-    <td contenteditable data-title="ห้อง"></td>
-    <td contenteditable data-title="เวลา"></td>
     <td contenteditable data-title="Staff"></td>
     <td contenteditable data-title="HN"></td>
     <td data-title="ชื่อ นามสกุล"></td>
@@ -64,7 +61,7 @@
 
 <div id="alert" ></div>
 
-<div id="container" title="Data Change"></div>
+<div id="container"></div>
 
 <div id="searchicd" class="smallpic">
   <div id="newicd" style="border:1px solid slategray"></div>

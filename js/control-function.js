@@ -198,35 +198,6 @@ function scrolltoview(highpos, lowpos)
 	}
 }
 
-function scrollanimation(to, duration) 
-{
-	var start = Yscrolled();
-	var	change = to - start;
-	var	currentTime = 0;
-	var	increment = 20;
-
-	duration = Math.abs(change) < 100? 100 : 
-		Math.abs(change) > duration? duration : Math.abs(change)
-	//duration should not be too low to let Math.easeInOutQuad complete its cycle
-	var animateScroll = function(){        
-		currentTime += increment;
-		var val = Math.easeInOutQuad(currentTime, start, change, duration);
-		document.documentElement.scrollTop = val
-		document.documentElement.scrollTop? "" : document.body.scrollTop = val;
-		if(currentTime < duration) {
-			setTimeout(animateScroll, increment);
-		}
-	};
-	animateScroll();
-}
-
-Math.easeInOutQuad = function (t, b, c, d) {
-	t /= d/2;
-	if (t < 1) return c/2*t*t + b;
-	t--;
-	return -c/2 * (t*(t-2) - 1) + b;
-};
-
 function popup(pointing)
 {
 	var xpos, ypos, xscr, yscr
@@ -260,45 +231,6 @@ function hidePopup()
 	for (var i=0; i<div.length; i++)
 		if ($(div[i]).css("display") == "block")
 			$(div[i]).fadeOut()
-}
-
-function getCaretPosition (oField) 
-{
-	var iCaretPos = 0;
-
-	// IE Support
-	if (document.selection) {
-		oField.focus ();
-		var oSel = document.selection.createRange ();
-
-		// Move selection start to 0 position
-		oSel.moveStart ('character', -oField.value.length);
-
-		// The caret position is selection length
-		iCaretPos = oSel.text.length;
-	}
-
-	// Firefox support
-	else if (typeof oField.selectionStart==='number')
-		iCaretPos = oField.selectionStart;
-
-	// Return results
-	return (iCaretPos);
-}
-
-function setCaretPosition(elem, caretPos) {
-    var range;
-
-    if (elem.createTextRange) {
-        range = elem.createTextRange();
-        range.move('character', caretPos);
-        range.select();
-    } else {
-        elem.focus();
-        if (elem.selectionStart !== undefined) {
-            elem.setSelectionRange(caretPos, caretPos);
-        }
-    }
 }
 
 function URIcomponent(qoute)

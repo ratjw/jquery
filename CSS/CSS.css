@@ -9,7 +9,7 @@ table {
 th {
 	font-size: 16px;
 	font-weight: bold;
-	background-color: #5599BB;
+	background-color: steelblue;
 	color: papayawhip;
 	border-left: solid 1px silver;
 	border-top: solid 1px silver;
@@ -136,6 +136,11 @@ td.sat:before { content: "เสาร์ "; }
 	box-shadow: 20px 30px 40px slategray;
 }
 
+.dialog {
+	position: fixed;
+	box-shadow: 10px 20px 30px slategray;
+}
+
 span {
 	display:inline-block; 
 }
@@ -153,15 +158,15 @@ a:hover {
 	background-size:auto;
 }
 
-table.historytable  {
+.historytable  {
+	display: none
 	table-layout: fixed;
 	overflow: scroll;
 	border-collapse: collapse;
 	border-right: solid 1px slategray;
-	width: 500px;
 }
 
-table.historytable th {
+.historytable th {
 	font-size: 16px;
 	font-weight: bold;
 	color: papayawhip;
@@ -170,13 +175,12 @@ table.historytable th {
 	border-left: solid 1px silver;
 	border-top: solid 1px silver;
 	border-bottom: solid 1px silver;
-	width: 70px;
 	height: 30px;
 }
 
-table.historytable td {
+.historytable td {
 	empty-cells:show;
-	font-size: 16px;
+	font-size: 14px;
 	color: black;
 	background-color: #eeeeee;
 	text-align: left;
@@ -184,15 +188,11 @@ table.historytable td {
 	border-color: #000000; 
 	border-left: solid 1px silver;
 	border-bottom: solid 1px silver;
-	height: 30px;
 }
 
-table.historytable td.historysun { background-color: #ffbbcc; }
-table.historytable td.historysat { background-color: #ccbbff; }
-table.historytable td.historyday { background-color: #ffffff; }
-table.historytable td.historytoday { background-color: fuchsia; }
-table.historytable td.calpremoveday { background-color: teal; }
-table.historytable td:hover { background-color: #00CC00; }
+.historytable tr:hover td {
+	background-color: white; 
+}
 
 div#equip, div#setor { font-size: 16px; }
 
