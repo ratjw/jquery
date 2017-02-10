@@ -170,7 +170,7 @@ function scrollUpDown()
 
 	if (STATE[0] == "FILLUP")
 	{ 
-		if (scrolly == 0)
+		if ($(window).scrollTop() < 10)
 		{
 			fillupscroll(-1)
 		}

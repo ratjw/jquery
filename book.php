@@ -56,6 +56,19 @@
 </TABLE>
 
 <div id="menudiv" class="smallpic"></div>
+ 
+<ul id="menu">
+  <li><div id="item1"></div></li>
+  <li><div id="item2"></div></li>
+  <li><div id="item3"></div></li>
+  <li><div id="item4"></div>
+    <ul>
+      <li><div id="item41"></div></li>
+      <li><div id="item42"></div></li>
+    </ul>
+  </li>
+  <li id="item5"><div></div></li>
+</ul>
 
 <div id="paperdiv" ></div>
 

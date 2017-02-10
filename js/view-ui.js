@@ -77,6 +77,90 @@ function DragDrop()
 	});
 }
 
+function scrollview(table, dateclicked)
+{
+	var i, j, q
+	var trow = table.rows
+	var tlen = table.rows.length
+
+	i = 1	//top row
+	while ((i < tlen) && (trow[i].cells[OPDATE].innerHTML.numDate() != dateclicked))
+		i++
+	if (i == tlen)
+		i--
+	j = i + 1	//bottom row
+	while ((j < tlen) && (trow[j].cells[OPDATE].innerHTML.numDate() == dateclicked))
+		j++
+	j--
+	scrolltoview(trow[i], trow[j])
+}
+
+function scrolltoview(highpos, lowpos)
+{
+	var recthigh, rectlow
+	var find = document.getElementById("finddiv")
+	
+	recthigh = highpos.getBoundingClientRect()
+	rectlow = lowpos.getBoundingClientRect()
+	if (rectlow.bottom > $(window).height())
+	{
+		$('#tbl, tbody').animate({
+		  scrollTop: rectlow.bottom - $(window).height() + Yscrolled()
+		}, 1250)
+	}
+	else if (find.style.display == "block")
+	{
+		high = find.offsetTop + find.offsetHeight
+		if (recthigh.top < high)
+		{
+			$('#tbl, tbody').animate({
+			  scrollTop: recthigh.top - high + Yscrolled()
+			}, 1250)
+		}
+	}
+	else if (recthigh.top < 0)
+	{
+		$('#tbl, tbody').animate({
+          scrollTop: recthigh.top + Yscrolled()
+        }, 1250)
+	}
+}
+
+function popup(pointing)
+{
+	var xpos, ypos, xscr, yscr
+	var xscroll = Xscrolled()
+	var yscroll = Yscrolled()
+	var menu = document.getElementById("menudiv")
+
+	menu.style.width = ""
+	menu.style.display = 'block'
+	menu.style.height = ""
+	menu.style.overflowY = ""
+	xscr = $(window).width()
+	yscr = $(window).height()
+	xpos = pointing.offsetLeft + pointing.offsetWidth - xscroll
+	ypos = pointing.offsetTop - yscroll
+	if (xpos > xscr - menu.offsetWidth)
+		xpos = pointing.offsetLeft - xscroll - menu.offsetWidth
+	if (ypos > yscr - menu.offsetHeight)
+		ypos = yscr - menu.offsetHeight
+	if (xpos < 0)
+		xpos = 0
+	if (ypos < 0)
+		ypos = 0
+	menu.style.top = ypos + 'px'
+	menu.style.left = xpos + 'px'
+}
+
+function hidePopup()
+{
+	var div = $("body").children("div")
+	for (var i=0; i<div.length; i++)
+		if ($(div[i]).css("display") == "block")
+			$(div[i]).fadeOut()
+}
+
 function holiday(date)
 {
 	var monthdate = date.substring(5)

@@ -179,6 +179,8 @@ function makehistory(rowmain, response)
 	HTML_String += '</tr>';
 	for (var j = 0; j < history.length; j++) 
 	{
+		if (!history[j].diagnosis && !history[j].treatment && !history[j].tel)
+			continue
 		HTML_String += '<tr>';
 		HTML_String += '<td>' + history[j].editdatetime +'</td>';
 		HTML_String += '<td>' + history[j].diagnosis +'</td>';
@@ -187,7 +189,6 @@ function makehistory(rowmain, response)
 		HTML_String += '<td>' + history[j].editor +'</td>';
 		HTML_String += '</tr>';
 	}
-	HTML_String += '</table></td></tr>';
 	HTML_String += '</table>';
 
 	$("#container").html(HTML_String);

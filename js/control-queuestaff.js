@@ -116,10 +116,8 @@ function changestaff(that, staffname)
 
 function Qclicktable(event)
 {
-	event = event || window.event	//for IE
-
 	//checkpoint#1 : click in editing area
-	var pointing = whichElement(event)
+	var pointing = event.target || window.event.srcElement
 	if (pointing.id == "editmode")
 		return
 
