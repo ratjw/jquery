@@ -190,7 +190,7 @@ function storePresentcell(pointing)
 		case OPDATE:
 			fillSetTable(rindex, pointing)
 			pointing.id = "editcell"
-			popup (pointing);
+//			popup (pointing);
 			if ($("#alert").css("display") == "block")
 				$("#alert").fadeOut();
 			break
@@ -212,6 +212,7 @@ function storePresentcell(pointing)
 function fillSetTable(rownum, pointing)
 {
 	var table = document.getElementById("tbl")
+	var rowmain = table.rows[rownum]
 	var tcell = table.rows[rownum].cells
 	var opdateth = tcell[OPDATE].innerHTML	//Thai date
 	var opdate = opdateth.numDate()		//Thai to mysql date
@@ -219,7 +220,10 @@ function fillSetTable(rownum, pointing)
 	var casename = tcell[NAME].innerHTML
 	var queue = tcell[QN].innerHTML
 	var opday = table.rows[rownum].className
+	var hn = tcell[HN].innerHTML
+	var qn = tcell[QN].innerHTML
 
+	var i = 0
 	while (opday.indexOf(NAMEOFDAYFULL[i]) == -1)
 		i++
 	opday = NAMEOFDAYTHAI[i]
@@ -228,26 +232,64 @@ function fillSetTable(rownum, pointing)
 	var disabled = "ui-state-disabled"
 	$("#menu #item1").html("เพิ่ม case วันที่ " + opdateth)
 	$("#menu #item1").attr("class", queue? "" : disabled)
+	$("#menu #item1").click(function() {
+		addnewrow(rowmain)
+	})
 	$("#menu #item2").html("ลบ case " + casename)
 	$("#menu #item2").attr("class", queue? "" : disabled)
+	$("#menu #item2").click(function() {
+		deletecase(rowmain, qn)
+	})
 	$("#menu #item3").html("Delete Blank Row")
 	$("#menu #item3").attr("class", check(opdate, queue)? "" : disabled)
+	$("#menu #item3").click(function() {
+		deleteblankrow(rowmain)
+	})
 	$("#menu #item4").html("ตารางคิว")
 	$("#menu #item41").html("คิววัน" + opday)
 	$("#menu #item41").attr("class", (STATE[0] != "FILLDAY")?  "" : disabled)
+	$("#menu #item41").click(function() {
+		STATE[1] = (new Date(opdate)).getDay()
+		fillday()
+		scrollview(table, opdate)
+	})
 	$("#menu #item42").html("คิว " + staffname)
 	$("#menu #item42").attr("class", (STATE[0] != "FILLSTAFF")? (staffname? "" : disabled) : disabled)
+	$("#menu #item42").click(function() {
+		STATE[1] = staffname
+		fillstaff()
+		scrollview(table, opdate)
+	})
 	$("#menu #item5").html("ประวัติการแก้ไข " + casename)
 	$("#menu #item5").attr("class", queue?  "" : disabled)
+	$("#menu #item5").click(function() {
+		edithistory(rowmain, qn)
+	})
 
-	$(#menu).menu()
-	for (each=0; each<Set.length; each++)
-	{
-		tex = "javascript:FirstColumn('"+ each +"','"+ rownum +"')"
-		txt = '<a href="'+ tex +'">'+ Set[each] +'</a>'
-		menu.innerHTML += txt
-	}
+	var pos = $(pointing).position();
+	var height = pos.top + $(pointing).outerHeight();
+	var width = pos.left + $(pointing).outerWidth();
+	if ((height + $("#menu").outerHeight()) > $(window).innerHeight())
+		height = pos.top - $("#menu").innerHeight()
+	$("#menu").css({
+		position: "absolute",
+		top: height + "px",
+		left: width + "px",
+		display: ""
+//		box-shadow: 10px 20px 30px slategray
+	})
 
+	$( "#menu" ).menu();
+/*
+    // .position() uses position relative to the offset parent, 
+    // so it supports position: relative parent elements
+    var pos = $(pointing).position();
+
+    // .outerWidth() takes into account border and padding.
+    var height = $(pointing).outerHeight();
+
+    //show the menu directly over the placeholder
+*/
 	function check(opdate, queue)
 	{	//Any case in this date? 
 		var q = 0

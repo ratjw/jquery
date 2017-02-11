@@ -57,7 +57,7 @@
 
 <div id="menudiv" class="smallpic"></div>
  
-<ul id="menu">
+<ul id="menu" style="display:none">
   <li><div id="item1"></div></li>
   <li><div id="item2"></div></li>
   <li><div id="item3"></div></li>
@@ -67,7 +67,7 @@
       <li><div id="item42"></div></li>
     </ul>
   </li>
-  <li id="item5"><div></div></li>
+  <li><div id="item5"></div></li>
 </ul>
 
 <div id="paperdiv" ></div>

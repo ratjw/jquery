@@ -131,12 +131,12 @@ function popup(pointing)
 	var xpos, ypos, xscr, yscr
 	var xscroll = Xscrolled()
 	var yscroll = Yscrolled()
-	var menu = document.getElementById("menudiv")
+	var menu = document.getElementById("menu")
 
-	menu.style.width = ""
+//	menu.style.width = "100px"
 	menu.style.display = 'block'
-	menu.style.height = ""
-	menu.style.overflowY = ""
+//	menu.style.height = "100px"
+//	menu.style.overflowY = ""
 	xscr = $(window).width()
 	yscr = $(window).height()
 	xpos = pointing.offsetLeft + pointing.offsetWidth - xscroll
