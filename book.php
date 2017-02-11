@@ -69,6 +69,18 @@
   </li>
   <li><div id="item5"></div></li>
 </ul>
+ 
+<ul id="stafflist" style="display:none">
+  <li><div id="staff1"></div></li>
+  <li><div id="staff2"></div></li>
+  <li><div id="staff3"></div></li>
+  <li><div id="staff4"></div></li>
+  <li><div id="staff5"></div></li>
+  <li><div id="staff6"></div></li>
+  <li><div id="staff7"></div></li>
+  <li><div id="staff8"></div></li>
+  <li><div id="staff9"></div></li>
+</ul>
 
 <div id="paperdiv" ></div>
 

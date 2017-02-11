@@ -77,6 +77,24 @@ function DragDrop()
 	});
 }
 
+function scrollUpDown()
+{
+	var tableheight = document.getElementById("tbl").offsetHeight
+	var scrolly = Yscrolled()
+
+	if (STATE[0] == "FILLUP")
+	{ 
+		if ($(window).scrollTop() < 2)
+		{
+			fillupscroll(-1)
+		}
+		else if (tableheight <= window.innerHeight + scrolly)
+		{
+			fillupscroll(+1)
+		}
+	}
+}
+
 function scrollview(table, dateclicked)
 {
 	var i, j, q
@@ -124,33 +142,6 @@ function scrolltoview(highpos, lowpos)
           scrollTop: recthigh.top + Yscrolled()
         }, 1250)
 	}
-}
-
-function popup(pointing)
-{
-	var xpos, ypos, xscr, yscr
-	var xscroll = Xscrolled()
-	var yscroll = Yscrolled()
-	var menu = document.getElementById("menu")
-
-//	menu.style.width = "100px"
-	menu.style.display = 'block'
-//	menu.style.height = "100px"
-//	menu.style.overflowY = ""
-	xscr = $(window).width()
-	yscr = $(window).height()
-	xpos = pointing.offsetLeft + pointing.offsetWidth - xscroll
-	ypos = pointing.offsetTop - yscroll
-	if (xpos > xscr - menu.offsetWidth)
-		xpos = pointing.offsetLeft - xscroll - menu.offsetWidth
-	if (ypos > yscr - menu.offsetHeight)
-		ypos = yscr - menu.offsetHeight
-	if (xpos < 0)
-		xpos = 0
-	if (ypos < 0)
-		ypos = 0
-	menu.style.top = ypos + 'px'
-	menu.style.left = xpos + 'px'
 }
 
 function hidePopup()

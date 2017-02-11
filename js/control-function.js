@@ -122,6 +122,26 @@ function Yscrolled()
 	return scrolled
 }
 
+function checkblank(opdate, qn)
+{	//No case in this date? 
+	var q = 0
+
+	if (BOOKFILL[0] == undefined)
+		return false
+	if (qn)
+		return false
+	while (opdate > BOOKFILL[q].opdate)
+	{
+		q++
+		if (q >= BOOKFILL.length)
+			return false
+	}
+	if (opdate == BOOKFILL[q].opdate)
+		return true
+	else
+		return false
+}
+
 function URIcomponent(qoute)
 {
 	qoute = qoute.replace(/\s+$/,'')

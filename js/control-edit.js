@@ -1,59 +1,4 @@
-﻿function FirstColumn(saveval, rownum)
-{
-	var table = document.getElementById("tbl")
-	var rowmain = table.rows[rownum]
-	var qn = rowmain.cells[QN].innerHTML
-	var hn = rowmain.cells[HN].innerHTML
-	var opdate = rowmain.cells[OPDATE].innerHTML.numDate()	//mysql date
-	var staffname = rowmain.cells[STAFFNAME].innerHTML
-
-	switch(saveval)
-	{
-		case "0":
-			addnewrow(rowmain)
-			break;
-		case "1":
-			if (qn)
-				deletecase(rowmain, qn)
-			break;
-		case "2":
-			deleteblankrow(rowmain)
-			break;
-		case "3":	// NORMAL
-			STATE[1] = getSunday(opdate)
-			fillupnormal(opdate)
-			scrollview(table, opdate)
-			break
-		case "4":	// queue of a day of week
-			STATE[1] = (new Date(opdate)).getDay()
-			fillday()
-			scrollview(table, opdate)
-			break
-		case "5":	// queue of a staff
-			STATE[1] = staffname
-			fillstaff()
-			scrollview(table, opdate)
-			break
-		case "6":
-			findq()
-			break;
-		case "7":
-			if (hn)
-				PACS (hn)
-			break
-		case "8":
-			edithistory(rowmain, qn)
-			break;
-		case "9":
-			staffqueue(staffname)
-			break;
-	}
-	document.getElementById("menudiv").style.height = ""
-	document.getElementById("menudiv").style.display = "none"
-	document.getElementById("editcell").id = ""
-}
-
-function addnewrow(rowmain)
+﻿function addnewrow(rowmain)
 {
 	if (rowmain.cells[QN].innerHTML)	//not empty
 	{
@@ -85,7 +30,10 @@ function deletecase(rowmain, qn)
 		{
 			updateBOOK(response);
 			updateBOOKFILL()
-			filldeleterow(rowmain)
+			if (checkblank(rowmain.cells[OPDATE].innerHTML, qn))
+				filldeleterow(rowmain)
+			else
+				$(rowmain).remove()
 		}
 	}
 }

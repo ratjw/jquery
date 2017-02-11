@@ -7,6 +7,7 @@ function fillupstart()
 		BOOK.push({"opdate" : getSunday()})
 	BOOKFILL = BOOK	//also begin BOOKFILL
 	fillnew()
+	document.body.scrollTop = 2
 	DragDrop()
 }
 

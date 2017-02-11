@@ -8,7 +8,7 @@ function clicktable(event)
 	{
 		if ($("#editcell").get(0))
 			$("#editcell").attr("id","")
-		hidePopup()
+		$("#tbl").siblings().hide()
 		return
 	}
 
@@ -48,7 +48,7 @@ function editing(event)
 		if ($("#editcell").index() == OPDATE)
 		{
 			$("editcell").attr("id","")
-			hidePopup()
+			$("#tbl").siblings().hide()
 		}
 		else
 		{
@@ -184,27 +184,26 @@ function storePresentcell(pointing)
 	var qn = $(rowtr).children("td").eq(QN).html()
 
 	$("#editcell").attr("id","")
+	pointing.id = "editcell"
+	$("#tbl").siblings().hide()
 
 	switch(cindex)
 	{
 		case OPDATE:
 			fillSetTable(rindex, pointing)
-			pointing.id = "editcell"
-//			popup (pointing);
-			if ($("#alert").css("display") == "block")
-				$("#alert").fadeOut();
 			break
 		case STAFFNAME:
+			stafflist(rindex, pointing)
+			break
 		case HN:
 		case DIAGNOSIS:
 		case TREATMENT:
 		case TEL:			//store value in attribute "title"
-			hidePopup()
-			pointing.id = "editcell"
 			$("#editcell").attr("title", pointing.innerHTML)
+			break
 		case NAME:
 		case AGE:
-			hidePopup()
+			$("#editcell").attr("id","")
 			break
 	}
 }
@@ -222,6 +221,7 @@ function fillSetTable(rownum, pointing)
 	var opday = table.rows[rownum].className
 	var hn = tcell[HN].innerHTML
 	var qn = tcell[QN].innerHTML
+	var disabled = "ui-state-disabled"
 
 	var i = 0
 	while (opday.indexOf(NAMEOFDAYFULL[i]) == -1)
@@ -229,86 +229,109 @@ function fillSetTable(rownum, pointing)
 	opday = NAMEOFDAYTHAI[i]
 
 	casename = casename.substring(0, casename.indexOf(' '))
-	var disabled = "ui-state-disabled"
-	$("#menu #item1").html("เพิ่ม case วันที่ " + opdateth)
-	$("#menu #item1").attr("class", queue? "" : disabled)
-	$("#menu #item1").click(function() {
+	$("#item1").html("เพิ่ม case วันที่ " + opdateth)
+	if (queue)
+		$("#item1").removeClass(disabled)
+	else
+		$("#item1").addClass(disabled)
+	$("#item1").click(function() {
 		addnewrow(rowmain)
 	})
-	$("#menu #item2").html("ลบ case " + casename)
-	$("#menu #item2").attr("class", queue? "" : disabled)
-	$("#menu #item2").click(function() {
+	$("#item2").html("ลบ case " + casename)
+	if (queue)
+		$("#item2").removeClass(disabled)
+	else
+		$("#item2").addClass(disabled)
+	$("#item2").click(function() {
 		deletecase(rowmain, qn)
 	})
-	$("#menu #item3").html("Delete Blank Row")
-	$("#menu #item3").attr("class", check(opdate, queue)? "" : disabled)
-	$("#menu #item3").click(function() {
+	$("#item3").html("Delete Blank Row")
+	if (checkblank(opdate, queue))
+		$("#item3").removeClass(disabled)
+	else
+		$("#item3").addClass(disabled)
+	$("#item3").click(function() {
 		deleteblankrow(rowmain)
 	})
-	$("#menu #item4").html("ตารางคิว")
-	$("#menu #item41").html("คิววัน" + opday)
-	$("#menu #item41").attr("class", (STATE[0] != "FILLDAY")?  "" : disabled)
-	$("#menu #item41").click(function() {
+	$("#item4").html("ตารางคิว")
+	$("#item41").html("คิววัน" + opday)
+	if (STATE[0] == "FILLDAY")
+		$("#item41").addClass(disabled)
+	else
+		$("#item41").removeClass(disabled)
+	$("#item41").click(function() {
 		STATE[1] = (new Date(opdate)).getDay()
 		fillday()
 		scrollview(table, opdate)
 	})
-	$("#menu #item42").html("คิว " + staffname)
-	$("#menu #item42").attr("class", (STATE[0] != "FILLSTAFF")? (staffname? "" : disabled) : disabled)
-	$("#menu #item42").click(function() {
+	$("#item42").html("Staff " + staffname)
+	if (STATE[0] == "FILLSTAFF")
+		$("#item42").addClass(disabled)
+	else
+		$("#item42").removeClass(disabled)
+	if (staffname)
+		$("#item42").removeClass(disabled)
+	else
+		$("#item42").addClass(disabled)
+	$("#item42").click(function() {
 		STATE[1] = staffname
 		fillstaff()
 		scrollview(table, opdate)
 	})
-	$("#menu #item5").html("ประวัติการแก้ไข " + casename)
-	$("#menu #item5").attr("class", queue?  "" : disabled)
-	$("#menu #item5").click(function() {
+	$("#item5").html("ประวัติการแก้ไข " + casename)
+	if (queue)
+		$("#item5").removeClass(disabled)
+	else
+		$("#item5").addClass(disabled)
+	$("#item5").click(function() {
 		edithistory(rowmain, qn)
 	})
 
 	var pos = $(pointing).position();
 	var height = pos.top + $(pointing).outerHeight();
 	var width = pos.left + $(pointing).outerWidth();
+
+	$("#menu").css("box-shadow", "10px 20px 30px slategray")
 	if ((height + $("#menu").outerHeight()) > $(window).innerHeight())
+	{
 		height = pos.top - $("#menu").innerHeight()
+		$("#menu").css("box-shadow", "10px -10px 30px slategray")
+	}
 	$("#menu").css({
 		position: "absolute",
 		top: height + "px",
 		left: width + "px",
 		display: ""
-//		box-shadow: 10px 20px 30px slategray
 	})
+	$("#menu").menu();
+}
 
-	$( "#menu" ).menu();
-/*
-    // .position() uses position relative to the offset parent, 
-    // so it supports position: relative parent elements
-    var pos = $(pointing).position();
-
-    // .outerWidth() takes into account border and padding.
-    var height = $(pointing).outerHeight();
-
-    //show the menu directly over the placeholder
-*/
-	function check(opdate, queue)
-	{	//Any case in this date? 
-		var q = 0
-
-		if (BOOKFILL[0] == undefined)
-			return false
-		if (queue)
-			return false
-		while (opdate > BOOKFILL[q].opdate)
-		{
-			q++
-			if (q >= BOOKFILL.length)
-				return false
-		}
-		if (opdate == BOOKFILL[q].opdate)
-			return true
-		else
-			return false
+function stafflist(rindex, pointing)
+{
+	for (var each=0; each<ALLLISTS.staff.length; each++)
+	{
+		$("#staff" + (each + 1)).html(ALLLISTS.staff[each][1])
+		$("#staff" + (each + 1)).click(function() {
+		})
 	}
+
+	var pos = $(pointing).position();
+	var height = pos.top + $(pointing).outerHeight();
+	var width = pos.left + $(pointing).outerWidth();
+
+	$("#stafflist").css("box-shadow", "10px 20px 30px slategray")
+	if ((height + $("#stafflist").outerHeight()) > $(window).innerHeight())
+	{
+		height = pos.top - $("#stafflist").innerHeight()
+		$("#stafflist").css("box-shadow", "10px -10px 30px slategray")
+	}
+	$("#stafflist").css({
+		position: "absolute",
+		top: height + "px",
+		left: width + "px",
+		display: ""
+	})
+	$("#stafflist").menu();
 }
 
 function findPrevcell() 
