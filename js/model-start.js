@@ -30,6 +30,7 @@ function loading(response)
 	{
 		updateBOOK(response);	//eval response into BOOK and ALLLISTS
 		fillupstart();
+		fillStafflist()
 	}
 	else
 		alert("Cannot load BOOK");
@@ -43,6 +44,17 @@ function updateBOOK(response)
 	TIMESTAMP = temp.QTIME? temp.QTIME : ""	//last update time of BOOK in server
 	QWAIT = temp.QWAIT? temp.QWAIT : []
 	ALLLISTS = temp.STAFF? temp.STAFF : []
+}
+
+function fillStafflist()
+{
+	var staffHTML = ''
+	for (var each=0; each<ALLLISTS.staff.length; each++)
+	{
+		staffHTML += '<li><div id="' + ALLLISTS.staff[each][1] + '">'
+		staffHTML += ALLLISTS.staff[each][1] + '</div></li>'
+	}
+	$("#stafflist").html(staffHTML)
 }
 
 function updateBOOKFILL()

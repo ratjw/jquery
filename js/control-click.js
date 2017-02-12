@@ -193,8 +193,7 @@ function storePresentcell(pointing)
 			fillSetTable(rindex, pointing)
 			break
 		case STAFFNAME:
-			stafflist(rindex, pointing)
-			break
+			stafflist(pointing)
 		case HN:
 		case DIAGNOSIS:
 		case TREATMENT:
@@ -234,37 +233,23 @@ function fillSetTable(rownum, pointing)
 		$("#item1").removeClass(disabled)
 	else
 		$("#item1").addClass(disabled)
-	$("#item1").click(function() {
-		addnewrow(rowmain)
-	})
 	$("#item2").html("ลบ case " + casename)
 	if (queue)
 		$("#item2").removeClass(disabled)
 	else
 		$("#item2").addClass(disabled)
-	$("#item2").click(function() {
-		deletecase(rowmain, qn)
-	})
 	$("#item3").html("Delete Blank Row")
 	if (checkblank(opdate, queue))
 		$("#item3").removeClass(disabled)
 	else
 		$("#item3").addClass(disabled)
-	$("#item3").click(function() {
-		deleteblankrow(rowmain)
-	})
 	$("#item4").html("ตารางคิว")
 	$("#item41").html("คิววัน" + opday)
 	if (STATE[0] == "FILLDAY")
 		$("#item41").addClass(disabled)
 	else
 		$("#item41").removeClass(disabled)
-	$("#item41").click(function() {
-		STATE[1] = (new Date(opdate)).getDay()
-		fillday()
-		scrollview(table, opdate)
-	})
-	$("#item42").html("Staff " + staffname)
+	$("#item42").html("คิวรอ " + staffname)
 	if (STATE[0] == "FILLSTAFF")
 		$("#item42").addClass(disabled)
 	else
@@ -273,65 +258,80 @@ function fillSetTable(rownum, pointing)
 		$("#item42").removeClass(disabled)
 	else
 		$("#item42").addClass(disabled)
-	$("#item42").click(function() {
-		STATE[1] = staffname
-		fillstaff()
-		scrollview(table, opdate)
-	})
-	$("#item5").html("ประวัติการแก้ไข " + casename)
+	$("#item5").html("การแก้ไข " + casename)
 	if (queue)
 		$("#item5").removeClass(disabled)
 	else
 		$("#item5").addClass(disabled)
-	$("#item5").click(function() {
-		edithistory(rowmain, qn)
-	})
+	$("#item6").html("รายชื่อที่ถูกลบ")
 
-	var pos = $(pointing).position();
-	var height = pos.top + $(pointing).outerHeight();
-	var width = pos.left + $(pointing).outerWidth();
+	$("#menu").menu({
+		select: function( event, ui ) {
+			switch(this.getAttribute("aria-activedescendant"))
+			{
+				case "item1":
+					addnewrow(rowmain)
+					break
+				case "item2":
+					deletecase(rowmain, qn)
+					break
+				case "item3":
+					deleteblankrow(rowmain)
+					break
+				case "item41":
+					STATE[1] = (new Date(opdate)).getDay()
+					fillday()
+					scrollview(table, opdate)
+					break
+				case "item42":
+					STATE[1] = staffname
+					fillstaff()
+					scrollview(table, opdate)
+					break
+				case "item5":
+					edithistory(rowmain, qn)
+					break
+				case "item6":
+					deletehistory(rowmain, qn)
+					break
+			}
+			$("#menu").hide()
+		}
+	});
 
-	$("#menu").css("box-shadow", "10px 20px 30px slategray")
-	if ((height + $("#menu").outerHeight()) > $(window).innerHeight())
-	{
-		height = pos.top - $("#menu").innerHeight()
-		$("#menu").css("box-shadow", "10px -10px 30px slategray")
-	}
-	$("#menu").css({
-		position: "absolute",
-		top: height + "px",
-		left: width + "px",
-		display: ""
-	})
-	$("#menu").menu();
+	showup(pointing, '#menu')
 }
 
-function stafflist(rindex, pointing)
+function stafflist(pointing)
 {
-	for (var each=0; each<ALLLISTS.staff.length; each++)
-	{
-		$("#staff" + (each + 1)).html(ALLLISTS.staff[each][1])
-		$("#staff" + (each + 1)).click(function() {
-		})
-	}
+	showup(pointing, '#stafflist')
 
+	$("#stafflist").menu({
+		select: function( event, ui ) {
+			$(pointing).html($(this).attr("aria-activedescendant"));
+			$('#stafflist').hide();
+		}
+	});
+}
+
+function showup(pointing, menuID)
+{
 	var pos = $(pointing).position();
 	var height = pos.top + $(pointing).outerHeight();
 	var width = pos.left + $(pointing).outerWidth();
 
-	$("#stafflist").css("box-shadow", "10px 20px 30px slategray")
-	if ((height + $("#stafflist").outerHeight()) > $(window).innerHeight())
+	$(menuID).css("box-shadow", "10px 20px 30px slategray")
+	if ((height + $(menuID).outerHeight()) > $(window).innerHeight() + document.body.scrollTop)
 	{
-		height = pos.top - $("#stafflist").innerHeight()
-		$("#stafflist").css("box-shadow", "10px -10px 30px slategray")
+		height = pos.top - $(menuID).innerHeight()
+		$(menuID).css("box-shadow", "10px -10px 30px slategray")
 	}
-	$("#stafflist").css({
+	$(menuID).css({
 		position: "absolute",
 		top: height + "px",
 		left: width + "px",
 		display: ""
 	})
-	$("#stafflist").menu();
 }
 
 function findPrevcell() 

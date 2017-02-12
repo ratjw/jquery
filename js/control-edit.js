@@ -148,3 +148,65 @@ function makehistory(rowmain, response)
 	});
 }
 
+function deletehistory(rowmain, qn)
+{
+	var sql = "sqlReturnData=SELECT * FROM bookhistory "
+		sql += "WHERE waitnum=0;"
+
+		Ajax(MYSQLIPHP, sql, callbackdeletehistory)
+
+	function callbackdeletehistory(response)
+	{
+		if (!response || response.indexOf("DBfailed") != -1)
+		{
+			$("#alert").text("Delete history DBfailed!\n" + response);
+			$("#alert").fadeIn();
+		}
+		else if (response.indexOf("editor") == -1)
+		{
+			$("#alert").text("ไม่มีการแก้ไข");
+			$("#alert").fadeIn();
+		}
+		else
+		{
+			makeDeleteHistory(rowmain, response)
+		}
+	}
+}
+
+function makeDeleteHistory(rowmain, response)
+{
+	var history = JSON.parse(response);
+
+	var HTML_String = '<table class="historytable">';
+	HTML_String += '<tr>';
+	HTML_String += '<th style="width:10%">Date Time</th>';
+	HTML_String += '<th style="width:5%">HN</th>';
+	HTML_String += '<th style="width:10%">Patient Name</th>';
+	HTML_String += '<th style="width:25%">Diagnosis</th>';
+	HTML_String += '<th style="width:25%">Treatment</th>';
+	HTML_String += '<th style="width:20%">Notice</th>';
+	HTML_String += '<th style="width:5%">Editor</th>';
+	HTML_String += '</tr>';
+	for (var j = 0; j < history.length; j++) 
+	{
+		HTML_String += '<tr>';
+		HTML_String += '<td>' + history[j].editdatetime +'</td>';
+		HTML_String += '<td>' + history[j].hn +'</td>';
+		HTML_String += '<td>' + history[j].patient +'</td>';
+		HTML_String += '<td>' + history[j].diagnosis +'</td>';
+		HTML_String += '<td>' + history[j].treatment +'</td>';
+		HTML_String += '<td>' + history[j].tel +'</td>';
+		HTML_String += '<td>' + history[j].editor +'</td>';
+		HTML_String += '</tr>';
+	}
+	HTML_String += '</table>';
+
+	$("#container").html(HTML_String);
+	$("#container").dialog({
+		dialogClass: "dialog",
+		title: rowmain.cells[HN].innerHTML +' '+ rowmain.cells[NAME].innerHTML,
+		height: window.innerHeight * 70 / 100,
+		width: window.innerWidth * 70 / 100
+	});
+}
