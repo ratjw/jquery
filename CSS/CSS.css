@@ -71,53 +71,6 @@ td.sat:before { content: "เสาร์ "; }
 	border:2px solid slategray;
 }
 
-.smallpic {
-	position: fixed;
-	display:none;
-	z-index: 10;
-	color: green;
-	background-color: papayawhip;
-	border: 2px solid slategray;
-	padding: 5px;
-	overflow-x: hidden;
-	overflow-y: hidden;
-	box-shadow: 10px 20px 30px slategray;
-}
-
-#icdname {
-	text-align: left;
-	overflow-x: hidden;
-	overflow-y: scroll;
-	height: auto;
-}
-
-.divindiv {
-	position: absolute;
-	display:none;
-	z-index: 1;
-	color: green;
-	background-color: papayawhip;
-	border: 2px solid slategray;
-	padding: 5px;
-	overflow-x: hidden;
-	overflow-y: hidden;
-}
-
-#paperdiv {
-	position: fixed;
-	display:none;
-	z-index: 1;
-	color: black;
-	background-color: white;
-	border: 2px solid slategray;
-	padding-top: 70px;
-	padding-right: 30px;
-	padding-bottom: 70px;
-	padding-left: 50px;
-	overflow-x: hidden;
-	overflow-y: hidden;
-}
-
 #alert {
 	position: fixed;
 	display:none;
@@ -208,7 +161,7 @@ input#equip, input#oequip {
 }
 
 #queuetbl {
-	background-color: white;
+/*	background-color: white;*/
 }
 
 #queuetbl th {

@@ -5,7 +5,6 @@ function fillupstart()
 	STATE[1] = getSunday()
 	if (BOOK.length == 0)
 		BOOK.push({"opdate" : getSunday()})
-	BOOKFILL = BOOK	//also begin BOOKFILL
 	fillnew()
 	document.body.scrollTop = 2
 	DragDrop()
@@ -15,7 +14,6 @@ function fillupnormal()
 {	//from selecting firstcolumn menu change STATE to fillup from fillday or fillstaff
 
 	STATE[0] = "FILLUP"
-	BOOKFILL = BOOK	//changed to fillup from fillday or fillstaff
 	fillnew()
 	DragDrop()
 }
@@ -49,10 +47,10 @@ function fillext(di, event)
 	if (di == -1)
 	{
 		begindate = STATE[1]
-		if ((BOOKFILL[0]) &&
-			(begindate < BOOKFILL[0].opdate) && 
+		if ((BOOK[0]) &&
+			(begindate < BOOK[0].opdate) && 
 			(begindate <= getSunday()))
-			return		//being in the beginning of BOOKFILL
+			return		//being in the beginning of BOOK
 		begindate = begindate.nextdays(di*7)
 		STATE[1] = begindate
 
@@ -103,9 +101,9 @@ function refill()
 		var begindate = at? STATE[1].nextdays(numweeks*7) : STATE[1]
 		numweeks++
 		
-		//Find OPDATE of FIRSTROW from the start of BOOKFILL
+		//Find OPDATE of FIRSTROW from the start of BOOK
 		q = 0
-		while (BOOKFILL[q] && (BOOKFILL[q].opdate < begindate))
+		while (BOOK[q] && (BOOK[q].opdate < begindate))
 			q++
 
 		rundate = begindate
@@ -113,12 +111,12 @@ function refill()
 		i = at
 		while (rundate < lastday)
 		{
-			while (q < BOOKFILL.length && rundate == BOOKFILL[q].opdate)
+			while (q < BOOK.length && rundate == BOOK[q].opdate)
 			{
 				i++
 				rowi = makenextrow(i, rundate)
 				makedate = rundate
-				filldata(BOOKFILL, rowi, q)
+				filldata(BOOK[q], rowi)
 				q++
 			}
 			if (rundate != makedate)
@@ -132,168 +130,63 @@ function refill()
 	}
 }
 
-function fillday()
+function fillday(day)
 {	//Display only one day of each week
-	var table = document.getElementById("tbl")
 	var i, k, q
 	var rowi = {}
 	var date = ""
-	var opday = STATE[1]
+	var opday = DAYOFTHAINAME[day]
 	var makedate
-	var temp = BOOKFILL
+	
+	$("#container").html($("#tbltemplate").clone())
+	$("#container table").attr("id", "tblday")
+	$("#tblday").css("display", "block")
+	var table = document.getElementById("tblday")
 
-	//make virtual BOOK of only this day
-	BOOKFILL = []
-	for (q=0; q < BOOK.length; q++)
-	{
-		k = (new Date(BOOK[q].opdate)).getDay()
-		if (k == opday)
-			BOOKFILL.push(BOOK[q])
-	}
-	if (BOOKFILL.length == 0)
-	{
-		BOOKFILL = temp
-		$("#alert").text("ไม่มี case วัน" + NAMEOFDAYTHAI[STATE[1]]);
-		$("#alert").fadeIn();
-		return
-	}
-	STATE[0] = "FILLDAY"
-
-	//delete previous table to fresh start every time
-	while (table.rows[1])
-		table.deleteRow(-1) 
-
-	date = BOOK[0].opdate	//Beginning of entire original BOOK
-	k = (new Date(date)).getDay()
+	date = BOOK[0].opdate	//for insert blank row
+	k = new Date(date).getDay()
 
 	//i for number of rows in growing table
 	i=0
 
-	//q for walking on BOOKFILL rows
-	for (q=0; q < BOOKFILL.length; q++)
+	//q for walking on BOOK rows
+	for (q=0; q < BOOK.length; q++)
 	{	
-		while (date < BOOKFILL[q].opdate)
-		{	//step over each day that is not in BOOKFILL
+		while (date < BOOK[q].opdate)
+		{	//step over each day that is not in QBOOK
 			if (date != makedate)
 			{
 				if (k%7 == opday)
 				{	//make a blank row for matched opday which is not already in the table
 					i++
-					rowi = makenextrow(i, date)
+					rowi = makenextrowday(i, date)
 				}
 				makedate = date
 			}
 			date = date.nextdays(1)
-			k++	// = (new Date(date)).getDay()
-			if (k%7 == 0 && table.rows.length != 1)
+			k++	// = date.getDay() = nextday on the table
+			if (k%7 == 0)
 			{	//make table head row before every Sunday
-				makeheader()
+				makeheaderday()
  				i++
 			}
 		}
-		i++
-		rowi = makenextrow(i, date)
-		makedate = date
-		filldata(BOOKFILL, rowi, q)
-	}
-	q = i+5		//make extra 5 rows
-	while (i < q)
-	{
-		if (date != makedate)
+		k = new Date(BOOK[q].opdate).getDay()
+		if (k == opday)
 		{
-			if (k%7 == opday)
-			{	//make a blank row for matched opday which is not already in the table
-				i++
-				rowi = makenextrow(i, date)
-			}
-			makedate = date
-		}
-		date = date.nextdays(1)
-		k++// = (new Date(date)).getDay()
-		if (k%7 == 0)
-		{	//make table head row before every Sunday
-			makeheader()
 			i++
-		}
-	}
- 	DragDrop()
-}
-
-function fillstaff()
-{	//Display all cases of only one staff (staffname is in STATE)
-	var table = document.getElementById("tbl")
-	var i, k, q
-	var rowi = {}
-	var date = ""
-	var makedate
-	var opday = [0,0,0,0,0,0,0]
-
-	STATE[0] = "FILLSTAFF"
-
-	//make temp BOOK of only this staff
-	BOOKFILL = []
-	for (q=0; q < BOOK.length; q++)
-		if (BOOK[q].staffname == STATE[1])
-			BOOKFILL.push(BOOK[q])
-
-	//determine opday of this staff
-	for (q=0; q < BOOKFILL.length; q++)
-		opday[(new Date(BOOKFILL[q].opdate)).getDay()]++
-	opday = opday.indexOf(Math.max.apply(null, opday))
-
-	//delete previous table to fresh start every time
-	while (table.rows[1])
-		table.deleteRow(-1) 
-
-	date = BOOK[0].opdate	//entire original BOOK
-	k = (new Date(date)).getDay()
-	for (i=0,q=0; q < BOOKFILL.length; q++)
-	{
-		while (date < BOOKFILL[q].opdate)
-		{
-			if (date != makedate)
-			{
-				if (k%7 == opday)
-				{	//make a blank row for matched opday which is not already in the table
-					i++
-					rowi = makenextrow(i, date)
-				}
-				makedate = date
-			}
-			date = date.nextdays(1)
-			k++// = (new Date(date)).getDay()
-			if (k%7 == 0 && table.rows.length != 1)
-			{	//make table head row before every Sunday
-				makeheader()
-				i++
-			}
-		}
-		i++
-		rowi = makenextrow(i, date)
-		makedate = date
-		filldata(BOOKFILL, rowi, q)
-	}
-	q = i
-	while (i < q+6)
-	{
-		if (date != makedate)
-		{
-			if (k%7 == opday)
-			{	//make a blank row for matched opday which is not already in the table
-				i++
-				rowi = makenextrow(i, date)
-			}
+			rowi = makenextrowday(i, date)
 			makedate = date
-		}
-		date = date.nextdays(1)
-		k++// = (new Date(date)).getDay()
-		if (k%7 == 0)
-		{	//make table head row before every Sunday
-			makeheader()
-			i++
+			filldata(BOOK[q], rowi)
 		}
 	}
-	DragDrop()
+	$("#container").dialog({
+		dialogClass: "dialog",
+		title: day,
+		height: window.innerHeight * 70 / 100,
+		width: window.innerWidth * 70 / 100
+	});
+ 	DragDropday(event)
 }
 
 function makeheader(at)
@@ -325,16 +218,45 @@ function makenextrow(i, date)
 	return rowi
 }
 
-function filldata(book, rowi, q)
+function makeheaderday(at)
 {
-	rowi.cells[STAFFNAME].innerHTML = book[q].staffname? book[q].staffname : ""
-	rowi.cells[HN].innerHTML = book[q].hn? book[q].hn : ""
-	rowi.cells[NAME].innerHTML = book[q].patient? book[q].patient : ""
-	rowi.cells[AGE].innerHTML = book[q].dob? book[q].dob.getAge(book[q].opdate) : ""
-	rowi.cells[DIAGNOSIS].innerHTML = book[q].diagnosis? book[q].diagnosis : ""
-	rowi.cells[TREATMENT].innerHTML = book[q].treatment? book[q].treatment : ""
-	rowi.cells[TEL].innerHTML = book[q].tel? book[q].tel : ""
-	rowi.cells[QN].innerHTML = book[q].qn
+	var table = document.getElementById("tblday")
+	var tbody = table.getElementsByTagName("tbody")[0]
+	var trow = table.getElementsByTagName("tr")[0]
+	var thead = trow.cloneNode(true)
+
+	if (at == 0)
+		tbody.insertBefore(thead, trow)
+	else
+		tbody.appendChild(thead)
+}
+
+function makenextrowday(i, date)
+{	// i = the row to be made
+	var table = document.getElementById("tblday")
+	var rowi
+	var j = 0
+	var datatitle = document.getElementById("datatitle")
+
+	rowi = table.insertRow(i)
+	table.rows[i].innerHTML = datatitle.innerHTML
+	rowi.cells[OPDATE].innerHTML = date.thDate()
+	rowi.cells[OPDATE].className = NAMEOFDAYABBR[(new Date(date)).getDay()]
+	rowi.className = NAMEOFDAYFULL[(new Date(date)).getDay()]
+	rowi.style.backgroundImage = holiday(date)
+	return rowi
+}
+
+function filldata(bookq, rowi)		//bookq = book[q]
+{
+	rowi.cells[STAFFNAME].innerHTML = bookq.staffname? bookq.staffname : ""
+	rowi.cells[HN].innerHTML = bookq.hn? bookq.hn : ""
+	rowi.cells[NAME].innerHTML = bookq.patient? bookq.patient : ""
+	rowi.cells[AGE].innerHTML = bookq.dob? bookq.dob.getAge(bookq.opdate) : ""
+	rowi.cells[DIAGNOSIS].innerHTML = bookq.diagnosis? bookq.diagnosis : ""
+	rowi.cells[TREATMENT].innerHTML = bookq.treatment? bookq.treatment : ""
+	rowi.cells[TEL].innerHTML = bookq.tel? bookq.tel : ""
+	rowi.cells[QN].innerHTML = bookq.qn
 }
 
 function filldeleterow(rowmain)		
@@ -343,20 +265,48 @@ function filldeleterow(rowmain)
 		rowmain.cells[j].innerHTML = ""
 }
 
-function fillselect(opdate)		
+function fillselect(tableID, opdate)		
 {
-	var table = document.getElementById("tbl")
+	var table = document.getElementById(tableID)
 
 	var q = 0
-	while (q < BOOKFILL.length && (BOOKFILL[q].opdate < opdate))
-		q++	//seek opdate in BOOKFILL
+	while (q < BOOK.length && (BOOK[q].opdate < opdate))
+		q++	//seek opdate in BOOK
 	var i = 0
-	while (table.rows[i].cells[OPDATE].innerHTML.numDate() != opdate)
+	while (opdate != table.rows[i].cells[OPDATE].innerHTML.numDate())
 		i++	//seek opdate in main table
-	while ((q < BOOKFILL.length) && (opdate == BOOKFILL[q].opdate))
+	while ((q < BOOK.length) && (opdate == BOOK[q].opdate))
 	{	//refill only that opdate cases
-		filldata(BOOKFILL, table.rows[i], q)
+		filldata(BOOK[q], table.rows[i])
 		q++
 		i++
 	}
+}
+
+function fillselectQueue(waitnum, staffname, rowcell)		
+{
+	var q = 0
+	while (q < QWAIT.length)
+	{
+		if ((QWAIT[q].waitnum == waitnum) && (QWAIT[q].staffname == staffname))
+			break
+		q++	//seek waitnum in QWAIT
+	}
+	var i = 0
+	while (waitnum != rowcell.eq(QWAITNUM).html())
+		i++	//seek waitnum in Qtable
+	filldataQueue(QWAIT[q], rowcell)
+}
+
+function filldataQueue(bookq, rowcell)
+{
+	rowcell.eq(QWAITNUM).html(bookq.waitnum)
+	rowcell.eq(QSINCE).html(bookq.opdate? bookq.opdate.thDate() : "")
+	rowcell.eq(QHN).html(bookq.hn)
+	rowcell.eq(QNAME).html(bookq.patient)
+	rowcell.eq(QAGE).html(bookq.dob? bookq.dob.getAge() : "")
+	rowcell.eq(QDIAGNOSIS).html(bookq.diagnosis? bookq.diagnosis : "")
+	rowcell.eq(QTREATMENT).html(bookq.treatment? bookq.treatment : "")
+	rowcell.eq(QTEL).html(bookq.tel)
+	rowcell.eq(QQN).html(bookq.qn)
 }

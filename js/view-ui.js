@@ -4,14 +4,16 @@ function DragDrop()
 	$("#tbl tr").draggable({
 		helper: "clone",
 		revert: true,
+		appendTo: "body",
+		stack: ".ui-draggable",
+		zIndex: 100,
 		start : function () {
 			$("editcell").attr("id", "")
-			hidePopup()
 		}
 	});
 
-	$("#tbl tr").droppable({
-		accept: "#tbl tr",
+	$("tr").droppable({
+		accept: "#tbl tr, #tblday tr, #queuetbl tr",
 		drop: function (event, ui) {
 
 			if (!$(this).children("td").eq(OPDATE).html())
@@ -68,10 +70,178 @@ function DragDrop()
 
 					updateBOOK(response);
 					updateBOOKFILL()
-					fillselect(opdate.numDate())
+					fillselect("tbl", thisdate)
 					DragDrop()
 				}
 				$("#tbl").css("cursor", 'default')
+			}	
+		}
+	});
+}
+
+function DragDropday(event)
+{
+	$("#tblday tr").draggable({
+		helper: "clone",
+		revert: true,
+		appendTo: "body",
+		stack: ".ui-draggable",
+		zIndex: 100,
+		start : function () {
+			$("editcell").attr("id", "")
+			event.stopPropagation()
+			event.preventDefault()
+		}
+	});
+
+	$("tr").droppable({
+		accept: "#tbl tr, #tblday tr",
+		drop: function (event, ui) {
+			event.stopPropagation()
+			event.preventDefault()
+
+			if (!$(this).children("td").eq(OPDATE).html())
+				return true
+
+			$("#tblday").css("cursor", 'wait')
+			var that_row = ui.draggable
+			var this_row = this
+			var uihelper = ui.helper
+			var prevdate
+			var nextdate
+
+			if (prevdate = $(ui.draggable).prev().children("td").eq(OPDATE).html()) 
+				prevdate = prevdate.numDate()
+			var thatdate = $(ui.draggable).children("td").eq(OPDATE).html().numDate()
+			if (nextdate = $(ui.draggable).next().children("td").eq(OPDATE).html())
+				nextdate = nextdate.numDate()
+			var thatqn = $(ui.draggable).children("td").eq(QN).html()
+
+			var thisdate = $(this).children("td").eq(OPDATE).html().numDate()
+			var thisqn = $(this).children("td").eq(QN).html()
+			var opdate = $(this).children("td").eq(OPDATE).html()	//Thai date
+
+			$(uihelper).children("td").eq(OPDATE).html(opdate)
+			$(uihelper).attr("class", $(this_row).attr("class"))
+			$(uihelper).children("td").eq(OPDATE).attr("class", $(this_row)
+						.children("td").eq(OPDATE).attr("class"))
+			$(uihelper).css("position", "")
+
+			var sql = "sqlReturnbook=UPDATE book SET opdate='" + thisdate
+			sql += "', editor='"+ THISUSER
+			sql += "' WHERE qn="+ thatqn +";"
+
+			Ajax(MYSQLIPHP, sql, callbackmove);
+
+			function callbackmove(response)
+			{
+				if (!response || response.indexOf("DBfailed") != -1)
+				{
+					alert ("Move failed!\n" + response)
+				}
+				else
+				{
+
+					if (prevdate != thatdate && thatdate != nextdate)
+						filldeleterow(that_row.get(0))
+					else
+						$(that_row).remove();				
+
+					if (thisqn)
+						$(uihelper).insertAfter(this_row);
+					else
+						$(this_row).replaceWith(uihelper);				
+
+					updateBOOK(response);
+					updateBOOKFILL()
+					fillselect("tblday", thisdate)
+					DragDrop()
+				}
+				$("#tblday").css("cursor", 'default')
+			}	
+		}
+	});
+}
+
+function DragDropStaff()
+{
+	$("#queuetbl tr").draggable({
+		helper: "clone",
+		revert: true,
+		appendTo: "body",
+		stack: ".ui-draggable",
+		zIndex: 100,
+		start : function () {
+			$("editcell").attr("id", "")
+			event.stopPropagation()
+			event.preventDefault()
+		}
+	});
+
+	$("tr").droppable({
+		accept: "#tbl tr, #queuetbl tr",
+		drop: function (event, ui) {
+			event.stopPropagation()
+			event.preventDefault()
+
+			if (!$(this).children("td").eq(OPDATE).html())
+				return true
+
+			$("#queuetbl").css("cursor", 'wait')
+			var that_row = ui.draggable
+			var this_row = this
+			var uihelper = ui.helper
+			var prevdate
+			var nextdate
+
+			if (prevdate = $(ui.draggable).prev().children("td").eq(OPDATE).html()) 
+				prevdate = prevdate.numDate()
+			var thatdate = $(ui.draggable).children("td").eq(OPDATE).html().numDate()
+			if (nextdate = $(ui.draggable).next().children("td").eq(OPDATE).html())
+				nextdate = nextdate.numDate()
+			var thatqn = $(ui.draggable).children("td").eq(QN).html()
+
+			var thisdate = $(this).children("td").eq(OPDATE).html().numDate()
+			var thisqn = $(this).children("td").eq(QN).html()
+			var opdate = $(this).children("td").eq(OPDATE).html()	//Thai date
+
+			$(uihelper).children("td").eq(OPDATE).html(opdate)
+			$(uihelper).attr("class", $(this_row).attr("class"))
+			$(uihelper).children("td").eq(OPDATE).attr("class", $(this_row)
+						.children("td").eq(OPDATE).attr("class"))
+			$(uihelper).css("position", "")
+
+			var sql = "sqlReturnbook=UPDATE book SET opdate='" + thisdate
+			sql += "', editor='"+ THISUSER
+			sql += "' WHERE qn="+ thatqn +";"
+
+			Ajax(MYSQLIPHP, sql, callbackmove);
+
+			function callbackmove(response)
+			{
+				if (!response || response.indexOf("DBfailed") != -1)
+				{
+					alert ("Move failed!\n" + response)
+				}
+				else
+				{
+
+					if (prevdate != thatdate && thatdate != nextdate)
+						filldeleterow(that_row.get(0))
+					else
+						$(that_row).remove();				
+
+					if (thisqn)
+						$(uihelper).insertAfter(this_row);
+					else
+						$(this_row).replaceWith(uihelper);				
+
+					updateBOOK(response);
+					updateBOOKFILL()
+					fillselect("queuetbl", thisdate)
+					DragDrop()
+				}
+				$("#queuetbl").css("cursor", 'default')
 			}	
 		}
 	});
@@ -142,14 +312,6 @@ function scrolltoview(highpos, lowpos)
           scrollTop: recthigh.top + Yscrolled()
         }, 1250)
 	}
-}
-
-function hidePopup()
-{
-	var div = $("body").children("div")
-	for (var i=0; i<div.length; i++)
-		if ($(div[i]).css("display") == "block")
-			$(div[i]).fadeOut()
 }
 
 function holiday(date)

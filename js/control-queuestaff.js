@@ -1,319 +1,303 @@
 function staffqueue(staffname)
-{	//Display all cases of only one staff as popup menu
-	var queuediv = document.getElementById("queuediv")
-	var queuedivin = document.getElementById("queuedivin")
-	var queuespan = document.getElementById("queuespan")
-	var qtable = document.getElementById("queuetbl")
+{	//Display all cases of only one staff in dialog box
+	var queuetbl = document.getElementById("queuetbl")
 	var i, q
 	var rowi = {}
-	var winheight = $(window).height()
-	var winwidth = $(window).width()
-	var xpos = 0
-	var ypos = 0
 
-	document.getElementById("overlayqueue").style.display = ""
-	updateQWAITFILL(staffname)
-	queuespan.innerHTML = staffname || "Click to enter staffname"
+	//delete previous queuetbl lest it accumulates
+	while (queuetbl.rows[1])
+		queuetbl.deleteRow(-1)
 
-	//delete previous qtable lest it accumulates
-	while (qtable.rows[1])
-		qtable.deleteRow(-1) 
-	for (i=0,q=0; q < QWAITFILL.length; q++)
+	for (i=0,q=0; q < QWAIT.length; q++)
 	{
-		rowi = makenextrowqueue(qtable, ++i)
-		filldataqueue(QWAITFILL, rowi, q)
+		if (QWAIT[q].staffname == staffname)
+		{
+			rowi = makenextrowQueue(queuetbl, ++i)
+			filldataQueue(QWAIT[q], $(rowi).children("td"))
+		}
 	}
-	if ((q==0) || (document.getElementById("movemode") && document.getElementById("movemode").className))
-	{	//no patient in waiting list || movemode from main table
-		rowi = makenextrowqueue(qtable, ++i)
+	if (i==0)	//no patient in waiting list
+	{
+		rowi = makenextrowQueue(queuetbl, ++i)
 		rowi.cells[QWAITNUM].innerHTML = i
 		rowi.cells[QSINCE].innerHTML = new Date().MysqlDate().thDate()
-		rowi.cells[QSTAFFNAME].innerHTML = staffname
 	}
-	document.getElementById("menudiv").style.display = ""	//close menu from FirstColumn
-	queuediv.style.display = "block"
-	queuediv.style.left = xpos +"px"
-	queuediv.style.top = ypos + winheight*1/10 +"px"
-	queuediv.style.height = ""	//delete queuediv height from previous changestaff
-	queuedivin.style.height = ""	//delete queuedivin height from previous staffqueue
-	if (queuedivin.offsetHeight > (winheight*8/10))
-	{
-		queuedivin.style.height = winheight*8/10 +"px"
-		queuedivin.style.overflowX = "hidden"
-		queuedivin.style.overflowY = "scroll"
-	}
-	else
-	{
-		queuedivin.style.height = ""
-		queuedivin.style.overflowX = "hidden"
-		queuedivin.style.overflowY = "hidden"
-	}
-	queuedivin.style.width = winwidth*9/10 +"px"
-	queuediv.onclick = Qclicktable
-	queuediv.onmousedown = dragHandler
+	$("#queuetbl").css("display", "block")
+	$("#container").html($("#queuetbl"));
+	$("#container").dialog({
+		dialogClass: "dialog",
+		title: staffname,
+		height: window.innerHeight * 70 / 100,
+		width: window.innerWidth * 70 / 100
+	});
+	DragDropStaff()
 }
-
-function makenextrowqueue(table, i)
+//$("#container").parent().find('.ui-dialog-titlebar').click(function() {
+//    alert("test");
+//});
+//$(whatever).dialog('option', 'title', 'New Title');
+function makenextrowQueue(table, i)
 {	// i = the row to be made
 	var cols = table.rows[0].cells.length
 	var rowi
 	var j = 0
 
 	rowi = table.insertRow(i)
-	while (j < cols)
-		rowi.insertCell(j++)
+	table.rows[i].innerHTML = qdatatitle.innerHTML
 	rowi.cells[QWAITNUM].style.textAlign = "center"
-	rowi.cells[cols-1].style.display = "none"
+	rowi.cells[QQN].style.display = "none"
 	return rowi
-}
-
-function filldataqueue(book, rowi, q)
-{
-	rowi.cells[QWAITNUM].innerHTML = book[q].waitnum
-	rowi.cells[QSINCE].innerHTML = book[q].opdate.thDate()
-	rowi.cells[QSTAFFNAME].innerHTML = book[q].staffname
-	rowi.cells[QHN].innerHTML = book[q].hn
-	rowi.cells[QNAME].innerHTML = book[q].patientname
-	rowi.cells[QAGE].innerHTML = book[q].dob.getAge()
-	rowi.cells[QDIAGNOSIS].innerHTML = dxstring(book, q)
-	rowi.cells[QTREATMENT].innerHTML = rxstring(book, q)
-	rowi.cells[QTEL].innerHTML = book[q].tel
-	rowi.cells[QQN].innerHTML = book[q].qn
-}
-
-function xqueue()
-{
-	document.getElementById("queuediv").style.display = ""
-	document.getElementById("menudiv").style.display = ""
-	$("editcell").id = ""
-}
-
-function changestaff(that, staffname)
-{
-	var each, txt, tex
-	var qdiv = document.getElementById("queuediv")
-	var overlayq = document.getElementById("overlayqueue")
-	var staffeach0, staffeach1
-
-	overlayq.innerHTML = ""
-	for (each=0; each<ALLLISTS.staff.length; each++)
-	{
-		staffeach0 = ALLLISTS.staff[each][0]
-		staffeach1 = ALLLISTS.staff[each][1]
-		if (staffeach1 == staffname)
-			continue
-		tex = "javascript:staffqueue('"+ staffeach0 +"', '"+ staffeach1 +"')"
-		txt = '<a href="'+ tex +'">'+ staffeach1 +'</a>'
-		overlayq.innerHTML += txt
-	}
-	overlayq.style.display = "block"
-	overlayq.style.top = that.offsetTop + that.offsetHeight +"px"
-	overlayq.style.left = that.offsetLeft +"px"
-	if (qdiv.offsetHeight < overlayq.offsetHeight + 25)	//div head height = 25px
-		qdiv.style.height = overlayq.offsetHeight + 25 +"px"
-	$("editcell").id = ""
 }
 
 function Qclicktable(event)
 {
 	//checkpoint#1 : click in editing area
-	var pointing = event.target || window.event.srcElement
-	if (pointing.id == "editmode")
+	var clickedCell = event.target || window.event.srcElement
+	if (clickedCell.id == "editcell")
 		return
 
-	//checkpoint#2 : click on staffname to list others
-	if (pointing.id == "queuespan")
-		return		//return to changestaff
-
-	//checkpoint#3 : click on other name to change
-	if (pointing.nodeName == "A")
-		return		//return to href link
-
-	//checkpoint#4 : click on table header : dragHandler
-	if (pointing.nodeName != 'TD')
-	{	//close changestaff not close QFirstColumn overlayqueue
-		var overlayq = document.getElementById("overlayqueue")
-		if ((overlayq.style.display == "block") && 
-			(overlayq.innerHTML.indexOf("staffqueue") != -1))
-			overlayq.style.display = ""
-		return
-	}
-	
-	//checkpoint#5 : click TD not in editing area, disable elsewhere editing area
-	if (document.getElementById("editmode"))	//td only one id is "editmode"
+	if (clickedCell.nodeName != "TD")
 	{
-		hidePopupqueue()
-		$("editcell").id = ""
-		return
-	}	
-	var table = document.getElementById("queuetbl")
-	var rindex = $(pointing).closest("tr").index()
-	var cindex = pointing.cellIndex
-	var rowmain = table.rows[rindex]
-	var pointQnum = rowmain.cells[QWAITNUM].innerHTML
-	var qn = rowmain.cells[QQN].innerHTML
-	var movemode = document.getElementById("movemode")
-
-	//checkpoint#6 : previously marked QN to move
-	if (movemode)
-	{
-		movetoQwait(movemode, pointQnum)
-		$("editcell").id = ""
+		if ($("#editcell").get(0))
+			$("#editcell").attr("id","")
 		return
 	}
 
-	//checkpoint#7 : click not in editing area, disable elsewhere editing area
-	if (checkpopup(pointing))	//any popup other than pointing at
-	{
-		hidePopupqueue()
-		$("editcell").id = ""
-		return
-	}	
+	savePreviouscellQueue()
+	storePresentcellQueue(clickedCell)
+	event.preventDefault()
+	clickedCell.focus()
+}
 
-	//checkpoint#8 : click on blank row
-	if (rowmain.cells[QQN].innerHTML == "")
+function editingQueue(event)
+{
+	var keycode = event.which || window.event.keyCode
+	var thatcell = $("#editcell").get(0)
+	var thiscell
+
+	if ($("#editcell").closest("table").attr("id") != "queuetbl")
+		return
+
+	if (keycode == 9)
 	{
-		if ((document.getElementById("queuespan").innerHTML == "staffname") || 
-			(cindex != QWAITNUM && cindex != QHN && cindex != QNAME))
-		{	//allow : fillSetTable, HNinput
-			$("editcell").id = ""
-			window.focus()
-			return
+		savePreviouscellQueue()
+		if (event.shiftKey)
+			thiscell = findPrevcellQueue()
+		else
+			thiscell = findNextcellQueue()
+		storePresentcellQueue(thiscell)
+		if (thiscell)
+			thiscell.focus()
+		else
+		{
+			thatcell.id = "editcell"
+			thatcell.focus()
+		}
+		event.preventDefault()
+	}
+	else if (keycode == 13)
+	{
+		if (event.shiftKey || event.ctrlKey)
+			return false
+
+		savePreviouscellQueue()
+		thiscell = findNextcellQueue()
+		storePresentcellQueue(thiscell)
+		if (thiscell)
+			thiscell.focus()
+		else
+		{
+			thatcell.id = "editcell"
+			thatcell.focus()
+		}
+		event.preventDefault()
+	}
+	else if (keycode == 27)
+	{
+		if ($("#editcell").index() == QWAITNUM)
+		{
+			$("editcell").attr("id","")
+			$("#container").parent().hide()	//dialog enwraped container
+		}
+		else
+		{
+			$("#editcell").html($("#editcell").attr("title"))
+		}
+		event.preventDefault()
+		window.focus()
+	}
+}
+
+function savePreviouscellQueue() 
+{
+	if (!$("#editcell").get(0))
+		return
+
+	var content = $("#editcell").html()
+
+	if (content == $("#editcell").attr("title"))
+		return
+
+	var editcindex = $("#editcell").closest("td").index()
+
+	switch(editcindex)
+	{
+		case QWAITNUM:
+		case QSINCE:
+		case QNAME:
+		case QAGE:
+			break
+		case QHN:
+			saveHNinputQueue("hn", content)
+			break
+		case QDIAGNOSIS:
+			saveContentQueue("diagnosis", content)
+			break
+		case QTREATMENT:
+			saveContentQueue("treatment", content)
+			break
+		case QTEL:
+			saveContentQueue("tel", content)
+			break
+	}
+}
+
+function saveContentQueue(column, content)
+{
+	var rowcell = $("#editcell").closest("tr").children("td")
+	var waitnum = rowcell.eq(QWAITNUM).html()
+	var opdate = new Date().MysqlDate()
+	var qn = rowcell.eq(QQN).html()
+	var staffname = $( "#container" ).dialog( "option", "title" )
+
+	content = URIcomponent(content)			//take care of white space, double qoute, 
+											//single qoute, and back slash
+	if (qn)
+	{
+		var sqlstring = "sqlReturnbook=UPDATE book SET "
+		sqlstring += column +" = '"+ content
+		sqlstring += "', editor='"+ THISUSER
+		sqlstring += "' WHERE qn = "+ qn +";"
+	}
+	else
+	{
+		var sqlstring = "sqlReturnbook=INSERT INTO book ("
+		sqlstring += "waitnum, opdate, staffname, "+ column +", editor) VALUES ('"
+		sqlstring += waitnum +"', '"+ opdate +"', '"+ staffname +"', '"+ content +"', '"+ THISUSER +"');"
+	}
+
+	Ajax(MYSQLIPHP, sqlstring, callbacksaveContentQueue);
+
+	function callbacksaveContentQueue(response)
+	{
+		if (!response || response.indexOf("DBfailed") != -1)
+		{
+			alert("Failed! update database \n\n" + response)
+			$("#editcell").attr("title")
+		}
+		else
+		{
+			updateBOOK(response);
+			fillselectQueue(waitnum, staffname, rowcell)
+			DragDropStaff()
 		}
 	}
+}
 
-	//Qclicktable of each cell
+function storePresentcellQueue(pointing)
+{  
+	var cindex = $(pointing).closest("td").index()
+	var rowtr = $(pointing).closest("tr")
+	var rindex = $(rowtr).index()
+	var qn = $(rowtr).children("td").eq(QN).html()
+
+	$("#editcell").attr("id","")
+	pointing.id = "editcell"
+
 	switch(cindex)
 	{
 		case QWAITNUM:
-			Qtable(pointing, rindex)
+			fillSetTableQueue(rindex, pointing)
 			break
 		case QSINCE:
-			sinceCalendar(pointing, qn)
+		case QNAME:
+		case QAGE:
+			$("#editcell").attr("id","") //disable any editcell
 			break
 		case QHN:
-			HNinputqueue(pointing)
-			break
-		case QNAME:
-//			NAMEinputqueue(pointing)
-			break
 		case QDIAGNOSIS:
-			diagnosis(pointing, qn, QWAITFILL)
-			break
 		case QTREATMENT:
-			treatment(pointing, qn, QWAITFILL)
-			break
-		case QTEL:
-			qphone(document.getElementById("qteldiv"), pointing, qn)
+		case QTEL:	//store value in attribute "title" of editcell
+			$("#editcell").attr("title", pointing.innerHTML)
 			break
 	}
-	return
 }
 
-function Qtable(that, rownum)
-{	//QFirstColumn
-	var qdiv = document.getElementById("queuediv")
-	var qdivin = document.getElementById("queuedivin")
-	var table = document.getElementById("queuetbl")
-	var tcell = table.rows[rownum].cells
-	var casename = tcell[QNAME].innerHTML
-	var queue = tcell[QQN].innerHTML
-	var Set = new Array()
-	var each
-	var txt, tex
-	var overlayq = document.getElementById("overlayqueue")
-
-	casename = casename.substring(0, casename.indexOf(' '))
-	Set[0] = queue? "เพิ่มก่อน case " + casename : ""
-	Set[1] = queue? "เพิ่มหลัง case " + casename : ""
-	Set[2] = queue? "ลบ case ผ่าตัด " + casename : ""
-	Set[3] = queue? "Move case " + casename +" ไปคิวอื่น" : ""
-	Set[4] = queue? "Move case " + casename +" ไปวันผ่าตัด" : ""
-	Set[5] = queue? "PACS " + casename : ""
-	Set[6] = queue? "LABs " + casename : ""
-	overlayq.innerHTML = ""
-	for (each=0; each<Set.length; each++)
-	{
-		tex = "javascript:QFirstColumn('"+ each +"','"+ rownum +"')"
-		txt = '<a href="'+ tex +'">'+ Set[each] +'</a>'
-		overlayq.innerHTML += txt
-	}
-	overlayq.style.display = "block"
-	var top = that.offsetTop - qdivin.scrollTop
-	var ohi = overlayq.offsetHeight
-	if ((top + ohi) > qdiv.offsetHeight)
-		top = top - ohi + that.offsetHeight
-	if (top < 25)	//div head height = 25px
-		top = 25
-	overlayq.style.top = top +"px"
-	overlayq.style.left = that.offsetLeft + that.offsetWidth +"px"
-	if (qdiv.offsetHeight < overlayq.offsetHeight + 25)
-		qdiv.style.height = overlayq.offsetHeight + 25 +"px"
-	that.id = "editmode"
-}
-
-function QFirstColumn(saveval, rownum)
+function fillSetTableQueue(rownum, pointing)
 {
 	var table = document.getElementById("queuetbl")
 	var rowmain = table.rows[rownum]
-	var qn = rowmain.cells[QQN].innerHTML
-	var hn = rowmain.cells[QHN].innerHTML
+	var tcell = rowmain.cells
+	var waitnum = tcell[QWAITNUM].innerHTML	//Thai date
+	var casename = tcell[QNAME].innerHTML
+	var hn = tcell[QHN].innerHTML
+	var qn = tcell[QQN].innerHTML
+	var disabled = "ui-state-disabled"
 
-	switch(saveval)
-	{
-		case "0":
-		case "1":
-			qaddrow(rowmain, saveval)
-			return;
-		case "2":
-			if (qn)
-				qdeletecase(rowmain, qn)
-			break;
-		case "3":
-			qpremovecase(rowmain)
-			return;
-		case "4":
-			qpremovetoOpDate(rowmain)
-			return;
-		case "5":
-			if (hn)
-				PACS(hn)
-			break
-		case "6":
-			if (hn)
-				getlab(hn)
-			break
-	}
+	casename = casename.substring(0, casename.indexOf(' '))
+	i = table.rows.length
+	qqn = table.rows[i-1].cells[QQN].innerHTML
+
+	$("#qitem1").html("เพิ่ม case")
+	if (qqn)
+		$("#qitem1").removeClass(disabled)
+	else
+		$("#qitem1").addClass(disabled)
+	$("#qitem2").html("ลบ case " + casename)
+	if (qn)
+		$("#qitem2").removeClass(disabled)
+	else
+		$("#qitem2").addClass(disabled)
+
+	$("#queuemenu").menu({
+		select: function( event, ui ) {
+			var item = this.getAttribute("aria-activedescendant")
+			switch(item)
+			{
+				case "qitem1":
+					addnewrowQ()
+					break
+				case "qitem2":
+					deletecaseQ(rowmain, qn)
+					break
+			}
+			$("#editcell").attr("id","")
+			$("#queuemenu").hide()
+		}
+	});
+
+	$("#queuemenu").appendTo($("#container"))
+	showupQueue(pointing, '#queuemenu')
 }
 
-function qaddrow(rowmain, saveval)
+function addnewrowQ()
 {
-	$("editcell").id = ""	//editmode of qFirstColumn Cell was started by Qtable
-	if (rowmain.cells[QQN].innerHTML)
-	{
-		var table = document.getElementById("queuetbl")
-		var i = rowmain.rowIndex
-		var clone = rowmain.cloneNode(true)
-		rowmain.parentNode.insertBefore(clone,rowmain)
-		if (saveval == 0)	//rowmain was pushed by insertBefore
-			rowmain = table.rows[i]	//go back to the clone-row
-		for (i=i+1; i<table.rows.length; i++)	//rows after were added waitnum by 1
-			table.rows[i].cells[QWAITNUM].innerHTML = parseInt(table.rows[i].cells[QWAITNUM].innerHTML) + 1
-		rowmain.cells[QSINCE].innerHTML = new Date().MysqlDate().thDate()	//date of booking
-		for (i=3; i<rowmain.cells.length; i++)
-			rowmain.cells[i].innerHTML = ""
-	}
-	document.getElementById("overlayqueue").style.display = ""
-	HNinput(rowmain.cells[QHN])
+	var queuetbl = document.getElementById("queuetbl")
+
+	$("editcell").id = ""	//editcell was started by storePresentcellQueue
+	rownum = $("#queuetbl tr").length	//always append to table end
+	rowi = makenextrowQueue(queuetbl, rownum)
+	rowi.cells[QWAITNUM].innerHTML = Number($(rowi).prev().find("td:first").html()) + 1
+	rowi.cells[QSINCE].innerHTML = new Date().MysqlDate().thDate()
 }
 
-function qdeletecase(rowmain, qn)
+function deletecaseQ(rowmain, qn)
 {
 	var waitnum = rowmain.cells[QWAITNUM].innerHTML
-	var staffname = rowmain.cells[QSTAFFNAME].innerHTML
+	var staffname = $( "#container" ).dialog( "option", "title" )
 	var sql = "sqlReturnbook=UPDATE book SET waitnum=0 WHERE qn="+ qn +";"
 	sql += "UPDATE book SET waitnum=waitnum"+ encodeURIComponent("-")
-	sql += "1 WHERE waitnum>"+ waitnum +";"
+	sql += "1 WHERE waitnum > "+ waitnum +";"
 
 	Ajax(MYSQLIPHP, sql, qcallbackdeleterow)
 
@@ -325,30 +309,66 @@ function qdeletecase(rowmain, qn)
 			updateBOOK(response);
 			staffqueue(staffname)
 	}
-	$("editcell").id = ""	//editmode of qFirstColumn Cell was started by Qtable
+	$("editcell").id = ""	//editmode of qFirstColumn Cell was started by storePresentcellQueue
 }
 
-function qpremovecase(rowmain)
+function findPrevcellQueue() 
 {
-	$("editcell").id = ""	//editmode of qFirstColumn was started by Qtable
-	rowmain.id = "movemode"	//start "movemode" of the "row"
-	document.getElementById("overlayqueue").style.display = ""
+	var prevcell = $("#editcell")
+
+	do {
+		if ($(prevcell).index() > 2)
+		{
+			prevcell = $(prevcell).prev()
+		}
+		else
+		{
+			if ($(prevcell).parent().index() > 1)
+			{	//go to prev row last editable
+				do {
+					prevcell = $(prevcell).parent().prev("tr").children().eq(TEL)
+				}
+				while ($(prevcell).get(0).nodeName == "TH")	//THEAD row
+			}
+			else
+			{	//#tbl tr:1 td:1
+				event.preventDefault()
+				return false
+			}
+		}
+	} while (!$(prevcell).get(0).isContentEditable)
+
+	return $(prevcell).get(0)
 }
 
-function qpremovetoOpDate(rowmain)
+function findNextcellQueue() 
 {
-	var queuedivin = document.getElementById("queuedivin")
-	var table = document.getElementById("queuetbl")
+	var nextcell = $("#editcell")
+	var lastrow = $('#queuetbl tr:last-child').index()
+	
+	do {
+		if ($(nextcell).index() < TEL)
+		{
+			nextcell = $(nextcell).next()
+		}
+		else
+		{
+			if ($(nextcell).parent().index() < lastrow)
+			{	//go to next row first editable
+				do {
+					nextcell = $(nextcell).parent().next("tr").children().eq(HN)
+				}
+				while ($(nextcell).get(0).nodeName == "TH")	//THEAD row
+			}
+			else
+			{	//#tbl tr:last-child td:last-child
+				event.preventDefault()
+				return false
+			}
+		}
+	} while (!$(nextcell).get(0).isContentEditable)
 
-	$("editcell").id = ""	//editmode of qFirstColumn was started by Qtable
-	rowmain.id = "movemode"	//start "movemode" of the "row"
-	document.getElementById("overlayqueue").style.display = ""
-	for (var i=1; i<table.rows.length; i++)
-	{
-		table.rows[i].style.display = "none"
-	}
-	rowmain.style.display = ""
-	queuedivin.style.height = ""
+	return $(nextcell).get(0)
 }
 
 function movetoQwait(movemode, pointQnum)
@@ -440,181 +460,41 @@ function movecaseBookToQwait(QNfrom, pointQnum)
 	}	
 }
 
-function HNinputqueue(pointing)
+function saveHNinputQueue(pointing)
 {
-	var pointHNname
+	var rowtr = $("#editcell").closest("tr").children("td")
+	var waitnum = rowtr.eq(QWAITNUM).html()
+	var opdate = rowtr.eq(QSINCE).html()
+	var staffname = $( "#container" ).dialog( "option", "title" )
+	var patient = rowtr.eq(QNAME).html()
+	var qn = rowtr.eq(QQN).html()
 
-	if ((pointing.innerHTML == "") && (pointing.id != "editmode"))
+	if (patient)
 	{
-		pointing.id = "editmode"
-		pointHNname = createinput(pointing)
-		pointHNname.onkeyup = getByHNqueue
-		pointHNname.focus()
+		$("#editcell").html($("#editcell").attr("title"))
+		return
 	}
-}
+	content = URIcomponent(content)
 
-function getByHNqueue(e)
-{
-	var keycode = window.event.keyCode || e.which;
-	var namehn = document.getElementById("keyin")
-	
-	namehn.value = namehn.value.replace(/<br>/g, "")
-	namehn.value = namehn.value.replace(/^\s+/g, "")
-	namehn.value = namehn.value.replace(/  +/g, " ")
-	if (keycode == 13)
-	{
-		var cells = $("#editmode").parents('tr').children("td" )
-		var opdate = $(cells).eq(QOPDATE).html().numDate()	//convert Thai date to MySQL date
-		var staffname = $(cells).eq(QSTAFFNAME).html();
-		var waitnum = $(cells).eq(QWAITNUM).html();
+	var sqlstring = "hn=" + content
+	sqlstring += "&waitnum="+ waitnum
+	sqlstring += "&opdate="+ opdate
+	sqlstring += "&staffname="+ staffname
+	sqlstring += "&username="+ THISUSER
 
-		var sqlstring = "hn=" + namehn.value
-		sqlstring += "&waitnum="+ waitnum
-		sqlstring += "&opdate="+ opdate
-		sqlstring += "&staffname="+ staffname
-		sqlstring += "&username="+ THISUSER
-
-		Ajax(GETNAMEHN, sqlstring, callbackgetByHNqueue)
-		//AJAX-false to prevent repeated GETNAMEHN when press <enter>
-	}
+	Ajax(GETNAMEHN, sqlstring, callbackgetByHNqueue)
+	//AJAX-false to prevent repeated GETNAMEHN when press <enter>
 
 	function callbackgetByHNqueue(response)
 	{
-		if (!response || response.indexOf("initial_name") == -1)	//no patient
+		if (!response || response.indexOf("patient") == -1)	//no patient
 			alert("Error getnamehn : "+ response)
-		else
-		{
-			if (response.charAt(0) == "{")
-			{	//Only one patient
-				var qname = JSON.parse(response);
-				var name = qname.initial_name + qname.first_name +" "+ qname.last_name
-				var cells = $("#editmode").parents('tr').children("td" )
-				var opdate = $(cells).eq(OPDATE).html().numDate()	//convert Thai date to MySQL date
-				var age = qname.dob.getAge(opdate)
-				$(cells).eq(QN).html(qname.qn);
-				$(cells).eq(HN).html(qname.hn);
-				$(cells).eq(NAME).html(name);
-				$(cells).eq(AGE).html(age);
-				var menu = document.getElementById("menudiv")
-				menu.style.display = ""
-				menu.style.height = ""
-				menu.style.overflow = ""
-				$("editcell").id = ""
-
-				Ajax(MYSQLIPHP, 'nosqlReturnbook', updateBOOKQWAIT)	//To reload book
-
-				function updateBOOKQWAIT(response)
-				{
-					if (!response || response.indexOf("DBfailed") != -1)
-						alert("Failed! nosqlReturnbook" + response)
-					else
-					{
-						updateBOOK(response)
-						if (staffname)
-							updateQWAITFILL(staffname)
-						else
-							updateBOOKFILL()
-					}	//new case entry tbl has no staffname but queuetbl has staffname
-				}
-			}
-		}
-	}
-}
-
-function qphone(textbox, pointing, qn)
-{
-	var queuedivin = document.getElementById("queuedivin")
-	var oldtxt = pointing.innerHTML
-	var txtarea
-	var txt
-	var xpos
-	var ypos
-
-	pointing.id = "editmode"
-	textbox.style.zIndex = "2"
-	textbox.style.display = "block"
-	if (textbox.id == "teldiv")
-	{
-		txtarea = document.getElementById("txtarea")
-		xpos = pointing.offsetLeft - textbox.offsetWidth - Xscrolled()
-		ypos = pointing.offsetTop - Yscrolled()
-		if (ypos > $(window).height() - textbox.offsetHeight)
-			ypos = $(window).height() - textbox.offsetHeight
-		if (xpos < 0)
-			xpos = 0
-		if (ypos < 0)
-			ypos = 0
-	}
-	else	//waiting list textbox.id == "qteldiv"
-	{
-		txtarea = document.getElementById("qtxtarea")
-		if ((navigator.userAgent.indexOf("MSIE")+1) && 
-			(!document.documentMode || (document.documentMode < 7)))
-		{	//IE6 documentMode is undefined and not support position: fixed
-			xpos = pointing.offsetLeft - textbox.offsetWidth - queuedivin.scrollLeft
-			ypos = pointing.offsetTop - queuedivin.scrollTop
-		}
-		else
-		{
-			xpos = pointing.offsetLeft - textbox.offsetWidth - queuedivin.scrollLeft
-			ypos = pointing.offsetTop - queuedivin.scrollTop
-		}
-		if (xpos < 0)
-			xpos = 0
-		if (ypos < 0)
-			ypos = 0
-	}
-	textbox.style.top = ypos + 'px'
-	textbox.style.left = xpos + 'px'
-	txtarea.onkeyup = savetelnum
-	txtarea.focus()
-	txtarea.value = pointing.innerHTML
-
-	function savetelnum(e)
-	{
-		var keycode = window.event.keyCode || e.which;
-		if (keycode == 13)
-		{
-			e = e || window.event
-			txtarea.value = txtarea.value.replace("\n", "")
-			savetel(false)
-			$("editcell").id = ""
-			textbox.style.display = ""
-		}
-	}
-
-	savetel = function (affirm)
-	{
-		if (txtarea.value == pointing.innerHTML)
-			return
-		if (affirm)
-			if (!confirm("Save the change?"))
-				return
-		txt = txtarea.value
-		txt = txt.replace(/,(?! )/g, ", ")
-		pointing.innerHTML = txt
-		txt = txt.replace(/\"/g, "&#34;")	// w3 org recommend use numeric character references to represent 
-		txt = txt.replace(/\'/g, "&#39;")	// double quotes (&#34;) or (&quot); and single quotes (&#39;)
-		txt = txt.replace(/\\/g, "\\\\")
-		txt = encodeURIComponent(txt)	//encode '&' keyed in
-		var sqlstring = "sqlReturnbook=UPDATE book SET tel='"+ txt
-		sqlstring += "', editor = '"+ THISUSER
-		sqlstring += "' WHERE qn = " + qn +";"
-
-		Ajax(MYSQLIPHP, sqlstring, callbacktel)
-	}
-
-	callbacktel = function (response)
-	{
-		if (!response || response.indexOf("DBfailed") != -1)
-		{
-			alert("DBfailed! update database \n\nRestore previous value \n\n" + response)
-			pointing.innerHTML = oldtxt
-		}
-		else
-		{
-			updateBOOK(response);
-			updateBOOKFILL()
+		else if (response.indexOf("DBfailed") != -1)
+			alert("Failed! book($mysqli)" + response)
+		else if (response.indexOf("{") != -1)
+		{	//Only one patient
+			updateBOOK(response)
+			staffqueue(staffname)
 		}
 	}
 }

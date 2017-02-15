@@ -7,7 +7,13 @@ function loadtable(userid)
 	$("#tbl").css("display", "block")
 	$("#tbl").keydown( function (event) {
 		countreset();
-		editing(event)
+		if ($("#queuetbl").css("display") == "none")
+			editing(event)
+	})
+	$("#queuetbl").parent().keydown( function (event) {
+		countreset();
+		if ($("#queuetbl").css("display") == "block")
+			editingQueue(event)
 	})
 	$("#tbl").click( function (event) {
 		countreset();
@@ -17,6 +23,13 @@ function loadtable(userid)
 	$("#tbl").contextmenu( function (event) {
 		countreset();
 		clicktable(event)
+		return false
+	})
+	$("#queuetbl").parent().click( function (event) {
+		countreset();
+		Qclicktable(event)
+		event.stopPropagation()
+		event.preventDefault()
 		return false
 	})
 	document.onscroll = scrollUpDown
@@ -48,13 +61,14 @@ function updateBOOK(response)
 
 function fillStafflist()
 {
-	var staffHTML = ''
+	var stafflist = ''
 	for (var each=0; each<ALLLISTS.staff.length; each++)
 	{
-		staffHTML += '<li><div id="' + ALLLISTS.staff[each][1] + '">'
-		staffHTML += ALLLISTS.staff[each][1] + '</div></li>'
+		stafflist += '<li><div id="' + ALLLISTS.staff[each][1] + '">'
+		stafflist += ALLLISTS.staff[each][1] + '</div></li>'
 	}
-	$("#stafflist").html(staffHTML)
+	$("#stafflist").html(stafflist)
+	$("#item40").append(stafflist)
 }
 
 function updateBOOKFILL()

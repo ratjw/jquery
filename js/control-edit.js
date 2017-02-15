@@ -11,7 +11,7 @@
 		rowmain.cells[0].id = ""
 		for (i=1; i<rowmain.cells.length; i++)
 			rowmain.cells[i].innerHTML = ""	
-		DragDrop()
+		DragDroptbl()
 	}
 }
 
@@ -52,7 +52,6 @@ function movecaseQwaitToBook(movemode, OpDateTo)
 	var QNfrom = movemode.cells[QQN].innerHTML
 	var sql = ""
 
-	table.style.cursor = 'wait'
 	sql = "sqlReturnbook=UPDATE book SET waitnum=null, opdate='" + OpDateTo
 	sql += "', editor='"+ THISUSER
 	sql += "' WHERE qn="+ QNfrom +";"
@@ -73,9 +72,8 @@ function movecaseQwaitToBook(movemode, OpDateTo)
 			updateBOOK(response);
 			refillall()
 		}
-		$("queuediv").css("display", "")
+		$("queuetbl").css("display", "")
 		$("editcell").id = ""
-		table.style.cursor = 'default'
 	}	
 }
 
@@ -101,15 +99,11 @@ function edithistory(rowmain, qn)
 			$("#alert").text("Data history DBfailed!\n" + response);
 			$("#alert").fadeIn();
 		}
-		else if (response.indexOf("editor") == -1)
-		{
-			$("#alert").text("ไม่มีการแก้ไข");
-			$("#alert").fadeIn();
-		}
 		else
 		{
 			makehistory(rowmain, response)
 		}
+		$("#editcell").attr("id","")
 	}
 }
 
@@ -162,15 +156,11 @@ function deletehistory(rowmain, qn)
 			$("#alert").text("Delete history DBfailed!\n" + response);
 			$("#alert").fadeIn();
 		}
-		else if (response.indexOf("editor") == -1)
-		{
-			$("#alert").text("ไม่มีการแก้ไข");
-			$("#alert").fadeIn();
-		}
 		else
 		{
 			makeDeleteHistory(rowmain, response)
 		}
+		$("#editcell").attr("id","")
 	}
 }
 

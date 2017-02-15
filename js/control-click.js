@@ -1,26 +1,34 @@
 function clicktable(event)
 {
-	mousedownCell = event.target || window.event.srcElement
-	if (mousedownCell.id == "editcell")
+	clickedCell = event.target || window.event.srcElement
+	if (clickedCell.id == "editcell")
 		return false
 
-	if (mousedownCell.nodeName != "TD")
+	$("#tbl").siblings().hide()
+	if ($( "#container" ).dialog("instance"))
+		$( "#container" ).dialog( "close" )
+
+	if (clickedCell.nodeName != "TD")
 	{
 		if ($("#editcell").get(0))
 			$("#editcell").attr("id","")
-		$("#tbl").siblings().hide()
 		return
 	}
 
 	savePreviouscell()
-	storePresentcell(mousedownCell)
+	storePresentcell(clickedCell)
 	event.preventDefault()
-	mousedownCell.focus()
+	clickedCell.focus()
 }
 
 function editing(event)
 {
 	var keycode = event.which || window.event.keyCode
+	var thatcell = $("#editcell").get(0)
+	var thiscell
+
+	if ($("#editcell").closest("table").attr("id") != "tbl")
+		return
 
 	if (keycode == 9)
 	{
@@ -30,8 +38,14 @@ function editing(event)
 		else
 			thiscell = findNextcell()
 		storePresentcell(thiscell)
+		if (thiscell)
+			thiscell.focus()
+		else
+		{
+			thatcell.id = "editcell"
+			thatcell.focus()
+		}
 		event.preventDefault()
-		thiscell.focus()
 	}
 	else if (keycode == 13)
 	{
@@ -41,7 +55,14 @@ function editing(event)
 		savePreviouscell()
 		thiscell = findNextcell()
 		storePresentcell(thiscell)
-		thiscell.focus()
+		if (thiscell)
+			thiscell.focus()
+		else
+		{
+			thatcell.id = "editcell"
+			thatcell.focus()
+		}
+		event.preventDefault()
 	}
 	else if (keycode == 27)
 	{
@@ -64,14 +85,17 @@ function savePreviouscell()
 	if (!$("#editcell").get(0))
 		return
 
+	if ($("#editcell").closest("table").attr("id") != "tbl")
+		return
+
 	var content = $("#editcell").html()
 
 	if (content == $("#editcell").attr("title"))
 		return
 
-	var edcindex = $("#editcell").closest("td").index()
+	var editcindex = $("#editcell").closest("td").index()
 
-	switch(edcindex)
+	switch(editcindex)
 	{
 		case OPDATE:
 			break
@@ -82,7 +106,6 @@ function savePreviouscell()
 			saveHNinput("hn", content)
 			break
 		case NAME:
-			break
 		case AGE:
 			break
 		case DIAGNOSIS:
@@ -133,7 +156,7 @@ function saveContent(column, content)
 		{
 			updateBOOK(response);
 			updateBOOKFILL()
-			fillselect(opdate)
+			fillselect("tbl", opdate)
 		}
 		$("#tbl").css("cursor", "")
 	}
@@ -170,8 +193,8 @@ function saveHNinput(hn, content)
 		else if (response.indexOf("{") != -1)
 		{	//Only one patient
 			updateBOOK(response)
-			updateBOOKFILL()
-			fillselect(opdate)
+//			updateBOOKFILL()
+			fillselect("tbl", opdate)
 		}
 	}
 }
@@ -194,15 +217,16 @@ function storePresentcell(pointing)
 			break
 		case STAFFNAME:
 			stafflist(pointing)
-		case HN:
-		case DIAGNOSIS:
-		case TREATMENT:
-		case TEL:			//store value in attribute "title"
-			$("#editcell").attr("title", pointing.innerHTML)
 			break
 		case NAME:
 		case AGE:
-			$("#editcell").attr("id","")
+			$("#editcell").attr("id","") //disable any editcell
+			break
+		case HN:
+		case DIAGNOSIS:
+		case TREATMENT:
+		case TEL:	//store value in attribute "title" of editcell
+			$("#editcell").attr("title", pointing.innerHTML)
 			break
 	}
 }
@@ -216,7 +240,6 @@ function fillSetTable(rownum, pointing)
 	var opdate = opdateth.numDate()		//Thai to mysql date
 	var staffname = tcell[STAFFNAME].innerHTML
 	var casename = tcell[NAME].innerHTML
-	var queue = tcell[QN].innerHTML
 	var opday = table.rows[rownum].className
 	var hn = tcell[HN].innerHTML
 	var qn = tcell[QN].innerHTML
@@ -229,45 +252,33 @@ function fillSetTable(rownum, pointing)
 
 	casename = casename.substring(0, casename.indexOf(' '))
 	$("#item1").html("เพิ่ม case วันที่ " + opdateth)
-	if (queue)
+	if (qn)
 		$("#item1").removeClass(disabled)
 	else
 		$("#item1").addClass(disabled)
 	$("#item2").html("ลบ case " + casename)
-	if (queue)
+	if (qn)
 		$("#item2").removeClass(disabled)
 	else
 		$("#item2").addClass(disabled)
 	$("#item3").html("Delete Blank Row")
-	if (checkblank(opdate, queue))
+	if (checkblank(opdate, qn))
 		$("#item3").removeClass(disabled)
 	else
 		$("#item3").addClass(disabled)
-	$("#item4").html("ตารางคิว")
-	$("#item41").html("คิววัน" + opday)
-	if (STATE[0] == "FILLDAY")
-		$("#item41").addClass(disabled)
+	$("#item4").html("คิวรออาจารย์")
+	$("#item5").html("คิวเฉพาะวัน")
+	$("#item6").html("การแก้ไขของ " + casename)
+	if (qn)
+		$("#item6").removeClass(disabled)
 	else
-		$("#item41").removeClass(disabled)
-	$("#item42").html("คิวรอ " + staffname)
-	if (STATE[0] == "FILLSTAFF")
-		$("#item42").addClass(disabled)
-	else
-		$("#item42").removeClass(disabled)
-	if (staffname)
-		$("#item42").removeClass(disabled)
-	else
-		$("#item42").addClass(disabled)
-	$("#item5").html("การแก้ไข " + casename)
-	if (queue)
-		$("#item5").removeClass(disabled)
-	else
-		$("#item5").addClass(disabled)
-	$("#item6").html("รายชื่อที่ถูกลบ")
+		$("#item6").addClass(disabled)
+	$("#item7").html("รายชื่อที่ถูกลบ")
 
 	$("#menu").menu({
 		select: function( event, ui ) {
-			switch(this.getAttribute("aria-activedescendant"))
+			var item = this.getAttribute("aria-activedescendant")
+			switch(item)
 			{
 				case "item1":
 					addnewrow(rowmain)
@@ -277,25 +288,35 @@ function fillSetTable(rownum, pointing)
 					break
 				case "item3":
 					deleteblankrow(rowmain)
+				case "item4":
 					break
-				case "item41":
-					STATE[1] = (new Date(opdate)).getDay()
-					fillday()
-					scrollview(table, opdate)
-					break
-				case "item42":
-					STATE[1] = staffname
-					fillstaff()
-					scrollview(table, opdate)
-					break
-				case "item5":
-					edithistory(rowmain, qn)
+				case "item51":
+				case "item52":
+				case "item53":
+				case "item54":
+				case "item55":
+				case "item56":
+				case "item57":
+					fillday($('#'+item).html())
 					break
 				case "item6":
+					edithistory(rowmain, qn)
+					break
+				case "item7":
 					deletehistory(rowmain, qn)
 					break
+				default :
+					staffqueue(item)
 			}
+			event.stopPropagation()
+			event.preventDefault()
+			$("#editcell").attr("id","")
 			$("#menu").hide()
+			$( "#item4" ).removeClass( "ui-state-active" )
+			$( "#item4" ).prepend('<span class="ui-menu-icon ui-icon  ui-icon-caret-1-e"></span>')
+			$( "#item40" ).hide()
+			$( "#item40" ).attr("aria-hidden", "true")
+			$( "#item40" ).attr("aria-expanded", "false")
 		}
 	});
 
@@ -330,7 +351,24 @@ function showup(pointing, menuID)
 		position: "absolute",
 		top: height + "px",
 		left: width + "px",
-		display: ""
+		display: "block"
+	})
+}
+
+function showupQueue(pointing, menuID)
+{
+	var pos = $(pointing).position();
+	var height = pos.top + $(pointing).outerHeight()
+	var width = pos.left  + $(pointing).outerWidth();
+
+	$(menuID).css("box-shadow", "10px 20px 30px slategray")
+	$(menuID).css({
+		position: "absolute",
+		top: height + "px",
+		left: width + "px",
+		zIndex: 1000,
+		modal:true,
+		display: "block"
 	})
 }
 
@@ -346,7 +384,7 @@ function findPrevcell()
 		else
 		{
 			if ($(prevcell).parent().index() > 1)
-			{	//go to prev row second-to last cell
+			{	//go to prev row last editable
 				do {
 					prevcell = $(prevcell).parent().prev("tr").children().eq(TEL)
 				}
@@ -376,7 +414,7 @@ function findNextcell()
 		else
 		{
 			if ($(nextcell).parent().index() < lastrow)
-			{	//go to next row second cell
+			{	//go to next row first editable
 				do {
 					nextcell = $(nextcell).parent().next("tr").children().eq(STAFFNAME)
 				}

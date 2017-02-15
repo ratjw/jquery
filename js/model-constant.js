@@ -28,16 +28,16 @@ var QN			= 8;
 
 var QWAITNUM	= 0;
 var QSINCE		= 1;
-var QSTAFFNAME	= 2;
-var QHN			= 3;
-var QNAME		= 4;
-var QAGE		= 5;
-var QDIAGNOSIS	= 6;
-var QTREATMENT	= 7;
-var QTEL		= 8;
-var QQN			= 9;
+var QHN			= 2;
+var QNAME		= 3;
+var QAGE		= 4;
+var QDIAGNOSIS	= 5;
+var QTREATMENT	= 6;
+var QTEL		= 7;
+var QQN			= 8;
 
 var NAMEOFDAYTHAI	= ["อาทิตย์", "จันทร์", "อังคาร", "พุธ", "พฤหัส", "ศุกร์", "เสาร์"];
+var DAYOFTHAINAME	= {"อาทิตย์":0, "จันทร์":1, "อังคาร":2, "พุธ":3, "พฤหัส":4, "ศุกร์":5, "เสาร์":6};
 var NAMEOFDAYABBR	= ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];	//for row color
 
 //used for 1st column color

@@ -26,8 +26,8 @@ function book($mysqli)
 		$datu = current($result->fetch_row());	//array.toString()
 
  	//waitnum = 0 are the deleted cases
-	$sql = "SELECT IFNULL(waitnum, ''), opdate, oproom, optime, staffname,
-		hn, patient, dob, gender, tel, qn
+	$sql = "SELECT IFNULL(waitnum, '') AS waitnum, opdate, oproom, optime,
+		 staffname, hn, patient, dob, gender, diagnosis, treatment, tel, qn
 		FROM book 
 		WHERE waitnum > 0
 		GROUP BY qn ORDER BY staffname, waitnum;";
