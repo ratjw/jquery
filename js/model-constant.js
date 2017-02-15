@@ -26,15 +26,14 @@ var TREATMENT	= 6;
 var TEL			= 7;
 var QN			= 8;
 
-var QWAITNUM	= 0;
-var QSINCE		= 1;
-var QHN			= 2;
-var QNAME		= 3;
-var QAGE		= 4;
-var QDIAGNOSIS	= 5;
-var QTREATMENT	= 6;
-var QTEL		= 7;
-var QQN			= 8;
+var QSINCE		= 0;
+var QHN			= 1;
+var QNAME		= 2;
+var QAGE		= 3;
+var QDIAGNOSIS	= 4;
+var QTREATMENT	= 5;
+var QTEL		= 6;
+var QQN			= 7;
 
 var NAMEOFDAYTHAI	= ["อาทิตย์", "จันทร์", "อังคาร", "พุธ", "พฤหัส", "ศุกร์", "เสาร์"];
 var DAYOFTHAINAME	= {"อาทิตย์":0, "จันทร์":1, "อังคาร":2, "พุธ":3, "พฤหัส":4, "ศุกร์":5, "เสาร์":6};

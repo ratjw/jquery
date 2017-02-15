@@ -282,31 +282,3 @@ function fillselect(tableID, opdate)
 		i++
 	}
 }
-
-function fillselectQueue(waitnum, staffname, rowcell)		
-{
-	var q = 0
-	while (q < QWAIT.length)
-	{
-		if ((QWAIT[q].waitnum == waitnum) && (QWAIT[q].staffname == staffname))
-			break
-		q++	//seek waitnum in QWAIT
-	}
-	var i = 0
-	while (waitnum != rowcell.eq(QWAITNUM).html())
-		i++	//seek waitnum in Qtable
-	filldataQueue(QWAIT[q], rowcell)
-}
-
-function filldataQueue(bookq, rowcell)
-{
-	rowcell.eq(QWAITNUM).html(bookq.waitnum)
-	rowcell.eq(QSINCE).html(bookq.opdate? bookq.opdate.thDate() : "")
-	rowcell.eq(QHN).html(bookq.hn)
-	rowcell.eq(QNAME).html(bookq.patient)
-	rowcell.eq(QAGE).html(bookq.dob? bookq.dob.getAge() : "")
-	rowcell.eq(QDIAGNOSIS).html(bookq.diagnosis? bookq.diagnosis : "")
-	rowcell.eq(QTREATMENT).html(bookq.treatment? bookq.treatment : "")
-	rowcell.eq(QTEL).html(bookq.tel)
-	rowcell.eq(QQN).html(bookq.qn)
-}

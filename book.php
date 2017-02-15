@@ -103,10 +103,9 @@
 <TABLE id="queuetbl" data-role="table" class="ui-responsive" style="display:none">
   <TBODY>
     <TR>
-     <th style="width:3%">No.</th>
-     <th style="width:5%">Since</th>
-     <th style="width:5%">HN</th>
-     <th style="width:17%">ชื่อ นามสกุล</th>
+     <th style="width:10%">Since</th>
+     <th style="width:10%">HN</th>
+     <th style="width:15%">ชื่อ นามสกุล</th>
      <th style="width:5%">อายุ</th>
      <th style="width:20%">Diagnosis</th>
      <th style="width:20%">Treatment</th>
@@ -119,7 +118,6 @@
 <TABLE style="display:none">
   <TBODY>
     <TR id="qdatatitle">
-     <td data-title="No."></td>
      <td data-title="Since"></td>
      <td contenteditable data-title="HN"></td>
      <td data-title="ชื่อ นามสกุล"></td>

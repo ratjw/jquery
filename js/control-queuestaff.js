@@ -19,7 +19,6 @@ function staffqueue(staffname)
 	if (i==0)	//no patient in waiting list
 	{
 		rowi = makenextrowQueue(queuetbl, ++i)
-		rowi.cells[QWAITNUM].innerHTML = i
 		rowi.cells[QSINCE].innerHTML = new Date().MysqlDate().thDate()
 	}
 	$("#queuetbl").css("display", "block")
@@ -44,7 +43,6 @@ function makenextrowQueue(table, i)
 
 	rowi = table.insertRow(i)
 	table.rows[i].innerHTML = qdatatitle.innerHTML
-	rowi.cells[QWAITNUM].style.textAlign = "center"
 	rowi.cells[QQN].style.display = "none"
 	return rowi
 }
@@ -114,7 +112,7 @@ function editingQueue(event)
 	}
 	else if (keycode == 27)
 	{
-		if ($("#editcell").index() == QWAITNUM)
+		if ($("#editcell").index() == QSINCE)
 		{
 			$("editcell").attr("id","")
 			$("#container").parent().hide()	//dialog enwraped container
@@ -142,7 +140,6 @@ function savePreviouscellQueue()
 
 	switch(editcindex)
 	{
-		case QWAITNUM:
 		case QSINCE:
 		case QNAME:
 		case QAGE:
@@ -165,25 +162,26 @@ function savePreviouscellQueue()
 function saveContentQueue(column, content)
 {
 	var rowcell = $("#editcell").closest("tr").children("td")
-	var waitnum = rowcell.eq(QWAITNUM).html()
 	var opdate = new Date().MysqlDate()
 	var qn = rowcell.eq(QQN).html()
 	var staffname = $( "#container" ).dialog( "option", "title" )
+	var sqlstring
+	var waitnum = findMAXwaitnum()
 
 	content = URIcomponent(content)			//take care of white space, double qoute, 
 											//single qoute, and back slash
 	if (qn)
 	{
-		var sqlstring = "sqlReturnbook=UPDATE book SET "
+		sqlstring = "sqlReturnbook=UPDATE book SET "
 		sqlstring += column +" = '"+ content
 		sqlstring += "', editor='"+ THISUSER
 		sqlstring += "' WHERE qn = "+ qn +";"
 	}
 	else
 	{
-		var sqlstring = "sqlReturnbook=INSERT INTO book ("
+		sqlstring = "sqlReturnbook=INSERT INTO book ("
 		sqlstring += "waitnum, opdate, staffname, "+ column +", editor) VALUES ('"
-		sqlstring += waitnum +"', '"+ opdate +"', '"+ staffname +"', '"+ content +"', '"+ THISUSER +"');"
+		sqlstring += waitnum +"', '"opdate +"', '"+ staffname +"', '"+ content +"', '"+ THISUSER +"');"
 	}
 
 	Ajax(MYSQLIPHP, sqlstring, callbacksaveContentQueue);
@@ -198,10 +196,36 @@ function saveContentQueue(column, content)
 		else
 		{
 			updateBOOK(response);
-			fillselectQueue(waitnum, staffname, rowcell)
+			fillselectQueue(qn, rowcell)
 			DragDropStaff()
 		}
 	}
+}
+
+function findMAXwaitnum()	
+{
+	var waitnum
+	for (var q = 0; q < QWAIT.length; q++)
+	{
+		waitnum += QWAIT[q].waitnum +", "
+	}
+	return Math.max(waitnum)
+}
+
+function fillselectQueue(qn, rowcell)		
+{
+	var q = 0
+	while ((q < QWAIT.length) && (QWAIT[q].qn != qn))
+		q++	//seek waitnum in QWAIT
+
+	var bookq = QWAIT[q]
+	rowcell.eq(QSINCE).html(bookq.opdate? bookq.opdate.thDate() : "")
+	rowcell.eq(QHN).html(bookq.hn)
+	rowcell.eq(QNAME).html(bookq.patient)
+	rowcell.eq(QAGE).html(bookq.dob? bookq.dob.getAge() : "")
+	rowcell.eq(QDIAGNOSIS).html(bookq.diagnosis? bookq.diagnosis : "")
+	rowcell.eq(QTREATMENT).html(bookq.treatment? bookq.treatment : "")
+	rowcell.eq(QTEL).html(bookq.tel)
 }
 
 function storePresentcellQueue(pointing)
@@ -216,10 +240,9 @@ function storePresentcellQueue(pointing)
 
 	switch(cindex)
 	{
-		case QWAITNUM:
+		case QSINCE:
 			fillSetTableQueue(rindex, pointing)
 			break
-		case QSINCE:
 		case QNAME:
 		case QAGE:
 			$("#editcell").attr("id","") //disable any editcell
@@ -238,7 +261,6 @@ function fillSetTableQueue(rownum, pointing)
 	var table = document.getElementById("queuetbl")
 	var rowmain = table.rows[rownum]
 	var tcell = rowmain.cells
-	var waitnum = tcell[QWAITNUM].innerHTML	//Thai date
 	var casename = tcell[QNAME].innerHTML
 	var hn = tcell[QHN].innerHTML
 	var qn = tcell[QQN].innerHTML
@@ -287,17 +309,13 @@ function addnewrowQ()
 	$("editcell").id = ""	//editcell was started by storePresentcellQueue
 	rownum = $("#queuetbl tr").length	//always append to table end
 	rowi = makenextrowQueue(queuetbl, rownum)
-	rowi.cells[QWAITNUM].innerHTML = Number($(rowi).prev().find("td:first").html()) + 1
 	rowi.cells[QSINCE].innerHTML = new Date().MysqlDate().thDate()
 }
 
 function deletecaseQ(rowmain, qn)
 {
-	var waitnum = rowmain.cells[QWAITNUM].innerHTML
 	var staffname = $( "#container" ).dialog( "option", "title" )
 	var sql = "sqlReturnbook=UPDATE book SET waitnum=0 WHERE qn="+ qn +";"
-	sql += "UPDATE book SET waitnum=waitnum"+ encodeURIComponent("-")
-	sql += "1 WHERE waitnum > "+ waitnum +";"
 
 	Ajax(MYSQLIPHP, sql, qcallbackdeleterow)
 
@@ -463,24 +481,37 @@ function movecaseBookToQwait(QNfrom, pointQnum)
 function saveHNinputQueue(pointing)
 {
 	var rowtr = $("#editcell").closest("tr").children("td")
-	var waitnum = rowtr.eq(QWAITNUM).html()
 	var opdate = rowtr.eq(QSINCE).html()
 	var staffname = $( "#container" ).dialog( "option", "title" )
 	var patient = rowtr.eq(QNAME).html()
 	var qn = rowtr.eq(QQN).html()
+	var sqlstring
 
 	if (patient)
 	{
 		$("#editcell").html($("#editcell").attr("title"))
 		return
 	}
+
 	content = URIcomponent(content)
 
-	var sqlstring = "hn=" + content
-	sqlstring += "&waitnum="+ waitnum
-	sqlstring += "&opdate="+ opdate
-	sqlstring += "&staffname="+ staffname
-	sqlstring += "&username="+ THISUSER
+	if (qn)
+	{
+		var waitnum = findMAXwaitnum()
+
+		sqlstring = "hn=" + content
+		sqlstring += "&waitnum="+ waitnum
+		sqlstring += "&opdate="+ opdate
+		sqlstring += "&staffname="+ staffname
+		sqlstring += "&username="+ THISUSER
+	}
+	else
+	{
+		sqlstring = "hn=" + content
+		sqlstring += "&opdate="+ opdate
+		sqlstring += "&staffname="+ staffname
+		sqlstring += "&username="+ THISUSER
+	}
 
 	Ajax(GETNAMEHN, sqlstring, callbackgetByHNqueue)
 	//AJAX-false to prevent repeated GETNAMEHN when press <enter>

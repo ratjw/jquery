@@ -43,11 +43,21 @@ function DragDrop()
 						.children("td").eq(OPDATE).attr("class"))
 			$(uihelper).css("position", "")
 
-			var sql = "sqlReturnbook=UPDATE book SET opdate='" + thisdate
-			sql += "', editor='"+ THISUSER
-			sql += "' WHERE qn="+ thatqn +";"
+			if ($(ui.draggable).closest("table").attr("id") == "queuetbl") 
+			{
+				var sql = "sqlReturnbook=UPDATE book SET waitnum = NULL, "
+				sql += "opdate='" + thisdate
+				sql += "', editor='"+ THISUSER
+				sql += "' WHERE qn="+ thatqn +";"
+			}
+			else if ($(ui.draggable).closest("table").attr("id") == "tbl")
+			{
+				var sql = "sqlReturnbook=UPDATE book SET opdate='" + thisdate
+				sql += "', editor='"+ THISUSER
+				sql += "' WHERE qn="+ thatqn +";"
+			}
 
-			Ajax(MYSQLIPHP, sql, callbackmove);
+				Ajax(MYSQLIPHP, sql, callbackmove);
 
 			function callbackmove(response)
 			{
