@@ -14,6 +14,8 @@ function DragDrop()
 
 	$("tr").droppable({
 		accept: "#tbl tr, #tblday tr, #queuetbl tr",
+		tolerance:'pointer',
+
 		drop: function (event, ui) {
 
 			if (!$(this).children("td").eq(OPDATE).html())
@@ -103,7 +105,7 @@ function DragDropday(event)
 			event.preventDefault()
 		}
 	});
-
+/*
 	$("tr").droppable({
 		accept: "#tbl tr, #tblday tr",
 		drop: function (event, ui) {
@@ -171,6 +173,7 @@ function DragDropday(event)
 			}	
 		}
 	});
+*/
 }
 
 function DragDropStaff()
@@ -183,17 +186,20 @@ function DragDropStaff()
 		zIndex: 100,
 		start : function () {
 			$("editcell").attr("id", "")
-			event.stopPropagation()
-			event.preventDefault()
 		}
 	});
-
+	
 	$("tr").droppable({
 		accept: "#tbl tr, #queuetbl tr",
+		tolerance:'pointer',
+		over: function(event, ui){
+			$( "#queuetbl" ).droppable( "disable" )
+		},
+		out: function(event, ui){
+			$( "#queuetbl" ).droppable( "enable" )
+		},
 		drop: function (event, ui) {
-			event.stopPropagation()
-			event.preventDefault()
-
+/*
 			if (!$(this).children("td").eq(OPDATE).html())
 				return true
 
@@ -253,6 +259,7 @@ function DragDropStaff()
 				}
 				$("#queuetbl").css("cursor", 'default')
 			}	
+*/
 		}
 	});
 }

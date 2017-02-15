@@ -166,7 +166,7 @@ function saveContentQueue(column, content)
 	var qn = rowcell.eq(QQN).html()
 	var staffname = $( "#container" ).dialog( "option", "title" )
 	var sqlstring
-	var waitnum = findMAXwaitnum()
+	var waitnum = findMAXwaitnum() + 1
 
 	content = URIcomponent(content)			//take care of white space, double qoute, 
 											//single qoute, and back slash
@@ -180,8 +180,9 @@ function saveContentQueue(column, content)
 	else
 	{
 		sqlstring = "sqlReturnbook=INSERT INTO book ("
-		sqlstring += "waitnum, opdate, staffname, "+ column +", editor) VALUES ('"
-		sqlstring += waitnum +"', '"opdate +"', '"+ staffname +"', '"+ content +"', '"+ THISUSER +"');"
+		sqlstring += "waitnum, opdate, staffname, "+ column +", editor) VALUES ("
+		sqlstring += waitnum +", '"+ opdate +"', '"+ staffname +"', '"
+		sqlstring += content +"', '"+ THISUSER +"');"
 	}
 
 	Ajax(MYSQLIPHP, sqlstring, callbacksaveContentQueue);
@@ -204,12 +205,12 @@ function saveContentQueue(column, content)
 
 function findMAXwaitnum()	
 {
-	var waitnum
-	for (var q = 0; q < QWAIT.length; q++)
+	var waitnum = QWAIT[0].waitnum
+	for (var q = 1; q < QWAIT.length; q++)
 	{
-		waitnum += QWAIT[q].waitnum +", "
+		waitnum = Math.max(waitnum, QWAIT[q].waitnum)
 	}
-	return Math.max(waitnum)
+	return waitnum
 }
 
 function fillselectQueue(qn, rowcell)		
@@ -218,7 +219,11 @@ function fillselectQueue(qn, rowcell)
 	while ((q < QWAIT.length) && (QWAIT[q].qn != qn))
 		q++	//seek waitnum in QWAIT
 
-	var bookq = QWAIT[q]
+	filldataQueue(QWAIT[q], rowcell)
+}
+
+function filldataQueue(bookq, rowcell)		
+{
 	rowcell.eq(QSINCE).html(bookq.opdate? bookq.opdate.thDate() : "")
 	rowcell.eq(QHN).html(bookq.hn)
 	rowcell.eq(QNAME).html(bookq.patient)
@@ -226,6 +231,7 @@ function fillselectQueue(qn, rowcell)
 	rowcell.eq(QDIAGNOSIS).html(bookq.diagnosis? bookq.diagnosis : "")
 	rowcell.eq(QTREATMENT).html(bookq.treatment? bookq.treatment : "")
 	rowcell.eq(QTEL).html(bookq.tel)
+	rowcell.eq(QQN).html(bookq.qn)
 }
 
 function storePresentcellQueue(pointing)
@@ -327,7 +333,7 @@ function deletecaseQ(rowmain, qn)
 			updateBOOK(response);
 			staffqueue(staffname)
 	}
-	$("editcell").id = ""	//editmode of qFirstColumn Cell was started by storePresentcellQueue
+	$("editcell").id = ""	//editcell was started by storePresentcellQueue
 }
 
 function findPrevcellQueue() 
@@ -497,7 +503,7 @@ function saveHNinputQueue(pointing)
 
 	if (qn)
 	{
-		var waitnum = findMAXwaitnum()
+		var waitnum = findMAXwaitnum() + 1
 
 		sqlstring = "hn=" + content
 		sqlstring += "&waitnum="+ waitnum
