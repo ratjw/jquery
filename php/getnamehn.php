@@ -9,6 +9,7 @@ require_once "book.php";
 
 	extract($_GET);
 
+//$hn = "4935743";
 /*
 	$waitnum="1";
 	//$opdate="2014-07-23";
@@ -41,8 +42,10 @@ require_once "book.php";
 		echo "DBfailed No dob for this hn";
 	else
 	{
-		newqn($resultz, $opdate, $username, $waitnum, $staffname);
-		echo json_encode(book($mysqli));
+		$resultz["hn"] = $hn;
+		$resultz["qn"] = $qn;
+		$resultz["waitnum"] = $waitnum;
+		echo newqn($resultz, $opdate, $username, $waitnum, $staffname);
 	}
 
 function newqn($resultz, $opdate, $username, $waitnum, $staffname)
@@ -52,24 +55,26 @@ function newqn($resultz, $opdate, $username, $waitnum, $staffname)
 	if ($mysqli->connect_errno)
 		exit("DBfailed Connect failed: " . $mysqli->connect_error);
 
-	$qn = 0;
+	$qn = "";
 
 	extract($resultz);	//$hn, $initial_name, $first_name, $last_name, $dob, $gender, $qn
 
-	if ($waitnum)
+	if ($qn)
 	{
-		$sql = "INSERT INTO book (waitnum, opdate, staffname, hn, patient, dob, gender, editor) ";
-		$sql = $sql."VALUES ($waitnum, '$opdate', '$staffname', '$hn', '$initial_name'";
-		$sql = $sql."'$first_name'"." "."'$last_name', '$dob', '$gender', '$username');";
+		$sql = "UPDATE book SET hn = '$hn', patient = '$initial_name";
+		$sql = $sql."$first_name.' '.$last_name', dob = '$dob', ";
+		$sql = $sql."gender = '$gender', editor = '$username' WHERE qn = $qn;";
 	}
 	else
 	{
 		$sql = "INSERT INTO book (opdate, staffname, hn, patient, dob, gender, editor)"; 
-		$sql = $sql."VALUES ('$opdate', '$staffname', '$hn', '$initial_name', ";
-		$sql = $sql."'$first_name'"." "."'$last_name', '$dob', '$gender', '$username');";
+		$sql = $sql."VALUES ('$opdate', '$staffname', '$hn', '$initial_name";
+		$sql = $sql."$first_name.' '.$last_name', '$dob', '$gender', '$username');";
 	}
 
 	$query = $mysqli->query ($sql);
 	if (!$query)
-		return "DBfailed to $sql " . $mysqli->error;
+		return $mysqli->error;
+	else
+		return json_encode(book($mysqli));
 }

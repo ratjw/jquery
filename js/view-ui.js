@@ -76,13 +76,13 @@ function DragDrop()
 						$(that_row).remove();				
 
 					if (thisqn)
-						$(uihelper).insertAfter(this_row);
+						$(uihelper).insertBefore($(this_row));
 					else
 						$(this_row).replaceWith(uihelper);				
 
 					updateBOOK(response);
 					updateBOOKFILL()
-					fillselect("tbl", thisdate)
+//					fillselect("tbl", thisdate)
 					DragDrop()
 				}
 				$("#tbl").css("cursor", 'default')
@@ -160,7 +160,7 @@ function DragDropday(event)
 						$(that_row).remove();				
 
 					if (thisqn)
-						$(uihelper).insertAfter(this_row);
+						$(uihelper).insertAfter($(this_row));
 					else
 						$(this_row).replaceWith(uihelper);				
 
@@ -247,7 +247,7 @@ function DragDropStaff()
 						$(that_row).remove();				
 
 					if (thisqn)
-						$(uihelper).insertAfter(this_row);
+						$(uihelper).insertAfter($(this_row));
 					else
 						$(this_row).replaceWith(uihelper);				
 

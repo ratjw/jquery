@@ -100,7 +100,7 @@ function savePreviouscell()
 		case OPDATE:
 			break
 		case STAFFNAME:
-			saveContent("staffname", content)
+			saveContent("staffname", content)	//column name in MYSQL
 			break
 		case HN:
 			saveHNinput("hn", content)
@@ -120,7 +120,7 @@ function savePreviouscell()
 	}
 }
 
-function saveContent(column, content)
+function saveContent(column, content)	//column name in MYSQL
 {
 	var rowtr = $("#editcell").closest("tr").children("td")
 	var opdate = rowtr.eq(OPDATE).html().numDate()
@@ -174,7 +174,8 @@ function saveHNinput(hn, content)
 		$("#editcell").html($("#editcell").attr("title"))
 		return
 	}
-	content = URIcomponent(content)
+	content = content.replace(/<br>/g, "")
+	content = content.replace(/^\s+/g, "")
 
 	var sqlstring = "hn=" + content
 	sqlstring += "&opdate="+ opdate
@@ -329,7 +330,9 @@ function stafflist(pointing)
 
 	$("#stafflist").menu({
 		select: function( event, ui ) {
-			$(pointing).html($(this).attr("aria-activedescendant"));
+			var staffname = $(this).attr("aria-activedescendant")
+			$(pointing).html(staffname);
+			saveContent("staffname", staffname)
 			$('#stafflist').hide();
 		}
 	});

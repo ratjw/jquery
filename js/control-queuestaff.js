@@ -203,8 +203,19 @@ function saveContentQueue(column, content)
 	}
 }
 
+function findwaitnum(qn)	
+{
+	var q = 0
+	while ((q < QWAIT.length) && (QWAIT[q].qn != qn))
+		q++
+
+	return QWAIT[q].waitnum
+}
+
 function findMAXwaitnum()	
 {
+	if (QWAIT.length == 0)
+		return 0
 	var waitnum = QWAIT[0].waitnum
 	for (var q = 1; q < QWAIT.length; q++)
 	{
@@ -227,7 +238,7 @@ function filldataQueue(bookq, rowcell)
 	rowcell.eq(QSINCE).html(bookq.opdate? bookq.opdate.thDate() : "")
 	rowcell.eq(QHN).html(bookq.hn)
 	rowcell.eq(QNAME).html(bookq.patient)
-	rowcell.eq(QAGE).html(bookq.dob? bookq.dob.getAge() : "")
+	rowcell.eq(QAGE).html(bookq.dob? bookq.dob.getAge(bookq.opdate) : "")
 	rowcell.eq(QDIAGNOSIS).html(bookq.diagnosis? bookq.diagnosis : "")
 	rowcell.eq(QTREATMENT).html(bookq.treatment? bookq.treatment : "")
 	rowcell.eq(QTEL).html(bookq.tel)
@@ -341,7 +352,7 @@ function findPrevcellQueue()
 	var prevcell = $("#editcell")
 
 	do {
-		if ($(prevcell).index() > 2)
+		if ($(prevcell).index() > QHN)
 		{
 			prevcell = $(prevcell).prev()
 		}
@@ -484,14 +495,14 @@ function movecaseBookToQwait(QNfrom, pointQnum)
 	}	
 }
 
-function saveHNinputQueue(pointing)
+function saveHNinputQueue(hn, content)
 {
 	var rowtr = $("#editcell").closest("tr").children("td")
-	var opdate = rowtr.eq(QSINCE).html()
-	var staffname = $( "#container" ).dialog( "option", "title" )
+	var opdate = rowtr.eq(QSINCE).html().numDate()
 	var patient = rowtr.eq(QNAME).html()
 	var qn = rowtr.eq(QQN).html()
-	var sqlstring
+	var staffname = $( "#container" ).dialog( "option", "title" )
+	var sqlstring, waitnum
 
 	if (patient)
 	{
@@ -499,25 +510,20 @@ function saveHNinputQueue(pointing)
 		return
 	}
 
-	content = URIcomponent(content)
+	content = content.replace(/<br>/g, "")
+	content = content.replace(/^\s+/g, "")
 
 	if (qn)
-	{
-		var waitnum = findMAXwaitnum() + 1
-
-		sqlstring = "hn=" + content
-		sqlstring += "&waitnum="+ waitnum
-		sqlstring += "&opdate="+ opdate
-		sqlstring += "&staffname="+ staffname
-		sqlstring += "&username="+ THISUSER
-	}
+		waitnum = findwaitnum(qn)
 	else
-	{
-		sqlstring = "hn=" + content
-		sqlstring += "&opdate="+ opdate
-		sqlstring += "&staffname="+ staffname
-		sqlstring += "&username="+ THISUSER
-	}
+		waitnum = findMAXwaitnum() + 1
+
+	sqlstring = "hn=" + content
+	sqlstring += "&waitnum="+ waitnum
+	sqlstring += "&opdate="+ opdate
+	sqlstring += "&staffname="+ staffname
+	sqlstring += "&qn="+ qn
+	sqlstring += "&username="+ THISUSER
 
 	Ajax(GETNAMEHN, sqlstring, callbackgetByHNqueue)
 	//AJAX-false to prevent repeated GETNAMEHN when press <enter>

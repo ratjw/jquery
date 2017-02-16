@@ -112,7 +112,7 @@ a:hover {
 }
 
 .historytable  {
-	display: none
+	display: none;
 	table-layout: fixed;
 	overflow: scroll;
 	border-collapse: collapse;
