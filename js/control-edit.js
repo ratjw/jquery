@@ -29,11 +29,7 @@ function deletecase(rowmain, qn)
 		else
 		{
 			updateBOOK(response);
-			updateBOOKFILL()
-			if (checkblank(rowmain.cells[OPDATE].innerHTML, qn))
-				filldeleterow(rowmain)
-			else
-				$(rowmain).remove()
+			filluprefill()
 		}
 	}
 }

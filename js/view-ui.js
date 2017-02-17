@@ -10,17 +10,17 @@ function DragDrop(event)
 		start : function () {
 			$("editcell").attr("id", "")
 			event.stopPropagation()
-//			event.preventDefault()
 		}
 	});
 
 	$("#tbl tr").droppable({
 		accept: "#tbl tr, #tblday tr, #queuetbl tr",
-//		tolerance:'pointer',
-
 		drop: function (event, ui) {
 			event.stopPropagation()
-//			event.preventDefault()
+
+			if(ui.helper.is(".dropped"))
+				return false;
+			ui.helper.addClass(".dropped");
 
 			if (!$(this).children("td").eq(OPDATE).html())		//drop on header
 				return
@@ -43,9 +43,6 @@ function DragDrop(event)
 				sql += "opdate='" + thisdate
 				sql += "', editor='"+ THISUSER
 				sql += "' WHERE qn="+ thatqn +";"
-
-				prevdate = thatdate
-				nextdate = thatdate
 			}
 			else if (dragTable == "tbl")
 			{
@@ -70,13 +67,18 @@ function DragDrop(event)
 				}
 				else
 				{
+					updateBOOK(response);
 					if (prevdate == thatdate || thatdate == nextdate)
-						that_row.remove();				
+						that_row.remove()
+					else if (dragTable == "queuetbl")
+					{
+						var staffname = $( "#container" ).dialog( "option", "title" )
+						staffqueue(staffname)
+					}
 
 					if (thisqn)
 						this_row.after(this_row.clone());
 
-					updateBOOK(response);
 					filluprefill()
 					DragDrop(event)
 				}
@@ -97,7 +99,6 @@ function DragDropday(event)
 		start : function () {
 			$("editcell").attr("id", "")
 			event.stopPropagation()
-//			event.preventDefault()
 		}
 	});
 
@@ -105,7 +106,6 @@ function DragDropday(event)
 		accept: "#tbl tr, #tblday tr",
 		drop: function (event, ui) {
 			event.stopPropagation()
-//			event.preventDefault()
 
 			if (!$(this).children("td").eq(OPDATE).html())
 				return true
@@ -179,65 +179,71 @@ function DragDropStaff(event)
 		appendTo: "body",
 		stack: ".ui-draggable",
 		zIndex: 100,
+		tolerance: "pointer",
 		start : function () {
 			$("editcell").attr("id", "")
 			event.stopPropagation()
-//			event.preventDefault()
+			event.preventDefault()
 		}
 	});
 	
 	$("#queuetbl tr").droppable({
-		accept: "#tbl tr",
-//		tolerance:'pointer',
+/*
+	over:function(evt,ui){
+    ui.draggable.attr('drg_time', this.drg_time = evt.timeStamp)
+  },
+  accept:function(draggeds){
+    if(draggeds.attr('drg_time'))
+    {
+      return draggeds.attr('drg_time') == this.drg_time
+    }
+    return draggeds.hasClass('acceptable_classes_here')
+  },
+  out:function(evt,ui){
+    // useless but cleaner
+    ui.draggable.removeAttr('drg_time')
+  }
+
+	drop: function( event, ui ) {
+       if(ui.helper.is(".dropped")) {
+           return false;
+       }
+       ui.helper.addClass(".dropped");
+    }
+
+	hoverClass: 'dragHover',
+    over:function(e,ui){
+		$('#dropArea').droppable('disable').removeClass('ui-state-disabled dragHover');    
+    },
+    out:function(){
+		$('#dropArea').droppable('enable').addClass('dragHover');
+    }
+
 		over: function(event, ui){
-			$( "#tbl tr" ).droppable( "disable" )
+			ui.helper.addClass( "dropped" )
 		},
 		out: function(event, ui){
-			$( "#tbl tr" ).droppable( "enable" )
+			ui.helper.removeClass( "dropped" )
 		},
+*/
+
+		accept: "#tbl tr",
 		drop: function (event, ui) {
-			event.stopPropagation()
-			event.preventDefault()
 
 			if (!$(this).children("td").eq(OPDATE).html())		//drop on header
 				return
-/*
-			var that_row = ui.draggable
-			var this_row = $(this)
-			var uihelper = ui.helper
-			var prevdate
-			var nextdate
-			var dragTable = $(ui.draggable).closest("table").attr("id")
-			var thatdate = $(ui.draggable).children("td").eq(OPDATE).html().numDate()
-			var thisdate = $(this).children("td").eq(OPDATE).html().numDate()
-			var thisqn = $(this).children("td").eq(QN).html()
 
-			if (dragTable == "queuetbl") 
-			{
-				var thatqn = $(ui.draggable).children("td").eq(QQN).html()
-				var sql = "sqlReturnbook=UPDATE book SET waitnum = NULL, "
-				sql += "opdate='" + thisdate
-				sql += "', editor='"+ THISUSER
-				sql += "' WHERE qn="+ thatqn +";"
-
-				prevdate = thatdate
-				nextdate = thatdate
-			}
-			else if (dragTable == "tbl")
-			{
-*/
-				var staffdrag = $(ui.draggable).children("td").eq(STAFFNAME).html()
-				var staffname = $( "#container" ).dialog( "option", "title" )
-				if (staffdrag != staffname)
-					return
-				var waitnum = findMAXwaitnum() + 1
-				var todate = new Date().MysqlDate()
-				var thatqn = $(ui.draggable).children("td").eq(QN).html()
-				var sql = "sqlReturnbook=UPDATE book SET waitnum ="+ waitnum
-				sql += ", opdate='" + todate
-				sql += "', editor='"+ THISUSER
-				sql += "' WHERE qn="+ thatqn +";"
-//			}
+			var staffdrag = $(ui.draggable).children("td").eq(STAFFNAME).html()
+			var staffname = $( "#container" ).dialog( "option", "title" )
+			if (staffdrag != staffname)
+				return
+			var waitnum = findMAXwaitnum() + 1
+			var todate = new Date().MysqlDate()
+			var thatqn = $(ui.draggable).children("td").eq(QN).html()
+			var sql = "sqlReturnbook=UPDATE book SET waitnum ="+ waitnum
+			sql += ", opdate='" + todate
+			sql += "', editor='"+ THISUSER
+			sql += "' WHERE qn="+ thatqn +";"
 
 			$("#tbl").css("cursor", 'wait')
 
