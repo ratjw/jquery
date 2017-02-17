@@ -16,6 +16,7 @@ var STARTFILLUP	= 3;	//how many weeks to fillup in starting table
 var THISUSER	= "";
 var TIMESTAMP	= "";
 var TIMER		= "";
+
 var OPDATE		= 0;
 var STAFFNAME	= 1;
 var HN			= 2;

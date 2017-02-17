@@ -12,7 +12,7 @@ function book($mysqli)
 		patient, dob, gender, diagnosis, treatment, tel, qn
 		FROM book 
 		WHERE opdate >= curdate()-interval 1 year AND waitnum IS NULL 
-		GROUP BY qn ORDER BY opdate, qn;";
+		GROUP BY qn ORDER BY opdate, staffname, qn;";
 	$rowi = array();
 	$data = array();
     if (!$result = $mysqli->query ($sql))

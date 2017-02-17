@@ -11,7 +11,7 @@
 		rowmain.cells[0].id = ""
 		for (i=1; i<rowmain.cells.length; i++)
 			rowmain.cells[i].innerHTML = ""	
-		DragDroptbl()
+		DragDrop(event)
 	}
 }
 
@@ -73,7 +73,7 @@ function movecaseQwaitToBook(movemode, OpDateTo)
 			refillall()
 		}
 		$("queuetbl").css("display", "")
-		$("editcell").id = ""
+		$("editcell").attr("id", "")
 	}	
 }
 

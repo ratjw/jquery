@@ -1,8 +1,8 @@
 function clicktable(event)
 {
 	clickedCell = event.target || window.event.srcElement
-	if (clickedCell.id == "editcell")
-		return false
+//	if (clickedCell.id == "editcell")
+//		return false
 
 	$("#tbl").siblings().hide()
 	if ($( "#container" ).dialog("instance"))
@@ -17,7 +17,7 @@ function clicktable(event)
 
 	savePreviouscell()
 	storePresentcell(clickedCell)
-	event.preventDefault()
+	event.stopPropagation()
 	clickedCell.focus()
 }
 
@@ -267,7 +267,7 @@ function fillSetTable(rownum, pointing)
 		$("#item3").removeClass(disabled)
 	else
 		$("#item3").addClass(disabled)
-	$("#item4").html("คิวรออาจารย์")
+	$("#item4").html("คิวของอาจารย์")
 	$("#item5").html("คิวเฉพาะวัน")
 	$("#item6").html("การแก้ไขของ " + casename)
 	if (qn)
@@ -310,7 +310,7 @@ function fillSetTable(rownum, pointing)
 					staffqueue(item)
 			}
 			event.stopPropagation()
-			event.preventDefault()
+//			event.preventDefault()
 			$("#editcell").attr("id","")
 			$("#menu").hide()
 			$( "#item4" ).removeClass( "ui-state-active" )
@@ -334,6 +334,8 @@ function stafflist(pointing)
 			$(pointing).html(staffname);
 			saveContent("staffname", staffname)
 			$('#stafflist').hide();
+			event.stopPropagation()
+//			event.preventDefault()
 		}
 	});
 }

@@ -7,7 +7,7 @@ function fillupstart()
 		BOOK.push({"opdate" : getSunday()})
 	fillnew()
 	document.body.scrollTop = 3
-	DragDrop()
+	DragDrop(event)
 }
 
 function fillupnormal()
@@ -15,7 +15,7 @@ function fillupnormal()
 
 	STATE[0] = "FILLUP"
 	fillnew()
-	DragDrop()
+	DragDrop(event)
 }
 
 function filluprefill()
@@ -28,14 +28,14 @@ function filluprefill()
 	updateBOOKFILL()
 	fillnew()
 	document.body.scrollTop = topscroll
-	DragDrop()
+	DragDrop(event)
 }
 
 function fillupscroll(direction)
 {
 	fillext(direction)
 //	hilitefillext()
-	DragDrop()
+	DragDrop(event)
 }
 
 function fillext(di, event)

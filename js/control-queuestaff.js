@@ -29,12 +29,12 @@ function staffqueue(staffname)
 		height: window.innerHeight * 70 / 100,
 		width: window.innerWidth * 70 / 100
 	});
-	DragDropStaff()
+	DragDropStaff(event)
 }
 //$("#container").parent().find('.ui-dialog-titlebar').click(function() {
 //    alert("test");
 //});
-//$(whatever).dialog('option', 'title', 'New Title');
+//$("#container").dialog('option', 'title', 'New Title');
 function makenextrowQueue(table, i)
 {	// i = the row to be made
 	var cols = table.rows[0].cells.length
@@ -51,8 +51,8 @@ function Qclicktable(event)
 {
 	//checkpoint#1 : click in editing area
 	var clickedCell = event.target || window.event.srcElement
-	if (clickedCell.id == "editcell")
-		return
+//	if (clickedCell.id == "editcell")
+//		return
 
 	if (clickedCell.nodeName != "TD")
 	{
@@ -166,7 +166,7 @@ function saveContentQueue(column, content)
 	var qn = rowcell.eq(QQN).html()
 	var staffname = $( "#container" ).dialog( "option", "title" )
 	var sqlstring
-	var waitnum = findMAXwaitnum() + 1
+	var waitnum
 
 	content = URIcomponent(content)			//take care of white space, double qoute, 
 											//single qoute, and back slash
@@ -179,6 +179,8 @@ function saveContentQueue(column, content)
 	}
 	else
 	{
+		waitnum = findMAXwaitnum() + 1
+
 		sqlstring = "sqlReturnbook=INSERT INTO book ("
 		sqlstring += "waitnum, opdate, staffname, "+ column +", editor) VALUES ("
 		sqlstring += waitnum +", '"+ opdate +"', '"+ staffname +"', '"
@@ -197,8 +199,8 @@ function saveContentQueue(column, content)
 		else
 		{
 			updateBOOK(response);
-			fillselectQueue(qn, rowcell)
-			DragDropStaff()
+			fillselectQueue(rowcell, waitnum, qn)
+			DragDropStaff(event)
 		}
 	}
 }
@@ -224,11 +226,15 @@ function findMAXwaitnum()
 	return waitnum
 }
 
-function fillselectQueue(qn, rowcell)		
+function fillselectQueue(rowcell, waitnum, qn)	//seek the QWAIT row
 {
 	var q = 0
-	while ((q < QWAIT.length) && (QWAIT[q].qn != qn))
-		q++	//seek waitnum in QWAIT
+	if (waitnum)	//come from old queuetbl row
+		while ((q < QWAIT.length) && (QWAIT[q].waitnum != waitnum))
+			q++	
+	else			//come from new queuetbl row
+		while ((q < QWAIT.length) && (QWAIT[q].qn != qn))
+			q++	
 
 	filldataQueue(QWAIT[q], rowcell)
 }
@@ -250,7 +256,7 @@ function storePresentcellQueue(pointing)
 	var cindex = $(pointing).closest("td").index()
 	var rowtr = $(pointing).closest("tr")
 	var rindex = $(rowtr).index()
-	var qn = $(rowtr).children("td").eq(QN).html()
+	var qn = $(rowtr).children("td").eq(QQN).html()
 
 	$("#editcell").attr("id","")
 	pointing.id = "editcell"
@@ -258,7 +264,7 @@ function storePresentcellQueue(pointing)
 	switch(cindex)
 	{
 		case QSINCE:
-			fillSetTableQueue(rindex, pointing)
+			fillSetTableQueue(pointing, rindex)
 			break
 		case QNAME:
 		case QAGE:
@@ -273,27 +279,26 @@ function storePresentcellQueue(pointing)
 	}
 }
 
-function fillSetTableQueue(rownum, pointing)
+function fillSetTableQueue(pointing, rindex)
 {
 	var table = document.getElementById("queuetbl")
-	var rowmain = table.rows[rownum]
+	var rowmain = table.rows[rindex]
 	var tcell = rowmain.cells
 	var casename = tcell[QNAME].innerHTML
-	var hn = tcell[QHN].innerHTML
-	var qn = tcell[QQN].innerHTML
+	var thisqqn = tcell[QQN].innerHTML
 	var disabled = "ui-state-disabled"
 
 	casename = casename.substring(0, casename.indexOf(' '))
 	i = table.rows.length
-	qqn = table.rows[i-1].cells[QQN].innerHTML
+	lastqqn = table.rows[i-1].cells[QQN].innerHTML
 
 	$("#qitem1").html("เพิ่ม case")
-	if (qqn)
+	if (lastqqn)
 		$("#qitem1").removeClass(disabled)
 	else
 		$("#qitem1").addClass(disabled)
 	$("#qitem2").html("ลบ case " + casename)
-	if (qn)
+	if (thisqqn)
 		$("#qitem2").removeClass(disabled)
 	else
 		$("#qitem2").addClass(disabled)
@@ -307,15 +312,17 @@ function fillSetTableQueue(rownum, pointing)
 					addnewrowQ()
 					break
 				case "qitem2":
-					deletecaseQ(rowmain, qn)
+					deletecaseQ(rowmain, thisqqn)
 					break
 			}
 			$("#editcell").attr("id","")
 			$("#queuemenu").hide()
+			event.stopPropagation()
+//			event.preventDefault()
 		}
 	});
 
-	$("#queuemenu").appendTo($("#container"))
+	$("#queuemenu").insertAfter($("#queuetbl"))
 	showupQueue(pointing, '#queuemenu')
 }
 
@@ -323,10 +330,10 @@ function addnewrowQ()
 {
 	var queuetbl = document.getElementById("queuetbl")
 
-	$("editcell").id = ""	//editcell was started by storePresentcellQueue
 	rownum = $("#queuetbl tr").length	//always append to table end
 	rowi = makenextrowQueue(queuetbl, rownum)
 	rowi.cells[QSINCE].innerHTML = new Date().MysqlDate().thDate()
+	$("editcell").attr("id", "")	//editcell was started by storePresentcellQueue
 }
 
 function deletecaseQ(rowmain, qn)
@@ -342,9 +349,9 @@ function deletecaseQ(rowmain, qn)
 			alert ("Delete & Refresh failed!\n" + response)
 		else
 			updateBOOK(response);
-			staffqueue(staffname)
+			$(rowmain).remove()
 	}
-	$("editcell").id = ""	//editcell was started by storePresentcellQueue
+	$("editcell").attr("id", "")	//editcell was started by storePresentcellQueue
 }
 
 function findPrevcellQueue() 
@@ -361,7 +368,7 @@ function findPrevcellQueue()
 			if ($(prevcell).parent().index() > 1)
 			{	//go to prev row last editable
 				do {
-					prevcell = $(prevcell).parent().prev("tr").children().eq(TEL)
+					prevcell = $(prevcell).parent().prev("tr").children().eq(QTEL)
 				}
 				while ($(prevcell).get(0).nodeName == "TH")	//THEAD row
 			}
@@ -382,7 +389,7 @@ function findNextcellQueue()
 	var lastrow = $('#queuetbl tr:last-child').index()
 	
 	do {
-		if ($(nextcell).index() < TEL)
+		if ($(nextcell).index() < QTEL)
 		{
 			nextcell = $(nextcell).next()
 		}
@@ -391,7 +398,7 @@ function findNextcellQueue()
 			if ($(nextcell).parent().index() < lastrow)
 			{	//go to next row first editable
 				do {
-					nextcell = $(nextcell).parent().next("tr").children().eq(HN)
+					nextcell = $(nextcell).parent().next("tr").children().eq(QHN)
 				}
 				while ($(nextcell).get(0).nodeName == "TH")	//THEAD row
 			}
@@ -434,7 +441,7 @@ function movecaseQwaitToQwait(WaitNumTo)
 
 	if (WNfrom == WaitNumTo)
 	{
-		$("editcell").id = ""
+		$("editcell").attr("id", "")
 		return
 	}
 
@@ -458,7 +465,7 @@ function movecaseQwaitToQwait(WaitNumTo)
 			staffqueue(staffname)
 			table.rows[WaitNumTo].scrollIntoView(false)
 		}
-		$("editcell").id = ""
+		$("editcell").attr("id", "")
 		table.style.cursor = 'default'
 	}	
 }
@@ -490,7 +497,7 @@ function movecaseBookToQwait(QNfrom, pointQnum)
 			table.rows[pointQnum].scrollIntoView(false)
 			refillall()
 		}
-		$("editcell").id = ""
+		$("editcell").attr("id", "")
 		table.style.cursor = 'default'
 	}	
 }
