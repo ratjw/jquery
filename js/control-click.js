@@ -145,6 +145,7 @@ function saveContent(column, content)	//column name in MYSQL
 		{
 			updateBOOK(response);
 			fillselect("tbl", opdate)
+			$("#editcell").data("content", "")
 		}
 		$("#tbl").css("cursor", "")
 	}
@@ -213,9 +214,7 @@ function storePresentcell(pointing)
 		case DIAGNOSIS:
 		case TREATMENT:
 		case TEL:	//store content in "data" of editcell
-			$("#editcell").data({
-				content : $(pointing).html()
-			})
+			$("#editcell").data("content", $(pointing).html())
 			break
 	}
 }
@@ -225,9 +224,7 @@ function editcell(pointing)
 	var pos = $(pointing).position()
 
 	$("#editcell").html($(pointing).html())
-	$("#editcell").data({
-		located : pointing
-	})
+	$("#editcell").data("located", pointing)
 	$("#editcell").css({
 		height: $(pointing).height() + "px",
 		width: $(pointing).width() + "px",
@@ -316,7 +313,6 @@ function fillSetTable(rownum, pointing)
 					staffqueue(item)
 			}
 			event.stopPropagation()
-//			event.preventDefault()
 			$("#editcell").hide()
 			$("#menu").hide()
 			$( "#item4" ).removeClass( "ui-state-active" )
@@ -339,9 +335,9 @@ function stafflist(pointing)
 			var staffname = $(this).attr("aria-activedescendant")
 			$(pointing).html(staffname);
 			saveContent("staffname", staffname)
+			$("#editcell").hide()
 			$('#stafflist').hide();
 			event.stopPropagation()
-//			event.preventDefault()
 		}
 	});
 }
@@ -388,9 +384,8 @@ function findPrevcell()
 	var prevcell = $("#editcell").data("located")
 	var column = $(prevcell).index()
 
-	if (column > 1)
+	if (column = EDITABLE[($.inArray(column, EDITABLE) - 1)])
 	{
-		column = EDITABLE[($.inArray(column, EDITABLE) - 1)];
 		prevcell = $(prevcell).parent().children().eq(column)
 	}
 	else
@@ -398,7 +393,7 @@ function findPrevcell()
 		if ($(prevcell).parent().index() > 1)
 		{	//go to prev row last editable
 			do {
-				prevcell = $(prevcell).parent().prev("tr").children().eq(TEL)
+				prevcell = $(prevcell).parent().prev("tr").children().eq(EDITABLE[EDITABLE.length-1])
 			}
 			while ($(prevcell).get(0).nodeName == "TH")	//THEAD row
 		}
@@ -418,9 +413,8 @@ function findNextcell()
 	var column = $(nextcell).index()
 	var lastrow = $('#tbl tr:last-child').index()
 
-	if (column < TEL)
+	if (column = EDITABLE[($.inArray(column, EDITABLE) + 1)])
 	{
-		column = EDITABLE[($.inArray(column, EDITABLE) + 1)]
 		nextcell = $(nextcell).parent().children().eq(column)
 	}
 	else
@@ -428,7 +422,7 @@ function findNextcell()
 		if ($(nextcell).parent().index() < lastrow)
 		{	//go to next row first editable
 			do {
-				nextcell = $(nextcell).parent().next("tr").children().eq(STAFFNAME)
+				nextcell = $(nextcell).parent().next("tr").children().eq(EDITABLE[0])
 			}
 			while ($(nextcell).get(0).nodeName == "TH")	//THEAD row
 		}
