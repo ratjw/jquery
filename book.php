@@ -15,7 +15,6 @@
 <script src="js/jquery-ui.js"></script>
 <script src="js/control-click.js"></script>
 <script src="js/control-edit.js"></script>
-<script src="js/control-fingermouse.js"></script>
 <script src="js/control-function.js"></script>
 <script src="js/control-queuestaff.js"></script>
 <script src="js/model-constant.js"></script>
@@ -44,7 +43,7 @@
 <TABLE style="display:none">	<!-- Used as cells template -->
   <TR id="datatitle">
     <td data-title="วันผ่าตัด"></td>
-    <td contenteditable data-title="Staff"></td>
+    <td data-title="Staff"></td>
     <td contenteditable data-title="HN"></td>
     <td data-title="ชื่อ นามสกุล"></td>
     <td data-title="อายุ"></td>
@@ -99,6 +98,8 @@
 <div id="alert" ></div>
 
 <div id="container"></div>
+
+<div id="editcell" contenteditable></div>
 
 <TABLE id="queuetbl" data-role="table" class="ui-responsive" style="display:none">
   <TBODY>

@@ -6,22 +6,18 @@ function DragDrop(event)
 		revert: "invalid",
 		appendTo: "body",
 		stack: ".ui-draggable",
-		zIndex: 100,
-		start : function () {
-			$("editcell").attr("id", "")
-			event.stopPropagation()
+		zIndex: 100,	//test found 65 is under but 66 is over #container
+		start : function (event) {
+//			if (window.event.srcElement.id == "editcell")
+//				$( this ).draggable("disable")
+//			else
+				$("#editcell").attr("id", "")
 		}
 	});
 
-	$("#tbl tr").droppable({
-		accept: "#tbl tr, #tblday tr, #queuetbl tr",
+	$("#tbl, #tbl tr").droppable({
+		accept: "tr",
 		drop: function (event, ui) {
-			event.stopPropagation()
-
-			if(ui.helper.is(".dropped"))
-				return false;
-			ui.helper.addClass(".dropped");
-
 			if (!$(this).children("td").eq(OPDATE).html())		//drop on header
 				return
 
@@ -57,9 +53,9 @@ function DragDrop(event)
 					nextdate = nextdate.numDate()
 			}
 
-			Ajax(MYSQLIPHP, sql, callbackmove);
+			Ajax(MYSQLIPHP, sql, callbackDragDrop);
 
-			function callbackmove(response)
+			function callbackDragDrop(response)
 			{
 				if (!response || response.indexOf("DBfailed") != -1)
 				{
@@ -97,7 +93,7 @@ function DragDropday(event)
 		stack: ".ui-draggable",
 		zIndex: 100,
 		start : function () {
-			$("editcell").attr("id", "")
+			$("#editcell").attr("id", "")
 			event.stopPropagation()
 		}
 	});
@@ -107,7 +103,7 @@ function DragDropday(event)
 		drop: function (event, ui) {
 			event.stopPropagation()
 
-			if (!$(this).children("td").eq(OPDATE).html())
+			if (!$(this).children("td").eq(OPDATE).html())		//drop on header
 				return true
 
 			$("#tbl").css("cursor", 'wait')
@@ -145,9 +141,9 @@ function DragDropday(event)
 					nextdate = nextdate.numDate()
 			}
 
-			Ajax(MYSQLIPHP, sql, callbackmove);
+			Ajax(MYSQLIPHP, sql, callbackDragDropday);
 
-			function callbackmove(response)
+			function callbackDragDropday(response)
 			{
 				if (!response || response.indexOf("DBfailed") != -1)
 				{
@@ -179,77 +175,43 @@ function DragDropStaff(event)
 		appendTo: "body",
 		stack: ".ui-draggable",
 		zIndex: 100,
-		tolerance: "pointer",
 		start : function () {
-			$("editcell").attr("id", "")
+			$("#editcell").attr("id", "")
 			event.stopPropagation()
-			event.preventDefault()
 		}
 	});
-	
-	$("#queuetbl tr").droppable({
-/*
-	over:function(evt,ui){
-    ui.draggable.attr('drg_time', this.drg_time = evt.timeStamp)
-  },
-  accept:function(draggeds){
-    if(draggeds.attr('drg_time'))
-    {
-      return draggeds.attr('drg_time') == this.drg_time
-    }
-    return draggeds.hasClass('acceptable_classes_here')
-  },
-  out:function(evt,ui){
-    // useless but cleaner
-    ui.draggable.removeAttr('drg_time')
-  }
 
-	drop: function( event, ui ) {
-       if(ui.helper.is(".dropped")) {
-           return false;
-       }
-       ui.helper.addClass(".dropped");
-    }
-
-	hoverClass: 'dragHover',
-    over:function(e,ui){
-		$('#dropArea').droppable('disable').removeClass('ui-state-disabled dragHover');    
-    },
-    out:function(){
-		$('#dropArea').droppable('enable').addClass('dragHover');
-    }
-
+	//#container to make "over" trigger at the start within draggable "#queuetbl tr" itself
+	//this causes dropping 2 times
+	//the first one (#container) is to be filtered out by "drop on header"
+	$("#container, #queuetbl tr").droppable({
 		over: function(event, ui){
-			ui.helper.addClass( "dropped" )
+			$( "#tbl tr" ).droppable( "disable" )
 		},
 		out: function(event, ui){
-			ui.helper.removeClass( "dropped" )
+			$( "#tbl tr" ).droppable( "enable" )
 		},
-*/
-
-		accept: "#tbl tr",
+		accept: "tr",
 		drop: function (event, ui) {
 
 			if (!$(this).children("td").eq(OPDATE).html())		//drop on header
-				return
+				return true
 
 			var staffdrag = $(ui.draggable).children("td").eq(STAFFNAME).html()
 			var staffname = $( "#container" ).dialog( "option", "title" )
 			if (staffdrag != staffname)
 				return
 			var waitnum = findMAXwaitnum() + 1
-			var todate = new Date().MysqlDate()
 			var thatqn = $(ui.draggable).children("td").eq(QN).html()
 			var sql = "sqlReturnbook=UPDATE book SET waitnum ="+ waitnum
-			sql += ", opdate='" + todate
-			sql += "', editor='"+ THISUSER
+			sql += ", editor='"+ THISUSER
 			sql += "' WHERE qn="+ thatqn +";"
 
 			$("#tbl").css("cursor", 'wait')
 
-			Ajax(MYSQLIPHP, sql, callbackmove);
+			Ajax(MYSQLIPHP, sql, callbackDragDropStaff);
 
-			function callbackmove(response)
+			function callbackDragDropStaff(response)
 			{
 				if (!response || response.indexOf("DBfailed") != -1)
 				{

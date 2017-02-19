@@ -1,24 +1,22 @@
+function clickeditcell(event)
+{
+	return
+}
+
 function clicktable(event)
 {
-	clickedCell = event.target || window.event.srcElement
-//	if (clickedCell.id == "editcell")
-//		return false
+	clickedCell = window.event.srcElement || event.target
 
 	$("#tbl").siblings().hide()
-	if ($( "#container" ).dialog("instance"))
-		$( "#container" ).dialog( "close" )
 
 	if (clickedCell.nodeName != "TD")
 	{
-		if ($("#editcell").get(0))
-			$("#editcell").attr("id","")
+		$("#editcell").attr("id","")
 		return
 	}
 
 	savePreviouscell()
 	storePresentcell(clickedCell)
-	event.stopPropagation()
-	clickedCell.focus()
 }
 
 function editing(event)
@@ -68,7 +66,7 @@ function editing(event)
 	{
 		if ($("#editcell").index() == OPDATE)
 		{
-			$("editcell").attr("id","")
+			$("#editcell").attr("id","")
 			$("#tbl").siblings().hide()
 		}
 		else
@@ -155,7 +153,6 @@ function saveContent(column, content)	//column name in MYSQL
 		else
 		{
 			updateBOOK(response);
-			updateBOOKFILL()
 			fillselect("tbl", opdate)
 		}
 		$("#tbl").css("cursor", "")
@@ -194,7 +191,6 @@ function saveHNinput(hn, content)
 		else if (response.indexOf("{") != -1)
 		{	//Only one patient
 			updateBOOK(response)
-//			updateBOOKFILL()
 			fillselect("tbl", opdate)
 		}
 	}
@@ -207,9 +203,10 @@ function storePresentcell(pointing)
 	var rindex = $(rowtr).index()
 	var qn = $(rowtr).children("td").eq(QN).html()
 
-	$("#editcell").attr("id","")
-	pointing.id = "editcell"
+//	$("#editcell").attr("id","")
+//	pointing.id = "editcell"
 	$("#tbl").siblings().hide()
+	editcell(pointing)
 
 	switch(cindex)
 	{
@@ -230,6 +227,21 @@ function storePresentcell(pointing)
 			$("#editcell").attr("title", pointing.innerHTML)
 			break
 	}
+}
+
+function editcell(pointing)
+{
+	var pos = $(pointing).position()
+
+	$("#editcell").css({
+		height: $(pointing).height() + "px",
+		width: $(pointing).width() + "px",
+		top: pos.top + "px",
+		left: pos.left + "px",
+		display: "block",
+	})
+	$("#editcell").html($(pointing).html())
+	$("#editcell").focus()
 }
 
 function fillSetTable(rownum, pointing)
@@ -346,7 +358,6 @@ function showup(pointing, menuID)
 	var height = pos.top + $(pointing).outerHeight();
 	var width = pos.left + $(pointing).outerWidth();
 
-	$(menuID).css("box-shadow", "10px 20px 30px slategray")
 	if ((height + $(menuID).outerHeight()) > $(window).innerHeight() + document.body.scrollTop)
 	{
 		height = pos.top - $(menuID).innerHeight()
@@ -356,7 +367,8 @@ function showup(pointing, menuID)
 		position: "absolute",
 		top: height + "px",
 		left: width + "px",
-		display: "block"
+		display: "block",
+		boxShadow: "10px 20px 30px slategray"
 	})
 }
 

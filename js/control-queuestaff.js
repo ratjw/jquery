@@ -26,7 +26,7 @@ function staffqueue(staffname)
 	$("#container").dialog({
 		dialogClass: "dialog",
 		title: staffname,
-		height: window.innerHeight * 70 / 100,
+		height: window.innerHeight * 50 / 100,
 		width: window.innerWidth * 70 / 100
 	});
 	DragDropStaff(event)
@@ -50,7 +50,7 @@ function makenextrowQueue(table, i)
 function Qclicktable(event)
 {
 	//checkpoint#1 : click in editing area
-	var clickedCell = event.target || window.event.srcElement
+	var clickedCell = window.event.srcElement || event.target
 //	if (clickedCell.id == "editcell")
 //		return
 
@@ -114,7 +114,7 @@ function editingQueue(event)
 	{
 		if ($("#editcell").index() == QSINCE)
 		{
-			$("editcell").attr("id","")
+			$("#editcell").attr("id","")
 			$("#container").parent().hide()	//dialog enwraped container
 		}
 		else
@@ -333,7 +333,7 @@ function addnewrowQ()
 	rownum = $("#queuetbl tr").length	//always append to table end
 	rowi = makenextrowQueue(queuetbl, rownum)
 	rowi.cells[QSINCE].innerHTML = new Date().MysqlDate().thDate()
-	$("editcell").attr("id", "")	//editcell was started by storePresentcellQueue
+	$("#editcell").attr("id", "")	//editcell was started by storePresentcellQueue
 }
 
 function deletecaseQ(rowmain, qn)
@@ -351,7 +351,7 @@ function deletecaseQ(rowmain, qn)
 			updateBOOK(response);
 			$(rowmain).remove()
 	}
-	$("editcell").attr("id", "")	//editcell was started by storePresentcellQueue
+	$("#editcell").attr("id", "")	//editcell was started by storePresentcellQueue
 }
 
 function findPrevcellQueue() 
@@ -411,95 +411,6 @@ function findNextcellQueue()
 	} while (!$(nextcell).get(0).isContentEditable)
 
 	return $(nextcell).get(0)
-}
-
-function movetoQwait(movemode, pointQnum)
-{
-	var fromtable = $(movemode).closest("table").get(0)
-
-	if (fromtable.id == "tbl")
-	{
-		movecaseBookToQwait(movemode.cells[QN].innerHTML, pointQnum)
-	}
-	else if (fromtable.id == "queuetbl")
-	{
-		if ((movemode.cells[QWAITNUM].innerHTML != pointQnum))
-		{	//to move must click not the same day
-			movecaseQwaitToQwait(pointQnum)
-		}
-	}
-}
-
-function movecaseQwaitToQwait(WaitNumTo)
-{
-	var table = document.getElementById("queuetbl")
-	var MVfrom = document.getElementById("movemode")
-	var WNfrom = MVfrom.cells[QWAITNUM].innerHTML
-	var QNfrom = MVfrom.cells[QQN].innerHTML
-	var staffname = MVfrom.cells[QSTAFFNAME].innerHTML
-	var sql = ""
-
-	if (WNfrom == WaitNumTo)
-	{
-		$("editcell").attr("id", "")
-		return
-	}
-
-	table.style.cursor = 'wait'
-	sql = "functionName=movecaseQwaitToQwait"	//name of function as a variable in PHP
-	sql += "&WNfrom="+ WNfrom
-	sql += "&WaitNumTo="+ WaitNumTo
-	sql += "&staffname="+ staffname
-	sql += "&THISUSER="+ THISUSER
-	sql += "&QNfrom="+ QNfrom
-
-	Ajax(MYSQLIPHP, sql, qcallbackmove);
-
-	function qcallbackmove(response)
-	{
-		if (!response || response.indexOf("DBfailed") != -1)
-			alert ("Move failed!\n" + response)
-		else
-		{
-			updateBOOK(response);
-			staffqueue(staffname)
-			table.rows[WaitNumTo].scrollIntoView(false)
-		}
-		$("editcell").attr("id", "")
-		table.style.cursor = 'default'
-	}	
-}
-
-function movecaseBookToQwait(QNfrom, pointQnum)
-{
-	var table = document.getElementById("queuetbl")
-	var WNfrom = null
-	var sql = ""
-	var staffname = document.getElementById("queuespan").innerHTML
-
-	table.style.cursor = 'wait'
-	sql = "functionName=movecaseBookToQwait"	//name of function as a variable in PHP
-	sql += "&WaitNumTo="+ pointQnum
-	sql += "&staffname="+ staffname
-	sql += "&THISUSER="+ THISUSER
-	sql += "&QNfrom="+ QNfrom
-
-	Ajax(MYSQLIPHP, sql, qcallbackmove);
-
-	function qcallbackmove(response)
-	{
-		if (!response || response.indexOf("DBfailed") != -1)
-			alert ("Move failed!\n" + response)
-		else
-		{
-			updateBOOK(response);
-			staffqueue(staffname)
-			table.rows[pointQnum].scrollIntoView(false)
-			refillall()
-		}
-		$("editcell").attr("id", "")
-		table.style.cursor = 'default'
-	}	
 }
 
 function saveHNinputQueue(hn, content)

@@ -40,39 +40,6 @@ function deleteblankrow(rowmain)
 	rowmain.parentNode.removeChild(rowmain)
 }
 
-function movecaseQwaitToBook(movemode, OpDateTo)
-{
-	var table = document.getElementById("queuetbl")
-	var waitnum = movemode.cells[QWAITNUM].innerHTML
-	var staffname = movemode.cells[QSTAFFNAME].innerHTML
-	var QNfrom = movemode.cells[QQN].innerHTML
-	var sql = ""
-
-	sql = "sqlReturnbook=UPDATE book SET waitnum=null, opdate='" + OpDateTo
-	sql += "', editor='"+ THISUSER
-	sql += "' WHERE qn="+ QNfrom +";"
-	sql += "UPDATE book SET waitnum=waitnum"+ encodeURIComponent("-")
-	sql += "1 WHERE waitnum>=" + waitnum
-	sql += " AND staffname='"+ staffname +"';"
-
-	Ajax(MYSQLIPHP, sql, callbackmoveQwaitToBook);
-
-	document.getElementById("calendar").style.display = ""
-		
-	function callbackmoveQwaitToBook(response)
-	{
-		if (!response || response.indexOf("DBfailed") != -1)
-			alert ("Move failed!\n" + response)
-		else
-		{
-			updateBOOK(response);
-			refillall()
-		}
-		$("queuetbl").css("display", "")
-		$("editcell").attr("id", "")
-	}	
-}
-
 function PACS(hn) 
 { 
 	open('http://synapse/explore.asp?path=/All Patients/InternalPatientUID='+hn);
@@ -133,7 +100,7 @@ function makehistory(rowmain, response)
 	$("#container").dialog({
 		dialogClass: "dialog",
 		title: rowmain.cells[HN].innerHTML +' '+ rowmain.cells[NAME].innerHTML,
-		height: window.innerHeight * 70 / 100,
+		height: window.innerHeight * 50 / 100,
 		width: window.innerWidth * 70 / 100
 	});
 }
@@ -192,7 +159,7 @@ function makeDeleteHistory(rowmain, response)
 	$("#container").dialog({
 		dialogClass: "dialog",
 		title: rowmain.cells[HN].innerHTML +' '+ rowmain.cells[NAME].innerHTML,
-		height: window.innerHeight * 70 / 100,
+		height: window.innerHeight * 50 / 100,
 		width: window.innerWidth * 70 / 100
 	});
 }

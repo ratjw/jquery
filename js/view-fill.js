@@ -25,7 +25,6 @@ function filluprefill()
 	//Start at the same begindate and same scrollTop
 	var topscroll = document.body.scrollTop
 
-	updateBOOKFILL()
 	fillnew()
 	document.body.scrollTop = topscroll
 	DragDrop(event)
@@ -183,7 +182,7 @@ function fillday(day)
 	$("#container").dialog({
 		dialogClass: "dialog",
 		title: day,
-		height: window.innerHeight * 70 / 100,
+		height: window.innerHeight * 50 / 100,
 		width: window.innerWidth * 70 / 100
 	});
  	DragDropday(event)

@@ -15,6 +15,11 @@ function loadtable(userid)
 		if ($("#queuetbl").css("display") == "block")
 			editingQueue(event)
 	})
+	$("#editcell").click( function (event) {
+//		countreset();
+//		clickeditcell(event)
+		return false
+	})
 	$("#tbl").click( function (event) {
 		countreset();
 		clicktable(event)
@@ -33,7 +38,6 @@ function loadtable(userid)
 		return false
 	})
 	document.onscroll = scrollUpDown
-	swipefinger();
 	TIMER = setTimeout("updating()",10000)		//poke next 10 sec.
 }
 
@@ -71,46 +75,6 @@ function fillStafflist()
 	$("#item40").append(stafflist)
 }
 
-function updateBOOKFILL()
-{
-	var q, k
-
-	if (STATE[0] == "FILLUP")
-	{
-		BOOKFILL = BOOK
-	}
-	else if (STATE[0] == "FILLDAY")
-	{
-		BOOKFILL = []
-		for (q=0; q < BOOK.length; q++)
-		{
-			k = (new Date(BOOK[q].opdate)).getDay()
-			if (k == STATE[1] || k == 0)
-				BOOKFILL.push(BOOK[q])
-		}
-	}
-	else if (STATE[0] == "FILLSTAFF")
-	{
-		BOOKFILL = []
-		for (q=0; q < BOOK.length; q++)
-			if (BOOK[q].staffname == STATE[1])
-				BOOKFILL.push(BOOK[q])
-	}
-}
-
-function updateQWAITFILL(staffname)
-{	//get temp QWAIT of only one staff
-	QWAITFILL = []
-	if (staffname)
-	{
-		for (q=0; q < QWAIT.length; q++)
-		{
-			if (QWAIT[q].staffname == staffname)
-				QWAITFILL.push(QWAIT[q])
-		}
-	}
-}
-
 function updating()
 {
 	if (document.getElementById("editmode") || document.getElementById("movemode"))
@@ -128,7 +92,7 @@ function updating()
 		if (response && response.indexOf("opdate") != -1)	//there is new entry after TIMESTAMP
 		{
 			updateBOOK(response);
-			refillall()
+			filluprefill()
 		}
 		clearTimeout(TIMER);
 		TIMER = setTimeout("updating()",10000);	//poke next 10 sec.
@@ -139,19 +103,4 @@ function countreset()
 {
 	clearTimeout(TIMER);
 	TIMER = setTimeout("updating()",10000);	//poke after 10 sec.
-}
-
-function refillall()
-{	//called from : updatingback, callbackmove
-	var foundqn
-
-	//BOOKFILL will be updated in each fill
-	if (STATE[0] == "FILLUP")
-		filluprefill();		//display the same weeks
-	else if (STATE[0] == "FILLDAY")
-		fillday();		//display the same opday
-	else if (STATE[0] == "FILLSTAFF")
-		fillstaff();		//display the same staff
-	if (foundqn)
-		hiliteupdatefill(foundqn)
 }
