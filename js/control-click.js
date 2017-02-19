@@ -2,8 +2,9 @@ function clicktable(event)
 {
 	clickedCell = window.event.srcElement || event.target
 
+	//checkpoint#1 : click in editing area
 	if (clickedCell.id == "editcell") {
-		return false
+		return
 	} else {
 		$("#tbl").siblings().hide()
 		if (clickedCell.nodeName != "TD")
@@ -18,7 +19,6 @@ function clicktable(event)
 function editing(event)
 {
 	var keycode = event.which || window.event.keyCode
-	var thatcell = $("#editcell").get(0)
 	var thiscell
 
 	if (keycode == 9)
@@ -34,37 +34,31 @@ function editing(event)
 		} else {
 			$("#tbl").siblings().hide()
 		}
-		event.preventDefault()
 	}
 	else if (keycode == 13)
 	{
 		if (event.shiftKey || event.ctrlKey)
 			return false
-		event.preventDefault()
 		savePreviouscell()
 		thiscell = findNextcell()
-		storePresentcell(thiscell)
-		if (thiscell)
+		if (thiscell) {
+			storePresentcell(thiscell)
 			thiscell.focus()
-		else
-		{
-			thatcell.id = "editcell"
-			thatcell.focus()
+		} else {
+			$("#tbl").siblings().hide()
 		}
-		event.preventDefault()
 	}
 	else if (keycode == 27)
 	{
-		if ($("#editcell").index() == OPDATE)
+		if ($($("#editcell").data("located")).index() == OPDATE)
 		{
-			$("#editcell").attr("id","")
+			$("#editcell").hide()
 			$("#tbl").siblings().hide()
 		}
 		else
 		{
-			$("#editcell").html($("#editcell").attr("title"))
+			$($("#editcell").data("located")).html($("#editcell").data("content"))
 		}
-		event.preventDefault()
 		window.focus()
 	}
 }
@@ -73,9 +67,6 @@ function savePreviouscell()
 {
 	if (!$("#editcell").data("located"))
 		return
-
-//	if ($("#queuetbl").css("display") == "block")
-//		return
 
 	var content = $("#editcell").html()
 
@@ -114,20 +105,21 @@ function saveContent(column, content)	//column name in MYSQL
 	var rowtr = $($("#editcell").data("located")).closest("tr").children("td")
 	var opdate = rowtr.eq(OPDATE).html().numDate()
 	var qn = rowtr.eq(QN).html()
+	var sqlstring
 
 	$("#tbl").css("cursor", "wait")
 	content = URIcomponent(content)			//take care of white space, double qoute, 
 											//single qoute, and back slash
 	if (qn)
 	{
-		var sqlstring = "sqlReturnbook=UPDATE book SET "
+		sqlstring = "sqlReturnbook=UPDATE book SET "
 		sqlstring += column +" = '"+ content
 		sqlstring += "', editor='"+ THISUSER
 		sqlstring += "' WHERE qn = "+ qn +";"
 	}
 	else
 	{
-		var sqlstring = "sqlReturnbook=INSERT INTO book ("
+		sqlstring = "sqlReturnbook=INSERT INTO book ("
 		sqlstring += "opdate, "+ column +", editor) VALUES ('"
 		sqlstring += opdate +"', '"+ content +"', '"+ THISUSER +"');"
 	}
@@ -208,7 +200,7 @@ function storePresentcell(pointing)
 			break
 		case NAME:
 		case AGE:
-			$("#editcell").hide() //disable any editcell
+			$("#editcell").hide() //disable self (uneditcell)
 			break
 		case HN:
 		case DIAGNOSIS:

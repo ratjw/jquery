@@ -49,32 +49,28 @@ function makenextrowQueue(table, i)
 
 function Qclicktable(event)
 {
-	//checkpoint#1 : click in editing area
 	var clickedCell = window.event.srcElement || event.target
-//	if (clickedCell.id == "editcell")
-//		return
 
-	if (clickedCell.nodeName != "TD")
-	{
-		if ($("#editcell").get(0))
-			$("#editcell").attr("id","")
+	//checkpoint#1 : click in editing area
+	if (clickedCell.id == "editcell") {
 		return
+	} else {
+		$("#tbl").siblings().not("#queuetbl").hide()
+		if (clickedCell.nodeName != "TD")
+			return
 	}
 
 	savePreviouscellQueue()
 	storePresentcellQueue(clickedCell)
-	event.preventDefault()
-	event.stopPropagation()
-	clickedCell.focus()
+	$("#editcell").focus()
 }
 
 function editingQueue(event)
 {
 	var keycode = event.which || window.event.keyCode
-	var thatcell = $("#editcell").get(0)
 	var thiscell
 
-	if ($("#editcell").closest("table").attr("id") != "queuetbl")
+	if ($($("#editcell").data("located")).closest("table").attr("id") != "queuetbl")
 		return
 
 	if (keycode == 9)
@@ -84,13 +80,11 @@ function editingQueue(event)
 			thiscell = findPrevcellQueue()
 		else
 			thiscell = findNextcellQueue()
-		storePresentcellQueue(thiscell)
-		if (thiscell)
+		if (thiscell) {
+			storePresentcellQueue(thiscell)
 			thiscell.focus()
-		else
-		{
-			thatcell.id = "editcell"
-			thatcell.focus()
+		} else {
+			$("#editcell").hide()
 		}
 	}
 	else if (keycode == 13)
@@ -100,25 +94,24 @@ function editingQueue(event)
 
 		savePreviouscellQueue()
 		thiscell = findNextcellQueue()
-		storePresentcellQueue(thiscell)
-		if (thiscell)
+		if (thiscell) {
+		if (thiscell) {
+			storePresentcellQueue(thiscell)
 			thiscell.focus()
-		else
-		{
-			thatcell.id = "editcell"
-			thatcell.focus()
+		} else {
+			$("#editcell").hide()
 		}
 	}
 	else if (keycode == 27)
 	{
-		if ($("#editcell").index() == QSINCE)
+		if ($($("#editcell").data("located")).index() == QSINCE)
 		{
-			$("#editcell").attr("id","")
-			$("#container").parent().hide()	//dialog enwraped container
+			$("#editcell").hide()
+			$("#queuemenu").hide()	//dialog enwraped container
 		}
 		else
 		{
-			$("#editcell").html($("#editcell").attr("title"))
+			$($("#editcell").data("located")).html($("#editcell").data("content"))
 		}
 		window.focus()
 	}
@@ -126,15 +119,15 @@ function editingQueue(event)
 
 function savePreviouscellQueue() 
 {
-	if (!$("#editcell").get(0))
+	if (!$("#editcell").data("located"))
 		return
 
 	var content = $("#editcell").html()
 
-	if (content == $("#editcell").attr("title"))
+	if (content == $("#editcell").data("content"))
 		return
 
-	var editcindex = $("#editcell").closest("td").index()
+	var editcindex = $($("#editcell").data("located")).index()
 
 	switch(editcindex)
 	{
@@ -159,13 +152,14 @@ function savePreviouscellQueue()
 
 function saveContentQueue(column, content)
 {
-	var rowcell = $("#editcell").closest("tr").children("td")
+	var rowcell = $($("#editcell").data("located")).closest("tr").children("td")
 	var opdate = new Date().MysqlDate()
 	var qn = rowcell.eq(QQN).html()
 	var staffname = $( "#container" ).dialog( "option", "title" )
 	var sqlstring
 	var waitnum
 
+	$("#queuetbl").css("cursor", "wait")
 	content = URIcomponent(content)			//take care of white space, double qoute, 
 											//single qoute, and back slash
 	if (qn)
@@ -198,8 +192,9 @@ function saveContentQueue(column, content)
 		{
 			updateBOOK(response);
 			fillselectQueue(rowcell, waitnum, qn)
-			DragDropStaff(event)
+			$("#editcell").data("content", "")
 		}
+		$("#queuetbl").css("cursor", "")
 	}
 }
 
@@ -256,8 +251,8 @@ function storePresentcellQueue(pointing)
 	var rindex = $(rowtr).index()
 	var qn = $(rowtr).children("td").eq(QQN).html()
 
-	$("#editcell").attr("id","")
-	pointing.id = "editcell"
+	$("#editcell").hide()
+	editcell(pointing)
 
 	switch(cindex)
 	{
@@ -266,13 +261,13 @@ function storePresentcellQueue(pointing)
 			break
 		case QNAME:
 		case QAGE:
-			$("#editcell").attr("id","") //disable any editcell
+			$("#editcell").hide() //disable self (uneditcell)
 			break
 		case QHN:
 		case QDIAGNOSIS:
 		case QTREATMENT:
 		case QTEL:	//store value in attribute "title" of editcell
-			$("#editcell").attr("title", pointing.innerHTML)
+			$("#editcell").data("content", $(pointing).html())
 			break
 	}
 }
@@ -313,7 +308,7 @@ function fillSetTableQueue(pointing, rindex)
 					deletecaseQ(rowmain, thisqqn)
 					break
 			}
-			$("#editcell").attr("id","")
+			$("#editcell").hide()
 			$("#queuemenu").hide()
 			event.stopPropagation()
 		}
@@ -330,7 +325,7 @@ function addnewrowQ()
 	rownum = $("#queuetbl tr").length	//always append to table end
 	rowi = makenextrowQueue(queuetbl, rownum)
 	rowi.cells[QSINCE].innerHTML = new Date().MysqlDate().thDate()
-	$("#editcell").attr("id", "")	//editcell was started by storePresentcellQueue
+	DragDropStaff(event)
 }
 
 function deletecaseQ(rowmain, qn)
@@ -348,71 +343,67 @@ function deletecaseQ(rowmain, qn)
 			updateBOOK(response);
 			$(rowmain).remove()
 	}
-	$("#editcell").attr("id", "")	//editcell was started by storePresentcellQueue
 }
 
 function findPrevcellQueue() 
 {
-	var prevcell = $("#editcell")
+	var prevcell = $("#editcell").data("located")
 
-	do {
-		if ($(prevcell).index() > QHN)
-		{
-			prevcell = $(prevcell).prev()
+	if (column = EDITQUEUE[($.inArray(column, EDITQUEUE) - 1)])
+	{
+		prevcell = $(prevcell).parent().children().eq(column)
+	}
+	else
+	{
+		if ($(prevcell).parent().index() > 1)
+		{	//go to prev row last editable
+			do {
+				prevcell = $(prevcell).parent().prev("tr").children().eq(QTEL)
+			}
+			while ($(prevcell).get(0).nodeName == "TH")	//THEAD row
 		}
 		else
-		{
-			if ($(prevcell).parent().index() > 1)
-			{	//go to prev row last editable
-				do {
-					prevcell = $(prevcell).parent().prev("tr").children().eq(QTEL)
-				}
-				while ($(prevcell).get(0).nodeName == "TH")	//THEAD row
-			}
-			else
-			{	//#tbl tr:1 td:1
-				event.preventDefault()
-				return false
-			}
+		{	//#tbl tr:1 td:1
+			event.preventDefault()
+			return false
 		}
-	} while (!$(prevcell).get(0).isContentEditable)
+	}
 
 	return $(prevcell).get(0)
 }
 
 function findNextcellQueue() 
 {
-	var nextcell = $("#editcell")
+	var nextcell = $("#editcell").data("located")
+	var column = $(nextcell).index()
 	var lastrow = $('#queuetbl tr:last-child').index()
 	
-	do {
-		if ($(nextcell).index() < QTEL)
-		{
-			nextcell = $(nextcell).next()
+	if (column = EDITQUEUE[($.inArray(column, EDITQUEUE) + 1)])
+	{
+		nextcell = $(nextcell).parent().children().eq(column)
+	}
+	else
+	{
+		if ($(nextcell).parent().index() < lastrow)
+		{	//go to next row first editable
+			do {
+				nextcell = $(nextcell).parent().next("tr").children().eq(QHN)
+			}
+			while ($(nextcell).get(0).nodeName == "TH")	//THEAD row
 		}
 		else
-		{
-			if ($(nextcell).parent().index() < lastrow)
-			{	//go to next row first editable
-				do {
-					nextcell = $(nextcell).parent().next("tr").children().eq(QHN)
-				}
-				while ($(nextcell).get(0).nodeName == "TH")	//THEAD row
-			}
-			else
-			{	//#tbl tr:last-child td:last-child
-				event.preventDefault()
-				return false
-			}
+		{	//#tbl tr:last-child td:last-child
+			event.preventDefault()
+			return false
 		}
-	} while (!$(nextcell).get(0).isContentEditable)
+	}
 
 	return $(nextcell).get(0)
 }
 
 function saveHNinputQueue(hn, content)
 {
-	var rowtr = $("#editcell").closest("tr").children("td")
+	var rowtr = $($("#editcell").data("located")).closest("tr").children("td")
 	var opdate = rowtr.eq(QSINCE).html().numDate()
 	var patient = rowtr.eq(QNAME).html()
 	var qn = rowtr.eq(QQN).html()
@@ -421,7 +412,7 @@ function saveHNinputQueue(hn, content)
 
 	if (patient)
 	{
-		$("#editcell").html($("#editcell").attr("title"))
+		$("#editcell").html($("#editcell").data("content"))
 		return
 	}
 
