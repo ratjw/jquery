@@ -5,19 +5,16 @@ function loadtable(userid)
 	THISUSER = userid
 	$("#login").remove()
 	$("#tbl").css("display", "block")
-	$("#tbl").keydown( function (event) {
+
+	$("#editcell").keydown( function (event) {
 		countreset();
 		if ($("#queuetbl").css("display") == "none")
 			editing(event)
-	})
-	$("#queuetbl").parent().keydown( function (event) {
-		countreset();
-		if ($("#queuetbl").css("display") == "block")
+		else if ($("#queuetbl").css("display") == "block")
 			editingQueue(event)
 	})
 	$("#editcell").click( function (event) {
-//		countreset();
-//		clickeditcell(event)
+		editing(event)
 		return false
 	})
 	$("#tbl").click( function (event) {
@@ -30,11 +27,9 @@ function loadtable(userid)
 		clicktable(event)
 		return false
 	})
-	$("#queuetbl").parent().click( function (event) {
+	$("#queuetbl").click( function (event) {
 		countreset();
 		Qclicktable(event)
-		event.stopPropagation()
-		event.preventDefault()
 		return false
 	})
 	document.onscroll = scrollUpDown

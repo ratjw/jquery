@@ -1,22 +1,18 @@
-function clickeditcell(event)
-{
-	return
-}
-
 function clicktable(event)
 {
 	clickedCell = window.event.srcElement || event.target
 
-	$("#tbl").siblings().hide()
-
-	if (clickedCell.nodeName != "TD")
-	{
-		$("#editcell").attr("id","")
-		return
+	if (clickedCell.id == "editcell") {
+		return false
+	} else {
+		$("#tbl").siblings().hide()
+		if (clickedCell.nodeName != "TD")
+			return
 	}
 
 	savePreviouscell()
 	storePresentcell(clickedCell)
+	$("#editcell").focus()
 }
 
 function editing(event)
@@ -25,9 +21,6 @@ function editing(event)
 	var thatcell = $("#editcell").get(0)
 	var thiscell
 
-	if ($("#editcell").closest("table").attr("id") != "tbl")
-		return
-
 	if (keycode == 9)
 	{
 		savePreviouscell()
@@ -35,13 +28,11 @@ function editing(event)
 			thiscell = findPrevcell()
 		else
 			thiscell = findNextcell()
-		storePresentcell(thiscell)
-		if (thiscell)
+		if (thiscell) {
+			storePresentcell(thiscell)
 			thiscell.focus()
-		else
-		{
-			thatcell.id = "editcell"
-			thatcell.focus()
+		} else {
+			$("#tbl").siblings().hide()
 		}
 		event.preventDefault()
 	}
@@ -80,18 +71,18 @@ function editing(event)
 
 function savePreviouscell() 
 {
-	if (!$("#editcell").get(0))
+	if (!$("#editcell").data("located"))
 		return
 
-	if ($("#editcell").closest("table").attr("id") != "tbl")
-		return
+//	if ($("#queuetbl").css("display") == "block")
+//		return
 
 	var content = $("#editcell").html()
 
-	if (content == $("#editcell").attr("title"))
+	if (content == $("#editcell").data("content"))
 		return
 
-	var editcindex = $("#editcell").closest("td").index()
+	var editcindex = $($("#editcell").data("located")).index()
 
 	switch(editcindex)
 	{
@@ -120,7 +111,7 @@ function savePreviouscell()
 
 function saveContent(column, content)	//column name in MYSQL
 {
-	var rowtr = $("#editcell").closest("tr").children("td")
+	var rowtr = $($("#editcell").data("located")).closest("tr").children("td")
 	var opdate = rowtr.eq(OPDATE).html().numDate()
 	var qn = rowtr.eq(QN).html()
 
@@ -148,7 +139,7 @@ function saveContent(column, content)	//column name in MYSQL
 		if (!response || response.indexOf("DBfailed") != -1)
 		{
 			alert("Failed! update database \n\n" + response)
-			$("#editcell").attr("title")
+			$($("#editcell").data("located")).html($("#editcell").data("content"))
 		}
 		else
 		{
@@ -161,14 +152,14 @@ function saveContent(column, content)	//column name in MYSQL
 
 function saveHNinput(hn, content)
 {
-	var rowtr = $("#editcell").closest("tr").children("td")
+	var rowtr = $($("#editcell").data("located")).closest("tr").children("td")
 	var opdate = rowtr.eq(OPDATE).html().numDate()
 	var patient = rowtr.eq(NAME).html()
 	var qn = rowtr.eq(QN).html()
 
 	if (patient)
 	{
-		$("#editcell").html($("#editcell").attr("title"))
+		$("#editcell").html($("#editcell").data("content"))
 		return
 	}
 	content = content.replace(/<br>/g, "")
@@ -203,8 +194,6 @@ function storePresentcell(pointing)
 	var rindex = $(rowtr).index()
 	var qn = $(rowtr).children("td").eq(QN).html()
 
-//	$("#editcell").attr("id","")
-//	pointing.id = "editcell"
 	$("#tbl").siblings().hide()
 	editcell(pointing)
 
@@ -218,13 +207,15 @@ function storePresentcell(pointing)
 			break
 		case NAME:
 		case AGE:
-			$("#editcell").attr("id","") //disable any editcell
+			$("#editcell").hide() //disable any editcell
 			break
 		case HN:
 		case DIAGNOSIS:
 		case TREATMENT:
-		case TEL:	//store value in attribute "title" of editcell
-			$("#editcell").attr("title", pointing.innerHTML)
+		case TEL:	//store content in "data" of editcell
+			$("#editcell").data({
+				content : $(pointing).html()
+			})
 			break
 	}
 }
@@ -233,6 +224,10 @@ function editcell(pointing)
 {
 	var pos = $(pointing).position()
 
+	$("#editcell").html($(pointing).html())
+	$("#editcell").data({
+		located : pointing
+	})
 	$("#editcell").css({
 		height: $(pointing).height() + "px",
 		width: $(pointing).width() + "px",
@@ -240,7 +235,6 @@ function editcell(pointing)
 		left: pos.left + "px",
 		display: "block",
 	})
-	$("#editcell").html($(pointing).html())
 	$("#editcell").focus()
 }
 
@@ -323,7 +317,7 @@ function fillSetTable(rownum, pointing)
 			}
 			event.stopPropagation()
 //			event.preventDefault()
-			$("#editcell").attr("id","")
+			$("#editcell").hide()
 			$("#menu").hide()
 			$( "#item4" ).removeClass( "ui-state-active" )
 			$( "#item4" ).prepend('<span class="ui-menu-icon ui-icon  ui-icon-caret-1-e"></span>')
@@ -391,59 +385,59 @@ function showupQueue(pointing, menuID)
 
 function findPrevcell() 
 {
-	var prevcell = $("#editcell")
+	var prevcell = $("#editcell").data("located")
+	var column = $(prevcell).index()
 
-	do {
-		if ($(prevcell).index() > 1)
-		{
-			prevcell = $(prevcell).prev()
+	if (column > 1)
+	{
+		column = EDITABLE[($.inArray(column, EDITABLE) - 1)];
+		prevcell = $(prevcell).parent().children().eq(column)
+	}
+	else
+	{
+		if ($(prevcell).parent().index() > 1)
+		{	//go to prev row last editable
+			do {
+				prevcell = $(prevcell).parent().prev("tr").children().eq(TEL)
+			}
+			while ($(prevcell).get(0).nodeName == "TH")	//THEAD row
 		}
 		else
-		{
-			if ($(prevcell).parent().index() > 1)
-			{	//go to prev row last editable
-				do {
-					prevcell = $(prevcell).parent().prev("tr").children().eq(TEL)
-				}
-				while ($(prevcell).get(0).nodeName == "TH")	//THEAD row
-			}
-			else
-			{	//#tbl tr:1 td:1
-				event.preventDefault()
-				return false
-			}
+		{	//#tbl tr:1 td:1
+			event.preventDefault()
+			return false
 		}
-	} while (!$(prevcell).get(0).isContentEditable)
+	}
 
 	return $(prevcell).get(0)
 }
 
 function findNextcell() 
 {
-	var nextcell = $("#editcell")
+	var nextcell = $("#editcell").data("located")
+	var column = $(nextcell).index()
 	var lastrow = $('#tbl tr:last-child').index()
-	
-	do {
-		if ($(nextcell).index() < TEL)
-		{
-			nextcell = $(nextcell).next()
+
+	if (column < TEL)
+	{
+		column = EDITABLE[($.inArray(column, EDITABLE) + 1)]
+		nextcell = $(nextcell).parent().children().eq(column)
+	}
+	else
+	{
+		if ($(nextcell).parent().index() < lastrow)
+		{	//go to next row first editable
+			do {
+				nextcell = $(nextcell).parent().next("tr").children().eq(STAFFNAME)
+			}
+			while ($(nextcell).get(0).nodeName == "TH")	//THEAD row
 		}
 		else
-		{
-			if ($(nextcell).parent().index() < lastrow)
-			{	//go to next row first editable
-				do {
-					nextcell = $(nextcell).parent().next("tr").children().eq(STAFFNAME)
-				}
-				while ($(nextcell).get(0).nodeName == "TH")	//THEAD row
-			}
-			else
-			{	//#tbl tr:last-child td:last-child
-				event.preventDefault()
-				return false
-			}
+		{	//#tbl tr:last-child td:last-child
+			event.preventDefault()
+			return false
 		}
-	} while (!$(nextcell).get(0).isContentEditable)
+	}
 
 	return $(nextcell).get(0)
 }

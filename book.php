@@ -44,12 +44,12 @@
   <TR id="datatitle">
     <td data-title="วันผ่าตัด"></td>
     <td data-title="Staff"></td>
-    <td contenteditable data-title="HN"></td>
+    <td data-title="HN"></td>
     <td data-title="ชื่อ นามสกุล"></td>
     <td data-title="อายุ"></td>
-    <td contenteditable data-title="Diagnosis"></td>
-    <td contenteditable data-title="Treatment"></td>
-    <td contenteditable data-title="Note"></td>
+    <td data-title="Diagnosis"></td>
+    <td data-title="Treatment"></td>
+    <td data-title="Note"></td>
     <td style="display:none"></td>
   </TR>
 </TABLE>
@@ -74,11 +74,11 @@
   <li><div id="item1"></div></li>
   <li><div id="item2"></div></li>
   <li><div id="item3"></div></li>
-  <li><div id="item4"></div>
+  <li><div id="item4" class="ui-state-disabled"></div>
 	<ul id="item40" style="width:120px">
 	</ul>
   </li>
-  <li><div id="item5"></div>
+  <li><div id="item5" class="ui-state-disabled"></div>
     <ul>
 	  <li><div id="item51">อาทิตย์</div></li>
 	  <li><div id="item52">จันทร์</div></li>
@@ -99,7 +99,7 @@
 
 <div id="container"></div>
 
-<div id="editcell" contenteditable></div>
+<div id="editcell" contenteditable="true"></div>
 
 <TABLE id="queuetbl" data-role="table" class="ui-responsive" style="display:none">
   <TBODY>
@@ -120,12 +120,12 @@
   <TBODY>
     <TR id="qdatatitle">
      <td data-title="Since"></td>
-     <td contenteditable data-title="HN"></td>
+     <td data-title="HN"></td>
      <td data-title="ชื่อ นามสกุล"></td>
      <td data-title="อายุ"></td>
-     <td contenteditable data-title="Diagnosis"></td>
-     <td contenteditable data-title="Treatment"></td>
-     <td contenteditable data-title="Note"></td>
+     <td data-title="Diagnosis"></td>
+     <td data-title="Treatment"></td>
+     <td data-title="Note"></td>
      <td style="display:none"></td>
 	</TR>
   </TBODY>

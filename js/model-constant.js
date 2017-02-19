@@ -26,6 +26,7 @@ var DIAGNOSIS	= 5;
 var TREATMENT	= 6;
 var TEL			= 7;
 var QN			= 8;
+var EDITABLE 	= [STAFFNAME, HN, DIAGNOSIS, TREATMENT, TEL];
 
 var QSINCE		= 0;
 var QHN			= 1;
@@ -35,6 +36,7 @@ var QDIAGNOSIS	= 4;
 var QTREATMENT	= 5;
 var QTEL		= 6;
 var QQN			= 7;
+var EDITQUEUE 	= [QHN, QDIAGNOSIS, QTREATMENT, QTEL];
 
 var NAMEOFDAYTHAI	= ["อาทิตย์", "จันทร์", "อังคาร", "พุธ", "พฤหัส", "ศุกร์", "เสาร์"];
 var DAYOFTHAINAME	= {"อาทิตย์":0, "จันทร์":1, "อังคาร":2, "พุธ":3, "พฤหัส":4, "ศุกร์":5, "เสาร์":6};

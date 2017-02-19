@@ -64,6 +64,7 @@ function Qclicktable(event)
 	savePreviouscellQueue()
 	storePresentcellQueue(clickedCell)
 	event.preventDefault()
+	event.stopPropagation()
 	clickedCell.focus()
 }
 
@@ -91,7 +92,6 @@ function editingQueue(event)
 			thatcell.id = "editcell"
 			thatcell.focus()
 		}
-		event.preventDefault()
 	}
 	else if (keycode == 13)
 	{
@@ -108,7 +108,6 @@ function editingQueue(event)
 			thatcell.id = "editcell"
 			thatcell.focus()
 		}
-		event.preventDefault()
 	}
 	else if (keycode == 27)
 	{
@@ -121,7 +120,6 @@ function editingQueue(event)
 		{
 			$("#editcell").html($("#editcell").attr("title"))
 		}
-		event.preventDefault()
 		window.focus()
 	}
 }
@@ -318,7 +316,6 @@ function fillSetTableQueue(pointing, rindex)
 			$("#editcell").attr("id","")
 			$("#queuemenu").hide()
 			event.stopPropagation()
-//			event.preventDefault()
 		}
 	});
 
