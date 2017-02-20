@@ -36,10 +36,6 @@ require_once "book.php";
 
 	if (empty($resultz["first_name"]))
 		echo "DBfailed ไม่มีผู้ป่วย hn นี้";
-	elseif (empty($resultz["initial_name"]))
-		echo "DBfailed Record devoided for this hn";
-	elseif (empty($resultz["dob"]))
-		echo "DBfailed No dob for this hn";
 	else
 	{
 		$resultz["hn"] = $hn;
@@ -62,14 +58,14 @@ function newqn($resultz, $opdate, $username, $waitnum, $staffname)
 	if ($qn)
 	{
 		$sql = "UPDATE book SET hn = '$hn', patient = '$initial_name";
-		$sql = $sql."$first_name.' '.$last_name', dob = '$dob', ";
+		$sql = $sql."$first_name"." "."$last_name', dob = '$dob', ";
 		$sql = $sql."gender = '$gender', editor = '$username' WHERE qn = $qn;";
 	}
 	else
 	{
 		$sql = "INSERT INTO book (opdate, staffname, hn, patient, dob, gender, editor)"; 
 		$sql = $sql."VALUES ('$opdate', '$staffname', '$hn', '$initial_name";
-		$sql = $sql."$first_name.' '.$last_name', '$dob', '$gender', '$username');";
+		$sql = $sql."$first_name"." "."$last_name', '$dob', '$gender', '$username');";
 	}
 
 	$query = $mysqli->query ($sql);

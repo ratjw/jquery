@@ -8,10 +8,7 @@ function DragDrop(event)
 		stack: ".ui-draggable",
 		zIndex: 100,	//test found 65 is under but 66 is over #container
 		start : function (event) {
-//			if (window.event.srcElement.id == "editcell")
-//				$( this ).draggable("disable")
-//			else
-				$("#editcell").attr("id", "")
+			$("#editcell").attr("id", "")
 		}
 	});
 
@@ -63,7 +60,7 @@ function DragDrop(event)
 				}
 				else
 				{
-					updateBOOK(response);
+					updateBOOK(response)
 					if (prevdate == thatdate || thatdate == nextdate)
 						that_row.remove()
 					else if (dragTable == "queuetbl")
@@ -235,16 +232,13 @@ function scrollUpDown()
 	var tableheight = document.getElementById("tbl").offsetHeight
 	var scrolly = Yscrolled()
 
-	if (STATE[0] == "FILLUP")
-	{ 
-		if ($(window).scrollTop() < 2)
-		{
-			fillupscroll(-1)
-		}
-		else if (tableheight <= window.innerHeight + scrolly)
-		{
-			fillupscroll(+1)
-		}
+	if ($(window).scrollTop() < 2)
+	{
+		fillupscroll(-1)
+	}
+	else if (tableheight <= window.innerHeight + scrolly)
+	{
+		fillupscroll(+1)
 	}
 }
 

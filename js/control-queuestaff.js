@@ -8,6 +8,7 @@ function staffqueue(staffname)
 	while (queuetbl.rows[1])
 		queuetbl.deleteRow(-1)
 
+
 	for (i=0,q=0; q < QWAIT.length; q++)
 	{
 		if (QWAIT[q].staffname == staffname)
@@ -29,7 +30,7 @@ function staffqueue(staffname)
 		height: window.innerHeight * 50 / 100,
 		width: window.innerWidth * 70 / 100
 	});
-	DragDropStaff(event)
+	DragDropStaff()
 }
 //$("#container").parent().find('.ui-dialog-titlebar').click(function() {
 //    alert("test");
@@ -49,7 +50,7 @@ function makenextrowQueue(table, i)
 
 function Qclicktable(event)
 {
-	var clickedCell = window.event.srcElement || event.target
+	var clickedCell = event.target || window.event.srcElement
 
 	//checkpoint#1 : click in editing area
 	if (clickedCell.id == "editcell") {
@@ -77,30 +78,34 @@ function editingQueue(event)
 	{
 		savePreviouscellQueue()
 		if (event.shiftKey)
-			thiscell = findPrevcellQueue()
+			thiscell = findPrevcellQueue(event)
 		else
-			thiscell = findNextcellQueue()
+			thiscell = findNextcellQueue(event)
 		if (thiscell) {
 			storePresentcellQueue(thiscell)
 			thiscell.focus()
 		} else {
 			$("#editcell").hide()
 		}
+		event.preventDefault()
 	}
 	else if (keycode == 13)
 	{
-		if (event.shiftKey || event.ctrlKey)
+		if (event.shiftKey || event.ctrlKey) {
+			event.preventDefault()
 			return false
-
+		}
 		savePreviouscellQueue()
-		thiscell = findNextcellQueue()
+		thiscell = findNextcellQueue(event)
 		if (thiscell) {
 		if (thiscell) {
 			storePresentcellQueue(thiscell)
 			thiscell.focus()
 		} else {
 			$("#editcell").hide()
+			window.focus()
 		}
+		event.preventDefault()
 	}
 	else if (keycode == 27)
 	{
@@ -114,6 +119,7 @@ function editingQueue(event)
 			$($("#editcell").data("located")).html($("#editcell").data("content"))
 		}
 		window.focus()
+		event.preventDefault()
 	}
 }
 
@@ -261,7 +267,7 @@ function storePresentcellQueue(pointing)
 			break
 		case QNAME:
 		case QAGE:
-			$("#editcell").hide() //disable self (uneditcell)
+			$("#editcell").hide() //disable self (uneditable cell)
 			break
 		case QHN:
 		case QDIAGNOSIS:
@@ -318,6 +324,23 @@ function fillSetTableQueue(pointing, rindex)
 	showupQueue(pointing, '#queuemenu')
 }
 
+function showupQueue(pointing, menuID)
+{
+	var pos = $(pointing).position();
+	var height = pos.top + $(pointing).outerHeight()
+	var width = pos.left  + $(pointing).outerWidth();
+
+	$(menuID).css({
+		position: "absolute",
+		top: height + "px",
+		left: width + "px",
+		zIndex: 1000,
+		modal:true,
+		display: "block"
+		boxShadow: "10px 20px 30px slategray"
+	})
+}
+
 function addnewrowQ()
 {
 	var queuetbl = document.getElementById("queuetbl")
@@ -325,7 +348,7 @@ function addnewrowQ()
 	rownum = $("#queuetbl tr").length	//always append to table end
 	rowi = makenextrowQueue(queuetbl, rownum)
 	rowi.cells[QSINCE].innerHTML = new Date().MysqlDate().thDate()
-	DragDropStaff(event)
+	DragDropStaff()
 }
 
 function deletecaseQ(rowmain, qn)
@@ -345,7 +368,7 @@ function deletecaseQ(rowmain, qn)
 	}
 }
 
-function findPrevcellQueue() 
+function findPrevcellQueue(event) 
 {
 	var prevcell = $("#editcell").data("located")
 
@@ -372,7 +395,7 @@ function findPrevcellQueue()
 	return $(prevcell).get(0)
 }
 
-function findNextcellQueue() 
+function findNextcellQueue(event) 
 {
 	var nextcell = $("#editcell").data("located")
 	var column = $(nextcell).index()

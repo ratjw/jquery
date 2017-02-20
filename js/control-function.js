@@ -126,17 +126,15 @@ function checkblank(opdate, qn)
 {	//No case in this date? 
 	var q = 0
 
-	if (BOOKFILL[0] == undefined)
-		return false
 	if (qn)
 		return false
-	while (opdate > BOOKFILL[q].opdate)
+	while (opdate > BOOK[q].opdate)
 	{
 		q++
-		if (q >= BOOKFILL.length)
+		if (q >= BOOK.length)
 			return false
 	}
-	if (opdate == BOOKFILL[q].opdate)
+	if (opdate == BOOK[q].opdate)
 		return true
 	else
 		return false

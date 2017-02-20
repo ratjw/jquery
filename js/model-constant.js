@@ -5,9 +5,7 @@ var MYSQLIPHP		= "php/mysqli.php";
 var MYSQL_ALLOR		= "php/mysql_allor.php";
 
 var BOOK		= {};
-var BOOKFILL	= [];	//fillup, fillstaff, fillday
 var QWAIT		= {};
-var QWAITFILL	= [];
 var ALLLISTS	= {};
 var STATE		= [];	//["FILLUP","2017-01-20"]	= show normal (queue of everyday) used in fillup
 						//["FILLDAY","0"]	(0-6)	= show queue of day used in fillday

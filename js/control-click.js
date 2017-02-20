@@ -1,6 +1,6 @@
 function clicktable(event)
 {
-	clickedCell = window.event.srcElement || event.target
+	var clickedCell = event.target || window.event.srcElement
 
 	//checkpoint#1 : click in editing area
 	if (clickedCell.id == "editcell") {
@@ -13,7 +13,6 @@ function clicktable(event)
 
 	savePreviouscell()
 	storePresentcell(clickedCell)
-	$("#editcell").focus()
 }
 
 function editing(event)
@@ -25,32 +24,36 @@ function editing(event)
 	{
 		savePreviouscell()
 		if (event.shiftKey)
-			thiscell = findPrevcell()
+			thiscell = findPrevcell(event)
 		else
-			thiscell = findNextcell()
+			thiscell = findNextcell(event)
 		if (thiscell) {
 			storePresentcell(thiscell)
-			thiscell.focus()
 		} else {
 			$("#tbl").siblings().hide()
+			window.focus()
 		}
+		event.preventDefault()
 	}
 	else if (keycode == 13)
 	{
-		if (event.shiftKey || event.ctrlKey)
+		if (event.shiftKey || event.ctrlKey) {
+			event.preventDefault()
 			return false
+		}
 		savePreviouscell()
-		thiscell = findNextcell()
+		thiscell = findNextcell(event)
 		if (thiscell) {
 			storePresentcell(thiscell)
-			thiscell.focus()
 		} else {
 			$("#tbl").siblings().hide()
+			window.focus()
 		}
+		event.preventDefault()
 	}
 	else if (keycode == 27)
 	{
-		if ($($("#editcell").data("located")).index() == OPDATE)
+		if ($("#editcell").data("located").cellIndex == OPDATE)
 		{
 			$("#editcell").hide()
 			$("#tbl").siblings().hide()
@@ -60,6 +63,7 @@ function editing(event)
 			$($("#editcell").data("located")).html($("#editcell").data("content"))
 		}
 		window.focus()
+		event.preventDefault()
 	}
 }
 
@@ -73,7 +77,7 @@ function savePreviouscell()
 	if (content == $("#editcell").data("content"))
 		return
 
-	var editcindex = $($("#editcell").data("located")).index()
+	var editcindex = $("#editcell").data("located").cellIndex
 
 	switch(editcindex)
 	{
@@ -102,7 +106,7 @@ function savePreviouscell()
 
 function saveContent(column, content)	//column name in MYSQL
 {
-	var rowtr = $($("#editcell").data("located")).closest("tr").children("td")
+	var rowtr = $($("#editcell").data("located")).parent().children("td")
 	var opdate = rowtr.eq(OPDATE).html().numDate()
 	var qn = rowtr.eq(QN).html()
 	var sqlstring
@@ -145,7 +149,7 @@ function saveContent(column, content)	//column name in MYSQL
 
 function saveHNinput(hn, content)
 {
-	var rowtr = $($("#editcell").data("located")).closest("tr").children("td")
+	var rowtr = $($("#editcell").data("located")).parent().children("td")
 	var opdate = rowtr.eq(OPDATE).html().numDate()
 	var patient = rowtr.eq(NAME).html()
 	var qn = rowtr.eq(QN).html()
@@ -200,7 +204,7 @@ function storePresentcell(pointing)
 			break
 		case NAME:
 		case AGE:
-			$("#editcell").hide() //disable self (uneditcell)
+			$("#editcell").hide() //disable self (uneditable cell)
 			break
 		case HN:
 		case DIAGNOSIS:
@@ -218,11 +222,12 @@ function editcell(pointing)
 	$("#editcell").html($(pointing).html())
 	$("#editcell").data("located", pointing)
 	$("#editcell").css({
-		height: $(pointing).height() + "px",
-		width: $(pointing).width() + "px",
 		top: pos.top + "px",
 		left: pos.left + "px",
-		display: "block",
+		height: $(pointing).height() + "px",
+		width: $(pointing).width() + "px",
+//		lineHeight: $(pointing).height() + "px",
+		display: "block"
 	})
 	$("#editcell").focus()
 }
@@ -304,14 +309,14 @@ function fillSetTable(rownum, pointing)
 				default :
 					staffqueue(item)
 			}
-			event.stopPropagation()
-			$("#editcell").hide()
-			$("#menu").hide()
+			$("#editcell").hide()	//to disappear after selection
+			$("#menu").hide()		//to disappear after selection
 			$( "#item4" ).removeClass( "ui-state-active" )
 			$( "#item4" ).prepend('<span class="ui-menu-icon ui-icon  ui-icon-caret-1-e"></span>')
 			$( "#item40" ).hide()
 			$( "#item40" ).attr("aria-hidden", "true")
 			$( "#item40" ).attr("aria-expanded", "false")
+			event.stopPropagation()
 		}
 	});
 
@@ -320,18 +325,18 @@ function fillSetTable(rownum, pointing)
 
 function stafflist(pointing)
 {
-	showup(pointing, '#stafflist')
-
 	$("#stafflist").menu({
 		select: function( event, ui ) {
 			var staffname = $(this).attr("aria-activedescendant")
-			$(pointing).html(staffname);
+			$("#editcell").html(staffname);
 			saveContent("staffname", staffname)
-			$("#editcell").hide()
-			$('#stafflist').hide();
+			$("#editcell").hide()	//to disappear after selection
+			$('#stafflist').hide()	//to disappear after selection
 			event.stopPropagation()
 		}
 	});
+
+	showup(pointing, '#stafflist')
 }
 
 function showup(pointing, menuID)
@@ -343,7 +348,6 @@ function showup(pointing, menuID)
 	if ((height + $(menuID).outerHeight()) > $(window).innerHeight() + document.body.scrollTop)
 	{
 		height = pos.top - $(menuID).innerHeight()
-		$(menuID).css("box-shadow", "10px -10px 30px slategray")
 	}
 	$(menuID).css({
 		position: "absolute",
@@ -354,24 +358,7 @@ function showup(pointing, menuID)
 	})
 }
 
-function showupQueue(pointing, menuID)
-{
-	var pos = $(pointing).position();
-	var height = pos.top + $(pointing).outerHeight()
-	var width = pos.left  + $(pointing).outerWidth();
-
-	$(menuID).css("box-shadow", "10px 20px 30px slategray")
-	$(menuID).css({
-		position: "absolute",
-		top: height + "px",
-		left: width + "px",
-		zIndex: 1000,
-		modal:true,
-		display: "block"
-	})
-}
-
-function findPrevcell() 
+function findPrevcell(event) 
 {
 	var prevcell = $("#editcell").data("located")
 	var column = $(prevcell).index()
@@ -399,7 +386,7 @@ function findPrevcell()
 	return $(prevcell).get(0)
 }
 
-function findNextcell() 
+function findNextcell(event) 
 {
 	var nextcell = $("#editcell").data("located")
 	var column = $(nextcell).index()

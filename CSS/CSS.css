@@ -24,17 +24,6 @@ td {
 	border-bottom: solid 1px silver;
 }
 
-#editcell { 
-	display:none;
-	position: absolute;
-	font-size: 16px;
-	text-align: left; 
-	vertical-align: middle; 
-	border: solid 1px blue;
-	background-color: white; 
-	box-shadow: 5px 5px 10px slategray;
-}
-
 tr {
 	background-repeat: no-repeat;
 	background-position: 300px;
@@ -71,6 +60,16 @@ td.sat:before { content: "เสาร์ "; }
 	text-align:center; 
 	background-color:papayawhip; 
 	border:2px solid slategray;
+}
+
+#editcell { 
+	display:none;
+	position: absolute;
+	font-size: 16px;
+	text-align: left; 
+	border: solid 1px #0099FF;
+	background-color: white; 
+	box-shadow: 5px 5px 10px slategray;
 }
 
 #alert {

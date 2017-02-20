@@ -11,7 +11,7 @@
 		rowmain.cells[0].id = ""
 		for (i=1; i<rowmain.cells.length; i++)
 			rowmain.cells[i].innerHTML = ""	
-		DragDrop(event)
+		DragDrop()
 	}
 }
 

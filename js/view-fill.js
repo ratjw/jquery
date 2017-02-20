@@ -1,43 +1,32 @@
 
 function fillupstart()		
 {	//Display all cases in each day of 5 weeks
-	STATE[0] = "FILLUP"
 	STATE[1] = getSunday()
 	if (BOOK.length == 0)
 		BOOK.push({"opdate" : getSunday()})
 	fillnew()
-	document.body.scrollTop = 3
-	DragDrop(event)
-}
-
-function fillupnormal()
-{	//from selecting firstcolumn menu change STATE to fillup from fillday or fillstaff
-
-	STATE[0] = "FILLUP"
-	fillnew()
-	DragDrop(event)
+	document.body.scrollTop = 1
+	DragDrop()
 }
 
 function filluprefill()
 { 	//from refillall which is called from :
 	//updatingback, callbackmove
-	//use current STATE : update inside the table
 	//Start at the same begindate and same scrollTop
 	var topscroll = document.body.scrollTop
 
 	fillnew()
 	document.body.scrollTop = topscroll
-	DragDrop(event)
+	DragDrop()
 }
 
 function fillupscroll(direction)
 {
 	fillext(direction)
-//	hilitefillext()
-	DragDrop(event)
+	DragDrop()
 }
 
-function fillext(di, event)
+function fillext(di)
 {
 	var begindate
 	var	i
