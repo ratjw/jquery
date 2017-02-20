@@ -98,7 +98,6 @@ function editingQueue(event)
 		savePreviouscellQueue()
 		thiscell = findNextcellQueue(event)
 		if (thiscell) {
-		if (thiscell) {
 			storePresentcellQueue(thiscell)
 			thiscell.focus()
 		} else {
@@ -336,7 +335,7 @@ function showupQueue(pointing, menuID)
 		left: width + "px",
 		zIndex: 1000,
 		modal:true,
-		display: "block"
+		display: "block",
 		boxShadow: "10px 20px 30px slategray"
 	})
 }

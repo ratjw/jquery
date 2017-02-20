@@ -275,10 +275,28 @@ function fillSetTable(rownum, pointing)
 	else
 		$("#item6").addClass(disabled)
 	$("#item7").html("รายชื่อที่ถูกลบ")
-
+/*
+$("#menu li").click(function() {
+    alert(this.id); // id of clicked li by directly accessing DOMElement property
+    alert($(this).attr('id')); // jQuery's .attr() method, same but more verbose
+    alert($(this).html()); // gets innerHTML of clicked li
+    alert($(this).text()); // gets text contents of clicked li
+})
+	$(function() {
+            var menu = $("#menu").menu();
+            $( "#menu" ).menu(
+               "focus", null, $( "#menu" ).menu().find( ".ui-menu-item:last" ));
+            $(menu).mouseleave(function () {
+               menu.menu('collapseAll');
+            });
+         });
+*/
 	$("#menu").menu({
 		select: function( event, ui ) {
-			var item = this.getAttribute("aria-activedescendant")
+			var item = $(ui.item).find("div").attr("id")
+			var disabled = $(ui.item).find("div").hasClass("ui-state-disabled")
+			if (disabled)
+				return false
 			switch(item)
 			{
 				case "item1":
@@ -309,13 +327,14 @@ function fillSetTable(rownum, pointing)
 				default :
 					staffqueue(item)
 			}
+			$("#menu").menu('collapseAll')
 			$("#editcell").hide()	//to disappear after selection
 			$("#menu").hide()		//to disappear after selection
-			$( "#item4" ).removeClass( "ui-state-active" )
-			$( "#item4" ).prepend('<span class="ui-menu-icon ui-icon  ui-icon-caret-1-e"></span>')
-			$( "#item40" ).hide()
-			$( "#item40" ).attr("aria-hidden", "true")
-			$( "#item40" ).attr("aria-expanded", "false")
+//			$( "#item4" ).removeClass( "ui-state-active" )
+//			$( "#item4" ).prepend('<span class="ui-menu-icon ui-icon  ui-icon-caret-1-e"></span>')
+//			$( "#item40" ).hide()
+//			$( "#item40" ).attr("aria-hidden", "true")
+//			$( "#item40" ).attr("aria-expanded", "false")
 			event.stopPropagation()
 		}
 	});
