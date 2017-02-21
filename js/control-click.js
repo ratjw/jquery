@@ -333,9 +333,9 @@ function stafflist(pointing)
 	$("#stafflist").menu({
 		select: function( event, ui ) {
 			var staffname = ui.item.text()
-			$(pointing).html(staffname);
-			$("#editcell").html(staffname);
+			$(pointing).html(staffname)
 			saveContent("staffname", staffname)
+			$("#editcell").data("located", "")
 			$("#editcell").hide()	//to disappear after selection
 			$('#stafflist').hide()	//to disappear after selection
 			event.stopPropagation()
