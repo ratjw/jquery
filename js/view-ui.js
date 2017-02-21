@@ -185,8 +185,9 @@ function DragDropStaff()
 	});
 
 	//add "#container" to trigger "over" at the "start" of draggable "#queuetbl tr"
-	//this causes 2 times when dropping from "#tbl" draggable
-	//the first one (#container) is to be filtered out by "drop on header"
+	//this is essential even it causes "#tbl" draggable enter "drop" 2 times
+	//because "#queuetbl tr" will move to "#tbl" when it was slightly dragged
+	//the first "drop" (because of #container) is filtered out by "drop on header"
 	$("#container, #queuetbl tr").droppable({
 		over: function(event, ui){
 			$( "#tbl tr" ).droppable( "disable" )
@@ -197,7 +198,7 @@ function DragDropStaff()
 		accept: "tr",
 		drop: function (event, ui) {
 
-			if (!$(this).children("td").eq(OPDATE).html())		//drop on header
+			if (!$(this).children("td").eq(OPDATE).html())	//drop on header
 				return true
 
 			var staffdrag = $(ui.draggable).children("td").eq(STAFFNAME).html()
@@ -231,160 +232,4 @@ function DragDropStaff()
 			}	
 		}
 	});
-}
-
-function scrollUpDown()
-{
-	var tableheight = document.getElementById("tbl").offsetHeight
-	var scrolly = Yscrolled()
-
-	if ($(window).scrollTop() < 2)
-	{
-		fillupscroll(-1)
-	}
-	else if (tableheight <= window.innerHeight + scrolly)
-	{
-		fillupscroll(+1)
-	}
-}
-
-function scrollview(table, dateclicked)
-{
-	var i, j, q
-	var trow = table.rows
-	var tlen = table.rows.length
-
-	i = 1	//top row
-	while ((i < tlen) && (trow[i].cells[OPDATE].innerHTML.numDate() != dateclicked))
-		i++
-	if (i == tlen)
-		i--
-	j = i + 1	//bottom row
-	while ((j < tlen) && (trow[j].cells[OPDATE].innerHTML.numDate() == dateclicked))
-		j++
-	j--
-	scrolltoview(trow[i], trow[j])
-}
-
-function scrolltoview(highpos, lowpos)
-{
-	var recthigh, rectlow
-	var find = document.getElementById("finddiv")
-	
-	recthigh = highpos.getBoundingClientRect()
-	rectlow = lowpos.getBoundingClientRect()
-	if (rectlow.bottom > $(window).height())
-	{
-		$('#tbl, tbody').animate({
-		  scrollTop: rectlow.bottom - $(window).height() + Yscrolled()
-		}, 1250)
-	}
-	else if (find.style.display == "block")
-	{
-		high = find.offsetTop + find.offsetHeight
-		if (recthigh.top < high)
-		{
-			$('#tbl, tbody').animate({
-			  scrollTop: recthigh.top - high + Yscrolled()
-			}, 1250)
-		}
-	}
-	else if (recthigh.top < 0)
-	{
-		$('#tbl, tbody').animate({
-          scrollTop: recthigh.top + Yscrolled()
-        }, 1250)
-	}
-}
-
-function holiday(date)
-{
-	var monthdate = date.substring(5)
-	var dayofweek = (new Date(date)).getDay()
-	var holidayname = ""
-
-	for (var key in HOLIDAY) 
-	{
-		if (key == date)
-			return HOLIDAY[key]	//matched a holiday
-		if (key > date)
-			break		//not a listed holiday
-						//either a fixed or a compensation holiday
-	}
-	switch (monthdate)
-	{
-	case "12-31":
-		holidayname = "url('pic/Yearend.jpg')"
-		break
-	case "01-01":
-		holidayname = "url('pic/Newyear.jpg')"
-		break
-	case "01-02":
-		if ((dayofweek == 1) || (dayofweek == 2))
-			holidayname = "url('pic/Yearendsub.jpg')"
-		break
-	case "01-03":
-		if ((dayofweek == 1) || (dayofweek == 2))
-			holidayname = "url('pic/Newyearsub.jpg')"
-		break
-	case "04-06":
-		holidayname = "url('pic/Chakri.jpg')"
-		break
-	case "04-07":
-	case "04-08":
-		if (dayofweek == 1)
-			holidayname = "url('pic/Chakrisub.jpg')"
-		break
-	case "04-13":
-	case "04-14":
-	case "04-15":
-		holidayname = "url('pic/Songkran.jpg')"
-		break
-	case "04-16":
-	case "04-17":
-		if (dayofweek && (dayofweek < 4))
-			holidayname = "url('pic/Songkransub.jpg')"
-		break
-	case "05-05":
-		holidayname = "url('pic/Coronation.jpg')"
-		break
-	case "05-06":
-	case "05-07":
-		if (dayofweek == 1)
-			holidayname = "url('pic/Coronationsub.jpg')"
-		break
-	case "08-12":
-		holidayname = "url('pic/Queen.jpg')"
-		break
-	case "08-13":
-	case "08-14":
-		if (dayofweek == 1)
-			holidayname = "url('pic/Queensub.jpg')"
-		break
-	case "10-23":
-		holidayname = "url('pic/Piya.jpg')"
-		break
-	case "10-24":
-	case "10-25":
-		if (dayofweek == 1)
-			holidayname = "url('pic/Piyasub.jpg')"
-		break
-	case "12-05":
-		holidayname = "url('pic/King.jpg')"
-		break
-	case "12-06":
-	case "12-07":
-		if (dayofweek == 1)
-			holidayname = "url('pic/Kingsub.jpg')"
-		break
-	case "12-10":
-		holidayname = "url('pic/Constitution.jpg')"
-		break
-	case "12-11":
-	case "12-12":
-		if (dayofweek == 1)
-			holidayname = "url('pic/Constitutionsub.jpg')"
-		break
-	}
-	return holidayname
 }

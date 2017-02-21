@@ -14,12 +14,14 @@
 <script src="js/jquery.js"></script>
 <script src="js/jquery-ui.js"></script>
 <script src="js/control-click.js"></script>
-<script src="js/control-edit.js"></script>
+<script src="js/control-clickqueue.js"></script>
 <script src="js/control-function.js"></script>
-<script src="js/control-queuestaff.js"></script>
 <script src="js/model-constant.js"></script>
 <script src="js/model-start.js"></script>
 <script src="js/view-fill.js"></script>
+<script src="js/view-fillqueue.js"></script>
+<script src="js/view-history.js"></script>
+<script src="js/view-menu.js"></script>
 <script src="js/view-ui.js"></script>
 </HEAD>
 <BODY>

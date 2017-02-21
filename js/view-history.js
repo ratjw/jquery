@@ -1,43 +1,17 @@
-﻿function addnewrow(rowmain)
+
+function scrollUpDown()
 {
-	if (rowmain.cells[QN].innerHTML)	//not empty
+	var tableheight = document.getElementById("tbl").offsetHeight
+	var scrolly = Yscrolled()
+
+	if ($(window).scrollTop() < 2)
 	{
-		var table = document.getElementById("tbl")
-		var clone = rowmain.cloneNode(true)	//cloneNode is faster than innerHTML
-		var i = rowmain.rowIndex
-		while (table.rows[i].cells[OPDATE].innerHTML == table.rows[i-1].cells[OPDATE].innerHTML)
-			i--		
-		rowmain.parentNode.insertBefore(clone,rowmain)
-		rowmain.cells[0].id = ""
-		for (i=1; i<rowmain.cells.length; i++)
-			rowmain.cells[i].innerHTML = ""	
-		DragDrop()
+		fillupscroll(-1)
 	}
-}
-
-function deletecase(rowmain, qn)
-{
-	//not actually delete the case but set waitnum=0
-	var sql = "sqlReturnbook=UPDATE book SET waitnum=0 WHERE qn="+ qn +";"
-
-	Ajax(MYSQLIPHP, sql, callbackdeleterow)
-
-	function callbackdeleterow(response)
+	else if (tableheight <= window.innerHeight + scrolly)
 	{
-		if (!response || response.indexOf("DBfailed") != -1)
-			alert ("Delete & Refresh failed!\n" + response)
-		else
-		{
-			updateBOOK(response);
-			filluprefill()
-		}
+		fillupscroll(+1)
 	}
-}
-
-function deleteblankrow(rowmain)
-{
-	var table = document.getElementById("tbl")
-	rowmain.parentNode.removeChild(rowmain)
 }
 
 function PACS(hn) 
@@ -162,4 +136,96 @@ function makeDeleteHistory(rowmain, response)
 		height: window.innerHeight * 50 / 100,
 		width: window.innerWidth * 70 / 100
 	});
+}
+
+function holiday(date)
+{
+	var monthdate = date.substring(5)
+	var dayofweek = (new Date(date)).getDay()
+	var holidayname = ""
+
+	for (var key in HOLIDAY) 
+	{
+		if (key == date)
+			return HOLIDAY[key]	//matched a holiday
+		if (key > date)
+			break		//not a listed holiday
+						//either a fixed or a compensation holiday
+	}
+	switch (monthdate)
+	{
+	case "12-31":
+		holidayname = "url('pic/Yearend.jpg')"
+		break
+	case "01-01":
+		holidayname = "url('pic/Newyear.jpg')"
+		break
+	case "01-02":
+		if ((dayofweek == 1) || (dayofweek == 2))
+			holidayname = "url('pic/Yearendsub.jpg')"
+		break
+	case "01-03":
+		if ((dayofweek == 1) || (dayofweek == 2))
+			holidayname = "url('pic/Newyearsub.jpg')"
+		break
+	case "04-06":
+		holidayname = "url('pic/Chakri.jpg')"
+		break
+	case "04-07":
+	case "04-08":
+		if (dayofweek == 1)
+			holidayname = "url('pic/Chakrisub.jpg')"
+		break
+	case "04-13":
+	case "04-14":
+	case "04-15":
+		holidayname = "url('pic/Songkran.jpg')"
+		break
+	case "04-16":
+	case "04-17":
+		if (dayofweek && (dayofweek < 4))
+			holidayname = "url('pic/Songkransub.jpg')"
+		break
+	case "05-05":
+		holidayname = "url('pic/Coronation.jpg')"
+		break
+	case "05-06":
+	case "05-07":
+		if (dayofweek == 1)
+			holidayname = "url('pic/Coronationsub.jpg')"
+		break
+	case "08-12":
+		holidayname = "url('pic/Queen.jpg')"
+		break
+	case "08-13":
+	case "08-14":
+		if (dayofweek == 1)
+			holidayname = "url('pic/Queensub.jpg')"
+		break
+	case "10-23":
+		holidayname = "url('pic/Piya.jpg')"
+		break
+	case "10-24":
+	case "10-25":
+		if (dayofweek == 1)
+			holidayname = "url('pic/Piyasub.jpg')"
+		break
+	case "12-05":
+		holidayname = "url('pic/King.jpg')"
+		break
+	case "12-06":
+	case "12-07":
+		if (dayofweek == 1)
+			holidayname = "url('pic/Kingsub.jpg')"
+		break
+	case "12-10":
+		holidayname = "url('pic/Constitution.jpg')"
+		break
+	case "12-11":
+	case "12-12":
+		if (dayofweek == 1)
+			holidayname = "url('pic/Constitutionsub.jpg')"
+		break
+	}
+	return holidayname
 }

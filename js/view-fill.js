@@ -288,3 +288,45 @@ function fillselect(tableID, opdate)
 		i++
 	}
 }
+
+function addnewrow(rowmain)
+{
+	if (rowmain.cells[QN].innerHTML)	//not empty
+	{
+		var table = document.getElementById("tbl")
+		var clone = rowmain.cloneNode(true)	//cloneNode is faster than innerHTML
+		var i = rowmain.rowIndex
+		while (table.rows[i].cells[OPDATE].innerHTML == table.rows[i-1].cells[OPDATE].innerHTML)
+			i--		
+		rowmain.parentNode.insertBefore(clone,rowmain)
+		rowmain.cells[0].id = ""
+		for (i=1; i<rowmain.cells.length; i++)
+			rowmain.cells[i].innerHTML = ""	
+		DragDrop()
+	}
+}
+
+function deletecase(rowmain, qn)
+{
+	//not actually delete the case but set waitnum=0
+	var sql = "sqlReturnbook=UPDATE book SET waitnum=0 WHERE qn="+ qn +";"
+
+	Ajax(MYSQLIPHP, sql, callbackdeleterow)
+
+	function callbackdeleterow(response)
+	{
+		if (!response || response.indexOf("DBfailed") != -1)
+			alert ("Delete & Refresh failed!\n" + response)
+		else
+		{
+			updateBOOK(response);
+			filluprefill()
+		}
+	}
+}
+
+function deleteblankrow(rowmain)
+{
+	var table = document.getElementById("tbl")
+	rowmain.parentNode.removeChild(rowmain)
+}
