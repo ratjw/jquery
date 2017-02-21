@@ -88,12 +88,12 @@ function editingQueue(event)
 			$("#editcell").hide()
 		}
 		event.preventDefault()
+		return false
 	}
 	else if (keycode == 13)
 	{
 		if (event.shiftKey || event.ctrlKey) {
-			event.preventDefault()
-			return false
+			return
 		}
 		savePreviouscellQueue()
 		thiscell = findNextcellQueue(event)
@@ -105,6 +105,7 @@ function editingQueue(event)
 			window.focus()
 		}
 		event.preventDefault()
+		return false
 	}
 	else if (keycode == 27)
 	{
@@ -119,6 +120,7 @@ function editingQueue(event)
 		}
 		window.focus()
 		event.preventDefault()
+		return false
 	}
 }
 
@@ -316,6 +318,7 @@ function fillSetTableQueue(pointing, rindex)
 			$("#editcell").hide()
 			$("#queuemenu").hide()
 			event.stopPropagation()
+			return false
 		}
 	});
 

@@ -6,7 +6,7 @@ function DragDrop()
 		revert: "true",
 		appendTo: "body",
 		stack: ".ui-draggable",
-		zIndex: 100,	//test found 65 is under but 66 is over #container
+		zIndex: 1000,	//z-index of #container increased by each dropping
 		start : function (event) {
 			$("#editcell").hide()
 			$("#menu").hide()
@@ -94,7 +94,7 @@ function DragDropday()
 		revert: "invalid",
 		appendTo: "body",
 		stack: ".ui-draggable",
-		zIndex: 100,
+		zIndex: 1000,
 		start : function () {
 			$("#editcell").hide()
 			event.stopPropagation()
@@ -177,15 +177,15 @@ function DragDropStaff()
 		revert: "invalid",
 		appendTo: "body",
 		stack: ".ui-draggable",
-		zIndex: 100,
+		zIndex: 1000,
 		start : function () {
 			$("#editcell").hide()
 			event.stopPropagation()
 		}
 	});
 
-	//#container to make "over" trigger at the start within draggable "#queuetbl tr" itself
-	//this causes dropping 2 times
+	//add "#container" to trigger "over" at the "start" of draggable "#queuetbl tr"
+	//this causes 2 times when dropping from "#tbl" draggable
 	//the first one (#container) is to be filtered out by "drop on header"
 	$("#container, #queuetbl tr").droppable({
 		over: function(event, ui){

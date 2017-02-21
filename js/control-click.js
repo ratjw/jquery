@@ -34,6 +34,7 @@ function editing(event)
 			window.focus()
 		}
 		event.preventDefault()
+		return false
 	}
 	else if (keycode == 13)
 	{
@@ -49,6 +50,7 @@ function editing(event)
 			window.focus()
 		}
 		event.preventDefault()
+		return false
 	}
 	else if (keycode == 27)
 	{
@@ -63,6 +65,7 @@ function editing(event)
 		$("#editcell").hide()
 		window.focus()
 		event.preventDefault()
+		return false
 	}
 }
 
@@ -72,7 +75,8 @@ function savePreviouscell()
 		return
 
 	var content = $("#editcell").html()
-
+	if ($("#editcell").data("located").index() == HN)
+		content = content.replace(/<br>/g, "")
 	if (content == $("#editcell").data("content"))
 		return
 
@@ -322,6 +326,7 @@ function fillSetTable(rownum, pointing)
 			$( "#item40" ).attr("aria-expanded", "false")
 			event.stopPropagation()
 			event.preventDefault()
+			return false
 		}
 	});
 
@@ -339,6 +344,7 @@ function stafflist(pointing)
 			$("#editcell").hide()	//to disappear after selection
 			$('#stafflist').hide()	//to disappear after selection
 			event.stopPropagation()
+			return false
 		}
 	});
 
