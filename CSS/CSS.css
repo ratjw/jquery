@@ -67,6 +67,7 @@ td.sat:before { content: "เสาร์ "; }
 	position: absolute;
 	font-size: 16px;
 	text-align: left; 
+	overflow: hidden;
 	border: solid 1px #0099FF;
 	background-color: white; 
 	box-shadow: 5px 5px 10px slategray;

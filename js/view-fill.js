@@ -1,11 +1,12 @@
 
 function fillupstart()		
 {	//Display all cases in each day of 5 weeks
-	STATE[1] = getSunday()
 	if (BOOK.length == 0)
 		BOOK.push({"opdate" : getSunday()})
+	setTopDate(getSunday())
+	setRequire(7)
 	fillnew()
-	document.body.scrollTop = 1
+	document.body.scrollTop = 3
 	DragDrop()
 }
 
@@ -15,6 +16,7 @@ function filluprefill()
 	//Start at the same begindate and same scrollTop
 	var topscroll = document.body.scrollTop
 
+	setRequire(null)
 	fillnew()
 	document.body.scrollTop = topscroll
 	DragDrop()
@@ -34,18 +36,18 @@ function fillext(di)
 
 	if (di == -1)
 	{
-		begindate = STATE[1]
+		begindate = getTopDate()
 		if ((BOOK[0]) &&
 			(begindate < BOOK[0].opdate) && 
 			(begindate <= getSunday()))
 			return		//being in the beginning of BOOK
 		begindate = begindate.nextdays(di*7)
-		STATE[1] = begindate
+		setTopDate(begindate)
 
 		makeheader(0)
 		fill(0)
 
-		//count rows hidden on top of the screen
+		//count hidden rows on top of the screen
 		i = 1
 		while (table.rows[i].cells[0].tagName != "TH")
 			i++
@@ -60,33 +62,49 @@ function fillext(di)
 	}
 }
 
-function fillnew()
+(function ()
 {
-	var num = 0
-	var table = document.getElementById("tbl")
+	//making static variables
+	var tableTopDate
+	var numweeks	//number of weeks in "tbl" made by fill function
+	var Require		//number of weeks in "tbl" required by caller
 
-	//delete previous table to fresh start every time
-	while (table.rows[1])
-		table.deleteRow(-1) 
+	setRequire = function (number)
+	{
+		if (number)
+			Require = number
+		else
+			Require = numweeks
+	}
 
-	refill()
-	fill(0)
-	while (num++ <= STARTFILLUP)
-		fillext(+1)
-}
+	getTopDate = function ()
+	{
+		return tableTopDate
+	}
 
-function refill()
-{
-	//making numweeks a static variable
-	//numweeks is number of weeks in the table as seen by fill function
-	var numweeks = 0
+	setTopDate = function (TopDate)
+	{
+		tableTopDate = TopDate
+	}
+
+	fillnew = function ()
+	{
+		$('#tbl tr').slice(1).remove()
+		numweeks = 0
+		fill(0)
+		while (numweeks < Require)
+		{
+			makeheader()
+			fill($('#tbl tr').length-1)
+		}
+	}
 
 	fill = function (at)	//at = where to fill : 0=top, >0=bottom
 	{
 		var i, q, rowi, rundate, lastday, makedate;
 		var table = document.getElementById("tbl")
 
-		var begindate = at? STATE[1].nextdays(numweeks*7) : STATE[1]
+		begindate = at? tableTopDate.nextdays(numweeks*7) : tableTopDate
 		numweeks++
 		
 		//Find OPDATE of FIRSTROW from the start of BOOK
@@ -116,7 +134,7 @@ function refill()
 			rundate = rundate.nextdays(1)
 		}
 	}
-}
+})()
 
 function fillday(day)
 {	//Display only one day of each week

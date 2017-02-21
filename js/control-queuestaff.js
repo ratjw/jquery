@@ -8,7 +8,6 @@ function staffqueue(staffname)
 	while (queuetbl.rows[1])
 		queuetbl.deleteRow(-1)
 
-
 	for (i=0,q=0; q < QWAIT.length; q++)
 	{
 		if (QWAIT[q].staffname == staffname)
@@ -22,7 +21,6 @@ function staffqueue(staffname)
 		rowi = makenextrowQueue(queuetbl, ++i)
 		rowi.cells[QSINCE].innerHTML = new Date().MysqlDate().thDate()
 	}
-	$("#queuetbl").css("display", "block")
 	$("#container").html($("#queuetbl"));
 	$("#container").dialog({
 		dialogClass: "dialog",
@@ -30,6 +28,8 @@ function staffqueue(staffname)
 		height: window.innerHeight * 50 / 100,
 		width: window.innerWidth * 70 / 100
 	});
+	$("#queuetbl").css("display", "block")
+	$(".dialog").css("display", "block")
 	DragDropStaff()
 }
 //$("#container").parent().find('.ui-dialog-titlebar').click(function() {
@@ -191,7 +191,7 @@ function saveContentQueue(column, content)
 		if (!response || response.indexOf("DBfailed") != -1)
 		{
 			alert("Failed! update database \n\n" + response)
-			$("#editcell").attr("title")
+			$("#editcell").hide()
 		}
 		else
 		{

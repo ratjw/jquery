@@ -15,6 +15,9 @@ function book($mysqli)
 		GROUP BY qn ORDER BY opdate, staffname, qn;";
 	$rowi = array();
 	$data = array();
+	$datu = array();
+	$dati = array();
+	$dats = array();
     if (!$result = $mysqli->query ($sql))
 		return $mysqli->error;
 	while ($rowi = $result->fetch_assoc())
@@ -31,20 +34,20 @@ function book($mysqli)
 		FROM book 
 		WHERE waitnum > 0
 		GROUP BY qn ORDER BY staffname, waitnum;";
-	$rowi = array();
-	$dati = array();
-    if (!$result = $mysqli->query ($sql))
+
+	if (!$result = $mysqli->query ($sql))
 		return $mysqli->error;
 	while ($rowi = $result->fetch_assoc())
 	{
 		$dati[] = $rowi;
 	}
 
-	$result = $mysqli->query ("SELECT code,name,specialty FROM staff ORDER BY code;");
-	if (!$result)
-		exit ('failed:load staff list ' . $mysqli->error);
-	while ($rowi = $result->fetch_row())
-		$dats["staff"][] = $rowi;
+	$sql = "SELECT code,name,specialty FROM staff ORDER BY code;";
+
+	if (!$result = $mysqli->query ($sql))
+		return $mysqli->error;
+	while ($rowi = $result->fetch_assoc())
+		$dats[] = $rowi;
 
 	$allarray["BOOK"] = $data;
 	$allarray["QTIME"] = $datu;

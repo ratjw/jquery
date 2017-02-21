@@ -1,14 +1,16 @@
 
-function DragDrop(event)
+function DragDrop()
 {
 	$("#tbl tr").draggable({
 		helper: "clone",
-		revert: "invalid",
+		revert: "true",
 		appendTo: "body",
 		stack: ".ui-draggable",
 		zIndex: 100,	//test found 65 is under but 66 is over #container
 		start : function (event) {
-			$("#editcell").attr("id", "")
+			$("#editcell").hide()
+			$("#menu").hide()
+			$("#stafflist").hide()
 		}
 	});
 
@@ -16,9 +18,8 @@ function DragDrop(event)
 		accept: "tr",
 		drop: function (event, ui) {
 			if (!$(this).children("td").eq(OPDATE).html())		//drop on header
-				return
+				return false
 
-			$("#tbl").css("cursor", 'wait')
 			var that_row = ui.draggable
 			var this_row = $(this)
 			var uihelper = ui.helper
@@ -32,6 +33,8 @@ function DragDrop(event)
 			if (dragTable == "queuetbl") 
 			{
 				var thatqn = $(ui.draggable).children("td").eq(QQN).html()
+				if (!thatqn)
+					return false
 				var sql = "sqlReturnbook=UPDATE book SET waitnum = NULL, "
 				sql += "opdate='" + thisdate
 				sql += "', editor='"+ THISUSER
@@ -40,6 +43,8 @@ function DragDrop(event)
 			else if (dragTable == "tbl")
 			{
 				var thatqn = $(ui.draggable).children("td").eq(QN).html()
+				if (!thatqn)
+					return false
 				var sql = "sqlReturnbook=UPDATE book SET opdate='" + thisdate
 				sql += "', editor='"+ THISUSER
 				sql += "' WHERE qn="+ thatqn +";"
@@ -49,6 +54,7 @@ function DragDrop(event)
 				if (nextdate = $(ui.draggable).next().children("td").eq(OPDATE).html())
 					nextdate = nextdate.numDate()
 			}
+			$("#tbl").css("cursor", 'wait')
 
 			Ajax(MYSQLIPHP, sql, callbackDragDrop);
 
@@ -73,7 +79,7 @@ function DragDrop(event)
 						this_row.after(this_row.clone());
 
 					filluprefill()
-					DragDrop(event)
+					DragDrop()
 				}
 				$("#tbl").css("cursor", 'default')
 			}	
@@ -81,7 +87,7 @@ function DragDrop(event)
 	});
 }
 
-function DragDropday(event)
+function DragDropday()
 {
 	$("#tblday tr").draggable({
 		helper: "clone",
@@ -90,7 +96,7 @@ function DragDropday(event)
 		stack: ".ui-draggable",
 		zIndex: 100,
 		start : function () {
-			$("#editcell").attr("id", "")
+			$("#editcell").hide()
 			event.stopPropagation()
 		}
 	});
@@ -164,7 +170,7 @@ function DragDropday(event)
 	});
 }
 
-function DragDropStaff(event)
+function DragDropStaff()
 {
 	$("#queuetbl tr").draggable({
 		helper: "clone",
@@ -173,7 +179,7 @@ function DragDropStaff(event)
 		stack: ".ui-draggable",
 		zIndex: 100,
 		start : function () {
-			$("#editcell").attr("id", "")
+			$("#editcell").hide()
 			event.stopPropagation()
 		}
 	});

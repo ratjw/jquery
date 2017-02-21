@@ -38,8 +38,7 @@ function editing(event)
 	else if (keycode == 13)
 	{
 		if (event.shiftKey || event.ctrlKey) {
-			event.preventDefault()
-			return false
+			return
 		}
 		savePreviouscell()
 		thiscell = findNextcell(event)
@@ -53,15 +52,15 @@ function editing(event)
 	}
 	else if (keycode == 27)
 	{
-		if ($("#editcell").data("located").cellIndex == OPDATE)
+		if ($("#editcell").data("located").index() == OPDATE)
 		{
-			$("#editcell").hide()
 			$("#tbl").siblings().hide()
 		}
 		else
 		{
-			$($("#editcell").data("located")).html($("#editcell").data("content"))
+			$("#editcell").data("located").html($("#editcell").data("content"))
 		}
+		$("#editcell").hide()
 		window.focus()
 		event.preventDefault()
 	}
@@ -77,7 +76,8 @@ function savePreviouscell()
 	if (content == $("#editcell").data("content"))
 		return
 
-	var editcindex = $("#editcell").data("located").cellIndex
+	$("#editcell").data("located").html(content)
+	var editcindex = $("#editcell").data("located").index()
 
 	switch(editcindex)
 	{
@@ -106,7 +106,7 @@ function savePreviouscell()
 
 function saveContent(column, content)	//column name in MYSQL
 {
-	var rowtr = $($("#editcell").data("located")).parent().children("td")
+	var rowtr = $("#editcell").data("located").parent().children("td")
 	var opdate = rowtr.eq(OPDATE).html().numDate()
 	var qn = rowtr.eq(QN).html()
 	var sqlstring
@@ -135,7 +135,7 @@ function saveContent(column, content)	//column name in MYSQL
 		if (!response || response.indexOf("DBfailed") != -1)
 		{
 			alert("Failed! update database \n\n" + response)
-			$($("#editcell").data("located")).html($("#editcell").data("content"))
+			$("#editcell").data("located").html($("#editcell").data("content"))
 		}
 		else
 		{
@@ -149,7 +149,7 @@ function saveContent(column, content)	//column name in MYSQL
 
 function saveHNinput(hn, content)
 {
-	var rowtr = $($("#editcell").data("located")).parent().children("td")
+	var rowtr = $("#editcell").data("located").parent().children("td")
 	var opdate = rowtr.eq(OPDATE).html().numDate()
 	var patient = rowtr.eq(NAME).html()
 	var qn = rowtr.eq(QN).html()
@@ -220,7 +220,7 @@ function editcell(pointing)
 	var pos = $(pointing).position()
 
 	$("#editcell").html($(pointing).html())
-	$("#editcell").data("located", pointing)
+	$("#editcell").data("located", $(pointing))
 	$("#editcell").css({
 		top: pos.top + "px",
 		left: pos.left + "px",
@@ -275,28 +275,14 @@ function fillSetTable(rownum, pointing)
 	else
 		$("#item6").addClass(disabled)
 	$("#item7").html("รายชื่อที่ถูกลบ")
-/*
-$("#menu li").click(function() {
-    alert(this.id); // id of clicked li by directly accessing DOMElement property
-    alert($(this).attr('id')); // jQuery's .attr() method, same but more verbose
-    alert($(this).html()); // gets innerHTML of clicked li
-    alert($(this).text()); // gets text contents of clicked li
-})
-	$(function() {
-            var menu = $("#menu").menu();
-            $( "#menu" ).menu(
-               "focus", null, $( "#menu" ).menu().find( ".ui-menu-item:last" ));
-            $(menu).mouseleave(function () {
-               menu.menu('collapseAll');
-            });
-         });
-*/
+
 	$("#menu").menu({
 		select: function( event, ui ) {
-			var item = $(ui.item).find("div").attr("id")
-			var disabled = $(ui.item).find("div").hasClass("ui-state-disabled")
-			if (disabled)
+			if ($(ui.item).find("div").hasClass("ui-state-disabled"))
 				return false
+
+			var item = $(ui.item).find("div").attr("id")
+
 			switch(item)
 			{
 				case "item1":
@@ -307,7 +293,6 @@ $("#menu li").click(function() {
 					break
 				case "item3":
 					deleteblankrow(rowmain)
-				case "item4":
 					break
 				case "item51":
 				case "item52":
@@ -325,17 +310,18 @@ $("#menu li").click(function() {
 					deletehistory(rowmain, qn)
 					break
 				default :
-					staffqueue(item)
+					staffqueue(ui.item.text())
 			}
-			$("#menu").menu('collapseAll')
+
 			$("#editcell").hide()	//to disappear after selection
 			$("#menu").hide()		//to disappear after selection
-//			$( "#item4" ).removeClass( "ui-state-active" )
-//			$( "#item4" ).prepend('<span class="ui-menu-icon ui-icon  ui-icon-caret-1-e"></span>')
-//			$( "#item40" ).hide()
-//			$( "#item40" ).attr("aria-hidden", "true")
-//			$( "#item40" ).attr("aria-expanded", "false")
+			$( "#item4" ).removeClass( "ui-state-active" )
+			$( "#item4" ).prepend('<span class="ui-menu-icon ui-icon  ui-icon-caret-1-e"></span>')
+			$( "#item40" ).hide()
+			$( "#item40" ).attr("aria-hidden", "true")
+			$( "#item40" ).attr("aria-expanded", "false")
 			event.stopPropagation()
+			event.preventDefault()
 		}
 	});
 
@@ -346,7 +332,8 @@ function stafflist(pointing)
 {
 	$("#stafflist").menu({
 		select: function( event, ui ) {
-			var staffname = $(this).attr("aria-activedescendant")
+			var staffname = ui.item.text()
+			$(pointing).html(staffname);
 			$("#editcell").html(staffname);
 			saveContent("staffname", staffname)
 			$("#editcell").hide()	//to disappear after selection
@@ -380,7 +367,7 @@ function showup(pointing, menuID)
 function findPrevcell(event) 
 {
 	var prevcell = $("#editcell").data("located")
-	var column = $(prevcell).index()
+	var column = prevcell.index()
 
 	if (column = EDITABLE[($.inArray(column, EDITABLE) - 1)])
 	{
@@ -408,7 +395,7 @@ function findPrevcell(event)
 function findNextcell(event) 
 {
 	var nextcell = $("#editcell").data("located")
-	var column = $(nextcell).index()
+	var column = nextcell.index()
 	var lastrow = $('#tbl tr:last-child').index()
 
 	if (column = EDITABLE[($.inArray(column, EDITABLE) + 1)])

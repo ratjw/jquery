@@ -66,7 +66,7 @@ function edithistory(rowmain, qn)
 		{
 			makehistory(rowmain, response)
 		}
-		$("#editcell").attr("id","")
+		$("#editcell").hide()
 	}
 }
 
@@ -123,7 +123,7 @@ function deletehistory(rowmain, qn)
 		{
 			makeDeleteHistory(rowmain, response)
 		}
-		$("#editcell").attr("id","")
+		$("#editcell").hide()
 	}
 }
 

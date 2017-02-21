@@ -40,7 +40,7 @@ function loading(response)
 {
 	if (response && response.indexOf("[") != -1)
 	{
-		updateBOOK(response);	//eval response into BOOK and ALLLISTS
+		updateBOOK(response)
 		fillupstart();
 		fillStafflist()
 	}
@@ -55,16 +55,15 @@ function updateBOOK(response)
 	BOOK = temp.BOOK? temp.BOOK : []
 	TIMESTAMP = temp.QTIME? temp.QTIME : ""	//last update time of BOOK in server
 	QWAIT = temp.QWAIT? temp.QWAIT : []
-	ALLLISTS = temp.STAFF? temp.STAFF : []
+	STAFF = temp.STAFF? temp.STAFF : []
 }
 
 function fillStafflist()
 {
 	var stafflist = ''
-	for (var each=0; each<ALLLISTS.staff.length; each++)
+	for (var each=0; each<STAFF.length; each++)
 	{
-		stafflist += '<li><div id="' + ALLLISTS.staff[each][1] + '">'
-		stafflist += ALLLISTS.staff[each][1] + '</div></li>'
+		stafflist += '<li><div>' + STAFF[each].name + '</div></li>'
 	}
 	$("#stafflist").html(stafflist)
 	$("#item40").append(stafflist)
