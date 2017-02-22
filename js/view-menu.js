@@ -45,8 +45,6 @@ function fillSetTable(rownum, pointing)
 
 	$("#menu").menu({
 		select: function( event, ui ) {
-			if ($(ui.item).find("div").hasClass("ui-state-disabled"))
-				return false
 
 			var item = $(ui.item).find("div").attr("id")
 
@@ -61,6 +59,9 @@ function fillSetTable(rownum, pointing)
 				case "item3":
 					deleteblankrow(rowmain)
 					break
+				case "item4":
+				case "item5":
+					return false
 				case "item51":
 				case "item52":
 				case "item53":

@@ -76,11 +76,11 @@
   <li><div id="item1"></div></li>
   <li><div id="item2"></div></li>
   <li><div id="item3"></div></li>
-  <li><div id="item4" class="ui-state-disabled"></div>
+  <li><div id="item4"></div>
 	<ul id="item40" style="width:120px">
 	</ul>
   </li>
-  <li><div id="item5" class="ui-state-disabled"></div>
+  <li><div id="item5"></div>
     <ul>
 	  <li><div id="item51">อาทิตย์</div></li>
 	  <li><div id="item52">จันทร์</div></li>

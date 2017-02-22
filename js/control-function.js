@@ -97,31 +97,6 @@ function Ajax(url, params, callback)
 	xmlHttp.send(null);
 }
 
-function Xscrolled()
-{
-	var scrolled
-	if (window.pageXOffset == undefined)
-	{
-		scrolled = document.documentElement.scrollLeft || document.body.scrollLeft 
-	}
-	else
-		scrolled = window.pageXOffset
-	return scrolled
-}
-
-function Yscrolled()
-{
-	var scrolled
-	var table = document.getElementById("tbl")
-	if (window.pageYOffset == undefined)
-	{
-		scrolled = table.scrollTop
-	}
-	else
-		scrolled = window.pageYOffset
-	return scrolled
-}
-
 function checkblank(opdate, qn)
 {	//No case in this date? 
 	var q = 0
@@ -138,6 +113,18 @@ function checkblank(opdate, qn)
 		return true
 	else
 		return false
+}
+
+function scrollUpDown()
+{
+	if ($(window).scrollTop() < 2)
+	{
+		fillupscroll(-1)
+	}
+	else if ($("#tbl").height() <= $(window).height() + $(window).scrollTop())
+	{
+		fillupscroll(+1)
+	}
 }
 
 function URIcomponent(qoute)

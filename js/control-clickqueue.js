@@ -6,7 +6,7 @@ function Qclicktable(event)
 	if (clickedCell.id == "editcell") {
 		return
 	} else {
-		$("#tbl").siblings().not("#queuetbl").hide()
+		$("#tbl").siblings().not(".ui-dialog").hide()
 		if (clickedCell.nodeName != "TD")
 			return
 	}
@@ -21,7 +21,7 @@ function editingQueue(event)
 	var keycode = event.which || window.event.keyCode
 	var thiscell
 
-	if ($($("#editcell").data("located")).closest("table").attr("id") != "queuetbl")
+	if ($("#editcell").data("located").closest("table").attr("id") != "queuetbl")
 		return
 
 	if (keycode == 9)
@@ -33,9 +33,9 @@ function editingQueue(event)
 			thiscell = findNextcellQueue(event)
 		if (thiscell) {
 			storePresentcellQueue(thiscell)
-			thiscell.focus()
 		} else {
 			$("#editcell").hide()
+			window.focus()
 		}
 		event.preventDefault()
 		return false
@@ -61,13 +61,13 @@ function editingQueue(event)
 	{
 		if ($($("#editcell").data("located")).index() == QSINCE)
 		{
-			$("#editcell").hide()
-			$("#queuemenu").hide()	//dialog enwraped container
+			$("#queuemenu").hide()
 		}
 		else
 		{
-			$($("#editcell").data("located")).html($("#editcell").data("content"))
+			$("#editcell").data("located").html($("#editcell").data("content"))
 		}
+		$("#editcell").hide()
 		window.focus()
 		event.preventDefault()
 		return false
@@ -80,10 +80,12 @@ function savePreviouscellQueue()
 		return
 
 	var content = $("#editcell").html()
-
+	if ($("#editcell").data("located").index() == QHN)
+		content = content.replace(/<br>/g, "")
 	if (content == $("#editcell").data("content"))
 		return
 
+	$("#editcell").data("located").html(content)
 	var editcindex = $($("#editcell").data("located")).index()
 
 	switch(editcindex)
@@ -131,8 +133,8 @@ function saveContentQueue(column, content)
 		waitnum = findMAXwaitnum() + 1
 
 		sqlstring = "sqlReturnbook=INSERT INTO book ("
-		sqlstring += "waitnum, opdate, staffname, "+ column +", editor) VALUES ("
-		sqlstring += waitnum +", '"+ opdate +"', '"+ staffname +"', '"
+		sqlstring += "waitnum, qsince, opdate, staffname, "+ column +", editor) VALUES ("
+		sqlstring += waitnum +", '"+ qsince +"', '0000-00-00', '"+ staffname +"', '"
 		sqlstring += content +"', '"+ THISUSER +"');"
 	}
 
@@ -158,28 +160,74 @@ function saveContentQueue(column, content)
 function findwaitnum(qn)	
 {
 	var q = 0
+	while ((q < BOOK.length) && (BOOK[q].qn != qn))
+		q++
+
+	return BOOK[q].waitnum
+}
+
+function findQsince(qn)	
+{
+	var q = 0
+	while ((q < BOOK.length) && (BOOK[q].qn != qn))
+		q++
+
+	return BOOK[q].qsince
+}
+
+function findwaitnumQ(qn)	
+{
+	var q = 0
 	while ((q < QWAIT.length) && (QWAIT[q].qn != qn))
 		q++
 
 	return QWAIT[q].waitnum
 }
 
+function findQsinceQ(qn)	
+{
+	var q = 0
+	while ((q < QWAIT.length) && (QWAIT[q].qn != qn))
+		q++
+
+	return QWAIT[q].qsince
+}
+
 function findMAXwaitnum()	
 {
-	if (QWAIT.length == 0)
-		return 0
-	var waitnum = QWAIT[0].waitnum
-	for (var q = 1; q < QWAIT.length; q++)
+	var waitnumB, waitnumQ
+
+	var waitnumB = BOOK[0].waitnum
+	for (var q = 1; q < BOOK.length; q++)
 	{
-		waitnum = Math.max(waitnum, QWAIT[q].waitnum)
+		waitnumB = Math.max(waitnumB, BOOK[q].waitnum)
 	}
-	return waitnum
+
+	if (QWAIT.length == 0)
+	{
+		if (waitnumB)
+			return waitnumB
+		else
+			return 0
+	}
+	else
+	{
+		var waitnumQ = QWAIT[0].waitnum
+		for (var q = 1; q < QWAIT.length; q++)
+		{
+			waitnumQ = Math.max(waitnumQ, QWAIT[q].waitnum)
+		}
+	}
+	if (waitnumB)
+		return Math.max(waitnumB, waitnumQ)
+	else 
+		return waitnumQ
 }
 
 function saveHNinputQueue(hn, content)
 {
 	var rowtr = $($("#editcell").data("located")).closest("tr").children("td")
-	var opdate = rowtr.eq(QSINCE).html().numDate()
+	var qsince = rowtr.eq(QSINCE).html().numDate()
 	var patient = rowtr.eq(QNAME).html()
 	var qn = rowtr.eq(QQN).html()
 	var staffname = $( "#container" ).dialog( "option", "title" )
@@ -195,13 +243,14 @@ function saveHNinputQueue(hn, content)
 	content = content.replace(/^\s+/g, "")
 
 	if (qn)
-		waitnum = findwaitnum(qn)
+		waitnum = findwaitnumQ(qn)
 	else
 		waitnum = findMAXwaitnum() + 1
 
 	sqlstring = "hn=" + content
 	sqlstring += "&waitnum="+ waitnum
-	sqlstring += "&opdate="+ opdate
+	sqlstring += "&qsince="+ qsince
+	sqlstring += "&opdate='0000-00-00'"
 	sqlstring += "&staffname="+ staffname
 	sqlstring += "&qn="+ qn
 	sqlstring += "&username="+ THISUSER
@@ -245,7 +294,7 @@ function storePresentcellQueue(pointing)
 		case QHN:
 		case QDIAGNOSIS:
 		case QTREATMENT:
-		case QTEL:	//store value in attribute "title" of editcell
+		case QTEL:		//store content in "data" of editcell
 			$("#editcell").data("content", $(pointing).html())
 			break
 	}
@@ -254,6 +303,7 @@ function storePresentcellQueue(pointing)
 function findPrevcellQueue(event) 
 {
 	var prevcell = $("#editcell").data("located")
+	var column = prevcell.index()
 
 	if (column = EDITQUEUE[($.inArray(column, EDITQUEUE) - 1)])
 	{
@@ -281,7 +331,7 @@ function findPrevcellQueue(event)
 function findNextcellQueue(event) 
 {
 	var nextcell = $("#editcell").data("located")
-	var column = $(nextcell).index()
+	var column = nextcell.index()
 	var lastrow = $('#queuetbl tr:last-child').index()
 	
 	if (column = EDITQUEUE[($.inArray(column, EDITQUEUE) + 1)])

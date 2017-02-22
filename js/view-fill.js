@@ -47,13 +47,8 @@ function fillext(di)
 		makeheader(0)
 		fill(0)
 
-		//count hidden rows on top of the screen
-		i = 1
-		while (table.rows[i].cells[0].tagName != "TH")
-			i++
-		document.body.scrollTop = table.rows[i].offsetTop
-		document.body.scrollTop? "" : document.documentElement.scrollTop = 
-			table.rows[i].offsetTop - Yscrolled()		//IE7,8,9
+		//scroll to the old "tr:has(th)"
+		document.body.scrollTop = $("#tbl tr:has(th)").eq(1).offset().top
 	}
 	else if (di == +1)
 	{
@@ -308,8 +303,8 @@ function addnewrow(rowmain)
 
 function deletecase(rowmain, qn)
 {
-	//not actually delete the case but set waitnum=0
-	var sql = "sqlReturnbook=UPDATE book SET waitnum=0 WHERE qn="+ qn +";"
+	//not actually delete the case but set waitnum=NULL
+	var sql = "sqlReturnbook=UPDATE book SET waitnum=NULL WHERE qn="+ qn +";"
 
 	Ajax(MYSQLIPHP, sql, callbackdeleterow)
 

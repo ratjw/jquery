@@ -5,8 +5,7 @@ function staffqueue(staffname)
 	var rowi = {}
 
 	//delete previous queuetbl lest it accumulates
-	while (queuetbl.rows[1])
-		queuetbl.deleteRow(-1)
+		$('#queuetbl tr').slice(1).remove()
 
 	for (i=0,q=0; q < QWAIT.length; q++)
 	{
@@ -23,13 +22,12 @@ function staffqueue(staffname)
 	}
 	$("#container").html($("#queuetbl"));
 	$("#container").dialog({
-		dialogClass: "dialog",
 		title: staffname,
 		height: window.innerHeight * 50 / 100,
 		width: window.innerWidth * 70 / 100
 	});
 	$("#queuetbl").css("display", "block")
-	$(".dialog").css("display", "block")
+	$(".ui-dialog").css("display", "block")
 	DragDropStaff()
 }
 //$("#container").parent().find('.ui-dialog-titlebar').click(function() {
@@ -63,10 +61,10 @@ function fillselectQueue(rowcell, waitnum, qn)	//seek the QWAIT row
 
 function filldataQueue(bookq, rowcell)		
 {
-	rowcell.eq(QSINCE).html(bookq.opdate? bookq.opdate.thDate() : "")
+	rowcell.eq(QSINCE).html(bookq.qsince? bookq.qsince.thDate() : "")
 	rowcell.eq(QHN).html(bookq.hn)
 	rowcell.eq(QNAME).html(bookq.patient)
-	rowcell.eq(QAGE).html(bookq.dob? bookq.dob.getAge(bookq.opdate) : "")
+	rowcell.eq(QAGE).html(bookq.dob? bookq.dob.getAge(bookq.qsince) : "")
 	rowcell.eq(QDIAGNOSIS).html(bookq.diagnosis? bookq.diagnosis : "")
 	rowcell.eq(QTREATMENT).html(bookq.treatment? bookq.treatment : "")
 	rowcell.eq(QTEL).html(bookq.tel)
@@ -150,7 +148,7 @@ function addnewrowQ()
 function deletecaseQ(rowmain, qn)
 {
 	var staffname = $( "#container" ).dialog( "option", "title" )
-	var sql = "sqlReturnbook=UPDATE book SET waitnum=0 WHERE qn="+ qn +";"
+	var sql = "sqlReturnbook=UPDATE book SET waitnum=NULL WHERE qn="+ qn +";"
 
 	Ajax(MYSQLIPHP, sql, qcallbackdeleterow)
 

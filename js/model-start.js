@@ -6,16 +6,12 @@ function loadtable(userid)
 	$("#login").remove()
 	$("#tbl").css("display", "block")
 
-	$("#editcell").keydown( function (event) {
+	$(document).keydown( function (event) {
 		countreset();
 		if ($("#queuetbl").css("display") == "none")
 			editing(event)
 		else if ($("#queuetbl").css("display") == "block")
 			editingQueue(event)
-	})
-	$("#editcell").click( function (event) {
-		editing(event)
-		return false
 	})
 	$("#tbl").click( function (event) {
 		countreset();
@@ -27,12 +23,16 @@ function loadtable(userid)
 		clicktable(event)
 		return false
 	})
-	$("#queuetbl").click( function (event) {
+	$(document).click( function (event) {
 		countreset();
 		Qclicktable(event)
 		return false
 	})
-	document.onscroll = scrollUpDown
+	$(document).scroll( function (event) {
+		countreset();
+		scrollUpDown(event)
+		return false
+	})
 	TIMER = setTimeout("updating()",10000)		//poke next 10 sec.
 }
 

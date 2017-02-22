@@ -1,7 +1,7 @@
 ﻿<?php
 require_once "book.php";
 
-	$hn = $username = $waitnum = $staffname = "";
+	$hn = $username = $waitnum = $qsince = $staffname = "";
 
 	$mysqli = new mysqli("localhost", "root", "zaq12wsx", "neurosurgery");
 	if ($mysqli->connect_errno)
@@ -40,11 +40,11 @@ require_once "book.php";
 	{
 		$resultz["hn"] = $hn;
 		$resultz["qn"] = $qn;
-		$resultz["waitnum"] = $waitnum;
-		echo newqn($resultz, $opdate, $username, $waitnum, $staffname);
+		$resultz["qsince"] = $qsince;
+		echo newqn($resultz, $opdate, $username, $qsince, $staffname);
 	}
 
-function newqn($resultz, $opdate, $username, $waitnum, $staffname)
+function newqn($resultz, $opdate, $username, $qsince, $staffname)
 {
 	$mysqli = new mysqli("localhost", "root", "zaq12wsx", "neurosurgery");
 
@@ -63,8 +63,8 @@ function newqn($resultz, $opdate, $username, $waitnum, $staffname)
 	}
 	else
 	{
-		$sql = "INSERT INTO book (opdate, staffname, hn, patient, dob, gender, editor)"; 
-		$sql = $sql."VALUES ('$opdate', '$staffname', '$hn', '$initial_name";
+		$sql = "INSERT INTO book (qsince, opdate, staffname, hn, patient, dob, gender, editor)"; 
+		$sql = $sql."VALUES ('$qsince', '$opdate', '$staffname', '$hn', '$initial_name";
 		$sql = $sql."$first_name"." "."$last_name', '$dob', '$gender', '$username');";
 	}
 

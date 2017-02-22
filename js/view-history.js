@@ -1,24 +1,3 @@
-
-function scrollUpDown()
-{
-	var tableheight = document.getElementById("tbl").offsetHeight
-	var scrolly = Yscrolled()
-
-	if ($(window).scrollTop() < 2)
-	{
-		fillupscroll(-1)
-	}
-	else if (tableheight <= window.innerHeight + scrolly)
-	{
-		fillupscroll(+1)
-	}
-}
-
-function PACS(hn) 
-{ 
-	open('http://synapse/explore.asp?path=/All Patients/InternalPatientUID='+hn);
-} 
-
 function edithistory(rowmain, qn)
 {
 	if (rowmain.cells[QN].innerHTML)
@@ -82,7 +61,7 @@ function makehistory(rowmain, response)
 function deletehistory(rowmain, qn)
 {
 	var sql = "sqlReturnData=SELECT * FROM bookhistory "
-		sql += "WHERE waitnum=0;"
+		sql += "WHERE waitnum=NULL;"
 
 		Ajax(MYSQLIPHP, sql, callbackdeletehistory)
 

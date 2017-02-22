@@ -1,7 +1,7 @@
 
 function DragDrop()
 {
-	$("#tbl tr").draggable({
+	$("#tbl tr:has(td)").draggable({
 		helper: "clone",
 		revert: "true",
 		appendTo: "body",
@@ -35,19 +35,13 @@ function DragDrop()
 				var thatqn = $(ui.draggable).children("td").eq(QQN).html()
 				if (!thatqn)
 					return false
-				var sql = "sqlReturnbook=UPDATE book SET waitnum = NULL, "
-				sql += "opdate='" + thisdate
-				sql += "', editor='"+ THISUSER
-				sql += "' WHERE qn="+ thatqn +";"
+				thatdate = nextdate	//trigger "that_row.remove()"
 			}
 			else if (dragTable == "tbl")
 			{
 				var thatqn = $(ui.draggable).children("td").eq(QN).html()
 				if (!thatqn)
 					return false
-				var sql = "sqlReturnbook=UPDATE book SET opdate='" + thisdate
-				sql += "', editor='"+ THISUSER
-				sql += "' WHERE qn="+ thatqn +";"
 
 				if (prevdate = $(ui.draggable).prev().children("td").eq(OPDATE).html()) 
 					prevdate = prevdate.numDate()
@@ -55,6 +49,10 @@ function DragDrop()
 					nextdate = nextdate.numDate()
 			}
 			$("#tbl").css("cursor", 'wait')
+			var sql = "sqlReturnbook=UPDATE book SET "
+			sql += "opdate='" + thisdate
+			sql += "', editor='"+ THISUSER
+			sql += "' WHERE qn="+ thatqn +";"
 
 			Ajax(MYSQLIPHP, sql, callbackDragDrop);
 
@@ -69,11 +67,11 @@ function DragDrop()
 					updateBOOK(response)
 					if (prevdate == thatdate || thatdate == nextdate)
 						that_row.remove()
-					else if (dragTable == "queuetbl")
-					{
-						var staffname = $( "#container" ).dialog( "option", "title" )
-						staffqueue(staffname)
-					}
+//					else if (dragTable == "queuetbl")
+//					{
+//						var staffname = $( "#container" ).dialog( "option", "title" )
+//						staffqueue(staffname)
+//					}
 
 					if (thisqn)
 						this_row.after(this_row.clone());
@@ -89,7 +87,7 @@ function DragDrop()
 
 function DragDropday()
 {
-	$("#tblday tr").draggable({
+	$("#tblday tr:has(td)").draggable({
 		helper: "clone",
 		revert: "invalid",
 		appendTo: "body",
@@ -172,7 +170,7 @@ function DragDropday()
 
 function DragDropStaff()
 {
-	$("#queuetbl tr").draggable({
+	$("#queuetbl tr:has(td)").draggable({
 		helper: "clone",
 		revert: "invalid",
 		appendTo: "body",
@@ -183,7 +181,7 @@ function DragDropStaff()
 			event.stopPropagation()
 		}
 	});
-
+//test hijack
 	//add "#container" to trigger "over" at the "start" of draggable "#queuetbl tr"
 	//this is essential even it causes "#tbl" draggable enter "drop" 2 times
 	//because "#queuetbl tr" will move to "#tbl" when it was slightly dragged
@@ -191,9 +189,11 @@ function DragDropStaff()
 	$("#container, #queuetbl tr").droppable({
 		over: function(event, ui){
 			$( "#tbl tr" ).droppable( "disable" )
+			$(ui.draggable).disable()
 		},
 		out: function(event, ui){
 			$( "#tbl tr" ).droppable( "enable" )
+			$(ui.draggable).enable()
 		},
 		accept: "tr",
 		drop: function (event, ui) {
@@ -202,12 +202,25 @@ function DragDropStaff()
 				return true
 
 			var staffdrag = $(ui.draggable).children("td").eq(STAFFNAME).html()
+//			if (!staffdrag)
+//			{
+//				$(ui.draggable).children("td").eq(QQN).html("")
+//				return
+//			}
 			var staffname = $( "#container" ).dialog( "option", "title" )
 			if (staffdrag != staffname)
 				return
-			var waitnum = findMAXwaitnum() + 1
 			var thatqn = $(ui.draggable).children("td").eq(QN).html()
-			var sql = "sqlReturnbook=UPDATE book SET waitnum ="+ waitnum
+			var waitnum = findwaitnum(thatqn)
+			if (!waitnum)
+				waitnum = findMAXwaitnum() + 1
+			var qsince = findQsince(thatqn)
+			if (!qsince)
+				qsince = $("#queuetbl tr:last td").eq(QSINCE).html().numDate()
+
+			var sql = "sqlReturnbook=UPDATE book SET waitnum = "+ waitnum
+			sql += ", qsince='"+ qsince
+			sql += "', opdate='0000-00-00'"
 			sql += ", editor='"+ THISUSER
 			sql += "' WHERE qn="+ thatqn +";"
 
