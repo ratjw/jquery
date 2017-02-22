@@ -6,9 +6,10 @@ function clicktable(event)
 	if (clickedCell.id == "editcell") {
 		return
 	} else {
-		$("#tbl").siblings().hide()
-		if (clickedCell.nodeName != "TD")
+		if (clickedCell.nodeName != "TD") {
+			$("#tbl").siblings().hide()
 			return
+		}
 	}
 
 	savePreviouscell()
@@ -19,6 +20,9 @@ function editing(event)
 {
 	var keycode = event.which || window.event.keyCode
 	var thiscell
+
+	if ($("#editcell").data("located").closest("table").attr("id") != "tbl")
+		return
 
 	if (keycode == 9)
 	{
@@ -110,9 +114,9 @@ function savePreviouscell()
 
 function saveContent(column, content)	//column name in MYSQL
 {
-	var rowtr = $("#editcell").data("located").parent().children("td")
-	var opdate = rowtr.eq(OPDATE).html().numDate()
-	var qn = rowtr.eq(QN).html()
+	var rowcell = $("#editcell").data("located").closest("tr").children("td")
+	var opdate = rowcell.eq(OPDATE).html().numDate()
+	var qn = rowcell.eq(QN).html()
 	var sqlstring
 
 	$("#tbl").css("cursor", "wait")
@@ -128,8 +132,8 @@ function saveContent(column, content)	//column name in MYSQL
 	else
 	{
 		sqlstring = "sqlReturnbook=INSERT INTO book ("
-		sqlstring += "opdate, "+ column +", editor) VALUES ('"
-		sqlstring += opdate +"', '"+ content +"', '"+ THISUSER +"');"
+		sqlstring += "waitnum, qsince, opdate, "+ column +", editor) VALUES ("
+		sqlstring += "0, '"+ opdate +"', '"+ opdate +"', '"+ content +"', '"+ THISUSER +"');"
 	}
 
 	Ajax(MYSQLIPHP, sqlstring, callbacksaveContent);
@@ -167,6 +171,8 @@ function saveHNinput(hn, content)
 	content = content.replace(/^\s+/g, "")
 
 	var sqlstring = "hn=" + content
+	sqlstring += "&waitnum=0"
+	sqlstring += "&qsince="+ opdate
 	sqlstring += "&opdate="+ opdate
 	sqlstring += "&qn="+ qn
 	sqlstring += "&username="+ THISUSER
@@ -213,7 +219,7 @@ function storePresentcell(pointing)
 		case HN:
 		case DIAGNOSIS:
 		case TREATMENT:
-		case TEL:	//store content in "data" of editcell
+		case TEL:		//store content in "data" of editcell
 			$("#editcell").data("content", $(pointing).html())
 			break
 	}
@@ -221,7 +227,7 @@ function storePresentcell(pointing)
 
 function editcell(pointing)
 {
-	var pos = $(pointing).position()
+	var pos = $(pointing).offset()
 
 	$("#editcell").html($(pointing).html())
 	$("#editcell").data("located", $(pointing))
@@ -230,7 +236,7 @@ function editcell(pointing)
 		left: pos.left + "px",
 		height: $(pointing).height() + "px",
 		width: $(pointing).width() + "px",
-//		lineHeight: $(pointing).height() + "px",
+		zIndex: 1000,
 		display: "block"
 	})
 	$("#editcell").focus()
