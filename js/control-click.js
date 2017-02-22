@@ -1,8 +1,6 @@
-function clicktable(event)
+function clicktable(clickedCell)
 {
-	var clickedCell = event.target || window.event.srcElement
-
-	//checkpoint#1 : click in editing area
+	//checkpoint#1 : click in editing div
 	if (clickedCell.id == "editcell") {
 		return
 	} else {
@@ -202,7 +200,7 @@ function storePresentcell(pointing)
 	var qn = $(rowtr).children("td").eq(QN).html()
 
 	$("#tbl").siblings().hide()
-	editcell(pointing)
+	editcell(pointing, "#tbl")
 
 	switch(cindex)
 	{
@@ -225,10 +223,11 @@ function storePresentcell(pointing)
 	}
 }
 
-function editcell(pointing)
+function editcell(pointing, id)
 {
-	var pos = $(pointing).offset()
+	var pos = $(pointing).position()
 
+	$(id).append($("#editcell"))
 	$("#editcell").html($(pointing).html())
 	$("#editcell").data("located", $(pointing))
 	$("#editcell").css({
@@ -236,7 +235,6 @@ function editcell(pointing)
 		left: pos.left + "px",
 		height: $(pointing).height() + "px",
 		width: $(pointing).width() + "px",
-		zIndex: 1000,
 		display: "block"
 	})
 	$("#editcell").focus()

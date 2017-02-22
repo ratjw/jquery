@@ -1,7 +1,5 @@
-function Qclicktable(event)
+function Qclicktable(clickedCell)
 {
-	var clickedCell = event.target || window.event.srcElement
-
 	//checkpoint#1 : click in editing area
 	if (clickedCell.id == "editcell") {
 		return
@@ -280,7 +278,7 @@ function storePresentcellQueue(pointing)
 	var qn = $(rowtr).children("td").eq(QQN).html()
 
 	$("#editcell").hide()
-	editcell(pointing)
+	editcell(pointing, "#queuetbl")
 
 	switch(cindex)
 	{

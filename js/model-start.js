@@ -6,26 +6,25 @@ function loadtable(userid)
 	$("#login").remove()
 	$("#tbl").css("display", "block")
 
-	$(document).keydown( function (event) {
-		countreset();
-		if ($("#queuetbl").css("display") == "none")
-			editing(event)
-		else if ($("#queuetbl").css("display") == "block")
-			editingQueue(event)
-	})
-	$("#tbl").click( function (event) {
-		countreset();
-		clicktable(event)
-		return false
-	})
-	$("#tbl").contextmenu( function (event) {
-		countreset();
-		clicktable(event)
-		return false
-	})
 	$(document).click( function (event) {
 		countreset();
-		Qclicktable(event)
+		var clickedCell = event.target
+
+		if ($(clickedCell).closest("table").attr("id") == "tbl")
+			clicktable(clickedCell)
+		else if ($(clickedCell).closest("table").attr("id") == "queuetbl")
+			Qclicktable(clickedCell)
+		return false
+	})
+	$(document).keydown( function (event) {
+		countreset();
+		if ($(".ui-dialog").css("display") == "none")
+			editing(event)
+		else if ($(".ui-dialog").css("display") == "block")
+			editingQueue(event)
+	})
+	$(document).contextmenu( function (event) {
+		countreset();
 		return false
 	})
 	$(document).scroll( function (event) {

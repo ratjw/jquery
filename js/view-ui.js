@@ -172,13 +172,13 @@ function DragDropStaff()
 {
 	$("#queuetbl tr:has(td)").draggable({
 		helper: "clone",
-		revert: "invalid",
+		revert: "true",
 		appendTo: "body",
 		stack: ".ui-draggable",
 		zIndex: 1000,
 		start : function () {
 			$("#editcell").hide()
-			event.stopPropagation()
+			$( "#tbl tr" ).droppable( "disable" )
 		}
 	});
 //test hijack
@@ -187,13 +187,12 @@ function DragDropStaff()
 	//because "#queuetbl tr" will move to "#tbl" when it was slightly dragged
 	//the first "drop" (because of #container) is filtered out by "drop on header"
 	$("#container, #queuetbl tr").droppable({
+		greedy: true,
 		over: function(event, ui){
 			$( "#tbl tr" ).droppable( "disable" )
-			$(ui.draggable).disable()
 		},
 		out: function(event, ui){
 			$( "#tbl tr" ).droppable( "enable" )
-			$(ui.draggable).enable()
 		},
 		accept: "tr",
 		drop: function (event, ui) {
@@ -202,11 +201,8 @@ function DragDropStaff()
 				return true
 
 			var staffdrag = $(ui.draggable).children("td").eq(STAFFNAME).html()
-//			if (!staffdrag)
-//			{
-//				$(ui.draggable).children("td").eq(QQN).html("")
-//				return
-//			}
+			if (!staffdrag)
+				return false
 			var staffname = $( "#container" ).dialog( "option", "title" )
 			if (staffdrag != staffname)
 				return
