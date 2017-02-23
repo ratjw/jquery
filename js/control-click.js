@@ -4,8 +4,8 @@ function clicktable(clickedCell)
 	if (clickedCell.id == "editcell") {
 		return
 	} else {
+		$("#tblcontainer").siblings().hide()
 		if (clickedCell.nodeName != "TD") {
-			$("#tbl").siblings().hide()
 			return
 		}
 	}
@@ -32,7 +32,7 @@ function editing(event)
 		if (thiscell) {
 			storePresentcell(thiscell)
 		} else {
-			$("#tbl").siblings().hide()
+			$("#tblcontainer").siblings().hide()
 			window.focus()
 		}
 		event.preventDefault()
@@ -48,7 +48,7 @@ function editing(event)
 		if (thiscell) {
 			storePresentcell(thiscell)
 		} else {
-			$("#tbl").siblings().hide()
+			$("#tblcontainer").siblings().hide()
 			window.focus()
 		}
 		event.preventDefault()
@@ -58,7 +58,7 @@ function editing(event)
 	{
 		if ($("#editcell").data("located").index() == OPDATE)
 		{
-			$("#tbl").siblings().hide()
+			$("#tblcontainer").siblings().hide()
 		}
 		else
 		{
@@ -117,7 +117,7 @@ function saveContent(column, content)	//column name in MYSQL
 	var qn = rowcell.eq(QN).html()
 	var sqlstring
 
-	$("#tbl").css("cursor", "wait")
+	$("#tblcontainer").css("cursor", "wait")
 	content = URIcomponent(content)			//take care of white space, double qoute, 
 											//single qoute, and back slash
 	if (qn)
@@ -149,7 +149,7 @@ function saveContent(column, content)	//column name in MYSQL
 			fillselect("tbl", opdate)
 			$("#editcell").data("content", "")
 		}
-		$("#tbl").css("cursor", "")
+		$("#tblcontainer").css("cursor", "")
 	}
 }
 
@@ -199,8 +199,8 @@ function storePresentcell(pointing)
 	var rindex = $(rowtr).index()
 	var qn = $(rowtr).children("td").eq(QN).html()
 
-	$("#tbl").siblings().hide()
-	editcell(pointing, "#tbl")
+	$("#tblcontainer").siblings().hide()
+	editcell(pointing)
 
 	switch(cindex)
 	{
@@ -223,11 +223,10 @@ function storePresentcell(pointing)
 	}
 }
 
-function editcell(pointing, id)
+function editcell(pointing)
 {
 	var pos = $(pointing).position()
 
-	$(id).append($("#editcell"))
 	$("#editcell").html($(pointing).html())
 	$("#editcell").data("located", $(pointing))
 	$("#editcell").css({

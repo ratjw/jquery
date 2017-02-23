@@ -131,5 +131,6 @@ function showup(pointing, menuID)
 		top: height + "px",
 		left: width + "px",
 		boxShadow: "10px 20px 30px slategray"
-	}).show()
+	})
+	$(menuID).show()
 }

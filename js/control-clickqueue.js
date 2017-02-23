@@ -4,7 +4,7 @@ function Qclicktable(clickedCell)
 	if (clickedCell.id == "editcell") {
 		return
 	} else {
-		$("#tbl").siblings().not(".ui-dialog").hide()
+		$("#tblcontainer").siblings().not(".ui-dialog").hide()
 		if (clickedCell.nodeName != "TD")
 			return
 	}
@@ -12,6 +12,9 @@ function Qclicktable(clickedCell)
 	savePreviouscellQueue()
 	storePresentcellQueue(clickedCell)
 	$("#editcell").focus()
+//	event.preventDefault()
+//	event.stopPropagation()
+//	return false
 }
 
 function editingQueue(event)
@@ -109,7 +112,8 @@ function savePreviouscellQueue()
 
 function saveContentQueue(column, content)
 {
-	var rowcell = $($("#editcell").data("located")).closest("tr").children("td")
+	var row = $($("#editcell").data("located")).closest("tr")
+	var rowcell = row.children("td")
 	var opdate = new Date().MysqlDate()
 	var qn = rowcell.eq(QQN).html()
 	var staffname = $( "#container" ).dialog( "option", "title" )
@@ -148,7 +152,7 @@ function saveContentQueue(column, content)
 		else
 		{
 			updateBOOK(response);
-			fillselectQueue(rowcell, waitnum, qn)
+			fillselectQueue(row, rowcell, waitnum, qn)
 			$("#editcell").data("content", "")
 		}
 		$("#queuetbl").css("cursor", "")
@@ -282,8 +286,8 @@ function storePresentcellQueue(pointing)
 
 	switch(cindex)
 	{
-		case QSINCE:
-			fillSetTableQueue(pointing, rindex)
+		case QNUM:
+			fillSetTableQueue(pointing)
 			break
 		case QNAME:
 		case QAGE:

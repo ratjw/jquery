@@ -35,7 +35,6 @@ function DragDrop()
 				var thatqn = $(ui.draggable).children("td").eq(QQN).html()
 				if (!thatqn)
 					return false
-				thatdate = nextdate	//trigger "that_row.remove()"
 			}
 			else if (dragTable == "tbl")
 			{
@@ -48,7 +47,7 @@ function DragDrop()
 				if (nextdate = $(ui.draggable).next().children("td").eq(OPDATE).html())
 					nextdate = nextdate.numDate()
 			}
-			$("#tbl").css("cursor", 'wait')
+			$("#tblcontainer").css("cursor", 'wait')
 			var sql = "sqlReturnbook=UPDATE book SET "
 			sql += "opdate='" + thisdate
 			sql += "', editor='"+ THISUSER
@@ -67,11 +66,11 @@ function DragDrop()
 					updateBOOK(response)
 					if (prevdate == thatdate || thatdate == nextdate)
 						that_row.remove()
-//					else if (dragTable == "queuetbl")
-//					{
-//						var staffname = $( "#container" ).dialog( "option", "title" )
-//						staffqueue(staffname)
-//					}
+					else if (dragTable == "queuetbl")
+					{
+						var staffname = $( "#container" ).dialog( "option", "title" )
+						staffqueue(staffname)
+					}
 
 					if (thisqn)
 						this_row.after(this_row.clone());
@@ -79,7 +78,7 @@ function DragDrop()
 					filluprefill()
 					DragDrop()
 				}
-				$("#tbl").css("cursor", 'default')
+				$("#tblcontainer").css("cursor", 'default')
 			}	
 		}
 	});
@@ -107,7 +106,7 @@ function DragDropday()
 			if (!$(this).children("td").eq(OPDATE).html())		//drop on header
 				return true
 
-			$("#tbl").css("cursor", 'wait')
+			$("#tblcontainer").css("cursor", 'wait')
 			var that_row = ui.draggable
 			var this_row = $(this)
 			var uihelper = ui.helper
@@ -162,7 +161,7 @@ function DragDropday()
 					filluprefill()
 					DragDrop(event)
 				}
-				$("#tbl").css("cursor", 'default')
+				$("#tblcontainer").css("cursor", 'default')
 			}	
 		}
 	});
@@ -220,7 +219,7 @@ function DragDropStaff()
 			sql += ", editor='"+ THISUSER
 			sql += "' WHERE qn="+ thatqn +";"
 
-			$("#tbl").css("cursor", 'wait')
+			$("#tblcontainer").css("cursor", 'wait')
 
 			Ajax(MYSQLIPHP, sql, callbackDragDropStaff);
 
@@ -237,7 +236,7 @@ function DragDropStaff()
 					filluprefill()
 					DragDrop(event)
 				}
-				$("#tbl").css("cursor", 'default')
+				$("#tblcontainer").css("cursor", 'default')
 			}	
 		}
 	});

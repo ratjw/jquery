@@ -121,7 +121,7 @@ function scrollUpDown()
 	{
 		fillupscroll(-1)
 	}
-	else if ($("#tbl").height() <= $(window).height() + $(window).scrollTop())
+	else if ($("#tblcontainer").height() <= $(window).height() + $(window).scrollTop())
 	{
 		fillupscroll(+1)
 	}

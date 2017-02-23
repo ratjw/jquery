@@ -4,7 +4,7 @@ function loadtable(userid)
 
 	THISUSER = userid
 	$("#login").remove()
-	$("#tbl").css("display", "block")
+	$("#tblcontainer").show()
 
 	$(document).click( function (event) {
 		countreset();

@@ -12,12 +12,13 @@ function staffqueue(staffname)
 		if (QWAIT[q].staffname == staffname)
 		{
 			rowi = makenextrowQueue(queuetbl, ++i)
-			filldataQueue(QWAIT[q], $(rowi).children("td"))
+			filldataQueue(QWAIT[q], i, $(rowi).children("td"))
 		}
 	}
 	if (i==0)	//no patient in waiting list
 	{
 		rowi = makenextrowQueue(queuetbl, ++i)
+		rowi.cells[QNUM].innerHTML = 1
 		rowi.cells[QSINCE].innerHTML = new Date().MysqlDate().thDate()
 	}
 	$("#container").html($("#queuetbl"));
@@ -26,8 +27,8 @@ function staffqueue(staffname)
 		height: window.innerHeight * 50 / 100,
 		width: window.innerWidth * 70 / 100
 	});
-	$("#queuetbl").css("display", "block")
-	$(".ui-dialog").css("display", "block")
+	$("#queuetbl").show()
+	$(".ui-dialog").show()
 	DragDropStaff()
 }
 //$("#container").parent().find('.ui-dialog-titlebar').click(function() {
@@ -46,7 +47,7 @@ function makenextrowQueue(table, i)
 	return rowi
 }
 
-function fillselectQueue(rowcell, waitnum, qn)	//seek the QWAIT row
+function fillselectQueue(row, rowcell, waitnum, qn)	//seek the QWAIT row
 {
 	var q = 0
 	if (waitnum)	//come from old queuetbl row
@@ -56,11 +57,12 @@ function fillselectQueue(rowcell, waitnum, qn)	//seek the QWAIT row
 		while ((q < QWAIT.length) && (QWAIT[q].qn != qn))
 			q++	
 
-	filldataQueue(QWAIT[q], rowcell)
+	filldataQueue(QWAIT[q], row, rowcell)
 }
 
-function filldataQueue(bookq, rowcell)		
+function filldataQueue(bookq, row, rowcell)		
 {
+	rowcell.eq(QNUM).html(row)
 	rowcell.eq(QSINCE).html(bookq.qsince? bookq.qsince.thDate() : "")
 	rowcell.eq(QHN).html(bookq.hn)
 	rowcell.eq(QNAME).html(bookq.patient)
@@ -71,18 +73,15 @@ function filldataQueue(bookq, rowcell)
 	rowcell.eq(QQN).html(bookq.qn)
 }
 
-function fillSetTableQueue(pointing, rindex)
+function fillSetTableQueue(pointing)
 {
-	var table = document.getElementById("queuetbl")
-	var rowmain = table.rows[rindex]
-	var tcell = rowmain.cells
-	var casename = tcell[QNAME].innerHTML
-	var thisqqn = tcell[QQN].innerHTML
+	var rowmain = $(pointing).closest('tr')
+	var casename = rowmain.find('td').eq(QNAME).html()
+	var thisqqn = rowmain.find('td').eq(QQN).html()
 	var disabled = "ui-state-disabled"
 
 	casename = casename.substring(0, casename.indexOf(' '))
-	i = table.rows.length
-	lastqqn = table.rows[i-1].cells[QQN].innerHTML
+	var lastqqn = $("#queuetbl tr:last td:last").html()
 
 	$("#qitem1").html("เพิ่ม case")
 	if (lastqqn)
@@ -97,7 +96,8 @@ function fillSetTableQueue(pointing, rindex)
 
 	$("#queuemenu").menu({
 		select: function( event, ui ) {
-			var item = this.getAttribute("aria-activedescendant")
+
+			var item = $(this).attr("aria-activedescendant")
 			switch(item)
 			{
 				case "qitem1":
@@ -110,28 +110,24 @@ function fillSetTableQueue(pointing, rindex)
 			$("#editcell").hide()
 			$("#queuemenu").hide()
 			event.stopPropagation()
+			event.preventDefault()
 			return false
 		}
 	});
 
-	$("#queuemenu").insertAfter($("#queuetbl"))
-	showupQueue(pointing)
-}
+	var pos = $(pointing).offset();
+	var height = pos.top + $(pointing).height()
+	var width = pos.left  + $(pointing).width();
 
-function showupQueue(pointing)
-{
-	var pos = $(pointing).position();
-	var height = pos.top + $(pointing).outerHeight()
-	var width = pos.left  + $(pointing).outerWidth();
-
-	$('#queuemenu').css({
+	$("#queuemenu").css({
 		position: "absolute",
-		top: height + $("#container").scrollTop() + "px",
+		top: height + "px",
 		left: width + "px",
 		zIndex: 1000,
 		modal:true,
 		boxShadow: "10px 20px 30px slategray"
-	}).show()
+	})
+	$("#queuemenu").show()
 }
 
 function addnewrowQ()
@@ -159,4 +155,59 @@ function deletecaseQ(rowmain, qn)
 			updateBOOK(response);
 			$(rowmain).remove()
 	}
+}
+
+function fillday(day)
+{	//Display only one day of each week
+	var i, k, q
+	var rowi = {}
+	var date = ""
+	var opday = DAYOFTHAINAME[day]
+	var madedate
+	
+	$("#tbldaycontainer").show()
+
+	date = BOOK[0].opdate
+
+	//i for rows in table
+	i=0
+
+	//q for rows in BOOK
+	for (q=0; q < BOOK.length; q++)
+	{	
+		while (date < BOOK[q].opdate)
+		{	//step over each day that is not in QBOOK
+			if (date != madedate)
+			{
+				if (k%7 == opday)
+				{	//make a blank row for matched opday which is not already in the table
+					i++
+					rowi = makenextrow(i, date, 'tblday')
+				}
+				madedate = date
+			}
+			date = date.nextdays(1)
+			k++	// = date.getDay() = nextday on the table
+			if (k%7 == 0)
+			{	//make table head row before every Sunday
+				$('#tblday tbody').append($('#tblday tr:first').clone())
+ 				i++
+			}
+		}
+		k = new Date(BOOK[q].opdate).getDay()
+		if (k == opday)
+		{
+			i++
+			rowi = makenextrow(i, date, 'tblday')
+			madedate = date
+			filldata(BOOK[q], rowi)
+		}
+	}
+	$("#tbldaycontainer").dialog({
+		title: day,
+		height: window.innerHeight * 50 / 100,
+		width: window.innerWidth * 70 / 100
+	})
+	$(".ui-dialog").show()
+// 	DragDropday(event)
 }

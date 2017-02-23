@@ -26,8 +26,9 @@
 </HEAD>
 <BODY>
 
-<TABLE id="tbl" data-role="table" class="ui-responsive" style="display:none">
- <TBODY>
+<div id="tblcontainer" style="display:none">
+ <TABLE id="tbl" data-role="table" class="ui-responsive">
+  <TBODY>
    <TR>
     <th style="width:10%">วันผ่าตัด</th>
     <th style="width:6%">Staff</th>
@@ -39,8 +40,9 @@
     <th style="width:20%">Note</th>
     <th style="display:none"></th>
    </TR>
- </TBODY>
-</TABLE>
+  </TBODY>
+ </TABLE>
+</div>
 
 <TABLE style="display:none">	<!-- Used as cells template -->
   <TR id="datatitle">
@@ -56,8 +58,9 @@
   </TR>
 </TABLE>
 
-<TABLE id="tbltemplate" data-role="table" class="ui-responsive" style="display:none">
- <TBODY>
+<div id="tbldaycontainer" style="display:none">
+ <TABLE id="tblday" data-role="table" class="ui-responsive">
+  <TBODY>
    <TR>
     <th style="width:10%">วันผ่าตัด</th>
     <th style="width:6%">Staff</th>
@@ -69,7 +72,42 @@
     <th style="width:20%">Note</th>
     <th style="display:none"></th>
    </TR>
- </TBODY>
+  </TBODY>
+ </TABLE>
+</div>
+
+<div id="queuecontainer" style="display:none">
+  <TABLE id="queuetbl" data-role="table" class="ui-responsive">
+   <TBODY>
+    <TR>
+     <th style="width:3%">No.</th>
+     <th style="width:10%">Since</th>
+     <th style="width:7%">HN</th>
+     <th style="width:15%">ชื่อ นามสกุล</th>
+     <th style="width:5%">อายุ</th>
+     <th style="width:20%">Diagnosis</th>
+     <th style="width:20%">Treatment</th>
+     <th style="width:20%">Note</th>
+     <th style="display:none"></th>
+    </TR>
+   </TBODY>
+  </TABLE>
+</div>
+
+<TABLE style="display:none">	<!--template "qdatatitle" for "staffqueue"-->
+  <TBODY>
+    <TR id="qdatatitle">
+     <td data-title="No."></td>
+     <td data-title="Since"></td>
+     <td data-title="HN"></td>
+     <td data-title="ชื่อ นามสกุล"></td>
+     <td data-title="อายุ"></td>
+     <td data-title="Diagnosis"></td>
+     <td data-title="Treatment"></td>
+     <td data-title="Note"></td>
+     <td style="display:none"></td>
+	</TR>
+  </TBODY>
 </TABLE>
 
 <ul id="menu" style="display:none">
@@ -95,6 +133,11 @@
   <li><div id="item7"></div></li>
 </ul>
 
+<ul id="queuemenu" style="display:none">
+  <li><div id="qitem1"></div></li>
+  <li><div id="qitem2"></div></li>
+</ul>
+
 <ul id="stafflist"></ul>
 
 <div id="alert" ></div>
@@ -102,41 +145,6 @@
 <div id="container"></div>
 
 <div id="editcell" contenteditable="true"></div>
-
-<TABLE id="queuetbl" data-role="table" class="ui-responsive" style="display:none">
-  <TBODY>
-    <TR>
-     <th style="width:10%">Since</th>
-     <th style="width:10%">HN</th>
-     <th style="width:15%">ชื่อ นามสกุล</th>
-     <th style="width:5%">อายุ</th>
-     <th style="width:20%">Diagnosis</th>
-     <th style="width:20%">Treatment</th>
-     <th style="width:20%">Note</th>
-     <th style="display:none"></th>
-    </TR>
-  </TBODY>
-</TABLE>
-
-<TABLE style="display:none">
-  <TBODY>
-    <TR id="qdatatitle">
-     <td data-title="Since"></td>
-     <td data-title="HN"></td>
-     <td data-title="ชื่อ นามสกุล"></td>
-     <td data-title="อายุ"></td>
-     <td data-title="Diagnosis"></td>
-     <td data-title="Treatment"></td>
-     <td data-title="Note"></td>
-     <td style="display:none"></td>
-	</TR>
-  </TBODY>
-</TABLE>
-
-<ul id="queuemenu" style="display:none">
-  <li><div id="qitem1"></div></li>
-  <li><div id="qitem2"></div></li>
-</ul>
 
 <DIV id="login">
 	<h3>Queue book for Neurosurgery</h3>
