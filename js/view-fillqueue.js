@@ -115,24 +115,23 @@ function fillSetTableQueue(pointing, rindex)
 	});
 
 	$("#queuemenu").insertAfter($("#queuetbl"))
-	showupQueue(pointing, '#queuemenu')
+	showupQueue(pointing)
 }
 
-function showupQueue(pointing, menuID)
+function showupQueue(pointing)
 {
 	var pos = $(pointing).position();
 	var height = pos.top + $(pointing).outerHeight()
 	var width = pos.left  + $(pointing).outerWidth();
 
-	$(menuID).css({
+	$('#queuemenu').css({
 		position: "absolute",
-		top: height + "px",
+		top: height + $(".ui-dialog").scrollTop() + "px",
 		left: width + "px",
 		zIndex: 1000,
 		modal:true,
-		display: "block",
 		boxShadow: "10px 20px 30px slategray"
-	})
+	}).show()
 }
 
 function addnewrowQ()

@@ -231,6 +231,8 @@ function editcell(pointing, id)
 	$("#editcell").html($(pointing).html())
 	$("#editcell").data("located", $(pointing))
 	$("#editcell").css({
+		position: "absolute",
+		zIndex: 1000,
 		top: pos.top + "px",
 		left: pos.left + "px",
 		height: $(pointing).height() + "px",

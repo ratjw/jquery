@@ -277,8 +277,7 @@ function storePresentcellQueue(pointing)
 	var rindex = $(rowtr).index()
 	var qn = $(rowtr).children("td").eq(QQN).html()
 
-	$("#editcell").hide()
-	editcell(pointing, "#queuetbl")
+	editcellqueue(pointing)
 
 	switch(cindex)
 	{
@@ -296,6 +295,34 @@ function storePresentcellQueue(pointing)
 			$("#editcell").data("content", $(pointing).html())
 			break
 	}
+}
+
+function editcellqueue(pointing)
+{
+	var pos = $(pointing).offset()
+
+	$("#editcell").html($(pointing).html())
+	$("#editcell").data("located", $(pointing))
+
+//	$("#editcell").destroy()
+//	$(".ui-dialog").append($("#editcell"))
+//	$("#editcell").position({
+//		my: "left top",
+//		at: "left top",
+//		of: pointing,
+//		collision: "fit",
+//		within: "#queuetbl"
+//	})
+	$("#editcell").css({
+		position: "absolute",
+		zIndex: "1000",
+		top: pos.top + $(".ui-dialog").scrollTop() + "px",
+		left: pos.left + "px",
+		height: $(pointing).height() + "px",
+		width: $(pointing).width() + "px"
+	})
+	$("#editcell").show()
+	$("#editcell").focus()
 }
 
 function findPrevcellQueue(event) 

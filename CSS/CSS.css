@@ -64,7 +64,7 @@ td.sat:before { content: "เสาร์ "; }
 
 #editcell { 
 	display:none;
-	position: absolute;
+/*	position: absolute;*/
 	font-size: 16px;
 	text-align: left; 
 	overflow: hidden;

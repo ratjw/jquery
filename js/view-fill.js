@@ -48,7 +48,7 @@ function fillext(di)
 		fill(0)
 
 		//scroll to the old "tr:has(th)"
-		document.body.scrollTop = $("#tbl tr:has(th)").eq(1).offset().top
+		$(document).scrollTop($("#tbl tr:has(th)").eq(1).offset().top)
 	}
 	else if (di == +1)
 	{
@@ -131,6 +131,47 @@ function fillext(di)
 	}
 })()
 
+function makeheader(at)
+{
+	var table = document.getElementById("tbl")
+	var tbody = table.getElementsByTagName("tbody")[0]
+	var trow = table.getElementsByTagName("tr")[0]
+	var thead = trow.cloneNode(true)
+
+	if (at == 0)
+		tbody.insertBefore(thead, trow)
+	else
+		tbody.appendChild(thead)
+}
+
+function makenextrow(i, date)
+{	// i = the row to be made
+	var table = document.getElementById("tbl")
+	var rowi
+	var j = 0
+	var datatitle = document.getElementById("datatitle")
+
+	rowi = table.insertRow(i)
+	table.rows[i].innerHTML = datatitle.innerHTML
+	rowi.cells[OPDATE].innerHTML = date.thDate()
+	rowi.cells[OPDATE].className = NAMEOFDAYABBR[(new Date(date)).getDay()]
+	rowi.className = NAMEOFDAYFULL[(new Date(date)).getDay()]
+	rowi.style.backgroundImage = holiday(date)
+	return rowi
+}
+
+function filldata(bookq, rowi)		//bookq = book[q]
+{
+	rowi.cells[STAFFNAME].innerHTML = bookq.staffname? bookq.staffname : ""
+	rowi.cells[HN].innerHTML = bookq.hn? bookq.hn : ""
+	rowi.cells[NAME].innerHTML = bookq.patient? bookq.patient : ""
+	rowi.cells[AGE].innerHTML = bookq.dob? bookq.dob.getAge(bookq.opdate) : ""
+	rowi.cells[DIAGNOSIS].innerHTML = bookq.diagnosis? bookq.diagnosis : ""
+	rowi.cells[TREATMENT].innerHTML = bookq.treatment? bookq.treatment : ""
+	rowi.cells[TEL].innerHTML = bookq.tel? bookq.tel : ""
+	rowi.cells[QN].innerHTML = bookq.qn
+}
+
 function fillday(day)
 {	//Display only one day of each week
 	var i, k, q
@@ -190,35 +231,6 @@ function fillday(day)
  	DragDropday(event)
 }
 
-function makeheader(at)
-{
-	var table = document.getElementById("tbl")
-	var tbody = table.getElementsByTagName("tbody")[0]
-	var trow = table.getElementsByTagName("tr")[0]
-	var thead = trow.cloneNode(true)
-
-	if (at == 0)
-		tbody.insertBefore(thead, trow)
-	else
-		tbody.appendChild(thead)
-}
-
-function makenextrow(i, date)
-{	// i = the row to be made
-	var table = document.getElementById("tbl")
-	var rowi
-	var j = 0
-	var datatitle = document.getElementById("datatitle")
-
-	rowi = table.insertRow(i)
-	table.rows[i].innerHTML = datatitle.innerHTML
-	rowi.cells[OPDATE].innerHTML = date.thDate()
-	rowi.cells[OPDATE].className = NAMEOFDAYABBR[(new Date(date)).getDay()]
-	rowi.className = NAMEOFDAYFULL[(new Date(date)).getDay()]
-	rowi.style.backgroundImage = holiday(date)
-	return rowi
-}
-
 function makeheaderday(at)
 {
 	var table = document.getElementById("tblday")
@@ -246,18 +258,6 @@ function makenextrowday(i, date)
 	rowi.className = NAMEOFDAYFULL[(new Date(date)).getDay()]
 	rowi.style.backgroundImage = holiday(date)
 	return rowi
-}
-
-function filldata(bookq, rowi)		//bookq = book[q]
-{
-	rowi.cells[STAFFNAME].innerHTML = bookq.staffname? bookq.staffname : ""
-	rowi.cells[HN].innerHTML = bookq.hn? bookq.hn : ""
-	rowi.cells[NAME].innerHTML = bookq.patient? bookq.patient : ""
-	rowi.cells[AGE].innerHTML = bookq.dob? bookq.dob.getAge(bookq.opdate) : ""
-	rowi.cells[DIAGNOSIS].innerHTML = bookq.diagnosis? bookq.diagnosis : ""
-	rowi.cells[TREATMENT].innerHTML = bookq.treatment? bookq.treatment : ""
-	rowi.cells[TEL].innerHTML = bookq.tel? bookq.tel : ""
-	rowi.cells[QN].innerHTML = bookq.qn
 }
 
 function filldeleterow(rowmain)		

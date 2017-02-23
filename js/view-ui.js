@@ -208,7 +208,7 @@ function DragDropStaff()
 				return
 			var thatqn = $(ui.draggable).children("td").eq(QN).html()
 			var waitnum = findwaitnum(thatqn)
-			if (!waitnum)
+			if (!(waitnum > 0))
 				waitnum = findMAXwaitnum() + 1
 			var qsince = findQsince(thatqn)
 			if (!qsince)

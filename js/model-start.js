@@ -18,7 +18,7 @@ function loadtable(userid)
 	})
 	$(document).keydown( function (event) {
 		countreset();
-		if ($(".ui-dialog").css("display") == "none")
+		if (!$(".ui-dialog").length || ($(".ui-dialog").css("display") == "none"))
 			editing(event)
 		else if ($(".ui-dialog").css("display") == "block")
 			editingQueue(event)

@@ -108,6 +108,7 @@ function stafflist(pointing)
 			$("#editcell").hide()	//to disappear after selection
 			$('#stafflist').hide()	//to disappear after selection
 			event.stopPropagation()
+			event.preventDefault()
 			return false
 		}
 	});
@@ -121,7 +122,7 @@ function showup(pointing, menuID)
 	var height = pos.top + $(pointing).outerHeight();
 	var width = pos.left + $(pointing).outerWidth();
 
-	if ((height + $(menuID).outerHeight()) > $(window).innerHeight() + document.body.scrollTop)
+	if ((height + $(menuID).outerHeight()) > $(window).innerHeight() + $(window).scrollTop())
 	{
 		height = pos.top - $(menuID).innerHeight()
 	}
@@ -129,7 +130,6 @@ function showup(pointing, menuID)
 		position: "absolute",
 		top: height + "px",
 		left: width + "px",
-		display: "block",
 		boxShadow: "10px 20px 30px slategray"
-	})
+	}).show()
 }
