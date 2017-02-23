@@ -9,7 +9,7 @@ table {
 th {
 	font-size: 16px;
 	font-weight: bold;
-	background-color: #5599BB;
+	background-color: steelblue;
 	color: papayawhip;
 	border-left: solid 1px silver;
 	border-top: solid 1px silver;
@@ -23,15 +23,6 @@ td {
 	border-left: solid 1px silver;
 	border-bottom: solid 1px silver;
 }
-
-td#editcell { 
-	background-color: white; 
-	box-shadow: 5px 5px 10px slategray;
-}	/* editing cell */
-
-tr#findrow { background-color: skyblue; }	/* match row */
-tr#movemode { background-color: teal; }	/* pre-move row */
-tr#copymode { background-color: teal; }	/* pre-copy row */
 
 tr {
 	background-repeat: no-repeat;
@@ -71,51 +62,16 @@ td.sat:before { content: "เสาร์ "; }
 	border:2px solid slategray;
 }
 
-.smallpic {
-	position: fixed;
+#editcell { 
 	display:none;
-	z-index: 1;
-	color: green;
-	background-color: papayawhip;
-	border: 2px solid slategray;
-	padding: 5px;
-	overflow-x: hidden;
-	overflow-y: hidden;
-	box-shadow: 10px 20px 30px slategray;
-}
-
-#icdname {
-	text-align: left;
-	overflow-x: hidden;
-	overflow-y: scroll;
-	height: auto;
-}
-
-.divindiv {
-	position: absolute;
-	display:none;
-	z-index: 1;
-	color: green;
-	background-color: papayawhip;
-	border: 2px solid slategray;
-	padding: 5px;
-	overflow-x: hidden;
-	overflow-y: hidden;
-}
-
-#paperdiv {
-	position: fixed;
-	display:none;
-	z-index: 1;
-	color: black;
-	background-color: white;
-	border: 2px solid slategray;
-	padding-top: 70px;
-	padding-right: 30px;
-	padding-bottom: 70px;
-	padding-left: 50px;
-	overflow-x: hidden;
-	overflow-y: hidden;
+/*	position: absolute;*/
+	font-size: 16px;
+	text-align: left; 
+	overflow: hidden;
+	border: solid 1px #0099FF;
+	background-color: white; 
+/*	z-index: 1000;*/
+	box-shadow: 5px 5px 10px slategray;
 }
 
 #alert {
@@ -136,32 +92,20 @@ td.sat:before { content: "เสาร์ "; }
 	box-shadow: 20px 30px 40px slategray;
 }
 
-span {
-	display:inline-block; 
+.dialog {
+	position: fixed;
+	box-shadow: 10px 20px 30px slategray;
 }
 
-div#divdmy span, div#divname span { display:inline; }
-
-a {
-	text-decoration: none;
-	display: block;
-}
-
-a:hover {
-	color: white;
-	background-color: steelblue;
-	background-size:auto;
-}
-
-table.historytable  {
+.historytable  {
+	display: none;
 	table-layout: fixed;
 	overflow: scroll;
 	border-collapse: collapse;
 	border-right: solid 1px slategray;
-	width: 500px;
 }
 
-table.historytable th {
+.historytable th {
 	font-size: 16px;
 	font-weight: bold;
 	color: papayawhip;
@@ -170,13 +114,12 @@ table.historytable th {
 	border-left: solid 1px silver;
 	border-top: solid 1px silver;
 	border-bottom: solid 1px silver;
-	width: 70px;
 	height: 30px;
 }
 
-table.historytable td {
+.historytable td {
 	empty-cells:show;
-	font-size: 16px;
+	font-size: 14px;
 	color: black;
 	background-color: #eeeeee;
 	text-align: left;
@@ -184,31 +127,10 @@ table.historytable td {
 	border-color: #000000; 
 	border-left: solid 1px silver;
 	border-bottom: solid 1px silver;
-	height: 30px;
-}
-
-table.historytable td.historysun { background-color: #ffbbcc; }
-table.historytable td.historysat { background-color: #ccbbff; }
-table.historytable td.historyday { background-color: #ffffff; }
-table.historytable td.historytoday { background-color: fuchsia; }
-table.historytable td.calpremoveday { background-color: teal; }
-table.historytable td:hover { background-color: #00CC00; }
-
-div#equip, div#setor { font-size: 16px; }
-
-input#equip, input#oequip { 
-	font-size: 16px; 
-	border-top: 0px; 
-	border-left: 0px; 
-	border-color: rgb(160, 160, 160); 
-}
-
-#setor td {
-	font-size: 1em; 
 }
 
 #queuetbl {
-	background-color: white;
+	background-color: #F0F0F0;
 }
 
 #queuetbl th {
