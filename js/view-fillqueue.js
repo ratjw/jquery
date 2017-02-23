@@ -126,7 +126,7 @@ function showupQueue(pointing)
 
 	$('#queuemenu').css({
 		position: "absolute",
-		top: height + $(".ui-dialog").scrollTop() + "px",
+		top: height + $("#container").scrollTop() + "px",
 		left: width + "px",
 		zIndex: 1000,
 		modal:true,
