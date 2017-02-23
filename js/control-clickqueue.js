@@ -277,6 +277,7 @@ function storePresentcellQueue(pointing)
 	var rindex = $(rowtr).index()
 	var qn = $(rowtr).children("td").eq(QQN).html()
 
+//	$("#queuemenu").hide()
 	editcellqueue(pointing)
 
 	switch(cindex)
@@ -299,13 +300,12 @@ function storePresentcellQueue(pointing)
 
 function editcellqueue(pointing)
 {
-	var pos = $(pointing).offset()
+	var pos = $(pointing).position()
 
 	$("#editcell").html($(pointing).html())
 	$("#editcell").data("located", $(pointing))
 
-//	$("#editcell").destroy()
-//	$(".ui-dialog").append($("#editcell"))
+	$("#queuetbl").append($("#editcell"))
 //	$("#editcell").position({
 //		my: "left top",
 //		at: "left top",
@@ -316,7 +316,7 @@ function editcellqueue(pointing)
 	$("#editcell").css({
 		position: "absolute",
 		zIndex: "1000",
-		top: pos.top + $(".ui-dialog").scrollTop() + "px",
+		top: pos.top + $("#container").scrollTop() + "px",
 		left: pos.left + "px",
 		height: $(pointing).height() + "px",
 		width: $(pointing).width() + "px"
