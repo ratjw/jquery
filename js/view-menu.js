@@ -153,8 +153,7 @@ function splitpane(staffname)
 			var remainSpace = parent.width() - ui.element.outerWidth()
 			var divTwo = ui.element.next()
 			var divTwoWidth = (remainSpace - (divTwo.outerWidth() - divTwo.width()))/parent.width()*100+"%";
-			divTwo.width(divTwoWidth);
-			staffqueue(staffname)
+			divTwo.css("width", divTwoWidth);
 		},
 		stop: function(e, ui) 
 		{

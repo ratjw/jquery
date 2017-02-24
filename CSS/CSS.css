@@ -35,27 +35,60 @@ html, body {
 	box-sizing: border-box;
 	overflow-y: auto;
 }
+
+.ui-resizable {
+	position: relative;
+}
+
+.ui-resizable-handle {
+	position: absolute;
+	font-size: 0.1px; display: block;
+}
+*/
+.wrap {
+	width: 100%;
+	border: 1px brown solid;
+	font-size: 0;
+}
+.resizable {
+	width: 50%;
+	height: 120px;
+	padding: 0.5em;
+	background-color: coral;
+	display: inline-block;
+}
+.resizable2 {
+	background-color: lightblue;
+}
+.ui-resizable-e { 
+	cursor: e-resize; 
+	width: 20px; 
+	right: -10px; 
+	top: 0; 
+	bottom: 0; 
+}
 */
 html, body {
-/*	height: 100%;*/
-	overflow: hidden;
+/*	height: 100%;
+	overflow: hidden;*/
 	margin: 0;
 }
+
 #wrapper {
 	height: 100%;
 }
+
 #tblcontainer {
 	float: left;
 	height: 100%;
-	overflow-x: hidden;
 	overflow-y: auto;
 	box-sizing: border-box;
 	padding: 0.3em;
 }
+
 #queuecontainer {
 	float: right;
 	height: 100%;
-	overflow-x: hidden;
 	overflow-y: auto;
 	box-sizing: border-box;
 	padding: 0.3em;
@@ -73,7 +106,6 @@ html, body {
 	border-right: solid 1px slategray;
 	width: auto;
 	table-layout: fixed;	/*make cell width = first row specified*/
-	overflow: hidden;
 	border-collapse: collapse;
 	padding: 0.4em;
 }
@@ -129,7 +161,6 @@ td.sat:before { content: "เสาร์ "; }
 	border-right: solid 1px slategray;
 	width: auto;
 	table-layout: fixed;	/*make cell width = first row specified*/
-	overflow: hidden;
 	border-collapse: collapse;
 	background-color: #F0F0F0;
 	padding: 0.4em;
