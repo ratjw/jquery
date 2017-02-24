@@ -1,32 +1,22 @@
 
 function fillupstart()		
 {	//Display all cases in each day of 5 weeks
-	STATE[0] = "FILLUP"
-	STATE[1] = getSunday()
 	if (BOOK.length == 0)
 		BOOK.push({"opdate" : getSunday()})
-	BOOKFILL = BOOK	//also begin BOOKFILL
+	setTopDate(getSunday())
+	setRequire(7)
 	fillnew()
-	DragDrop()
-}
-
-function fillupnormal()
-{	//from selecting firstcolumn menu change STATE to fillup from fillday or fillstaff
-
-	STATE[0] = "FILLUP"
-	BOOKFILL = BOOK	//changed to fillup from fillday or fillstaff
-	fillnew()
+	document.body.scrollTop = 3
 	DragDrop()
 }
 
 function filluprefill()
 { 	//from refillall which is called from :
 	//updatingback, callbackmove
-	//use current STATE : update inside the table
 	//Start at the same begindate and same scrollTop
 	var topscroll = document.body.scrollTop
 
-	updateBOOKFILL()
+	setRequire(null)
 	fillnew()
 	document.body.scrollTop = topscroll
 	DragDrop()
@@ -35,11 +25,10 @@ function filluprefill()
 function fillupscroll(direction)
 {
 	fillext(direction)
-//	hilitefillext()
 	DragDrop()
 }
 
-function fillext(di, event)
+function fillext(di)
 {
 	var begindate
 	var	i
@@ -47,64 +36,74 @@ function fillext(di, event)
 
 	if (di == -1)
 	{
-		begindate = STATE[1]
-		if ((BOOKFILL[0]) &&
-			(begindate < BOOKFILL[0].opdate) && 
+		begindate = getTopDate()
+		if ((BOOK[0]) &&
+			(begindate < BOOK[0].opdate) && 
 			(begindate <= getSunday()))
-			return		//being in the beginning of BOOKFILL
+			return		//being in the beginning of BOOK
 		begindate = begindate.nextdays(di*7)
-		STATE[1] = begindate
+		setTopDate(begindate)
 
 		makeheader(0)
 		fill(0)
 
-		//count rows hidden on top of the screen
-		i = 1
-		while (table.rows[i].cells[0].tagName != "TH")
-			i++
-		document.body.scrollTop = table.rows[i].offsetTop
-		document.body.scrollTop? "" : document.documentElement.scrollTop = 
-			table.rows[i].offsetTop - Yscrolled()		//IE7,8,9
+		//scroll to the old "tr:has(th)"
+		$(document).scrollTop($("#tbl tr:has(th)").eq(1).offset().top)
 	}
 	else if (di == +1)
 	{
-		makeheader()
+		makeheader(1)
 		fill(table.rows.length-1)
 	}
 }
 
-function fillnew()
+(function ()
 {
-	var num = 0
-	var table = document.getElementById("tbl")
+	//making static variables
+	var tableTopDate
+	var numweeks	//number of weeks in "tbl" made by fill function
+	var Require		//number of weeks in "tbl" required by caller
 
-	//delete previous table to fresh start every time
-	while (table.rows[1])
-		table.deleteRow(-1) 
+	setRequire = function (number)
+	{
+		if (number)
+			Require = number
+		else
+			Require = numweeks
+	}
 
-	refill()
-	fill(0)
-	while (num++ <= STARTFILLUP)
-		fillext(+1)
-}
+	getTopDate = function ()
+	{
+		return tableTopDate
+	}
 
-function refill()
-{
-	//making numweeks a static variable
-	//numweeks is number of weeks in the table as seen by fill function
-	var numweeks = 0
+	setTopDate = function (TopDate)
+	{
+		tableTopDate = TopDate
+	}
+
+	fillnew = function ()
+	{
+		$('#tbl tr').slice(1).remove()
+		numweeks = 0
+		fill(0)
+		while (numweeks < Require)
+		{
+			makeheader(1)
+			fill($('#tbl tr').length-1)
+		}
+	}
 
 	fill = function (at)	//at = where to fill : 0=top, >0=bottom
 	{
-		var i, q, rowi, rundate, lastday, makedate;
-		var table = document.getElementById("tbl")
+		var i, q, rowi, rundate, lastday, madedate;
 
-		var begindate = at? STATE[1].nextdays(numweeks*7) : STATE[1]
+		begindate = at? tableTopDate.nextdays(numweeks*7) : tableTopDate
 		numweeks++
 		
-		//Find OPDATE of FIRSTROW from the start of BOOKFILL
+		//Find OPDATE of FIRSTROW from the start of BOOK
 		q = 0
-		while (BOOKFILL[q] && (BOOKFILL[q].opdate < begindate))
+		while (BOOK[q] && (BOOK[q].opdate < begindate))
 			q++
 
 		rundate = begindate
@@ -112,207 +111,37 @@ function refill()
 		i = at
 		while (rundate < lastday)
 		{
-			while (q < BOOKFILL.length && rundate == BOOKFILL[q].opdate)
+			while (q < BOOK.length && rundate == BOOK[q].opdate)
 			{
 				i++
-				rowi = makenextrow(i, rundate)
-				makedate = rundate
-				filldata(BOOKFILL, rowi, q)
+				rowi = makenextrow(i, rundate, 'tbl')
+				madedate = rundate
+				filldata(BOOK[q], rowi)
 				q++
 			}
-			if (rundate != makedate)
+			if (rundate != madedate)
 			{
 				i++
-				rowi = makenextrow(i, rundate)
-				makedate = rundate
+				rowi = makenextrow(i, rundate, 'tbl')
+				madedate = rundate
 			}
 			rundate = rundate.nextdays(1)
 		}
 	}
-}
-
-function fillday()
-{	//Display only one day of each week
-	var table = document.getElementById("tbl")
-	var i, k, q
-	var rowi = {}
-	var date = ""
-	var opday = STATE[1]
-	var makedate
-	var temp = BOOKFILL
-
-	//make virtual BOOK of only this day
-	BOOKFILL = []
-	for (q=0; q < BOOK.length; q++)
-	{
-		k = (new Date(BOOK[q].opdate)).getDay()
-		if (k == opday)
-			BOOKFILL.push(BOOK[q])
-	}
-	if (BOOKFILL.length == 0)
-	{
-		BOOKFILL = temp
-		$("#alert").text("ไม่มี case วัน" + NAMEOFDAYTHAI[STATE[1]]);
-		$("#alert").fadeIn();
-		return
-	}
-	STATE[0] = "FILLDAY"
-
-	//delete previous table to fresh start every time
-	while (table.rows[1])
-		table.deleteRow(-1) 
-
-	date = BOOK[0].opdate	//Beginning of entire original BOOK
-	k = (new Date(date)).getDay()
-
-	//i for number of rows in growing table
-	i=0
-
-	//q for walking on BOOKFILL rows
-	for (q=0; q < BOOKFILL.length; q++)
-	{	
-		while (date < BOOKFILL[q].opdate)
-		{	//step over each day that is not in BOOKFILL
-			if (date != makedate)
-			{
-				if (k%7 == opday)
-				{	//make a blank row for matched opday which is not already in the table
-					i++
-					rowi = makenextrow(i, date)
-				}
-				makedate = date
-			}
-			date = date.nextdays(1)
-			k++	// = (new Date(date)).getDay()
-			if (k%7 == 0 && table.rows.length != 1)
-			{	//make table head row before every Sunday
-				makeheader()
- 				i++
-			}
-		}
-		i++
-		rowi = makenextrow(i, date)
-		makedate = date
-		filldata(BOOKFILL, rowi, q)
-	}
-	q = i+5		//make extra 5 rows
-	while (i < q)
-	{
-		if (date != makedate)
-		{
-			if (k%7 == opday)
-			{	//make a blank row for matched opday which is not already in the table
-				i++
-				rowi = makenextrow(i, date)
-			}
-			makedate = date
-		}
-		date = date.nextdays(1)
-		k++// = (new Date(date)).getDay()
-		if (k%7 == 0)
-		{	//make table head row before every Sunday
-			makeheader()
-			i++
-		}
-	}
- 	DragDrop(event)
-}
-
-function fillstaff()
-{	//Display all cases of only one staff (staffname is in STATE)
-	var table = document.getElementById("tbl")
-	var i, k, q
-	var rowi = {}
-	var date = ""
-	var makedate
-	var opday = [0,0,0,0,0,0,0]
-
-	STATE[0] = "FILLSTAFF"
-
-	//make temp BOOK of only this staff
-	BOOKFILL = []
-	for (q=0; q < BOOK.length; q++)
-		if (BOOK[q].staffname == STATE[1])
-			BOOKFILL.push(BOOK[q])
-
-	//determine opday of this staff
-	for (q=0; q < BOOKFILL.length; q++)
-		opday[(new Date(BOOKFILL[q].opdate)).getDay()]++
-	opday = opday.indexOf(Math.max.apply(null, opday))
-
-	//delete previous table to fresh start every time
-	while (table.rows[1])
-		table.deleteRow(-1) 
-
-	date = BOOK[0].opdate	//entire original BOOK
-	k = (new Date(date)).getDay()
-	for (i=0,q=0; q < BOOKFILL.length; q++)
-	{
-		while (date < BOOKFILL[q].opdate)
-		{
-			if (date != makedate)
-			{
-				if (k%7 == opday)
-				{	//make a blank row for matched opday which is not already in the table
-					i++
-					rowi = makenextrow(i, date)
-				}
-				makedate = date
-			}
-			date = date.nextdays(1)
-			k++// = (new Date(date)).getDay()
-			if (k%7 == 0 && table.rows.length != 1)
-			{	//make table head row before every Sunday
-				makeheader()
-				i++
-			}
-		}
-		i++
-		rowi = makenextrow(i, date)
-		makedate = date
-		filldata(BOOKFILL, rowi, q)
-	}
-	q = i
-	while (i < q+6)
-	{
-		if (date != makedate)
-		{
-			if (k%7 == opday)
-			{	//make a blank row for matched opday which is not already in the table
-				i++
-				rowi = makenextrow(i, date)
-			}
-			makedate = date
-		}
-		date = date.nextdays(1)
-		k++// = (new Date(date)).getDay()
-		if (k%7 == 0)
-		{	//make table head row before every Sunday
-			makeheader()
-			i++
-		}
-	}
-	DragDrop(event)
-}
+})()
 
 function makeheader(at)
 {
-	var table = document.getElementById("tbl")
-	var tbody = table.getElementsByTagName("tbody")[0]
-	var trow = table.getElementsByTagName("tr")[0]
-	var thead = trow.cloneNode(true)
-
 	if (at == 0)
-		tbody.insertBefore(thead, trow)
+		$('#tbl tbody').prepend($('#tbl tr:first').clone())
 	else
-		tbody.appendChild(thead)
+		$('#tbl tbody').append($('#tbl tr:first').clone())
 }
 
-function makenextrow(i, date)
+function makenextrow(i, date, tableID)
 {	// i = the row to be made
-	var table = document.getElementById("tbl")
+	var table = document.getElementById(tableID)
 	var rowi
-	var j = 0
 	var datatitle = document.getElementById("datatitle")
 
 	rowi = table.insertRow(i)
@@ -324,18 +153,16 @@ function makenextrow(i, date)
 	return rowi
 }
 
-function filldata(book, rowi, q)
+function filldata(bookq, rowi)		//bookq = book[q]
 {
-	rowi.cells[OPROOM].innerHTML = book[q].oproom? book[q].oproom : ""
-	rowi.cells[OPTIME].innerHTML = book[q].optime? book[q].optime : ""
-	rowi.cells[STAFFNAME].innerHTML = book[q].staffname? book[q].staffname : ""
-	rowi.cells[HN].innerHTML = book[q].hn? book[q].hn : ""
-	rowi.cells[NAME].innerHTML = book[q].patient? book[q].patient : ""
-	rowi.cells[AGE].innerHTML = book[q].dob? book[q].dob.getAge(book[q].opdate) : ""
-	rowi.cells[DIAGNOSIS].innerHTML = book[q].diagnosis? book[q].diagnosis : ""
-	rowi.cells[TREATMENT].innerHTML = book[q].treatment? book[q].treatment : ""
-	rowi.cells[TEL].innerHTML = book[q].tel? book[q].tel : ""
-	rowi.cells[QN].innerHTML = book[q].qn
+	rowi.cells[STAFFNAME].innerHTML = bookq.staffname? bookq.staffname : ""
+	rowi.cells[HN].innerHTML = bookq.hn? bookq.hn : ""
+	rowi.cells[NAME].innerHTML = bookq.patient? bookq.patient : ""
+	rowi.cells[AGE].innerHTML = bookq.dob? bookq.dob.getAge(bookq.opdate) : ""
+	rowi.cells[DIAGNOSIS].innerHTML = bookq.diagnosis? bookq.diagnosis : ""
+	rowi.cells[TREATMENT].innerHTML = bookq.treatment? bookq.treatment : ""
+	rowi.cells[TEL].innerHTML = bookq.tel? bookq.tel : ""
+	rowi.cells[QN].innerHTML = bookq.qn
 }
 
 function filldeleterow(rowmain)		
@@ -344,187 +171,62 @@ function filldeleterow(rowmain)
 		rowmain.cells[j].innerHTML = ""
 }
 
-function fillselect(opdate)		
+function fillselect(tableID, opdate)		
 {
-	var table = document.getElementById("tbl")
+	var table = document.getElementById(tableID)
 
 	var q = 0
-	while (q < BOOKFILL.length && (BOOKFILL[q].opdate < opdate))
-		q++	//seek opdate in BOOKFILL
+	while (q < BOOK.length && (BOOK[q].opdate < opdate))
+		q++	//seek opdate in BOOK
 	var i = 0
-	while (table.rows[i].cells[OPDATE].innerHTML.numDate() != opdate)
+	while (opdate != table.rows[i].cells[OPDATE].innerHTML.numDate())
 		i++	//seek opdate in main table
-	while ((q < BOOKFILL.length) && (opdate == BOOKFILL[q].opdate))
+	while ((q < BOOK.length) && (opdate == BOOK[q].opdate))
 	{	//refill only that opdate cases
-		filldata(BOOKFILL, table.rows[i], q)
+		filldata(BOOK[q], table.rows[i])
 		q++
 		i++
 	}
 }
 
-function DragDrop()
+function addnewrow(rowmain)
 {
-	$("#tbl tr").draggable({
-		helper: "clone",
-		revert: true,
-		start : function () {
-			$("editcell").attr("id", "")
-			hidePopup()
-		}
-	});
-
-	$("#tbl tr").droppable({
-		drop: function (event, ui) {
-
-			if (!$(this).children("td").eq(OPDATE).html())
-				return true
-
-			var that_row = ui.draggable
-			var this_row = this
-			var uihelper = ui.helper
-			var prevdate
-			var nextdate
-
-			if (prevdate = $(ui.draggable).prev().children("td").eq(OPDATE).html()) 
-				prevdate = prevdate.numDate()
-			var thatdate = $(ui.draggable).children("td").eq(OPDATE).html().numDate()
-			if (nextdate = $(ui.draggable).next().children("td").eq(OPDATE).html())
-				nextdate = nextdate.numDate()
-			var thatqn = $(ui.draggable).children("td").eq(QN).html()
-
-			var thisdate = $(this).children("td").eq(OPDATE).html().numDate()
-			var thisqn = $(this).children("td").eq(QN).html()
-			var opdate = $(this).children("td").eq(OPDATE).html()	//Thai date
-
-			$(uihelper).children("td").eq(OPDATE).html(opdate)
-			$(uihelper).attr("class", $(this_row).attr("class"))
-			$(uihelper).children("td").eq(OPDATE).attr("class", $(this_row)
-						.children("td").eq(OPDATE).attr("class"))
-			$(uihelper).css("position", "")
-
-			var sql = "sqlReturnbook=UPDATE book SET opdate='" + thisdate
-			sql += "', editor='"+ THISUSER
-			sql += "' WHERE qn="+ thatqn +";"
-
-			Ajax(MYSQLIPHP, sql, callbackmove);
-
-			function callbackmove(response)
-			{
-				if (!response || response.indexOf("DBfailed") != -1)
-				{
-					alert ("Move failed!\n" + response)
-				}
-				else
-				{
-
-					if (prevdate != thatdate && thatdate != nextdate)
-						filldeleterow(that_row.get(0))
-					else
-						$(that_row).remove();				
-
-					if (thisqn)
-						$(uihelper).insertAfter(this_row);
-					else
-						$(this_row).replaceWith(uihelper);				
-
-					updateBOOK(response);
-					updateBOOKFILL()
-					fillselect(opdate.numDate())
-					DragDrop()
-				}
-			}	
-		}
-	});
+	if (rowmain.cells[QN].innerHTML)	//not empty
+	{
+		var table = document.getElementById("tbl")
+		var clone = rowmain.cloneNode(true)	//cloneNode is faster than innerHTML
+		var i = rowmain.rowIndex
+		while (table.rows[i].cells[OPDATE].innerHTML == table.rows[i-1].cells[OPDATE].innerHTML)
+			i--		
+		rowmain.parentNode.insertBefore(clone,rowmain)
+		rowmain.cells[0].id = ""
+		for (i=1; i<rowmain.cells.length; i++)
+			rowmain.cells[i].innerHTML = ""	
+		DragDrop()
+	}
 }
 
-function holiday(date)
+function deletecase(rowmain, qn)
 {
-	var monthdate = date.substring(5)
-	var dayofweek = (new Date(date)).getDay()
-	var holidayname = ""
+	//not actually delete the case but set waitnum=NULL
+	var sql = "sqlReturnbook=UPDATE book SET waitnum=NULL WHERE qn="+ qn +";"
 
-	for (var key in HOLIDAY) 
+	Ajax(MYSQLIPHP, sql, callbackdeleterow)
+
+	function callbackdeleterow(response)
 	{
-		if (key == date)
-			return HOLIDAY[key]	//matched a holiday
-		if (key > date)
-			break		//not a listed holiday
-						//either a fixed or a compensation holiday
+		if (!response || response.indexOf("DBfailed") != -1)
+			alert ("Delete & Refresh failed!\n" + response)
+		else
+		{
+			updateBOOK(response);
+			filluprefill()
+		}
 	}
-	switch (monthdate)
-	{
-	case "12-31":
-		holidayname = "url('pic/Yearend.jpg')"
-		break
-	case "01-01":
-		holidayname = "url('pic/Newyear.jpg')"
-		break
-	case "01-02":
-		if ((dayofweek == 1) || (dayofweek == 2))
-			holidayname = "url('pic/Yearendsub.jpg')"
-		break
-	case "01-03":
-		if ((dayofweek == 1) || (dayofweek == 2))
-			holidayname = "url('pic/Newyearsub.jpg')"
-		break
-	case "04-06":
-		holidayname = "url('pic/Chakri.jpg')"
-		break
-	case "04-07":
-	case "04-08":
-		if (dayofweek == 1)
-			holidayname = "url('pic/Chakrisub.jpg')"
-		break
-	case "04-13":
-	case "04-14":
-	case "04-15":
-		holidayname = "url('pic/Songkran.jpg')"
-		break
-	case "04-16":
-	case "04-17":
-		if (dayofweek && (dayofweek < 4))
-			holidayname = "url('pic/Songkransub.jpg')"
-		break
-	case "05-05":
-		holidayname = "url('pic/Coronation.jpg')"
-		break
-	case "05-06":
-	case "05-07":
-		if (dayofweek == 1)
-			holidayname = "url('pic/Coronationsub.jpg')"
-		break
-	case "08-12":
-		holidayname = "url('pic/Queen.jpg')"
-		break
-	case "08-13":
-	case "08-14":
-		if (dayofweek == 1)
-			holidayname = "url('pic/Queensub.jpg')"
-		break
-	case "10-23":
-		holidayname = "url('pic/Piya.jpg')"
-		break
-	case "10-24":
-	case "10-25":
-		if (dayofweek == 1)
-			holidayname = "url('pic/Piyasub.jpg')"
-		break
-	case "12-05":
-		holidayname = "url('pic/King.jpg')"
-		break
-	case "12-06":
-	case "12-07":
-		if (dayofweek == 1)
-			holidayname = "url('pic/Kingsub.jpg')"
-		break
-	case "12-10":
-		holidayname = "url('pic/Constitution.jpg')"
-		break
-	case "12-11":
-	case "12-12":
-		if (dayofweek == 1)
-			holidayname = "url('pic/Constitutionsub.jpg')"
-		break
-	}
-	return holidayname
+}
+
+function deleteblankrow(rowmain)
+{
+	var table = document.getElementById("tbl")
+	rowmain.parentNode.removeChild(rowmain)
 }

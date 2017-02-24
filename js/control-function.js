@@ -85,27 +85,6 @@ function getMonday(date)	//get last Monday
 	return today.MysqlDate();
 }
 
-function isequalcontent(firstnode, secondnode) 
-{
-	if (firstnode.innerHTML || secondnode.innerHTML)
-		if (firstnode.innerHTML !== secondnode.innerHTML)
-			return false
-	if (firstnode.value || secondnode.value)
-		if (firstnode.value !== secondnode.value)
-			return false
-	var len = firstnode.childNodes.length + 1;
-	while (len -= 1)
-	{
-		if (firstnode.childNodes[len - 1].innerHTML || secondnode.childNodes[len - 1].innerHTML)
-			if (firstnode.childNodes[len - 1].innerHTML !== secondnode.childNodes[len - 1].innerHTML)
-				return false
-		if (firstnode.childNodes[len - 1].value || secondnode.childNodes[len - 1].value)
-			if (firstnode.childNodes[len - 1].value !== secondnode.childNodes[len - 1].value)
-				return false
-	}
-	return true
-}
-
 function Ajax(url, params, callback)
 {
 	var xmlHttp = new XMLHttpRequest();
@@ -118,187 +97,34 @@ function Ajax(url, params, callback)
 	xmlHttp.send(null);
 }
 
-function whichElement(e)
-{
-	var targ;
-	if (!e)
-		var e=window.event;
-	if (e.target)
-		targ=e.target;
+function checkblank(opdate, qn)
+{	//No case in this date? 
+	var q = 0
+
+	if (qn)
+		return false
+	while (opdate > BOOK[q].opdate)
+	{
+		q++
+		if (q >= BOOK.length)
+			return false
+	}
+	if (opdate == BOOK[q].opdate)
+		return true
 	else
-		targ=e.srcElement;
-	return targ;
+		return false
 }
 
-function Xscrolled()
+function scrollUpDown()
 {
-	var scrolled
-	if (window.pageXOffset == undefined)
+	if ($(window).scrollTop() < 2)
 	{
-		scrolled = document.documentElement.scrollLeft || document.body.scrollLeft 
+		fillupscroll(-1)
 	}
-	else
-		scrolled = window.pageXOffset
-	return scrolled
-}
-
-function Yscrolled()
-{
-	var scrolled
-	var table = document.getElementById("tbl")
-	if (window.pageYOffset == undefined)
+	else if ($("#tblcontainer").height() <= $(window).height() + $(window).scrollTop())
 	{
-		scrolled = table.scrollTop
+		fillupscroll(+1)
 	}
-	else
-		scrolled = window.pageYOffset
-	return scrolled
-}
-
-function scrollview(table, dateclicked)
-{
-	var i, j, q
-	var trow = table.rows
-	var tlen = table.rows.length
-
-	i = 1	//top row
-	while ((i < tlen) && (trow[i].cells[OPDATE].innerHTML.numDate() != dateclicked))
-		i++
-	if (i == tlen)
-		i--
-	j = i + 1	//bottom row
-	while ((j < tlen) && (trow[j].cells[OPDATE].innerHTML.numDate() == dateclicked))
-		j++
-	j--
-	scrolltoview(trow[i], trow[j])
-}
-
-function scrolltoview(highpos, lowpos)
-{
-	var recthigh, rectlow
-	var find = document.getElementById("finddiv")
-	
-	recthigh = highpos.getBoundingClientRect()
-	rectlow = lowpos.getBoundingClientRect()
-	if (rectlow.bottom > $(window).height())
-	{
-		scrollanimation(rectlow.bottom - $(window).height() + Yscrolled(), 1250)
-	}
-	else if (find.style.display == "block")
-	{
-		high = find.offsetTop + find.offsetHeight
-		if (recthigh.top < high)
-		{
-			scrollanimation(recthigh.top - high + Yscrolled(), 1250)
-		}
-	}
-	else if (recthigh.top < 0)
-	{
-		scrollanimation(recthigh.top + Yscrolled(), 1250)
-	}
-}
-
-function scrollanimation(to, duration) 
-{
-	var start = Yscrolled();
-	var	change = to - start;
-	var	currentTime = 0;
-	var	increment = 20;
-
-	duration = Math.abs(change) < 100? 100 : 
-		Math.abs(change) > duration? duration : Math.abs(change)
-	//duration should not be too low to let Math.easeInOutQuad complete its cycle
-	var animateScroll = function(){        
-		currentTime += increment;
-		var val = Math.easeInOutQuad(currentTime, start, change, duration);
-		document.documentElement.scrollTop = val
-		document.documentElement.scrollTop? "" : document.body.scrollTop = val;
-		if(currentTime < duration) {
-			setTimeout(animateScroll, increment);
-		}
-	};
-	animateScroll();
-}
-
-Math.easeInOutQuad = function (t, b, c, d) {
-	t /= d/2;
-	if (t < 1) return c/2*t*t + b;
-	t--;
-	return -c/2 * (t*(t-2) - 1) + b;
-};
-
-function popup(pointing)
-{
-	var xpos, ypos, xscr, yscr
-	var xscroll = Xscrolled()
-	var yscroll = Yscrolled()
-	var menu = document.getElementById("menudiv")
-
-	menu.style.width = ""
-	menu.style.display = 'block'
-	menu.style.height = ""
-	menu.style.overflowY = ""
-	xscr = $(window).width()
-	yscr = $(window).height()
-	xpos = pointing.offsetLeft + pointing.offsetWidth - xscroll
-	ypos = pointing.offsetTop - yscroll
-	if (xpos > xscr - menu.offsetWidth)
-		xpos = pointing.offsetLeft - xscroll - menu.offsetWidth
-	if (ypos > yscr - menu.offsetHeight)
-		ypos = yscr - menu.offsetHeight
-	if (xpos < 0)
-		xpos = 0
-	if (ypos < 0)
-		ypos = 0
-	menu.style.top = ypos + 'px'
-	menu.style.left = xpos + 'px'
-}
-
-function hidePopup()
-{
-	var div = $("body").children("div")
-	for (var i=0; i<div.length; i++)
-		if ($(div[i]).css("display") == "block")
-			$(div[i]).fadeOut()
-}
-
-function getCaretPosition (oField) 
-{
-	var iCaretPos = 0;
-
-	// IE Support
-	if (document.selection) {
-		oField.focus ();
-		var oSel = document.selection.createRange ();
-
-		// Move selection start to 0 position
-		oSel.moveStart ('character', -oField.value.length);
-
-		// The caret position is selection length
-		iCaretPos = oSel.text.length;
-	}
-
-	// Firefox support
-	else if (typeof oField.selectionStart==='number')
-		iCaretPos = oField.selectionStart;
-
-	// Return results
-	return (iCaretPos);
-}
-
-function setCaretPosition(elem, caretPos) {
-    var range;
-
-    if (elem.createTextRange) {
-        range = elem.createTextRange();
-        range.move('character', caretPos);
-        range.select();
-    } else {
-        elem.focus();
-        if (elem.selectionStart !== undefined) {
-            elem.setSelectionRange(caretPos, caretPos);
-        }
-    }
 }
 
 function URIcomponent(qoute)

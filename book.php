@@ -14,109 +14,137 @@
 <script src="js/jquery.js"></script>
 <script src="js/jquery-ui.js"></script>
 <script src="js/control-click.js"></script>
-<script src="js/control-edit.js"></script>
-<script src="js/control-fingermouse.js"></script>
+<script src="js/control-clickqueue.js"></script>
 <script src="js/control-function.js"></script>
-<script src="js/control-queuestaff.js"></script>
 <script src="js/model-constant.js"></script>
 <script src="js/model-start.js"></script>
 <script src="js/view-fill.js"></script>
+<script src="js/view-fillqueue.js"></script>
+<script src="js/view-history.js"></script>
+<script src="js/view-menu.js"></script>
+<script src="js/view-ui.js"></script>
 </HEAD>
 <BODY>
 
-<TABLE id="tbl" data-role="table" class="ui-responsive" style="display:none">
- <TBODY>
+<div id="tblcontainer" style="display:none">
+ <TABLE id="tbl" data-role="table" class="ui-responsive">
+  <TBODY>
    <TR>
-    <th style="width:8%">วันผ่าตัด</th>
-    <th style="width:5%">ห้อง</th>
-    <th style="width:5%">เวลา</th>
+    <th style="width:10%">วันผ่าตัด</th>
     <th style="width:6%">Staff</th>
-    <th style="width:6%">HN</th>
-    <th style="width:10%">ชื่อ นามสกุล</th>
-    <th style="width:5%">อายุ</th>
+    <th style="width:5%">HN</th>
+    <th style="width:15%">ชื่อ นามสกุล</th>
+    <th style="width:4%">อายุ</th>
     <th style="width:20%">Diagnosis</th>
     <th style="width:20%">Treatment</th>
-    <th style="width:15%">โทรศัพท์</th>
+    <th style="width:20%">Note</th>
     <th style="display:none"></th>
    </TR>
- </TBODY>
-</TABLE>
+  </TBODY>
+ </TABLE>
+</div>
 
 <TABLE style="display:none">	<!-- Used as cells template -->
   <TR id="datatitle">
     <td data-title="วันผ่าตัด"></td>
-    <td contenteditable data-title="ห้อง"></td>
-    <td contenteditable data-title="เวลา"></td>
-    <td contenteditable data-title="Staff"></td>
-    <td contenteditable data-title="HN"></td>
+    <td data-title="Staff"></td>
+    <td data-title="HN"></td>
     <td data-title="ชื่อ นามสกุล"></td>
     <td data-title="อายุ"></td>
-    <td contenteditable data-title="Diagnosis"></td>
-    <td contenteditable data-title="Treatment"></td>
-    <td contenteditable data-title="โทรศัพท์"></td>
+    <td data-title="Diagnosis"></td>
+    <td data-title="Treatment"></td>
+    <td data-title="Note"></td>
     <td style="display:none"></td>
   </TR>
 </TABLE>
 
-<div id="menudiv" class="smallpic"></div>
-
-<div id="paperdiv" ></div>
-
-<div id="alert" ></div>
-
-<div id="container" class="smallpic">
-  <button onClick="xcontainer()">Close</button>
-  <br/>
-  <hr style="border:2px solid slategray">
-  <div id="containerdiv"></div>
-  <div id="overlay" class="divindiv"></div>
+<div id="tbldaycontainer" style="display:none">
+ <TABLE id="tblday" data-role="table" class="ui-responsive">
+  <TBODY>
+   <TR>
+    <th style="width:10%">วันผ่าตัด</th>
+    <th style="width:6%">Staff</th>
+    <th style="width:5%">HN</th>
+    <th style="width:15%">ชื่อ นามสกุล</th>
+    <th style="width:4%">อายุ</th>
+    <th style="width:20%">Diagnosis</th>
+    <th style="width:20%">Treatment</th>
+    <th style="width:20%">Note</th>
+    <th style="display:none"></th>
+   </TR>
+  </TBODY>
+ </TABLE>
 </div>
 
-<div id="searchicd" class="smallpic">
-  <div id="newicd" style="border:1px solid slategray"></div>
-  <div id="oldicd" style="display:none"></div>
-  <div id="undermed"></div>
-  <div id="oundermed" style="display:none"></div>
-  Search ICD : 
-  <input type="text" id="commonname" size="30"/>
-  <button style="width:100px; font-size:20px; font-weight: bold;" onClick="oksaveDxRx()">Save</button>
-  <button style="width:60px" onClick="cancel()">Cancel</button>
-  <div id="icdname" style="border:1px solid slategray; height:auto"></div>
-</div>
-
-<div id="finddiv" class="smallpic">
-  <button onClick="getstring()">Find:</button>
-  <input type="text" id="findstr" size="30"/>
-  <button id="previous">previous</button>
-  <button id="next">next</button>
-  <button id="close">x</button>
-  <button id="notfound" style="background-color:yellow;">Not found</button>
-</div>
-
-<div id="queuediv" class="smallpic">
- <div id="queueheader" style="height:25px">
-  <span id="queuespan" onclick="changestaff(this, this.innerHTML)"></span>
-  <button style="width:70px;position:absolute;right:5px" onClick="xqueue()">Close</button>
- </div>
- <div id="queuedivin">
-  <TABLE id="queuetbl">
+<div id="queuecontainer" style="display:none">
+  <TABLE id="queuetbl" data-role="table" class="ui-responsive">
    <TBODY>
     <TR>
      <th style="width:3%">No.</th>
-     <th style="width:5%">Since</th>
-     <th style="width:5%">Staff</th>
+     <th style="width:10%">Since</th>
      <th style="width:7%">HN</th>
-     <th style="width:10%">ชื่อ นามสกุล</th>
+     <th style="width:15%">ชื่อ นามสกุล</th>
      <th style="width:5%">อายุ</th>
-     <th style="width:25%">Diagnosis</th>
+     <th style="width:20%">Diagnosis</th>
      <th style="width:20%">Treatment</th>
-     <th style="width:20%">โทรศัพท์</th>
-     <th style="display:none"> </th>
+     <th style="width:20%">Note</th>
+     <th style="display:none"></th>
     </TR>
    </TBODY>
   </TABLE>
- </div>
 </div>
+
+<TABLE style="display:none">	<!--template "qdatatitle" for "staffqueue"-->
+  <TBODY>
+    <TR id="qdatatitle">
+     <td data-title="No."></td>
+     <td data-title="Since"></td>
+     <td data-title="HN"></td>
+     <td data-title="ชื่อ นามสกุล"></td>
+     <td data-title="อายุ"></td>
+     <td data-title="Diagnosis"></td>
+     <td data-title="Treatment"></td>
+     <td data-title="Note"></td>
+     <td style="display:none"></td>
+	</TR>
+  </TBODY>
+</TABLE>
+
+<ul id="menu" style="display:none">
+  <li><div id="item1"></div></li>
+  <li><div id="item2"></div></li>
+  <li><div id="item3"></div></li>
+  <li><div id="item4"></div>
+	<ul id="item40" style="width:120px">
+	</ul>
+  </li>
+  <li><div id="item5"></div>
+    <ul>
+	  <li><div id="item51">อาทิตย์</div></li>
+	  <li><div id="item52">จันทร์</div></li>
+	  <li><div id="item53">อังคาร</div></li>
+	  <li><div id="item54">พุธ</div></li>
+	  <li><div id="item55">พฤหัส</div></li>
+	  <li><div id="item56">ศุกร์</div></li>
+	  <li><div id="item57">เสาร์</div></li>
+    </ul>
+  </li>
+  <li><div id="item6"></div></li>
+  <li><div id="item7"></div></li>
+</ul>
+
+<ul id="queuemenu" style="display:none">
+  <li><div id="qitem1"></div></li>
+  <li><div id="qitem2"></div></li>
+</ul>
+
+<ul id="stafflist"></ul>
+
+<div id="alert" ></div>
+
+<div id="container"></div>
+
+<div id="editcell" contenteditable="true"></div>
 
 <DIV id="login">
 	<h3>Queue book for Neurosurgery</h3>
@@ -126,10 +154,10 @@
 					value="<?php echo $userid;?>" oninput="namesix()" onpropertychange="namesix()">
 		<br><br>
 		Password: <input id="password" type="password" name="password" onkeyup="delwrong()"
-					maxlength="16" size="8" value="<?php echo $password;?>">
+					maxlength="6" size="6" value="<?php echo $password;?>">
 		<br>
 		<span id="span" style="color:blue;"><?php echo $passworderr;?></span>
-		<br><br>
+		<br>
 		<input id="submit" type="submit" value="Submit">
 		<br><br>
 	</form>
