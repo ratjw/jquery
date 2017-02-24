@@ -1,12 +1,84 @@
-table {
+/*
+html, body {
+	height: 100%;
+	overflow: hidden;
+	margin: 0;
+	padding: 0;
+}
+
+#wrapper {
+	height: 100%;
+	width: 100%;
+	font-size: 0;
+}
+
+.ui-resizable-e { 
+	cursor: e-resize; 
+	width: 15px; 
+	right: -5px; 
+	top: 0; 
+	bottom: 0; 
+}
+
+#tblcontainer {
+	margin: 0;
+	padding: 0;
+	float: left;
+	box-sizing: border-box;
+	overflow-y: auto;
+}
+
+#queuecontainer {
+	margin: 0;
+	padding: 0;
+	float: right;
+	box-sizing: border-box;
+	overflow-y: auto;
+}
+*/
+html, body {
+/*	height: 100%;*/
+	overflow: hidden;
+	margin: 0;
+}
+#wrapper {
+	height: 100%;
+}
+#tblcontainer {
+	float: left;
+	height: 100%;
+	overflow-x: hidden;
+	overflow-y: auto;
+	box-sizing: border-box;
+	padding: 0.3em;
+}
+#queuecontainer {
+	float: left;
+	height: 100%;
+	overflow-x: hidden;
+	overflow-y: auto;
+	box-sizing: border-box;
+	padding: 0.3em;
+}
+
+.ui-resizable-e { 
+	cursor: e-resize; 
+	width: 15px; 
+	right: -5px; 
+	top: 0; 
+	bottom: 0; 
+}
+
+#tbl {
 	border-right: solid 1px slategray;
 	width: auto;
 	table-layout: fixed;	/*make cell width = first row specified*/
 	overflow: hidden;
 	border-collapse: collapse;
+	padding: 0.4em;
 }
 
-th {
+#tbl th {
 	font-size: 16px;
 	font-weight: bold;
 	background-color: steelblue;
@@ -17,16 +89,16 @@ th {
 	height: 40px;
 }
 
-td {
+#tbl tr {
+	background-repeat: no-repeat;
+	background-position: 300px;
+}
+
+#tbl td {
 	empty-cells:show;
 	font-size: 16px;
 	border-left: solid 1px silver;
 	border-bottom: solid 1px silver;
-}
-
-tr {
-	background-repeat: no-repeat;
-	background-position: 300px;
 }
 
 tr.sunday, td.sunday { background-color: #FFEEEE; }
@@ -52,6 +124,34 @@ td.wed:before { content: "พุธ "; }
 td.thu:before { content: "พฤหัส "; }
 td.fri:before { content: "ศุกร์ "; }
 td.sat:before { content: "เสาร์ "; }
+
+#queuetbl {
+	border-right: solid 1px slategray;
+	width: auto;
+	table-layout: fixed;	/*make cell width = first row specified*/
+	overflow: hidden;
+	border-collapse: collapse;
+	background-color: #F0F0F0;
+	padding: 0.4em;
+}
+
+#queuetbl th {
+	font-size: 12px;
+	font-weight: bold;
+	height: 20px;
+	background-color: steelblue;
+	color: papayawhip;
+	border-left: solid 1px silver;
+	border-top: solid 1px silver;
+	border-bottom: solid 1px silver;
+}
+
+#queuetbl td {
+	empty-cells:show;
+	font-size: 12px;
+	border-left: solid 1px silver;
+	border-bottom: solid 1px silver;
+}
 
 #login {
 	width:300px; 
@@ -127,18 +227,4 @@ td.sat:before { content: "เสาร์ "; }
 	border-color: #000000; 
 	border-left: solid 1px silver;
 	border-bottom: solid 1px silver;
-}
-
-#queuetbl {
-	background-color: #F0F0F0;
-}
-
-#queuetbl th {
-	font-size: 14px;
-	height: 25px;
-}
-
-#queuetbl td {
-	font-size: 14px;
-	color: black;
 }

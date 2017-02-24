@@ -26,6 +26,10 @@
 </HEAD>
 <BODY>
 
+
+<div id="wrapper">
+</div>
+
 <div id="tblcontainer" style="display:none">
  <TABLE id="tbl" data-role="table" class="ui-responsive">
   <TBODY>
@@ -57,24 +61,6 @@
     <td style="display:none"></td>
   </TR>
 </TABLE>
-
-<div id="tbldaycontainer" style="display:none">
- <TABLE id="tblday" data-role="table" class="ui-responsive">
-  <TBODY>
-   <TR>
-    <th style="width:10%">วันผ่าตัด</th>
-    <th style="width:6%">Staff</th>
-    <th style="width:5%">HN</th>
-    <th style="width:15%">ชื่อ นามสกุล</th>
-    <th style="width:4%">อายุ</th>
-    <th style="width:20%">Diagnosis</th>
-    <th style="width:20%">Treatment</th>
-    <th style="width:20%">Note</th>
-    <th style="display:none"></th>
-   </TR>
-  </TBODY>
- </TABLE>
-</div>
 
 <div id="queuecontainer" style="display:none">
   <TABLE id="queuetbl" data-role="table" class="ui-responsive">
@@ -110,6 +96,24 @@
   </TBODY>
 </TABLE>
 
+<div id="tbldaycontainer" style="display:none">
+ <TABLE id="tblday" data-role="table" class="ui-responsive">
+  <TBODY>
+   <TR>
+    <th style="width:10%">วันผ่าตัด</th>
+    <th style="width:6%">Staff</th>
+    <th style="width:5%">HN</th>
+    <th style="width:15%">ชื่อ นามสกุล</th>
+    <th style="width:4%">อายุ</th>
+    <th style="width:20%">Diagnosis</th>
+    <th style="width:20%">Treatment</th>
+    <th style="width:20%">Note</th>
+    <th style="display:none"></th>
+   </TR>
+  </TBODY>
+ </TABLE>
+</div>
+
 <ul id="menu" style="display:none">
   <li><div id="item1"></div></li>
   <li><div id="item2"></div></li>
@@ -138,7 +142,7 @@
   <li><div id="qitem2"></div></li>
 </ul>
 
-<ul id="stafflist"></ul>
+<ul id="stafflist" style="display:none"></ul>
 
 <div id="alert" ></div>
 

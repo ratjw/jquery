@@ -21,15 +21,17 @@ function staffqueue(staffname)
 		rowi.cells[QNUM].innerHTML = 1
 		rowi.cells[QSINCE].innerHTML = new Date().MysqlDate().thDate()
 	}
-	$("#container").html($("#queuetbl"));
-	$("#container").dialog({
+/*
+	$("#queuecontainer").html($("#queuetbl"));
+	$("#queuecontainer").dialog({
 		title: staffname,
 		height: window.innerHeight * 50 / 100,
 		width: window.innerWidth * 70 / 100
 	});
 	$("#queuetbl").show()
 	$(".ui-dialog").show()
-	DragDropStaff()
+*/
+//	DragDropStaff()
 }
 //$("#container").parent().find('.ui-dialog-titlebar').click(function() {
 //    alert("test");

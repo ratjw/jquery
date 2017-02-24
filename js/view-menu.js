@@ -78,7 +78,7 @@ function fillSetTable(rownum, pointing)
 					deletehistory(rowmain, qn)
 					break
 				default :
-					staffqueue(ui.item.text())
+					splitpane(ui.item.text())
 			}
 
 			$("#editcell").hide()	//to disappear after selection
@@ -133,4 +133,42 @@ function showup(pointing, menuID)
 		boxShadow: "10px 20px 30px slategray"
 	})
 	$(menuID).show()
+}
+
+function splitpane(staffname)
+{
+	staffqueue(staffname)
+	$("#queuecontainer").dialog({
+		title: staffname,
+//		height: window.innerHeight * 50 / 100,
+//		width: window.innerWidth * 70 / 100
+	});
+	$(".ui-dialog").css("float", "left")
+	$(".ui-dialog").show()
+	$("#tblcontainer").after($(".ui-dialog"))
+	$("#tblcontainer").css("width", "60%")
+	$(".ui-dialog").css("width", "40%")
+
+	$("#tblcontainer").resizable(
+	{
+		autoHide: true,
+		handles: 'e',
+		resize: function(e, ui) 
+		{
+			var parent = ui.element.parent();
+			var remainSpace = parent.width() - ui.element.outerWidth()
+			var divTwo = ui.element.next()
+			var divTwoWidth = (remainSpace - (divTwo.outerWidth() - divTwo.width()))/parent.width()*100+"%";
+			divTwo.width(divTwoWidth);
+			staffqueue(staffname)
+		},
+		stop: function(e, ui) 
+		{
+			var parent = ui.element.parent();
+			ui.element.css(
+			{
+				width: ui.element.width()/parent.width()*100+"%",
+			});
+		}
+	});
 }
