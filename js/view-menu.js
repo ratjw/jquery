@@ -138,16 +138,10 @@ function showup(pointing, menuID)
 function splitpane(staffname)
 {
 	staffqueue(staffname)
-	$("#queuecontainer").dialog({
-		title: staffname,
-//		height: window.innerHeight * 50 / 100,
-//		width: window.innerWidth * 70 / 100
-	});
-	$(".ui-dialog").css("float", "left")
-	$(".ui-dialog").show()
-	$("#tblcontainer").after($(".ui-dialog"))
+	$("#queuecontainer").show()
+	$("#tblcontainer").after($("#queuecontainer"))
 	$("#tblcontainer").css("width", "60%")
-	$(".ui-dialog").css("width", "40%")
+	$("#queuecontainer").css("width", "40%")
 
 	$("#tblcontainer").resizable(
 	{

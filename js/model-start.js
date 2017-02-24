@@ -11,12 +11,12 @@ function loadtable(userid)
 	$(document).click( function (event) {
 		countreset();
 		var clickedCell = event.target
-
-		if ($(clickedCell).closest("table").attr("id") == "tbl")
-			clicktable(clickedCell)
-		else if ($(clickedCell).closest("table").attr("id") == "queuetbl")
-			Qclicktable(clickedCell)
-		return false
+splitpane(STAFF[0].name)
+//		if ($(clickedCell).closest("table").attr("id") == "tbl")
+//			clicktable(clickedCell)
+//		else if ($(clickedCell).closest("table").attr("id") == "queuetbl")
+//			Qclicktable(clickedCell)
+//		return false
 	})
 	$(document).keydown( function (event) {
 		countreset();

@@ -4,7 +4,7 @@ function clicktable(clickedCell)
 	if (clickedCell.id == "editcell") {
 		return
 	} else {
-		$("#tblcontainer").siblings().hide()
+//		$("#tblcontainer").siblings().hide()
 		if (clickedCell.nodeName != "TD") {
 			return
 		}
@@ -199,7 +199,7 @@ function storePresentcell(pointing)
 	var rindex = $(rowtr).index()
 	var qn = $(rowtr).children("td").eq(QN).html()
 
-	$("#tblcontainer").siblings().hide()
+//	$("#tblcontainer").siblings().hide()
 	editcell(pointing)
 
 	switch(cindex)

@@ -4,7 +4,7 @@ function Qclicktable(clickedCell)
 	if (clickedCell.id == "editcell") {
 		return
 	} else {
-		$("#tblcontainer").siblings().not(".ui-dialog").hide()
+//		$("#tblcontainer").siblings().not(".ui-dialog").hide()
 		if (clickedCell.nodeName != "TD")
 			return
 	}

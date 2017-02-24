@@ -53,7 +53,7 @@ html, body {
 	padding: 0.3em;
 }
 #queuecontainer {
-	float: left;
+	float: right;
 	height: 100%;
 	overflow-x: hidden;
 	overflow-y: auto;
