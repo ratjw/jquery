@@ -118,19 +118,19 @@
   <li><div id="item1"></div></li>
   <li><div id="item2"></div></li>
   <li><div id="item3"></div></li>
-  <li><div id="item4"></div>
+  <li><div>คิวของอาจารย์</div>
 	<ul id="item40" style="width:120px">
 	</ul>
   </li>
-  <li><div id="item5"></div>
+  <li><div>คิวเฉพาะวัน</div>
     <ul>
-	  <li><div id="item51">อาทิตย์</div></li>
-	  <li><div id="item52">จันทร์</div></li>
-	  <li><div id="item53">อังคาร</div></li>
-	  <li><div id="item54">พุธ</div></li>
-	  <li><div id="item55">พฤหัส</div></li>
-	  <li><div id="item56">ศุกร์</div></li>
-	  <li><div id="item57">เสาร์</div></li>
+	  <li><div id="item5">อาทิตย์</div></li>
+	  <li><div id="item5">จันทร์</div></li>
+	  <li><div id="item5">อังคาร</div></li>
+	  <li><div id="item5">พุธ</div></li>
+	  <li><div id="item5">พฤหัส</div></li>
+	  <li><div id="item5">ศุกร์</div></li>
+	  <li><div id="item5">เสาร์</div></li>
     </ul>
   </li>
   <li><div id="item6"></div></li>

@@ -34,8 +34,6 @@ function fillSetTable(rownum, pointing)
 		$("#item3").removeClass(disabled)
 	else
 		$("#item3").addClass(disabled)
-	$("#item4").html("คิวของอาจารย์")
-	$("#item5").html("คิวเฉพาะวัน")
 	$("#item6").html("การแก้ไขของ " + casename)
 	if (qn)
 		$("#item6").removeClass(disabled)
@@ -60,15 +58,12 @@ function fillSetTable(rownum, pointing)
 					deleteblankrow(rowmain)
 					break
 				case "item4":
+					staffqueue(ui.item.text())
+					$("#tblcontainer").css("width", "60%")
+					$("#queuecontainer").css("width", "40%")
+					initResize("#tblcontainer")
+					break
 				case "item5":
-					return false
-				case "item51":
-				case "item52":
-				case "item53":
-				case "item54":
-				case "item55":
-				case "item56":
-				case "item57":
 					fillday($('#'+item).html())
 					break
 				case "item6":
@@ -77,20 +72,13 @@ function fillSetTable(rownum, pointing)
 				case "item7":
 					deletehistory(rowmain, qn)
 					break
-				default :
-					splitpane(ui.item.text())
 			}
 
-			$("#editcell").hide()	//to disappear after selection
+			$("#editcell").hide()		//to disappear after selection
 			$(".ui-menu").hide()		//to disappear after selection
-			$( "#item4" ).removeClass( "ui-state-active" )
-			$( "#item4" ).prepend('<span class="ui-menu-icon ui-icon  ui-icon-caret-1-e"></span>')
-			$( "#item40" ).hide()
-			$( "#item40" ).attr("aria-hidden", "true")
-			$( "#item40" ).attr("aria-expanded", "false")
-			event.stopPropagation()
-			event.preventDefault()
-			return false
+//			event.stopPropagation()
+//			event.preventDefault()
+//			return false
 		}
 	});
 
@@ -105,8 +93,8 @@ function stafflist(pointing)
 			$(pointing).html(staffname)
 			saveContent("staffname", staffname)
 			$("#editcell").data("located", "")
-			$("#editcell").hide()	//to disappear after selection
-			$('#stafflist').hide()	//to disappear after selection
+			$("#editcell").hide()		//to disappear after selection
+			$('#stafflist').hide()		//to disappear after selection
 			event.stopPropagation()
 			event.preventDefault()
 			return false
@@ -122,7 +110,7 @@ function showup(pointing, menuID)
 	var height = pos.top + $(pointing).outerHeight();
 	var width = pos.left + $(pointing).outerWidth();
 
-	if ((height + $(menuID).outerHeight()) > $(window).innerHeight() + $(window).scrollTop())
+	if ((height + $(menuID).outerHeight()) > $('#tblcontainer').innerHeight() + $('#tblcontainer').scrollTop())
 	{
 		height = pos.top - $(menuID).innerHeight()
 	}
@@ -135,13 +123,27 @@ function showup(pointing, menuID)
 	$(menuID).show()
 }
 
-function splitpane(staffname)
-{
-	staffqueue(staffname)
-	$("#tblcontainer").css("width", "60%")
-	$("#queuecontainer").css("width", "40%")
+function checkblank(opdate, qn)
+{	//No case in this date? 
+	var q = 0
 
-	$("#tblcontainer").resizable(
+	if (qn)
+		return false
+	while (opdate > BOOK[q].opdate)
+	{
+		q++
+		if (q >= BOOK.length)
+			return false
+	}
+	if (opdate == BOOK[q].opdate)
+		return true
+	else
+		return false
+}
+
+function initResize(id)
+{
+	$(id).resizable(
 	{
 		autoHide: true,
 		handles: 'e',
@@ -150,16 +152,23 @@ function splitpane(staffname)
 			var parent = ui.element.parent();
 			var remainSpace = parent.width() - ui.element.outerWidth()
 			var divTwo = ui.element.next()
-//var divTwoWidth = (remainSpace - (divTwo.outerWidth() - divTwo.width()))/parent.width()*100+"%";
-			var divTwoWidth = remainSpace/parent.width()*100+"%";
+			var margin = divTwo.outerWidth() - divTwo.width()
+			var divTwoWidth = (remainSpace-margin)/parent.width()*100+"%";
 			divTwo.css("width", divTwoWidth);
 		},
 		stop: function(e, ui) 
 		{
 			var parent = ui.element.parent();
+			var remainSpace = parent.width() - ui.element.outerWidth()
+//			var divTwo = ui.element.next()
+//			var margin = divTwo.outerWidth() - divTwo.width()
 			ui.element.css(
 			{
 				width: ui.element.width()/parent.width()*100+"%",
+			});
+			ui.element.next().css(
+			{
+				width: (remainSpace)/parent.width()*100+"%",
 			});
 		}
 	});

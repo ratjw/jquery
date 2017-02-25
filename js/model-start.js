@@ -67,12 +67,14 @@ function updateBOOK(response)
 function fillStafflist()
 {
 	var stafflist = ''
+	var staffqueue = ''
 	for (var each=0; each<STAFF.length; each++)
 	{
 		stafflist += '<li><div>' + STAFF[each].name + '</div></li>'
+		staffqueue += '<li><div id="item4">' + STAFF[each].name + '</div></li>'
 	}
 	$("#stafflist").html(stafflist)
-	$("#item40").append(stafflist)
+	$("#item40").html(staffqueue)
 }
 
 function updating()

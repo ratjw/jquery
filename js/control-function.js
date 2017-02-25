@@ -97,24 +97,6 @@ function Ajax(url, params, callback)
 	xmlHttp.send(null);
 }
 
-function checkblank(opdate, qn)
-{	//No case in this date? 
-	var q = 0
-
-	if (qn)
-		return false
-	while (opdate > BOOK[q].opdate)
-	{
-		q++
-		if (q >= BOOK.length)
-			return false
-	}
-	if (opdate == BOOK[q].opdate)
-		return true
-	else
-		return false
-}
-
 function scrollUpDown()
 {
 	if ($("#tblcontainer").scrollTop() < 2)
@@ -125,6 +107,7 @@ function scrollUpDown()
 	{
 		fillupscroll(+1)
 	}
+	$(".ui-resizable-e").css("height", $("#tbl").height())
 }
 
 function URIcomponent(qoute)
