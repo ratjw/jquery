@@ -117,11 +117,11 @@ function checkblank(opdate, qn)
 
 function scrollUpDown()
 {
-	if ($(window).scrollTop() < 2)
+	if ($("#tblcontainer").scrollTop() < 2)
 	{
 		fillupscroll(-1)
 	}
-	else if ($("#tblcontainer").height() <= $(window).height() + $(window).scrollTop())
+	else if ($("#tbl").height() <= $("#tblcontainer").outerHeight() + $("#tblcontainer").scrollTop())
 	{
 		fillupscroll(+1)
 	}

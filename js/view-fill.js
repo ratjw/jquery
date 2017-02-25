@@ -6,7 +6,7 @@ function fillupstart()
 	setTopDate(getSunday())
 	setRequire(7)
 	fillnew()
-	document.body.scrollTop = 3
+	$("#tblcontainer").scrollTop(3)
 	DragDrop()
 }
 
@@ -14,11 +14,11 @@ function filluprefill()
 { 	//from refillall which is called from :
 	//updatingback, callbackmove
 	//Start at the same begindate and same scrollTop
-	var topscroll = document.body.scrollTop
+	var topscroll = $("#tblcontainer").scrollTop()
 
 	setRequire(null)
 	fillnew()
-	document.body.scrollTop = topscroll
+	$("#tblcontainer").scrollTop(topscroll)
 	DragDrop()
 }
 
@@ -48,7 +48,7 @@ function fillext(di)
 		fill(0)
 
 		//scroll to the old "tr:has(th)"
-		$(document).scrollTop($("#tbl tr:has(th)").eq(1).offset().top)
+		$("#tblcontainer").scrollTop($("#tbl tr:has(th)").eq(1).offset().top)
 	}
 	else if (di == +1)
 	{

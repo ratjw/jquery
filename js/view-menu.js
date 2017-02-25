@@ -82,7 +82,7 @@ function fillSetTable(rownum, pointing)
 			}
 
 			$("#editcell").hide()	//to disappear after selection
-			$("#menu").hide()		//to disappear after selection
+			$(".ui-menu").hide()		//to disappear after selection
 			$( "#item4" ).removeClass( "ui-state-active" )
 			$( "#item4" ).prepend('<span class="ui-menu-icon ui-icon  ui-icon-caret-1-e"></span>')
 			$( "#item40" ).hide()
@@ -138,8 +138,6 @@ function showup(pointing, menuID)
 function splitpane(staffname)
 {
 	staffqueue(staffname)
-	$("#queuecontainer").show()
-	$("#tblcontainer").after($("#queuecontainer"))
 	$("#tblcontainer").css("width", "60%")
 	$("#queuecontainer").css("width", "40%")
 
@@ -152,7 +150,8 @@ function splitpane(staffname)
 			var parent = ui.element.parent();
 			var remainSpace = parent.width() - ui.element.outerWidth()
 			var divTwo = ui.element.next()
-			var divTwoWidth = (remainSpace - (divTwo.outerWidth() - divTwo.width()))/parent.width()*100+"%";
+//var divTwoWidth = (remainSpace - (divTwo.outerWidth() - divTwo.width()))/parent.width()*100+"%";
+			var divTwoWidth = remainSpace/parent.width()*100+"%";
 			divTwo.css("width", divTwoWidth);
 		},
 		stop: function(e, ui) 

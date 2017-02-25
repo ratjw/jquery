@@ -1,75 +1,4 @@
-/*
 html, body {
-	height: 100%;
-	overflow: hidden;
-	margin: 0;
-	padding: 0;
-}
-
-#wrapper {
-	height: 100%;
-	width: 100%;
-	font-size: 0;
-}
-
-.ui-resizable-e { 
-	cursor: e-resize; 
-	width: 15px; 
-	right: -5px; 
-	top: 0; 
-	bottom: 0; 
-}
-
-#tblcontainer {
-	margin: 0;
-	padding: 0;
-	float: left;
-	box-sizing: border-box;
-	overflow-y: auto;
-}
-
-#queuecontainer {
-	margin: 0;
-	padding: 0;
-	float: right;
-	box-sizing: border-box;
-	overflow-y: auto;
-}
-
-.ui-resizable {
-	position: relative;
-}
-
-.ui-resizable-handle {
-	position: absolute;
-	font-size: 0.1px; display: block;
-}
-
-.wrap {
-	width: 100%;
-	border: 1px brown solid;
-	font-size: 0;
-}
-.resizable {
-	width: 50%;
-	height: 120px;
-	padding: 0.5em;
-	background-color: coral;
-	display: inline-block;
-}
-.resizable2 {
-	background-color: lightblue;
-}
-.ui-resizable-e { 
-	cursor: e-resize; 
-	width: 20px; 
-	right: -10px; 
-	top: 0; 
-	bottom: 0; 
-}
-*/
-html, body {
-/*	height: 100%;*/
 	overflow: hidden;
 	margin: 0;
 }
@@ -87,6 +16,8 @@ html, body {
 	overflow-x: hidden;
 	overflow-y: auto;
 	box-sizing: border-box;
+	border-top: solid 2px silver;
+	border-left: solid 2px silver;
 }
 
 #queuecontainer {
@@ -95,12 +26,13 @@ html, body {
 	overflow-x: hidden;
 	overflow-y: auto;
 	box-sizing: border-box;
+	border-top: solid 2px silver;
+	border-right: solid 2px silver;
 }
 
 .ui-resizable-e { 
 	cursor: e-resize; 
 	width: 15px; 
-/*	right: -5px; */
 	top: 0; 
 	bottom: 0; 
 }
@@ -110,7 +42,6 @@ html, body {
 	width: auto;
 	table-layout: fixed;	/*make cell width = first row specified*/
 	border-collapse: collapse;
-	padding: 0.4em;
 }
 
 #tbl th {
@@ -121,7 +52,7 @@ html, body {
 	border-left: solid 1px silver;
 	border-top: solid 1px silver;
 	border-bottom: solid 1px silver;
-	height: 40px;
+	height: 35px;
 }
 
 #tbl tr {

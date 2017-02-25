@@ -4,11 +4,10 @@ function loadtable(userid)
 
 	THISUSER = userid
 	$("#login").remove()
-//	$("html").css("height", "98%")
-//	$("body").css("height", "98%")
-	$("#wrapper").append($("#tblcontainer").show())
 	$("html").css("height", "100%")
 	$("body").css("height", "100%")
+	$("#wrapper").append($("#tblcontainer").show())
+	$("#wrapper").append($("#queuecontainer").show())
 
 	$(document).click( function (event) {
 		countreset();
@@ -22,19 +21,23 @@ function loadtable(userid)
 	})
 	$(document).keydown( function (event) {
 		countreset();
-		if (!$(".ui-dialog").length || ($(".ui-dialog").css("display") == "none"))
+		var table = $("#editcell").data("located").closest("table").attr("id")
+		if (table == "tbl")
 			editing(event)
-		else if ($(".ui-dialog").css("display") == "block")
-			editingQueue(event)
+		else if (table == "queuetbl")
+			editingqueue(event)
 	})
 	$(document).contextmenu( function (event) {
 		countreset();
 		return false
 	})
-	$(document).scroll( function (event) {
+	$("#tblcontainer").scroll( function (event) {
 		countreset();
-		scrollUpDown(event)
-		return false
+		if(typeof timeout == "number") {
+			window.clearTimeout(timeout);
+			delete timeout;
+		}
+		timeout = window.setTimeout( scrollUpDown, 100);
 	})
 	TIMER = setTimeout("updating()",10000)		//poke next 10 sec.
 }

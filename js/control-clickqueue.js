@@ -17,7 +17,7 @@ function Qclicktable(clickedCell)
 //	return false
 }
 
-function editingQueue(event)
+function editingqueue(event)
 {
 	var keycode = event.which || window.event.keyCode
 	var thiscell
@@ -50,7 +50,6 @@ function editingQueue(event)
 		thiscell = findNextcellQueue(event)
 		if (thiscell) {
 			storePresentcellQueue(thiscell)
-			thiscell.focus()
 		} else {
 			$("#editcell").hide()
 			window.focus()
@@ -60,7 +59,7 @@ function editingQueue(event)
 	}
 	else if (keycode == 27)
 	{
-		if ($($("#editcell").data("located")).index() == QSINCE)
+		if ($("#editcell").data("located").index() == QSINCE)
 		{
 			$("#queuemenu").hide()
 		}
@@ -87,7 +86,7 @@ function savePreviouscellQueue()
 		return
 
 	$("#editcell").data("located").html(content)
-	var editcindex = $($("#editcell").data("located")).index()
+	var editcindex = $("#editcell").data("located").index()
 
 	switch(editcindex)
 	{
@@ -112,7 +111,7 @@ function savePreviouscellQueue()
 
 function saveContentQueue(column, content)
 {
-	var row = $($("#editcell").data("located")).closest("tr")
+	var row = $("#editcell").data("located").closest("tr")
 	var rowcell = row.children("td")
 	var opdate = new Date().MysqlDate()
 	var qn = rowcell.eq(QQN).html()
@@ -228,7 +227,7 @@ function findMAXwaitnum()
 
 function saveHNinputQueue(hn, content)
 {
-	var rowtr = $($("#editcell").data("located")).closest("tr").children("td")
+	var rowtr = $("#editcell").data("located").closest("tr").children("td")
 	var qsince = rowtr.eq(QSINCE).html().numDate()
 	var patient = rowtr.eq(QNAME).html()
 	var qn = rowtr.eq(QQN).html()

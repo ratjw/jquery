@@ -1,14 +1,7 @@
 function clicktable(clickedCell)
 {
-	//checkpoint#1 : click in editing div
-	if (clickedCell.id == "editcell") {
-		return
-	} else {
-//		$("#tblcontainer").siblings().hide()
-		if (clickedCell.nodeName != "TD") {
+	if ((clickedCell.id == "editcell") || (clickedCell.nodeName != "TD"))
 			return
-		}
-	}
 
 	savePreviouscell()
 	storePresentcell(clickedCell)
@@ -18,9 +11,6 @@ function editing(event)
 {
 	var keycode = event.which || window.event.keyCode
 	var thiscell
-
-	if ($("#editcell").data("located").closest("table").attr("id") != "tbl")
-		return
 
 	if (keycode == 9)
 	{
@@ -88,8 +78,10 @@ function savePreviouscell()
 	switch(editcindex)
 	{
 		case OPDATE:
+			$(".ui-menu").hide()
 			break
 		case STAFFNAME:
+			$(".ui-menu").hide()
 			saveContent("staffname", content)	//column name in MYSQL
 			break
 		case HN:
