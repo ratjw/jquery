@@ -103,11 +103,50 @@ td.sat:before { content: "เสาร์ "; }
 	width: 100px;
 	line-height: 30px;
 }
-
+/*
 .ui-icon {
 	float:right;
 }	
 
+.ui-icon:hover {
+	background-color: black;
+	color: #fff;
+	text-align: center;
+	border-radius: 6px;
+	padding: 5px 0;
+
+	position: absolute;
+	z-index: 1;
+	top: -5px;
+	right: 105%;
+}
+*/
+.tooltip {
+	position: relative;
+	display: inline-block;
+/*	float: right;*/
+	border-bottom: 1px dotted black;
+}
+/*
+.tooltip .tooltiptext {
+	visibility: hidden;
+	width: 120px;
+	background-color: black;
+	color: #fff;
+	text-align: center;
+	border-radius: 6px;
+	padding: 5px 0;
+
+	position: absolute;
+	z-index: 10000;
+	top: -5px;
+	right: 105%;
+}
+
+.tooltip:hover .tooltiptext {
+	visibility: visible;
+}
+*/
 #queuetbl, #tblday {
 	border-right: solid 1px slategray;
 	width: auto;

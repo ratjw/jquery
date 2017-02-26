@@ -153,6 +153,9 @@ function fillday(day)
 	$("#tbldaycontainer").show()
 
 	date = BOOK[0].opdate
+	
+	//delete previous queuetbl lest it accumulates
+	$('#tblday tr').slice(1).remove()
 
 	//i for rows in table
 	i=0
@@ -194,5 +197,5 @@ function fillday(day)
 		width: window.innerWidth * 70 / 100
 	})
 	$(".ui-dialog").show()
-// 	DragDropday(event)
+ 	DragDropday(event)
 }

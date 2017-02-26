@@ -65,7 +65,7 @@ function fillSetTable(rownum, pointing)
 					initResize("#tblcontainer")
 					break
 				case "item5":
-					fillday($('#'+item).html())
+					fillday(ui.item.text())
 					break
 				case "item6":
 					edithistory(rowmain, qn)

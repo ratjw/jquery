@@ -64,8 +64,13 @@
 <div id="queuecontainer" style="display:none">
   <div id="titlebar">
 	<span style="width:20px; display:inline-block"></span>
-	<span id="titlename"></span>
-    <a href="#"><span class="ui-icon ui-icon-closethick" onclick="closequeue()"></span></a>
+	<span id="titlename" style="display:inline-block"></span>
+	<div>XXX
+     <!--a href="#">
+	  <span class="ui-icon ui-icon-closethick" onclick="closequeue()"></span>
+	 </a-->
+	 <span>Close</span>
+	</div>
   </div> 
 
   <TABLE id="queuetbl" data-role="table" class="ui-responsive">
