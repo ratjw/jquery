@@ -91,16 +91,31 @@ td.thu:before { content: "พฤหัส "; }
 td.fri:before { content: "ศุกร์ "; }
 td.sat:before { content: "เสาร์ "; }
 
+#titlebar {
+	height: 30px;
+	background-color: #F0F0F0;
+}
+
+#titlename {
+	font-size: 16px;
+	font-weight: bold;
+	color: #777777;
+	width: 100px;
+	line-height: 30px;
+}
+
+.ui-icon {
+	float:right;
+}	
+
 #queuetbl, #tblday {
 	border-right: solid 1px slategray;
 	width: auto;
 	table-layout: fixed;	/*make cell width = first row specified*/
 	border-collapse: collapse;
-	background-color: #F0F0F0;
-	padding: 0.4em;
 }
 
-#queuetbl, #tblday th {
+#queuetbl th, #tblday th {
 	font-size: 12px;
 	font-weight: bold;
 	height: 20px;
@@ -111,9 +126,10 @@ td.sat:before { content: "เสาร์ "; }
 	border-bottom: solid 1px silver;
 }
 
-#queuetbl, #tblday td {
+#queuetbl td, #tblday td {
 	empty-cells:show;
 	font-size: 12px;
+	background-color: #F0F0F0;
 	border-left: solid 1px silver;
 	border-bottom: solid 1px silver;
 }
@@ -129,13 +145,12 @@ td.sat:before { content: "เสาร์ "; }
 
 #editcell { 
 	display:none;
-/*	position: absolute;*/
-	font-size: 16px;
+	position: absolute;
 	text-align: left; 
 	overflow: hidden;
 	border: solid 1px #0099FF;
 	background-color: white; 
-/*	z-index: 1000;*/
+	z-index: 1000;
 	box-shadow: 5px 5px 10px slategray;
 }
 

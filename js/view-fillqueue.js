@@ -4,8 +4,10 @@ function staffqueue(staffname)
 	var i, q
 	var rowi = {}
 
+	$('#titlename').html(staffname)
+	
 	//delete previous queuetbl lest it accumulates
-		$('#queuetbl tr').slice(1).remove()
+	$('#queuetbl tr').slice(1).remove()
 
 	for (i=0,q=0; q < QWAIT.length; q++)
 	{
@@ -21,27 +23,20 @@ function staffqueue(staffname)
 		rowi.cells[QNUM].innerHTML = 1
 		rowi.cells[QSINCE].innerHTML = new Date().MysqlDate().thDate()
 	}
-/*
-	$("#queuecontainer").html($("#queuetbl"));
-	$("#queuecontainer").dialog({
-		title: staffname,
-		height: window.innerHeight * 50 / 100,
-		width: window.innerWidth * 70 / 100
-	});
-	$("#queuetbl").show()
-	$(".ui-dialog").show()
-*/
-//	DragDropStaff()
+	DragDropStaff()
 }
-//$("#container").parent().find('.ui-dialog-titlebar').click(function() {
-//    alert("test");
-//});
-//$("#container").dialog('option', 'title', 'New Title');
+
+function closequeue()
+{
+	$("#queuecontainer").hide()
+	$("#queuecontainer").css("width", "0%")
+	$("#tblcontainer").css("width", "100%")
+}
+
 function makenextrowQueue(table, i)
 {	// i = the row to be made
 	var cols = table.rows[0].cells.length
 	var rowi
-	var j = 0
 
 	rowi = table.insertRow(i)
 	table.rows[i].innerHTML = qdatatitle.innerHTML
@@ -117,19 +112,7 @@ function fillSetTableQueue(pointing)
 		}
 	});
 
-	var pos = $(pointing).offset();
-	var height = pos.top + $(pointing).height()
-	var width = pos.left  + $(pointing).width();
-
-	$("#queuemenu").css({
-		position: "absolute",
-		top: height + "px",
-		left: width + "px",
-		zIndex: 1000,
-		modal:true,
-		boxShadow: "10px 20px 30px slategray"
-	})
-	$("#queuemenu").show()
+	showup(pointing, "#queuemenu")
 }
 
 function addnewrowQ()
@@ -144,7 +127,7 @@ function addnewrowQ()
 
 function deletecaseQ(rowmain, qn)
 {
-	var staffname = $( "#container" ).dialog( "option", "title" )
+	var staffname = $( "#titlename" ).html()
 	var sql = "sqlReturnbook=UPDATE book SET waitnum=NULL WHERE qn="+ qn +";"
 
 	Ajax(MYSQLIPHP, sql, qcallbackdeleterow)

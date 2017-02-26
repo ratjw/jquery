@@ -1,29 +1,16 @@
 function Qclicktable(clickedCell)
 {
-	//checkpoint#1 : click in editing area
-	if (clickedCell.id == "editcell") {
-		return
-	} else {
-//		$("#tblcontainer").siblings().not(".ui-dialog").hide()
-		if (clickedCell.nodeName != "TD")
+	if ((clickedCell.id == "editcell") || (clickedCell.nodeName != "TD"))
 			return
-	}
 
 	savePreviouscellQueue()
 	storePresentcellQueue(clickedCell)
-	$("#editcell").focus()
-//	event.preventDefault()
-//	event.stopPropagation()
-//	return false
 }
 
 function editingqueue(event)
 {
 	var keycode = event.which || window.event.keyCode
 	var thiscell
-
-	if ($("#editcell").data("located").closest("table").attr("id") != "queuetbl")
-		return
 
 	if (keycode == 9)
 	{
@@ -61,7 +48,7 @@ function editingqueue(event)
 	{
 		if ($("#editcell").data("located").index() == QSINCE)
 		{
-			$("#queuemenu").hide()
+			$(".ui-menu").hide()
 		}
 		else
 		{
@@ -90,12 +77,15 @@ function savePreviouscellQueue()
 
 	switch(editcindex)
 	{
+		case QNUM:
+			$(".ui-menu").hide()
 		case QSINCE:
-		case QNAME:
-		case QAGE:
 			break
 		case QHN:
 			saveHNinputQueue("hn", content)
+			break
+		case QNAME:
+		case QAGE:
 			break
 		case QDIAGNOSIS:
 			saveContentQueue("diagnosis", content)
@@ -111,11 +101,10 @@ function savePreviouscellQueue()
 
 function saveContentQueue(column, content)
 {
-	var row = $("#editcell").data("located").closest("tr")
-	var rowcell = row.children("td")
-	var opdate = new Date().MysqlDate()
+	var rowcell = $("#editcell").data("located").closest("tr").children("td")
+	var opdate = rowcell.eq(QSINCE).html().numDate()
 	var qn = rowcell.eq(QQN).html()
-	var staffname = $( "#container" ).dialog( "option", "title" )
+	var staffname = $( "#titlename" ).html()
 	var sqlstring
 	var waitnum
 
@@ -231,7 +220,7 @@ function saveHNinputQueue(hn, content)
 	var qsince = rowtr.eq(QSINCE).html().numDate()
 	var patient = rowtr.eq(QNAME).html()
 	var qn = rowtr.eq(QQN).html()
-	var staffname = $( "#container" ).dialog( "option", "title" )
+	var staffname = $( "#titlename" ).html()
 	var sqlstring, waitnum
 
 	if (patient)
@@ -280,14 +269,14 @@ function storePresentcellQueue(pointing)
 	var rindex = $(rowtr).index()
 	var qn = $(rowtr).children("td").eq(QQN).html()
 
-//	$("#queuemenu").hide()
-	editcellqueue(pointing)
+	editcell(pointing)
 
 	switch(cindex)
 	{
 		case QNUM:
 			fillSetTableQueue(pointing)
 			break
+		case QSINCE:
 		case QNAME:
 		case QAGE:
 			$("#editcell").hide() //disable self (uneditable cell)
@@ -299,33 +288,6 @@ function storePresentcellQueue(pointing)
 			$("#editcell").data("content", $(pointing).html())
 			break
 	}
-}
-
-function editcellqueue(pointing)
-{
-	var pos = $(pointing).position()
-
-	$("#editcell").html($(pointing).html())
-	$("#editcell").data("located", $(pointing))
-
-	$("#queuetbl").append($("#editcell"))
-//	$("#editcell").position({
-//		my: "left top",
-//		at: "left top",
-//		of: pointing,
-//		collision: "fit",
-//		within: "#queuetbl"
-//	})
-	$("#editcell").css({
-		position: "absolute",
-		zIndex: "1000",
-		top: pos.top + $("#container").scrollTop() + "px",
-		left: pos.left + "px",
-		height: $(pointing).height() + "px",
-		width: $(pointing).width() + "px"
-	})
-	$("#editcell").show()
-	$("#editcell").focus()
 }
 
 function findPrevcellQueue(event) 
@@ -342,7 +304,7 @@ function findPrevcellQueue(event)
 		if ($(prevcell).parent().index() > 1)
 		{	//go to prev row last editable
 			do {
-				prevcell = $(prevcell).parent().prev("tr").children().eq(QTEL)
+				prevcell = $(prevcell).parent().prev("tr").children().eq(EDITQUEUE[EDITQUEUE.length-1])
 			}
 			while ($(prevcell).get(0).nodeName == "TH")	//THEAD row
 		}
@@ -371,7 +333,7 @@ function findNextcellQueue(event)
 		if ($(nextcell).parent().index() < lastrow)
 		{	//go to next row first editable
 			do {
-				nextcell = $(nextcell).parent().next("tr").children().eq(QHN)
+				nextcell = $(nextcell).parent().next("tr").children().eq(EDITQUEUE[0])
 			}
 			while ($(nextcell).get(0).nodeName == "TH")	//THEAD row
 		}

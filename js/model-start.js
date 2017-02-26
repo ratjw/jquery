@@ -7,10 +7,10 @@ function loadtable(userid)
 	$("html").css("height", "100%")
 	$("body").css("height", "100%")
 	$("#wrapper").append($("#tblcontainer").show())
-	$("#wrapper").append($("#queuecontainer").show())
+	$("#wrapper").append($("#queuecontainer"))
 
 	$(document).click( function (event) {
-		countreset();
+		countReset();
 		var clickedCell = event.target
 
 		if ($(clickedCell).closest("table").attr("id") == "tbl")
@@ -20,7 +20,7 @@ function loadtable(userid)
 		return false
 	})
 	$(document).keydown( function (event) {
-		countreset();
+		countReset();
 		var table = $("#editcell").data("located").closest("table").attr("id")
 		if (table == "tbl")
 			editing(event)
@@ -28,16 +28,16 @@ function loadtable(userid)
 			editingqueue(event)
 	})
 	$(document).contextmenu( function (event) {
-		countreset();
+		countReset();
 		return false
 	})
 	$("#tblcontainer").scroll( function (event) {
-		countreset();
+		countReset();
 		if(typeof timeout == "number") {
 			window.clearTimeout(timeout);
 			delete timeout;
 		}
-		timeout = window.setTimeout( scrollUpDown, 100);
+		timeout = window.setTimeout( scrollUpDown, 50);
 	})
 	TIMER = setTimeout("updating()",10000)		//poke next 10 sec.
 }
@@ -101,7 +101,7 @@ function updating()
 	}
 }
 
-function countreset()
+function countReset()
 {
 	clearTimeout(TIMER);
 	TIMER = setTimeout("updating()",10000);	//poke after 10 sec.

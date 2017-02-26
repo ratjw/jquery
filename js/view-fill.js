@@ -44,7 +44,7 @@ function fillext(di)
 		begindate = begindate.nextdays(di*7)
 		setTopDate(begindate)
 
-		makeheader(0)
+		$('#tbl tbody').prepend($('#tbl tr:first').clone())
 		fill(0)
 
 		//scroll to the old "tr:has(th)"
@@ -52,7 +52,7 @@ function fillext(di)
 	}
 	else if (di == +1)
 	{
-		makeheader(1)
+		$('#tbl tbody').append($('#tbl tr:first').clone())
 		fill(table.rows.length-1)
 	}
 }
@@ -89,7 +89,7 @@ function fillext(di)
 		fill(0)
 		while (numweeks < Require)
 		{
-			makeheader(1)
+			$('#tbl tbody').append($('#tbl tr:first').clone())
 			fill($('#tbl tr').length-1)
 		}
 	}
@@ -130,14 +130,6 @@ function fillext(di)
 	}
 })()
 
-function makeheader(at)
-{
-	if (at == 0)
-		$('#tbl tbody').prepend($('#tbl tr:first').clone())
-	else
-		$('#tbl tbody').append($('#tbl tr:first').clone())
-}
-
 function makenextrow(i, date, tableID)
 {	// i = the row to be made
 	var table = document.getElementById(tableID)
@@ -163,12 +155,6 @@ function filldata(bookq, rowi)		//bookq = book[q]
 	rowi.cells[TREATMENT].innerHTML = bookq.treatment? bookq.treatment : ""
 	rowi.cells[TEL].innerHTML = bookq.tel? bookq.tel : ""
 	rowi.cells[QN].innerHTML = bookq.qn
-}
-
-function filldeleterow(rowmain)		
-{
-	for (var j=1; j<rowmain.cells.length; j++)
-		rowmain.cells[j].innerHTML = ""
 }
 
 function fillselect(tableID, opdate)		

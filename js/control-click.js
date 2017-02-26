@@ -22,7 +22,7 @@ function editing(event)
 		if (thiscell) {
 			storePresentcell(thiscell)
 		} else {
-			$("#tblcontainer").siblings().hide()
+			$("#editcell").hide()
 			window.focus()
 		}
 		event.preventDefault()
@@ -38,7 +38,7 @@ function editing(event)
 		if (thiscell) {
 			storePresentcell(thiscell)
 		} else {
-			$("#tblcontainer").siblings().hide()
+			$("#editcell").hide()
 			window.focus()
 		}
 		event.preventDefault()
@@ -48,7 +48,7 @@ function editing(event)
 	{
 		if ($("#editcell").data("located").index() == OPDATE)
 		{
-			$("#tblcontainer").siblings().hide()
+			$(".ui-menu").hide()
 		}
 		else
 		{
@@ -109,7 +109,7 @@ function saveContent(column, content)	//column name in MYSQL
 	var qn = rowcell.eq(QN).html()
 	var sqlstring
 
-	$("#tblcontainer").css("cursor", "wait")
+	$("#tbl").css("cursor", "wait")
 	content = URIcomponent(content)			//take care of white space, double qoute, 
 											//single qoute, and back slash
 	if (qn)
@@ -133,7 +133,7 @@ function saveContent(column, content)	//column name in MYSQL
 		if (!response || response.indexOf("DBfailed") != -1)
 		{
 			alert("Failed! update database \n\n" + response)
-			$("#editcell").data("located").html($("#editcell").data("content"))
+			$("#editcell").hide()
 		}
 		else
 		{
@@ -141,7 +141,7 @@ function saveContent(column, content)	//column name in MYSQL
 			fillselect("tbl", opdate)
 			$("#editcell").data("content", "")
 		}
-		$("#tblcontainer").css("cursor", "")
+		$("#tbl").css("cursor", "")
 	}
 }
 
@@ -191,7 +191,6 @@ function storePresentcell(pointing)
 	var rindex = $(rowtr).index()
 	var qn = $(rowtr).children("td").eq(QN).html()
 
-//	$("#tblcontainer").siblings().hide()
 	editcell(pointing)
 
 	switch(cindex)
@@ -222,12 +221,11 @@ function editcell(pointing)
 	$("#editcell").html($(pointing).html())
 	$("#editcell").data("located", $(pointing))
 	$("#editcell").css({
-		position: "absolute",
-		zIndex: 1000,
 		top: pos.top + "px",
 		left: pos.left + "px",
 		height: $(pointing).height() + "px",
 		width: $(pointing).width() + "px",
+		fontSize: $(pointing).css("fontSize"),
 		display: "block"
 	})
 	$("#editcell").focus()

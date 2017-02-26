@@ -59,6 +59,7 @@ function fillSetTable(rownum, pointing)
 					break
 				case "item4":
 					staffqueue(ui.item.text())
+					$("#queuecontainer").show()
 					$("#tblcontainer").css("width", "60%")
 					$("#queuecontainer").css("width", "40%")
 					initResize("#tblcontainer")
@@ -76,9 +77,6 @@ function fillSetTable(rownum, pointing)
 
 			$("#editcell").hide()		//to disappear after selection
 			$(".ui-menu").hide()		//to disappear after selection
-//			event.stopPropagation()
-//			event.preventDefault()
-//			return false
 		}
 	});
 
@@ -110,7 +108,8 @@ function showup(pointing, menuID)
 	var height = pos.top + $(pointing).outerHeight();
 	var width = pos.left + $(pointing).outerWidth();
 
-	if ((height + $(menuID).outerHeight()) > $('#tblcontainer').innerHeight() + $('#tblcontainer').scrollTop())
+	if ((height + $(menuID).outerHeight()) > 
+		$('#tblcontainer').innerHeight() + $('#tblcontainer').scrollTop())
 	{
 		height = pos.top - $(menuID).innerHeight()
 	}
@@ -128,7 +127,7 @@ function checkblank(opdate, qn)
 	var q = 0
 
 	if (qn)
-		return false
+		return false	//No, it's not empty
 	while (opdate > BOOK[q].opdate)
 	{
 		q++
@@ -136,7 +135,7 @@ function checkblank(opdate, qn)
 			return false
 	}
 	if (opdate == BOOK[q].opdate)
-		return true
+		return true	//Yes, there is none
 	else
 		return false
 }
@@ -152,7 +151,7 @@ function initResize(id)
 			var parent = ui.element.parent();
 			var remainSpace = parent.width() - ui.element.outerWidth()
 			var divTwo = ui.element.next()
-			var margin = divTwo.outerWidth() - divTwo.width()
+			var margin = divTwo.outerWidth() - divTwo.innerWidth()
 			var divTwoWidth = (remainSpace-margin)/parent.width()*100+"%";
 			divTwo.css("width", divTwoWidth);
 		},
@@ -160,15 +159,15 @@ function initResize(id)
 		{
 			var parent = ui.element.parent();
 			var remainSpace = parent.width() - ui.element.outerWidth()
-//			var divTwo = ui.element.next()
-//			var margin = divTwo.outerWidth() - divTwo.width()
+			var divTwo = ui.element.next()
+			var margin = divTwo.outerWidth() - divTwo.innerWidth()
 			ui.element.css(
 			{
-				width: ui.element.width()/parent.width()*100+"%",
+				width: ui.element.outerWidth()/parent.width()*100+"%",
 			});
 			ui.element.next().css(
 			{
-				width: (remainSpace)/parent.width()*100+"%",
+				width: (remainSpace-margin)/parent.width()*100+"%",
 			});
 		}
 	});

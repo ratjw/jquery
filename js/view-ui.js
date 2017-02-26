@@ -2,24 +2,28 @@
 function DragDrop()
 {
 	$("#tbl tr:has(td)").draggable({
-		helper: "clone",
 		revert: "true",
-		appendTo: "body",
+		helper: function(){
+					var copy = $(this).clone();
+					copy.find("td").css({
+						"fontSize": "16px",
+						"border": "solid 1px silver",
+					})
+					return copy;
+				},
+		appendTo: 'body',
+		scroll: false,
 		stack: ".ui-draggable",
-		zIndex: 1000,	//z-index of #container increased by each dropping
+		zIndex: 1000,
 		start : function (event) {
 			$("#editcell").hide()
-			$("#menu").hide()
-			$("#stafflist").hide()
+			$(".ui-menu").hide()
 		}
 	});
 
-	$("#tbl, #tbl tr").droppable({
+	$("#tbl tr:has(td)").droppable({
 		accept: "tr",
 		drop: function (event, ui) {
-			if (!$(this).children("td").eq(OPDATE).html())		//drop on header
-				return false
-
 			var that_row = ui.draggable
 			var this_row = $(this)
 			var uihelper = ui.helper
@@ -47,7 +51,7 @@ function DragDrop()
 				if (nextdate = $(ui.draggable).next().children("td").eq(OPDATE).html())
 					nextdate = nextdate.numDate()
 			}
-			$("#tblcontainer").css("cursor", 'wait')
+
 			var sql = "sqlReturnbook=UPDATE book SET "
 			sql += "opdate='" + thisdate
 			sql += "', editor='"+ THISUSER
@@ -68,7 +72,7 @@ function DragDrop()
 						that_row.remove()
 					else if (dragTable == "queuetbl")
 					{
-						var staffname = $( "#container" ).dialog( "option", "title" )
+						var staffname = $( "#titlename" ).html()
 						staffqueue(staffname)
 					}
 
@@ -78,7 +82,6 @@ function DragDrop()
 					filluprefill()
 					DragDrop()
 				}
-				$("#tblcontainer").css("cursor", 'default')
 			}	
 		}
 	});
@@ -88,25 +91,19 @@ function DragDropday()
 {
 	$("#tblday tr:has(td)").draggable({
 		helper: "clone",
-		revert: "invalid",
+		revert: "true",
 		appendTo: "body",
 		stack: ".ui-draggable",
 		zIndex: 1000,
 		start : function () {
 			$("#editcell").hide()
-			event.stopPropagation()
+			$(".ui-menu").hide()
 		}
 	});
 
-	$("#tblday tr").droppable({
+	$("#tblday tr:has(td)").droppable({
 		accept: "#tbl tr, #tblday tr",
 		drop: function (event, ui) {
-			event.stopPropagation()
-
-			if (!$(this).children("td").eq(OPDATE).html())		//drop on header
-				return true
-
-			$("#tblcontainer").css("cursor", 'wait')
 			var that_row = ui.draggable
 			var this_row = $(this)
 			var uihelper = ui.helper
@@ -161,7 +158,6 @@ function DragDropday()
 					filluprefill()
 					DragDrop(event)
 				}
-				$("#tblcontainer").css("cursor", 'default')
 			}	
 		}
 	});
@@ -172,37 +168,22 @@ function DragDropStaff()
 	$("#queuetbl tr:has(td)").draggable({
 		helper: "clone",
 		revert: "true",
-		appendTo: "body",
+//		appendTo: "body",
 		stack: ".ui-draggable",
 		zIndex: 1000,
 		start : function () {
 			$("#editcell").hide()
-			$( "#tbl tr" ).droppable( "disable" )
+			$(".ui-menu").hide()
 		}
 	});
-//test hijack
-	//add "#container" to trigger "over" at the "start" of draggable "#queuetbl tr"
-	//this is essential even it causes "#tbl" draggable enter "drop" 2 times
-	//because "#queuetbl tr" will move to "#tbl" when it was slightly dragged
-	//the first "drop" (because of #container) is filtered out by "drop on header"
-	$("#container, #queuetbl tr").droppable({
-		greedy: true,
-		over: function(event, ui){
-			$( "#tbl tr" ).droppable( "disable" )
-		},
-		out: function(event, ui){
-			$( "#tbl tr" ).droppable( "enable" )
-		},
-		accept: "tr",
+
+	$("#queuetbl tr:has(td)").droppable({
+		accept: "#tbl tr, #tblday tr",
 		drop: function (event, ui) {
-
-			if (!$(this).children("td").eq(OPDATE).html())	//drop on header
-				return true
-
 			var staffdrag = $(ui.draggable).children("td").eq(STAFFNAME).html()
 			if (!staffdrag)
 				return false
-			var staffname = $( "#container" ).dialog( "option", "title" )
+			var staffname = $( "#titlename" ).html()
 			if (staffdrag != staffname)
 				return
 			var thatqn = $(ui.draggable).children("td").eq(QN).html()
@@ -219,8 +200,6 @@ function DragDropStaff()
 			sql += ", editor='"+ THISUSER
 			sql += "' WHERE qn="+ thatqn +";"
 
-			$("#tblcontainer").css("cursor", 'wait')
-
 			Ajax(MYSQLIPHP, sql, callbackDragDropStaff);
 
 			function callbackDragDropStaff(response)
@@ -236,7 +215,6 @@ function DragDropStaff()
 					filluprefill()
 					DragDrop(event)
 				}
-				$("#tblcontainer").css("cursor", 'default')
 			}	
 		}
 	});

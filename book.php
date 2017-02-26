@@ -26,7 +26,6 @@
 </HEAD>
 <BODY>
 
-
 <div id="wrapper">
 </div>
 
@@ -63,6 +62,12 @@
 </TABLE>
 
 <div id="queuecontainer" style="display:none">
+  <div id="titlebar">
+	<span style="width:20px; display:inline-block"></span>
+	<span id="titlename"></span>
+    <a href="#"><span class="ui-icon ui-icon-closethick" onclick="closequeue()"></span></a>
+  </div> 
+
   <TABLE id="queuetbl" data-role="table" class="ui-responsive">
    <TBODY>
     <TR>
@@ -83,7 +88,7 @@
 <TABLE style="display:none">	<!--template "qdatatitle" for "staffqueue"-->
   <TBODY>
     <TR id="qdatatitle">
-     <td data-title="No."></td>
+     <td data-title="No." style="text-align:right; padding-right:4px"></td>
      <td data-title="Since"></td>
      <td data-title="HN"></td>
      <td data-title="ชื่อ นามสกุล"></td>
