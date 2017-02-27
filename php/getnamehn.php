@@ -25,6 +25,14 @@ require_once "book.php";
 	$resultz["gender"] = "M";
 	$resultz["hn"] = $hn;
 	$resultz["qn"] = $qn;
+
+	$sql = "UPDATE book SET hn = '$hn', patient = '$initial_name.$first_name.' '.$last_name',";
+	$sql = $sql." dob = '$dob', gender = '$gender', editor = '$username' ";
+	$sql = $sql."WHERE qn = $qn;";
+	$sql = "INSERT INTO book (waitnum, qsince, opdate, staffname, hn, patient, dob, gender, editor)"; 
+	$sql = $sql."VALUES ($waitnum, $qsince, $opdate, '$staffname', '$hn', ";
+	$sql = $sql."'$initial_name.$first_name.' '.$last_name', '$dob', '$gender', '$username');";
+	echo $sql; exit;
 */
 	$wsdl="http://appcenter/webservice/patientservice.wsdl";
 	$client = new SoapClient($wsdl);
@@ -47,34 +55,28 @@ require_once "book.php";
 		$resultz["hn"] = $hn;
 		$resultz["qn"] = $qn;
 		$resultz["username"] = $username;
-		echo newqn($resultz);
+
+		$mysqli = new mysqli("localhost", "root", "zaq12wsx", "neurosurgery");
+
+		if ($mysqli->connect_errno)
+			exit("DBfailed Connect failed: " . $mysqli->connect_error);
+
+		if ($qn)
+		{
+			$sql = "UPDATE book SET hn = '$hn', patient = '$initial_name"."$first_name"." "."$last_name',";
+			$sql = $sql." dob = '$dob', gender = '$gender', editor = '$username' ";
+			$sql = $sql."WHERE qn = $qn;";
+		}
+		else
+		{
+			$sql = "INSERT INTO book (waitnum, qsince, opdate, staffname, hn, patient, dob, gender, editor) "; 
+			$sql = $sql."VALUES ($waitnum, $qsince, $opdate, '$staffname', '$hn', ";
+			$sql = $sql."'$initial_name"."$first_name"." "."$last_name', '$dob', '$gender', '$username');";
+		}
+
+		$query = $mysqli->query ($sql);
+		if (!$query)
+			echo $mysqli->error . $sql;
+		else
+			echo json_encode(book($mysqli));
 	}
-
-function newqn($resultz)
-{
-	$mysqli = new mysqli("localhost", "root", "zaq12wsx", "neurosurgery");
-
-	if ($mysqli->connect_errno)
-		exit("DBfailed Connect failed: " . $mysqli->connect_error);
-
-	extract($resultz);
-
-	if ($qn)
-	{
-		$sql = "UPDATE book SET hn = '$hn', patient = '$initial_name";
-		$sql = $sql."$first_name"." "."$last_name', dob = '$dob', ";
-		$sql = $sql."gender = '$gender', editor = '$username' WHERE qn = $qn;";
-	}
-	else
-	{
-		$sql = "INSERT INTO book (waitnum, qsince, opdate, staffname, hn, patient, dob, gender, editor)"; 
-		$sql = $sql."VALUES ($waitnum, '$qsince', $opdate, '$staffname', '$hn', '$initial_name";
-		$sql = $sql."$first_name"." "."$last_name', '$dob', '$gender', '$username');";
-	}
-
-	$query = $mysqli->query ($sql);
-	if (!$query)
-		return $mysqli->error . $sql;
-	else
-		return json_encode(book($mysqli));
-}

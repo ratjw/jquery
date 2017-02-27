@@ -116,6 +116,12 @@ function saveContent(column, content)	//column name in MYSQL
 	var opdate = rowcell.eq(OPDATE).html().numDate()
 	var qn = rowcell.eq(QN).html()
 	var sqlstring
+	var qsince
+
+	if (rowcell.eq(QSINCE).html())
+		qsince = rowcell.eq(QSINCE).html().numDate()
+	else
+		qsince = new Date().MysqlDate()
 
 	content = URIcomponent(content)			//take care of white space, double qoute, 
 											//single qoute, and back slash
@@ -130,7 +136,7 @@ function saveContent(column, content)	//column name in MYSQL
 	{
 		sqlstring = "sqlReturnbook=INSERT INTO book ("
 		sqlstring += "waitnum, qsince, opdate, "+ column +", editor) VALUES ("
-		sqlstring += "0, '"+ opdate +"', '"+ opdate +"', '"+ content +"', '"+ THISUSER +"');"
+		sqlstring += "0, '"+ qsince +"', '"+ opdate +"', '"+ content +"', '"+ THISUSER +"');"
 	}
 
 	Ajax(MYSQLIPHP, sqlstring, callbacksaveContent);
@@ -154,10 +160,16 @@ function saveContent(column, content)	//column name in MYSQL
 
 function saveHNinput(hn, content)
 {
-	var rowtr = $("#editcell").data("located").parent().children("td")
-	var opdate = rowtr.eq(OPDATE).html().numDate()
-	var patient = rowtr.eq(NAME).html()
-	var qn = rowtr.eq(QN).html()
+	var rowcell = $("#editcell").data("located").parent().children("td")
+	var opdate = rowcell.eq(OPDATE).html().numDate()
+	var patient = rowcell.eq(NAME).html()
+	var qn = rowcell.eq(QN).html()
+	var qsince
+
+	if (rowcell.eq(QSINCE).html())
+		qsince = rowcell.eq(QSINCE).html().numDate()
+	else
+		qsince = new Date().MysqlDate()
 
 	if (patient)
 	{
@@ -169,7 +181,7 @@ function saveHNinput(hn, content)
 
 	var sqlstring = "hn=" + content
 	sqlstring += "&waitnum=0"
-	sqlstring += "&qsince="+ opdate
+	sqlstring += "&qsince="+ qsince
 	sqlstring += "&opdate="+ opdate
 	sqlstring += "&qn="+ qn
 	sqlstring += "&username="+ THISUSER

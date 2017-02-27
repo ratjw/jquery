@@ -95,40 +95,16 @@ td.sun, td.mon, td.tue, td.wed, td.thu, td.fri, td.sat {
 	font-weight: bold;
 	color: #777777;
 	width: 100px;
-	line-height: 30px;
+	margin-top: 5px;
 }
 
-.tooltip {
+.ui-icon {
 	float: right;
-	font-size: 14px;
-	font-weight: bold;
+	margin: 10px 10px 0;
 }
 
-.tooltip .tooltiptext {
-	visibility: hidden;
-	width: 60px;
-	background-color: #AAAAAA;
-	color: #FFFFFF;
-	text-align: center;
-	border-radius: 6px;
-	padding: 0 0 15px 0;
-	height: 15px;
-	position: relative;
-	z-index: 1;
-	top: 0px;
-	right: 5%;
-}
-
-.tooltip:hover .tooltiptext {
-	visibility: visible;
-}
-
-.tooltip:hover {
+.ui-icon:hover {
 	cursor: pointer;
-}
-
-.tooltip span {
-	display: inline-block;
 }
 
 #queuetbl, #tblday {
