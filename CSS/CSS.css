@@ -69,15 +69,15 @@ html, body {
 }
 
 tr.sunday { background-color: #FFFFFF; }
-tr.monday { background-color: #FCFCFA; }
+tr.monday { background-color: #F7FFF7; }
 tr.tuesday { background-color: #FFFFFF; }
-tr.wednesday { background-color: #FCFCFA; }
+tr.wednesday { background-color: #F7FFF7; }
 tr.thursday { background-color: #FFFFFF; }
-tr.friday { background-color: #FCFCFA; }
+tr.friday { background-color: #F7FFF7; }
 tr.saturday { background-color: #FFFFFF; }
 
 td.sun, td.mon, td.tue, td.wed, td.thu, td.fri, td.sat {
-	font-size: 14px; background-color: #FCFCFA; 
+	font-size: 14px; background-color: #E0F0F7; 
 }
 
 #titlebar {
@@ -101,21 +101,22 @@ td.sun, td.mon, td.tue, td.wed, td.thu, td.fri, td.sat {
 .tooltip {
 	float: right;
 	font-size: 14px;
+	font-weight: bold;
 }
 
 .tooltip .tooltiptext {
 	visibility: hidden;
 	width: 60px;
-	background-color: #777777;
+	background-color: #AAAAAA;
 	color: #FFFFFF;
 	text-align: center;
 	border-radius: 6px;
-	padding: 5px 0;
-	height: 20px;
+	padding: 0 0 15px 0;
+	height: 15px;
 	position: relative;
 	z-index: 1;
-	top: -5px;
-	right: 105%;
+	top: 0px;
+	right: 5%;
 }
 
 .tooltip:hover .tooltiptext {
@@ -126,7 +127,7 @@ td.sun, td.mon, td.tue, td.wed, td.thu, td.fri, td.sat {
 	cursor: pointer;
 }
 
-span {
+.tooltip span {
 	display: inline-block;
 }
 
