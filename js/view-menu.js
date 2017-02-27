@@ -43,6 +43,8 @@ function fillSetTable(rownum, pointing)
 
 	$("#menu").menu({
 		select: function( event, ui ) {
+			if ($(this).attr("class") == "disabled")
+				return
 
 			var item = $(ui.item).find("div").attr("id")
 

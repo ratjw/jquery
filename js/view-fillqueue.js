@@ -5,6 +5,7 @@ function staffqueue(staffname)
 	var rowi = {}
 
 	$('#titlename').html(staffname)
+	var scrolled = $("#queuecontainer").scrollTop()
 	
 	//delete previous queuetbl lest it accumulates
 	$('#queuetbl tr').slice(1).remove()
@@ -23,6 +24,11 @@ function staffqueue(staffname)
 		rowi.cells[QNUM].innerHTML = 1
 		rowi.cells[QSINCE].innerHTML = new Date().MysqlDate().thDate()
 	}
+	$("#queuetbl tr td:first-child").css({
+		"backgroundColor":"#AABBCC",
+		"color":"white"
+		})
+	$("#queuecontainer").scrollTop(scrolled)
 	DragDropStaff()
 }
 
@@ -93,7 +99,8 @@ function fillSetTableQueue(pointing)
 
 	$("#queuemenu").menu({
 		select: function( event, ui ) {
-
+			if ($(this).attr("class") == "disabled")
+				return
 			var item = $(this).attr("aria-activedescendant")
 			switch(item)
 			{
@@ -105,10 +112,7 @@ function fillSetTableQueue(pointing)
 					break
 			}
 			$("#editcell").hide()
-			$("#queuemenu").hide()
-			event.stopPropagation()
-			event.preventDefault()
-			return false
+			$(".ui-menu").hide()
 		}
 	});
 
@@ -118,10 +122,13 @@ function fillSetTableQueue(pointing)
 function addnewrowQ()
 {
 	var queuetbl = document.getElementById("queuetbl")
+	var toscroll
 
 	rownum = $("#queuetbl tr").length	//always append to table end
 	rowi = makenextrowQueue(queuetbl, rownum)
 	rowi.cells[QSINCE].innerHTML = new Date().MysqlDate().thDate()
+	toscroll = $("#queuetbl").height() - $("#queuecontainer").height() + $(rowi).height()
+	$("#queuecontainer").scrollTop(toscroll)
 	DragDropStaff()
 }
 

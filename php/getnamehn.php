@@ -1,7 +1,8 @@
 ﻿<?php
 require_once "book.php";
 
-	$hn = $username = $waitnum = $qsince = $staffname = "";
+	$waitnum = $qsince = $hn = $staffname = $qn = $username = "";
+	$opdate = '0000-00-00';
 
 	$mysqli = new mysqli("localhost", "root", "zaq12wsx", "neurosurgery");
 	if ($mysqli->connect_errno)
@@ -33,27 +34,30 @@ require_once "book.php";
 		$resulty = $resulty->children();	//numeric array
 	$resultj = json_encode($resulty);		//use json encode-decode
 	$resultz = json_decode($resultj,true);	//to make assoc array
+	//$hn, $initial_name, $first_name, $last_name, $dob, $gender
 
 	if (empty($resultz["first_name"]))
 		echo "DBfailed ไม่มีผู้ป่วย hn นี้";
 	else
 	{
+		$resultz["waitnum"] = $waitnum;
+		$resultz["qsince"] = $qsince;
+		$resultz["opdate"] = $opdate;
+		$resultz["staffname"] = $staffname;
 		$resultz["hn"] = $hn;
 		$resultz["qn"] = $qn;
-		$resultz["qsince"] = $qsince;
-		echo newqn($resultz, $opdate, $username, $qsince, $staffname);
+		$resultz["username"] = $username;
+		echo newqn($resultz);
 	}
 
-function newqn($resultz, $opdate, $username, $qsince, $staffname)
+function newqn($resultz)
 {
 	$mysqli = new mysqli("localhost", "root", "zaq12wsx", "neurosurgery");
 
 	if ($mysqli->connect_errno)
 		exit("DBfailed Connect failed: " . $mysqli->connect_error);
 
-	$qn = "";
-
-	extract($resultz);	//$hn, $initial_name, $first_name, $last_name, $dob, $gender, $qn
+	extract($resultz);
 
 	if ($qn)
 	{
@@ -63,14 +67,14 @@ function newqn($resultz, $opdate, $username, $qsince, $staffname)
 	}
 	else
 	{
-		$sql = "INSERT INTO book (qsince, opdate, staffname, hn, patient, dob, gender, editor)"; 
-		$sql = $sql."VALUES ('$qsince', '$opdate', '$staffname', '$hn', '$initial_name";
+		$sql = "INSERT INTO book (waitnum, qsince, opdate, staffname, hn, patient, dob, gender, editor)"; 
+		$sql = $sql."VALUES ($waitnum, '$qsince', $opdate, '$staffname', '$hn', '$initial_name";
 		$sql = $sql."$first_name"." "."$last_name', '$dob', '$gender', '$username');";
 	}
 
 	$query = $mysqli->query ($sql);
 	if (!$query)
-		return $mysqli->error;
+		return $mysqli->error . $sql;
 	else
 		return json_encode(book($mysqli));
 }

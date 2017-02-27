@@ -120,7 +120,7 @@ function saveContentQueue(column, content)
 	}
 	else
 	{
-		waitnum = findMAXwaitnum() + 1
+		waitnum = findMAXwaitnum(staffname) + 1
 
 		sqlstring = "sqlReturnbook=INSERT INTO book ("
 		sqlstring += "waitnum, qsince, opdate, staffname, "+ column +", editor) VALUES ("
@@ -183,14 +183,15 @@ function findQsinceQ(qn)
 	return QWAIT[q].qsince
 }
 
-function findMAXwaitnum()	
+function findMAXwaitnum(staffname)	//latest queue of a particular staff
 {
 	var waitnumB, waitnumQ
 
 	var waitnumB = BOOK[0].waitnum
 	for (var q = 1; q < BOOK.length; q++)
 	{
-		waitnumB = Math.max(waitnumB, BOOK[q].waitnum)
+		if (BOOK[q].staffname == staffname)
+			waitnumB = Math.max(waitnumB, BOOK[q].waitnum)
 	}
 
 	if (QWAIT.length == 0)
@@ -200,14 +201,14 @@ function findMAXwaitnum()
 		else
 			return 0
 	}
-	else
+
+	var waitnumQ = QWAIT[0].waitnum
+	for (var q = 1; q < QWAIT.length; q++)
 	{
-		var waitnumQ = QWAIT[0].waitnum
-		for (var q = 1; q < QWAIT.length; q++)
-		{
+		if (QWAIT[q].staffname == staffname)
 			waitnumQ = Math.max(waitnumQ, QWAIT[q].waitnum)
-		}
 	}
+
 	if (waitnumB)
 		return Math.max(waitnumB, waitnumQ)
 	else 
@@ -235,7 +236,7 @@ function saveHNinputQueue(hn, content)
 	if (qn)
 		waitnum = findwaitnumQ(qn)
 	else
-		waitnum = findMAXwaitnum() + 1
+		waitnum = findMAXwaitnum(staffname) + 1
 
 	sqlstring = "hn=" + content
 	sqlstring += "&waitnum="+ waitnum
@@ -280,12 +281,14 @@ function storePresentcellQueue(pointing)
 		case QNAME:
 		case QAGE:
 			$("#editcell").hide() //disable self (uneditable cell)
+			$(".ui-menu").hide()
 			break
 		case QHN:
 		case QDIAGNOSIS:
 		case QTREATMENT:
 		case QTEL:		//store content in "data" of editcell
 			$("#editcell").data("content", $(pointing).html())
+			$(".ui-menu").hide()
 			break
 	}
 }

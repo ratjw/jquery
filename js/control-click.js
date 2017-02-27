@@ -1,7 +1,15 @@
 function clicktable(clickedCell)
 {
-	if ((clickedCell.id == "editcell") || (clickedCell.nodeName != "TD"))
-			return
+	if (clickedCell.id == "editcell")
+		return
+	if  (clickedCell.nodeName != "TD")
+	{
+		$("#editcell").hide()
+		$(".ui-menu").hide()
+		$(".ui-dialog").hide()
+		return
+	}
+	
 
 	savePreviouscell()
 	storePresentcell(clickedCell)

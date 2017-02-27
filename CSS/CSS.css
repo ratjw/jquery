@@ -13,6 +13,7 @@ html, body {
 #tblcontainer {
 	float: left;
 	height: 100%;
+	width: 100%;
 	overflow-x: hidden;
 	overflow-y: auto;
 	box-sizing: border-box;
@@ -47,8 +48,8 @@ html, body {
 #tbl th {
 	font-size: 16px;
 	font-weight: bold;
-	background-color: steelblue;
-	color: papayawhip;
+	background-color: #D0E7FF;
+	color: #557799;
 	border-left: solid 1px silver;
 	border-top: solid 1px silver;
 	border-bottom: solid 1px silver;
@@ -67,33 +68,26 @@ html, body {
 	border-bottom: solid 1px silver;
 }
 
-tr.sunday, td.sunday { background-color: #FFEEEE; }
-tr.monday, td.monday { background-color: #FFFFEE; }
-tr.tuesday, td.tuesday { background-color: #FFFEFE; }
-tr.wednesday, td.wednesday { background-color: #EEFFEE; }
-tr.thursday, td.thursday { background-color: #FFEEEE; }
-tr.friday, td.friday { background-color: #EEEEFF; }
-tr.saturday, td.saturday { background-color: #FFEEFF; }
+tr.sunday { background-color: #FFFFFF; }
+tr.monday { background-color: #FCFCFB; }
+tr.tuesday { background-color: #FFFFFF; }
+tr.wednesday { background-color: #FCFCFB; }
+tr.thursday { background-color: #FFFFFF; }
+tr.friday { background-color: #FCFCFB; }
+tr.saturday { background-color: #FFFFFF; }
 
-td.sun { background-color: #FFDDDD; }
-td.mon { background-color: #FFFFDD; }
-td.tue { background-color: #FFEEEE; }
-td.wed { background-color: #DDFFDD; }
-td.thu { background-color: #FFEEDD; }
-td.fri { background-color: #DDDDFF; }
-td.sat { background-color: #FFDDFF; }
-
-td.sun:before { content: "อาทิตย์ "; }
-td.mon:before { content: "จันทร์ "; }
-td.tue:before { content: "อังคาร "; }
-td.wed:before { content: "พุธ "; }
-td.thu:before { content: "พฤหัส "; }
-td.fri:before { content: "ศุกร์ "; }
-td.sat:before { content: "เสาร์ "; }
+td.sun, td.mon, td.tue, td.wed, td.thu, td.fri, td.sat {
+	font-size: 14px; background-color: #FCFCFB; 
+}
 
 #titlebar {
-	height: 30px;
+	line-height: 30px;
 	background-color: #F0F0F0;
+}
+
+#titlebar span {
+	line-height: 30px;
+	display: inline-block;
 }
 
 #titlename {
@@ -103,36 +97,17 @@ td.sat:before { content: "เสาร์ "; }
 	width: 100px;
 	line-height: 30px;
 }
-/*
-.ui-icon {
-	float:right;
-}	
 
-.ui-icon:hover {
-	background-color: black;
-	color: #fff;
-	text-align: center;
-	border-radius: 6px;
-	padding: 5px 0;
-
-	position: absolute;
-	z-index: 1;
-	top: -5px;
-	right: 105%;
-}
-*/
 .tooltip {
-	position: relative;
-	display: inline-block;
-/*	float: right;*/
-	border-bottom: 1px dotted black;
+	float: right;
+	font-size: 14px;
 }
-/*
+
 .tooltip .tooltiptext {
 	visibility: hidden;
-	width: 120px;
-	background-color: black;
-	color: #fff;
+	width: 60px;
+	background-color: #777777;
+	color: #FFFFFF;
 	text-align: center;
 	border-radius: 6px;
 	padding: 5px 0;
@@ -146,7 +121,7 @@ td.sat:before { content: "เสาร์ "; }
 .tooltip:hover .tooltiptext {
 	visibility: visible;
 }
-*/
+
 #queuetbl, #tblday {
 	border-right: solid 1px slategray;
 	width: auto;
@@ -158,8 +133,8 @@ td.sat:before { content: "เสาร์ "; }
 	font-size: 12px;
 	font-weight: bold;
 	height: 20px;
-	background-color: steelblue;
-	color: papayawhip;
+	background-color: #AABBCC;
+	color: white;
 	border-left: solid 1px silver;
 	border-top: solid 1px silver;
 	border-bottom: solid 1px silver;
@@ -227,8 +202,8 @@ td.sat:before { content: "เสาร์ "; }
 .historytable th {
 	font-size: 16px;
 	font-weight: bold;
-	color: papayawhip;
-	background-color: steelblue;
+	color: white;
+	background-color: #AABBCC;
 	text-align: center;
 	border-left: solid 1px silver;
 	border-top: solid 1px silver;
