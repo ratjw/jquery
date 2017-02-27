@@ -117,7 +117,6 @@ function saveContent(column, content)	//column name in MYSQL
 	var qn = rowcell.eq(QN).html()
 	var sqlstring
 
-	$("#tbl").css("cursor", "wait")
 	content = URIcomponent(content)			//take care of white space, double qoute, 
 											//single qoute, and back slash
 	if (qn)
@@ -146,10 +145,10 @@ function saveContent(column, content)	//column name in MYSQL
 		else
 		{
 			updateBOOK(response);
+			$("#editcell").data("located").html(content)
 			fillselect("tbl", opdate)
 			$("#editcell").data("content", "")
 		}
-		$("#tbl").css("cursor", "")
 	}
 }
 
@@ -187,6 +186,7 @@ function saveHNinput(hn, content)
 		else if (response.indexOf("{") != -1)
 		{	//Only one patient
 			updateBOOK(response)
+			$("#editcell").data("located").html(content)
 			fillselect("tbl", opdate)
 		}
 	}

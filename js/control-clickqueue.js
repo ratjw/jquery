@@ -108,7 +108,6 @@ function saveContentQueue(column, content)
 	var sqlstring
 	var waitnum
 
-	$("#queuetbl").css("cursor", "wait")
 	content = URIcomponent(content)			//take care of white space, double qoute, 
 											//single qoute, and back slash
 	if (qn)
@@ -140,10 +139,10 @@ function saveContentQueue(column, content)
 		else
 		{
 			updateBOOK(response);
+			$("#editcell").data("located").html(content)
 			fillselectQueue(row, rowcell, waitnum, qn)
 			$("#editcell").data("content", "")
 		}
-		$("#queuetbl").css("cursor", "")
 	}
 }
 

@@ -69,15 +69,15 @@ html, body {
 }
 
 tr.sunday { background-color: #FFFFFF; }
-tr.monday { background-color: #FCFCFB; }
+tr.monday { background-color: #FCFCFA; }
 tr.tuesday { background-color: #FFFFFF; }
-tr.wednesday { background-color: #FCFCFB; }
+tr.wednesday { background-color: #FCFCFA; }
 tr.thursday { background-color: #FFFFFF; }
-tr.friday { background-color: #FCFCFB; }
+tr.friday { background-color: #FCFCFA; }
 tr.saturday { background-color: #FFFFFF; }
 
 td.sun, td.mon, td.tue, td.wed, td.thu, td.fri, td.sat {
-	font-size: 14px; background-color: #FCFCFB; 
+	font-size: 14px; background-color: #FCFCFA; 
 }
 
 #titlebar {
@@ -111,15 +111,23 @@ td.sun, td.mon, td.tue, td.wed, td.thu, td.fri, td.sat {
 	text-align: center;
 	border-radius: 6px;
 	padding: 5px 0;
-
-	position: absolute;
-	z-index: 10000;
+	height: 20px;
+	position: relative;
+	z-index: 1;
 	top: -5px;
 	right: 105%;
 }
 
 .tooltip:hover .tooltiptext {
 	visibility: visible;
+}
+
+.tooltip:hover {
+	cursor: pointer;
+}
+
+span {
+	display: inline-block;
 }
 
 #queuetbl, #tblday {

@@ -65,8 +65,8 @@
   <div id="titlebar">
 	<span style="width:20px;"></span>
 	<span id="titlename"></span>
-	<span onclick="closequeue()">X
-	  <span>Close</span>
+	<span class="tooltip" onclick="closequeue()">
+	  <span class="tooltiptext">Close</span>X
 	</span>
   </div> 
 
