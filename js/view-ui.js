@@ -12,17 +12,76 @@ function DragDrop()
 					return copy;
 				},
 		appendTo: 'body',
-		scroll: false,
 		stack: ".ui-draggable",
 		zIndex: 1000,
 		start : function (event) {
 			$("#editcell").hide()
 			$(".ui-menu").hide()
-		}
+		},
+		refreshPositions: true
 	});
 
-	$("#tbl tr:has(td)").droppable({
+	$("#tbl tr").droppable({
 		accept: "tr",
+/*
+		over: function (event, ui) {
+//			if (var curDown == undefined)
+//				curDown = true
+			var curDown = true
+			var scrollup
+			var curYPos
+			var height = $('#tblcontainer').height()
+
+			$(window).mousedown(function(){
+				curDown = true;
+			});
+
+			$(window).mousemove(function(m){
+				scrollup = $('#tblcontainer').scrollTop() - curYPos
+				console.log("helper:"+Math.round($(ui.helper).position().top)+
+					"...curYPos:"+Math.round(curYPos)+
+					"...tbl:"+Math.round($('#tblcontainer').scrollTop())+
+					"...scrollup:"+Math.round(scrollup)+
+					"...curdown:"+curDown)
+				if ($(ui.helper).position().top == 0 )
+					curYPos = 100
+				else
+					curYPos = $(ui.helper).position().top
+//				if (!$(ui.helper).position().top)
+//					curDown = true
+				if(curDown == true)
+				{
+
+	console.log("helper:"+Math.round($(ui.helper).position().top)+
+		"...curYPos:"+Math.round(curYPos)+
+		"...tbl:"+Math.round($('#tblcontainer').scrollTop())+
+		"...scrollup:"+Math.round(scrollup)+
+		"...if:"+(curYPos < 50))
+if (curYPos < 50)
+{
+	if ($('#tblcontainer').scrollTop() < 3)		//scroll up only when drag up
+	{
+		$('#tblcontainer').scrollTop(0)
+	}
+}
+else
+{
+	if (curYPos > (height - 50))
+	{
+		if ($(ui.helper).position().top > curYPos)	//scroll down only when drag down
+		{
+			$('#tblcontainer').scrollTop($('#tblcontainer').scrollTop() + $(ui.helper).position().top - curYPos); 
+		}
+	}
+}
+				}
+			});
+
+			$(window).mouseup(function(){
+				curDown = false;
+			});
+		}
+*/
 		drop: function (event, ui) {
 			var that_row = ui.draggable
 			var this_row = $(this)

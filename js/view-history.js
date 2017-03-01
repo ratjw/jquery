@@ -1,14 +1,14 @@
-function edithistory(rowmain, qn)
+function editHistory(rowmain, qn)
 {
 	if (rowmain.cells[QN].innerHTML)
 	{
 		var sql = "sqlReturnData=SELECT * FROM bookhistory "
 		sql += "WHERE qn="+ qn +";"
 
-		Ajax(MYSQLIPHP, sql, callbackedithistory)
+		Ajax(MYSQLIPHP, sql, callbackeditHistory)
 	}
 
-	function callbackedithistory(response)
+	function callbackeditHistory(response)
 	{
 		if (!response || response.indexOf("DBfailed") != -1)
 		{
@@ -27,7 +27,7 @@ function makehistory(rowmain, response)
 {
 	var history = JSON.parse(response);
 
-	var HTML_String = '<table class="historytable">';
+	var HTML_String = '<table id = "historytable">';
 	HTML_String += '<tr>';
 	HTML_String += '<th style="width:10%">Date Time</th>';
 	HTML_String += '<th style="width:30%">Diagnosis</th>';
@@ -49,23 +49,23 @@ function makehistory(rowmain, response)
 	}
 	HTML_String += '</table>';
 
-	$("#container").html(HTML_String);
-	$("#container").dialog({
-		dialogClass: "dialog",
+	$("#dialogContainer").html(HTML_String);
+	$("#dialogContainer").dialog({
 		title: rowmain.cells[HN].innerHTML +' '+ rowmain.cells[NAME].innerHTML,
 		height: window.innerHeight * 50 / 100,
-		width: window.innerWidth * 70 / 100
+		width: window.innerWidth * 50 / 100,
 	});
+	$(".ui-dialog").show()
 }
 
-function deletehistory(rowmain, qn)
+function deleteHistory(rowmain, qn)
 {
 	var sql = "sqlReturnData=SELECT * FROM bookhistory "
-		sql += "WHERE waitnum=NULL;"
+		sql += "WHERE waitnum is NULL;"
 
-		Ajax(MYSQLIPHP, sql, callbackdeletehistory)
+		Ajax(MYSQLIPHP, sql, callbackdeleteHistory)
 
-	function callbackdeletehistory(response)
+	function callbackdeleteHistory(response)
 	{
 		if (!response || response.indexOf("DBfailed") != -1)
 		{
@@ -84,7 +84,7 @@ function makeDeleteHistory(rowmain, response)
 {
 	var history = JSON.parse(response);
 
-	var HTML_String = '<table class="historytable">';
+	var HTML_String = '<table id = "historytable">';
 	HTML_String += '<tr>';
 	HTML_String += '<th style="width:10%">Date Time</th>';
 	HTML_String += '<th style="width:5%">HN</th>';
@@ -108,13 +108,13 @@ function makeDeleteHistory(rowmain, response)
 	}
 	HTML_String += '</table>';
 
-	$("#container").html(HTML_String);
-	$("#container").dialog({
-		dialogClass: "dialog",
+	$("#dialogContainer").html(HTML_String);
+	$("#dialogContainer").dialog({
 		title: rowmain.cells[HN].innerHTML +' '+ rowmain.cells[NAME].innerHTML,
 		height: window.innerHeight * 50 / 100,
-		width: window.innerWidth * 70 / 100
+		width: window.innerWidth * 50 / 100,
 	});
+	$(".ui-dialog").show()
 }
 
 function holiday(date)

@@ -19,27 +19,44 @@ function fillSetTable(rownum, pointing)
 	opday = NAMEOFDAYTHAI[i]
 
 	casename = casename.substring(0, casename.indexOf(' '))
-	$("#item1").html("เพิ่ม case วันที่ " + opdateth)
+
+	$("#item3").html("เพิ่ม case วันที่ " + opdateth)
 	if (qn)
-		$("#item1").removeClass(disabled)
-	else
-		$("#item1").addClass(disabled)
-	$("#item2").html("ลบ case " + casename)
-	if (qn)
-		$("#item2").removeClass(disabled)
-	else
-		$("#item2").addClass(disabled)
-	$("#item3").html("Delete Blank Row")
-	if (checkblank(opdate, qn))
 		$("#item3").removeClass(disabled)
 	else
 		$("#item3").addClass(disabled)
+
+	$("#item4").html("ลบ case " + casename)
+	if (qn)
+		$("#item4").removeClass(disabled)
+	else
+		$("#item4").addClass(disabled)
+
+	$("#item5").html("Delete Blank Row")
+	if (checkblank(opdate, qn))
+		$("#item5").removeClass(disabled)
+	else
+		$("#item5").addClass(disabled)
+
 	$("#item6").html("การแก้ไขของ " + casename)
 	if (qn)
 		$("#item6").removeClass(disabled)
 	else
 		$("#item6").addClass(disabled)
+
 	$("#item7").html("รายชื่อที่ถูกลบ")
+
+	$("#item8").html("Move")
+	if (qn)
+		$("#item8").removeClass(disabled)
+	else
+		$("#item8").addClass(disabled)
+
+	$("#item9").html("วาง")
+	if ($('#moverow').css('display') == 'block')
+		$("#item9").removeClass(disabled)
+	else
+		$("#item9").addClass(disabled)
 
 	$("#menu").menu({
 		select: function( event, ui ) {
@@ -51,29 +68,36 @@ function fillSetTable(rownum, pointing)
 			switch(item)
 			{
 				case "item1":
-					addnewrow(rowmain)
-					break
-				case "item2":
-					deletecase(rowmain, qn)
-					break
-				case "item3":
-					deleteblankrow(rowmain)
-					break
-				case "item4":
 					staffqueue(ui.item.text())
+					$("#wrapper").append($("#queuecontainer"))
 					$("#queuecontainer").show()
 					$("#tblcontainer").css("width", "60%")
 					$("#queuecontainer").css("width", "40%")
 					initResize("#tblcontainer")
 					break
-				case "item5":
+				case "item2":
 					fillday(ui.item.text())
 					break
+				case "item3":
+					addnewrow(rowmain)
+					break
+				case "item4":
+					deletecase(rowmain, qn)
+					break
+				case "item5":
+					deleteblankrow(rowmain)
+					break
 				case "item6":
-					edithistory(rowmain, qn)
+					editHistory(rowmain, qn)
 					break
 				case "item7":
-					deletehistory(rowmain, qn)
+					deleteHistory(rowmain, qn)
+					break
+				case "item8":
+					moveRow(rowmain, qn)
+					break
+				case "item9":
+					pasteRow(rowmain, qn)
 					break
 			}
 
@@ -140,37 +164,4 @@ function checkblank(opdate, qn)
 		return true	//Yes, there is none
 	else
 		return false
-}
-
-function initResize(id)
-{
-	$(id).resizable(
-	{
-		autoHide: true,
-		handles: 'e',
-		resize: function(e, ui) 
-		{
-			var parent = ui.element.parent();
-			var remainSpace = parent.width() - ui.element.outerWidth()
-			var divTwo = ui.element.next()
-			var margin = divTwo.outerWidth() - divTwo.innerWidth()
-			var divTwoWidth = (remainSpace-margin)/parent.width()*100+"%";
-			divTwo.css("width", divTwoWidth);
-		},
-		stop: function(e, ui) 
-		{
-			var parent = ui.element.parent();
-			var remainSpace = parent.width() - ui.element.outerWidth()
-			var divTwo = ui.element.next()
-			var margin = divTwo.outerWidth() - divTwo.innerWidth()
-			ui.element.css(
-			{
-				width: ui.element.outerWidth()/parent.width()*100+"%",
-			});
-			ui.element.next().css(
-			{
-				width: (remainSpace-margin)/parent.width()*100+"%",
-			});
-		}
-	});
 }

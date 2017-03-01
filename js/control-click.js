@@ -2,14 +2,13 @@ function clicktable(clickedCell)
 {
 	if (clickedCell.id == "editcell")
 		return
+
+	$("#editcell").hide()
+	$(".ui-menu").hide()
+	$(".ui-dialog").hide()
+
 	if  (clickedCell.nodeName != "TD")
-	{
-		$("#editcell").hide()
-		$(".ui-menu").hide()
-		$(".ui-dialog").hide()
-		return
-	}
-	
+		return	
 
 	savePreviouscell()
 	storePresentcell(clickedCell)
@@ -232,23 +231,6 @@ function storePresentcell(pointing)
 			$("#editcell").data("content", $(pointing).html())
 			break
 	}
-}
-
-function editcell(pointing)
-{
-	var pos = $(pointing).position()
-
-	$("#editcell").html($(pointing).html())
-	$("#editcell").data("located", $(pointing))
-	$("#editcell").css({
-		top: pos.top + "px",
-		left: pos.left + "px",
-		height: $(pointing).height() + "px",
-		width: $(pointing).width() + "px",
-		fontSize: $(pointing).css("fontSize"),
-		display: "block"
-	})
-	$("#editcell").focus()
 }
 
 function findPrevcell(event) 

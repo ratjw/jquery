@@ -4,10 +4,13 @@ function loadtable(userid)
 
 	THISUSER = userid
 	$("#login").remove()
-	$("html").css("height", "100%")
-	$("body").css("height", "100%")
-	$("#wrapper").append($("#tblcontainer").show())
-	$("#wrapper").append($("#queuecontainer"))
+//	$("html, body").css( {
+//		height: "100%",
+//		overflow: "hidden",
+//		margin: "0"
+//	})
+//	$("#wrapper").append($("#tblcontainer"))
+	$("#tblcontainer").show()
 
 	$(document).click( function (event) {
 		countReset();
@@ -31,14 +34,22 @@ function loadtable(userid)
 		countReset();
 		return false
 	})
-	$("#tblcontainer").scroll( function (event) {
-		countReset();
-		if(typeof timeout == "number") {
-			window.clearTimeout(timeout);
-			delete timeout;
-		}
-		timeout = window.setTimeout( scrollUpDown, 50);
-	})
+//	$("#tblcontainer").scroll( function (event) {
+//		countReset();
+//		if(typeof timeout == "number") {
+//			window.clearTimeout(timeout);
+//			delete timeout;
+//		}
+//		timeout = window.setTimeout( scrollUpDown, 50);
+//	})
+//	$(document).scroll( function (event) {
+//		countReset();
+//		if(typeof timeout == "number") {
+//			window.clearTimeout(timeout);
+//			delete timeout;
+//		}
+//		timeout = window.setTimeout( scrollUpDown, 150);
+//	})
 	TIMER = setTimeout("updating()",10000)		//poke next 10 sec.
 }
 
@@ -48,7 +59,7 @@ function loading(response)
 	{
 		updateBOOK(response)
 		fillupstart();
-		fillStafflist()
+		dataStafflist()
 	}
 	else
 		alert("Cannot load BOOK");
@@ -64,17 +75,17 @@ function updateBOOK(response)
 	STAFF = temp.STAFF? temp.STAFF : []
 }
 
-function fillStafflist()
+function dataStafflist()
 {
 	var stafflist = ''
 	var staffmenu = ''
 	for (var each=0; each<STAFF.length; each++)
 	{
 		stafflist += '<li><div>' + STAFF[each].name + '</div></li>'
-		staffmenu += '<li><div id="item4">' + STAFF[each].name + '</div></li>'
+		staffmenu += '<li><div id="item1">' + STAFF[each].name + '</div></li>'
 	}
 	$("#stafflist").html(stafflist)
-	$("#item40").html(staffmenu)
+	$("#item0").html(staffmenu)
 }
 
 function updating()
@@ -105,4 +116,54 @@ function countReset()
 {
 	clearTimeout(TIMER);
 	TIMER = setTimeout("updating()",10000);	//poke after 10 sec.
+}
+
+function editcell(pointing)
+{
+	var pos = $(pointing).position()
+
+	$("#editcell").html($(pointing).html())
+	$("#editcell").data("located", $(pointing))
+	$("#editcell").css({
+		top: pos.top + "px",
+		left: pos.left + "px",
+		height: $(pointing).height() + "px",
+		width: $(pointing).width() + "px",
+		fontSize: $(pointing).css("fontSize"),
+		display: "block"
+	})
+	$("#editcell").focus()
+}
+
+function initResize(id)
+{
+	$(id).resizable(
+	{
+		autoHide: true,
+		handles: 'e',
+		resize: function(e, ui) 
+		{
+			var parent = ui.element.parent();
+			var remainSpace = parent.width() - ui.element.outerWidth()
+			var divTwo = ui.element.next()
+			var margin = divTwo.outerWidth() - divTwo.innerWidth()
+			var divTwoWidth = (remainSpace-margin)/parent.width()*100+"%";
+			divTwo.css("width", divTwoWidth);
+		},
+		stop: function(e, ui) 
+		{
+			var parent = ui.element.parent();
+			var remainSpace = parent.width() - ui.element.outerWidth()
+			var divTwo = ui.element.next()
+			var margin = divTwo.outerWidth() - divTwo.innerWidth()
+			ui.element.css(
+			{
+				width: ui.element.outerWidth()/parent.width()*100+"%",
+			});
+			ui.element.next().css(
+			{
+				width: (remainSpace-margin)/parent.width()*100+"%",
+			});
+		}
+	});
 }

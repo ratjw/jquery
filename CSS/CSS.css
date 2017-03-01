@@ -1,8 +1,3 @@
-html, body {
-	overflow: hidden;
-	margin: 0;
-}
-
 #wrapper {
 	height: 100%;
 	width: 100%;
@@ -63,22 +58,30 @@ html, body {
 
 #tbl td {
 	empty-cells:show;
-	font-size: 16px;
+	font-size: 14px;
 	border-left: solid 1px silver;
 	border-bottom: solid 1px silver;
 }
 
-tr.sunday { background-color: #FFFFFF; }
-tr.monday { background-color: #F7FFF7; }
-tr.tuesday { background-color: #FFFFFF; }
-tr.wednesday { background-color: #F7FFF7; }
-tr.thursday { background-color: #FFFFFF; }
-tr.friday { background-color: #F7FFF7; }
-tr.saturday { background-color: #FFFFFF; }
+#tbl tr.sunday { background-color: #FFFFFF; }
+#tbl tr.monday { background-color: #F7FFF7; }
+#tbl tr.tuesday { background-color: #FFFFFF; }
+#tbl tr.wednesday { background-color: #F7FFF7; }
+#tbl tr.thursday { background-color: #FFFFFF; }
+#tbl tr.friday { background-color: #F7FFF7; }
+#tbl tr.saturday { background-color: #FFFFFF; }
 
-td.sun, td.mon, td.tue, td.wed, td.thu, td.fri, td.sat {
-	font-size: 14px; background-color: #E0F0F7; 
+#tbl td.sun, #tbl td.mon, #tbl td.tue, #tbl td.wed, #tbl td.thu, #tbl td.fri, #tbl td.sat {
+	font-size: 12px; background-color: #E0F0F7; 
 }
+
+#tbl td.sun:before { content: "อาทิตย์ "; }
+#tbl td.mon:before { content: "จันทร์ "; }
+#tbl td.tue:before { content: "อังคาร "; }
+#tbl td.wed:before { content: "พุธ "; }
+#tbl td.thu:before { content: "พฤหัส "; }
+#tbl td.fri:before { content: "ศุกร์ "; }
+#tbl td.sat:before { content: "เสาร์ "; }
 
 #titlebar {
 	line-height: 30px;
@@ -105,16 +108,17 @@ td.sun, td.mon, td.tue, td.wed, td.thu, td.fri, td.sat {
 
 .ui-icon:hover {
 	cursor: pointer;
+	border: black dotted
 }
 
-#queuetbl, #tblday {
+#queuetbl, #tblday, #historytable {
 	border-right: solid 1px slategray;
 	width: auto;
 	table-layout: fixed;	/*make cell width = first row specified*/
 	border-collapse: collapse;
 }
 
-#queuetbl th, #tblday th {
+#queuetbl th, #tblday th, #historytable th {
 	font-size: 12px;
 	font-weight: bold;
 	height: 20px;
@@ -125,7 +129,7 @@ td.sun, td.mon, td.tue, td.wed, td.thu, td.fri, td.sat {
 	border-bottom: solid 1px silver;
 }
 
-#queuetbl td, #tblday td {
+#queuetbl td, #tblday td, #historytable td {
 	empty-cells:show;
 	font-size: 12px;
 	background-color: #F0F0F0;
@@ -149,7 +153,6 @@ td.sun, td.mon, td.tue, td.wed, td.thu, td.fri, td.sat {
 	overflow: hidden;
 	border: solid 1px #0099FF;
 	background-color: white; 
-	z-index: 1000;
 	box-shadow: 5px 5px 10px slategray;
 }
 
@@ -174,36 +177,4 @@ td.sun, td.mon, td.tue, td.wed, td.thu, td.fri, td.sat {
 .dialog {
 	position: fixed;
 	box-shadow: 10px 20px 30px slategray;
-}
-
-.historytable  {
-	display: none;
-	table-layout: fixed;
-	overflow: scroll;
-	border-collapse: collapse;
-	border-right: solid 1px slategray;
-}
-
-.historytable th {
-	font-size: 16px;
-	font-weight: bold;
-	color: white;
-	background-color: #AABBCC;
-	text-align: center;
-	border-left: solid 1px silver;
-	border-top: solid 1px silver;
-	border-bottom: solid 1px silver;
-	height: 30px;
-}
-
-.historytable td {
-	empty-cells:show;
-	font-size: 14px;
-	color: black;
-	background-color: #eeeeee;
-	text-align: left;
-	vertical-align: text-top;
-	border-color: #000000; 
-	border-left: solid 1px silver;
-	border-bottom: solid 1px silver;
 }

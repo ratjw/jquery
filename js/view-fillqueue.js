@@ -198,11 +198,12 @@ function fillday(day)
 			filldata(BOOK[q], rowi)
 		}
 	}
-	$("#tbldaycontainer").dialog({
+	$("#dialogContainer").html($("#tbldaycontainer").html())
+	$("#dialogContainer").dialog({
 		title: day,
 		height: window.innerHeight * 50 / 100,
-		width: window.innerWidth * 70 / 100
+		width: window.innerWidth * 70 / 100,
 	})
 	$(".ui-dialog").show()
- 	DragDropday(event)
+// 	DragDropday(event)
 }

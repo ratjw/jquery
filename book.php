@@ -121,26 +121,28 @@
 </div>
 
 <ul id="menu" style="display:none">
-  <li><div id="item1"></div></li>
-  <li><div id="item2"></div></li>
-  <li><div id="item3"></div></li>
   <li><div>คิวของอาจารย์</div>
-	<ul id="item40" style="width:120px">
+	<ul id="item0" style="width:120px">
 	</ul>
   </li>
   <li><div>คิวเฉพาะวัน</div>
     <ul>
-	  <li><div id="item5">อาทิตย์</div></li>
-	  <li><div id="item5">จันทร์</div></li>
-	  <li><div id="item5">อังคาร</div></li>
-	  <li><div id="item5">พุธ</div></li>
-	  <li><div id="item5">พฤหัส</div></li>
-	  <li><div id="item5">ศุกร์</div></li>
-	  <li><div id="item5">เสาร์</div></li>
+	  <li><div id="item2">อาทิตย์</div></li>
+	  <li><div id="item2">จันทร์</div></li>
+	  <li><div id="item2">อังคาร</div></li>
+	  <li><div id="item2">พุธ</div></li>
+	  <li><div id="item2">พฤหัส</div></li>
+	  <li><div id="item2">ศุกร์</div></li>
+	  <li><div id="item2">เสาร์</div></li>
     </ul>
   </li>
+  <li><div id="item3"></div></li>
+  <li><div id="item4"></div></li>
+  <li><div id="item5"></div></li>
   <li><div id="item6"></div></li>
   <li><div id="item7"></div></li>
+  <li><div id="item8"></div></li>
+  <li><div id="item9"></div></li>
 </ul>
 
 <ul id="queuemenu" style="display:none">
@@ -152,7 +154,7 @@
 
 <div id="alert" ></div>
 
-<div id="container"></div>
+<div id="dialogContainer"></div>
 
 <div id="editcell" contenteditable="true"></div>
 

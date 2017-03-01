@@ -3,7 +3,9 @@ function fillupstart()
 {	//Display all cases in each day of 5 weeks
 	if (BOOK.length == 0)
 		BOOK.push({"opdate" : getSunday()})
-	fillall()
+	setTopDate(getSunday())
+	setRequire(7)
+	fillnew()
 	$("#tblcontainer").scrollTop(3)
 	DragDrop()
 }
@@ -14,69 +16,119 @@ function filluprefill()
 	//Start at the same begindate and same scrollTop
 	var topscroll = $("#tblcontainer").scrollTop()
 
-	fillall()
+	setRequire(null)
+	fillnew()
 	$("#tblcontainer").scrollTop(topscroll)
 	DragDrop()
 }
 
-function fillall()
+function fillupscroll(direction)
 {
-	var i, k, q
-	var rowi = {}
-	var date = ""
-	var madedate
+	fillext(direction)
+	DragDrop()
+}
 
-	date = BOOK[0].opdate
-	
-	//delete previous queuetbl lest it accumulates
-	$('#tbl tr').slice(1).remove()
+function fillext(di)
+{
+	var begindate
+	var	i
+	var table = document.getElementById("tbl")
 
-	//i for rows in table
-	i=0
-
-	//q for rows in BOOK
-	for (q=0; q < BOOK.length; q++)
-	{	
-		while (date < BOOK[q].opdate)
-		{	//step over each day that is not in QBOOK
-			if (date != madedate)
-			{
-				//make a blank row for matched opday which is not already in the table
-				i++
-				rowi = makenextrow(i, date, 'tbl')
-				
-				madedate = date
-			}
-			date = date.nextdays(1)
-			//make table head row before every Sunday
-			if ((new Date(date).getDay())%7 == 0)
-			{
-				$('#tbl tbody').append($('#tbl tr:first').clone())
- 				i++
-			}
-		}
-		i++
-		rowi = makenextrow(i, date, 'tbl')
-		filldata(BOOK[q], rowi)
-		madedate = date
-	}
-	//fill until 1 year from now
-	until = (new Date(new Date().getFullYear() + 1, new Date().getMonth(), new Date().getDate())).MysqlDate()
-	while (date < until)
+	if (di == -1)
 	{
-		//make a blank row
-		i++
-		rowi = makenextrow(i, date, 'tbl')
-		
-		date = date.nextdays(1)
-		//make table head row before every Sunday
-		if (((new Date(date)).getDay())%7 == 0)
-		{
-			$('#tbl tbody').append($('#tbl tr:first').clone())
-			i++
-		}
+		begindate = getTopDate()
+		if ((BOOK[0]) &&
+			(begindate < BOOK[0].opdate) && 
+			(begindate <= getSunday()))
+			return		//being in the beginning of BOOK
+		begindate = begindate.nextdays(di*7)
+		setTopDate(begindate)
+
+		$('#tbl tbody').prepend($('#tbl tr:first').clone())
+		fill(0)
+
+		//scroll to the old "tr:has(th)"
+		$("#tblcontainer").scrollTop($("#tbl tr:has(th)").eq(1).offset().top)
+	}
+	else if (di == +1)
+	{
+		$('#tbl tbody').append($('#tbl tr:first').clone())
+		fill(table.rows.length-1)
 	}
 }
+
+(function ()
+{
+	//making static variables
+	var tableTopDate
+	var numweeks	//number of weeks in "tbl" made by fill function
+	var Require		//number of weeks in "tbl" required by caller
+
+	setRequire = function (number)
+	{
+		if (number)
+			Require = number
+		else
+			Require = numweeks
+	}
+
+	getTopDate = function ()
+	{
+		return tableTopDate
+	}
+
+	setTopDate = function (TopDate)
+	{
+		tableTopDate = TopDate
+	}
+
+	fillnew = function ()
+	{
+		$('#tbl tr').slice(1).remove()
+		numweeks = 0
+		fill(0)
+		while (numweeks < Require)
+		{
+			$('#tbl tbody').append($('#tbl tr:first').clone())
+			fill($('#tbl tr').length-1)
+		}
+	}
+
+	fill = function (at)	//at = where to fill : 0=top, >0=bottom
+	{
+		var i, q, rowi, rundate, lastday, madedate;
+
+		begindate = at? tableTopDate.nextdays(numweeks*7) : tableTopDate
+		numweeks++
+		
+		//Find OPDATE of FIRSTROW from the start of BOOK
+		q = 0
+		while (BOOK[q] && (BOOK[q].opdate < begindate))
+			q++
+
+		rundate = begindate
+		lastday = rundate.nextdays(7);		//Display 7 days
+		i = at
+		while (rundate < lastday)
+		{
+			while (q < BOOK.length && rundate == BOOK[q].opdate)
+			{
+				i++
+				rowi = makenextrow(i, rundate, 'tbl')
+				madedate = rundate
+				filldata(BOOK[q], rowi)
+				q++
+			}
+			if (rundate != madedate)
+			{
+				i++
+				rowi = makenextrow(i, rundate, 'tbl')
+				madedate = rundate
+			}
+			rundate = rundate.nextdays(1)
+		}
+	}
+})()
 
 function makenextrow(i, date, tableID)
 {	// i = the row to be made
