@@ -69,11 +69,7 @@ function fillSetTable(rownum, pointing)
 			{
 				case "item1":
 					staffqueue(ui.item.text())
-					$("#wrapper").append($("#queuecontainer"))
-					$("#queuecontainer").show()
-					$("#tblcontainer").css("width", "60%")
-					$("#queuecontainer").css("width", "40%")
-					initResize("#tblcontainer")
+					TwoWindows()
 					break
 				case "item2":
 					fillday(ui.item.text())
@@ -164,4 +160,19 @@ function checkblank(opdate, qn)
 		return true	//Yes, there is none
 	else
 		return false
+}
+
+function TwoWindows()
+{
+	$("html, body").css( {
+		height: "100%",
+		overflow: "hidden",
+		margin: "0"
+	})
+	$("#wrapper").append($("#tblcontainer"))
+	$("#wrapper").append($("#queuecontainer"))
+	$("#queuecontainer").show()
+	$("#tblcontainer").css("width", "60%")
+	$("#queuecontainer").css("width", "40%")
+	initResize("#tblcontainer")
 }

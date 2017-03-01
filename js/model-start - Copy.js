@@ -4,6 +4,12 @@ function loadtable(userid)
 
 	THISUSER = userid
 	$("#login").remove()
+//	$("html, body").css( {
+//		height: "100%",
+//		overflow: "hidden",
+//		margin: "0"
+//	})
+//	$("#wrapper").append($("#tblcontainer"))
 	$("#tblcontainer").show()
 
 	$(document).click( function (event) {

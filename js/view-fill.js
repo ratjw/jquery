@@ -4,7 +4,11 @@ function fillupstart()
 	if (BOOK.length == 0)
 		BOOK.push({"opdate" : getSunday()})
 	fillall()
-	$("#tblcontainer").scrollTop(3)
+
+	//scroll to today
+	var today = new Date().MysqlDate().thDate()
+	var thishead = $("tr:contains(" + today + ")").eq(0).prevAll("tr:has(th)").first()
+	$("#tblcontainer").scrollTop(thishead.offset().top)
 	DragDrop()
 }
 
@@ -62,6 +66,7 @@ function fillall()
 	}
 	//fill until 1 year from now
 	until = (new Date(new Date().getFullYear() + 1, new Date().getMonth(), new Date().getDate())).MysqlDate()
+	date = date.nextdays(1)
 	while (date < until)
 	{
 		//make a blank row

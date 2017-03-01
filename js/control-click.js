@@ -117,8 +117,8 @@ function saveContent(column, content)	//column name in MYSQL
 	var sqlstring
 	var qsince
 
-	if (rowcell.eq(QSINCE).html())
-		qsince = rowcell.eq(QSINCE).html().numDate()
+	if (qn)
+		qsince = findQsince(qn)
 	else
 		qsince = new Date().MysqlDate()
 
@@ -150,7 +150,6 @@ function saveContent(column, content)	//column name in MYSQL
 		else
 		{
 			updateBOOK(response);
-			$("#editcell").data("located").html(content)
 			fillselect("tbl", opdate)
 			$("#editcell").data("content", "")
 		}
@@ -165,8 +164,8 @@ function saveHNinput(hn, content)
 	var qn = rowcell.eq(QN).html()
 	var qsince
 
-	if (rowcell.eq(QSINCE).html())
-		qsince = rowcell.eq(QSINCE).html().numDate()
+	if (qn)
+		qsince = findQsince(qn)
 	else
 		qsince = new Date().MysqlDate()
 
