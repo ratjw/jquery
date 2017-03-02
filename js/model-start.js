@@ -5,6 +5,8 @@ function loadtable(userid)
 	THISUSER = userid
 	$("#login").remove()
 	$("#tblcontainer").show()
+	$("#wrapper").append($("#tblcontainer"))
+	$("#wrapper").append($("#queuecontainer"))
 
 	$(document).click( function (event) {
 		countReset();
@@ -28,22 +30,7 @@ function loadtable(userid)
 		countReset();
 		return false
 	})
-//	$("#tblcontainer").scroll( function (event) {
-//		countReset();
-//		if(typeof timeout == "number") {
-//			window.clearTimeout(timeout);
-//			delete timeout;
-//		}
-//		timeout = window.setTimeout( scrollUpDown, 50);
-//	})
-//	$(document).scroll( function (event) {
-//		countReset();
-//		if(typeof timeout == "number") {
-//			window.clearTimeout(timeout);
-//			delete timeout;
-//		}
-//		timeout = window.setTimeout( scrollUpDown, 150);
-//	})
+
 	TIMER = setTimeout("updating()",10000)		//poke next 10 sec.
 }
 
@@ -127,6 +114,43 @@ function editcell(pointing)
 		display: "block"
 	})
 	$("#editcell").focus()
+}
+
+function SplitPane()
+{
+	$("html, body").css( {
+		height: "100%",
+		overflow: "hidden",
+		margin: "0"
+	})
+	$("#queuecontainer").show()
+	$("#tblcontainer").css("width", "60%")
+	$("#queuecontainer").css("width", "40%")
+	initResize("#tblcontainer")
+}
+
+function closequeue()
+{
+	var topscroll = $(document).scrollTop()
+
+	$("html, body").css( {
+		height: "auto",
+		overflow: "visible",
+		margin: "0"
+	})
+//	$("#queuecontainer").hide()
+	$("#tblcontainer").css("width", "100%")
+	$("#queuecontainer").css("width", "0%")
+/*
+    $("#scrollContent").animate({scrollTop: scrollheight+375},500,function() {  
+        $("#tbl tr:has(th)").each(function() {
+            if ($(this).offset().top > topscroll) {
+                var first = $(this)
+            }
+        });
+    });
+*/
+	$(document).scrollTop(topscroll)
 }
 
 function initResize(id)

@@ -7,8 +7,8 @@ function fillupstart()
 
 	//scroll to today
 	var today = new Date().MysqlDate().thDate()
-	var thishead = $("tr:contains(" + today + ")").eq(0).prevAll("tr:has(th)").first()
-	$("#tblcontainer").scrollTop(thishead.offset().top)
+	var thishead = $("tr:contains(" + today + ")").eq(0).prevAll(":has(th)").first()
+	$(document).scrollTop(thishead.offset().top)
 	DragDrop()
 }
 
@@ -65,7 +65,11 @@ function fillall()
 		madedate = date
 	}
 	//fill until 1 year from now
-	until = (new Date(new Date().getFullYear() + 1, new Date().getMonth(), new Date().getDate())).MysqlDate()
+	var nextyear = new Date().getFullYear() + 1
+	var month = new Date().getMonth()
+	var todate = new Date().getDate()
+	
+	until = (new Date(nextyear, month, todate)).MysqlDate()
 	date = date.nextdays(1)
 	while (date < until)
 	{

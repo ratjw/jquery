@@ -184,17 +184,14 @@ function saveHNinput(hn, content)
 	sqlstring += "&qn="+ qn
 	sqlstring += "&username="+ THISUSER
 
-
 	Ajax(GETNAMEHN, sqlstring, callbackgetByHN)
 
 	function callbackgetByHN(response)
 	{
-		if (!response || response.indexOf("patient") == -1)	//no patient
-			alert("Error getnamehn : "+ response)
-		else if (response.indexOf("DBfailed") != -1)
-			alert("Failed! book($mysqli)" + response)
-		else if (response.indexOf("{") != -1)
-		{	//Only one patient
+		if ((!response) || (response.indexOf("patient") == -1) || (response.indexOf("{") == -1))
+			alert(response)
+		else 
+		{
 			updateBOOK(response)
 			$("#editcell").data("located").html(content)
 			fillselect("tbl", opdate)

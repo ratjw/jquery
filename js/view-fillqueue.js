@@ -32,15 +32,8 @@ function staffqueue(staffname)
 	DragDropStaff()
 }
 
-function closequeue()
-{
-	$("#queuecontainer").hide()
-	$("#queuecontainer").css("width", "0%")
-	$("#tblcontainer").css("width", "100%")
-}
-
 function makenextrowQueue(table, i)
-{	// i = the row to be made
+{	// i = the rownum to be made
 	var cols = table.rows[0].cells.length
 	var rowi
 
@@ -50,7 +43,7 @@ function makenextrowQueue(table, i)
 	return rowi
 }
 
-function fillselectQueue(row, rowcell, waitnum, qn)	//seek the QWAIT row
+function fillselectQueue(rownum, rowcell, waitnum, qn)	//seek the QWAIT row
 {
 	var q = 0
 	if (waitnum)	//come from old queuetbl row
@@ -60,12 +53,12 @@ function fillselectQueue(row, rowcell, waitnum, qn)	//seek the QWAIT row
 		while ((q < QWAIT.length) && (QWAIT[q].qn != qn))
 			q++	
 
-	filldataQueue(QWAIT[q], row, rowcell)
+	filldataQueue(QWAIT[q], rownum, rowcell)
 }
 
-function filldataQueue(bookq, row, rowcell)		
+function filldataQueue(bookq, rownum, rowcell)		
 {
-	rowcell.eq(QNUM).html(row)
+	rowcell.eq(QNUM).html(rownum)
 	rowcell.eq(QSINCE).html(bookq.qsince? bookq.qsince.thDate() : "")
 	rowcell.eq(QHN).html(bookq.hn)
 	rowcell.eq(QNAME).html(bookq.patient)
@@ -84,12 +77,12 @@ function fillSetTableQueue(pointing)
 	var disabled = "ui-state-disabled"
 
 	casename = casename.substring(0, casename.indexOf(' '))
-	var lastqqn = $("#queuetbl tr:last td:last").html()
+	var lastqqn = $("#queuetbl tr:last td").eq(QQN).html()
 
 	$("#qitem1").html("เพิ่ม case")
-	if (lastqqn)
+	if (lastqqn)		//no blank
 		$("#qitem1").removeClass(disabled)
-	else
+	else				//blank last row
 		$("#qitem1").addClass(disabled)
 	$("#qitem2").html("ลบ case " + casename)
 	if (thisqqn)
@@ -119,13 +112,14 @@ function fillSetTableQueue(pointing)
 	showup(pointing, "#queuemenu")
 }
 
-function addnewrowQ()
+function addnewrowQ(num)
 {
 	var queuetbl = document.getElementById("queuetbl")
 	var toscroll
 
 	rownum = $("#queuetbl tr").length	//always append to table end
 	rowi = makenextrowQueue(queuetbl, rownum)
+	rowi.cells[QNUM].innerHTML = rownum
 	rowi.cells[QSINCE].innerHTML = new Date().MysqlDate().thDate()
 	toscroll = $("#queuetbl").height() - $("#queuecontainer").height() + $(rowi).height()
 	$("#queuecontainer").scrollTop(toscroll)
@@ -205,5 +199,4 @@ function fillday(day)
 		width: window.innerWidth * 70 / 100,
 	})
 	$(".ui-dialog").show()
-// 	DragDropday(event)
 }

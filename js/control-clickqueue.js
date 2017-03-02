@@ -101,7 +101,9 @@ function savePreviouscellQueue()
 
 function saveContentQueue(column, content)
 {
-	var rowcell = $("#editcell").data("located").closest("tr").children("td")
+	var row = $("#editcell").data("located").closest("tr")
+	var rownum = row.index()
+	var rowcell = row.children("td")
 	var opdate = rowcell.eq(QSINCE).html().numDate()
 	var qn = rowcell.eq(QQN).html()
 	var staffname = $( "#titlename" ).html()
@@ -140,7 +142,7 @@ function saveContentQueue(column, content)
 		{
 			updateBOOK(response);
 			$("#editcell").data("located").html(content)
-			fillselectQueue(row, rowcell, waitnum, qn)
+			fillselectQueue(rownum, rowcell, waitnum, qn)
 			$("#editcell").data("content", "")
 		}
 	}
@@ -240,7 +242,7 @@ function saveHNinputQueue(hn, content)
 	sqlstring = "hn=" + content
 	sqlstring += "&waitnum="+ waitnum
 	sqlstring += "&qsince="+ qsince
-	sqlstring += "&opdate='0000-00-00'"
+	sqlstring += "&opdate=0000-00-00"
 	sqlstring += "&staffname="+ staffname
 	sqlstring += "&qn="+ qn
 	sqlstring += "&username="+ THISUSER
