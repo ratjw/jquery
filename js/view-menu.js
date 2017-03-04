@@ -46,14 +46,18 @@ function fillSetTable(rownum, pointing)
 
 	$("#item7").html("รายชื่อที่ถูกลบ")
 
-	$("#item8").html("Move")
+	if ($('#moverow'))
+	{
+		$("#item8").html("วาง")
+	} else {
+		$("#item8").html("To Move")
+		if (qn)
+			$("#item8").removeClass(disabled)
+		else
+			$("#item8").addClass(disabled)
+	}
+	$("#item9").html("Equipment")
 	if (qn)
-		$("#item8").removeClass(disabled)
-	else
-		$("#item8").addClass(disabled)
-
-	$("#item9").html("วาง")
-	if ($('#moverow').css('display') == 'block')
 		$("#item9").removeClass(disabled)
 	else
 		$("#item9").addClass(disabled)
@@ -93,7 +97,7 @@ function fillSetTable(rownum, pointing)
 					moveRow(rowmain, qn)
 					break
 				case "item9":
-					pasteRow(rowmain, qn)
+					fillEquipTable(rownum, qn)
 					break
 			}
 
@@ -102,7 +106,7 @@ function fillSetTable(rownum, pointing)
 		}
 	});
 
-	showup(pointing, '#menu')
+	showup(pointing, '#menu', '#tblcontainer')
 }
 
 function stafflist(pointing)
@@ -121,17 +125,17 @@ function stafflist(pointing)
 		}
 	});
 
-	showup(pointing, '#stafflist')
+	showup(pointing, '#stafflist', "#tblcontainer")
 }
 
-function showup(pointing, menuID)
+function showup(pointing, menuID, container)
 {
 	var pos = $(pointing).position();
 	var height = pos.top + $(pointing).outerHeight();
 	var width = pos.left + $(pointing).outerWidth();
 
 	if ((height + $(menuID).outerHeight()) > 
-		$('#tblcontainer').innerHeight() + $('#tblcontainer').scrollTop())
+		$(container).innerHeight() + $(container).scrollTop())
 	{
 		height = pos.top - $(menuID).innerHeight()
 	}

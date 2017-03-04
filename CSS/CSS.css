@@ -9,8 +9,7 @@
 	float: left;
 	height: 100%;
 	width: 100%;
-	overflow-x: hidden;
-	overflow-y: auto;
+	overflow: auto;
 	box-sizing: border-box;
 	border-top: solid 2px silver;
 	border-left: solid 2px silver;
@@ -19,8 +18,7 @@
 #queuecontainer {
 	float: right;
 	height: 100%;
-	overflow-x: hidden;
-	overflow-y: auto;
+	overflow: auto;
 	box-sizing: border-box;
 	border-top: solid 2px silver;
 	border-right: solid 2px silver;
@@ -177,4 +175,23 @@
 .dialog {
 	position: fixed;
 	box-shadow: 10px 20px 30px slategray;
+}
+
+.paper {
+	position: fixed;
+	display:none;
+	z-index: 1;
+	color: black;
+	background-color: white;
+	border: 2px solid slategray;
+	padding-top: 30px;
+	padding-right: 30px;
+	padding-bottom: 30px;
+	padding-left: 50px;
+	overflow-x: hidden;
+	overflow-y: hidden;
+}
+
+span {
+	display:inline-block; 
 }

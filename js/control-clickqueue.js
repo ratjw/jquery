@@ -46,14 +46,12 @@ function editingqueue(event)
 	}
 	else if (keycode == 27)
 	{
-		if ($("#editcell").data("located").index() == QSINCE)
-		{
+		var editTD = $("#editcell").data("located")
+		if (editTD.index() == QNUM)
 			$(".ui-menu").hide()
-		}
 		else
-		{
-			$("#editcell").data("located").html($("#editcell").data("content"))
-		}
+			editTD.html($("#editcell").data("content"))
+
 		$("#editcell").hide()
 		window.focus()
 		event.preventDefault()
@@ -104,7 +102,7 @@ function saveContentQueue(column, content)
 	var row = $("#editcell").data("located").closest("tr")
 	var rownum = row.index()
 	var rowcell = row.children("td")
-	var opdate = rowcell.eq(QSINCE).html().numDate()
+	var qsince = rowcell.eq(QSINCE).html().numDate()
 	var qn = rowcell.eq(QQN).html()
 	var staffname = $( "#titlename" ).html()
 	var sqlstring
@@ -173,15 +171,6 @@ function findwaitnumQ(qn)
 		q++
 
 	return QWAIT[q].waitnum
-}
-
-function findQsinceQ(qn)	
-{
-	var q = 0
-	while ((q < QWAIT.length) && (QWAIT[q].qn != qn))
-		q++
-
-	return QWAIT[q].qsince
 }
 
 function findMAXwaitnum(staffname)	//latest queue of a particular staff

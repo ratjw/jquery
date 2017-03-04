@@ -113,15 +113,15 @@ function DragDropStaff()
 				return
 			var thatqn = $(ui.draggable).children("td").eq(QN).html()
 			var waitnum = findwaitnum(thatqn)
-			if (!(waitnum > 0))
+			if (!(waitnum > 0.00))
 				waitnum = findMAXwaitnum(staffname) + 1
 			var qsince = findQsince(thatqn)
-			if (!qsince)
-				qsince = $("#queuetbl tr:last td").eq(QSINCE).html().numDate()
+//			if (!qsince)
+//				qsince = $("#queuetbl tr:last td").eq(QSINCE).html().numDate()
 
 			var sql = "sqlReturnbook=UPDATE book SET waitnum = "+ waitnum
-			sql += ", qsince='"+ qsince
-			sql += "', opdate=0000-00-00"
+//			sql += ", qsince='"+ qsince
+			sql += ", opdate=0000-00-00"
 			sql += ", editor='"+ THISUSER
 			sql += "' WHERE qn="+ thatqn +";"
 

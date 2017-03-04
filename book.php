@@ -17,6 +17,7 @@
 <script src="js/control-clickqueue.js"></script>
 <script src="js/control-function.js"></script>
 <script src="js/model-constant.js"></script>
+<script src="js/model-equip.js"></script>
 <script src="js/model-start.js"></script>
 <script src="js/view-fill.js"></script>
 <script src="js/view-fillqueue.js"></script>
@@ -141,7 +142,7 @@
   <li><div id="item5"></div></li>
   <li><div id="item6"></div></li>
   <li><div id="item7"></div></li>
-  <li><div id="item8"></div></li>
+  <!--li><div id="item8"></div></li-->
   <li><div id="item9"></div></li>
 </ul>
 
@@ -157,6 +158,8 @@
 <div id="dialogContainer"></div>
 
 <div id="editcell" contenteditable="true"></div>
+
+<div id="paperdiv" class="paper"></div>
 
 <DIV id="login">
 	<h3>Queue book for Neurosurgery</h3>

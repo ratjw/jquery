@@ -16,7 +16,7 @@ function loadtable(userid)
 			clicktable(clickedCell)
 		else if ($(clickedCell).closest("table").attr("id") == "queuetbl")
 			Qclicktable(clickedCell)
-		return false
+//		return false
 	})
 	$(document).keydown( function (event) {
 		countReset();
@@ -83,8 +83,8 @@ function updating()
 
 	function updatingback(response)	//only changed database by checkupdate&time
 	{
-		if (response && response.indexOf("opdate") != -1)	//there is new entry after TIMESTAMP
-		{
+		if (response && response.indexOf("opdate") != -1)
+		{								//there is new entry after TIMESTAMP
 			updateBOOK(response);
 			filluprefill()
 		}
@@ -118,6 +118,19 @@ function editcell(pointing)
 
 function SplitPane()
 {
+	var topscroll = $(this).scrollTop()
+
+	var visibleTH = $('#tbl tr:has(th)')
+	for (var i = 0; i < visibleTH.length; i++)
+		if (visibleTH.eq(i).offset().top > topscroll)
+			break
+/*
+
+	var visibleTH = $('#tbl tr:has(th)')
+	$.each(visibleTH, function(i, thead) {
+		return (thead.offset().top < topscroll)
+	})
+*/
 	$("html, body").css( {
 		height: "100%",
 		overflow: "hidden",
@@ -127,30 +140,37 @@ function SplitPane()
 	$("#tblcontainer").css("width", "60%")
 	$("#queuecontainer").css("width", "40%")
 	initResize("#tblcontainer")
+	$('.ui-resizable-e').css('height', $("#tbl").css("height"))
+
+	$('#tblcontainer').animate({
+		scrollTop: visibleTH.eq(i).offset().top
+	}, 1000);
+	DragDrop()
 }
 
 function closequeue()
 {
-	var topscroll = $(document).scrollTop()
+	var topscroll = $(this).scrollTop()
 
+	var visibleTH = $('#tbl tr:has(th)')
+	for (var i = 0; i < visibleTH.length; i++)
+		if (visibleTH.eq(i).offset().top >= topscroll)
+			break
+	
 	$("html, body").css( {
-		height: "auto",
-		overflow: "visible",
-		margin: "0"
+		height: "",
+		overflow: "",
+		margin: ""
 	})
-//	$("#queuecontainer").hide()
 	$("#tblcontainer").css("width", "100%")
 	$("#queuecontainer").css("width", "0%")
-/*
-    $("#scrollContent").animate({scrollTop: scrollheight+375},500,function() {  
-        $("#tbl tr:has(th)").each(function() {
-            if ($(this).offset().top > topscroll) {
-                var first = $(this)
-            }
-        });
-    });
-*/
-	$(document).scrollTop(topscroll)
+	$("#queuecontainer").hide()
+	$("#tblcontainer").resizable('destroy');
+
+	$('html body').animate({
+		scrollTop: visibleTH.eq(i).offset().top
+	}, 1000);
+	DragDrop()
 }
 
 function initResize(id)

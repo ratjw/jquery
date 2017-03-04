@@ -8,7 +8,9 @@ function fillupstart()
 	//scroll to today
 	var today = new Date().MysqlDate().thDate()
 	var thishead = $("tr:contains(" + today + ")").eq(0).prevAll(":has(th)").first()
-	$(document).scrollTop(thishead.offset().top)
+	$('html, body').animate({
+		scrollTop: thishead.offset().top
+	}, 500);
 	DragDrop()
 }
 
@@ -16,10 +18,10 @@ function filluprefill()
 { 	//from refillall which is called from :
 	//updatingback, callbackmove
 	//Start at the same begindate and same scrollTop
-	var topscroll = $("#tblcontainer").scrollTop()
+//	var topscroll = $("#tblcontainer").scrollTop()
 
 	fillall()
-	$("#tblcontainer").scrollTop(topscroll)
+//	$("#tblcontainer").scrollTop(topscroll)
 	DragDrop()
 }
 
