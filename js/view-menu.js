@@ -131,19 +131,19 @@ function stafflist(pointing)
 function showup(pointing, menuID, container)
 {
 	var pos = $(pointing).position();
-	var height = pos.top + $(pointing).outerHeight();
-	var width = pos.left + $(pointing).outerWidth();
+	var height = pos.top + $(pointing).outerHeight();	//bottom
+	var width = pos.left + $(pointing).outerWidth();	//right
 
 	if ((height + $(menuID).outerHeight()) > 
-		$(container).innerHeight() + $(container).scrollTop())
+		$(window).innerHeight() + $(window).scrollTop())
 	{
 		height = pos.top - $(menuID).innerHeight()
 	}
 	$(menuID).css({
-		position: "absolute",
+//		position: "absolute",
 		top: height + "px",
 		left: width + "px",
-		boxShadow: "10px 20px 30px slategray"
+//		boxShadow: "10px 20px 30px slategray"
 	})
 	$(menuID).show()
 }

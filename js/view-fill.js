@@ -25,6 +25,24 @@ function filluprefill()
 	DragDrop()
 }
 
+function fillselect(tableID, opdate)		
+{
+	var table = document.getElementById(tableID)
+
+	var q = 0
+	while (q < BOOK.length && (BOOK[q].opdate < opdate))
+		q++	//seek opdate in BOOK
+	var i = 0
+	while (opdate != table.rows[i].cells[OPDATE].innerHTML.numDate())
+		i++	//seek opdate in main table
+	while ((q < BOOK.length) && (opdate == BOOK[q].opdate))
+	{	//refill only that opdate cases
+		filldata(BOOK[q], table.rows[i])
+		q++
+		i++
+	}
+}
+
 function fillall()
 {
 	var i, k, q

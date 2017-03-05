@@ -12,8 +12,7 @@ function fillEquipTable(rownum, qn)
 	var treatment = rowmain.cells[TREATMENT].innerHTML
 	var equipOR = document.getElementById("paperdiv")
 
-	var txt = "<div id='oequip' style='display:none'></div>";	//hidden copy of equip to be compared with new ones
-	txt += "<div id='equip'>";
+	var txt = "<div id='equip'>";
 	txt += "<span style='width:250px;'></span>วันที่ผ่าตัด ";
 	txt += "<span style='width:120px; font-size: 14px; font-weight: bold;'); >"+ opdate +"</span>";
 	txt += "<span style='width:20px;'></span>Surgeon "+ staffname;
@@ -139,11 +138,23 @@ function fillEquipTable(rownum, qn)
 	txt += "</div>";
 
 	equipOR.innerHTML = txt;
-	equipOR.style.display = "block";
+	equipOR.style.display = "block"
 	equipOR.style.top = "0px"
 	equipOR.style.left = rowmain.cells[OPDATE].offsetWidth +"px"	//show first column
 	equipOR.style.overflowY = "auto"
 	equipOR.style.fontSize = "12px"
+	if (equipOR.offsetHeight > window.innerHeight)
+		equipOR.style.height = window.innerHeight - 60 +"px"
+/*
+	$("#dialogContainer").html("")
+	$("#dialogContainer").append(equipOR)
+	$("#dialogContainer").dialog({
+		title: "Equipment",
+		height: window.innerHeight * 90 / 100,
+		width: window.innerWidth * 50 / 100,
+	})
+	$(".ui-dialog").show()
+*/
 
 	var q = 0
 
@@ -152,7 +163,7 @@ function fillEquipTable(rownum, qn)
 
 	if ( BOOK[q].equipment )
 	{								//fill checked equip if any
-		$.each($.parseJSON(BOOK[q].equipment), function(key, val){
+		$.each(JSON.parse(BOOK[q].equipment), function(key, val){
 			if (val == 'checked')
 				$("#"+ key).prop("checked", true)
 			else
@@ -165,25 +176,25 @@ function fillEquipTable(rownum, qn)
 function saveequip(qn) 
 {
 	Checklistequip(qn)
-	$("paperdiv").hide()
+	$("#paperdiv").hide()
 }
 
 function cancelset()
 {
-	$("paperdiv").hide()
+	$("#paperdiv").hide()
 }
 
 function Checklistequip(qn) 
 {
-	var equipment = "{ "
+	var equipment = {}
 	$( "input:checked" ).each( function() {
-		equipment += '"'+ this.id +'":"checked",'
+		equipment[this.id] = "checked"
 	})
 	$('input[type=text]').each(function() {
 		if (this.value)
-			equipment += '"'+ this.id +'":"'+ this.value +'",'
+			equipment[this.id] = this.value
 	})
-	equipment = equipment.replace(/\,$/, ' }')	//replace last comma
+	equipment = JSON.stringify(equipment)
 
 	var sql = "UPDATE book SET ";
 	sql += "equipment='"+ equipment +"' ,";
@@ -207,24 +218,76 @@ function Checklistequip(qn)
 
 function printpaper(qn)	//*** have to set paperdiv padding to top:70px; bottom:70px
 {
+	if (/Edge/.test(navigator.userAgent)) {
+		var equip = document.getElementById('equip');
+		var win = window.open();
+		win.document.open();
+		win.document.write('<LINK type="text/css" rel="stylesheet" href="print.css">');
+		win.document.writeln(equip.outerHTML);
+
+		var newequip = equip.getElementsByTagName("INPUT");
+		var winequip = win.equip.getElementsByTagName("INPUT");
+		for (var i = 0; i < newequip.length; i++) 
+		{
+			winequip[i].checked = newequip[i].checked
+			winequip[i].value = newequip[i].value
+			if (!winequip[i].checked || !winequip[i].value)
+			{	//pale color for no input items
+				temp = winequip[i]
+				while (temp.nodeName != "SPAN")
+					temp = temp.parentNode
+				temp.className = "pale"
+			}
+		}
+
+		win.document.close();
+		win.focus();
+//.scrollTo(0,0)
+		win.print();
+		win.close();
+	}
+	else {
+		original = document.body.innerHTML;
+		var equip = document.getElementById('equip');
+		document.body.innerHTML = equip.outerHTML;
+
+		var newequip = original.equip.getElementsByTagName("INPUT");
+		var winequip = equip.getElementsByTagName("INPUT");
+		for (var i = 0; i < newequip.length; i++) 
+		{
+			winequip[i].checked = newequip[i].checked
+			winequip[i].value = newequip[i].value
+			if (!winequip[i].checked || !winequip[i].value)
+			{	//pale color for no input items
+				temp = winequip[i]
+				while (temp.nodeName != "SPAN")
+					temp = temp.parentNode
+				temp.className = "pale"
+			}
+		}
+
+		window.print();
+		document.body.innerHTML = original;
+		document.getElementById('equip').scrollIntoView(true);
+		location.reload();
+	}
+}
+/*
+{
 	var equip = document.getElementById("equip")
 	var win = window.open()
 	var newequip
 	var winequip
 	var i
-//	var setby = THISUSER
-//	var setdate = (new Date()).toString().replace(/GMT.*|UTC.*/, "")
 
-	Checklistequip(qn) 
+//	Checklistequip(qn) 
 	win.document.open();
 	win.document.write('<LINK type="text/css" rel="stylesheet" href="print.css">');
 	win.document.write(equip.outerHTML)
 	//clone cannot be used across window
 	//outerHTML comes with container of itself
 	//outerHTML comes without checked status
-//	win.document.getElementById("setby").innerHTML = setby
-//	win.document.getElementById("setdate").innerHTML = setdate
-	var temp = win.document.getElementById("equip")
+
 	newequip = equip.getElementsByTagName("INPUT");
 	winequip = win.equip.getElementsByTagName("INPUT");
 	for (i = 0; i < newequip.length; i++) 
@@ -244,3 +307,4 @@ function printpaper(qn)	//*** have to set paperdiv padding to top:70px; bottom:7
 	win.print();
 	win.close();
 }
+*/
