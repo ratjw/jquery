@@ -22,27 +22,27 @@ function fillSetTable(rownum, pointing)
 
 	$("#item3").html("เพิ่ม case วันที่ " + opdateth)
 	if (qn)
-		$("#item3").removeClass(disabled)
+		$("#item3").parent().removeClass(disabled)
 	else
-		$("#item3").addClass(disabled)
+		$("#item3").parent().addClass(disabled)
 
 	$("#item4").html("ลบ case " + casename)
 	if (qn)
-		$("#item4").removeClass(disabled)
+		$("#item4").parent().removeClass(disabled)
 	else
-		$("#item4").addClass(disabled)
+		$("#item4").parent().addClass(disabled)
 
 	$("#item5").html("Delete Blank Row")
 	if (checkblank(opdate, qn))
-		$("#item5").removeClass(disabled)
+		$("#item5").parent().removeClass(disabled)
 	else
-		$("#item5").addClass(disabled)
+		$("#item5").parent().addClass(disabled)
 
 	$("#item6").html("การแก้ไขของ " + casename)
 	if (qn)
-		$("#item6").removeClass(disabled)
+		$("#item6").parent().removeClass(disabled)
 	else
-		$("#item6").addClass(disabled)
+		$("#item6").parent().addClass(disabled)
 
 	$("#item7").html("รายชื่อที่ถูกลบ")
 
@@ -52,20 +52,18 @@ function fillSetTable(rownum, pointing)
 	} else {
 		$("#item8").html("To Move")
 		if (qn)
-			$("#item8").removeClass(disabled)
+			$("#item8").parent().removeClass(disabled)
 		else
-			$("#item8").addClass(disabled)
+			$("#item8").parent().addClass(disabled)
 	}
 	$("#item9").html("Equipment")
 	if (qn)
-		$("#item9").removeClass(disabled)
+		$("#item9").parent().removeClass(disabled)
 	else
-		$("#item9").addClass(disabled)
+		$("#item9").parent().addClass(disabled)
 
 	$("#menu").menu({
 		select: function( event, ui ) {
-			if ($(this).attr("class") == "disabled")
-				return
 
 			var item = $(ui.item).find("div").attr("id")
 

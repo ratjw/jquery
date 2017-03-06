@@ -21,6 +21,8 @@ function editing(event)
 
 	if (keycode == 9)
 	{
+		$(".ui-menu").hide()
+		$(".ui-dialog").hide()
 		savePreviouscell()
 		if (event.shiftKey)
 			thiscell = findPrevcell(event)
@@ -37,6 +39,8 @@ function editing(event)
 	}
 	else if (keycode == 13)
 	{
+		$(".ui-menu").hide()
+		$(".ui-dialog").hide()
 		if (event.shiftKey || event.ctrlKey) {
 			return
 		}
@@ -53,6 +57,8 @@ function editing(event)
 	}
 	else if (keycode == 27)
 	{
+		$(".ui-menu").hide()
+		$(".ui-dialog").hide()
 		if ($("#editcell").data("located").index() == OPDATE)
 		{
 			$(".ui-menu").hide()

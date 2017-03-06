@@ -1,10 +1,6 @@
 ﻿<?php
-
+include "connect.php";
 require_once "book.php";
-
-	$mysqli = new mysqli("localhost", "root", "zaq12wsx", "neurosurgery");
-	if ($mysqli->connect_errno)
-		exit("Connect failed: %s\n". $mysqli->connect_error);
 
 	if (isset($_GET['nosqlReturnbook']))
 	{

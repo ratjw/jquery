@@ -65,8 +65,16 @@ function savePreviouscellQueue()
 		return
 
 	var content = $("#editcell").html()
-	if ($("#editcell").data("located").index() == QHN)
-		content = content.replace(/<br>/g, "")
+	while (/^<br/.test(content))
+	{
+		$("#editcell br:first-child").remove();
+		content = $("#editcell").html()
+	}
+	while (/<br.*>$/.test(content))
+	{
+		$("#editcell br:last-child").remove();
+		content = $("#editcell").html()
+	}
 	if (content == $("#editcell").data("content"))
 		return
 
