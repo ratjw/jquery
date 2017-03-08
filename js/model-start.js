@@ -21,6 +21,10 @@ function loadtable(userid)
 	})
 	$(document).keydown( function (event) {
 		countReset();
+		if ($('#paperdiv').css('display') == 'block') {
+			$('#paperdiv').focus()
+			return
+		}
 		var table = $("#editcell").data("located").closest("table").attr("id")
 		if (table == "tbl")
 			editing(event)
@@ -121,19 +125,14 @@ function editcell(pointing)
 
 function SplitPane()
 {
+	var tohead
 	var topscroll = $(this).scrollTop()
 
-	var visibleTH = $('#tbl tr:has(th)')
-	for (var i = 0; i < visibleTH.length; i++)
-		if (visibleTH.eq(i).offset().top > topscroll)
-			break
-/*
-
-	var visibleTH = $('#tbl tr:has(th)')
-	$.each(visibleTH, function(i, thead) {
-		return (thead.offset().top < topscroll)
+	$.each($('#tbl tr:has(th)'), function(i, thead) {
+		tohead = thead
+		return ($(thead).offset().top < topscroll)
 	})
-*/
+
 	$("html, body").css( {
 		height: "100%",
 		overflow: "hidden",
@@ -146,19 +145,20 @@ function SplitPane()
 	$('.ui-resizable-e').css('height', $("#tbl").css("height"))
 
 	$('#tblcontainer').animate({
-		scrollTop: visibleTH.eq(i).offset().top
+		scrollTop: $(tohead).offset().top
 	}, 300);
 	DragDrop()
 }
 
 function closequeue()
 {
+	var tohead
 	var topscroll = $(this).scrollTop()
 
-	var visibleTH = $('#tbl tr:has(th)')
-	for (var i = 0; i < visibleTH.length; i++)
-		if (visibleTH.eq(i).offset().top >= topscroll)
-			break
+	$.each($('#tbl tr:has(th)'), function(i, thead) {
+		tohead = thead
+		return ($(thead).offset().top < topscroll)
+	})
 	
 	$("html, body").css( {
 		height: "",
@@ -171,8 +171,8 @@ function closequeue()
 	$("#tblcontainer").resizable('destroy');
 
 	$('html body').animate({
-		scrollTop: visibleTH.eq(i).offset().top
-	}, 500);
+		scrollTop: $(tohead).offset().top
+	}, 300);
 	DragDrop()
 }
 

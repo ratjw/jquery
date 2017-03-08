@@ -108,7 +108,7 @@ function fillEquipTable(rownum, qn)
 	txt += "<span style='width:120px;'><label><input type='checkbox' id='CN5'>CN5</label></span>";
 	txt += "<span style='width:120px;'><label><input type='checkbox' id='CN6'>CN6</label></span>";
 	txt += "<span style='width:120px;'><label><input type='checkbox' id='CN7'>CN7</label></span>";
-	txt += "<span><label><input type='checkbox' id='CN8 (BAER)'>CN8 (BAER)</label></span>";
+	txt += "<span><label><input type='checkbox' id='CN8-BAER'>CN8 (BAER)</label></span>";
 	txt += "<br>";
 	txt += "<span style='width:120px;'></span>";
 	txt += "<span style='width:120px;'><label><input type='checkbox' id='CN9'>CN9</label></span>";

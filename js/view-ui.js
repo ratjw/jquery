@@ -32,13 +32,20 @@ function DragDrop()
 
 	$("#tbl tr:has(td)").droppable({
 		accept: "tr",
+		refreshPositions: true,
 
 		over: function (event, ui){
-			if ($(ui.helper).position().top < 100) {
-				$('#tblcontainer').scrollTop($('#tblcontainer').scrollTop() - 100)
+			if ($(ui.helper).position().top < 50) {
+//				$('#tblcontainer').scrollTop($('#tblcontainer').scrollTop() - 50)
+				$('#tblcontainer').animate({
+					scrollTop: $('#tblcontainer').scrollTop() - 100
+				}, 300);
 			}
-			if ($(ui.helper).position().top > $('#tblcontainer').innerHeight() - 100)
-				$('#tblcontainer').scrollTop($('#tblcontainer').scrollTop() + 100)
+			if ($(ui.helper).position().top > $('#tblcontainer').innerHeight() - 50)
+//				$('#tblcontainer').scrollTop($('#tblcontainer').scrollTop() + 50)
+				$('#tblcontainer').animate({
+					scrollTop: $('#tblcontainer').scrollTop() + 100
+				}, 300);
 		},
 
 		drop: function (event, ui) {
@@ -110,6 +117,7 @@ function DragDropStaff()
 //		appendTo: "body",
 		stack: ".ui-draggable",
 		zIndex: 1000,
+		refreshPositions: true,
 /*
 		drag: function (event, ui){
 			if ($(ui.helper).position().top < 50)
@@ -130,11 +138,12 @@ function DragDropStaff()
 
 	$("#queuetbl tr:has(td)").droppable({
 		accept: "#tbl tr, #queuetbl tr",
+		refreshPositions: true,
 
 		over: function (event, ui) {
-			if ($(ui.helper).position().top < 100)
+			if ($(ui.helper).position().top < 50)
 				$('#queuecontainer').scrollTop($('#queuecontainer').scrollTop() - 50)
-			if ($(ui.helper).position().top > $('#queuecontainer').innerHeight() - 100)
+			if ($(ui.helper).position().top > $('#queuecontainer').innerHeight() - 50)
 				$('#queuecontainer').scrollTop($('#queuecontainer').scrollTop() + 50)
 		},
 
@@ -167,11 +176,11 @@ function DragDropStaff()
 				else
 					thisdrop = $(this).next()	//ui.draggable was added to last row of same table
 				if (thisdrop.is(":last-child"))
-					finalWaitnum = dropWaitnum + 1000000000000
+					finalWaitnum = dropWaitnum + 100000000000
 				else
 					finalWaitnum = (prevWaitnum + dropWaitnum) / 2
 			} else {
-				finalWaitnum = prevWaitnum + 1000000000000
+				finalWaitnum = prevWaitnum + 100000000000
 			}
 
 			var sql = "sqlReturnbook=UPDATE book SET waitnum = "+ finalWaitnum
