@@ -36,16 +36,15 @@ function DragDrop()
 
 		over: function (event, ui){
 			if ($(ui.helper).position().top < 50) {
-//				$('#tblcontainer').scrollTop($('#tblcontainer').scrollTop() - 50)
 				$('#tblcontainer').animate({
-					scrollTop: $('#tblcontainer').scrollTop() - 100
-				}, 300);
+					scrollTop: $('#tblcontainer').scrollTop() - 200
+				}, 200);
 			}
-			if ($(ui.helper).position().top > $('#tblcontainer').innerHeight() - 50)
-//				$('#tblcontainer').scrollTop($('#tblcontainer').scrollTop() + 50)
+			if ($(ui.helper).position().top > $('#tblcontainer').innerHeight() - 50) {
 				$('#tblcontainer').animate({
-					scrollTop: $('#tblcontainer').scrollTop() + 100
-				}, 300);
+					scrollTop: $('#tblcontainer').scrollTop() + 200
+				}, 200);
+			}
 		},
 
 		drop: function (event, ui) {
@@ -103,8 +102,8 @@ function DragDrop()
 
 					fillthisDay(thisdate)
 				}
+				DragDrop()
 			}	
-			DragDrop()
 		}
 	});
 }
@@ -114,22 +113,9 @@ function DragDropStaff()
 	$("#queuetbl tr:has(td)").draggable({
 		helper: "clone",
 		revert: "true",
-//		appendTo: "body",
 		stack: ".ui-draggable",
 		zIndex: 1000,
 		refreshPositions: true,
-/*
-		drag: function (event, ui){
-			if ($(ui.helper).position().top < 50)
-				$('#tblcontainer').scrollTop($('#tblcontainer').scrollTop() - 10)
-			if ($(ui.helper).position().top > $('#tblcontainer').innerHeight() - 50)
-				$('#tblcontainer').scrollTop($('#tblcontainer').scrollTop() + 10)
-			if ($(ui.helper).position().top < 50)
-				$('#queuecontainer').scrollTop($('#queuecontainer').scrollTop() - 10)
-			if ($(ui.helper).position().top > $('#queuecontainer').innerHeight() - 50)
-				$('#queuecontainer').scrollTop($('#queuecontainer').scrollTop() + 10)
-		},
-*/
 		start : function () {
 			$("#editcell").hide()
 			$(".ui-menu").hide()
@@ -141,10 +127,16 @@ function DragDropStaff()
 		refreshPositions: true,
 
 		over: function (event, ui) {
-			if ($(ui.helper).position().top < 50)
-				$('#queuecontainer').scrollTop($('#queuecontainer').scrollTop() - 50)
-			if ($(ui.helper).position().top > $('#queuecontainer').innerHeight() - 50)
-				$('#queuecontainer').scrollTop($('#queuecontainer').scrollTop() + 50)
+			if ($(ui.helper).position().top < 50) {
+				$('#queuecontainer').animate({
+					scrollTop: $('#queuecontainer').scrollTop() - 100
+				}, 200);
+			}
+			if ($(ui.helper).position().top > $('#queuecontainer').innerHeight() - 50) {
+				$('#queuecontainer').animate({
+					scrollTop: $('#queuecontainer').scrollTop() + 100
+				}, 200);
+			}
 		},
 
 		drop: function (event, ui) {
@@ -176,11 +168,11 @@ function DragDropStaff()
 				else
 					thisdrop = $(this).next()	//ui.draggable was added to last row of same table
 				if (thisdrop.is(":last-child"))
-					finalWaitnum = dropWaitnum + 100000000000
+					finalWaitnum = dropWaitnum + 1
 				else
 					finalWaitnum = (prevWaitnum + dropWaitnum) / 2
 			} else {
-				finalWaitnum = prevWaitnum + 100000000000
+				finalWaitnum = prevWaitnum + 1
 			}
 
 			var sql = "sqlReturnbook=UPDATE book SET waitnum = "+ finalWaitnum
@@ -204,8 +196,8 @@ function DragDropStaff()
 						deleteRow(thatRow, thatDate)
 					}
 				}
+				DragDropStaff()
 			}
-			DragDropStaff()
 		}
 	});
 }

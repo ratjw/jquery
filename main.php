@@ -141,7 +141,7 @@
   <li><div id="item4"></div></li>
   <li><div id="item5"></div></li>
   <li><div id="item6"></div></li>
-  <li><div id="item7"></div></li>
+  <!--li><div id="item7"></div></li-->
   <li><div id="item8"></div></li>
   <!--li><div id="item9"></div></li-->
 </ul>

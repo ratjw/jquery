@@ -127,10 +127,7 @@ function saveContentQueue(column, content)
 	}
 	else
 	{
-		waitnum = findMAXwaitnum(staffname) + 100000000000
-		//waitnum is bigint(16) unsigned
-		//first 5 digits used for entire 99,999 cases of each staff
-		//last 11 digits used for 11*3 = 33 times cutting the same queue
+		waitnum = findMAXwaitnum(staffname) + 1
 
 		sqlstring = "sqlReturnbook=INSERT INTO book ("
 		sqlstring += "waitnum, qsince, opdate, staffname, "+ column +", editor) VALUES ("
@@ -228,7 +225,7 @@ function saveHNinputQueue(hn, content)
 	if (qn)
 		waitnum = findwaitnumQ(qn)
 	else
-		waitnum = findMAXwaitnum(staffname) + 100000000000
+		waitnum = findMAXwaitnum(staffname) + 1
 
 	sqlstring = "hn=" + content
 	sqlstring += "&waitnum="+ waitnum
