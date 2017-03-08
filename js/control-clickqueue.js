@@ -127,7 +127,10 @@ function saveContentQueue(column, content)
 	}
 	else
 	{
-		waitnum = findMAXwaitnum(staffname) + 1
+		waitnum = findMAXwaitnum(staffname) + 1000000000000
+		//waitnum is bigint(16) unsigned
+		//first 4 digits used for entire cases of each staff
+		//last 12 digits used for 12*3 = 36 times cutting the same queue
 
 		sqlstring = "sqlReturnbook=INSERT INTO book ("
 		sqlstring += "waitnum, qsince, opdate, staffname, "+ column +", editor) VALUES ("
@@ -160,25 +163,16 @@ function findwaitnum(qn)
 	while ((q < BOOK.length) && (BOOK[q].qn != qn))
 		q++
 
-	return BOOK[q].waitnum
+	return Number(BOOK[q].waitnum)
 }
 
-function findQsince(qn)	
-{
-	var q = 0
-	while ((q < BOOK.length) && (BOOK[q].qn != qn))
-		q++
-
-	return BOOK[q].qsince
-}
-
-function findwaitnumQ(qn)	
+function findwaitnumQ(qn)	//waitnum is not QNUM
 {
 	var q = 0
 	while ((q < QWAIT.length) && (QWAIT[q].qn != qn))
 		q++
 
-	return QWAIT[q].waitnum
+	return Number(QWAIT[q].waitnum)
 }
 
 function findMAXwaitnum(staffname)	//latest queue of a particular staff
@@ -195,7 +189,7 @@ function findMAXwaitnum(staffname)	//latest queue of a particular staff
 	if (QWAIT.length == 0)
 	{
 		if (waitnumB)
-			return waitnumB
+			return Number(waitnumB)
 		else
 			return 0
 	}
@@ -210,7 +204,7 @@ function findMAXwaitnum(staffname)	//latest queue of a particular staff
 	if (waitnumB)
 		return Math.max(waitnumB, waitnumQ)
 	else 
-		return waitnumQ
+		return Number(waitnumQ)
 }
 
 function saveHNinputQueue(hn, content)
@@ -234,7 +228,7 @@ function saveHNinputQueue(hn, content)
 	if (qn)
 		waitnum = findwaitnumQ(qn)
 	else
-		waitnum = findMAXwaitnum(staffname) + 1
+		waitnum = findMAXwaitnum(staffname) + 1000000000000
 
 	sqlstring = "hn=" + content
 	sqlstring += "&waitnum="+ waitnum

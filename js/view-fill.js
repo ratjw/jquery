@@ -10,7 +10,7 @@ function fillupstart()
 	var thishead = $("tr:contains(" + today + ")").eq(0).prevAll(":has(th)").first()
 	$('html, body').animate({
 		scrollTop: thishead.offset().top
-	}, 500);
+	}, 300);
 	DragDrop()
 }
 
@@ -18,48 +18,33 @@ function filluprefill()
 { 	//from refillall which is called from :
 	//updatingback, callbackmove
 	//Start at the same begindate and same scrollTop
-//	var topscroll = $("#tblcontainer").scrollTop()
 
 	fillall()
-//	$("#tblcontainer").scrollTop(topscroll)
 	DragDrop()
-}
-
-function fillselect(tableID, opdate)		
-{
-	var table = document.getElementById(tableID)
-
-	var q = 0
-	while (q < BOOK.length && (BOOK[q].opdate < opdate))
-		q++	//seek opdate in BOOK
-	var i = 0
-	while (opdate != table.rows[i].cells[OPDATE].innerHTML.numDate())
-		i++	//seek opdate in main table
-	while ((q < BOOK.length) && (opdate == BOOK[q].opdate))
-	{	//refill only that opdate cases
-		filldata(BOOK[q], table.rows[i])
-		q++
-		i++
-	}
 }
 
 function fillall()
 {
-	var i, k, q
+	var i = k = q = 0
 	var rowi = {}
 	var date = ""
 	var madedate
 
+	var start = new Date()
+	start = new Date(start.getFullYear(), start.getMonth()-3).MysqlDate()
+
 	date = BOOK[0].opdate
-	
+	while ((q < BOOK.length) && (date < start)) {
+		date = BOOK[q].opdate
+		q++
+	}	
+
 	//delete previous queuetbl lest it accumulates
 	$('#tbl tr').slice(1).remove()
 
 	//i for rows in table
-	i=0
-
 	//q for rows in BOOK
-	for (q=0; q < BOOK.length; q++)
+	for ( ; q < BOOK.length; q++)
 	{	
 		while (date < BOOK[q].opdate)
 		{	//step over each day that is not in QBOOK
@@ -134,16 +119,18 @@ function filldata(bookq, rowi)		//bookq = book[q]
 	rowi.cells[QN].innerHTML = bookq.qn
 }
 
-function fillselect(tableID, opdate)		
-{
-	var table = document.getElementById(tableID)
+function fillthisDay(opdate)		
+{	//previous rows and present rows must be equal
+	var table = document.getElementById("tbl")
 
-	var q = 0
+	var q = 0	//seek opdate in BOOK
 	while (q < BOOK.length && (BOOK[q].opdate < opdate))
-		q++	//seek opdate in BOOK
-	var i = 0
+		q++
+
+	var i = 0	//seek opdate in #tbl
 	while (opdate != table.rows[i].cells[OPDATE].innerHTML.numDate())
-		i++	//seek opdate in main table
+		i++
+
 	while ((q < BOOK.length) && (opdate == BOOK[q].opdate))
 	{	//refill only that opdate cases
 		filldata(BOOK[q], table.rows[i])
@@ -169,8 +156,14 @@ function addnewrow(rowmain)
 	}
 }
 
-function deletecase(rowmain, qn)
+function deletecase(rowmain, opdate, qn)
 {
+	if (!qn)
+	{
+		if (checkblank(opdate))		//blank row with this opdate case in another row
+			$(rowmain).remove()		//delete blank row
+		return
+	}
 	//not actually delete the case but set waitnum=NULL
 	var sql = "sqlReturnbook=UPDATE book SET waitnum=NULL WHERE qn="+ qn +";"
 
@@ -183,13 +176,27 @@ function deletecase(rowmain, qn)
 		else
 		{
 			updateBOOK(response);
-			filluprefill()
+			deleteRow(rowmain, opdate)
 		}
 	}
 }
 
-function deleteblankrow(rowmain)
+function deleteRow(rowmain, opdate)
 {
-	var table = document.getElementById("tbl")
-	rowmain.parentNode.removeChild(rowmain)
+	var prevDate = $(rowmain).prev().children().eq(OPDATE).html()
+	var nextDate = $(rowmain).next().children().eq(OPDATE).html()
+
+	if (prevDate)	//avoid "undefined" error message
+		prevDate = prevDate.numDate()
+
+	if (nextDate)
+		nextDate = nextDate.numDate()
+
+	if ((prevDate == opdate) ||
+		(nextDate == opdate))
+	{
+		$(rowmain).remove()
+	} else {
+		$(rowmain).children().eq(OPDATE).siblings().html("")
+	}
 }

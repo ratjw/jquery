@@ -218,7 +218,7 @@ function Checklistequip(qn)
 
 function printpaper(qn)	//*** have to set paperdiv padding to top:70px; bottom:70px
 {
-	if (/Edge/.test(navigator.userAgent)) {
+	if (/Edge | MS/.test(navigator.userAgent)) {
 		var equip = document.getElementById('equip');
 		var win = window.open();
 		win.document.open();
@@ -242,16 +242,16 @@ function printpaper(qn)	//*** have to set paperdiv padding to top:70px; bottom:7
 
 		win.document.close();
 		win.focus();
-//.scrollTo(0,0)
 		win.print();
 		win.close();
 	}
 	else {
-		original = document.body.innerHTML;
+		var original = document.body.innerHTML;
+		var orgequip = document.getElementById('equip');
+		document.body.innerHTML = orgequip.outerHTML;
 		var equip = document.getElementById('equip');
-		document.body.innerHTML = equip.outerHTML;
 
-		var newequip = original.equip.getElementsByTagName("INPUT");
+		var newequip = orgequip.getElementsByTagName("INPUT");
 		var winequip = equip.getElementsByTagName("INPUT");
 		for (var i = 0; i < newequip.length; i++) 
 		{
@@ -272,39 +272,3 @@ function printpaper(qn)	//*** have to set paperdiv padding to top:70px; bottom:7
 		location.reload();
 	}
 }
-/*
-{
-	var equip = document.getElementById("equip")
-	var win = window.open()
-	var newequip
-	var winequip
-	var i
-
-//	Checklistequip(qn) 
-	win.document.open();
-	win.document.write('<LINK type="text/css" rel="stylesheet" href="print.css">');
-	win.document.write(equip.outerHTML)
-	//clone cannot be used across window
-	//outerHTML comes with container of itself
-	//outerHTML comes without checked status
-
-	newequip = equip.getElementsByTagName("INPUT");
-	winequip = win.equip.getElementsByTagName("INPUT");
-	for (i = 0; i < newequip.length; i++) 
-	{
-		winequip[i].checked = newequip[i].checked
-		winequip[i].value = newequip[i].value
-		if (!winequip[i].checked || !winequip[i].value)
-		{	//pale color for no input items
-			temp = winequip[i]
-			while (temp.nodeName != "SPAN")
-				temp = temp.parentNode
-			temp.className = "pale"
-		}
-	}
-	win.document.close();
-	win.focus();
-	win.print();
-	win.close();
-}
-*/

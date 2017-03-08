@@ -11,12 +11,13 @@ function loadtable(userid)
 	$(document).click( function (event) {
 		countReset();
 		var clickedCell = event.target
-
-		if ($(clickedCell).closest("table").attr("id") == "tbl")
-			clicktable(clickedCell)
-		else if ($(clickedCell).closest("table").attr("id") == "queuetbl")
-			Qclicktable(clickedCell)
-//		return false
+		if (clickedCell) {
+			if ($(clickedCell).closest("table").attr("id") == "tbl")
+				clicktable(clickedCell)
+			else if ($(clickedCell).closest("table").attr("id") == "queuetbl")
+				Qclicktable(clickedCell)
+		}
+		return
 	})
 	$(document).keydown( function (event) {
 		countReset();
@@ -25,6 +26,7 @@ function loadtable(userid)
 			editing(event)
 		else if (table == "queuetbl")
 			editingqueue(event)
+		return
 	})
 	$(document).contextmenu( function (event) {
 		countReset();
@@ -86,7 +88,8 @@ function updating()
 		if (response && response.indexOf("opdate") != -1)
 		{								//there is new entry after TIMESTAMP
 			updateBOOK(response);
-			filluprefill()
+			fillall()
+			DragDrop()
 		}
 		clearTimeout(TIMER);
 		TIMER = setTimeout("updating()",10000);	//poke next 10 sec.
@@ -144,7 +147,7 @@ function SplitPane()
 
 	$('#tblcontainer').animate({
 		scrollTop: visibleTH.eq(i).offset().top
-	}, 1000);
+	}, 300);
 	DragDrop()
 }
 
@@ -169,7 +172,7 @@ function closequeue()
 
 	$('html body').animate({
 		scrollTop: visibleTH.eq(i).offset().top
-	}, 1000);
+	}, 500);
 	DragDrop()
 }
 

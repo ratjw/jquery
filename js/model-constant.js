@@ -1,8 +1,5 @@
-var GETLABDATA		= "php/getlabdata.php";
 var GETNAMEHN		= "php/getnamehn.php";
-var ICDPHP			= "php/icd.php";
 var MYSQLIPHP		= "php/mysqli.php";
-var MYSQL_ALLOR		= "php/mysql_allor.php";
 
 var BOOK		= [];
 var QWAIT		= [];
@@ -46,17 +43,6 @@ var NUMMONTH	= {"มค.":"01","กพ.":"02","มีค.":"03","เมย.":"04
 					"กค.":"07","สค.":"08","กย.":"09","ตค.":"10","พย.":"11","ธค.":"12"};
 
 var HOLIDAY = {
-	"2015-01-02" : "url('pic/special.jpg')",	//วันหยุดพิเศษ
-	"2015-03-04" : "url('pic/Magha.jpg')",		//วันมาฆบูชา
-	"2015-05-13" : "url('pic/Ploughing.jpg')",	//วันพืชมงคล
-	"2015-06-01" : "url('pic/Vesak.jpg')",		//วันวิสาขบูชา
-	"2015-07-30" : "url('pic/Asalha.jpg')",		//วันอาสาฬหบูชา
-	"2015-07-31" : "url('pic/Vassa.jpg')",		//วันเข้าพรรษา
-	"2016-02-22" : "url('pic/Magha.jpg')",
-	"2016-05-13" : "url('pic/Ploughing.jpg')",
-	"2016-05-20" : "url('pic/Vesak.jpg')",
-	"2016-07-19" : "url('pic/Asalha.jpg')",
-	"2016-07-20" : "url('pic/Vassa.jpg')",
 	"2017-02-11" : "url('pic/Magha.jpg')",
 	"2017-02-13" : "url('pic/Maghasub.jpg')",	//หยุดชดเชยวันมาฆบูชา
 	"2017-05-09" : "url('pic/Ploughing.jpg')",
@@ -71,10 +57,10 @@ var HOLIDAY = {
 	"2018-07-27" : "url('pic/Asalha.jpg')",
 	"2018-07-28" : "url('pic/Vassa.jpg')",
 	"2018-07-30" : "url('pic/Vassasub.jpg')",
-	"2019-02-19" : "url('pic/Magha.jpg')",
-	"2019-05-13" : "url('pic/Ploughing.jpg')",
-	"2019-05-18" : "url('pic/Vesak.jpg')",
-	"2019-05-20" : "url('pic/Vesaksub.jpg')",
-	"2019-07-16" : "url('pic/Asalha.jpg')",
-	"2019-07-17" : "url('pic/Vassa.jpg')"
+	"2019-02-19" : "url('pic/Magha.jpg')",		//วันมาฆบูชา
+	"2019-05-13" : "url('pic/Ploughing.jpg')",	//วันพืชมงคล
+	"2019-05-18" : "url('pic/Vesak.jpg')",		//วันวิสาขบูชา
+	"2019-05-20" : "url('pic/Vesaksub.jpg')",	//หยุดชดเชยวันวิสาขบูชา	
+	"2019-07-16" : "url('pic/Asalha.jpg')",		//วันอาสาฬหบูชา
+	"2019-07-17" : "url('pic/Vassa.jpg')"		//วันเข้าพรรษา
 	}

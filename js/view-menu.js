@@ -26,17 +26,9 @@ function fillSetTable(rownum, pointing)
 	else
 		$("#item3").parent().addClass(disabled)
 
-	$("#item4").html("ลบ case " + casename)
-	if (qn)
-		$("#item4").parent().removeClass(disabled)
-	else
-		$("#item4").parent().addClass(disabled)
+	$("#item4").html("Delete Row " + casename)
 
-	$("#item5").html("Delete Blank Row")
-	if (checkblank(opdate, qn))
-		$("#item5").parent().removeClass(disabled)
-	else
-		$("#item5").parent().addClass(disabled)
+	$("#item5").html("รายชื่อที่ถูกลบ")
 
 	$("#item6").html("การแก้ไขของ " + casename)
 	if (qn)
@@ -44,23 +36,21 @@ function fillSetTable(rownum, pointing)
 	else
 		$("#item6").parent().addClass(disabled)
 
-	$("#item7").html("รายชื่อที่ถูกลบ")
-
-	if ($('#moverow'))
-	{
-		$("#item8").html("วาง")
-	} else {
-		$("#item8").html("To Move")
-		if (qn)
-			$("#item8").parent().removeClass(disabled)
-		else
-			$("#item8").parent().addClass(disabled)
-	}
-	$("#item9").html("Equipment")
+//	if ($('#moverow'))
+//	{
+//		$("#item7").html("วาง")
+//	} else {
+		$("#item7").html("To Move")
+//		if (qn)
+//			$("#item7").parent().removeClass(disabled)
+//		else
+			$("#item7").parent().addClass(disabled)
+//	}
+	$("#item8").html("Equipment")
 	if (qn)
-		$("#item9").parent().removeClass(disabled)
+		$("#item8").parent().removeClass(disabled)
 	else
-		$("#item9").parent().addClass(disabled)
+		$("#item8").parent().addClass(disabled)
 
 	$("#menu").menu({
 		select: function( event, ui ) {
@@ -80,21 +70,18 @@ function fillSetTable(rownum, pointing)
 					addnewrow(rowmain)
 					break
 				case "item4":
-					deletecase(rowmain, qn)
+					deletecase(rowmain, opdate, qn)
 					break
 				case "item5":
-					deleteblankrow(rowmain)
+					deleteHistory(rowmain, qn)
 					break
 				case "item6":
 					editHistory(rowmain, qn)
 					break
 				case "item7":
-					deleteHistory(rowmain, qn)
-					break
-				case "item8":
 					moveRow(rowmain, qn)
 					break
-				case "item9":
+				case "item8":
 					fillEquipTable(rownum, qn)
 					break
 			}
@@ -156,10 +143,10 @@ function checkblank(opdate, qn)
 	{
 		q++
 		if (q >= BOOK.length)
-			return false
+			return false	//beyond BOOK, do not delete
 	}
 	if (opdate == BOOK[q].opdate)
-		return true	//Yes, there is none
+		return true	//there is this opdate case in another row, can delete
 	else
-		return false
+		return false	//No this opdate case in another row, do not delete
 }

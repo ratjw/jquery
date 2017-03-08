@@ -79,17 +79,7 @@ function savePreviouscell()
 	if (!$("#editcell").data("located"))
 		return
 
-	var content = $("#editcell").html()
-	while (/^<br/.test(content))
-	{
-		$("#editcell br:first-child").remove();
-		content = $("#editcell").html()
-	}
-	while (/<br.*>$/.test(content))
-	{
-		$("#editcell br:last-child").remove();
-		content = $("#editcell").html()
-	}
+	var content = $("#editcell").html().replace(/^(\s*<br\s*\/?>)*\s*|\s*(<br\s*\/?>\s*)*$/g, '')
 	if (content == $("#editcell").data("content"))
 		return
 
@@ -131,9 +121,7 @@ function saveContent(column, content)	//column name in MYSQL
 	var sqlstring
 	var qsince
 
-	if (qn)
-		qsince = findQsince(qn)
-	else
+	if (!qn)
 		qsince = new Date().MysqlDate()
 
 	content = URIcomponent(content)			//take care of white space, double qoute, 
@@ -159,12 +147,11 @@ function saveContent(column, content)	//column name in MYSQL
 		if (!response || response.indexOf("DBfailed") != -1)
 		{
 			alert("Failed! update database \n\n" + response)
-			$("#editcell").hide()
 		}
 		else
 		{
 			updateBOOK(response);
-			fillselect("tbl", opdate)
+			fillthisDay(opdate)
 			$("#editcell").data("content", "")
 		}
 	}
@@ -178,14 +165,12 @@ function saveHNinput(hn, content)
 	var qn = rowcell.eq(QN).html()
 	var qsince
 
-	if (qn)
-		qsince = findQsince(qn)
-	else
+	if (!qn)
 		qsince = new Date().MysqlDate()
 
 	if (patient)
 	{
-		$("#editcell").html($("#editcell").data("content"))
+		$("#editcell").html($("#editcell").data("content"))	//just for show instantly
 		return
 	}
 	content = content.replace(/<br>/g, "")
@@ -208,7 +193,7 @@ function saveHNinput(hn, content)
 		{
 			updateBOOK(response)
 			$("#editcell").data("located").html(content)
-			fillselect("tbl", opdate)
+			fillthisDay(opdate)
 		}
 	}
 }
@@ -221,6 +206,7 @@ function storePresentcell(pointing)
 	var qn = $(rowtr).children("td").eq(QN).html()
 
 	editcell(pointing)
+	$("#editcell").data("content", $(pointing).html())
 
 	switch(cindex)
 	{
@@ -238,7 +224,6 @@ function storePresentcell(pointing)
 		case DIAGNOSIS:
 		case TREATMENT:
 		case TEL:		//store content in "data" of editcell
-			$("#editcell").data("content", $(pointing).html())
 			break
 	}
 }
