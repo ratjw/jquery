@@ -16,8 +16,16 @@ require_once "book.php";
 	$resultj = json_encode($resulty);		//use json encode-decode
 	$resultz = json_decode($resultj,true);	//to make assoc array
 
+	if (empty($resultz["initial_name"]))
+		$resultz["initial_name"] = "";
 	if (empty($resultz["first_name"]))
 		exit ("DBfailed ไม่มีผู้ป่วย hn นี้");
+	if (empty($resultz["last_name"]))
+		$resultz["last_name"] = "";
+	if (empty($resultz["dob"]))
+		$resultz["dob"] = "0000-00-00";
+	if (empty($resultz["gender"]))
+		$resultz["gender"] = "";
 
 	extract($resultz);
 

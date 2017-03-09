@@ -3,7 +3,7 @@ function DragDrop()
 {
 	$("#tbl tr:has(td)").draggable({
 		revert: "true",
-		refreshPositions: true,
+//		refreshPositions: true,
 		helper: function(){
 					var copy = $(this).clone();
 					copy.find("td").css({
@@ -32,7 +32,6 @@ function DragDrop()
 
 	$("#tbl tr:has(td)").droppable({
 		accept: "tr",
-		refreshPositions: true,
 
 		over: function (event, ui){
 			if ($(ui.helper).position().top < 50) {
@@ -115,7 +114,7 @@ function DragDropStaff()
 		revert: "true",
 		stack: ".ui-draggable",
 		zIndex: 1000,
-		refreshPositions: true,
+//		refreshPositions: true,
 		start : function () {
 			$("#editcell").hide()
 			$(".ui-menu").hide()
@@ -124,7 +123,6 @@ function DragDropStaff()
 
 	$("#queuetbl tr:has(td)").droppable({
 		accept: "#tbl tr, #queuetbl tr",
-		refreshPositions: true,
 
 		over: function (event, ui) {
 			if ($(ui.helper).position().top < 50) {

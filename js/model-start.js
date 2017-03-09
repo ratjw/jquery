@@ -22,7 +22,7 @@ function loadtable(userid)
 	$(document).keydown( function (event) {
 		countReset();
 		if ($('#paperdiv').css('display') == 'block') {
-			$('#paperdiv').focus()
+//			$('#paperdiv').focus()
 			return
 		}
 		var table = $("#editcell").data("located").closest("table").attr("id")

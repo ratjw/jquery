@@ -3,7 +3,12 @@ function fillupstart()
 {	//Display all cases in each day of 5 weeks
 	if (BOOK.length == 0)
 		BOOK.push({"opdate" : getSunday()})
-	fillall()
+
+	var start = new Date()
+	start = new Date(start.getFullYear(), start.getMonth()-3).MysqlDate()
+	start = getSunday(start)
+
+	fillall(start)
 
 	//scroll to today
 	var today = new Date().MysqlDate().thDate()
@@ -14,28 +19,15 @@ function fillupstart()
 	DragDrop()
 }
 
-function filluprefill()
-{ 	//from refillall which is called from :
-	//updatingback, callbackmove
-	//Start at the same begindate and same scrollTop
-
-	fillall()
-	DragDrop()
-}
-
-function fillall()
+function fillall(start)
 {
 	var i = k = q = 0
 	var rowi = {}
 	var date = ""
 	var madedate
 
-	var start = new Date()
-	start = new Date(start.getFullYear(), start.getMonth()-3).MysqlDate()
-
-	date = BOOK[0].opdate
-	while ((q < BOOK.length) && (date < start)) {
-		date = BOOK[q].opdate
+	date = start
+	while ((q < BOOK.length) && (BOOK[q].opdate < start)) {
 		q++
 	}	
 
@@ -44,7 +36,7 @@ function fillall()
 
 	//i for rows in table
 	//q for rows in BOOK
-	for ( ; q < BOOK.length; q++)
+	for (q; q < BOOK.length; q++)
 	{	
 		while (date < BOOK[q].opdate)
 		{	//step over each day that is not in QBOOK
