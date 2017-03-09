@@ -109,7 +109,7 @@ function fillSetTableQueue(pointing)
 		}
 	});
 
-	showup(pointing, "#queuemenu", "#queuecontainer")
+	showMenu(pointing, "#queuemenu", "#queuecontainer")
 }
 
 function addnewrowQ(num)

@@ -3,7 +3,6 @@ function DragDrop()
 {
 	$("#tbl tr:has(td)").draggable({
 		revert: "true",
-//		refreshPositions: true,
 		helper: function(){
 					var copy = $(this).clone();
 					copy.find("td").css({
@@ -15,15 +14,6 @@ function DragDrop()
 		appendTo: 'body',
 		stack: ".ui-draggable",
 		zIndex: 1000,
-/*
-		drag: function (event, ui){
-			if ($(ui.helper).position().top < 50) {
-				$('#tblcontainer').scrollTop($('#tblcontainer').scrollTop() - 10)
-			}
-			if ($(ui.helper).position().top > $('#tblcontainer').innerHeight() - 50)
-				$('#tblcontainer').scrollTop($('#tblcontainer').scrollTop() + 10)
-		},
-*/
 		start : function (event) {
 			$("#editcell").hide()
 			$(".ui-menu").hide()
@@ -114,7 +104,6 @@ function DragDropStaff()
 		revert: "true",
 		stack: ".ui-draggable",
 		zIndex: 1000,
-//		refreshPositions: true,
 		start : function () {
 			$("#editcell").hide()
 			$(".ui-menu").hide()

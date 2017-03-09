@@ -3,20 +3,14 @@ function fillSetTable(rownum, pointing)
 {
 	var table = document.getElementById("tbl")
 	var rowmain = table.rows[rownum]
-	var tcell = table.rows[rownum].cells
+	var tcell = rowmain.cells
 	var opdateth = tcell[OPDATE].innerHTML	//Thai date
 	var opdate = opdateth.numDate()		//Thai to mysql date
 	var staffname = tcell[STAFFNAME].innerHTML
 	var casename = tcell[NAME].innerHTML
-	var opday = table.rows[rownum].className
 	var hn = tcell[HN].innerHTML
 	var qn = tcell[QN].innerHTML
 	var disabled = "ui-state-disabled"
-
-	var i = 0
-	while (opday.indexOf(NAMEOFDAYFULL[i]) == -1)
-		i++
-	opday = NAMEOFDAYTHAI[i]
 
 	casename = casename.substring(0, casename.indexOf(' '))
 
@@ -36,21 +30,28 @@ function fillSetTable(rownum, pointing)
 	else
 		$("#item6").parent().addClass(disabled)
 
-//	if ($('#moverow'))
-//	{
-//		$("#item7").html("วาง")
-//	} else {
-		$("#item7").html("To Move")
-//		if (qn)
-//			$("#item7").parent().removeClass(disabled)
-//		else
-			$("#item7").parent().addClass(disabled)
-//	}
+	$("#item7").html("PAC")
+	if (hn)
+		$("#item7").parent().removeClass(disabled)
+	else
+		$("#item7").parent().addClass(disabled)
+
 	$("#item8").html("Equipment")
 	if (qn)
 		$("#item8").parent().removeClass(disabled)
 	else
 		$("#item8").parent().addClass(disabled)
+
+//	if ($('#moverow'))
+//	{
+//		$("#item9").html("วาง")
+//	} else {
+//		$("#item9").html("To Move")
+//		if (qn)
+//			$("#item9").parent().removeClass(disabled)
+//		else
+//			$("#item9").parent().addClass(disabled)
+//	}
 
 	$("#menu").menu({
 		select: function( event, ui ) {
@@ -91,7 +92,7 @@ function fillSetTable(rownum, pointing)
 		}
 	});
 
-	showup(pointing, '#menu', '#tblcontainer')
+	showMenu(pointing, '#menu', '#tblcontainer')
 }
 
 function stafflist(pointing)
@@ -110,10 +111,10 @@ function stafflist(pointing)
 		}
 	});
 
-	showup(pointing, '#stafflist', "#tblcontainer")
+	showMenu(pointing, '#stafflist', "#tblcontainer")
 }
 
-function showup(pointing, menuID, container)
+function showMenu(pointing, menuID, container)
 {
 	var pos = $(pointing).position();
 	var height = pos.top + $(pointing).outerHeight();	//bottom
@@ -125,10 +126,8 @@ function showup(pointing, menuID, container)
 		height = pos.top - $(menuID).innerHeight()
 	}
 	$(menuID).css({
-//		position: "absolute",
 		top: height + "px",
 		left: width + "px",
-//		boxShadow: "10px 20px 30px slategray"
 	})
 	$(menuID).show()
 }
