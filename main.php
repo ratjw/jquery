@@ -13,16 +13,16 @@
 <!--script src="js/jquery.mobile-1.4.5.js"></script-->
 <script src="js/jquery.js"></script>
 <script src="js/jquery-ui.js"></script>
-<script src="js/control-click.js"></script>
-<script src="js/control-clickqueue.js"></script>
+<script src="js/control-main-click.js"></script>
+<script src="js/control-queue-click.js"></script>
 <script src="js/control-function.js"></script>
 <script src="js/model-constant.js"></script>
 <script src="js/model-equip.js"></script>
 <script src="js/model-start.js"></script>
-<script src="js/view-fill.js"></script>
-<script src="js/view-fillqueue.js"></script>
+<script src="js/view-main-fill.js"></script>
+<script src="js/view-main-menu.js"></script>
+<script src="js/view-queue-fill.js"></script>
 <script src="js/view-history.js"></script>
-<script src="js/view-menu.js"></script>
 <script src="js/view-ui.js"></script>
 </HEAD>
 <BODY>

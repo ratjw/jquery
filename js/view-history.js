@@ -117,6 +117,11 @@ function makeDeleteHistory(rowmain, response)
 	$(".ui-dialog").show()
 }
 
+function PACS(hn) 
+{ 
+	open('http://synapse/explore.asp?path=/All Patients/InternalPatientUID='+hn);
+} 
+
 function holiday(date)
 {
 	var monthdate = date.substring(5)

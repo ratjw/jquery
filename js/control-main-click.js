@@ -59,14 +59,8 @@ function editing(event)
 	{
 		$(".ui-menu").hide()
 		$(".ui-dialog").hide()
-		if ($("#editcell").data("located").index() == OPDATE)
-		{
-			$(".ui-menu").hide()
-		}
-		else
-		{
+		if ($("#editcell").data("located").index() != OPDATE)
 			$("#editcell").data("located").html($("#editcell").data("content"))
-		}
 		$("#editcell").hide()
 		window.focus()
 		event.preventDefault()
@@ -77,6 +71,8 @@ function editing(event)
 function savePreviouscell() 
 {
 	if (!$("#editcell").data("located"))
+		return
+	if ($("#editcell").data("located").closest('table').attr("id") != 'tbl')
 		return
 
 	var content = $("#editcell").html().replace(/^(\s*<br\s*\/?>)*\s*|\s*(<br\s*\/?>\s*)*$/g, '')

@@ -61,20 +61,14 @@ function editingqueue(event)
 
 function savePreviouscellQueue() 
 {
-	if (!$("#editcell").data("located"))
+	if ((!$("#editcell").data("located")) ||
+		($("#editcell").data("located").closest('table').attr("id") != 'queuetbl'))
+	{
+		$(".ui-menu").hide()
 		return
+	}
 
-	var content = $("#editcell").html()
-	while (/^<br/.test(content))
-	{
-		$("#editcell br:first-child").remove();
-		content = $("#editcell").html()
-	}
-	while (/<br.*>$/.test(content))
-	{
-		$("#editcell br:last-child").remove();
-		content = $("#editcell").html()
-	}
+	var content = $("#editcell").html().replace(/^(\s*<br\s*\/?>)*\s*|\s*(<br\s*\/?>\s*)*$/g, '')
 	if (content == $("#editcell").data("content"))
 		return
 

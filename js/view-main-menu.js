@@ -80,7 +80,7 @@ function fillSetTable(rownum, pointing)
 					editHistory(rowmain, qn)
 					break
 				case "item7":
-					moveRow(rowmain, qn)
+					PAC(hn)
 					break
 				case "item8":
 					fillEquipTable(rownum, qn)
@@ -89,6 +89,7 @@ function fillSetTable(rownum, pointing)
 
 			$("#editcell").hide()		//to disappear after selection
 			$(".ui-menu").hide()		//to disappear after selection
+			return false
 		}
 	});
 
@@ -105,8 +106,6 @@ function stafflist(pointing)
 			$("#editcell").data("located", "")
 			$("#editcell").hide()		//to disappear after selection
 			$('#stafflist').hide()		//to disappear after selection
-			event.stopPropagation()
-			event.preventDefault()
 			return false
 		}
 	});

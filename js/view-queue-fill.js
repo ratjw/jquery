@@ -106,6 +106,7 @@ function fillSetTableQueue(pointing)
 			}
 			$("#editcell").hide()
 			$(".ui-menu").hide()
+			return false
 		}
 	});
 
