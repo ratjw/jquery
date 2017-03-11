@@ -1,5 +1,6 @@
 var GETNAMEHN		= "php/getnamehn.php";
 var MYSQLIPHP		= "php/mysqli.php";
+var CHECKPAC		= "php/checkpac.php";
 
 var BOOK		= [];
 var QWAIT		= [];

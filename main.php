@@ -87,9 +87,9 @@
   </TABLE>
 </div>
 
-<TABLE style="display:none">	<!--template "qdatatitle" for "staffqueue"-->
+<TABLE id="qdatatitle" style="display:none">	<!--template "qdatatitle" for "staffqueue"-->
   <TBODY>
-    <TR id="qdatatitle">
+    <TR>
      <td data-title="No." style="text-align:right; padding-right:4px"></td>
      <td data-title="Since"></td>
      <td data-title="HN"></td>
@@ -141,7 +141,7 @@
   <li><div id="item4"></div></li>
   <li><div id="item5"></div></li>
   <li><div id="item6"></div></li>
-  <!--li><div id="item7"></div></li-->
+  <li><div id="item7"></div></li>
   <li><div id="item8"></div></li>
   <!--li><div id="item9"></div></li-->
 </ul>
@@ -153,7 +153,12 @@
 
 <ul id="stafflist" style="display:none"></ul>
 
-<div id="alert" ></div>
+
+<div id="alert">
+	<span class="ui-icon ui-icon-closethick" style="float: right;" onclick="closeAlert()"></span>
+	<br><br>
+	<div style="display: inline-block;"></div>	
+</div>
 
 <div id="dialogContainer"></div>
 

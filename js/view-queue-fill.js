@@ -1,7 +1,7 @@
 function staffqueue(staffname)
 {	//Display all cases of only one staff in dialog box
 	var queuetbl = document.getElementById("queuetbl")
-	var i, q
+	var i = q = 0
 	var rowi = {}
 
 	$('#titlename').html(staffname)
@@ -10,19 +10,28 @@ function staffqueue(staffname)
 	//delete previous queuetbl lest it accumulates
 	$('#queuetbl tr').slice(1).remove()
 
-	for (i=0,q=0; q < QWAIT.length; q++)
-	{
-		if (QWAIT[q].staffname == staffname)
-		{
-			rowi = makenextrowQueue(queuetbl, ++i)
-			filldataQueue(QWAIT[q], i, $(rowi).children("td"))
+	$( QWAIT ).each(function( q ) {
+		// each q == this
+		if ( this.staffname == staffname ) {
+			$('#qdatatitle tr').clone()
+				.insertAfter($('#queuetbl tr:last'))
+					.filldataQueue(this)
 		}
-	}
-	if (i==0)	//no patient in waiting list
+	});
+
+//	for (i=0,q=0; q < QWAIT.length; q++)
+//	{
+//		if (QWAIT[q].staffname == staffname)
+//		{
+//			rowi = makenextrowQueue(queuetbl, ++i)
+//			filldataQueue(QWAIT[q], i, $(rowi).children("td"))
+//		}
+//	}
+	if ($('#queuetbl tr').length == 1)	//no patient in waiting list
 	{
-		rowi = makenextrowQueue(queuetbl, ++i)
-		rowi.cells[QNUM].innerHTML = 1
-		rowi.cells[QSINCE].innerHTML = new Date().MysqlDate().thDate()
+		rowi = $('#qdatatitle tr').clone().insertAfter($('#queuetbl tr:last'))
+		rowi.children("td").eq(QNUM).html(1)
+		rowi.children("td").eq(QSINCE).html(new Date().MysqlDate().thDate())
 	}
 	$("#queuetbl tr td:first-child").css({
 		"backgroundColor":"#AABBCC",
@@ -39,23 +48,24 @@ function makenextrowQueue(table, i)
 
 	rowi = table.insertRow(i)
 	table.rows[i].innerHTML = qdatatitle.innerHTML
-	rowi.cells[QQN].style.display = "none"
 	return rowi
 }
 
-function fillselectQueue(rownum, rowcell, waitnum, qn)	//seek the QWAIT row
-{
-	var q = 0
-	if (waitnum)	//come from old queuetbl row
-		while ((q < QWAIT.length) && (QWAIT[q].waitnum != waitnum))
-			q++	
-	else			//come from new queuetbl row
-		while ((q < QWAIT.length) && (QWAIT[q].qn != qn))
-			q++	
-
-	filldataQueue(QWAIT[q], rownum, rowcell)
-}
-
+jQuery.fn.extend({
+	filldataQueue : function(bookq) {
+		cell = $(this).children()
+		cell.eq(QNUM).html(this.index())
+		cell.eq(QSINCE).html(bookq.qsince? bookq.qsince.thDate() : "")
+		cell.eq(QHN).html(bookq.hn)
+		cell.eq(QNAME).html(bookq.patient)
+		cell.eq(QAGE).html(bookq.dob? bookq.dob.getAge(bookq.qsince) : "")
+		cell.eq(QDIAGNOSIS).html(bookq.diagnosis? bookq.diagnosis : "")
+		cell.eq(QTREATMENT).html(bookq.treatment? bookq.treatment : "")
+		cell.eq(QTEL).html(bookq.tel)
+		cell.eq(QQN).html(bookq.qn)
+	}
+})
+/*
 function filldataQueue(bookq, rownum, rowcell)		
 {
 	rowcell.eq(QNUM).html(rownum)
@@ -67,6 +77,19 @@ function filldataQueue(bookq, rownum, rowcell)
 	rowcell.eq(QTREATMENT).html(bookq.treatment? bookq.treatment : "")
 	rowcell.eq(QTEL).html(bookq.tel)
 	rowcell.eq(QQN).html(bookq.qn)
+}
+*/
+function fillselectQueue(rownum, rowcell, waitnum, qn)	//seek the QWAIT row
+{
+	var q = 0
+	if (waitnum)	//come from old queuetbl row
+		while ((q < QWAIT.length) && (QWAIT[q].waitnum != waitnum))
+			q++	
+	else			//come from new queuetbl row
+		while ((q < QWAIT.length) && (QWAIT[q].qn != qn))
+			q++	
+
+	filldataQueue(QWAIT[q], rownum, rowcell)
 }
 
 function fillSetTableQueue(pointing)

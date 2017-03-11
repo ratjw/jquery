@@ -11,14 +11,10 @@ function editHistory(rowmain, qn)
 	function callbackeditHistory(response)
 	{
 		if (!response || response.indexOf("DBfailed") != -1)
-		{
-			$("#alert").text("Data history DBfailed!\n" + response);
-			$("#alert").fadeIn();
-		}
+			alert("Data history DBfailed!\n" + response);
 		else
-		{
 			makehistory(rowmain, response)
-		}
+
 		$("#editcell").hide()
 	}
 }
@@ -68,14 +64,10 @@ function deleteHistory(rowmain, qn)
 	function callbackdeleteHistory(response)
 	{
 		if (!response || response.indexOf("DBfailed") != -1)
-		{
-			$("#alert").text("Delete history DBfailed!\n" + response);
-			$("#alert").fadeIn();
-		}
+			alert("Delete history DBfailed!\n" + response)
 		else
-		{
 			makeDeleteHistory(rowmain, response)
-		}
+
 		$("#editcell").hide()
 	}
 }
@@ -119,7 +111,20 @@ function makeDeleteHistory(rowmain, response)
 
 function PACS(hn) 
 { 
-	open('http://synapse/explore.asp?path=/All Patients/InternalPatientUID='+hn);
+	var sql = "PAC=http://synapse/explore.asp"
+
+		Ajax(CHECKPAC, sql, callbackCHECKPAC)
+
+	function callbackCHECKPAC(response)
+	{
+		if (!response || response.indexOf("PAC") == -1)
+			alert(response)
+		else
+			open('http://synapse/explore.asp?path=/All Patients/InternalPatientUID='+hn);
+
+		$("#editcell").hide()
+	}
+
 } 
 
 function holiday(date)

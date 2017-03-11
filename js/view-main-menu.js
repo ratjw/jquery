@@ -30,7 +30,7 @@ function fillSetTable(rownum, pointing)
 	else
 		$("#item6").parent().addClass(disabled)
 
-	$("#item7").html("PAC")
+	$("#item7").html("PACS")
 	if (hn)
 		$("#item7").parent().removeClass(disabled)
 	else
@@ -80,7 +80,7 @@ function fillSetTable(rownum, pointing)
 					editHistory(rowmain, qn)
 					break
 				case "item7":
-					PAC(hn)
+					PACS(hn)
 					break
 				case "item8":
 					fillEquipTable(rownum, qn)

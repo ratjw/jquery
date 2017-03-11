@@ -118,3 +118,14 @@ function URIcomponent(qoute)
 	qoute = qoute.replace(/\\/g, "\\\\")
 	return encodeURIComponent(qoute)
 }
+
+function alert(message)	//get last Monday 
+{
+	$("#alert").find('div').text(message);
+	$("#alert").fadeIn();
+}
+
+function closeAlert()	//get last Monday 
+{
+	$("#alert").hide();
+}

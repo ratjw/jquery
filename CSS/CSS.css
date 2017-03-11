@@ -178,12 +178,11 @@ tr#movemode { background-color: teal; }	/* pre-move row */
 	left:30%;
 	width: 300px;
 	height:200px;
-	line-height: 180px;
 	background-color: snow;
 	border: 2px solid silver;
 	text-align:center;
 	font-weight: bold;
-	font-size: 24px;
+	font-size: 20px;
 	color: slategray;
 	box-shadow: 20px 30px 40px slategray;
 }
