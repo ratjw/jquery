@@ -1,7 +1,14 @@
 function Qclicktable(clickedCell)
 {
-	if ((clickedCell.id == "editcell") || (clickedCell.nodeName != "TD"))
-			return
+	if (clickedCell.id == "editcell")
+		return
+
+	$("#editcell").hide()
+	$(".ui-menu").hide()
+	$(".ui-dialog").hide()
+
+	if  (clickedCell.nodeName != "TD")
+		return	
 
 	savePreviouscellQueue()
 	storePresentcellQueue(clickedCell)
@@ -46,12 +53,10 @@ function editingqueue(event)
 	}
 	else if (keycode == 27)
 	{
-		if ($("#editcell").data("cell-index") == QNUM)
+		if ($("#editcell").data("cellIndex") == QNUM)
 			$(".ui-menu").hide()
-		else
-			$($("#editcell").data("location")).html($("#editcell").data("content"))
 
-		$("#editcell").hide()
+		$("#editcell").hide()	//just do nothing
 		window.focus()
 		event.preventDefault()
 		return false
@@ -61,9 +66,8 @@ function editingqueue(event)
 function savePreviouscellQueue() 
 {
 	if ((!$("#editcell").data("location")) ||
-		($("#editcell").data('table-id') != 'queuetbl'))
+		($("#editcell").data('tableID') != 'queuetbl'))
 	{
-		$(".ui-menu").hide()
 		return
 	}
 
@@ -71,7 +75,7 @@ function savePreviouscellQueue()
 	if (content == $("#editcell").data("content"))
 		return
 
-	switch($("#editcell").data("cell-index"))
+	switch($("#editcell").data("cellIndex"))
 	{
 		case QNUM:
 			$(".ui-menu").hide()
@@ -146,7 +150,7 @@ function saveContentQueue(column, content)
 function saveHNinputQueue(hn, content)
 {
 	var rowtr = $($("#editcell").data("tableRow"))
-	var rowcell = $($("#editcell").data("tableRow")).children("td")
+	var rowcell = rowtr.children("td")
 	var qsince = rowcell.eq(QSINCE).html().numDate()
 	var patient = rowcell.eq(QNAME).html()
 	var qn = rowcell.eq(QQN).html()
@@ -155,7 +159,7 @@ function saveHNinputQueue(hn, content)
 
 	if (patient)
 	{
-		$("#editcell").html($("#editcell").data("content"))
+		$("#editcell").hide()	//just do nothing
 		return
 	}
 
@@ -182,10 +186,8 @@ function saveHNinputQueue(hn, content)
 
 	function callbackgetByHNqueue(response)
 	{
-		if (!response || response.indexOf("patient") == -1)	//no patient
-			alert("Error getnamehn : "+ response)
-		else if (response.indexOf("DBfailed") != -1)
-			alert("Failed! book($mysqli)" + response)
+		if ((!response) || (response.indexOf("patient") == -1) || (response.indexOf("{") == -1))
+			alert(response)
 		else if (response.indexOf("{") != -1)
 		{	//Only one patient
 			updateBOOK(response)
@@ -228,7 +230,7 @@ function storePresentcellQueue(pointing)
 		case QDIAGNOSIS:
 		case QTREATMENT:
 		case QTEL:		//store content in "data" of editcell
-			$("#editcell").data("content", $(pointing).html())
+			$("#editcell").data("content", pointing.innerHTML)
 			$(".ui-menu").hide()
 			break
 	}

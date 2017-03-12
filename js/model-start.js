@@ -24,10 +24,10 @@ function loadtable(userid)
 		if ($('#paperdiv').css('display') == 'block') {
 			return
 		}
-		var table-id = $("#editcell").data('table-id')
-		if (table-id == "tbl")
+		var tableID = $("#editcell").data('tableID')
+		if (tableID == "tbl")
 			editing(event)
-		else if (table-id == "queuetbl")
+		else if (tableID == "queuetbl")
 			editingqueue(event)
 		return
 	})
@@ -109,16 +109,16 @@ function countReset()
 function editcell(pointing)
 {
 	var pos = $(pointing).position()
-	var table-id = $(pointing).closest('table').attr('id')
-	var row-index = $(pointing).closest('tr').index()
-	var cell-index = $(pointing).index()
+	var tableID = $(pointing).closest('table').attr('id')
+	var rowIndex = $(pointing).closest('tr').index()
+	var cellIndex = $(pointing).index()
 
-	$("#editcell").data("location", "#"+ table-id +" tr:eq("+ row-index +") td:eq("+ cell-index +")")
-	$("#editcell").data("tableRow", "#"+ table-id +" tr:eq("+ row-index +")")
-	$("#editcell").data("table-id", table-id)
-	$("#editcell").data("row-index", row-index)
-	$("#editcell").data("cell-index", cell-index)
-	$("#editcell").html($(pointing).html())
+	$("#editcell").data("location", "#"+ tableID +" tr:eq("+ rowIndex +") td:eq("+ cellIndex +")")
+	$("#editcell").data("tableRow", "#"+ tableID +" tr:eq("+ rowIndex +")")
+	$("#editcell").data("tableID", tableID)
+	$("#editcell").data("rowIndex", rowIndex)
+	$("#editcell").data("cellIndex", cellIndex)
+	$("#editcell").html(pointing.innerHTML)
 	$("#editcell").css({
 		top: pos.top + "px",
 		left: pos.left + "px",
@@ -203,14 +203,13 @@ function initResize(id)
 			var parent = ui.element.parent();
 			var remainSpace = parent.width() - ui.element.outerWidth()
 			var divTwo = ui.element.next()
-			var margin = divTwo.outerWidth() - divTwo.innerWidth()
 			ui.element.css(
 			{
 				width: ui.element.outerWidth()/parent.width()*100+"%",
 			});
 			ui.element.next().css(
 			{
-				width: (remainSpace-margin)/parent.width()*100+"%",
+				width: remainSpace/parent.width()*100+"%",
 			});
 		}
 	});

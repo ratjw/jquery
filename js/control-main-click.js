@@ -59,8 +59,8 @@ function editing(event)
 	{
 		$(".ui-menu").hide()
 		$(".ui-dialog").hide()
-		if ($("#editcell").data("cell-index").index() != OPDATE)
-			$($("#editcell").data("location")).html($("#editcell").data("content"))
+		if ($("#editcell").data("cellIndex").index() != OPDATE)
+			$("#editcell").hide()	//just do nothing
 		$("#editcell").hide()
 		window.focus()
 		event.preventDefault()
@@ -72,14 +72,14 @@ function savePreviouscell()
 {
 	if (!$("#editcell").data("location"))
 		return
-	if ($("#editcell").data('table-id') != 'tbl')
+	if ($("#editcell").data('tableID') != 'tbl')
 		return
 
 	var content = $("#editcell").html().replace(/^(\s*<br\s*\/?>)*\s*|\s*(<br\s*\/?>\s*)*$/g, '')
 	if (content == $("#editcell").data("content"))
 		return
 
-	switch($("#editcell").data("cell-index"))
+	switch($("#editcell").data("cellIndex"))
 	{
 		case OPDATE:
 			$(".ui-menu").hide()
@@ -161,7 +161,7 @@ function saveHNinput(hn, content)
 
 	if (patient)
 	{
-		$("#editcell").html($("#editcell").data("content"))	//just for show instantly
+		$("#editcell").hide()	//just do nothing
 		return
 	}
 
@@ -188,7 +188,6 @@ function saveHNinput(hn, content)
 		else 
 		{
 			updateBOOK(response)
-			$($("#editcell").data("location")).html(content)	//just for show instantly
 			fillthisDay(opdate)
 		}
 	}
@@ -196,13 +195,10 @@ function saveHNinput(hn, content)
 
 function storePresentcell(pointing)
 {  
+	var rindex = $(pointing).closest("tr").index()
 	var cindex = $(pointing).closest("td").index()
-	var rowtr = $(pointing).closest("tr")
-	var rindex = $(rowtr).index()
-	var qn = $(rowtr).children("td").eq(QN).html()
 
 	editcell(pointing)
-	$("#editcell").data("content", $(pointing).html())
 
 	switch(cindex)
 	{
@@ -210,6 +206,7 @@ function storePresentcell(pointing)
 			fillSetTable(rindex, pointing)
 			break
 		case STAFFNAME:
+			$("#editcell").data("content", pointing.innerHTML)
 			stafflist(pointing)
 			break
 		case NAME:
@@ -220,6 +217,7 @@ function storePresentcell(pointing)
 		case DIAGNOSIS:
 		case TREATMENT:
 		case TEL:		//store content in "data" of editcell
+			$("#editcell").data("content", pointing.innerHTML)
 			break
 	}
 }
