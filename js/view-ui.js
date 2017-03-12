@@ -127,12 +127,13 @@ function DragDropStaff()
 		},
 
 		drop: function (event, ui) {
-			var finalWaitnum
+			var finalWaitnum, prevqn, dropqn
 			var staffname = $( "#titlename" ).html()
 			var thatRow = ui.draggable
 			var uidrag = $(ui.draggable).children("td")
 			var thatDate = uidrag.eq(OPDATE).html().numDate()
 			var dragTable = $(ui.draggable).closest("table").attr("id")
+
 			if (dragTable == "tbl") {
 				var staffdrag = uidrag.eq(STAFFNAME).html()
 				if (staffdrag != staffname)
@@ -141,24 +142,27 @@ function DragDropStaff()
 			} else {
 				var dragqn = uidrag.eq(QQN).html()
 			}
-			var prevqn = $(this).prev().children("td").eq(QQN).html()
-			if (prevqn) {
+
+			if (prevqn = $(this).prev().children("td").eq(QQN).html())
 				var prevWaitnum = findwaitnumQ(prevqn)
-			} else {
+			else
 				var prevWaitnum = 0
-			}
-			var dropqn = $(this).children("td").eq(QQN).html()
-			if (dropqn) {
+
+			if (dropqn = $(this).children("td").eq(QQN).html()) {
+
 				var dropWaitnum = findwaitnumQ(dropqn)
+
 				if (dragTable == "tbl")
 					thisdrop = $(this)	//ui.draggable from another table, same number of rows
 				else
 					thisdrop = $(this).next()	//ui.draggable was added to last row of same table
+
 				if (thisdrop.is(":last-child"))
 					finalWaitnum = Math.round(dropWaitnum + 1)	//move to last row
 				else
 					finalWaitnum = (prevWaitnum + dropWaitnum) / 2	//interposition
-			} else {
+
+				} else {
 				finalWaitnum = Math.round(prevWaitnum + 1)		//add new last row
 			}
 

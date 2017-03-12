@@ -106,7 +106,7 @@ function saveContentQueue(column, content)
 	var qsince = rowcell.eq(QSINCE).html().numDate()	//already new Date() in new row
 	var qn = rowcell.eq(QQN).html()
 	var staffname = $( "#titlename" ).html()
-	var sqlstring, waitnum
+	var sqlstring, waitnum, prevqn
 
 	$($("#editcell").data("location")).html(content)	//just for show instantly
 
@@ -121,8 +121,10 @@ function saveContentQueue(column, content)
 	}
 	else
 	{
-		var prevqn = rowtr.prev().children("td").eq(QQN).html()
-		waitnum = Math.round(findwaitnumQ(prevqn) + 1)
+		if (prevqn = rowtr.prev().children("td").eq(QQN).html())
+			waitnum = Math.round(findwaitnumQ(prevqn) + 1)
+		else
+			waitnum = 1
 
 		sqlstring = "sqlReturnbook=INSERT INTO book ("
 		sqlstring += "waitnum, qsince, opdate, staffname, "+ column +", editor) VALUES ("
@@ -155,7 +157,7 @@ function saveHNinputQueue(hn, content)
 	var patient = rowcell.eq(QNAME).html()
 	var qn = rowcell.eq(QQN).html()
 	var staffname = $( "#titlename" ).html()
-	var sqlstring, waitnum
+	var sqlstring, waitnum, prevqn
 
 	if (patient)
 	{
@@ -169,8 +171,10 @@ function saveHNinputQueue(hn, content)
 	content = content.replace(/^\s+/g, "")
 
 	if (!qn) {
-		var prevqn = rowtr.prev().children("td").eq(QQN).html()
-		waitnum = Math.round(findwaitnumQ(prevqn) + 1)
+		if (prevqn = rowtr.prev().children("td").eq(QQN).html())
+			waitnum = Math.round(findwaitnumQ(prevqn) + 1)
+		else
+			waitnum = 1
 	}
 
 	sqlstring = "hn=" + content
