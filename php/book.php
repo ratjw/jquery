@@ -6,7 +6,9 @@
 
  	//waitnum = null :: deleted cases
 	//waitnum = 0 :: never in waitnum list
-	//waitnum > 0 :: being in waiting list => opdate  = '0000-00-00'
+	//waitnum > 0 :: is being or has been in waiting list
+	//opdate  = '0000-00-00' :: is being in '#queuetbl'
+	//qsince is never changed
 
 function book($mysqli)
 {

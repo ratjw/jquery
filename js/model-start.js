@@ -22,13 +22,12 @@ function loadtable(userid)
 	$(document).keydown( function (event) {
 		countReset();
 		if ($('#paperdiv').css('display') == 'block') {
-//			$('#paperdiv').focus()
 			return
 		}
-		var table = $("#editcell").data("located").closest("table").attr("id")
-		if (table == "tbl")
+		var queuetbl = $("#queuecontainer").css('display')
+		if (queuetbl == "none")
 			editing(event)
-		else if (table == "queuetbl")
+		else if (queuetbl == "block")
 			editingqueue(event)
 		return
 	})
@@ -91,8 +90,9 @@ function updating()
 	{
 		if (response && response.indexOf("opdate") != -1)
 		{								//there is new entry after TIMESTAMP
-			updateBOOK(response);
-			fillall()
+			updateBOOK(response)
+			var start = $('#tbl > tbody > tr > td:eq('+ OPDATE +')').html().numDate()
+			fillall(start)
 			DragDrop()
 		}
 		clearTimeout(TIMER);
@@ -109,9 +109,16 @@ function countReset()
 function editcell(pointing)
 {
 	var pos = $(pointing).position()
+	var table = $(pointing).closest('table').attr('id')
+	var row = $(pointing).closest('tr').index()
+	var cell = $(pointing).index()
 
+	$("#editcell").data("location", "#"+ table +" tr:eq("+ row +") td:eq("+ cell +")")
+	$("#editcell").data("tableRow", "#"+ table +" tr:eq("+ row +")")
+	$("#editcell").data("table", table)
+	$("#editcell").data("row", row)
+	$("#editcell").data("cell", cell)
 	$("#editcell").html($(pointing).html())
-	$("#editcell").data("located", $(pointing))
 	$("#editcell").css({
 		top: pos.top + "px",
 		left: pos.left + "px",

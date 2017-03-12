@@ -19,36 +19,16 @@ function staffqueue(staffname)
 		}
 	});
 
-//	for (i=0,q=0; q < QWAIT.length; q++)
-//	{
-//		if (QWAIT[q].staffname == staffname)
-//		{
-//			rowi = makenextrowQueue(queuetbl, ++i)
-//			filldataQueue(QWAIT[q], i, $(rowi).children("td"))
-//		}
-//	}
 	if ($('#queuetbl tr').length == 1)	//no patient in waiting list
 	{
-		rowi = $('#qdatatitle tr').clone().insertAfter($('#queuetbl tr:last'))
-		rowi.children("td").eq(QNUM).html(1)
-		rowi.children("td").eq(QSINCE).html(new Date().MysqlDate().thDate())
+		$('#qdatatitle tr').clone().insertAfter($('#queuetbl tr:last'))
+			.children("td").eq(QNUM).html(1)
+			.parent().children("td").eq(QSINCE).html(new Date().MysqlDate().thDate())
 	}
-	$("#queuetbl tr td:first-child").css({
-		"backgroundColor":"#AABBCC",
-		"color":"white"
-		})
+
 	$("#queuecontainer").scrollTop(scrolled)
+
 	DragDropStaff()
-}
-
-function makenextrowQueue(table, i)
-{	// i = the rownum to be made
-	var cols = table.rows[0].cells.length
-	var rowi
-
-	rowi = table.insertRow(i)
-	table.rows[i].innerHTML = qdatatitle.innerHTML
-	return rowi
 }
 
 jQuery.fn.extend({
@@ -65,32 +45,6 @@ jQuery.fn.extend({
 		cell.eq(QQN).html(bookq.qn)
 	}
 })
-/*
-function filldataQueue(bookq, rownum, rowcell)		
-{
-	rowcell.eq(QNUM).html(rownum)
-	rowcell.eq(QSINCE).html(bookq.qsince? bookq.qsince.thDate() : "")
-	rowcell.eq(QHN).html(bookq.hn)
-	rowcell.eq(QNAME).html(bookq.patient)
-	rowcell.eq(QAGE).html(bookq.dob? bookq.dob.getAge(bookq.qsince) : "")
-	rowcell.eq(QDIAGNOSIS).html(bookq.diagnosis? bookq.diagnosis : "")
-	rowcell.eq(QTREATMENT).html(bookq.treatment? bookq.treatment : "")
-	rowcell.eq(QTEL).html(bookq.tel)
-	rowcell.eq(QQN).html(bookq.qn)
-}
-*/
-function fillselectQueue(rownum, rowcell, waitnum, qn)	//seek the QWAIT row
-{
-	var q = 0
-	if (waitnum)	//come from old queuetbl row
-		while ((q < QWAIT.length) && (QWAIT[q].waitnum != waitnum))
-			q++	
-	else			//come from new queuetbl row
-		while ((q < QWAIT.length) && (QWAIT[q].qn != qn))
-			q++	
-
-	filldataQueue(QWAIT[q], rownum, rowcell)
-}
 
 function fillSetTableQueue(pointing)
 {
@@ -127,6 +81,7 @@ function fillSetTableQueue(pointing)
 					deletecaseQ(rowmain, thisqqn)
 					break
 			}
+			$("#editcell").data("location", "")
 			$("#editcell").hide()
 			$(".ui-menu").hide()
 			return false
@@ -136,17 +91,14 @@ function fillSetTableQueue(pointing)
 	showMenu(pointing, "#queuemenu", "#queuecontainer")
 }
 
-function addnewrowQ(num)
+function addnewrowQ()
 {
-	var queuetbl = document.getElementById("queuetbl")
-	var toscroll
+	$('#qdatatitle tr').clone().insertAfter($('#queuetbl tr:last'))
+		.children("td").eq(QNUM).html($('#queuetbl tr:last').index())
+		.parent().children("td").eq(QSINCE).html(new Date().MysqlDate().thDate())
 
-	rownum = $("#queuetbl tr").length	//always append to table end
-	rowi = makenextrowQueue(queuetbl, rownum)
-	rowi.cells[QNUM].innerHTML = rownum
-	rowi.cells[QSINCE].innerHTML = new Date().MysqlDate().thDate()
-	toscroll = $("#queuetbl").height() - $("#queuecontainer").height() + $(rowi).height()
-	$("#queuecontainer").scrollTop(toscroll)
+	$("#queuecontainer").scrollTop($("#queuetbl tr:last").height())
+
 	DragDropStaff()
 }
 

@@ -2,8 +2,9 @@
 include "connect.php";
 require_once "book.php";
 
-	$waitnum = $qsince = $hn = $staffname = $qn = $username = "";
-	$opdate = '0000-00-00';
+	$waitnum = 0;
+	$hn = $staffname = $qn = $username = "";
+	$qsince = $opdate = '0000-00-00';
 
 	extract($_GET);
 
@@ -29,14 +30,14 @@ require_once "book.php";
 
 	extract($resultz);
 
-	if ($qn)
+	if ($qn)	//existing row, just update patient's name. waitnum not concern
 	{
 		$sql = "UPDATE book SET hn = '$hn', patient = '$initial_name"."$first_name"." "."$last_name',";
 		$sql = $sql." dob = '$dob', gender = '$gender', editor = '$username' ";
 		$sql = $sql."WHERE qn = $qn;";
 	}
-	else
-	{
+	else	//new row, if from '#queuetbl' -> waitnum is provided
+	{					//if from '#tbl' -> no waitnum (but already = 0 from above)
 		$sql = "INSERT INTO book (waitnum, qsince, opdate, staffname, hn, patient, dob, gender, editor) "; 
 		$sql = $sql."VALUES ($waitnum, '$qsince', '$opdate', '$staffname', '$hn', ";
 		$sql = $sql."'$initial_name"."$first_name"." "."$last_name', '$dob', '$gender', '$username');";

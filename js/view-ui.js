@@ -155,11 +155,11 @@ function DragDropStaff()
 				else
 					thisdrop = $(this).next()	//ui.draggable was added to last row of same table
 				if (thisdrop.is(":last-child"))
-					finalWaitnum = dropWaitnum + 1
+					finalWaitnum = Math.round(dropWaitnum + 1)	//move to last row
 				else
-					finalWaitnum = (prevWaitnum + dropWaitnum) / 2
+					finalWaitnum = (prevWaitnum + dropWaitnum) / 2	//interposition
 			} else {
-				finalWaitnum = prevWaitnum + 1
+				finalWaitnum = Math.round(prevWaitnum + 1)		//add new last row
 			}
 
 			var sql = "sqlReturnbook=UPDATE book SET waitnum = "+ finalWaitnum

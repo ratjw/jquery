@@ -87,6 +87,7 @@ function fillSetTable(rownum, pointing)
 					break
 			}
 
+			$("#editcell").data("location", "")
 			$("#editcell").hide()		//to disappear after selection
 			$(".ui-menu").hide()		//to disappear after selection
 			return false
@@ -103,7 +104,7 @@ function stafflist(pointing)
 			var staffname = ui.item.text()
 			$(pointing).html(staffname)
 			saveContent("staffname", staffname)
-			$("#editcell").data("located", "")
+			$("#editcell").data("location", "")
 			$("#editcell").hide()		//to disappear after selection
 			$('#stafflist').hide()		//to disappear after selection
 			return false

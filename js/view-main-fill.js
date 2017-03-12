@@ -65,8 +65,8 @@ function fillall(start)
 	var nextyear = new Date().getFullYear() + 1
 	var month = new Date().getMonth()
 	var todate = new Date().getDate()
-	
-	until = (new Date(nextyear, month, todate)).MysqlDate()
+	var until = (new Date(nextyear, month, todate)).MysqlDate()
+
 	date = date.nextdays(1)
 	while (date < until)
 	{

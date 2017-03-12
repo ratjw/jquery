@@ -59,8 +59,8 @@ function editing(event)
 	{
 		$(".ui-menu").hide()
 		$(".ui-dialog").hide()
-		if ($("#editcell").data("located").index() != OPDATE)
-			$("#editcell").data("located").html($("#editcell").data("content"))
+		if ($("#editcell").data("cell").index() != OPDATE)
+			$($("#editcell").data("location")).html($("#editcell").data("content"))
 		$("#editcell").hide()
 		window.focus()
 		event.preventDefault()
@@ -70,19 +70,16 @@ function editing(event)
 
 function savePreviouscell() 
 {
-	if (!$("#editcell").data("located"))
+	if (!$("#editcell").data("location"))
 		return
-	if ($("#editcell").data("located").closest('table').attr("id") != 'tbl')
+	if ($("#editcell").data('table') != 'tbl')
 		return
 
 	var content = $("#editcell").html().replace(/^(\s*<br\s*\/?>)*\s*|\s*(<br\s*\/?>\s*)*$/g, '')
 	if (content == $("#editcell").data("content"))
 		return
 
-	$("#editcell").data("located").html(content)
-	var editcindex = $("#editcell").data("located").index()
-
-	switch(editcindex)
+	switch($("#editcell").data("cell"))
 	{
 		case OPDATE:
 			$(".ui-menu").hide()
@@ -111,7 +108,7 @@ function savePreviouscell()
 
 function saveContent(column, content)	//column name in MYSQL
 {
-	var rowcell = $("#editcell").data("located").closest("tr").children("td")
+	var rowcell = $($("#editcell").data("tableRow")).children("td")
 	var opdate = rowcell.eq(OPDATE).html().numDate()
 	var qn = rowcell.eq(QN).html()
 	var sqlstring
@@ -119,6 +116,8 @@ function saveContent(column, content)	//column name in MYSQL
 
 	if (!qn)
 		qsince = new Date().MysqlDate()
+
+	$($("#editcell").data("location")).html(content)	//just for show instantly
 
 	content = URIcomponent(content)			//take care of white space, double qoute, 
 											//single qoute, and back slash
@@ -132,8 +131,8 @@ function saveContent(column, content)	//column name in MYSQL
 	else
 	{
 		sqlstring = "sqlReturnbook=INSERT INTO book ("
-		sqlstring += "waitnum, qsince, opdate, "+ column +", editor) VALUES ("
-		sqlstring += "0, '"+ qsince +"', '"+ opdate +"', '"+ content +"', '"+ THISUSER +"');"
+		sqlstring += "qsince, opdate, "+ column +", editor) VALUES ("
+		sqlstring += qsince +"', '"+ opdate +"', '"+ content +"', '"+ THISUSER +"');"
 	}
 
 	Ajax(MYSQLIPHP, sqlstring, callbacksaveContent);
@@ -148,32 +147,33 @@ function saveContent(column, content)	//column name in MYSQL
 		{
 			updateBOOK(response);
 			fillthisDay(opdate)
-			$("#editcell").data("content", "")
 		}
 	}
 }
 
 function saveHNinput(hn, content)
 {
-	var rowcell = $("#editcell").data("located").parent().children("td")
+	var rowcell = $($("#editcell").data("tableRow")).children("td")
 	var opdate = rowcell.eq(OPDATE).html().numDate()
 	var patient = rowcell.eq(NAME).html()
 	var qn = rowcell.eq(QN).html()
 	var qsince
-
-	if (!qn)
-		qsince = new Date().MysqlDate()
 
 	if (patient)
 	{
 		$("#editcell").html($("#editcell").data("content"))	//just for show instantly
 		return
 	}
+
+	$($("#editcell").data("location")).html(content)	//just for show instantly
+
 	content = content.replace(/<br>/g, "")
 	content = content.replace(/^\s+/g, "")
 
+	if (!qn)
+		qsince = new Date().MysqlDate()
+
 	var sqlstring = "hn=" + content
-	sqlstring += "&waitnum=0"
 	sqlstring += "&qsince="+ qsince
 	sqlstring += "&opdate="+ opdate
 	sqlstring += "&qn="+ qn
@@ -188,7 +188,7 @@ function saveHNinput(hn, content)
 		else 
 		{
 			updateBOOK(response)
-			$("#editcell").data("located").html(content)
+			$($("#editcell").data("location")).html(content)	//just for show instantly
 			fillthisDay(opdate)
 		}
 	}
@@ -226,7 +226,7 @@ function storePresentcell(pointing)
 
 function findPrevcell(event) 
 {
-	var prevcell = $("#editcell").data("located")
+	var prevcell = $($("#editcell").data("location"))
 	var column = prevcell.index()
 
 	if (column = EDITABLE[($.inArray(column, EDITABLE) - 1)])
@@ -254,7 +254,7 @@ function findPrevcell(event)
 
 function findNextcell(event) 
 {
-	var nextcell = $("#editcell").data("located")
+	var nextcell = $($("#editcell").data("location"))
 	var column = nextcell.index()
 	var lastrow = $('#tbl tr:last-child').index()
 

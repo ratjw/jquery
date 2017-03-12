@@ -71,7 +71,7 @@
 #tbl tr.friday { background-color: #F7FFF7; }
 #tbl tr.saturday { background-color: #FFFFFF; }
 
-#tbl td.sun, #tbl td.mon, #tbl td.tue, #tbl td.wed, #tbl td.thu, #tbl td.fri, #tbl td.sat {
+#tbl td:first-child {
 	font-size: 12px; background-color: #E0F0F7; 
 }
 
@@ -107,6 +107,11 @@
 	background-color: #F0F0F0;
 	border-left: solid 1px silver;
 	border-bottom: solid 1px silver;
+}
+
+#queuetbl td:first-child {
+	background-color: #AABBCC;
+	color: white;
 }
 
 #titlebar {
