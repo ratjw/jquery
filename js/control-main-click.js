@@ -59,7 +59,7 @@ function editing(event)
 	{
 		$(".ui-menu").hide()
 		$(".ui-dialog").hide()
-		if ($("#editcell").data("cell").index() != OPDATE)
+		if ($("#editcell").data("cell-index").index() != OPDATE)
 			$($("#editcell").data("location")).html($("#editcell").data("content"))
 		$("#editcell").hide()
 		window.focus()
@@ -72,14 +72,14 @@ function savePreviouscell()
 {
 	if (!$("#editcell").data("location"))
 		return
-	if ($("#editcell").data('table') != 'tbl')
+	if ($("#editcell").data('table-id') != 'tbl')
 		return
 
 	var content = $("#editcell").html().replace(/^(\s*<br\s*\/?>)*\s*|\s*(<br\s*\/?>\s*)*$/g, '')
 	if (content == $("#editcell").data("content"))
 		return
 
-	switch($("#editcell").data("cell"))
+	switch($("#editcell").data("cell-index"))
 	{
 		case OPDATE:
 			$(".ui-menu").hide()

@@ -46,7 +46,7 @@ function editingqueue(event)
 	}
 	else if (keycode == 27)
 	{
-		if ($("#editcell").data("cell") == QNUM)
+		if ($("#editcell").data("cell-index") == QNUM)
 			$(".ui-menu").hide()
 		else
 			$($("#editcell").data("location")).html($("#editcell").data("content"))
@@ -61,7 +61,7 @@ function editingqueue(event)
 function savePreviouscellQueue() 
 {
 	if ((!$("#editcell").data("location")) ||
-		($("#editcell").data('table') != 'queuetbl'))
+		($("#editcell").data('table-id') != 'queuetbl'))
 	{
 		$(".ui-menu").hide()
 		return
@@ -71,7 +71,7 @@ function savePreviouscellQueue()
 	if (content == $("#editcell").data("content"))
 		return
 
-	switch($("#editcell").data("cell"))
+	switch($("#editcell").data("cell-index"))
 	{
 		case QNUM:
 			$(".ui-menu").hide()

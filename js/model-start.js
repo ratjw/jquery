@@ -24,10 +24,10 @@ function loadtable(userid)
 		if ($('#paperdiv').css('display') == 'block') {
 			return
 		}
-		var queuetbl = $("#queuecontainer").css('display')
-		if (queuetbl == "none")
+		var table-id = $("#editcell").data('table-id')
+		if (table-id == "tbl")
 			editing(event)
-		else if (queuetbl == "block")
+		else if (table-id == "queuetbl")
 			editingqueue(event)
 		return
 	})
@@ -109,15 +109,15 @@ function countReset()
 function editcell(pointing)
 {
 	var pos = $(pointing).position()
-	var table = $(pointing).closest('table').attr('id')
-	var row = $(pointing).closest('tr').index()
-	var cell = $(pointing).index()
+	var table-id = $(pointing).closest('table').attr('id')
+	var row-index = $(pointing).closest('tr').index()
+	var cell-index = $(pointing).index()
 
-	$("#editcell").data("location", "#"+ table +" tr:eq("+ row +") td:eq("+ cell +")")
-	$("#editcell").data("tableRow", "#"+ table +" tr:eq("+ row +")")
-	$("#editcell").data("table", table)
-	$("#editcell").data("row", row)
-	$("#editcell").data("cell", cell)
+	$("#editcell").data("location", "#"+ table-id +" tr:eq("+ row-index +") td:eq("+ cell-index +")")
+	$("#editcell").data("tableRow", "#"+ table-id +" tr:eq("+ row-index +")")
+	$("#editcell").data("table-id", table-id)
+	$("#editcell").data("row-index", row-index)
+	$("#editcell").data("cell-index", cell-index)
 	$("#editcell").html($(pointing).html())
 	$("#editcell").css({
 		top: pos.top + "px",

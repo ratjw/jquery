@@ -13,6 +13,7 @@
 	overflow-Y: auto;
 	box-sizing: border-box;
 	border-top: solid 2px silver;
+	border-right: solid 2px silver;
 	border-left: solid 2px silver;
 }
 
@@ -24,13 +25,15 @@
 	box-sizing: border-box;
 	border-top: solid 2px silver;
 	border-right: solid 2px silver;
+	border-left: solid 0px snow;
 }
 
 .ui-resizable-e { 
 	cursor: e-resize; 
-	width: 15px; 
+	width: 10px; 
 	border-right: solid 1px silver;
 	top: 0; 
+	right: -2px;
 }
 
 #tbl {
