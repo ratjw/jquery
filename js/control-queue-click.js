@@ -170,6 +170,8 @@ function saveHNinputQueue(hn, content)
 	content = content.replace(/<br>/g, "")
 	content = content.replace(/^\s+/g, "")
 
+	if (content.length != 7)
+		return
 	if (!qn) {
 		if (prevqn = rowtr.prev().children("td").eq(QQN).html())
 			waitnum = Math.round(findwaitnumQ(prevqn) + 1)

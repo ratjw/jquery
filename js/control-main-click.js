@@ -131,7 +131,7 @@ function saveContent(column, content)	//column name in MYSQL
 	else
 	{
 		sqlstring = "sqlReturnbook=INSERT INTO book ("
-		sqlstring += "qsince, opdate, "+ column +", editor) VALUES ("
+		sqlstring += "qsince, opdate, "+ column +", editor) VALUES ('"
 		sqlstring += qsince +"', '"+ opdate +"', '"+ content +"', '"+ THISUSER +"');"
 	}
 
@@ -170,6 +170,8 @@ function saveHNinput(hn, content)
 	content = content.replace(/<br>/g, "")
 	content = content.replace(/^\s+/g, "")
 
+	if (content.length != 7)
+		return
 	if (!qn)
 		qsince = new Date().MysqlDate()
 
