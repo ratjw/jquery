@@ -73,11 +73,11 @@
   <TABLE id="queuetbl" data-role="table" class="ui-responsive">
    <TBODY>
     <TR>
-     <th style="width:3%">No.</th>
-     <th style="width:10%">Since</th>
+     <th style="width:10%">วันผ่าตัด</th>
+     <th style="width:4%">Since</th>
      <th style="width:7%">HN</th>
      <th style="width:15%">ชื่อ นามสกุล</th>
-     <th style="width:5%">อายุ</th>
+     <th style="width:4%">อายุ</th>
      <th style="width:20%">Diagnosis</th>
      <th style="width:20%">Treatment</th>
      <th style="width:20%">Note</th>
@@ -90,7 +90,7 @@
 <TABLE id="qdatatitle" style="display:none">	<!--template "qdatatitle" for "staffqueue"-->
   <TBODY>
     <TR>
-     <td data-title="No." style="text-align:right; padding-right:4px"></td>
+     <td data-title="opdateQ"></td>
      <td data-title="Since"></td>
      <td data-title="HN"></td>
      <td data-title="ชื่อ นามสกุล"></td>
@@ -102,24 +102,6 @@
 	</TR>
   </TBODY>
 </TABLE>
-
-<div id="tbldaycontainer" style="display:none">
- <TABLE id="tblday" data-role="table" class="ui-responsive">
-  <TBODY>
-   <TR>
-    <th style="width:10%">วันผ่าตัด</th>
-    <th style="width:6%">Staff</th>
-    <th style="width:5%">HN</th>
-    <th style="width:15%">ชื่อ นามสกุล</th>
-    <th style="width:4%">อายุ</th>
-    <th style="width:20%">Diagnosis</th>
-    <th style="width:20%">Treatment</th>
-    <th style="width:20%">Note</th>
-    <th style="display:none"></th>
-   </TR>
-  </TBODY>
- </TABLE>
-</div>
 
 <ul id="menu" style="display:none">
   <li><div>คิวของอาจารย์</div>
@@ -152,7 +134,6 @@
 </ul>
 
 <ul id="stafflist" style="display:none"></ul>
-
 
 <div id="alert">
 	<span class="ui-icon ui-icon-closethick" style="float: right;" onclick="closeAlert()"></span>

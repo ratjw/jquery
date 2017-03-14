@@ -53,7 +53,7 @@ function editingqueue(event)
 	}
 	else if (keycode == 27)
 	{
-		if ($("#editcell").data("cellIndex") == QOPDATE)
+		if ($("#editcell").data("cellIndex") == QNUM)
 			$(".ui-menu").hide()
 
 		$("#editcell").hide()	//just do nothing
@@ -77,7 +77,7 @@ function savePreviouscellQueue()
 
 	switch($("#editcell").data("cellIndex"))
 	{
-		case QOPDATE:
+		case QNUM:
 			$(".ui-menu").hide()
 		case QSINCE:
 			break
@@ -103,11 +103,10 @@ function saveContentQueue(column, content)
 {
 	var rowtr = $($("#editcell").data("tableRow"))
 	var rowcell = rowtr.children("td")
-	var qsince = rowcell.eq(QOPDATE).html().numDate()	//already new Date() in new row
-	var opdate = rowcell.eq(QOPDATE).html().numDate()	//already new Date() in new row
+	var qsince = rowcell.eq(QSINCE).html().numDate()	//already new Date() in new row
 	var qn = rowcell.eq(QQN).html()
 	var staffname = $( "#titlename" ).html()
-	var sqlstring, prevqn
+	var sqlstring, waitnum, prevqn
 
 	$($("#editcell").data("location")).html(content)	//just for show instantly
 
@@ -122,10 +121,14 @@ function saveContentQueue(column, content)
 	}
 	else
 	{
+		if (prevqn = rowtr.prev().children("td").eq(QQN).html())
+			waitnum = Math.round(findwaitnumQ(prevqn) + 1)
+		else
+			waitnum = 1
+
 		sqlstring = "sqlReturnbook=INSERT INTO book ("
-		sqlstring += "qsince, opdate, staffname, "
-		sqlstring += column +", editor) VALUES ('"
-		sqlstring += qsince +"', '"+ opdate +"', '"+ staffname +"', '"
+		sqlstring += "waitnum, qsince, opdate, staffname, "+ column +", editor) VALUES ("
+		sqlstring += waitnum +", '"+ qsince +"', '0000-00-00', '"+ staffname +"', '"
 		sqlstring += content +"', '"+ THISUSER +"');"
 	}
 
@@ -150,12 +153,11 @@ function saveHNinputQueue(hn, content)
 {
 	var rowtr = $($("#editcell").data("tableRow"))
 	var rowcell = rowtr.children("td")
-	var qsince = rowcell.eq(QOPDATE).html().numDate()	//already new Date() in new row
-	var opdate = rowcell.eq(QOPDATE).html().numDate()	//already new Date() in new row
+	var qsince = rowcell.eq(QSINCE).html().numDate()
 	var patient = rowcell.eq(QNAME).html()
 	var qn = rowcell.eq(QQN).html()
 	var staffname = $( "#titlename" ).html()
-	var sqlstring, prevqn
+	var sqlstring, waitnum, prevqn
 
 	if (patient)
 	{
@@ -170,10 +172,17 @@ function saveHNinputQueue(hn, content)
 
 	if (content.length != 7)
 		return
+	if (!qn) {
+		if (prevqn = rowtr.prev().children("td").eq(QQN).html())
+			waitnum = Math.round(findwaitnumQ(prevqn) + 1)
+		else
+			waitnum = 1
+	}
 
 	sqlstring = "hn=" + content
+	sqlstring += "&waitnum="+ waitnum	//if (qn), waitnum is not used in getnamehn
 	sqlstring += "&qsince="+ qsince		//already new Date() in new row
-	sqlstring += "&opdate="+ opdate
+	sqlstring += "&opdate=0000-00-00"
 	sqlstring += "&staffname="+ staffname
 	sqlstring += "&qn="+ qn
 	sqlstring += "&username="+ THISUSER
@@ -196,7 +205,7 @@ function saveHNinputQueue(hn, content)
 function findwaitnumQ(qn)
 {  
 	var waitnum
-	$(BOOK).each(function() {
+	$(QWAIT).each(function() {
 		waitnum = this.waitnum
 		return (this.qn != qn)
 	})
@@ -214,7 +223,7 @@ function storePresentcellQueue(pointing)
 
 	switch(cindex)
 	{
-		case QOPDATE:
+		case QNUM:
 			fillSetTableQueue(pointing)
 			break
 		case QSINCE:

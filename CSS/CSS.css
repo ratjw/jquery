@@ -66,11 +66,11 @@
 }
 
 #tbl tr.sunday { background-color: #FFFFFF; }
-#tbl tr.monday { background-color: #F7FFF7; }
+#tbl tr.monday { background-color: #F0FFF0; }
 #tbl tr.tuesday { background-color: #FFFFFF; }
-#tbl tr.wednesday { background-color: #F7FFF7; }
+#tbl tr.wednesday { background-color: #F0FFF0; }
 #tbl tr.thursday { background-color: #FFFFFF; }
-#tbl tr.friday { background-color: #F7FFF7; }
+#tbl tr.friday { background-color: #F0FFF0; }
 #tbl tr.saturday { background-color: #FFFFFF; }
 
 #tbl td:first-child {
@@ -85,34 +85,37 @@
 #tbl td.fri:before { content: "ศุกร์ "; }
 #tbl td.sat:before { content: "เสาร์ "; }
 
-#queuetbl, #tblday, #historytable {
+#queuetbl, #historytable {
 	border-right: solid 1px slategray;
 	width: auto;
 	table-layout: fixed;	/*make cell width = first row specified*/
 	border-collapse: collapse;
 }
 
-#queuetbl th, #tblday th, #historytable th {
+#queuetbl tr:nth-child(odd), #historytable tr:nth-child(odd) {
+    background-color: #F0FFF0;
+}
+
+#queuetbl th, #historytable th {
 	font-size: 12px;
 	font-weight: bold;
 	height: 20px;
-	background-color: #AABBCC;
+	background-color: #7799AA;
 	color: white;
 	border-left: solid 1px silver;
 	border-top: solid 1px silver;
 	border-bottom: solid 1px silver;
 }
 
-#queuetbl td, #tblday td, #historytable td {
+#queuetbl td, #historytable td {
 	empty-cells:show;
 	font-size: 12px;
-	background-color: #F0F0F0;
 	border-left: solid 1px silver;
 	border-bottom: solid 1px silver;
 }
 
 #queuetbl td:first-child {
-	background-color: #AABBCC;
+	background-color: #7799AA;
 	color: white;
 }
 

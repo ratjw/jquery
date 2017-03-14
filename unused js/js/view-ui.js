@@ -90,8 +90,8 @@ function DragDrop()
 						this_row.after(this_row.clone());
 
 					fillthisDay(thisdate)
-					DragDrop()
 				}
+				DragDrop()
 			}	
 		}
 	});
@@ -127,12 +127,11 @@ function DragDropStaff()
 		},
 
 		drop: function (event, ui) {
-			var finalWaitnum, dropqn, nextqn
+			var finalWaitnum, prevqn, dropqn
 			var staffname = $( "#titlename" ).html()
 			var thatRow = ui.draggable
 			var uidrag = $(ui.draggable).children("td")
-			var thatDate = uidrag.eq(OPDATE).html().numDate()	//only from '#tbl'
-			var dropDate = $(this).children("td").eq(QOPDATE).html().numDate()
+			var thatDate = uidrag.eq(OPDATE).html().numDate()
 			var dragTable = $(ui.draggable).closest("table").attr("id")
 
 			if (dragTable == "tbl") {
@@ -144,28 +143,32 @@ function DragDropStaff()
 				var dragqn = uidrag.eq(QQN).html()
 			}
 
-			if (dropqn = $(this).children("td").eq(QQN).html()) {
-				var dropWaitnum = findwaitnumQ(dropqn)
-				if (nextqn = $(this).next().children("td").eq(QQN).html()) {
-					if (nextqn == uidrag.eq(QQN).html()) {			//come from '#queuetbl'
-						finalWaitnum = Math.round(dropWaitnum + 1)	//move to last row
-					} else {
-						var nextWaitnum = findwaitnumQ(nextqn)
-						finalWaitnum = (nextWaitnum + dropWaitnum) / 2	//interposition
-					}
-				} else {	//come from '#tbl'
-					finalWaitnum = Math.round(dropWaitnum + 1)	//move to last row
-				}
-			} else {		//added new last row
-				var dropDate = $(this).prev().children("td").eq(QOPDATE).html()().numDate()
-				var prevqn = $(this).prev().children("td").eq(QQN).html()
+			if (prevqn = $(this).prev().children("td").eq(QQN).html())
 				var prevWaitnum = findwaitnumQ(prevqn)
-				finalWaitnum = Math.round(prevWaitnum + 1)		//added new last row
+			else
+				var prevWaitnum = 0
+
+			if (dropqn = $(this).children("td").eq(QQN).html()) {
+
+				var dropWaitnum = findwaitnumQ(dropqn)
+
+				if (dragTable == "tbl")
+					thisdrop = $(this)	//ui.draggable from another table, same number of rows
+				else
+					thisdrop = $(this).next()	//ui.draggable was added to last row of same table
+
+				if (thisdrop.is(":last-child"))
+					finalWaitnum = Math.round(dropWaitnum + 1)	//move to last row
+				else
+					finalWaitnum = (prevWaitnum + dropWaitnum) / 2	//interposition
+
+				} else {
+				finalWaitnum = Math.round(prevWaitnum + 1)		//add new last row
 			}
 
-			var sql = "sqlReturnbook=UPDATE book SET Waitnum = "+ finalWaitnum
-			sql += ", opdate='"+ dropDate
-			sql += "', editor='"+ THISUSER
+			var sql = "sqlReturnbook=UPDATE book SET waitnum = "+ finalWaitnum
+			sql += ", opdate=0000-00-00"
+			sql += ", editor='"+ THISUSER
 			sql += "' WHERE qn="+ dragqn +";"
 
 			Ajax(MYSQLIPHP, sql, callbackDragDropStaff);
@@ -183,9 +186,8 @@ function DragDropStaff()
 					if (dragTable == "tbl") {
 						deleteRow(thatRow, thatDate)
 					}
-					refillall()
-					DragDropStaff()
 				}
+				DragDropStaff()
 			}
 		}
 	});

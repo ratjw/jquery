@@ -11,26 +11,12 @@ Date.prototype.mysqlDate = function ()
 
 String.prototype.thDate = function () 
 {	//MySQL date (2014-05-11) to Thai date (11 พค. 2557) 
-	if (this < '1900-01-01')
-		return ""
 	var yyyy = parseInt(this.substr(0, 4)) + 543;
 	var mm = this.substr(5, 2);
 	for (ThMonth in NUMMONTH)
 		if (NUMMONTH[ThMonth] == mm) 
 			break;
 	return (this.substr(8, 2) +' '+ ThMonth + yyyy);
-} 
-
-String.prototype.thDateShort = function () 
-{	//MySQL date (2014-05-11) to Thai date (11 พค. 2557) 
-	if (this < '1900-01-01')
-		return ""
-	var yyyy = parseInt(this.substr(0, 4)) + 543;
-	var mm = this.substr(5, 2);
-//	for (ThMonth in NUMMONTH)
-//		if (NUMMONTH[ThMonth] == mm) 
-//			break;
-	return (this.substr(8, 2) +' '+ ThMonth + yyyy.toString().slice(-2));
 } 
 
 String.prototype.numDate = function () 
@@ -79,8 +65,8 @@ String.prototype.getAge = function (toDate)
 	}
 
 	var ageyears = years? years + Math.floor(months / 6)  + " ปี " : "";
-	var agemonths = months? months + Math.floor(days / 15)  + " ด." : "";
-	var agedays = days? days + " ว." : "";
+	var agemonths = months? months + Math.floor(days / 15)  + " เดือน " : "";
+	var agedays = days? days + " วัน" : "";
 
 	return years? ageyears : months? agemonths : agedays;
 }

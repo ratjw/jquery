@@ -57,7 +57,7 @@ function makehistory(rowmain, response)
 function deleteHistory(rowmain, qn)
 {
 	var sql = "sqlReturnData=SELECT * FROM bookhistory "
-		sql += "WHERE waitnum IS NULL;"
+		sql += "WHERE waitnum is NULL;"
 
 		Ajax(MYSQLIPHP, sql, callbackdeleteHistory)
 

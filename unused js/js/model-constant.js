@@ -3,7 +3,7 @@ var MYSQLIPHP		= "php/mysqli.php";
 var CHECKPAC		= "php/checkpac.php";
 
 var BOOK		= [];
-//var QWAIT		= [];
+var QWAIT		= [];
 var STAFF		= [];
 var THISUSER	= "";
 var TIMESTAMP	= "";
@@ -20,7 +20,7 @@ var TEL			= 7;
 var QN			= 8;
 var EDITABLE 	= [STAFFNAME, HN, DIAGNOSIS, TREATMENT, TEL];
 
-var QOPDATE		= 0;
+var QNUM		= 0;
 var QSINCE		= 1;
 var QHN			= 2;
 var QNAME		= 3;

@@ -1,17 +1,18 @@
 function staffqueue(staffname)
 {	//Display all cases of only one staff in dialog box
-	var todate = new Date().mysqlDate()
+	var queuetbl = document.getElementById("queuetbl")
 	var i = q = 0
-	var scrolled = $("#queuecontainer").scrollTop()
+	var rowi = {}
 
 	$('#titlename').html(staffname)
+	var scrolled = $("#queuecontainer").scrollTop()
 	
 	//delete previous queuetbl lest it accumulates
 	$('#queuetbl tr').slice(1).remove()
 
-	$( BOOK ).each(function() {
-		// each == this
-		if (( this.staffname == staffname ) && this.opdate >= todate) {
+	$( QWAIT ).each(function( q ) {
+		// each q == this
+		if ( this.staffname == staffname ) {
 			$('#qdatatitle tr').clone()
 				.insertAfter($('#queuetbl tr:last'))
 					.filldataQueue(this)
@@ -21,8 +22,8 @@ function staffqueue(staffname)
 	if ($('#queuetbl tr').length == 1)	//no patient in waiting list
 	{
 		$('#qdatatitle tr').clone().insertAfter($('#queuetbl tr:last'))
-			.children("td").eq(QOPDATE).html(todate.thDate())
-			.parent().children("td").eq(QSINCE).html(todate().thDate().slice(0,-4))
+			.children("td").eq(QNUM).html(1)
+			.parent().children("td").eq(QSINCE).html(new Date().mysqlDate().thDate())
 	}
 
 	$("#queuecontainer").scrollTop(scrolled)
@@ -33,13 +34,13 @@ function staffqueue(staffname)
 jQuery.fn.extend({
 	filldataQueue : function(bookq) {
 		cell = $(this).children()
-		cell.eq(QOPDATE).html(bookq.opdate.thDateShort())
-		cell.eq(QSINCE).html(bookq.qsince.thDateShort().slice(0,-2))
+		cell.eq(QNUM).html(this.index())
+		cell.eq(QSINCE).html(bookq.qsince? bookq.qsince.thDate() : "")
 		cell.eq(QHN).html(bookq.hn)
 		cell.eq(QNAME).html(bookq.patient)
-		cell.eq(QAGE).html(bookq.dob? bookq.dob.getAge(bookq.opdate) : "")
-		cell.eq(QDIAGNOSIS).html(bookq.diagnosis)
-		cell.eq(QTREATMENT).html(bookq.treatment)
+		cell.eq(QAGE).html(bookq.dob? bookq.dob.getAge(bookq.qsince) : "")
+		cell.eq(QDIAGNOSIS).html(bookq.diagnosis? bookq.diagnosis : "")
+		cell.eq(QTREATMENT).html(bookq.treatment? bookq.treatment : "")
 		cell.eq(QTEL).html(bookq.tel)
 		cell.eq(QQN).html(bookq.qn)
 	}
@@ -93,7 +94,7 @@ function fillSetTableQueue(pointing)
 function addnewrowQ()
 {
 	$('#qdatatitle tr').clone().insertAfter($('#queuetbl tr:last'))
-		.children("td").eq(QOPDATE).html($('#queuetbl tr:last').index())
+		.children("td").eq(QNUM).html($('#queuetbl tr:last').index())
 		.parent().children("td").eq(QSINCE).html(new Date().mysqlDate().thDate())
 
 	$("#queuecontainer").scrollTop($("#queuetbl tr:last").height())

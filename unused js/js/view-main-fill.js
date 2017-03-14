@@ -84,75 +84,11 @@ function fillall(start)
 	}
 }
 
-function refillall()
-{
-	var table = document.getElementById("tbl")
-	var i = k = q = 0
-	var rowi = {}
-	var date = ""
-	var madedate
-	var start = $('#tbl > tbody > tr:not(:has("th")):first > td').eq(OPDATE).html().numDate()
-	var stop = $('#tbl > tbody > tr:not(:has("th")):last > td').eq(OPDATE).html().numDate()
-
-	date = start	//find this row in BOOK
-	while ((q < BOOK.length) && (BOOK[q].opdate < start)) {
-		q++
-	}	
-
-	//i for rows in table
-	//q for rows in BOOK
-	for (q; q < BOOK.length; q++)
-	{	
-		while (date < BOOK[q].opdate)
-		{	//step over each day that is not in QBOOK
-			if (date != madedate)
-			{
-				//make a blank row for matched opday which is not already in the table
-				i++
-				rowi = makenextrowRefill(i, date, 'tbl')
-				
-				madedate = date
-			}
-			date = date.nextdays(1)
-			//make table head row before every Sunday
-			if ((new Date(date).getDay())%7 == 0)
-			{
-				if (table.rows[i].cells[0].nodeName != "TH") {
-					i++
-					table.rows[i].innerHTML = $('#tbl tr:first').html()
-				}
-			}
-		}
-		i++
-		rowi = makenextrowRefill(i, date, 'tbl')
-		filldata(BOOK[q], rowi)
-		madedate = date
-	}
-
-	date = date.nextdays(1)
-	while (date < stop)
-	{
-		//make a blank row
-		i++
-		rowi = makenextrowRefill(i, date, 'tbl')
-		
-		date = date.nextdays(1)
-		//make table head row before every Sunday
-		if (((new Date(date)).getDay())%7 == 0)
-		{
-			if (table.rows[i].cells[0].nodeName != "TH") {
-				i++
-				table.rows[i].innerHTML = $('#tbl tr:first').html()
-			}
-		}
-	}
-}
-
 function makenextrow(i, date, tableID)
 {	// i = the row to be made
 	var table = document.getElementById(tableID)
-	var datatitle = document.getElementById("datatitle")
 	var rowi
+	var datatitle = document.getElementById("datatitle")
 
 	rowi = table.insertRow(i)
 	table.rows[i].innerHTML = datatitle.innerHTML
@@ -163,31 +99,15 @@ function makenextrow(i, date, tableID)
 	return rowi
 }
 
-function makenextrowRefill(i, date, tableID)
-{	// i = the row to be made
-	var table = document.getElementById(tableID)
-	var datatitle = document.getElementById("datatitle")
-	var rowi = table.rows[i]
-
-	if (rowi.cells[0].nodeName == "TH") {
-		rowi.innerHTML = datatitle.innerHTML
-	}
-	rowi.cells[OPDATE].innerHTML = date.thDate()
-	rowi.cells[OPDATE].className = NAMEOFDAYABBR[(new Date(date)).getDay()]
-	rowi.className = NAMEOFDAYFULL[(new Date(date)).getDay()]
-	rowi.style.backgroundImage = holiday(date)
-	return rowi
-}
-
-function filldata(bookq, rowi)		//bookq = BOOK[q]
+function filldata(bookq, rowi)		//bookq = book[q]
 {
-	rowi.cells[STAFFNAME].innerHTML = bookq.staffname
-	rowi.cells[HN].innerHTML = bookq.hn
-	rowi.cells[NAME].innerHTML = bookq.patient
+	rowi.cells[STAFFNAME].innerHTML = bookq.staffname? bookq.staffname : ""
+	rowi.cells[HN].innerHTML = bookq.hn? bookq.hn : ""
+	rowi.cells[NAME].innerHTML = bookq.patient? bookq.patient : ""
 	rowi.cells[AGE].innerHTML = bookq.dob? bookq.dob.getAge(bookq.opdate) : ""
-	rowi.cells[DIAGNOSIS].innerHTML = bookq.diagnosis
-	rowi.cells[TREATMENT].innerHTML = bookq.treatment
-	rowi.cells[TEL].innerHTML = bookq.tel
+	rowi.cells[DIAGNOSIS].innerHTML = bookq.diagnosis? bookq.diagnosis : ""
+	rowi.cells[TREATMENT].innerHTML = bookq.treatment? bookq.treatment : ""
+	rowi.cells[TEL].innerHTML = bookq.tel? bookq.tel : ""
 	rowi.cells[QN].innerHTML = bookq.qn
 }
 
