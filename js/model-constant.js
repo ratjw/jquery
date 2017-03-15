@@ -3,7 +3,6 @@ var MYSQLIPHP		= "php/mysqli.php";
 var CHECKPAC		= "php/checkpac.php";
 
 var BOOK		= [];
-//var QWAIT		= [];
 var STAFF		= [];
 var THISUSER	= "";
 var TIMESTAMP	= "";

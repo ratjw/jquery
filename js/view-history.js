@@ -56,8 +56,11 @@ function makehistory(rowmain, response)
 
 function deleteHistory(rowmain, qn)
 {
-	var sql = "sqlReturnData=SELECT * FROM bookhistory "
-		sql += "WHERE waitnum IS NULL;"
+	var sql = "sqlReturnData=SELECT bh.editdatetime, b.opdate, b.staffname, "
+		sql += "b.hn, b.patient, b.diagnosis, b.treatment, b.tel, b.editor, b.qn "
+		sql += "FROM book b INNER JOIN bookhistory bh ON b.qn = bh.qn "
+		sql += "WHERE b.waitnum IS NULL AND bh.waitnum IS NULL "
+		sql += "ORDER BY editdatetime DESC;"
 
 		Ajax(MYSQLIPHP, sql, callbackdeleteHistory)
 
@@ -79,34 +82,92 @@ function makeDeleteHistory(rowmain, response)
 	var HTML_String = '<table id = "historytable">';
 	HTML_String += '<tr>';
 	HTML_String += '<th style="width:10%">Date Time</th>';
+	HTML_String += '<th style="width:5%">Op.Date</th>';
+	HTML_String += '<th style="width:5%">Staff</th>';
 	HTML_String += '<th style="width:5%">HN</th>';
 	HTML_String += '<th style="width:10%">Patient Name</th>';
-	HTML_String += '<th style="width:25%">Diagnosis</th>';
-	HTML_String += '<th style="width:25%">Treatment</th>';
+	HTML_String += '<th style="width:20%">Diagnosis</th>';
+	HTML_String += '<th style="width:20%">Treatment</th>';
 	HTML_String += '<th style="width:20%">Notice</th>';
 	HTML_String += '<th style="width:5%">Editor</th>';
+	HTML_String += '<th style="display:none"></th>';
 	HTML_String += '</tr>';
 	for (var j = 0; j < history.length; j++) 
 	{
 		HTML_String += '<tr>';
-		HTML_String += '<td>' + history[j].editdatetime +'</td>';
+		HTML_String += '<td onclick="undelete(this)">' + history[j].editdatetime +'</td>';
+		HTML_String += '<td>' + history[j].opdate +'</td>';
+		HTML_String += '<td>' + history[j].staffname +'</td>';
 		HTML_String += '<td>' + history[j].hn +'</td>';
 		HTML_String += '<td>' + history[j].patient +'</td>';
 		HTML_String += '<td>' + history[j].diagnosis +'</td>';
 		HTML_String += '<td>' + history[j].treatment +'</td>';
 		HTML_String += '<td>' + history[j].tel +'</td>';
 		HTML_String += '<td>' + history[j].editor +'</td>';
+		HTML_String += '<td>' + history[j].qn +'</td>';
 		HTML_String += '</tr>';
 	}
 	HTML_String += '</table>';
 
 	$("#dialogContainer").html(HTML_String);
 	$("#dialogContainer").dialog({
-		title: rowmain.cells[HN].innerHTML +' '+ rowmain.cells[NAME].innerHTML,
+		title: "รายชื่อที่ถูกลบ",
 		height: window.innerHeight * 50 / 100,
 		width: window.innerWidth * 50 / 100,
 	});
 	$(".ui-dialog").show()
+}
+
+function undelete(that) 
+{
+	$('#historytable').after($('#undelete'))
+	$('#undelete').show()
+	$('#undelete').position( {
+		my: "left center",
+		at: "left center",
+		of: $(that)
+	})
+	$('#undel').click(function() {
+		doUndelete()
+	})
+
+	function doUndelete() 
+	{
+		var qn = $(that).siblings(":last").html()
+
+		var sqlstring = "sqlReturnbook=UPDATE book SET "
+		sqlstring += "waitnum = 0"
+		sqlstring += ", editor = '"+ THISUSER
+		sqlstring += "' WHERE qn = " + qn + ";"
+		sqlstring += "DELETE FROM bookhistory "
+		sqlstring += "WHERE qn = " + qn
+		sqlstring += " AND waitnum IS NULL;"
+
+		Ajax(MYSQLIPHP, sqlstring, callbackUndelete);
+
+		function callbackUndelete(response)
+		{
+			if (!response || response.indexOf("DBfailed") != -1)
+			{
+				alert("Failed! update database \n\n" + response)
+			}
+			else
+			{
+				updateBOOK(response);
+				refillall()
+			}
+			$('.ui-dialog').hide()
+		}
+	}
+}
+
+function closeUndel() 
+{
+	$('#undelete').dialog({ 
+		close: function (event, ui) {
+			$(this).dialog("destroy");
+		}
+	})
 }
 
 function PACS(hn) 

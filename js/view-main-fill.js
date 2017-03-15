@@ -87,62 +87,66 @@ function fillall(start)
 function refillall()
 {
 	var table = document.getElementById("tbl")
-	var i = k = q = 0
 	var rowi = {}
 	var date = ""
 	var madedate
 	var start = $('#tbl > tbody > tr:not(:has("th")):first > td').eq(OPDATE).html().numDate()
-	var stop = $('#tbl > tbody > tr:not(:has("th")):last > td').eq(OPDATE).html().numDate()
+	var tlength = $('#tbl > tbody > tr').length
 
 	date = start	//find this row in BOOK
+
+	//q for rows in BOOK
+	var q = 0
 	while ((q < BOOK.length) && (BOOK[q].opdate < start)) {
 		q++
 	}	
 
 	//i for rows in table
-	//q for rows in BOOK
-	for (q; q < BOOK.length; q++)
-	{	
-		while (date < BOOK[q].opdate)
-		{	//step over each day that is not in QBOOK
-			if (date != madedate)
-			{
-				//make a blank row for matched opday which is not already in the table
-				i++
-				rowi = makenextrowRefill(i, date, 'tbl')
-				
-				madedate = date
+	var i = 0
+	while (i < tlength - 2)	//i++ before loop back
+	{
+		if (q < BOOK.length) {
+			while (date < BOOK[q].opdate)
+			{	//step over each day that is not in QBOOK
+				if (date != madedate)
+				{
+					//make a blank row for matched opday which is not already in the table
+					i++
+					rowi = makenextrowRefill(i, date, 'tbl')
+					
+					madedate = date
+				}
+				date = date.nextdays(1)
+				//make table head row before every Sunday
+				if ((new Date(date).getDay())%7 == 0)
+				{
+					if (table.rows[i].cells[0].nodeName != "TH") {
+						i++
+						table.rows[i].innerHTML = $('#tbl tr:first').html()
+					}
+				}
 			}
+			i++
+			rowi = makenextrowRefill(i, date, 'tbl')
+			filldata(BOOK[q], rowi)
+			madedate = date
+			q++
+		}
+		else
+		{
+			date = date.nextdays(1)
+			//make a blank row
+			i++
+			rowi = makenextrowRefill(i, date, 'tbl')
+			
 			date = date.nextdays(1)
 			//make table head row before every Sunday
-			if ((new Date(date).getDay())%7 == 0)
+			if (((new Date(date)).getDay())%7 == 0)
 			{
 				if (table.rows[i].cells[0].nodeName != "TH") {
 					i++
 					table.rows[i].innerHTML = $('#tbl tr:first').html()
 				}
-			}
-		}
-		i++
-		rowi = makenextrowRefill(i, date, 'tbl')
-		filldata(BOOK[q], rowi)
-		madedate = date
-	}
-
-	date = date.nextdays(1)
-	while (date < stop)
-	{
-		//make a blank row
-		i++
-		rowi = makenextrowRefill(i, date, 'tbl')
-		
-		date = date.nextdays(1)
-		//make table head row before every Sunday
-		if (((new Date(date)).getDay())%7 == 0)
-		{
-			if (table.rows[i].cells[0].nodeName != "TH") {
-				i++
-				table.rows[i].innerHTML = $('#tbl tr:first').html()
 			}
 		}
 	}
@@ -228,7 +232,7 @@ function addnewrow(rowmain)
 	}
 }
 
-function deletecase(rowmain, opdate, qn)
+function deleteCase(rowmain, opdate, qn)
 {
 	if (!qn)
 	{
@@ -236,21 +240,42 @@ function deletecase(rowmain, opdate, qn)
 			$(rowmain).remove()		//delete blank row
 		return
 	}
-	//not actually delete the case but set waitnum=NULL
-	var sql = "sqlReturnbook=UPDATE book SET waitnum=NULL WHERE qn="+ qn +";"
 
-	Ajax(MYSQLIPHP, sql, callbackdeleterow)
+//	$('#tbl').after($('#delete'))
+	$('#delete').show()
+	$('#delete').position( {
+		my: "left center",
+		at: "left center",
+		of: $(rowmain)
+	})
+	$('#del').click(function() {
+		doDeleteCase()
+	})
 
-	function callbackdeleterow(response)
+	function doDeleteCase() 
 	{
-		if (!response || response.indexOf("DBfailed") != -1)
-			alert ("Delete & Refresh failed!\n" + response)
-		else
+		//not actually delete the case but set waitnum=NULL
+		var sql = "sqlReturnbook=UPDATE book SET waitnum=NULL WHERE qn="+ qn +";"
+
+		Ajax(MYSQLIPHP, sql, callbackdeleterow)
+
+		function callbackdeleterow(response)
 		{
-			updateBOOK(response);
-			deleteRow(rowmain, opdate)
+			if (!response || response.indexOf("DBfailed") != -1)
+				alert ("Delete & Refresh failed!\n" + response)
+			else
+			{
+				updateBOOK(response);
+				deleteRow(rowmain, opdate)
+			}
 		}
+		$('#delete').hide()
 	}
+}
+
+function closeDel() 
+{
+	$('#delete').hide()
 }
 
 function deleteRow(rowmain, opdate)

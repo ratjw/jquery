@@ -150,7 +150,7 @@ tr#movemode { background-color: teal; }	/* pre-move row */
 	box-shadow: 10px 20px 30px slategray;
 }
 
-.ui-icon {
+#queuecontainer .ui-icon-closethick {
 	float: right;
 	margin: 10px 10px 0;
 }
@@ -158,6 +158,13 @@ tr#movemode { background-color: teal; }	/* pre-move row */
 .ui-icon:hover {
 	cursor: pointer;
 	border: black dotted
+}
+
+.ui-icon-circle-close {
+	float: right;
+	background-color: white;
+	height: 15px;
+	width: 15px;
 }
 
 #login {
@@ -178,6 +185,38 @@ tr#movemode { background-color: teal; }	/* pre-move row */
 	border: solid 1px #0099FF;
 	background-color: white; 
 	box-shadow: 5px 5px 10px slategray;
+}
+
+#delete { 
+	display:none;
+	position: absolute;
+}
+
+#del { 
+	text-align: center; 
+	height: 25px;
+	width: 100px;
+	font-size: 14px;
+	color: white;
+	background-color: black;
+	text-align: center;
+	line-height: 25px;
+}
+
+#undelete { 
+	display:none;
+	position: absolute;
+}
+
+#undel { 
+	text-align: center; 
+	height: 25px;
+	width: 100px;
+	font-size: 14px;
+	color: white;
+	background-color: black;
+	text-align: center;
+	line-height: 25px;
 }
 
 #alert {

@@ -20,7 +20,7 @@ function fillSetTable(rownum, pointing)
 	else
 		$("#item3").parent().addClass(disabled)
 
-	$("#item4").html("Delete Row " + casename)
+	$("#item4").html("Delete This Row " + casename)
 
 	$("#item5").html("รายชื่อที่ถูกลบ")
 
@@ -71,7 +71,7 @@ function fillSetTable(rownum, pointing)
 					addnewrow(rowmain)
 					break
 				case "item4":
-					deletecase(rowmain, opdate, qn)
+					deleteCase(rowmain, opdate, qn)
 					break
 				case "item5":
 					deleteHistory(rowmain, qn)
@@ -127,7 +127,7 @@ function showMenu(pointing, menuID, container)
 	}
 	$(menuID).css({
 		top: height + "px",
-		left: width + "px",
+		left: width + "px"
 	})
 	$(menuID).show()
 }

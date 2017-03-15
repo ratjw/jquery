@@ -33,8 +33,8 @@ function staffqueue(staffname)
 jQuery.fn.extend({
 	filldataQueue : function(bookq) {
 		cell = $(this).children()
-		cell.eq(QOPDATE).html(bookq.opdate.thDateShort())
-		cell.eq(QSINCE).html(bookq.qsince.thDateShort().slice(0,-2))
+		cell.eq(QOPDATE).html(bookq.opdate.thDate())
+		cell.eq(QSINCE).html(bookq.qsince.thDate().slice(0,-4))
 		cell.eq(QHN).html(bookq.hn)
 		cell.eq(QNAME).html(bookq.patient)
 		cell.eq(QAGE).html(bookq.dob? bookq.dob.getAge(bookq.opdate) : "")

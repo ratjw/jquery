@@ -141,7 +141,18 @@
 	<div style="display: inline-block;"></div>	
 </div>
 
-<div id="dialogContainer"></div>
+<div id="dialogContainer">
+</div>
+
+<div id="delete">
+	<span id="del">Delete</span>
+	<span class="ui-icon ui-icon-circle-close" onclick="closeDel()"></span>
+</div>
+
+<div id="undelete">
+	<span id="undel">Undelete</span>
+	<span class="ui-icon ui-icon-circle-close" onclick="closeUndel()"></span>
+</div>
 
 <div id="editcell" contenteditable="true"></div>
 

@@ -21,18 +21,6 @@ String.prototype.thDate = function ()
 	return (this.substr(8, 2) +' '+ ThMonth + yyyy);
 } 
 
-String.prototype.thDateShort = function () 
-{	//MySQL date (2014-05-11) to Thai date (11 พค. 2557) 
-	if (this < '1900-01-01')
-		return ""
-	var yyyy = parseInt(this.substr(0, 4)) + 543;
-	var mm = this.substr(5, 2);
-//	for (ThMonth in NUMMONTH)
-//		if (NUMMONTH[ThMonth] == mm) 
-//			break;
-	return (this.substr(8, 2) +' '+ ThMonth + yyyy.toString().slice(-2));
-} 
-
 String.prototype.numDate = function () 
 {	//Thai date (11 พค. 2557) to MySQL date (2014-05-11)
     var mm = this.substring(this.indexOf(" ")+1, this.length-4);

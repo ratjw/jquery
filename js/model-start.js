@@ -17,7 +17,6 @@ function loadtable(userid)
 			else if ($(clickedCell).closest("table").attr("id") == "queuetbl")
 				Qclicktable(clickedCell)
 		}
-		return
 	})
 	$(document).keydown( function (event) {
 		countReset();
@@ -29,7 +28,6 @@ function loadtable(userid)
 			editing(event)
 		else if (tableID == "queuetbl")
 			editingqueue(event)
-		return
 	})
 	$(document).contextmenu( function (event) {
 		countReset();
@@ -37,6 +35,31 @@ function loadtable(userid)
 	})
 
 	TIMER = setTimeout("updating()",10000)		//poke next 10 sec.
+/*
+	$(function () {
+
+		// create dialogs
+		$(".dialog").dialog({
+			autoOpen: false,
+			closeOnEscape: true,
+			buttons: {
+				"Close": function () {
+					$(id).dialog('close');
+				}
+			}
+		});
+
+		// hook up the click event
+		$(".link").bind("click", function () {
+			// console.log($(this).parent());
+			// open the dialog
+			var dialogId = $(this).attr("data-open");
+			$("#" + dialogId).dialog("open");
+
+			return false;
+		});
+	});
+*/
 }
 
 function loading(response)
@@ -91,8 +114,7 @@ function updating()
 		if (response && response.indexOf("opdate") != -1)
 		{								//there is new entry after TIMESTAMP
 			updateBOOK(response)
-			var start = $('#tbl > tbody > tr > td:eq('+ OPDATE +')').html().numDate()
-			fillall(start)
+			refillall()
 			DragDrop()
 		}
 		clearTimeout(TIMER);
@@ -133,11 +155,11 @@ function editcell(pointing)
 function SplitPane()
 {
 	var tohead
-	var topscroll = $(this).scrollTop()
+	var topscroll = $(this).scrollTop()	//this = window
 
-	$.each($('#tbl tr:has(th)'), function(i, thead) {
-		tohead = thead
-		return ($(thead).offset().top < topscroll)
+	$.each($('#tbl tr:has(th)'), function() {	//this = each item
+		tohead = this
+		return ($(this).offset().top < topscroll)
 	})
 
 	$("html, body").css( {
@@ -162,9 +184,9 @@ function closequeue()
 	var tohead
 	var topscroll = $(this).scrollTop()
 
-	$.each($('#tbl tr:has(th)'), function(i, thead) {
-		tohead = thead
-		return ($(thead).offset().top < topscroll)
+	$.each($('#tbl tr:has(th)'), function() {
+		tohead = this
+		return ($(this).offset().top < topscroll)
 	})
 	
 	$("html, body").css( {

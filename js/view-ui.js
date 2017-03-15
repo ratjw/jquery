@@ -80,16 +80,16 @@ function DragDrop()
 				else
 				{
 					updateBOOK(response)
-					if (dragTable == "queuetbl") {
-						staffqueue($( "#titlename" ).html())
-					} else {
+					if (dragTable == "tbl") {
 						deleteRow(that_row, thatdate)
 					}
 						
 					if (thisqn)
 						this_row.after(this_row.clone());
 
-					fillthisDay(thisdate)
+					refillall()
+					staffqueue($( "#titlename" ).html())
+
 					DragDrop()
 				}
 			}	
