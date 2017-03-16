@@ -1,5 +1,5 @@
 function staffqueue(staffname)
-{	//Display all cases of only one staff in dialog box
+{
 	var todate = new Date().mysqlDate()
 	var i = q = 0
 	var scrolled = $("#queuecontainer").scrollTop()
@@ -116,62 +116,4 @@ function deletecaseQ(rowmain, qn)
 			updateBOOK(response);
 			$(rowmain).remove()
 	}
-}
-
-function fillday(day)
-{	//Display only one day of each week
-	var i, k, q
-	var rowi = {}
-	var date = ""
-	var opday = DAYOFTHAINAME[day]
-	var madedate
-	
-	$("#tbldaycontainer").show()
-
-	date = BOOK[0].opdate
-	
-	//delete previous queuetbl lest it accumulates
-	$('#tblday tr').slice(1).remove()
-
-	//i for rows in table
-	i=0
-
-	//q for rows in BOOK
-	for (q=0; q < BOOK.length; q++)
-	{	
-		while (date < BOOK[q].opdate)
-		{	//step over each day that is not in QBOOK
-			if (date != madedate)
-			{
-				if (k%7 == opday)
-				{	//make a blank row for matched opday which is not already in the table
-					i++
-					rowi = makenextrow(i, date, 'tblday')
-				}
-				madedate = date
-			}
-			date = date.nextdays(1)
-			k++	// = date.getDay() = nextday on the table
-			if (k%7 == 0)
-			{	//make table head row before every Sunday
-				$('#tblday tbody').append($('#tblday tr:first').clone())
- 				i++
-			}
-		}
-		k = new Date(BOOK[q].opdate).getDay()
-		if (k == opday)
-		{
-			i++
-			rowi = makenextrow(i, date, 'tblday')
-			madedate = date
-			filldata(BOOK[q], rowi)
-		}
-	}
-	$("#dialogContainer").html($("#tbldaycontainer").html())
-	$("#dialogContainer").dialog({
-		title: day,
-		height: window.innerHeight * 50 / 100,
-		width: window.innerWidth * 70 / 100,
-	})
-	$(".ui-dialog").show()
 }

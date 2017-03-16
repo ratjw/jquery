@@ -36,28 +36,31 @@ function loadtable(userid)
 
 	TIMER = setTimeout("updating()",10000)		//poke next 10 sec.
 /*
-	$(function () {
-
-		// create dialogs
-		$(".dialog").dialog({
-			autoOpen: false,
-			closeOnEscape: true,
-			buttons: {
-				"Close": function () {
-					$(id).dialog('close');
-				}
+	// create dialogs
+	$(".dialog").dialog({
+		autoOpen: false,
+		closeOnEscape: true,
+		buttons: {
+			"Close": function () {
+				$(id).dialog('close');
 			}
-		});
+		}
+	});
 
-		// hook up the click event
-		$(".link").bind("click", function () {
-			// console.log($(this).parent());
-			// open the dialog
-			var dialogId = $(this).attr("data-open");
-			$("#" + dialogId).dialog("open");
+	$("#historytable").dialog({
+		title: rowmain.cells[HN].innerHTML +' '+ rowmain.cells[NAME].innerHTML,
+		height: window.innerHeight * 50 / 100,
+		width: window.innerWidth * 50 / 100,
+	});
 
-			return false;
-		});
+	// hook up the click event
+	$(".link").bind("click", function () {
+		// console.log($(this).parent());
+		// open the dialog
+		var dialogId = $(this).attr("data-open");
+		$("#" + dialogId).dialog("open");
+
+		return false;
 	});
 */
 }

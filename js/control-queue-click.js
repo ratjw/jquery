@@ -5,7 +5,6 @@ function Qclicktable(clickedCell)
 
 	$("#editcell").hide()
 	$(".ui-menu").hide()
-	$(".ui-dialog").hide()
 
 	if  (clickedCell.nodeName != "TD")
 		return	

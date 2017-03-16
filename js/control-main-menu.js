@@ -20,9 +20,13 @@ function fillSetTable(rownum, pointing)
 	else
 		$("#item3").parent().addClass(disabled)
 
-	$("#item4").html("Delete This Row " + casename)
+	$("#item4").html("Delete " + casename)
+	if (!qn && !(checkblank(opdate, qn)))
+		$("#item4").parent().addClass(disabled)
+	else
+		$("#item4").parent().removeClass(disabled)
 
-	$("#item5").html("รายชื่อที่ถูกลบ")
+	$("#item5").html("List of Deleted Cases")
 
 	$("#item6").html("การแก้ไขของ " + casename)
 	if (qn)
@@ -71,7 +75,10 @@ function fillSetTable(rownum, pointing)
 					addnewrow(rowmain)
 					break
 				case "item4":
-					deleteCase(rowmain, opdate, qn)
+					if (checkblank(opdate, qn))		//from add new row (this opdate case in another row)
+						$(rowmain).remove()		//delete blank row
+					else
+						deleteCase(rowmain, opdate, qn)
 					break
 				case "item5":
 					deleteHistory(rowmain, qn)

@@ -103,7 +103,7 @@ function refillall()
 
 	//i for rows in table
 	var i = 0
-	while (i < tlength - 2)	//i++ before loop back
+	while (i < tlength - 1)	//i++ before loop back
 	{
 		if (q < BOOK.length) {
 			while (date < BOOK[q].opdate)
@@ -145,6 +145,8 @@ function refillall()
 			{
 				if (table.rows[i].cells[0].nodeName != "TH") {
 					i++
+					if (!(i < tlength - 1))
+						break
 					table.rows[i].innerHTML = $('#tbl tr:first').html()
 				}
 			}
@@ -234,14 +236,6 @@ function addnewrow(rowmain)
 
 function deleteCase(rowmain, opdate, qn)
 {
-	if (!qn)
-	{
-		if (checkblank(opdate))		//blank row with this opdate case in another row
-			$(rowmain).remove()		//delete blank row
-		return
-	}
-
-//	$('#tbl').after($('#delete'))
 	$('#delete').show()
 	$('#delete').position( {
 		my: "left center",

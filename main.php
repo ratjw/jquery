@@ -14,13 +14,13 @@
 <script src="js/jquery.js"></script>
 <script src="js/jquery-ui.js"></script>
 <script src="js/control-main-click.js"></script>
+<script src="js/control-main-menu.js"></script>
 <script src="js/control-queue-click.js"></script>
 <script src="js/control-function.js"></script>
 <script src="js/model-constant.js"></script>
 <script src="js/model-equip.js"></script>
 <script src="js/model-start.js"></script>
 <script src="js/view-main-fill.js"></script>
-<script src="js/view-main-menu.js"></script>
 <script src="js/view-queue-fill.js"></script>
 <script src="js/view-history.js"></script>
 <script src="js/view-ui.js"></script>
@@ -64,7 +64,6 @@
 
 <div id="queuecontainer" style="display:none">
   <div id="titlebar">
-	<span style="width:20px;"></span>
 	<span id="titlename"></span>
 	<span class="ui-icon ui-icon-closethick" onclick="closequeue()">
 	</span>
@@ -139,9 +138,6 @@
 	<span class="ui-icon ui-icon-closethick" style="float: right;" onclick="closeAlert()"></span>
 	<br><br>
 	<div style="display: inline-block;"></div>	
-</div>
-
-<div id="dialogContainer">
 </div>
 
 <div id="delete">

@@ -45,13 +45,12 @@ function makehistory(rowmain, response)
 	}
 	HTML_String += '</table>';
 
-	$("#dialogContainer").html(HTML_String);
-	$("#dialogContainer").dialog({
+	$(HTML_String).dialog({
 		title: rowmain.cells[HN].innerHTML +' '+ rowmain.cells[NAME].innerHTML,
-		height: window.innerHeight * 50 / 100,
-		width: window.innerWidth * 50 / 100,
-	});
-	$(".ui-dialog").show()
+//		height: "auto",
+//		width: "auto",
+//		overflow: "auto"
+	}).css("maxHeight", window.innerHeight-120)
 }
 
 function deleteHistory(rowmain, qn)
@@ -104,18 +103,19 @@ function makeDeleteHistory(rowmain, response)
 		HTML_String += '<td>' + history[j].treatment +'</td>';
 		HTML_String += '<td>' + history[j].tel +'</td>';
 		HTML_String += '<td>' + history[j].editor +'</td>';
-		HTML_String += '<td>' + history[j].qn +'</td>';
+		HTML_String += '<td style="display:none">' + history[j].qn +'</td>';
 		HTML_String += '</tr>';
 	}
 	HTML_String += '</table>';
 
-	$("#dialogContainer").html(HTML_String);
-	$("#dialogContainer").dialog({
-		title: "รายชื่อที่ถูกลบ",
-		height: window.innerHeight * 50 / 100,
-		width: window.innerWidth * 50 / 100,
-	});
-	$(".ui-dialog").show()
+//	$("#historytable").html(HTML_String);
+	$(HTML_String).dialog({
+		title: "Deleted Cases",
+		closeOnEscape: true,
+		maxHeight: window.innerHeight-120,
+		width: "auto",
+		overflow: "auto"
+	}).css("maxHeight", window.innerHeight-120)
 }
 
 function undelete(that) 
@@ -156,18 +156,14 @@ function undelete(that)
 				updateBOOK(response);
 				refillall()
 			}
-			$('.ui-dialog').hide()
+			$('#historytable').dialog("close")
 		}
 	}
 }
 
 function closeUndel() 
 {
-	$('#undelete').dialog({ 
-		close: function (event, ui) {
-			$(this).dialog("destroy");
-		}
-	})
+	$('#undelete').hide()
 }
 
 function PACS(hn) 
