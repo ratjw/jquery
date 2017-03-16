@@ -45,12 +45,21 @@ function makehistory(rowmain, response)
 	}
 	HTML_String += '</table>';
 
-	$(HTML_String).dialog({
+	$("#historytable").remove()
+	$('#historycontainer').prepend(HTML_String)
+	var container = $("#tblcontainer").height() * 7 / 10
+	var height = $("#historytable").height()
+	height = (height > container)? container : height
+	$('#historycontainer').dialog({
 		title: rowmain.cells[HN].innerHTML +' '+ rowmain.cells[NAME].innerHTML,
-//		height: "auto",
-//		width: "auto",
-//		overflow: "auto"
-	}).css("maxHeight", window.innerHeight-120)
+		closeOnEscape: true,
+		height: height,
+		width: $("#tblcontainer").width() * 7 / 10
+	})
+	$('#historycontainer').css({
+		height: height,
+		overflow: "auto"
+	})
 }
 
 function deleteHistory(rowmain, qn)
@@ -108,14 +117,21 @@ function makeDeleteHistory(rowmain, response)
 	}
 	HTML_String += '</table>';
 
-//	$("#historytable").html(HTML_String);
-	$(HTML_String).dialog({
+	$("#historytable").remove()
+	$('#historycontainer').prepend(HTML_String)
+	var container = $("#tblcontainer").height() * 7 / 10
+	var height = $("#historytable").height()
+	height = (height > container)? container : height
+	$('#historycontainer').dialog({
 		title: "Deleted Cases",
 		closeOnEscape: true,
-		maxHeight: window.innerHeight-120,
-		width: "auto",
+		height: height,
+		width: $("#tblcontainer").width() * 7 / 10
+	})
+	$('#historycontainer').css({
+		height: height,
 		overflow: "auto"
-	}).css("maxHeight", window.innerHeight-120)
+	})
 }
 
 function undelete(that) 
@@ -156,7 +172,7 @@ function undelete(that)
 				updateBOOK(response);
 				refillall()
 			}
-			$('#historytable').dialog("close")
+			$('#historycontainer').dialog("close")
 		}
 	}
 }

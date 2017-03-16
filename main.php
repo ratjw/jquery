@@ -102,6 +102,13 @@
   </TBODY>
 </TABLE>
 
+<div id="historycontainer" style="display:none">
+  <div id="undelete">
+	<span id="undel">Undelete</span>
+	<span class="ui-icon ui-icon-circle-close" onclick="closeUndel()"></span>
+  </div>
+</div>
+
 <ul id="menu" style="display:none">
   <li><div>คิวของอาจารย์</div>
 	<ul id="item0" style="width:120px">
@@ -143,11 +150,6 @@
 <div id="delete">
 	<span id="del">Delete</span>
 	<span class="ui-icon ui-icon-circle-close" onclick="closeDel()"></span>
-</div>
-
-<div id="undelete">
-	<span id="undel">Undelete</span>
-	<span class="ui-icon ui-icon-circle-close" onclick="closeUndel()"></span>
 </div>
 
 <div id="editcell" contenteditable="true"></div>
