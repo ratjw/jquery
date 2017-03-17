@@ -49,7 +49,7 @@ function MoveCalendar(clickdate, qn)
 						temp = 'class="calendarsat"';
 					else
 						temp = 'class="calendarday"';
-					if (opdate == Today.MysqlDate())
+					if (opdate == Today.mysqlDate())
 						temp = 'class="calendartoday"';
 					if (opdate == clickdate)
 						temp = 'class="calpremoveday"';
@@ -130,7 +130,7 @@ function ConsultCalendar()
 						temp = 'class="calendarsat"';
 					else
 						temp = 'class="calendarday"';
-					if (opdate == Today.MysqlDate())
+					if (opdate == Today.mysqlDate())
 						temp = 'class="calendartoday"';
 					temp += ''
 					HTML_String += '<td onclick="fillconsultcalendar(this, \''
@@ -243,7 +243,7 @@ function sinceCalendar(pointing, qn)
 						temp = 'class="calendarsat"';
 					else
 						temp = 'class="calendarday"';
-					if (opdate == Today.MysqlDate())
+					if (opdate == Today.mysqlDate())
 						temp = 'class="calendartoday"';
 					temp += ' onclick="sinceDate('+ qn +', \''+ opdate +'\')"'
 					HTML_String += '<td '+ temp +'>'

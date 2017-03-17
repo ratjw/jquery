@@ -4,22 +4,54 @@ function loadtable(userid)
 
 	THISUSER = userid
 	$("#login").remove()
-	$("#tbl").css("display", "block")
-	$("#tbl").keydown( function (event) {
-		countreset();
-		editing(event)
+	$("#tblcontainer").show()
+	$("#wrapper").append($("#tblcontainer"))
+	$("#wrapper").append($("#queuecontainer"))
+
+	$(document).click( function (event) {
+		countReset();
+		var clickedCell = event.target
+		if(!$(clickedCell).closest('#menu').length) {
+			if($('#menu').is(":visible")) {
+				$('#menu').hide();
+			}
+		}
+		if(!$(clickedCell).closest('#queuemenu').length) {
+			if($('#queuemenu').is(":visible")) {
+				$('#queuemenu').hide();
+			}
+		}
+		if(!$(clickedCell).closest('#stafflist').length) {
+			if($('#stafflist').is(":visible")) {
+				$('#stafflist').hide();
+			}
+		}
+		if(!$(clickedCell).closest('#editcell').length) {
+			if($('#editcell').is(":visible")) {
+				$('#editcell').hide();
+			}
+		}
+		if ($(clickedCell).closest("table").attr("id") == "tbl")
+			clicktable(clickedCell)
+		else if ($(clickedCell).closest("table").attr("id") == "queuetbl")
+			Qclicktable(clickedCell)
 	})
-	$("#tbl").click( function (event) {
-		countreset();
-		clicktable(event)
+	$(document).keydown( function (event) {
+		countReset();
+		if ($('#paperdiv').css('display') == 'block') {
+			return
+		}
+		var tableID = $("#editcell").data('tableID')
+		if (tableID == "tbl")
+			editing(event)
+		else if (tableID == "queuetbl")
+			editingqueue(event)
 	})
-	$("#tbl").contextmenu( function (event) {
-		countreset();
-		clicktable(event)
+	$(document).contextmenu( function (event) {
+		countReset();
 		return false
 	})
-	swipefinger();
-	initMouseWheel();
+
 	TIMER = setTimeout("updating()",10000)		//poke next 10 sec.
 }
 
@@ -27,8 +59,9 @@ function loading(response)
 {
 	if (response && response.indexOf("[") != -1)
 	{
-		updateBOOK(response);	//eval response into BOOK and ALLLISTS
+		updateBOOK(response)
 		fillupstart();
+		dataStafflist()
 	}
 	else
 		alert("Cannot load BOOK");
@@ -41,47 +74,20 @@ function updateBOOK(response)
 	BOOK = temp.BOOK? temp.BOOK : []
 	TIMESTAMP = temp.QTIME? temp.QTIME : ""	//last update time of BOOK in server
 	QWAIT = temp.QWAIT? temp.QWAIT : []
-	ALLLISTS = temp.STAFF? temp.STAFF : []
+	STAFF = temp.STAFF? temp.STAFF : []
 }
 
-function updateBOOKFILL()
+function dataStafflist()
 {
-	var q, k
-
-	if (STATE[0] == "FILLUP")
+	var stafflist = ''
+	var staffmenu = ''
+	for (var each=0; each<STAFF.length; each++)
 	{
-		BOOKFILL = BOOK
+		stafflist += '<li><div>' + STAFF[each].name + '</div></li>'
+		staffmenu += '<li><div id="item1">' + STAFF[each].name + '</div></li>'
 	}
-	else if (STATE[0] == "FILLDAY")
-	{
-		BOOKFILL = []
-		for (q=0; q < BOOK.length; q++)
-		{
-			k = (new Date(BOOK[q].opdate)).getDay()
-			if (k == STATE[1] || k == 0)
-				BOOKFILL.push(BOOK[q])
-		}
-	}
-	else if (STATE[0] == "FILLSTAFF")
-	{
-		BOOKFILL = []
-		for (q=0; q < BOOK.length; q++)
-			if (BOOK[q].staffname == STATE[1])
-				BOOKFILL.push(BOOK[q])
-	}
-}
-
-function updateQWAITFILL(staffname)
-{	//get temp QWAIT of only one staff
-	QWAITFILL = []
-	if (staffname)
-	{
-		for (q=0; q < QWAIT.length; q++)
-		{
-			if (QWAIT[q].staffname == staffname)
-				QWAITFILL.push(QWAIT[q])
-		}
-	}
+	$("#stafflist").html(stafflist)
+	$("#item0").html(staffmenu)
 }
 
 function updating()
@@ -98,33 +104,19 @@ function updating()
 
 	function updatingback(response)	//only changed database by checkupdate&time
 	{
-		if (response && response.indexOf("opdate") != -1)	//there is new entry after TIMESTAMP
-		{
-			updateBOOK(response);
+		if (response && response.indexOf("opdate") != -1)
+		{								//there is new entry after TIMESTAMP
+			updateBOOK(response)
 			refillall()
+			DragDrop()
 		}
 		clearTimeout(TIMER);
 		TIMER = setTimeout("updating()",10000);	//poke next 10 sec.
 	}
 }
 
-function countreset()
+function countReset()
 {
 	clearTimeout(TIMER);
 	TIMER = setTimeout("updating()",10000);	//poke after 10 sec.
-}
-
-function refillall()
-{	//called from : updatingback, callbackmove
-	var foundqn
-
-	//BOOKFILL will be updated in each fill
-	if (STATE[0] == "FILLUP")
-		filluprefill();		//display the same weeks
-	else if (STATE[0] == "FILLDAY")
-		fillday();		//display the same opday
-	else if (STATE[0] == "FILLSTAFF")
-		fillstaff();		//display the same staff
-	if (foundqn)
-		hiliteupdatefill(foundqn)
 }

@@ -4,52 +4,58 @@
 //		exit("Connect failed: %s\n". $mysqli->connect_error);
 //	echo json_encode(book($mysqli));
 
+ 	//waitnum = null :: deleted cases
+	//waitnum = 0 :: never in waitnum list
+	//waitnum > 0 :: is being or has been in waiting list
+	//qsince new case  from Javascript new Date()
+	//qsince is never changed
+
 function book($mysqli)
 {
 	date_default_timezone_set("Asia/Bangkok");
 
-	$sql = "SELECT opdate, oproom, optime, staffname, hn,
-		patient, dob, gender, diagnosis, treatment, tel, qn
-		FROM book 
-		WHERE opdate >= curdate()-interval 1 year AND waitnum IS NULL 
-		GROUP BY qn ORDER BY opdate,oproom,optime,qn;";
 	$rowi = array();
-	$data = array();
+	$case = array();
+	$time = array();
+	$wait = array();
+	$staff = array();
+
+	$sql = "SELECT * FROM book 
+		WHERE opdate >= curdate()-interval 1 year AND waitnum IS NOT NULL
+		ORDER BY opdate, staffname, waitnum;";
     if (!$result = $mysqli->query ($sql))
 		return $mysqli->error;
 	while ($rowi = $result->fetch_assoc())
 	{
-		$data[] = $rowi;
+		$case[] = $rowi;
 	}
 
 	if ($result = $mysqli->query ("SELECT now();"))
-		$datu = current($result->fetch_row());	//array.toString()
+		$time = current($result->fetch_row());	//array.toString()
+/*
+	$sql = "SELECT * FROM book 
+		WHERE waitnum > 0 AND opdate = '0000-00-00'
+		ORDER BY staffname, waitnum;";
 
- 	//waitnum = 0 are the deleted cases
-	$sql = "SELECT IFNULL(waitnum, ''), opdate, oproom, optime, staffname,
-		hn, patient, dob, gender, tel, qn
-		FROM book 
-		WHERE waitnum > 0
-		GROUP BY qn ORDER BY staffname, waitnum;";
-	$rowi = array();
-	$dati = array();
-    if (!$result = $mysqli->query ($sql))
+	if (!$result = $mysqli->query ($sql))
 		return $mysqli->error;
 	while ($rowi = $result->fetch_assoc())
 	{
-		$dati[] = $rowi;
+		$wait[] = $rowi;
 	}
+*/
 
-	$result = $mysqli->query ("SELECT code,name,specialty FROM staff ORDER BY code;");
-	if (!$result)
-		exit ('failed:load staff list ' . $mysqli->error);
-	while ($rowi = $result->fetch_row())
-		$dats["staff"][] = $rowi;
+	$sql = "SELECT * FROM staff ORDER BY code;";
 
-	$allarray["BOOK"] = $data;
-	$allarray["QTIME"] = $datu;
-	$allarray["QWAIT"] = $dati;
-	$allarray["STAFF"] = $dats;
+	if (!$result = $mysqli->query ($sql))
+		return $mysqli->error;
+	while ($rowi = $result->fetch_assoc())
+		$staff[] = $rowi;
+
+	$allarray["BOOK"] = $case;
+	$allarray["QTIME"] = $time;
+//	$allarray["QWAIT"] = $wait;
+	$allarray["STAFF"] = $staff;
 
 	return $allarray;
 }
