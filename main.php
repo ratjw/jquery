@@ -28,41 +28,26 @@
 <BODY>
 
 <div id="wrapper">
-</div>
 
-<div id="tblcontainer" style="display:none">
- <TABLE id="tbl" data-role="table" class="ui-responsive">
-  <TBODY>
-   <TR>
-    <th style="width:10%">วันผ่าตัด</th>
-    <th style="width:6%">Staff</th>
-    <th style="width:5%">HN</th>
-    <th style="width:15%">ชื่อ นามสกุล</th>
-    <th style="width:4%">อายุ</th>
-    <th style="width:20%">Diagnosis</th>
-    <th style="width:20%">Treatment</th>
-    <th style="width:20%">Note</th>
-    <th style="display:none"></th>
-   </TR>
-  </TBODY>
- </TABLE>
-</div>
+ <div id="tblcontainer" style="display:none">
+  <TABLE id="tbl" data-role="table" class="ui-responsive">
+   <TBODY>
+    <TR>
+     <th style="width:10%">วันผ่าตัด</th>
+     <th style="width:6%">Staff</th>
+     <th style="width:5%">HN</th>
+     <th style="width:15%">ชื่อ นามสกุล</th>
+     <th style="width:4%">อายุ</th>
+     <th style="width:20%">Diagnosis</th>
+     <th style="width:20%">Treatment</th>
+     <th style="width:20%">Note</th>
+     <th style="display:none"></th>
+    </TR>
+   </TBODY>
+  </TABLE>
+ </div>
 
-<TABLE style="display:none">	<!-- Used as cells template -->
-  <TR id="datatitle">
-    <td data-title="วันผ่าตัด"></td>
-    <td data-title="Staff"></td>
-    <td data-title="HN"></td>
-    <td data-title="ชื่อ นามสกุล"></td>
-    <td data-title="อายุ"></td>
-    <td data-title="Diagnosis"></td>
-    <td data-title="Treatment"></td>
-    <td data-title="Note"></td>
-    <td style="display:none"></td>
-  </TR>
-</TABLE>
-
-<div id="queuecontainer" style="display:none">
+ <div id="queuecontainer" style="display:none">
   <div id="titlebar">
 	<span id="titlename"></span>
 	<span class="ui-icon ui-icon-closethick" onclick="closequeue()">
@@ -84,7 +69,23 @@
     </TR>
    </TBODY>
   </TABLE>
+ </div>
+
 </div>
+
+<TABLE style="display:none">	<!-- Used as cells template -->
+  <TR id="datatitle">
+    <td data-title="วันผ่าตัด"></td>
+    <td data-title="Staff"></td>
+    <td data-title="HN"></td>
+    <td data-title="ชื่อ นามสกุล"></td>
+    <td data-title="อายุ"></td>
+    <td data-title="Diagnosis"></td>
+    <td data-title="Treatment"></td>
+    <td data-title="Note"></td>
+    <td style="display:none"></td>
+  </TR>
+</TABLE>
 
 <TABLE id="qdatatitle" style="display:none">	<!--template "qdatatitle" for "staffqueue"-->
   <TBODY>
@@ -102,9 +103,14 @@
   </TBODY>
 </TABLE>
 
+<div id="delete">
+	<span id="del" onclick="doDelete()">Delete</span>
+	<span class="ui-icon ui-icon-circle-close" onclick="closeDel()"></span>
+</div>
+
 <div id="historycontainer" style="display:none">
   <div id="undelete">
-	<span id="undel">Undelete</span>
+	<span id="undel" onclick="doUndelete()"></>Undelete</span>
 	<span class="ui-icon ui-icon-circle-close" onclick="closeUndel()"></span>
   </div>
 </div>
@@ -145,11 +151,6 @@
 	<span class="ui-icon ui-icon-closethick" style="float: right;" onclick="closeAlert()"></span>
 	<br><br>
 	<div style="display: inline-block;"></div>	
-</div>
-
-<div id="delete">
-	<span id="del">Delete</span>
-	<span class="ui-icon ui-icon-circle-close" onclick="closeDel()"></span>
 </div>
 
 <div id="editcell" contenteditable="true"></div>

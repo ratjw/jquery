@@ -3,9 +3,6 @@ function clicktable(clickedCell)
 	if (clickedCell.id == "editcell")
 		return
 
-	$("#editcell").hide()
-	$(".ui-menu").hide()
-
 	if  (clickedCell.nodeName != "TD")
 		return	
 
@@ -78,10 +75,8 @@ function savePreviouscell()
 	switch($("#editcell").data("cellIndex"))
 	{
 		case OPDATE:
-			$(".ui-menu").hide()
 			break
 		case STAFFNAME:
-			$(".ui-menu").hide()
 			saveContent("staffname", content)	//column name in MYSQL
 			break
 		case HN:
@@ -196,25 +191,25 @@ function storePresentcell(pointing)
 	var rindex = $(pointing).closest("tr").index()
 	var cindex = $(pointing).closest("td").index()
 
-	editcell(pointing)
-
 	switch(cindex)
 	{
 		case OPDATE:
+			editcell(pointing)
 			fillSetTable(rindex, pointing)
 			break
 		case STAFFNAME:
+			editcell(pointing)
 			$("#editcell").data("content", pointing.innerHTML)
 			stafflist(pointing)
 			break
 		case NAME:
 		case AGE:
-			$("#editcell").hide() //disable self (uneditable cell)
 			break
 		case HN:
 		case DIAGNOSIS:
 		case TREATMENT:
 		case TEL:		//store content in "data" of editcell
+			editcell(pointing)
 			$("#editcell").data("content", pointing.innerHTML)
 			break
 	}

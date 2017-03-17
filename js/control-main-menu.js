@@ -66,7 +66,8 @@ function fillSetTable(rownum, pointing)
 			{
 				case "item1":
 					staffqueue(ui.item.text())
-					SplitPane()
+					if ($("#queuecontainer").css("display") != "block")
+						SplitPane()
 					break
 				case "item2":
 					fillday(ui.item.text())
@@ -96,7 +97,8 @@ function fillSetTable(rownum, pointing)
 
 			$("#editcell").data("location", "")
 			$("#editcell").hide()		//to disappear after selection
-			$(".ui-menu").hide()		//to disappear after selection
+			$("#menu").hide()		//to disappear after selection
+			event.stopPropagation()
 			return false
 		}
 	});

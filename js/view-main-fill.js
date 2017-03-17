@@ -101,9 +101,9 @@ function refillall()
 		q++
 	}	
 
-	//i for rows in table
-	var i = 0
-	while (i < tlength - 1)	//i++ before loop back
+	//i for rows in table with head as the first row
+	var i = 1
+	while (i < tlength)
 	{
 		if (q < BOOK.length) {
 			while (date < BOOK[q].opdate)
@@ -111,8 +111,8 @@ function refillall()
 				if (date != madedate)
 				{
 					//make a blank row for matched opday which is not already in the table
-					i++
 					rowi = makenextrowRefill(i, date, 'tbl')
+					i++
 					
 					madedate = date
 				}
@@ -120,36 +120,30 @@ function refillall()
 				//make table head row before every Sunday
 				if ((new Date(date).getDay())%7 == 0)
 				{
-					if (table.rows[i].cells[0].nodeName != "TH") {
-						i++
-						table.rows[i].innerHTML = $('#tbl tr:first').html()
-					}
+					table.rows[i].innerHTML = $('#tbl tr:first').html()
+					i++
 				}
 			}
-			i++
 			rowi = makenextrowRefill(i, date, 'tbl')
 			filldata(BOOK[q], rowi)
 			madedate = date
+			i++
 			q++
 		}
 		else
 		{
 			date = date.nextdays(1)
-			//make a blank row
-			i++
-			rowi = makenextrowRefill(i, date, 'tbl')
-			
-			date = date.nextdays(1)
+
 			//make table head row before every Sunday
 			if (((new Date(date)).getDay())%7 == 0)
 			{
-				if (table.rows[i].cells[0].nodeName != "TH") {
-					i++
-					if (!(i < tlength - 1))
-						break
-					table.rows[i].innerHTML = $('#tbl tr:first').html()
-				}
+				table.rows[i].innerHTML = $('#tbl tr:first').html()
+				i++
 			}
+
+			//make a blank row
+			rowi = makenextrowRefill(i, date, 'tbl')
+			i++
 		}
 	}
 }
@@ -161,7 +155,7 @@ function makenextrow(i, date, tableID)
 	var rowi
 
 	rowi = table.insertRow(i)
-	table.rows[i].innerHTML = datatitle.innerHTML
+	rowi.innerHTML = datatitle.innerHTML
 	rowi.cells[OPDATE].innerHTML = date.thDate()
 	rowi.cells[OPDATE].className = NAMEOFDAYABBR[(new Date(date)).getDay()]
 	rowi.className = NAMEOFDAYFULL[(new Date(date)).getDay()]
@@ -175,9 +169,7 @@ function makenextrowRefill(i, date, tableID)
 	var datatitle = document.getElementById("datatitle")
 	var rowi = table.rows[i]
 
-	if (rowi.cells[0].nodeName == "TH") {
-		rowi.innerHTML = datatitle.innerHTML
-	}
+	rowi.innerHTML = datatitle.innerHTML
 	rowi.cells[OPDATE].innerHTML = date.thDate()
 	rowi.cells[OPDATE].className = NAMEOFDAYABBR[(new Date(date)).getDay()]
 	rowi.className = NAMEOFDAYFULL[(new Date(date)).getDay()]
@@ -242,11 +234,8 @@ function deleteCase(rowmain, opdate, qn)
 		at: "left center",
 		of: $(rowmain)
 	})
-	$('#del').click(function() {
-		doDeleteCase()
-	})
 
-	function doDeleteCase() 
+	doDelete = function() 
 	{
 		//not actually delete the case but set waitnum=NULL
 		var sql = "sqlReturnbook=UPDATE book SET waitnum=NULL WHERE qn="+ qn +";"
@@ -290,4 +279,115 @@ function deleteRow(rowmain, opdate)
 	} else {
 		$(rowmain).children().eq(OPDATE).siblings().html("")
 	}
+}
+
+function editcell(pointing)
+{
+	var pos = $(pointing).position()
+	var tableID = $(pointing).closest('table').attr('id')
+	var rowIndex = $(pointing).closest('tr').index()
+	var cellIndex = $(pointing).index()
+
+	$("#editcell").data("location", "#"+ tableID +" tr:eq("+ rowIndex +") td:eq("+ cellIndex +")")
+	$("#editcell").data("tableRow", "#"+ tableID +" tr:eq("+ rowIndex +")")
+	$("#editcell").data("tableID", tableID)
+	$("#editcell").data("rowIndex", rowIndex)
+	$("#editcell").data("cellIndex", cellIndex)
+	$("#editcell").html(pointing.innerHTML)
+	$("#editcell").css({
+		top: pos.top + "px",
+		left: pos.left + "px",
+		height: $(pointing).height() + "px",
+		width: $(pointing).width() + "px",
+		fontSize: $(pointing).css("fontSize"),
+		display: "block"
+	})
+	$("#editcell").focus()
+}
+
+function SplitPane()
+{
+	var tohead
+	var topscroll = $(this).scrollTop()	//this = window
+
+	$.each($('#tbl tr:has(th)'), function() {	//this = each item
+		tohead = this
+		return ($(this).offset().top < topscroll)	//visible th
+	})
+
+	$("html, body").css( {
+		height: "100%",
+		overflow: "hidden",
+		margin: "0"
+	})
+	$("#queuecontainer").show()
+	$("#tblcontainer").css("width", "60%")
+	$("#queuecontainer").css("width", "40%")
+	initResize("#tblcontainer")
+	$('.ui-resizable-e').css('height', $("#tbl").css("height"))
+
+	$('#tblcontainer').scrollTop($(tohead).offset().top - 300)
+	$('#tblcontainer').animate({
+		scrollTop: $('#tblcontainer').scrollTop() + 300
+	}, 500);
+	DragDrop()
+}
+
+function closequeue()
+{
+	var tohead
+	var topscroll = $(this).scrollTop()
+
+	$.each($('#tbl tr:has(th)'), function() {
+		tohead = this
+		return ($(this).offset().top < topscroll)
+	})
+	
+	$("html, body").css( {
+		height: "",
+		overflow: "",
+		margin: ""
+	})
+	$("#tblcontainer").css("width", "100%")
+	$("#queuecontainer").css("width", "0%")
+	$("#queuecontainer").hide()
+	$("#tblcontainer").resizable('destroy');
+
+	$('html body').scrollTop($(tohead).offset().top - 300)
+	$('html body').animate({
+		scrollTop: $('html body').scrollTop() + 300
+	}, 500);
+	DragDrop()
+}
+
+function initResize(id)
+{
+	$(id).resizable(
+	{
+		autoHide: true,
+		handles: 'e',
+		resize: function(e, ui) 
+		{
+			var parent = ui.element.parent();
+			var remainSpace = parent.width() - ui.element.outerWidth()
+			var divTwo = ui.element.next()
+			var margin = divTwo.outerWidth() - divTwo.innerWidth()
+			var divTwoWidth = (remainSpace-margin)/parent.width()*100+"%";
+			divTwo.css("width", divTwoWidth);
+		},
+		stop: function(e, ui) 
+		{
+			var parent = ui.element.parent();
+			var remainSpace = parent.width() - ui.element.outerWidth()
+			var divTwo = ui.element.next()
+			ui.element.css(
+			{
+				width: ui.element.outerWidth()/parent.width()*100+"%",
+			});
+			ui.element.next().css(
+			{
+				width: remainSpace/parent.width()*100+"%",
+			});
+		}
+	});
 }

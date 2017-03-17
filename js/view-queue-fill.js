@@ -22,7 +22,7 @@ function staffqueue(staffname)
 	{
 		$('#qdatatitle tr').clone().insertAfter($('#queuetbl tr:last'))
 			.children("td").eq(QOPDATE).html(todate.thDate())
-			.parent().children("td").eq(QSINCE).html(todate().thDate().slice(0,-4))
+			.parent().children("td").eq(QSINCE).html(todate.thDate().slice(0,-4))
 	}
 
 	$("#queuecontainer").scrollTop(scrolled)
@@ -80,9 +80,6 @@ function fillSetTableQueue(pointing)
 					deletecaseQ(rowmain, thisqqn)
 					break
 			}
-			$("#editcell").data("location", "")
-			$("#editcell").hide()
-			$(".ui-menu").hide()
 			return false
 		}
 	});

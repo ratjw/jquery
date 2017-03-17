@@ -47,14 +47,13 @@ function makehistory(rowmain, response)
 
 	$("#historytable").remove()
 	$('#historycontainer').prepend(HTML_String)
-	var container = $("#tblcontainer").height() * 7 / 10
-	var height = $("#historytable").height()
-	height = (height > container)? container : height
+	var maxHeight = window.innerHeight * 8 / 10
+	var height = $("#historycontainer").height()
+	height = (height > maxHeight)? maxHeight : height
 	$('#historycontainer').dialog({
 		title: rowmain.cells[HN].innerHTML +' '+ rowmain.cells[NAME].innerHTML,
-		closeOnEscape: true,
-		height: height,
-		width: $("#tblcontainer").width() * 7 / 10
+		width: $("#tblcontainer").width() * 6 / 10,
+		closeOnEscape: true
 	})
 	$('#historycontainer').css({
 		height: height,
@@ -118,15 +117,15 @@ function makeDeleteHistory(rowmain, response)
 	HTML_String += '</table>';
 
 	$("#historytable").remove()
+	$('#undelete').hide()
 	$('#historycontainer').prepend(HTML_String)
-	var container = $("#tblcontainer").height() * 7 / 10
-	var height = $("#historytable").height()
-	height = (height > container)? container : height
+	var maxHeight = window.innerHeight * 8 / 10
+	var height = $("#historycontainer").height()
+	height = (height > maxHeight)? maxHeight : height
 	$('#historycontainer').dialog({
 		title: "Deleted Cases",
-		closeOnEscape: true,
-		height: height,
-		width: $("#tblcontainer").width() * 7 / 10
+		width: $("#tblcontainer").width() * 7 / 10,
+		closeOnEscape: true
 	})
 	$('#historycontainer').css({
 		height: height,
@@ -143,11 +142,8 @@ function undelete(that)
 		at: "left center",
 		of: $(that)
 	})
-	$('#undel').click(function() {
-		doUndelete()
-	})
 
-	function doUndelete() 
+	doUndelete = function() 
 	{
 		var qn = $(that).siblings(":last").html()
 

@@ -3,9 +3,6 @@ function Qclicktable(clickedCell)
 	if (clickedCell.id == "editcell")
 		return
 
-	$("#editcell").hide()
-	$(".ui-menu").hide()
-
 	if  (clickedCell.nodeName != "TD")
 		return	
 
@@ -77,7 +74,6 @@ function savePreviouscellQueue()
 	switch($("#editcell").data("cellIndex"))
 	{
 		case QOPDATE:
-			$(".ui-menu").hide()
 		case QSINCE:
 			break
 		case QHN:
@@ -209,25 +205,23 @@ function storePresentcellQueue(pointing)
 	var rindex = $(rowtr).index()
 	var qn = $(rowtr).children("td").eq(QQN).html()
 
-	editcell(pointing)
 
 	switch(cindex)
 	{
 		case QOPDATE:
+			editcell(pointing)
 			fillSetTableQueue(pointing)
 			break
 		case QSINCE:
 		case QNAME:
 		case QAGE:
-			$("#editcell").hide() //disable self (uneditable cell)
-			$(".ui-menu").hide()
 			break
 		case QHN:
 		case QDIAGNOSIS:
 		case QTREATMENT:
 		case QTEL:		//store content in "data" of editcell
+			editcell(pointing)
 			$("#editcell").data("content", pointing.innerHTML)
-			$(".ui-menu").hide()
 			break
 	}
 }

@@ -11,12 +11,30 @@ function loadtable(userid)
 	$(document).click( function (event) {
 		countReset();
 		var clickedCell = event.target
-		if (clickedCell) {
-			if ($(clickedCell).closest("table").attr("id") == "tbl")
-				clicktable(clickedCell)
-			else if ($(clickedCell).closest("table").attr("id") == "queuetbl")
-				Qclicktable(clickedCell)
+		if(!$(clickedCell).closest('#menu').length) {
+			if($('#menu').is(":visible")) {
+				$('#menu').hide();
+			}
 		}
+		if(!$(clickedCell).closest('#queuemenu').length) {
+			if($('#queuemenu').is(":visible")) {
+				$('#queuemenu').hide();
+			}
+		}
+		if(!$(clickedCell).closest('#stafflist').length) {
+			if($('#stafflist').is(":visible")) {
+				$('#stafflist').hide();
+			}
+		}
+		if(!$(clickedCell).closest('#editcell').length) {
+			if($('#editcell').is(":visible")) {
+				$('#editcell').hide();
+			}
+		}
+		if ($(clickedCell).closest("table").attr("id") == "tbl")
+			clicktable(clickedCell)
+		else if ($(clickedCell).closest("table").attr("id") == "queuetbl")
+			Qclicktable(clickedCell)
 	})
 	$(document).keydown( function (event) {
 		countReset();
@@ -35,34 +53,6 @@ function loadtable(userid)
 	})
 
 	TIMER = setTimeout("updating()",10000)		//poke next 10 sec.
-/*
-	// create dialogs
-	$(".dialog").dialog({
-		autoOpen: false,
-		closeOnEscape: true,
-		buttons: {
-			"Close": function () {
-				$(id).dialog('close');
-			}
-		}
-	});
-
-	$("#historytable").dialog({
-		title: rowmain.cells[HN].innerHTML +' '+ rowmain.cells[NAME].innerHTML,
-		height: window.innerHeight * 50 / 100,
-		width: window.innerWidth * 50 / 100,
-	});
-
-	// hook up the click event
-	$(".link").bind("click", function () {
-		// console.log($(this).parent());
-		// open the dialog
-		var dialogId = $(this).attr("data-open");
-		$("#" + dialogId).dialog("open");
-
-		return false;
-	});
-*/
 }
 
 function loading(response)
@@ -129,113 +119,4 @@ function countReset()
 {
 	clearTimeout(TIMER);
 	TIMER = setTimeout("updating()",10000);	//poke after 10 sec.
-}
-
-function editcell(pointing)
-{
-	var pos = $(pointing).position()
-	var tableID = $(pointing).closest('table').attr('id')
-	var rowIndex = $(pointing).closest('tr').index()
-	var cellIndex = $(pointing).index()
-
-	$("#editcell").data("location", "#"+ tableID +" tr:eq("+ rowIndex +") td:eq("+ cellIndex +")")
-	$("#editcell").data("tableRow", "#"+ tableID +" tr:eq("+ rowIndex +")")
-	$("#editcell").data("tableID", tableID)
-	$("#editcell").data("rowIndex", rowIndex)
-	$("#editcell").data("cellIndex", cellIndex)
-	$("#editcell").html(pointing.innerHTML)
-	$("#editcell").css({
-		top: pos.top + "px",
-		left: pos.left + "px",
-		height: $(pointing).height() + "px",
-		width: $(pointing).width() + "px",
-		fontSize: $(pointing).css("fontSize"),
-		display: "block"
-	})
-	$("#editcell").focus()
-}
-
-function SplitPane()
-{
-	var tohead
-	var topscroll = $(this).scrollTop()	//this = window
-
-	$.each($('#tbl tr:has(th)'), function() {	//this = each item
-		tohead = this
-		return ($(this).offset().top < topscroll)
-	})
-
-	$("html, body").css( {
-		height: "100%",
-		overflow: "hidden",
-		margin: "0"
-	})
-	$("#queuecontainer").show()
-	$("#tblcontainer").css("width", "60%")
-	$("#queuecontainer").css("width", "40%")
-	initResize("#tblcontainer")
-	$('.ui-resizable-e').css('height', $("#tbl").css("height"))
-
-	$('#tblcontainer').animate({
-		scrollTop: $(tohead).offset().top
-	}, 300);
-	DragDrop()
-}
-
-function closequeue()
-{
-	var tohead
-	var topscroll = $(this).scrollTop()
-
-	$.each($('#tbl tr:has(th)'), function() {
-		tohead = this
-		return ($(this).offset().top < topscroll)
-	})
-	
-	$("html, body").css( {
-		height: "",
-		overflow: "",
-		margin: ""
-	})
-	$("#tblcontainer").css("width", "100%")
-	$("#queuecontainer").css("width", "0%")
-	$("#queuecontainer").hide()
-	$("#tblcontainer").resizable('destroy');
-
-	$('html body').animate({
-		scrollTop: $(tohead).offset().top
-	}, 300);
-	DragDrop()
-}
-
-function initResize(id)
-{
-	$(id).resizable(
-	{
-		autoHide: true,
-		handles: 'e',
-		resize: function(e, ui) 
-		{
-			var parent = ui.element.parent();
-			var remainSpace = parent.width() - ui.element.outerWidth()
-			var divTwo = ui.element.next()
-			var margin = divTwo.outerWidth() - divTwo.innerWidth()
-			var divTwoWidth = (remainSpace-margin)/parent.width()*100+"%";
-			divTwo.css("width", divTwoWidth);
-		},
-		stop: function(e, ui) 
-		{
-			var parent = ui.element.parent();
-			var remainSpace = parent.width() - ui.element.outerWidth()
-			var divTwo = ui.element.next()
-			ui.element.css(
-			{
-				width: ui.element.outerWidth()/parent.width()*100+"%",
-			});
-			ui.element.next().css(
-			{
-				width: remainSpace/parent.width()*100+"%",
-			});
-		}
-	});
 }
