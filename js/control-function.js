@@ -80,13 +80,6 @@ function getSunday(date)	//get Sunday in the same week
 	return today.mysqlDate();
 }
 
-function getMonday(date)	//get last Monday 
-{
-	var today = date? new Date(date) : new Date();
-	today.setDate(today.getDate() - ((today.getDay() + 6) % 7));	//make Monday=0, Sunday=6
-	return today.mysqlDate();
-}
-
 function Ajax(url, params, callback)
 {
 	var xmlHttp = new XMLHttpRequest();
@@ -99,19 +92,6 @@ function Ajax(url, params, callback)
 	xmlHttp.send(null);
 }
 
-function scrollUpDown()
-{
-	if ($("#tblcontainer").scrollTop() < 2)
-	{
-		fillupscroll(-1)
-	}
-	else if ($("#tbl").height() <= $("#tblcontainer").outerHeight() + $("#tblcontainer").scrollTop())
-	{
-		fillupscroll(+1)
-	}
-	$(".ui-resizable-e").css("height", $("#tbl").height())
-}
-
 function URIcomponent(qoute)
 {
 	qoute = qoute.replace(/\s+$/,'')
@@ -121,13 +101,24 @@ function URIcomponent(qoute)
 	return encodeURIComponent(qoute)
 }
 
-function alert(message)	//get last Monday 
+function alert(message)
 {
-	$("#alert").find('div').text(message);
+
+	resizeText = function() {
+		var div = $('#message')
+		while (div.height() > div.parent().height() - 30) {
+			div.css('font-size', (parseInt(div.css('font-size')) - 1) + "px")
+			if (parseInt(div.css('font-size')) < 8)
+				break
+		}
+	}
+
+	$('#message').html(message)
 	$("#alert").fadeIn();
+	resizeText();
 }
 
-function closeAlert()	//get last Monday 
+function closeAlert()
 {
 	$("#alert").hide();
 }

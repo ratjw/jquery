@@ -12,7 +12,7 @@ function loadtable(userid)
 		countReset();
 		var clickedCell = event.target
 		if(!$(clickedCell).closest('#menu').length) {
-			if($('#menu').is(":visible")) {
+			if($('#menu').is(":visible")) {	//visible == take up space even can't be seen
 				$('#menu').hide();
 			}
 		}

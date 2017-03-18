@@ -283,37 +283,43 @@ function deleteRow(rowmain, opdate)
 
 function editcell(pointing)
 {
-	var pos = $(pointing).position()
+	var editcell = "#editcell"
+	saveDataPoint(editcell, pointing)
+	positioning(editcell, pointing)
+	$(editcell).show()
+	$(editcell).focus()
+}
+
+function saveDataPoint(editcell, pointing)
+{
 	var tableID = $(pointing).closest('table').attr('id')
 	var rowIndex = $(pointing).closest('tr').index()
 	var cellIndex = $(pointing).index()
 
-	$("#editcell").data("location", "#"+ tableID +" tr:eq("+ rowIndex +") td:eq("+ cellIndex +")")
-	$("#editcell").data("tableRow", "#"+ tableID +" tr:eq("+ rowIndex +")")
-	$("#editcell").data("tableID", tableID)
-	$("#editcell").data("rowIndex", rowIndex)
-	$("#editcell").data("cellIndex", cellIndex)
-	$("#editcell").html(pointing.innerHTML)
-	$("#editcell").css({
+	$(editcell).data("location", "#"+ tableID +" tr:eq("+ rowIndex +") td:eq("+ cellIndex +")")
+	$(editcell).data("tableRow", "#"+ tableID +" tr:eq("+ rowIndex +")")
+	$(editcell).data("tableID", tableID)
+	$(editcell).data("rowIndex", rowIndex)
+	$(editcell).data("cellIndex", cellIndex)
+	$(editcell).html($(pointing).html())
+}
+
+function positioning(editcell, pointing)
+{
+	var pos = $(pointing).position()
+
+	$(editcell).css({
 		top: pos.top + "px",
 		left: pos.left + "px",
 		height: $(pointing).height() + "px",
 		width: $(pointing).width() + "px",
 		fontSize: $(pointing).css("fontSize"),
-		display: "block"
 	})
-	$("#editcell").focus()
 }
 
 function SplitPane()
 {
-	var tohead
-	var topscroll = $(this).scrollTop()	//this = window
-
-	$.each($('#tbl tr:has(th)'), function() {	//this = each item
-		tohead = this
-		return ($(this).offset().top < topscroll)	//visible th
-	})
+	var tohead = findVisibleHead('#tbl')
 
 	$("html, body").css( {
 		height: "100%",
@@ -326,22 +332,13 @@ function SplitPane()
 	initResize("#tblcontainer")
 	$('.ui-resizable-e').css('height', $("#tbl").css("height"))
 
-	$('#tblcontainer').scrollTop($(tohead).offset().top - 300)
-	$('#tblcontainer').animate({
-		scrollTop: $('#tblcontainer').scrollTop() + 300
-	}, 500);
+	scrollto('#tblcontainer', tohead, 300, 500)
 	DragDrop()
 }
 
 function closequeue()
 {
-	var tohead
-	var topscroll = $(this).scrollTop()
-
-	$.each($('#tbl tr:has(th)'), function() {
-		tohead = this
-		return ($(this).offset().top < topscroll)
-	})
+	var tohead = findVisibleHead('#tbl')
 	
 	$("html, body").css( {
 		height: "",
@@ -353,11 +350,28 @@ function closequeue()
 	$("#queuecontainer").hide()
 	$("#tblcontainer").resizable('destroy');
 
-	$('html body').scrollTop($(tohead).offset().top - 300)
-	$('html body').animate({
-		scrollTop: $('html body').scrollTop() + 300
-	}, 500);
+	scrollto('html body', tohead, 300, 500)
 	DragDrop()
+}
+
+function findVisibleHead(table)
+{
+	var tohead
+	var topscroll = $('html body').scrollTop()
+
+	$.each($(table + ' tr:has(th)'), function() {
+		tohead = this
+		return ($(this).offset().top < topscroll)
+	})
+	return tohead
+}
+
+function scrollto(container, tohead, pixel, time)
+{
+	$(container).scrollTop($(tohead).offset().top - pixel)
+	$(container).animate({
+		scrollTop: $(container).scrollTop() + pixel
+	}, time);
 }
 
 function initResize(id)

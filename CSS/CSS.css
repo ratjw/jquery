@@ -220,15 +220,23 @@
 	z-index: 1;
 	top:25%;
 	left:30%;
-	width: 300px;
-	height:200px;
-	background-color: snow;
+	max-width: 300px;
+	max-height:200px;
 	border: 2px solid silver;
+	border-radius: 10px;
+	background-color: slategray;
+	box-shadow: 20px 30px 40px slategray;
+}
+
+#message {
+	display:inline-block;
 	text-align:center;
 	font-weight: bold;
 	font-size: 20px;
 	color: slategray;
-	box-shadow: 20px 30px 40px slategray;
+	padding: 10px;
+	background-color: snow;
+	overflow:auto;
 }
 
 .paper {

@@ -148,9 +148,8 @@
 <ul id="stafflist" style="display:none"></ul>
 
 <div id="alert">
-	<span class="ui-icon ui-icon-closethick" style="float: right;" onclick="closeAlert()"></span>
-	<br><br>
-	<div style="display: inline-block;"></div>	
+	<span class="ui-icon ui-icon-closethick" style="float: right;height:20px;" onclick="closeAlert()"></span>
+	<div id="message"></div>
 </div>
 
 <div id="editcell" contenteditable="true"></div>
