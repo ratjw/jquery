@@ -13,15 +13,13 @@
 <!--script src="js/jquery.mobile-1.4.5.js"></script-->
 <script src="js/jquery.js"></script>
 <script src="js/jquery-ui.js"></script>
-<script src="js/control-main-click.js"></script>
-<script src="js/control-main-menu.js"></script>
-<script src="js/control-queue-click.js"></script>
+<script src="js/control-click.js"></script>
+<script src="js/control-menu.js"></script>
 <script src="js/control-function.js"></script>
 <script src="js/model-constant.js"></script>
 <script src="js/model-equip.js"></script>
 <script src="js/model-start.js"></script>
-<script src="js/view-main-fill.js"></script>
-<script src="js/view-queue-fill.js"></script>
+<script src="js/view-fill.js"></script>
 <script src="js/view-history.js"></script>
 <script src="js/view-ui.js"></script>
 </HEAD>
@@ -34,6 +32,7 @@
    <TBODY>
     <TR>
      <th style="width:10%">วันผ่าตัด</th>
+     <th style="display:none">Since</th>
      <th style="width:6%">Staff</th>
      <th style="width:5%">HN</th>
      <th style="width:15%">ชื่อ นามสกุล</th>
@@ -59,6 +58,7 @@
     <TR>
      <th style="width:10%">วันผ่าตัด</th>
      <th style="width:4%">Since</th>
+     <th style="display:none">Staff</th>
      <th style="width:7%">HN</th>
      <th style="width:15%">ชื่อ นามสกุล</th>
      <th style="width:4%">อายุ</th>
@@ -76,6 +76,7 @@
 <TABLE style="display:none">	<!-- Used as cells template -->
   <TR id="datatitle">
     <td data-title="วันผ่าตัด"></td>
+    <td style="display:none"></td>
     <td data-title="Staff"></td>
     <td data-title="HN"></td>
     <td data-title="ชื่อ นามสกุล"></td>
@@ -92,6 +93,7 @@
     <TR>
      <td data-title="opdateQ"></td>
      <td data-title="Since"></td>
+     <td style="display:none"></td>
      <td data-title="HN"></td>
      <td data-title="ชื่อ นามสกุล"></td>
      <td data-title="อายุ"></td>
@@ -110,7 +112,7 @@
 
 <div id="historycontainer" style="display:none">
   <div id="undelete">
-	<span id="undel" onclick="doUndelete()"></>Undelete</span>
+	<span id="undel" onclick="doUndelete()">Undelete</span>
 	<span class="ui-icon ui-icon-circle-close" onclick="closeUndel()"></span>
   </div>
 </div>
@@ -120,17 +122,7 @@
 	<ul id="item0" style="width:120px">
 	</ul>
   </li>
-  <li><div>คิวเฉพาะวัน</div>
-    <ul>
-	  <li><div id="item2">อาทิตย์</div></li>
-	  <li><div id="item2">จันทร์</div></li>
-	  <li><div id="item2">อังคาร</div></li>
-	  <li><div id="item2">พุธ</div></li>
-	  <li><div id="item2">พฤหัส</div></li>
-	  <li><div id="item2">ศุกร์</div></li>
-	  <li><div id="item2">เสาร์</div></li>
-    </ul>
-  </li>
+  <li class="ui-state-disabled"><div id="item2">เลื่อนออกไป 1 สัปดาห์ ทุกราย</div></li>
   <li><div id="item3"></div></li>
   <li><div id="item4"></div></li>
   <li><div id="item5"></div></li>
@@ -148,8 +140,10 @@
 <ul id="stafflist" style="display:none"></ul>
 
 <div id="alert">
+  <div>
 	<span class="ui-icon ui-icon-closethick" style="float: right;height:20px;" onclick="closeAlert()"></span>
-	<div id="message"></div>
+  </div>
+  <div id="message"></div>
 </div>
 
 <div id="editcell" contenteditable="true"></div>

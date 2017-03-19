@@ -209,9 +209,9 @@ function storePresentcellQueue(pointing)
 	switch(cindex)
 	{
 		case QOPDATE:
-			editcell(pointing)
-			fillSetTableQueue(pointing)
-			break
+//			editcell(pointing)
+//			fillSetTableQueue(pointing)
+//			break
 		case QSINCE:
 		case QNAME:
 		case QAGE:

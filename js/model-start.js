@@ -34,7 +34,7 @@ function loadtable(userid)
 		if ($(clickedCell).closest("table").attr("id") == "tbl")
 			clicktable(clickedCell)
 		else if ($(clickedCell).closest("table").attr("id") == "queuetbl")
-			Qclicktable(clickedCell)
+			clicktable(clickedCell)
 	})
 	$(document).keydown( function (event) {
 		countReset();
@@ -45,7 +45,7 @@ function loadtable(userid)
 		if (tableID == "tbl")
 			editing(event)
 		else if (tableID == "queuetbl")
-			editingqueue(event)
+			editing(event)
 	})
 	$(document).contextmenu( function (event) {
 		countReset();

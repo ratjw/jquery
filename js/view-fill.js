@@ -21,6 +21,7 @@ function fillupstart()
 
 function fillall(start)
 {
+	var table = document.getElementById("tbl")
 	var i = k = q = 0
 	var rowi = {}
 	var date = ""
@@ -44,7 +45,7 @@ function fillall(start)
 			{
 				//make a blank row for matched opday which is not already in the table
 				i++
-				rowi = makenextrow(i, date, 'tbl')
+				rowi = makenextrow(table.insertRow(i), date)
 				
 				madedate = date
 			}
@@ -52,12 +53,13 @@ function fillall(start)
 			//make table head row before every Sunday
 			if ((new Date(date).getDay())%7 == 0)
 			{
-				$('#tbl tbody').append($('#tbl tr:first').clone())
+				var clone = table.getElementsByTagName("TR")[0].cloneNode(true)
+				rowi.parentNode.appendChild(clone, rowi)
  				i++
 			}
 		}
 		i++
-		rowi = makenextrow(i, date, 'tbl')
+		rowi = makenextrow(table.insertRow(i), date)
 		filldata(BOOK[q], rowi)
 		madedate = date
 	}
@@ -72,13 +74,14 @@ function fillall(start)
 	{
 		//make a blank row
 		i++
-		rowi = makenextrow(i, date, 'tbl')
+		rowi = makenextrow(table.insertRow(i), date)
 		
 		date = date.nextdays(1)
 		//make table head row before every Sunday
 		if (((new Date(date)).getDay())%7 == 0)
 		{
-			$('#tbl tbody').append($('#tbl tr:first').clone())
+			var clone = table.getElementsByTagName("TR")[0].cloneNode(true)
+			rowi.parentNode.appendChild(clone, rowi)
 			i++
 		}
 	}
@@ -103,7 +106,7 @@ function refillall()
 
 	//i for rows in table with head as the first row
 	var i = 1
-	while (i < tlength)
+	while (i < tlength - 1)
 	{
 		if (q < BOOK.length) {
 			while (date < BOOK[q].opdate)
@@ -111,7 +114,7 @@ function refillall()
 				if (date != madedate)
 				{
 					//make a blank row for matched opday which is not already in the table
-					rowi = makenextrowRefill(i, date, 'tbl')
+					rowi = makenextrow(table.rows[i], date)
 					i++
 					
 					madedate = date
@@ -124,7 +127,7 @@ function refillall()
 					i++
 				}
 			}
-			rowi = makenextrowRefill(i, date, 'tbl')
+			rowi = makenextrow(table.rows[i], date)
 			filldata(BOOK[q], rowi)
 			madedate = date
 			i++
@@ -142,32 +145,15 @@ function refillall()
 			}
 
 			//make a blank row
-			rowi = makenextrowRefill(i, date, 'tbl')
+			rowi = makenextrow(table.rows[i], date)
 			i++
 		}
 	}
 }
 
-function makenextrow(i, date, tableID)
-{	// i = the row to be made
-	var table = document.getElementById(tableID)
+function makenextrow(rowi, date)
+{
 	var datatitle = document.getElementById("datatitle")
-	var rowi
-
-	rowi = table.insertRow(i)
-	rowi.innerHTML = datatitle.innerHTML
-	rowi.cells[OPDATE].innerHTML = date.thDate()
-	rowi.cells[OPDATE].className = NAMEOFDAYABBR[(new Date(date)).getDay()]
-	rowi.className = NAMEOFDAYFULL[(new Date(date)).getDay()]
-	rowi.style.backgroundImage = holiday(date)
-	return rowi
-}
-
-function makenextrowRefill(i, date, tableID)
-{	// i = the row to be made
-	var table = document.getElementById(tableID)
-	var datatitle = document.getElementById("datatitle")
-	var rowi = table.rows[i]
 
 	rowi.innerHTML = datatitle.innerHTML
 	rowi.cells[OPDATE].innerHTML = date.thDate()
@@ -189,37 +175,53 @@ function filldata(bookq, rowi)		//bookq = BOOK[q]
 	rowi.cells[QN].innerHTML = bookq.qn
 }
 
-function fillthisDay(opdate)		
-{	//previous rows and present rows must be equal
-	var table = document.getElementById("tbl")
+function staffqueue(staffname)
+{
+	var todate = new Date().mysqlDate()
+	var i = q = 0
+	var scrolled = $("#queuecontainer").scrollTop()
 
-	var q = 0	//seek opdate in BOOK
-	while (q < BOOK.length && (BOOK[q].opdate < opdate))
-		q++
+	$('#titlename').html(staffname)
+	
+	//delete previous queuetbl lest it accumulates
+	$('#queuetbl tr').slice(1).remove()
 
-	var i = 0	//seek opdate in #tbl
-	while (opdate != table.rows[i].cells[OPDATE].innerHTML.numDate())
-		i++
+	$.each( BOOK, function() {	// each == this
+		if (( this.staffname == staffname ) && this.opdate >= todate) {
+			$('#qdatatitle tr').clone()
+				.insertAfter($('#queuetbl tr:last'))
+					.filldataQueue(this)
+		}
+	});
 
-	while ((q < BOOK.length) && (opdate == BOOK[q].opdate))
-	{	//refill only that opdate cases
-		filldata(BOOK[q], table.rows[i])
-		q++
-		i++
-	}
+	$("#queuecontainer").scrollTop(scrolled)
+
+	DragDropStaff()
 }
+
+jQuery.fn.extend({
+	filldataQueue : function(bookq) {
+		var rowcell = this[0].cells
+		rowcell[OPDATE].innerHTML = bookq.opdate.thDate()
+		rowcell[SINCE].innerHTML = bookq.qsince.thDate().slice(0,-4)
+		rowcell[STAFFNAME].innerHTML = bookq.staffname
+		rowcell[HN].innerHTML = bookq.hn
+		rowcell[NAME].innerHTML = bookq.patient
+		rowcell[AGE].innerHTML = bookq.dob? bookq.dob.getAge(bookq.opdate) : ""
+		rowcell[DIAGNOSIS].innerHTML = bookq.diagnosis
+		rowcell[TREATMENT].innerHTML = bookq.treatment
+		rowcell[TEL].innerHTML = bookq.tel
+		rowcell[QN].innerHTML = bookq.qn
+	}
+})
 
 function addnewrow(rowmain)
 {
 	if (rowmain.cells[QN].innerHTML)	//not empty
 	{
-		var table = document.getElementById("tbl")
-		var clone = rowmain.cloneNode(true)	//cloneNode is faster than innerHTML
-		var i = rowmain.rowIndex
-		while (table.rows[i].cells[OPDATE].innerHTML == table.rows[i-1].cells[OPDATE].innerHTML)
-			i--		
+		var clone = rowmain.cloneNode(true)
+
 		rowmain.parentNode.insertBefore(clone,rowmain)
-		rowmain.cells[0].id = ""
 		for (i=1; i<rowmain.cells.length; i++)
 			rowmain.cells[i].innerHTML = ""	
 		DragDrop()

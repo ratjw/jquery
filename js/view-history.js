@@ -11,7 +11,7 @@ function editHistory(rowmain, qn)
 	function callbackeditHistory(response)
 	{
 		if (!response || response.indexOf("DBfailed") != -1)
-			alert("Data history DBfailed!\n" + response);
+			alert("Data history DBfailed!\n" + response)
 		else
 			makehistory(rowmain, response)
 

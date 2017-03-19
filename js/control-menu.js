@@ -1,7 +1,8 @@
 
 function fillSetTable(rownum, pointing)
 {
-	var table = document.getElementById("tbl")
+	var tableID = $('#editcell').data("tableID")
+	var table = document.getElementById(tableID)
 	var rowmain = table.rows[rownum]
 	var tcell = rowmain.cells
 	var opdateth = tcell[OPDATE].innerHTML	//Thai date
@@ -70,7 +71,7 @@ function fillSetTable(rownum, pointing)
 						SplitPane()
 					break
 				case "item2":
-					fillday(ui.item.text())
+					postpone()
 					break
 				case "item3":
 					addnewrow(rowmain)
@@ -103,7 +104,7 @@ function fillSetTable(rownum, pointing)
 		}
 	});
 
-	showMenu(pointing, '#menu', '#tblcontainer')
+	showMenu(pointing, '#menu')
 }
 
 function stafflist(pointing)
@@ -116,14 +117,15 @@ function stafflist(pointing)
 			$("#editcell").data("location", "")
 			$("#editcell").hide()		//to disappear after selection
 			$('#stafflist').hide()		//to disappear after selection
+			event.stopPropagation()
 			return false
 		}
 	});
 
-	showMenu(pointing, '#stafflist', "#tblcontainer")
+	showMenu(pointing, '#stafflist')
 }
 
-function showMenu(pointing, menuID, container)
+function showMenu(pointing, menuID)
 {
 	var pos = $(pointing).position();
 	var height = pos.top + $(pointing).outerHeight();	//bottom

@@ -65,10 +65,9 @@ function savePreviouscell()
 {
 	if (!$("#editcell").data("location"))
 		return
-	if ($("#editcell").data('tableID') != 'tbl')
-		return
 
-	var content = $("#editcell").html().replace(/^(\s*<br\s*\/?>)*\s*|\s*(<br\s*\/?>\s*)*$/g, '')
+	var trimBR = "/^(\s*<br\s*\/?>)*\s*|\s*(<br\s*\/?>\s*)*$/g"
+	var content = $("#editcell").html().replace(trimBR, '')
 	if (content == $("#editcell").data("content"))
 		return
 
@@ -99,8 +98,10 @@ function savePreviouscell()
 
 function saveContent(column, content)	//column name in MYSQL
 {
+	var tableID = $("#editcell").data("tableID")
 	var rowcell = $($("#editcell").data("tableRow")).children("td")
 	var opdate = rowcell.eq(OPDATE).html().numDate()
+	var staffname = rowcell.eq(STAFFNAME).html()
 	var qn = rowcell.eq(QN).html()
 	var sqlstring
 	var qsince
@@ -137,15 +138,18 @@ function saveContent(column, content)	//column name in MYSQL
 		else
 		{
 			updateBOOK(response);
-			fillthisDay(opdate)
+			staffqueue(staffname)
+			refillall()
 		}
 	}
 }
 
 function saveHNinput(hn, content)
 {
+	var tableID = $("#editcell").data("tableID")
 	var rowcell = $($("#editcell").data("tableRow")).children("td")
 	var opdate = rowcell.eq(OPDATE).html().numDate()
+	var staffname = rowcell.eq(STAFFNAME).html()
 	var patient = rowcell.eq(NAME).html()
 	var qn = rowcell.eq(QN).html()
 	var qsince
@@ -181,7 +185,8 @@ function saveHNinput(hn, content)
 		else 
 		{
 			updateBOOK(response)
-			fillthisDay(opdate)
+			staffqueue(staffname)
+			refillall()
 		}
 	}
 }
@@ -220,6 +225,9 @@ function findPrevcell(event)
 	var prevcell = $($("#editcell").data("location"))
 	var column = prevcell.index()
 
+	if ($("#editcell").data("tableID") == "queuetbl")
+		EDITABLE = EDITQUEUE
+
 	if (column = EDITABLE[($.inArray(column, EDITABLE) - 1)])
 	{
 		prevcell = $(prevcell).parent().children().eq(column)
@@ -248,6 +256,9 @@ function findNextcell(event)
 	var nextcell = $($("#editcell").data("location"))
 	var column = nextcell.index()
 	var lastrow = $('#tbl tr:last-child').index()
+
+	if ($("#editcell").data("tableID") == "queuetbl")
+		EDITABLE = EDITQUEUE
 
 	if (column = EDITABLE[($.inArray(column, EDITABLE) + 1)])
 	{

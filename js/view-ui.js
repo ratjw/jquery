@@ -21,7 +21,7 @@ function DragDrop()
 	});
 
 	$("#tbl tr:has(td)").droppable({
-		accept: "tr",
+		accept: "tr:has(td)",
 
 		over: function (event, ui){
 			if ($(ui.helper).position().top < 50) {
@@ -37,37 +37,47 @@ function DragDrop()
 		},
 
 		drop: function (event, ui) {
-			var that_row = ui.draggable
-			var this_row = $(this)
-			var uihelper = ui.helper
-			var prevdate
-			var nextdate
-			var dragTable = $(ui.draggable).closest("table").attr("id")
-			var thatdate = $(ui.draggable).children("td").eq(OPDATE).html()
-			var thisdate = $(this).children("td").eq(OPDATE).html()
-			if (thatdate)
-				thatdate = thatdate.numDate()
-			if (thisdate)
-				thisdate = thisdate.numDate()
-			var thisqn = $(this).children("td").eq(QN).html()
+			var dropWaitnum, nextWaitnum, finalWaitnum
+			var prevDate, prevqn, dropqn, caseNum
+			var staffname = $( "#titlename" ).html()
+			var dragcell = $(ui.draggable).children("td")
+			var dropcell = $(this).children("td")
+			var dragqn = dragcell.eq(QN).html()
+			var dropDate = dropcell.eq(OPDATE).html().numDate()
 
-			if (dragTable == "queuetbl") 
-			{
-				var thatqn = $(ui.draggable).children("td").eq(QQN).html()
-				if (!thatqn)
-					return false
-			}
-			else if (dragTable == "tbl")
-			{
-				var thatqn = $(ui.draggable).children("td").eq(QN).html()
-				if (!thatqn)
-					return false
+			if (!dragqn)
+				return false
+
+			dropqn = dropcell.eq(QN).html()
+			if (dropqn) {	//drop on existing case
+				caseNum = findcaseNum(dropqn)	//look in BOOK
+			} else {		//drop on blank row
+				if (!(prevDate = $(this).prev().children("td").eq(OPDATE).html()))	//undefined
+					finalWaitnum = 1		//no case in this date
+				if (prevDate != dropDate) {
+					finalWaitnum = 1		//no case in this date
+				} else {
+					prevqn = $(this).prev().children("td").eq(QN).html()	//case in this date
+					caseNum = findcaseNum(prevqn)	//look in BOOK
+				}
 			}
 
-			var sql = "sqlReturnbook=UPDATE book SET "
-			sql += "opdate='" + thisdate
+			if (!finalWaitnum) {
+				dropWaitnum = Number(BOOK[caseNum].waitnum)
+				caseNum++
+				if ((caseNum > BOOK.length - 1) ||
+					(BOOK[caseNum].opdate != dropDate)) {
+					finalWaitnum = dropWaitnum + 1
+				} else {
+					nextWaitnum = Number(BOOK[caseNum].waitnum)
+					finalWaitnum = (nextWaitnum + dropWaitnum) / 2	//interposition
+				}
+			}
+
+			var sql = "sqlReturnbook=UPDATE book SET Waitnum = "+ finalWaitnum
+			sql += ", opdate='" + dropDate
 			sql += "', editor='"+ THISUSER
-			sql += "' WHERE qn="+ thatqn +";"
+			sql += "' WHERE qn="+ dragqn +";"
 
 			Ajax(MYSQLIPHP, sql, callbackDragDrop);
 
@@ -80,15 +90,10 @@ function DragDrop()
 				else
 				{
 					updateBOOK(response)
-					if (dragTable == "tbl") {
-						deleteRow(that_row, thatdate)
-					}
-						
-					if (thisqn)
-						this_row.after(this_row.clone());
-
 					refillall()
-					staffqueue($( "#titlename" ).html())
+					if (($('#queuecontainer').css('display') == 'block') &&
+						($( "#titlename" ).html() == staffname))
+						staffqueue(staffname)
 
 					DragDrop()
 				}
@@ -111,7 +116,7 @@ function DragDropStaff()
 	});
 
 	$("#queuetbl tr:has(td)").droppable({
-		accept: "#tbl tr, #queuetbl tr",
+		accept: "tr:has(td)",
 
 		over: function (event, ui) {
 			if ($(ui.helper).position().top < 50) {
@@ -127,44 +132,47 @@ function DragDropStaff()
 		},
 
 		drop: function (event, ui) {
-			var finalWaitnum, dropqn, nextqn
+			var dropWaitnum, nextWaitnum, finalWaitnum
+			var prevDate, prevqn, dropqn, caseNum
 			var staffname = $( "#titlename" ).html()
-			var thatRow = ui.draggable
-			var uidrag = $(ui.draggable).children("td")
-			var thatDate = uidrag.eq(OPDATE).html().numDate()	//only from '#tbl'
-			var dropDate = $(this).children("td").eq(QOPDATE).html().numDate()
-			var dragTable = $(ui.draggable).closest("table").attr("id")
+			var dragcell = $(ui.draggable).children("td")
+			var dropcell = $(this).children("td")
+			var dragqn = dragcell.eq(QN).html()
+			var dropDate = dropcell.eq(OPDATE).html().numDate()
 
-			if (dragTable == "tbl") {
-				var staffdrag = uidrag.eq(STAFFNAME).html()
-				if (staffdrag != staffname)
-					return
-				var dragqn = uidrag.eq(QN).html()
-			} else {
-				var dragqn = uidrag.eq(QQN).html()
+			if (!dragqn)
+				return false
+			if (staffname != dragcell.eq(STAFFNAME).html())//accept only same staff name
+				return false
+
+			dropqn = dropcell.eq(QN).html()
+			if (dropqn) {	//drop on existing case
+				caseNum = findcaseNum(dropqn)	//look in BOOK
+			} else {		//drop on blank row
+				if (!(prevDate = $(this).prev().children("td").eq(OPDATE).html()))	//undefined
+					finalWaitnum = 1		//no case in this date
+				if (prevDate != dropDate) {
+					finalWaitnum = 1		//no case in this date
+				} else {
+					prevqn = $(this).prev().children("td").eq(QN).html()	//case in this date
+					caseNum = findcaseNum(prevqn)	//look in BOOK
+				}
 			}
 
-			if (dropqn = $(this).children("td").eq(QQN).html()) {
-				var dropWaitnum = findwaitnumQ(dropqn)
-				if (nextqn = $(this).next().children("td").eq(QQN).html()) {
-					if (nextqn == uidrag.eq(QQN).html()) {			//come from '#queuetbl'
-						finalWaitnum = Math.round(dropWaitnum + 1)	//move to last row
-					} else {
-						var nextWaitnum = findwaitnumQ(nextqn)
-						finalWaitnum = (nextWaitnum + dropWaitnum) / 2	//interposition
-					}
-				} else {	//come from '#tbl'
-					finalWaitnum = Math.round(dropWaitnum + 1)	//move to last row
+			if (!finalWaitnum) {
+				dropWaitnum = Number(BOOK[caseNum].waitnum)
+				caseNum++
+				if ((caseNum > BOOK.length - 1) ||
+					(BOOK[caseNum].opdate != dropDate)) {
+					finalWaitnum = dropWaitnum + 1
+				} else {
+					nextWaitnum = Number(BOOK[caseNum].waitnum)
+					finalWaitnum = (nextWaitnum + dropWaitnum) / 2	//interposition
 				}
-			} else {		//added new last row
-				var dropDate = $(this).prev().children("td").eq(QOPDATE).html()().numDate()
-				var prevqn = $(this).prev().children("td").eq(QQN).html()
-				var prevWaitnum = findwaitnumQ(prevqn)
-				finalWaitnum = Math.round(prevWaitnum + 1)		//added new last row
 			}
 
 			var sql = "sqlReturnbook=UPDATE book SET Waitnum = "+ finalWaitnum
-			sql += ", opdate='"+ dropDate
+			sql += ", opdate='" + dropDate
 			sql += "', editor='"+ THISUSER
 			sql += "' WHERE qn="+ dragqn +";"
 
@@ -180,13 +188,29 @@ function DragDropStaff()
 				{
 					updateBOOK(response);
 					staffqueue(staffname)
-					if (dragTable == "tbl") {
-						deleteRow(thatRow, thatDate)
-					}
 					refillall()
-					DragDropStaff()
+					DragDrop()
 				}
 			}
 		}
 	});
+}
+
+function findcaseNum(qn)
+{  
+	var i = 0
+	while (i < BOOK.length && BOOK[i].qn != qn)
+		i++
+
+	return i
+}
+
+function findwaitnum(qn)
+{  
+	var waitnum
+	$.each( BOOK, function() {
+		waitnum = this.waitnum
+		return (this.qn != qn)
+	})
+	return Number(waitnum)
 }

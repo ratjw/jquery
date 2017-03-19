@@ -23,6 +23,8 @@ String.prototype.thDate = function ()
 
 String.prototype.numDate = function () 
 {	//Thai date (11 พค. 2557) to MySQL date (2014-05-11)
+	if (!this.length || this == "0000-00-00")
+		return "0000-00-00"
     var mm = this.substring(this.indexOf(" ")+1, this.length-4);
     var yyyy = parseInt(this.substr(this.length-4)) - 543;
     return yyyy +"-"+ NUMMONTH[mm] +"-"+ this.substr(0, 2);
@@ -95,27 +97,23 @@ function Ajax(url, params, callback)
 function URIcomponent(qoute)
 {
 	qoute = qoute.replace(/\s+$/,'')
-	qoute = qoute.replace(/\"/g, "&#34;")	// w3 org recommend use numeric character references to represent 
-	qoute = qoute.replace(/\'/g, "&#39;")	// double quotes (&#34;) or (&quot); and single quotes (&#39;)
-	qoute = qoute.replace(/\\/g, "\\\\")
-	return encodeURIComponent(qoute)
+	qoute = qoute.replace(/\"/g, "&#34;")	// w3 org recommend use numeric
+	qoute = qoute.replace(/\'/g, "&#39;")	// character references to represent 
+	qoute = qoute.replace(/\\/g, "\\\\")	// double quotes ((&#34;) or (&quot))
+	return encodeURIComponent(qoute)		// and single quotes (&#39;)
 }
 
 function alert(message)
 {
-
-	resizeText = function() {
-		var div = $('#message')
-		while (div.height() > div.parent().height() - 30) {
-			div.css('font-size', (parseInt(div.css('font-size')) - 1) + "px")
-			if (parseInt(div.css('font-size')) < 8)
-				break
-		}
-	}
-
 	$('#message').html(message)
 	$("#alert").fadeIn();
-	resizeText();
+
+	var div = $('#message')
+	while (div.height() > div.parent().height() - 40) {	//-30 for header
+		div.css('font-size', (parseInt(div.css('font-size')) - 1) + "px")
+		if (parseInt(div.css('font-size')) < 8)
+			break
+	}
 }
 
 function closeAlert()
