@@ -6,7 +6,7 @@ function fillupstart()
 	setTopDate(getSunday())
 	setRequire(7)
 	fillnew()
-	document.body.scrollTop = 3
+	$("#tblcontainer").scrollTop(3)
 	DragDrop()
 }
 
@@ -14,11 +14,11 @@ function filluprefill()
 { 	//from refillall which is called from :
 	//updatingback, callbackmove
 	//Start at the same begindate and same scrollTop
-	var topscroll = document.body.scrollTop
+	var topscroll = $("#tblcontainer").scrollTop()
 
 	setRequire(null)
 	fillnew()
-	document.body.scrollTop = topscroll
+	$("#tblcontainer").scrollTop(topscroll)
 	DragDrop()
 }
 
@@ -44,15 +44,15 @@ function fillext(di)
 		begindate = begindate.nextdays(di*7)
 		setTopDate(begindate)
 
-		makeheader(0)
+		$('#tbl tbody').prepend($('#tbl tr:first').clone())
 		fill(0)
 
 		//scroll to the old "tr:has(th)"
-		$(document).scrollTop($("#tbl tr:has(th)").eq(1).offset().top)
+		$("#tblcontainer").scrollTop($("#tbl tr:has(th)").eq(1).offset().top)
 	}
 	else if (di == +1)
 	{
-		makeheader()
+		$('#tbl tbody').append($('#tbl tr:first').clone())
 		fill(table.rows.length-1)
 	}
 }
@@ -89,15 +89,14 @@ function fillext(di)
 		fill(0)
 		while (numweeks < Require)
 		{
-			makeheader()
+			$('#tbl tbody').append($('#tbl tr:first').clone())
 			fill($('#tbl tr').length-1)
 		}
 	}
 
 	fill = function (at)	//at = where to fill : 0=top, >0=bottom
 	{
-		var i, q, rowi, rundate, lastday, makedate;
-		var table = document.getElementById("tbl")
+		var i, q, rowi, rundate, lastday, madedate;
 
 		begindate = at? tableTopDate.nextdays(numweeks*7) : tableTopDate
 		numweeks++
@@ -115,40 +114,26 @@ function fillext(di)
 			while (q < BOOK.length && rundate == BOOK[q].opdate)
 			{
 				i++
-				rowi = makenextrow(i, rundate)
-				makedate = rundate
+				rowi = makenextrow(i, rundate, 'tbl')
+				madedate = rundate
 				filldata(BOOK[q], rowi)
 				q++
 			}
-			if (rundate != makedate)
+			if (rundate != madedate)
 			{
 				i++
-				rowi = makenextrow(i, rundate)
-				makedate = rundate
+				rowi = makenextrow(i, rundate, 'tbl')
+				madedate = rundate
 			}
 			rundate = rundate.nextdays(1)
 		}
 	}
 })()
 
-function makeheader(at)
-{
-	var table = document.getElementById("tbl")
-	var tbody = table.getElementsByTagName("tbody")[0]
-	var trow = table.getElementsByTagName("tr")[0]
-	var thead = trow.cloneNode(true)
-
-	if (at == 0)
-		tbody.insertBefore(thead, trow)
-	else
-		tbody.appendChild(thead)
-}
-
-function makenextrow(i, date)
+function makenextrow(i, date, tableID)
 {	// i = the row to be made
-	var table = document.getElementById("tbl")
+	var table = document.getElementById(tableID)
 	var rowi
-	var j = 0
 	var datatitle = document.getElementById("datatitle")
 
 	rowi = table.insertRow(i)
@@ -170,100 +155,6 @@ function filldata(bookq, rowi)		//bookq = book[q]
 	rowi.cells[TREATMENT].innerHTML = bookq.treatment? bookq.treatment : ""
 	rowi.cells[TEL].innerHTML = bookq.tel? bookq.tel : ""
 	rowi.cells[QN].innerHTML = bookq.qn
-}
-
-function fillday(day)
-{	//Display only one day of each week
-	var i, k, q
-	var rowi = {}
-	var date = ""
-	var opday = DAYOFTHAINAME[day]
-	var makedate
-	
-	$("#container").html($("#tbltemplate").clone())
-	$("#container table").attr("id", "tblday")
-	$("#tblday").css("display", "block")
-	var table = document.getElementById("tblday")
-
-	date = BOOK[0].opdate	//for insert blank row
-	k = new Date(date).getDay()
-
-	//i for number of rows in growing table
-	i=0
-
-	//q for walking on BOOK rows
-	for (q=0; q < BOOK.length; q++)
-	{	
-		while (date < BOOK[q].opdate)
-		{	//step over each day that is not in QBOOK
-			if (date != makedate)
-			{
-				if (k%7 == opday)
-				{	//make a blank row for matched opday which is not already in the table
-					i++
-					rowi = makenextrowday(i, date)
-				}
-				makedate = date
-			}
-			date = date.nextdays(1)
-			k++	// = date.getDay() = nextday on the table
-			if (k%7 == 0)
-			{	//make table head row before every Sunday
-				makeheaderday()
- 				i++
-			}
-		}
-		k = new Date(BOOK[q].opdate).getDay()
-		if (k == opday)
-		{
-			i++
-			rowi = makenextrowday(i, date)
-			makedate = date
-			filldata(BOOK[q], rowi)
-		}
-	}
-	$("#container").dialog({
-		dialogClass: "dialog",
-		title: day,
-		height: window.innerHeight * 50 / 100,
-		width: window.innerWidth * 70 / 100
-	});
- 	DragDropday(event)
-}
-
-function makeheaderday(at)
-{
-	var table = document.getElementById("tblday")
-	var tbody = table.getElementsByTagName("tbody")[0]
-	var trow = table.getElementsByTagName("tr")[0]
-	var thead = trow.cloneNode(true)
-
-	if (at == 0)
-		tbody.insertBefore(thead, trow)
-	else
-		tbody.appendChild(thead)
-}
-
-function makenextrowday(i, date)
-{	// i = the row to be made
-	var table = document.getElementById("tblday")
-	var rowi
-	var j = 0
-	var datatitle = document.getElementById("datatitle")
-
-	rowi = table.insertRow(i)
-	table.rows[i].innerHTML = datatitle.innerHTML
-	rowi.cells[OPDATE].innerHTML = date.thDate()
-	rowi.cells[OPDATE].className = NAMEOFDAYABBR[(new Date(date)).getDay()]
-	rowi.className = NAMEOFDAYFULL[(new Date(date)).getDay()]
-	rowi.style.backgroundImage = holiday(date)
-	return rowi
-}
-
-function filldeleterow(rowmain)		
-{
-	for (var j=1; j<rowmain.cells.length; j++)
-		rowmain.cells[j].innerHTML = ""
 }
 
 function fillselect(tableID, opdate)		

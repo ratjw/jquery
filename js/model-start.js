@@ -4,34 +4,54 @@ function loadtable(userid)
 
 	THISUSER = userid
 	$("#login").remove()
-	$("#tbl").css("display", "block")
+	$("#tblcontainer").show()
+	$("#wrapper").append($("#tblcontainer"))
+	$("#wrapper").append($("#queuecontainer"))
 
 	$(document).click( function (event) {
-		countreset();
+		countReset();
 		var clickedCell = event.target
-
+		if(!$(clickedCell).closest('#menu').length) {
+			if($('#menu').is(":visible")) {
+				$('#menu').hide();
+			}
+		}
+		if(!$(clickedCell).closest('#queuemenu').length) {
+			if($('#queuemenu').is(":visible")) {
+				$('#queuemenu').hide();
+			}
+		}
+		if(!$(clickedCell).closest('#stafflist').length) {
+			if($('#stafflist').is(":visible")) {
+				$('#stafflist').hide();
+			}
+		}
+		if(!$(clickedCell).closest('#editcell').length) {
+			if($('#editcell').is(":visible")) {
+				$('#editcell').hide();
+			}
+		}
 		if ($(clickedCell).closest("table").attr("id") == "tbl")
 			clicktable(clickedCell)
 		else if ($(clickedCell).closest("table").attr("id") == "queuetbl")
 			Qclicktable(clickedCell)
-		return false
 	})
 	$(document).keydown( function (event) {
-		countreset();
-		if (!$(".ui-dialog").length || ($(".ui-dialog").css("display") == "none"))
+		countReset();
+		if ($('#paperdiv').css('display') == 'block') {
+			return
+		}
+		var tableID = $("#editcell").data('tableID')
+		if (tableID == "tbl")
 			editing(event)
-		else if ($(".ui-dialog").css("display") == "block")
-			editingQueue(event)
+		else if (tableID == "queuetbl")
+			editingqueue(event)
 	})
 	$(document).contextmenu( function (event) {
-		countreset();
+		countReset();
 		return false
 	})
-	$(document).scroll( function (event) {
-		countreset();
-		scrollUpDown(event)
-		return false
-	})
+
 	TIMER = setTimeout("updating()",10000)		//poke next 10 sec.
 }
 
@@ -41,7 +61,7 @@ function loading(response)
 	{
 		updateBOOK(response)
 		fillupstart();
-		fillStafflist()
+		dataStafflist()
 	}
 	else
 		alert("Cannot load BOOK");
@@ -57,15 +77,17 @@ function updateBOOK(response)
 	STAFF = temp.STAFF? temp.STAFF : []
 }
 
-function fillStafflist()
+function dataStafflist()
 {
 	var stafflist = ''
+	var staffmenu = ''
 	for (var each=0; each<STAFF.length; each++)
 	{
 		stafflist += '<li><div>' + STAFF[each].name + '</div></li>'
+		staffmenu += '<li><div id="item1">' + STAFF[each].name + '</div></li>'
 	}
 	$("#stafflist").html(stafflist)
-	$("#item40").append(stafflist)
+	$("#item0").html(staffmenu)
 }
 
 function updating()
@@ -82,17 +104,18 @@ function updating()
 
 	function updatingback(response)	//only changed database by checkupdate&time
 	{
-		if (response && response.indexOf("opdate") != -1)	//there is new entry after TIMESTAMP
-		{
-			updateBOOK(response);
-			filluprefill()
+		if (response && response.indexOf("opdate") != -1)
+		{								//there is new entry after TIMESTAMP
+			updateBOOK(response)
+			refillall()
+			DragDrop()
 		}
 		clearTimeout(TIMER);
 		TIMER = setTimeout("updating()",10000);	//poke next 10 sec.
 	}
 }
 
-function countreset()
+function countReset()
 {
 	clearTimeout(TIMER);
 	TIMER = setTimeout("updating()",10000);	//poke after 10 sec.

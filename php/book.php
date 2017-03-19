@@ -6,35 +6,34 @@
 
  	//waitnum = null :: deleted cases
 	//waitnum = 0 :: never in waitnum list
-	//waitnum > 0 :: being in waiting list
+	//waitnum > 0 :: is being or has been in waiting list
+	//qsince new case  from Javascript new Date()
+	//qsince is never changed
 
 function book($mysqli)
 {
 	date_default_timezone_set("Asia/Bangkok");
 
-	$sql = "SELECT waitnum, qsince, opdate, oproom, optime, staffname, hn,
-		patient, dob, gender, diagnosis, treatment, tel, qn
-		FROM book 
-		WHERE opdate >= curdate()-interval 1 year AND waitnum is not NULL
-		ORDER BY opdate, staffname, qn;";
 	$rowi = array();
-	$data = array();
-	$datu = array();
-	$dati = array();
-	$dats = array();
+	$case = array();
+	$time = array();
+	$wait = array();
+	$staff = array();
+
+	$sql = "SELECT * FROM book 
+		WHERE opdate >= curdate()-interval 1 year AND waitnum IS NOT NULL
+		ORDER BY opdate, staffname, waitnum;";
     if (!$result = $mysqli->query ($sql))
 		return $mysqli->error;
 	while ($rowi = $result->fetch_assoc())
 	{
-		$data[] = $rowi;
+		$case[] = $rowi;
 	}
 
 	if ($result = $mysqli->query ("SELECT now();"))
-		$datu = current($result->fetch_row());	//array.toString()
-
-	$sql = "SELECT waitnum, qsince, opdate, oproom, optime, staffname, hn, 
-		patient, dob, gender, diagnosis, treatment, tel, qn
-		FROM book 
+		$time = current($result->fetch_row());	//array.toString()
+/*
+	$sql = "SELECT * FROM book 
 		WHERE waitnum > 0 AND opdate = '0000-00-00'
 		ORDER BY staffname, waitnum;";
 
@@ -42,20 +41,21 @@ function book($mysqli)
 		return $mysqli->error;
 	while ($rowi = $result->fetch_assoc())
 	{
-		$dati[] = $rowi;
+		$wait[] = $rowi;
 	}
+*/
 
-	$sql = "SELECT code,name,specialty FROM staff ORDER BY code;";
+	$sql = "SELECT * FROM staff ORDER BY code;";
 
 	if (!$result = $mysqli->query ($sql))
 		return $mysqli->error;
 	while ($rowi = $result->fetch_assoc())
-		$dats[] = $rowi;
+		$staff[] = $rowi;
 
-	$allarray["BOOK"] = $data;
-	$allarray["QTIME"] = $datu;
-	$allarray["QWAIT"] = $dati;
-	$allarray["STAFF"] = $dats;
+	$allarray["BOOK"] = $case;
+	$allarray["QTIME"] = $time;
+//	$allarray["QWAIT"] = $wait;
+	$allarray["STAFF"] = $staff;
 
 	return $allarray;
 }

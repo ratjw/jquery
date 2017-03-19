@@ -1,57 +1,165 @@
-table {
+#wrapper {
+	height: 100%;
+	width: 100%;
+	font-size: 0;
+	overflow: hidden;
+}
+
+#tblcontainer {
+	float: left;
+	height: 100%;
+	width: 100%;
+	overflow-X: hidden;
+	overflow-Y: auto;
+	box-sizing: border-box;
+	border-top: solid 2px silver;
+	border-right: solid 2px silver;
+	border-left: solid 2px silver;
+}
+
+#queuecontainer {
+	float: right;
+	height: 100%;
+	overflow-X: hidden;
+	overflow-Y: auto;
+	box-sizing: border-box;
+	border-top: solid 2px silver;
+	border-right: solid 2px silver;
+	border-left: solid 2px snow;
+}
+
+#tbl {
 	border-right: solid 1px slategray;
 	width: auto;
 	table-layout: fixed;	/*make cell width = first row specified*/
-	overflow: hidden;
 	border-collapse: collapse;
 }
 
-th {
+#tbl th {
 	font-size: 16px;
 	font-weight: bold;
-	background-color: steelblue;
-	color: papayawhip;
+	background-color: #D0E7FF;
+	color: #557799;
 	border-left: solid 1px silver;
 	border-top: solid 1px silver;
 	border-bottom: solid 1px silver;
-	height: 40px;
+	height: 35px;
 }
 
-td {
-	empty-cells:show;
-	font-size: 16px;
-	border-left: solid 1px silver;
-	border-bottom: solid 1px silver;
-}
-
-tr {
+#tbl tr {
 	background-repeat: no-repeat;
 	background-position: 300px;
 }
 
-tr.sunday, td.sunday { background-color: #FFEEEE; }
-tr.monday, td.monday { background-color: #FFFFEE; }
-tr.tuesday, td.tuesday { background-color: #FFFEFE; }
-tr.wednesday, td.wednesday { background-color: #EEFFEE; }
-tr.thursday, td.thursday { background-color: #FFEEEE; }
-tr.friday, td.friday { background-color: #EEEEFF; }
-tr.saturday, td.saturday { background-color: #FFEEFF; }
+#tbl td {
+	empty-cells:show;
+	font-size: 14px;
+	border-left: solid 1px silver;
+	border-bottom: solid 1px silver;
+}
 
-td.sun { background-color: #FFDDDD; }
-td.mon { background-color: #FFFFDD; }
-td.tue { background-color: #FFEEEE; }
-td.wed { background-color: #DDFFDD; }
-td.thu { background-color: #FFEEDD; }
-td.fri { background-color: #DDDDFF; }
-td.sat { background-color: #FFDDFF; }
+#tbl tr.sunday { background-color: #FAFAFA; }
+#tbl tr.monday { background-color: #F0FFF0; }
+#tbl tr.tuesday { background-color: #FAFAFA; }
+#tbl tr.wednesday { background-color: #F0FFF0; }
+#tbl tr.thursday { background-color: #FAFAFA; }
+#tbl tr.friday { background-color: #F0FFF0; }
+#tbl tr.saturday { background-color: #FAFAFA; }
 
-td.sun:before { content: "อาทิตย์ "; }
-td.mon:before { content: "จันทร์ "; }
-td.tue:before { content: "อังคาร "; }
-td.wed:before { content: "พุธ "; }
-td.thu:before { content: "พฤหัส "; }
-td.fri:before { content: "ศุกร์ "; }
-td.sat:before { content: "เสาร์ "; }
+#tbl td:first-child {
+	font-size: 12px; background-color: #E0F0F7; 
+}
+
+#tbl td.sun:before { content: "อาทิตย์ "; }
+#tbl td.mon:before { content: "จันทร์ "; }
+#tbl td.tue:before { content: "อังคาร "; }
+#tbl td.wed:before { content: "พุธ "; }
+#tbl td.thu:before { content: "พฤหัส "; }
+#tbl td.fri:before { content: "ศุกร์ "; }
+#tbl td.sat:before { content: "เสาร์ "; }
+
+#queuetbl, #historytable {
+	border-right: solid 1px slategray;
+	width: auto;
+	table-layout: fixed;	/*make cell width = first row specified*/
+	border-collapse: collapse;
+}
+
+#queuetbl tr:nth-child(odd), #historytable tr:nth-child(odd) {
+    background-color: #F0FFF0;
+}
+
+#queuetbl th, #historytable th {
+	font-size: 12px;
+	font-weight: bold;
+	height: 20px;
+	background-color: #7799AA;
+	color: white;
+	border-left: solid 1px silver;
+	border-top: solid 1px silver;
+	border-bottom: solid 1px silver;
+}
+
+#queuetbl td, #historytable td {
+	empty-cells:show;
+	font-size: 12px;
+	border-left: solid 1px silver;
+	border-bottom: solid 1px silver;
+}
+
+#queuetbl td:first-child {
+	background-color: #7799AA;
+	color: white;
+}
+
+#titlebar {
+	height: 40px;
+	background-color: #F0F0F0;
+}
+
+#titlename {
+	font-size: 16px;
+	font-weight: bold;
+	color: #777777;
+	width: 100px;
+	padding-top: 10px;
+	padding-left: 25px;
+}
+
+.ui-dialog {
+	position: fixed;
+	box-shadow: 10px 20px 30px slategray;
+}
+
+.ui-menu {
+	position: absolute;
+	font-size: 14px;
+	box-shadow: 10px 20px 30px slategray;
+}
+
+.ui-icon-closethick {
+	float: right;
+	margin: 10px 10px 0 0;
+}
+
+.ui-resizable-e { 
+	cursor: e-resize; 
+	width: 10px; 
+	top: 0; 
+	right: -2px;
+}
+
+.ui-icon:hover {
+	cursor: pointer;
+	border: black dotted
+}
+
+.ui-icon-circle-close {
+	float: right;
+	background-color: white;
+	height: 15px;
+	width: 15px;
+}
 
 #login {
 	width:300px; 
@@ -60,18 +168,50 @@ td.sat:before { content: "เสาร์ "; }
 	text-align:center; 
 	background-color:papayawhip; 
 	border:2px solid slategray;
+	box-shadow: 20px 30px 40px slategray;
 }
 
 #editcell { 
 	display:none;
-/*	position: absolute;*/
-	font-size: 16px;
+	position: absolute;
 	text-align: left; 
 	overflow: hidden;
 	border: solid 1px #0099FF;
 	background-color: white; 
-/*	z-index: 1000;*/
 	box-shadow: 5px 5px 10px slategray;
+}
+
+#delete { 
+	display:none;
+	position: absolute;
+}
+
+#del { 
+	text-align: center; 
+	height: 25px;
+	width: 100px;
+	font-size: 14px;
+	color: white;
+	background-color: black;
+	text-align: center;
+	line-height: 25px;
+}
+
+#undelete { 
+	display:none;
+	position: absolute;
+}
+
+#undel { 
+	text-align: center; 
+	height: 25px;
+	width: 100px;
+	font-size: 14px;
+	color: black;
+	background-color: white;
+	border: 2px solid slategray;
+	text-align: center;
+	line-height: 25px;
 }
 
 #alert {
@@ -82,63 +222,31 @@ td.sat:before { content: "เสาร์ "; }
 	left:30%;
 	width: 300px;
 	height:200px;
-	line-height: 180px;
 	background-color: snow;
 	border: 2px solid silver;
 	text-align:center;
 	font-weight: bold;
-	font-size: 24px;
+	font-size: 20px;
 	color: slategray;
 	box-shadow: 20px 30px 40px slategray;
 }
 
-.dialog {
+.paper {
 	position: fixed;
-	box-shadow: 10px 20px 30px slategray;
-}
-
-.historytable  {
-	display: none;
-	table-layout: fixed;
-	overflow: scroll;
-	border-collapse: collapse;
-	border-right: solid 1px slategray;
-}
-
-.historytable th {
-	font-size: 16px;
-	font-weight: bold;
-	color: papayawhip;
-	background-color: steelblue;
-	text-align: center;
-	border-left: solid 1px silver;
-	border-top: solid 1px silver;
-	border-bottom: solid 1px silver;
-	height: 30px;
-}
-
-.historytable td {
-	empty-cells:show;
-	font-size: 14px;
+	display:none;
+	z-index: 1;
+	font-size: 12px;
 	color: black;
-	background-color: #eeeeee;
-	text-align: left;
-	vertical-align: text-top;
-	border-color: #000000; 
-	border-left: solid 1px silver;
-	border-bottom: solid 1px silver;
+	background-color: white;
+	border: 2px solid slategray;
+	padding-top: 30px;
+	padding-right: 30px;
+	padding-bottom: 30px;
+	padding-left: 50px;
+	overflow-x: hidden;
+	overflow-y: hidden;
 }
 
-#queuetbl {
-	background-color: #F0F0F0;
-}
-
-#queuetbl th {
-	font-size: 14px;
-	height: 25px;
-}
-
-#queuetbl td {
-	font-size: 14px;
-	color: black;
+span {
+	display:inline-block; 
 }

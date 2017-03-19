@@ -12,15 +12,15 @@
 	}
 
 	/* Hide table headers (but not display: none;, for accessibility) */
-	#tbl tr th { 
+	#tbl, #queuetbl, #tblday tr th { 
 		position: absolute;
 		top: -9999px;
 		left: -9999px;
 	}
  
-	#tbl tr { border: 1px solid #ccc; }
+	#tbl, #queuetbl, #tblday tr { border: 1px solid #ccc; }
 
-	#tbl td { 
+	#tbl, #queuetbl, #tblday td { 
 		/* Behave  like a "row" */
 		border: none;
 		border-bottom: 1px solid #eee; 
@@ -30,7 +30,7 @@
 		text-align:left;
 	}
 
-	#tbl td:before { 
+	#tbl, #queuetbl, #tblday td:before { 
 		/* Now like a table header */
 		position: absolute;
 		/* Top/left values mimic padding */
@@ -47,13 +47,13 @@
 	/*
 	Label the data
 	*/
-	#tbl td:before { content: attr(data-title); }
+	#tbl, #queuetbl, #tblday td:before { content: attr(data-title); }
 
-	#tbl td.sun:before { content: "วันอาทิตย์ "; }
-	#tbl td.mon:before { content: "วันจันทร์ "; }
-	#tbl td.tue:before { content: "วันอังคาร "; }
-	#tbl td.wed:before { content: "วันพุธ "; }
-	#tbl td.thu:before { content: "วันพฤหัส "; }
-	#tbl td.fri:before { content: "วันศุกร์ "; }
-	#tbl td.sat:before { content: "วันเสาร์ "; }
+	#tbl, #queuetbl, #tblday td.sun:before { content: "วันอาทิตย์ "; }
+	#tbl, #queuetbl, #tblday td.mon:before { content: "วันจันทร์ "; }
+	#tbl, #queuetbl, #tblday td.tue:before { content: "วันอังคาร "; }
+	#tbl, #queuetbl, #tblday td.wed:before { content: "วันพุธ "; }
+	#tbl, #queuetbl, #tblday td.thu:before { content: "วันพฤหัส "; }
+	#tbl, #queuetbl, #tblday td.fri:before { content: "วันศุกร์ "; }
+	#tbl, #queuetbl, #tblday td.sat:before { content: "วันเสาร์ "; }
 }

@@ -1,14 +1,10 @@
 function clicktable(clickedCell)
 {
-	//checkpoint#1 : click in editing div
-	if (clickedCell.id == "editcell") {
+	if (clickedCell.id == "editcell")
 		return
-	} else {
-		if (clickedCell.nodeName != "TD") {
-			$("#tbl").siblings().hide()
-			return
-		}
-	}
+
+	if  (clickedCell.nodeName != "TD")
+		return	
 
 	savePreviouscell()
 	storePresentcell(clickedCell)
@@ -19,11 +15,9 @@ function editing(event)
 	var keycode = event.which || window.event.keyCode
 	var thiscell
 
-	if ($("#editcell").data("located").closest("table").attr("id") != "tbl")
-		return
-
 	if (keycode == 9)
 	{
+		$(".ui-menu").hide()
 		savePreviouscell()
 		if (event.shiftKey)
 			thiscell = findPrevcell(event)
@@ -32,7 +26,7 @@ function editing(event)
 		if (thiscell) {
 			storePresentcell(thiscell)
 		} else {
-			$("#tbl").siblings().hide()
+			$("#editcell").hide()
 			window.focus()
 		}
 		event.preventDefault()
@@ -40,6 +34,7 @@ function editing(event)
 	}
 	else if (keycode == 13)
 	{
+		$(".ui-menu").hide()
 		if (event.shiftKey || event.ctrlKey) {
 			return
 		}
@@ -48,7 +43,7 @@ function editing(event)
 		if (thiscell) {
 			storePresentcell(thiscell)
 		} else {
-			$("#tbl").siblings().hide()
+			$("#editcell").hide()
 			window.focus()
 		}
 		event.preventDefault()
@@ -56,14 +51,9 @@ function editing(event)
 	}
 	else if (keycode == 27)
 	{
-		if ($("#editcell").data("located").index() == OPDATE)
-		{
-			$("#tbl").siblings().hide()
-		}
-		else
-		{
-			$("#editcell").data("located").html($("#editcell").data("content"))
-		}
+		$(".ui-menu").hide()
+		if ($("#editcell").data("cellIndex").index() != OPDATE)
+			$("#editcell").hide()	//just do nothing
 		$("#editcell").hide()
 		window.focus()
 		event.preventDefault()
@@ -73,19 +63,16 @@ function editing(event)
 
 function savePreviouscell() 
 {
-	if (!$("#editcell").data("located"))
+	if (!$("#editcell").data("location"))
+		return
+	if ($("#editcell").data('tableID') != 'tbl')
 		return
 
-	var content = $("#editcell").html()
-	if ($("#editcell").data("located").index() == HN)
-		content = content.replace(/<br>/g, "")
+	var content = $("#editcell").html().replace(/^(\s*<br\s*\/?>)*\s*|\s*(<br\s*\/?>\s*)*$/g, '')
 	if (content == $("#editcell").data("content"))
 		return
 
-	$("#editcell").data("located").html(content)
-	var editcindex = $("#editcell").data("located").index()
-
-	switch(editcindex)
+	switch($("#editcell").data("cellIndex"))
 	{
 		case OPDATE:
 			break
@@ -112,12 +99,17 @@ function savePreviouscell()
 
 function saveContent(column, content)	//column name in MYSQL
 {
-	var rowcell = $("#editcell").data("located").closest("tr").children("td")
+	var rowcell = $($("#editcell").data("tableRow")).children("td")
 	var opdate = rowcell.eq(OPDATE).html().numDate()
 	var qn = rowcell.eq(QN).html()
 	var sqlstring
+	var qsince
 
-	$("#tbl").css("cursor", "wait")
+	if (!qn)
+		qsince = new Date().mysqlDate()
+
+	$($("#editcell").data("location")).html(content)	//just for show instantly
+
 	content = URIcomponent(content)			//take care of white space, double qoute, 
 											//single qoute, and back slash
 	if (qn)
@@ -130,8 +122,8 @@ function saveContent(column, content)	//column name in MYSQL
 	else
 	{
 		sqlstring = "sqlReturnbook=INSERT INTO book ("
-		sqlstring += "waitnum, qsince, opdate, "+ column +", editor) VALUES ("
-		sqlstring += "0, '"+ opdate +"', '"+ opdate +"', '"+ content +"', '"+ THISUSER +"');"
+		sqlstring += "qsince, opdate, "+ column +", editor) VALUES ('"
+		sqlstring += qsince +"', '"+ opdate +"', '"+ content +"', '"+ THISUSER +"');"
 	}
 
 	Ajax(MYSQLIPHP, sqlstring, callbacksaveContent);
@@ -141,110 +133,91 @@ function saveContent(column, content)	//column name in MYSQL
 		if (!response || response.indexOf("DBfailed") != -1)
 		{
 			alert("Failed! update database \n\n" + response)
-			$("#editcell").data("located").html($("#editcell").data("content"))
 		}
 		else
 		{
 			updateBOOK(response);
-			fillselect("tbl", opdate)
-			$("#editcell").data("content", "")
+			fillthisDay(opdate)
 		}
-		$("#tbl").css("cursor", "")
 	}
 }
 
 function saveHNinput(hn, content)
 {
-	var rowtr = $("#editcell").data("located").parent().children("td")
-	var opdate = rowtr.eq(OPDATE).html().numDate()
-	var patient = rowtr.eq(NAME).html()
-	var qn = rowtr.eq(QN).html()
+	var rowcell = $($("#editcell").data("tableRow")).children("td")
+	var opdate = rowcell.eq(OPDATE).html().numDate()
+	var patient = rowcell.eq(NAME).html()
+	var qn = rowcell.eq(QN).html()
+	var qsince
 
 	if (patient)
 	{
-		$("#editcell").html($("#editcell").data("content"))
+		$("#editcell").hide()	//just do nothing
 		return
 	}
+
+	$($("#editcell").data("location")).html(content)	//just for show instantly
+
 	content = content.replace(/<br>/g, "")
 	content = content.replace(/^\s+/g, "")
 
+	if (content.length != 7)
+		return
+	if (!qn)
+		qsince = new Date().mysqlDate()
+
 	var sqlstring = "hn=" + content
-	sqlstring += "&waitnum=0"
-	sqlstring += "&qsince="+ opdate
+	sqlstring += "&qsince="+ qsince
 	sqlstring += "&opdate="+ opdate
 	sqlstring += "&qn="+ qn
 	sqlstring += "&username="+ THISUSER
-
 
 	Ajax(GETNAMEHN, sqlstring, callbackgetByHN)
 
 	function callbackgetByHN(response)
 	{
-		if (!response || response.indexOf("patient") == -1)	//no patient
-			alert("Error getnamehn : "+ response)
-		else if (response.indexOf("DBfailed") != -1)
-			alert("Failed! book($mysqli)" + response)
-		else if (response.indexOf("{") != -1)
-		{	//Only one patient
+		if ((!response) || (response.indexOf("patient") == -1) || (response.indexOf("{") == -1))
+			alert(response)
+		else 
+		{
 			updateBOOK(response)
-			fillselect("tbl", opdate)
+			fillthisDay(opdate)
 		}
 	}
 }
 
 function storePresentcell(pointing)
 {  
+	var rindex = $(pointing).closest("tr").index()
 	var cindex = $(pointing).closest("td").index()
-	var rowtr = $(pointing).closest("tr")
-	var rindex = $(rowtr).index()
-	var qn = $(rowtr).children("td").eq(QN).html()
-
-	$("#tbl").siblings().hide()
-	editcell(pointing, "#tbl")
 
 	switch(cindex)
 	{
 		case OPDATE:
+			editcell(pointing)
 			fillSetTable(rindex, pointing)
 			break
 		case STAFFNAME:
+			editcell(pointing)
+			$("#editcell").data("content", pointing.innerHTML)
 			stafflist(pointing)
 			break
 		case NAME:
 		case AGE:
-			$("#editcell").hide() //disable self (uneditable cell)
 			break
 		case HN:
 		case DIAGNOSIS:
 		case TREATMENT:
 		case TEL:		//store content in "data" of editcell
-			$("#editcell").data("content", $(pointing).html())
+			editcell(pointing)
+			$("#editcell").data("content", pointing.innerHTML)
 			break
 	}
 }
 
-function editcell(pointing, id)
-{
-	var pos = $(pointing).position()
-
-	$(id).append($("#editcell"))
-	$("#editcell").html($(pointing).html())
-	$("#editcell").data("located", $(pointing))
-	$("#editcell").css({
-		position: "absolute",
-		zIndex: 1000,
-		top: pos.top + "px",
-		left: pos.left + "px",
-		height: $(pointing).height() + "px",
-		width: $(pointing).width() + "px",
-		display: "block"
-	})
-	$("#editcell").focus()
-}
-
 function findPrevcell(event) 
 {
-	var prevcell = $("#editcell").data("located")
+	var prevcell = $($("#editcell").data("location"))
 	var column = prevcell.index()
 
 	if (column = EDITABLE[($.inArray(column, EDITABLE) - 1)])
@@ -272,7 +245,7 @@ function findPrevcell(event)
 
 function findNextcell(event) 
 {
-	var nextcell = $("#editcell").data("located")
+	var nextcell = $($("#editcell").data("location"))
 	var column = nextcell.index()
 	var lastrow = $('#tbl tr:last-child').index()
 
