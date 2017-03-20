@@ -67,7 +67,7 @@ function deleteHistory(rowmain, qn)
 		sql += "b.hn, b.patient, b.diagnosis, b.treatment, b.tel, b.editor, b.qn "
 		sql += "FROM book b INNER JOIN bookhistory bh ON b.qn = bh.qn "
 		sql += "WHERE b.waitnum IS NULL AND bh.waitnum IS NULL "
-		sql += "ORDER BY editdatetime DESC;"
+		sql += "ORDER BY revision DESC;"
 
 		Ajax(MYSQLIPHP, sql, callbackdeleteHistory)
 
