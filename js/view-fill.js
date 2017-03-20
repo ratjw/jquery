@@ -45,7 +45,7 @@ function fillall(start)
 			{
 				//make a blank row for matched opday which is not already in the table
 				i++
-				rowi = makenextrow(table.insertRow(i), date)
+				rowi = makenextrow(table.insertRow(i), date)	//insertRow
 				
 				madedate = date
 			}
@@ -59,7 +59,7 @@ function fillall(start)
 			}
 		}
 		i++
-		rowi = makenextrow(table.insertRow(i), date)
+		rowi = makenextrow(table.insertRow(i), date)	//insertRow
 		filldata(BOOK[q], rowi)
 		madedate = date
 	}
@@ -74,7 +74,7 @@ function fillall(start)
 	{
 		//make a blank row
 		i++
-		rowi = makenextrow(table.insertRow(i), date)
+		rowi = makenextrow(table.insertRow(i), date)	//insertRow
 		
 		date = date.nextdays(1)
 		//make table head row before every Sunday
@@ -106,7 +106,7 @@ function refillall()
 
 	//i for rows in table with head as the first row
 	var i = 1
-	while (i < tlength - 1)
+	while (i < tlength)
 	{
 		if (q < BOOK.length) {
 			while (date < BOOK[q].opdate)
@@ -114,8 +114,10 @@ function refillall()
 				if (date != madedate)
 				{
 					//make a blank row for matched opday which is not already in the table
-					rowi = makenextrow(table.rows[i], date)
+					rowi = makenextrow(table.rows[i], date)	//existing row
 					i++
+					if (i >= tlength)
+						return
 					
 					madedate = date
 				}
@@ -123,11 +125,13 @@ function refillall()
 				//make table head row before every Sunday
 				if ((new Date(date).getDay())%7 == 0)
 				{
-					table.rows[i].innerHTML = $('#tbl tr:first').html()
+					table.rows[i].innerHTML = table.getElementsByTagName("TR")[0].innerHTML
 					i++
+					if (i >= tlength)
+						return
 				}
 			}
-			rowi = makenextrow(table.rows[i], date)
+			rowi = makenextrow(table.rows[i], date)	//existing row
 			filldata(BOOK[q], rowi)
 			madedate = date
 			i++
@@ -142,10 +146,12 @@ function refillall()
 			{
 				table.rows[i].innerHTML = $('#tbl tr:first').html()
 				i++
+				if (i >= tlength)
+					return
 			}
 
 			//make a blank row
-			rowi = makenextrow(table.rows[i], date)
+			rowi = makenextrow(table.rows[i], date)	//existing row
 			i++
 		}
 	}
@@ -352,14 +358,14 @@ function closequeue()
 	$("#queuecontainer").hide()
 	$("#tblcontainer").resizable('destroy');
 
-	scrollto('html body', tohead, 300, 500)
+	scrollto('html, body', tohead, 300, 500)
 	DragDrop()
 }
 
 function findVisibleHead(table)
 {
 	var tohead
-	var topscroll = $('html body').scrollTop()
+	var topscroll = $('html, body').scrollTop()
 
 	$.each($(table + ' tr:has(th)'), function() {
 		tohead = this

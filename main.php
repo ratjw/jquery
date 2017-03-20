@@ -122,7 +122,7 @@
 	<ul id="item0" style="width:120px">
 	</ul>
   </li>
-  <li class="ui-state-disabled"><div id="item2">เลื่อนออกไป 1 สัปดาห์ ทุกราย</div></li>
+  <li><div id="item2"></div></li>
   <li><div id="item3"></div></li>
   <li><div id="item4"></div></li>
   <li><div id="item5"></div></li>

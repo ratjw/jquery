@@ -15,6 +15,12 @@ function fillSetTable(rownum, pointing)
 
 	casename = casename.substring(0, casename.indexOf(' '))
 
+	$("#item2").html("เลื่อนทุกราย 1 สัปดาห์")
+	if ($('#editcell').data("tableID") == "queuetbl")
+		$("#item2").parent().removeClass(disabled)
+	else
+		$("#item2").parent().addClass(disabled)
+
 	$("#item3").html("เพิ่ม case วันที่ " + opdateth)
 	if (qn)
 		$("#item3").parent().removeClass(disabled)
@@ -71,7 +77,7 @@ function fillSetTable(rownum, pointing)
 						SplitPane()
 					break
 				case "item2":
-					postpone()
+//					postpone()
 					break
 				case "item3":
 					addnewrow(rowmain)
