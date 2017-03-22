@@ -32,7 +32,7 @@
    <TBODY>
     <TR>
      <th style="width:10%">วันผ่าตัด</th>
-     <th style="display:none">Since</th>
+     <th style="display:none"></th>
      <th style="width:6%">Staff</th>
      <th style="width:5%">HN</th>
      <th style="width:15%">ชื่อ นามสกุล</th>
@@ -58,7 +58,7 @@
     <TR>
      <th style="width:10%">วันผ่าตัด</th>
      <th style="width:4%">Since</th>
-     <th style="display:none">Staff</th>
+     <th style="display:none"></th>
      <th style="width:7%">HN</th>
      <th style="width:15%">ชื่อ นามสกุล</th>
      <th style="width:4%">อายุ</th>
@@ -88,10 +88,10 @@
   </TR>
 </TABLE>
 
-<TABLE id="qdatatitle" style="display:none">	<!--template "qdatatitle" for "staffqueue"-->
+<TABLE id="qdatatitle" style="display:none">	<!--template for "staffqueue"-->
   <TBODY>
     <TR>
-     <td data-title="opdateQ"></td>
+     <td data-title="วันผ่าตัด"></td>
      <td data-title="Since"></td>
      <td style="display:none"></td>
      <td data-title="HN"></td>
@@ -105,17 +105,52 @@
   </TBODY>
 </TABLE>
 
+<TABLE id="servicetbl" data-role="table" class="ui-responsive" style="display:none">
+  <TBODY>
+    <TR>
+     <th style="width:10%">วันผ่าตัด</th>
+     <th style="display:none"></th>
+     <th style="display:none"></th>
+     <th style="width:5%">HN</th>
+     <th style="width:15%">ชื่อ นามสกุล</th>
+     <th style="width:4%">อายุ</th>
+     <th style="width:20%">Diagnosis</th>
+     <th style="width:20%">Treatment</th>
+     <th style="display:none"></th>
+     <th style="display:none"></th>
+    </TR>
+  </TBODY>
+</TABLE>
+
+<TABLE id="sdatatitle" style="display:none">	<!--template for "servicetable"-->
+  <TBODY>
+   <TR>
+    <td data-title="วันผ่าตัด"></td>
+    <td style="display:none"></td>
+    <td style="display:none"></td>
+    <td data-title="HN"></td>
+    <td data-title="ชื่อ นามสกุล"></td>
+    <td data-title="อายุ"></td>
+    <td data-title="Diagnosis"></td>
+    <td data-title="Treatment"></td>
+    <td style="display:none"</td>
+    <td style="display:none"></td>
+   </TR>
+  </TBODY>
+</TABLE>
+
 <div id="delete">
 	<span id="del" onclick="doDelete()">Delete</span>
 	<span class="ui-icon ui-icon-circle-close" onclick="closeDel()"></span>
 </div>
 
-<div id="historycontainer" style="display:none">
-  <div id="undelete">
-	<span id="undel" onclick="doUndelete()">Undelete</span>
-	<span class="ui-icon ui-icon-circle-close" onclick="closeUndel()"></span>
-  </div>
+<div id="dialogContainer"></div>
+
+<div id="nondelete" style="display:none">
+  <span id="undel" onclick="doUndelete()">Undelete</span>
+  <span class="ui-icon ui-icon-circle-close" onclick="closeUndel()"></span>
 </div>
+
 
 <ul id="menu" style="display:none">
   <li><div>คิวของอาจารย์</div>
@@ -129,7 +164,7 @@
   <li><div id="item6"></div></li>
   <li><div id="item7"></div></li>
   <li><div id="item8"></div></li>
-  <!--li><div id="item9"></div></li-->
+  <li><div id="item9"></div></li>
 </ul>
 
 <ul id="queuemenu" style="display:none">

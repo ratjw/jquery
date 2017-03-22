@@ -52,8 +52,6 @@ function editing(event)
 	else if (keycode == 27)
 	{
 		$(".ui-menu").hide()
-		if ($("#editcell").data("cellIndex").index() != OPDATE)
-			$("#editcell").hide()	//just do nothing
 		$("#editcell").hide()
 		window.focus()
 		event.preventDefault()
@@ -218,6 +216,42 @@ function storePresentcell(pointing)
 			$("#editcell").data("content", pointing.innerHTML)
 			break
 	}
+}
+
+function editcell(pointing)
+{
+	var editcell = "#editcell"
+	saveDataPoint(editcell, pointing)
+	positioning(editcell, pointing)
+	$(editcell).show()
+	$(editcell).focus()
+}
+
+function saveDataPoint(editcell, pointing)
+{
+	var tableID = $(pointing).closest('table').attr('id')
+	var rowIndex = $(pointing).closest('tr').index()
+	var cellIndex = $(pointing).index()
+
+	$(editcell).data("location", "#"+ tableID +" tr:eq("+ rowIndex +") td:eq("+ cellIndex +")")
+	$(editcell).data("tableRow", "#"+ tableID +" tr:eq("+ rowIndex +")")
+	$(editcell).data("tableID", tableID)
+	$(editcell).data("rowIndex", rowIndex)
+	$(editcell).data("cellIndex", cellIndex)
+	$(editcell).html($(pointing).html())
+}
+
+function positioning(editcell, pointing)
+{
+	var pos = $(pointing).position()
+
+	$(editcell).css({
+		top: pos.top + "px",
+		left: pos.left + "px",
+		height: $(pointing).height() + "px",
+		width: $(pointing).width() + "px",
+		fontSize: $(pointing).css("fontSize"),
+	})
 }
 
 function findPrevcell(event) 

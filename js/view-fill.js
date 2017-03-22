@@ -45,7 +45,8 @@ function fillall(start)
 			{
 				//make a blank row for matched opday which is not already in the table
 				i++
-				rowi = makenextrow(table.insertRow(i), date)	//insertRow
+				rowi = table.insertRow(i)
+				rowi = makenextrow(rowi, date)	//insertRow
 				
 				madedate = date
 			}
@@ -59,7 +60,8 @@ function fillall(start)
 			}
 		}
 		i++
-		rowi = makenextrow(table.insertRow(i), date)	//insertRow
+		rowi = table.insertRow(i)
+		rowi = makenextrow(rowi, date)	//insertRow
 		filldata(BOOK[q], rowi)
 		madedate = date
 	}
@@ -74,7 +76,8 @@ function fillall(start)
 	{
 		//make a blank row
 		i++
-		rowi = makenextrow(table.insertRow(i), date)	//insertRow
+		rowi = table.insertRow(i)
+		rowi = makenextrow(rowi, date)	//insertRow
 		
 		date = date.nextdays(1)
 		//make table head row before every Sunday
@@ -184,7 +187,6 @@ function filldata(bookq, rowi)		//bookq = BOOK[q]
 function staffqueue(staffname)
 {
 	var todate = new Date().mysqlDate()
-	var i = q = 0
 	var scrolled = $("#queuecontainer").scrollTop()
 
 	$('#titlename').html(staffname)
@@ -221,113 +223,9 @@ jQuery.fn.extend({
 	}
 })
 
-function addnewrow(rowmain)
-{
-	if (rowmain.cells[QN].innerHTML)	//not empty
-	{
-		var clone = rowmain.cloneNode(true)
-
-		rowmain.parentNode.insertBefore(clone,rowmain)
-		for (i=1; i<rowmain.cells.length; i++)
-			rowmain.cells[i].innerHTML = ""	
-		DragDrop()
-	}
-}
-
-function deleteCase(rowmain, opdate, qn)
-{
-	$('#delete').show()
-	$('#delete').position( {
-		my: "left center",
-		at: "left center",
-		of: $(rowmain)
-	})
-
-	doDelete = function() 
-	{
-		//not actually delete the case but set waitnum=NULL
-		var sql = "sqlReturnbook=UPDATE book SET waitnum=NULL WHERE qn="+ qn +";"
-
-		Ajax(MYSQLIPHP, sql, callbackdeleterow)
-
-		function callbackdeleterow(response)
-		{
-			if (!response || response.indexOf("DBfailed") != -1)
-				alert ("Delete & Refresh failed!\n" + response)
-			else
-			{
-				updateBOOK(response);
-				deleteRow(rowmain, opdate)
-			}
-		}
-		$('#delete').hide()
-	}
-}
-
-function closeDel() 
-{
-	$('#delete').hide()
-}
-
-function deleteRow(rowmain, opdate)
-{
-	var prevDate = $(rowmain).prev().children().eq(OPDATE).html()
-	var nextDate = $(rowmain).next().children().eq(OPDATE).html()
-
-	if (prevDate)	//avoid "undefined" error message
-		prevDate = prevDate.numDate()
-
-	if (nextDate)
-		nextDate = nextDate.numDate()
-
-	if ((prevDate == opdate) ||
-		(nextDate == opdate))
-	{
-		$(rowmain).remove()
-	} else {
-		$(rowmain).children().eq(OPDATE).siblings().html("")
-	}
-}
-
-function editcell(pointing)
-{
-	var editcell = "#editcell"
-	saveDataPoint(editcell, pointing)
-	positioning(editcell, pointing)
-	$(editcell).show()
-	$(editcell).focus()
-}
-
-function saveDataPoint(editcell, pointing)
-{
-	var tableID = $(pointing).closest('table').attr('id')
-	var rowIndex = $(pointing).closest('tr').index()
-	var cellIndex = $(pointing).index()
-
-	$(editcell).data("location", "#"+ tableID +" tr:eq("+ rowIndex +") td:eq("+ cellIndex +")")
-	$(editcell).data("tableRow", "#"+ tableID +" tr:eq("+ rowIndex +")")
-	$(editcell).data("tableID", tableID)
-	$(editcell).data("rowIndex", rowIndex)
-	$(editcell).data("cellIndex", cellIndex)
-	$(editcell).html($(pointing).html())
-}
-
-function positioning(editcell, pointing)
-{
-	var pos = $(pointing).position()
-
-	$(editcell).css({
-		top: pos.top + "px",
-		left: pos.left + "px",
-		height: $(pointing).height() + "px",
-		width: $(pointing).width() + "px",
-		fontSize: $(pointing).css("fontSize"),
-	})
-}
-
 function SplitPane()
 {
-	var tohead = findVisibleHead('#tbl')
+	var tohead = findVisibleHead('html body', '#tbl')
 
 	$("html, body").css( {
 		height: "100%",
@@ -346,7 +244,7 @@ function SplitPane()
 
 function closequeue()
 {
-	var tohead = findVisibleHead('#tbl')
+	var tohead = findVisibleHead('html body', '#tbl')
 	
 	$("html, body").css( {
 		height: "",
@@ -358,14 +256,14 @@ function closequeue()
 	$("#queuecontainer").hide()
 	$("#tblcontainer").resizable('destroy');
 
-	scrollto('html, body', tohead, 300, 500)
+	scrollto('html body', tohead, 300, 500)
 	DragDrop()
 }
 
-function findVisibleHead(table)
+function findVisibleHead(container, table)
 {
 	var tohead
-	var topscroll = $('html, body').scrollTop()
+	var topscroll = $(container).scrollTop()// || $(window).scrollTop()
 
 	$.each($(table + ' tr:has(th)'), function() {
 		tohead = this
@@ -412,4 +310,96 @@ function initResize(id)
 			});
 		}
 	});
+}
+
+function holiday(date)
+{
+	var monthdate = date.substring(5)
+	var dayofweek = (new Date(date)).getDay()
+	var holidayname = ""
+
+	for (var key in HOLIDAY) 
+	{
+		if (key == date)
+			return HOLIDAY[key]	//matched a holiday
+		if (key > date)
+			break		//not a listed holiday
+						//either a fixed or a compensation holiday
+	}
+	switch (monthdate)
+	{
+	case "12-31":
+		holidayname = "url('pic/Yearend.jpg')"
+		break
+	case "01-01":
+		holidayname = "url('pic/Newyear.jpg')"
+		break
+	case "01-02":
+		if ((dayofweek == 1) || (dayofweek == 2))
+			holidayname = "url('pic/Yearendsub.jpg')"
+		break
+	case "01-03":
+		if ((dayofweek == 1) || (dayofweek == 2))
+			holidayname = "url('pic/Newyearsub.jpg')"
+		break
+	case "04-06":
+		holidayname = "url('pic/Chakri.jpg')"
+		break
+	case "04-07":
+	case "04-08":
+		if (dayofweek == 1)
+			holidayname = "url('pic/Chakrisub.jpg')"
+		break
+	case "04-13":
+	case "04-14":
+	case "04-15":
+		holidayname = "url('pic/Songkran.jpg')"
+		break
+	case "04-16":
+	case "04-17":
+		if (dayofweek && (dayofweek < 4))
+			holidayname = "url('pic/Songkransub.jpg')"
+		break
+	case "05-05":
+		holidayname = "url('pic/Coronation.jpg')"
+		break
+	case "05-06":
+	case "05-07":
+		if (dayofweek == 1)
+			holidayname = "url('pic/Coronationsub.jpg')"
+		break
+	case "08-12":
+		holidayname = "url('pic/Queen.jpg')"
+		break
+	case "08-13":
+	case "08-14":
+		if (dayofweek == 1)
+			holidayname = "url('pic/Queensub.jpg')"
+		break
+	case "10-23":
+		holidayname = "url('pic/Piya.jpg')"
+		break
+	case "10-24":
+	case "10-25":
+		if (dayofweek == 1)
+			holidayname = "url('pic/Piyasub.jpg')"
+		break
+	case "12-05":
+		holidayname = "url('pic/King.jpg')"
+		break
+	case "12-06":
+	case "12-07":
+		if (dayofweek == 1)
+			holidayname = "url('pic/Kingsub.jpg')"
+		break
+	case "12-10":
+		holidayname = "url('pic/Constitution.jpg')"
+		break
+	case "12-11":
+	case "12-12":
+		if (dayofweek == 1)
+			holidayname = "url('pic/Constitutionsub.jpg')"
+		break
+	}
+	return holidayname
 }

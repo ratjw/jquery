@@ -43,12 +43,13 @@
 	border-left: solid 1px silver;
 	border-top: solid 1px silver;
 	border-bottom: solid 1px silver;
-	height: 35px;
+	height: 30px;
 }
 
 #tbl tr {
 	background-repeat: no-repeat;
 	background-position: 300px;
+	height: 25px;
 }
 
 #tbl td {
@@ -78,21 +79,23 @@
 #tbl td.fri:before { content: "ศุกร์ "; }
 #tbl td.sat:before { content: "เสาร์ "; }
 
-#queuetbl, #historytable {
+#queuetbl, #historytable, #servicetable {
 	border-right: solid 1px slategray;
 	width: auto;
 	table-layout: fixed;	/*make cell width = first row specified*/
 	border-collapse: collapse;
 }
 
-#queuetbl tr:nth-child(odd), #historytable tr:nth-child(odd) {
+#queuetbl tr:nth-child(odd), 
+#historytable tr:nth-child(odd), 
+#servicetable tr:nth-child(odd) {
     background-color: #F0FFF0;
 }
 
-#queuetbl th, #historytable th {
-	font-size: 12px;
+#queuetbl th, #historytable th, #servicetable th {
+	font-size: 14px;
 	font-weight: bold;
-	height: 20px;
+	height: 25px;
 	background-color: #7799AA;
 	color: white;
 	border-left: solid 1px silver;
@@ -100,7 +103,10 @@
 	border-bottom: solid 1px silver;
 }
 
-#queuetbl td, #historytable td {
+#queuetbl tr, #historytable tr, #servicetable tr {
+	height: 20px;
+}
+#queuetbl td, #historytable td, #servicetable td {
 	empty-cells:show;
 	font-size: 12px;
 	border-left: solid 1px silver;
@@ -210,8 +216,16 @@
 	color: black;
 	background-color: white;
 	border: 2px solid slategray;
-	text-align: center;
 	line-height: 25px;
+}
+
+#datepicker, #datepicking {
+	width: 150px;
+	font-size: 16px;
+}
+
+.ui-datepicker-calendar {
+	display: none;
 }
 
 #alert {

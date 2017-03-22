@@ -53,16 +53,7 @@ function fillSetTable(rownum, pointing)
 	else
 		$("#item8").parent().addClass(disabled)
 
-//	if ($('#moverow'))
-//	{
-//		$("#item9").html("วาง")
-//	} else {
-//		$("#item9").html("To Move")
-//		if (qn)
-//			$("#item9").parent().removeClass(disabled)
-//		else
-//			$("#item9").parent().addClass(disabled)
-//	}
+	$("#item9").html("Service Review ")
 
 	$("#menu").menu({
 		select: function( event, ui ) {
@@ -89,7 +80,7 @@ function fillSetTable(rownum, pointing)
 						deleteCase(rowmain, opdate, qn)
 					break
 				case "item5":
-					deleteHistory(rowmain, qn)
+					deleteHistory()
 					break
 				case "item6":
 					editHistory(rowmain, qn)
@@ -99,6 +90,9 @@ function fillSetTable(rownum, pointing)
 					break
 				case "item8":
 					fillEquipTable(rownum, qn)
+					break
+				case "item9":
+					serviceReview()
 					break
 			}
 
@@ -165,4 +159,72 @@ function checkblank(opdate, qn)
 		return true	//there is this opdate case in another row, can delete
 	else
 		return false	//No this opdate case in another row, do not delete
+}
+
+function addnewrow(rowmain)
+{
+	if (rowmain.cells[QN].innerHTML)	//not empty
+	{
+		var clone = rowmain.cloneNode(true)
+
+		rowmain.parentNode.insertBefore(clone,rowmain)
+		for (i=1; i<rowmain.cells.length; i++)
+			rowmain.cells[i].innerHTML = ""	
+		DragDrop()
+	}
+}
+
+function deleteCase(rowmain, opdate, qn)
+{
+	$('#delete').show()
+	$('#delete').position( {
+		my: "left center",
+		at: "left center",
+		of: $(rowmain)
+	})
+
+	doDelete = function() 
+	{
+		//not actually delete the case but set waitnum=NULL
+		var sql = "sqlReturnbook=UPDATE book SET waitnum=NULL WHERE qn="+ qn +";"
+
+		Ajax(MYSQLIPHP, sql, callbackdeleterow)
+
+		function callbackdeleterow(response)
+		{
+			if (!response || response.indexOf("DBfailed") != -1)
+				alert ("Delete & Refresh failed!\n" + response)
+			else
+			{
+				updateBOOK(response);
+				deleteRow(rowmain, opdate)
+			}
+		}
+		$('#delete').hide()
+	}
+}
+
+function closeDel() 
+{
+	$('#delete').hide()
+}
+
+function deleteRow(rowmain, opdate)
+{
+	var prevDate = $(rowmain).prev().children().eq(OPDATE).html()
+	var nextDate = $(rowmain).next().children().eq(OPDATE).html()
+
+	if (prevDate)	//avoid "undefined" error message
+		prevDate = prevDate.numDate()
+
+	if (nextDate)
+		nextDate = nextDate.numDate()
+
+	if ((prevDate == opdate) ||
+		(nextDate == opdate))
+	{
+		$(rowmain).remove()
+	} else {
+		$(rowmain).children().eq(OPDATE).siblings().html("")
+	}
 }
