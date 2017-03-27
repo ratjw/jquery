@@ -45,8 +45,7 @@ function fillall(start)
 			{
 				//make a blank row for matched opday which is not already in the table
 				i++
-				rowi = table.insertRow(i)
-				rowi = makenextrow(rowi, date)	//insertRow
+				rowi = makenextrow(i, date)	//insertRow
 				
 				madedate = date
 			}
@@ -60,8 +59,7 @@ function fillall(start)
 			}
 		}
 		i++
-		rowi = table.insertRow(i)
-		rowi = makenextrow(rowi, date)	//insertRow
+		rowi = makenextrow(i, date)	//insertRow
 		filldata(BOOK[q], rowi)
 		madedate = date
 	}
@@ -76,8 +74,7 @@ function fillall(start)
 	{
 		//make a blank row
 		i++
-		rowi = table.insertRow(i)
-		rowi = makenextrow(rowi, date)	//insertRow
+		rowi = makenextrow(i, date)	//insertRow
 		
 		date = date.nextdays(1)
 		//make table head row before every Sunday
@@ -96,7 +93,7 @@ function refillall()
 	var rowi = {}
 	var date = ""
 	var madedate
-	var start = $('#tbl > tbody > tr:not(:has("th")):first > td').eq(OPDATE).html().numDate()
+	var start = $('#tbl tr:has("td"):first td').eq(OPDATE).html().numDate()
 	var tlength = $('#tbl > tbody > tr').length
 
 	date = start	//find this row in BOOK
@@ -160,11 +157,15 @@ function refillall()
 	}
 }
 
-function makenextrow(rowi, date)
+function makenextrow(i, date)
 {
+	var table = document.getElementById("tbl")
+	var cols = table.rows[0].cells.length
 	var datatitle = document.getElementById("datatitle")
+	var row = datatitle.cloneNode(true)
+	var rowi = table.appendChild(row)
 
-	rowi.innerHTML = datatitle.innerHTML
+	row.id = ""
 	rowi.cells[OPDATE].innerHTML = date.thDate()
 	rowi.cells[OPDATE].className = NAMEOFDAYABBR[(new Date(date)).getDay()]
 	rowi.className = NAMEOFDAYFULL[(new Date(date)).getDay()]
@@ -225,7 +226,7 @@ jQuery.fn.extend({
 
 function SplitPane()
 {
-	var tohead = findVisibleHead('html body', '#tbl')
+	var tohead = findVisibleHead('html, body', '#tbl')
 
 	$("html, body").css( {
 		height: "100%",
@@ -238,13 +239,16 @@ function SplitPane()
 	initResize("#tblcontainer")
 	$('.ui-resizable-e').css('height', $("#tbl").css("height"))
 
-	scrollto('#tblcontainer', tohead, 300, 500)
+	$('#tblcontainer').scrollTop($(tohead).offset().top - 300)
+	$('#tblcontainer').animate({
+		scrollTop: $('#tblcontainer').scrollTop() + 300
+	}, 500);
 	DragDrop()
 }
 
 function closequeue()
 {
-	var tohead = findVisibleHead('html body', '#tbl')
+	var tohead = findVisibleHead('html, body', '#tbl')
 	
 	$("html, body").css( {
 		height: "",
@@ -256,28 +260,23 @@ function closequeue()
 	$("#queuecontainer").hide()
 	$("#tblcontainer").resizable('destroy');
 
-	scrollto('html body', tohead, 300, 500)
+	$('html, body').scrollTop($(tohead).offset().top - 300)
+	$('html, body').animate({
+		scrollTop: $('html, body').scrollTop() + 300
+	}, 500);
 	DragDrop()
 }
 
 function findVisibleHead(container, table)
 {
 	var tohead
-	var topscroll = $(container).scrollTop()// || $(window).scrollTop()
+	var topscroll = $(container).scrollTop()
 
 	$.each($(table + ' tr:has(th)'), function() {
 		tohead = this
 		return ($(this).offset().top < topscroll)
 	})
 	return tohead
-}
-
-function scrollto(container, tohead, pixel, time)
-{
-	$(container).scrollTop($(tohead).offset().top - pixel)
-	$(container).animate({
-		scrollTop: $(container).scrollTop() + pixel
-	}, time);
 }
 
 function initResize(id)

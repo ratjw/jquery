@@ -64,7 +64,7 @@ function savePreviouscell()
 	if (!$("#editcell").data("location"))
 		return
 
-	var trimBR = "/^(\s*<br\s*\/?>)*\s*|\s*(<br\s*\/?>\s*)*$/g"
+	var trimBR = /^(\s*<br\s*\/?>)*\s*|\s*(<br\s*\/?>\s*)*$/g
 	var content = $("#editcell").html().replace(trimBR, '')
 	if (content == $("#editcell").data("content"))
 		return
