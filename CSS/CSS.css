@@ -17,9 +17,13 @@
 	border-left: solid 2px silver;
 }
 
-#queuecontainer {
+#titlequeue {
 	float: right;
 	height: 100%;
+}
+
+#queuecontainer {
+	height: 90%;
 	overflow-X: hidden;
 	overflow-Y: auto;
 	box-sizing: border-box;

@@ -64,7 +64,7 @@ function fillSetTable(rownum, pointing)
 			{
 				case "item1":
 					staffqueue(ui.item.text())
-					if ($("#queuecontainer").css("display") != "block")
+					if ($("#titlequeue").css("display") != "block")
 						SplitPane()
 					break
 				case "item2":

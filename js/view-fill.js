@@ -16,7 +16,6 @@ function fillupstart()
 	$('html, body').animate({
 		scrollTop: thishead.offset().top
 	}, 300);
-	DragDrop()
 }
 
 function fillall(start)
@@ -114,7 +113,8 @@ function refillall()
 				if (date != madedate)
 				{
 					//make a blank row for matched opday which is not already in the table
-					rowi = makenextrow(table.rows[i], date)	//existing row
+					rowi = table.rows[i]	//existing row
+					fillOPDATE(rowi, date)
 					i++
 					if (i >= tlength)
 						return
@@ -131,8 +131,8 @@ function refillall()
 						return
 				}
 			}
-			rowi = makenextrow(table.rows[i], date)	//existing row
-			filldata(BOOK[q], rowi)
+			rowi = table.rows[i]	//existing row
+			fillOPDATE(rowi, date)
 			madedate = date
 			i++
 			q++
@@ -151,26 +151,37 @@ function refillall()
 			}
 
 			//make a blank row
-			rowi = makenextrow(table.rows[i], date)	//existing row
+			rowi = table.rows[i]	//existing row
+			fillOPDATE(rowi, date)
 			i++
 		}
 	}
+	sortable("#tbl")
+//	DragDrop()
 }
 
 function makenextrow(i, date)
 {
-	var table = document.getElementById("tbl")
-	var cols = table.rows[0].cells.length
+	var tbody = document.getElementById("tbl").getElementsByTagName("TBODY")[0]
+	var cols = tbody.rows[0].cells.length
 	var datatitle = document.getElementById("datatitle")
 	var row = datatitle.cloneNode(true)
-	var rowi = table.appendChild(row)
-
 	row.id = ""
+	var rowi = tbody.appendChild(row)
+
 	rowi.cells[OPDATE].innerHTML = date.thDate()
 	rowi.cells[OPDATE].className = NAMEOFDAYABBR[(new Date(date)).getDay()]
 	rowi.className = NAMEOFDAYFULL[(new Date(date)).getDay()]
 	rowi.style.backgroundImage = holiday(date)
 	return rowi
+}
+
+function fillOPDATE(rowi, date)
+{
+	rowi.cells[OPDATE].innerHTML = date.thDate()
+	rowi.cells[OPDATE].className = NAMEOFDAYABBR[(new Date(date)).getDay()]
+	rowi.className = NAMEOFDAYFULL[(new Date(date)).getDay()]
+	rowi.style.backgroundImage = holiday(date)
 }
 
 function filldata(bookq, rowi)		//bookq = BOOK[q]
@@ -198,14 +209,15 @@ function staffqueue(staffname)
 	$.each( BOOK, function() {	// each == this
 		if (( this.staffname == staffname ) && this.opdate >= todate) {
 			$('#qdatatitle tr').clone()
-				.insertAfter($('#queuetbl tr:last'))
+				.appendTo($('#queuetbl'))
 					.filldataQueue(this)
 		}
 	});
 
 	$("#queuecontainer").scrollTop(scrolled)
 
-	DragDropStaff()
+//	DragDropStaff()
+	sortable("#queuetbl")
 }
 
 jQuery.fn.extend({
@@ -226,16 +238,16 @@ jQuery.fn.extend({
 
 function SplitPane()
 {
-	var tohead = findVisibleHead('html, body', '#tbl')
+	var tohead = findVisibleHead(window, '#tbl')
 
 	$("html, body").css( {
 		height: "100%",
 		overflow: "hidden",
 		margin: "0"
 	})
-	$("#queuecontainer").show()
+	$("#titlequeue").show()
 	$("#tblcontainer").css("width", "60%")
-	$("#queuecontainer").css("width", "40%")
+	$("#titlequeue").css("width", "40%")
 	initResize("#tblcontainer")
 	$('.ui-resizable-e').css('height', $("#tbl").css("height"))
 
@@ -248,7 +260,7 @@ function SplitPane()
 
 function closequeue()
 {
-	var tohead = findVisibleHead('html, body', '#tbl')
+	var tohead = findVisibleHead(window, '#tbl')
 	
 	$("html, body").css( {
 		height: "",
@@ -256,13 +268,13 @@ function closequeue()
 		margin: ""
 	})
 	$("#tblcontainer").css("width", "100%")
-	$("#queuecontainer").css("width", "0%")
-	$("#queuecontainer").hide()
+	$("#titlequeue").css("width", "0%")
+	$("#titlequeue").hide()
 	$("#tblcontainer").resizable('destroy');
 
 	$('html, body').scrollTop($(tohead).offset().top - 300)
 	$('html, body').animate({
-		scrollTop: $('html, body').scrollTop() + 300
+		scrollTop: $(window).scrollTop() + 300
 	}, 500);
 	DragDrop()
 }
@@ -274,7 +286,7 @@ function findVisibleHead(container, table)
 
 	$.each($(table + ' tr:has(th)'), function() {
 		tohead = this
-		return ($(this).offset().top < topscroll)
+		return (Math.round($(this).offset().top) < Math.round(topscroll))
 	})
 	return tohead
 }

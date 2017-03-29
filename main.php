@@ -11,11 +11,12 @@
 <!--link href="css/jquery.mobile-1.4.5.css" rel="stylesheet"-->
 
 <!--script src="js/jquery.mobile-1.4.5.js"></script-->
-<script src="js/jquery.js"></script>
+<!--script src="js/jquery-1.12.4.min.js"></script-->
+<script src="js/jquery-3.1.1.js"></script>
 <script src="js/jquery-ui.js"></script>
 <script src="js/control-click.js"></script>
-<script src="js/control-menu.js"></script>
 <script src="js/control-function.js"></script>
+<script src="js/control-menu.js"></script>
 <script src="js/model-constant.js"></script>
 <script src="js/model-equip.js"></script>
 <script src="js/model-start.js"></script>
@@ -46,31 +47,31 @@
   </TABLE>
  </div>
 
- <div id="queuecontainer" style="display:none">
+ <div id="titlequeue" style="display:none">
   <div id="titlebar">
 	<span id="titlename"></span>
 	<span class="ui-icon ui-icon-closethick" onclick="closequeue()">
 	</span>
   </div> 
-
-  <TABLE id="queuetbl" data-role="table" class="ui-responsive">
-   <TBODY>
-    <TR>
-     <th style="width:10%">วันผ่าตัด</th>
-     <th style="width:4%">Since</th>
-     <th style="display:none"></th>
-     <th style="width:7%">HN</th>
-     <th style="width:15%">ชื่อ นามสกุล</th>
-     <th style="width:4%">อายุ</th>
-     <th style="width:20%">Diagnosis</th>
-     <th style="width:20%">Treatment</th>
-     <th style="width:20%">Note</th>
-     <th style="display:none"></th>
-    </TR>
-   </TBODY>
-  </TABLE>
+  <div id="queuecontainer">
+   <TABLE id="queuetbl" data-role="table" class="ui-responsive">
+    <TBODY>
+     <TR>
+      <th style="width:10%">วันผ่าตัด</th>
+      <th style="width:4%">Since</th>
+      <th style="display:none"></th>
+      <th style="width:7%">HN</th>
+      <th style="width:15%">ชื่อ นามสกุล</th>
+      <th style="width:4%">อายุ</th>
+      <th style="width:20%">Diagnosis</th>
+      <th style="width:20%">Treatment</th>
+      <th style="width:20%">Note</th>
+      <th style="display:none"></th>
+     </TR>
+    </TBODY>
+   </TABLE>
+  </div>
  </div>
-
 </div>
 
 <TABLE style="display:none">	<!-- Used as cells template -->

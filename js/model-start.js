@@ -5,8 +5,6 @@ function loadtable(userid)
 	THISUSER = userid
 	$("#login").remove()
 	$("#tblcontainer").show()
-	$("#wrapper").append($("#tblcontainer"))
-	$("#wrapper").append($("#queuecontainer"))
 
 	$(document).click( function (event) {
 		countReset();
@@ -52,7 +50,10 @@ function loadtable(userid)
 		return false
 	})
 
-	TIMER = setTimeout("updating()",10000)		//poke next 10 sec.
+	TIMER = setTimeout("sortable('#tbl')", 0)
+	//trick browser to render immediately
+	//because sortable takes long time
+	TIMER = setTimeout("updating()",10000);	//poke next 10 sec.
 }
 
 function loading(response)
@@ -92,14 +93,6 @@ function dataStafflist()
 
 function updating()
 {
-	if (document.getElementById("editmode") || document.getElementById("movemode"))
-	{
-		clearTimeout(TIMER);
-		TIMER = setTimeout("updating()",10000);	//poke next 10 sec.
-		return;
-	}
-	//poke database if not editmode, not movemode and not adding new case
-
 	Ajax(MYSQLIPHP, "functionName=checkupdate&time="+TIMESTAMP, updatingback);
 
 	function updatingback(response)	//only changed database by checkupdate&time
@@ -108,7 +101,6 @@ function updating()
 		{								//there is new entry after TIMESTAMP
 			updateBOOK(response)
 			refillall()
-			DragDrop()
 		}
 		clearTimeout(TIMER);
 		TIMER = setTimeout("updating()",10000);	//poke next 10 sec.

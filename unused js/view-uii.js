@@ -78,52 +78,38 @@ function DragDrop()
 	});
 }
 
-function sortable(id)
+function DragDropStaff()
 {
-	var fixHelperModified = function(e, tr) {
-		var original = tr.children();
-		var helper = tr.clone();
-		helper.children().each(function(index)
-		{
-		  $(this).width(original.eq(index).width())
-		});
-		return helper;
-	};
-//	var prevplaceholder
-//	var thisplaceholder
+	$("#queuetbl tr:has(td)").draggable({
+		helper: "clone",
+		revert: "true",
+		stack: ".ui-draggable",
+		zIndex: 1000,
+		start : function () {
+			$("#editcell").hide()
+			$(".ui-menu").hide()
+		}
+	});
 
-	$(id + " tbody").sortable({
-		items: "> tr:has(td)",
-		start: function(e, ui){
-			ui.placeholder.height(ui.item.height());
-		},
-		forceHelperSize: true,
-		forcePlaceholderSize: true,
-		helper: fixHelperModified
-//		change: function(e, ui){
-//			prevplaceholder = thisplaceholder
-//			thisplaceholder = ui.placeholder.index()
-//		},
-	}).droppable({
+	$("#queuetbl tr:has(td)").droppable({
 		accept: "tr:has(td)",
-/*
-		over: function (event, ui){
+
+		over: function (event, ui) {
 			if ($(ui.helper).position().top < 50) {
-				$('#tblcontainer').animate({
-					scrollTop: $('#tblcontainer').scrollTop() - 200
+				$('#queuecontainer').animate({
+					scrollTop: $('#queuecontainer').scrollTop() - 100
 				}, 200);
 			}
-			if ($(ui.helper).position().top > $('#tblcontainer').innerHeight() - 50) {
-				$('#tblcontainer').animate({
-					scrollTop: $('#tblcontainer').scrollTop() + 200
+			if ($(ui.helper).position().top > $('#queuecontainer').innerHeight() - 50) {
+				$('#queuecontainer').animate({
+					scrollTop: $('#queuecontainer').scrollTop() + 100
 				}, 200);
 			}
 		},
-*/
+
 		drop: function (event, ui) {
 			
-			var dragTable = ui.item.closest("table").attr("id")
-			var dragcell = ui.item.children("td")
+			var dragcell = $(ui.draggable).children("td")
 			var dropcell = $(this).children("td")
 			var prevcell = $(this).prev().children("td")
 			var staffname = dragcell.eq(STAFFNAME).html()
@@ -133,11 +119,13 @@ function sortable(id)
 
 			if (!dragqn)
 				return false
+			if (staffname != $( "#titlename" ).html())//accept only same staff name
+				return false
 
 			var finalWaitnum = getfinalWaitnum(prevcell, dropqn, dropDate)
 
 			var sql = "sqlReturnbook=UPDATE book SET Waitnum = "+ finalWaitnum
-			sql += ", opdate='" + opdate
+			sql += ", opdate='" + dropDate
 			sql += "', editor='"+ THISUSER
 			sql += "' WHERE qn="+ dragqn +";"
 
@@ -148,29 +136,35 @@ function sortable(id)
 				if (!response || response.indexOf("DBfailed") != -1)
 				{
 					alert ("Move failed!\n" + response)
-					$( id + " tbody" ).sortable( "cancel" )
 				}
 				else
 				{
 					updateBOOK(response);
-					$( id + " tbody" ).sortable( "refreshPositions" )
+					staffqueue(staffname)
+					refillall()
+					DragDrop()
 				}
 			}
 		}
-	})
+	});
 }
 
-function getfinalWaitnum(prevcell, dropDate)
+function getfinalWaitnum(prevcell, dropqn, dropDate)
 {  
-	var prevDate
-	if (!(prevDate = prevcell.eq(OPDATE).html()))	//undefined
-		return 1		//no case in this date
-	if (prevDate != dropDate) {
-		return 1		//no case in this date
-	} else {
-		var prevqn = prevcell.eq(QN).html()	//case in this date
-		caseNum = findcaseNum(prevqn)	//look in BOOK
+	if (dropqn) {	//drop on existing case
+		var caseNum = findcaseNum(dropqn)	//look in BOOK
 		return finalWaitnum(caseNum, dropDate)
+	} else {		//drop on blank row
+		var prevDate
+		if (!(prevDate = prevcell.eq(OPDATE).html()))	//undefined
+			return 1		//no case in this date
+		if (prevDate != dropDate) {
+			return 1		//no case in this date
+		} else {
+			var prevqn = prevcell.eq(QN).html()	//case in this date
+			caseNum = findcaseNum(prevqn)	//look in BOOK
+			return finalWaitnum(caseNum, dropDate)
+		}
 	}
 }
 
