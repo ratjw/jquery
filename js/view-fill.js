@@ -133,6 +133,7 @@ function refillall()
 			}
 			rowi = table.rows[i]	//existing row
 			fillOPDATE(rowi, date)
+			filldata(BOOK[q], rowi)
 			madedate = date
 			i++
 			q++
@@ -144,7 +145,7 @@ function refillall()
 			//make table head row before every Sunday
 			if (((new Date(date)).getDay())%7 == 0)
 			{
-				table.rows[i].innerHTML = $('#tbl tr:first').html()
+				table.rows[i].innerHTML = table.getElementsByTagName("TR")[0].innerHTML
 				i++
 				if (i >= tlength)
 					return
@@ -178,6 +179,8 @@ function makenextrow(i, date)
 
 function fillOPDATE(rowi, date)
 {
+	var datatitle = document.getElementById("datatitle")
+	rowi.innerHTML = datatitle.innerHTML
 	rowi.cells[OPDATE].innerHTML = date.thDate()
 	rowi.cells[OPDATE].className = NAMEOFDAYABBR[(new Date(date)).getDay()]
 	rowi.className = NAMEOFDAYFULL[(new Date(date)).getDay()]

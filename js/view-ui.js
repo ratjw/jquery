@@ -78,21 +78,6 @@ function DragDrop()
 	});
 }
 
-function getclosest(beforeitem, beforeplace)
-{
-	var itemtop = beforeitem.offset().top
-	var prevtop = beforeitem.prev().offset().top
-	var nexttop = beforeitem.next().offset().top
-	var placetop = beforeplace.offset().top
-	var nearprev = Math.abs(itemtop - prevtop)
-	var nearplace = Math.abs(itemtop - placetop)
-	var nearnext = Math.abs(itemtop - nexttop)
-	if (nearprev < nearplace) {
-		if (nearprev < nearnext) {
-		} 
-	}
-}
-
 function sortable(id)
 {
 	var prevplaceholder
@@ -123,11 +108,11 @@ function sortable(id)
 			var nearplace = Math.abs(stoppos - thispos)
 			var nearnext = Math.abs(stoppos - nextpos)
 			var nearest = Math.min(nearprev, nearplace, nearnext)
-			if (nearprev == nearest) 
+			if (nearest == nearprev) 
 				thisdrop = previtem
-			if (nearnext == nearest) 
+			if (nearest == nearnext) 
 				thisdrop = nextitem
-			if (nearplace == nearest) 
+			if (nearest == nearplace) 
 				if (prevplaceholder < thisplaceholder)
 					thisdrop = previtem
 				else
@@ -136,14 +121,14 @@ function sortable(id)
 			var prevopdate = previtem.children("td").eq(OPDATE).html().numDate()
 			var thisopdate = thisdrop.children("td").eq(OPDATE).html().numDate()
 			var nextopdate = nextitem.children("td").eq(OPDATE).html().numDate()
-			var prevcasenum = findcaseNum(previtem.children("td").eq(QN).html())
+			var prevqn = previtem.children("td").eq(QN).html()
 			var thisqn = thisitem.children("td").eq(QN).html()
-			var nextcasenum = findcaseNum(nextitem.children("td").eq(QN).html())
+			var nextqn = nextitem.children("td").eq(QN).html()
 			if (thisdrop == previtem) {
-				finalWaitnum = prevWaitnum(prevcasenum, thisopdate)
+				finalWaitnum = prevWaitnum(prevqn, thisopdate)
 			}
 			if (thisdrop == nextitem) {
-				finalWaitnum = nextWaitnum(nextcasenum, thisopdate)
+				finalWaitnum = nextWaitnum(nextqn, thisopdate)
 			}
 
 			var sql = "sqlReturnbook=UPDATE book SET Waitnum = "+ finalWaitnum
@@ -162,8 +147,10 @@ function sortable(id)
 				}
 				else
 				{
-					updateBOOK(response);
-					$( id + " tbody" ).sortable( "refreshPositions" )
+//					$( id + " tbody" ).sortable( "refresh" )
+//					$( id + " tbody" ).sortable( "refreshPositions" )
+					updateBOOK(response)
+					refillall()
 				}
 			}
 		}
@@ -179,8 +166,11 @@ function findcaseNum(qn)
 	return i
 }
 
-function prevWaitnum(caseNum, dropDate)
+function prevWaitnum(prevqn, dropDate)
 {  
+	if (!prevqn)
+		return 0
+	var caseNum = findcaseNum(prevqn)
 	var dropWaitnum = Number(BOOK[caseNum].waitnum)
 	caseNum++
 	if ((caseNum > BOOK.length - 1) ||
@@ -192,8 +182,11 @@ function prevWaitnum(caseNum, dropDate)
 	}
 }
 
-function nextWaitnum(caseNum, dropDate)
+function nextWaitnum(nextqn, dropDate)
 {  
+	if (!nextqn)
+		return 0
+	var caseNum = findcaseNum(nextqn)
 	var dropWaitnum = Number(BOOK[caseNum].waitnum)
 	caseNum--
 	if ((caseNum < 0) ||
