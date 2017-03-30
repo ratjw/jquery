@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<HTML>
+<HEAD>
+<meta charset="utf-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link href="css/jquery-ui.css" rel="stylesheet">
+<!--link href="css/jquery.mobile-1.4.5.css" rel="stylesheet"-->
+
+<!--script src="js/jquery.mobile-1.4.5.js"></script-->
+<!--script src="js/jquery-1.12.4.min.js"></script-->
+<script src="js/jquery-3.1.1.js"></script>
+<script src="js/jquery-ui.js"></script>
+</HEAD>
+<style>
+table {
+    width: 80%;
+    margin: 20px auto;
+}
+
+tr {
+    background: #FFF;
+}
+tr:nth-child(2n) {
+    background: rgba(0,0,0,.05);
+}
+
+td {
+    padding: 5px;
+}
+</style>
+<BODY>
+<table class="tasks-list table">
+
+    <tr>
+        <td>Row 1</td>
+    </tr>
+    <tr>
+        <td>Row 2</td>
+    </tr>
+    <tr>
+        <td>Row 3</td>
+    </tr>
+    <tr>
+        <td>Row 4</td>
+    </tr>
+    <tr>
+        <td>Row 5</td>
+    </tr>
+    <tr>
+        <td>Row 6</td>
+    </tr>
+    <tr>
+        <td>Row 8</td>
+    </tr>
+    <tr>
+        <td>Row 9</td>
+    </tr>
+    <tr>
+        <td>Row 10</td>
+    </tr>
+    
+</table>
+<script>
+// Helper to prevent the columns from collapsing when dragging
+var fixHelper = function(e, ui) {
+    ui.children().each(function() {
+        $(this).width($(this).width());
+    });
+    return ui;
+};
+
+
+$('.tasks-list > *').sortable({
+    helper: fixHelper,
+    axis: 'y',
+    cursor: 'move',
+}).droppable({
+    drop: function(event, ui) {
+        ui.draggable.remove();
+    }
+});
+</script>
+
+</BODY>
+</HTML>

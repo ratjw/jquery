@@ -78,19 +78,27 @@ function DragDrop()
 	});
 }
 
+function getclosest(beforeitem, beforeplace)
+{
+	var itemtop = beforeitem.offset().top
+	var prevtop = beforeitem.prev().offset().top
+	var nexttop = beforeitem.next().offset().top
+	var placetop = beforeplace.offset().top
+	var nearprev = Math.abs(itemtop - prevtop)
+	var nearplace = Math.abs(itemtop - placetop)
+	var nearnext = Math.abs(itemtop - nexttop)
+	if (nearprev < nearplace) {
+		if (nearprev < nearnext) {
+		} 
+	}
+}
+
 function sortable(id)
 {
-	var fixHelperModified = function(e, tr) {
-		var original = tr.children();
-		var helper = tr.clone();
-		helper.children().each(function(index)
-		{
-		  $(this).width(original.eq(index).width())
-		});
-		return helper;
-	};
-//	var prevplaceholder
-//	var thisplaceholder
+	var prevplaceholder
+	var thisplaceholder
+	var thisdrop
+	var finalWaitnum
 
 	$(id + " tbody").sortable({
 		items: "> tr:has(td)",
@@ -99,47 +107,49 @@ function sortable(id)
 		},
 		forceHelperSize: true,
 		forcePlaceholderSize: true,
-		helper: fixHelperModified
-//		change: function(e, ui){
-//			prevplaceholder = thisplaceholder
-//			thisplaceholder = ui.placeholder.index()
-//		},
-	}).droppable({
-		accept: "tr:has(td)",
-/*
-		over: function (event, ui){
-			if ($(ui.helper).position().top < 50) {
-				$('#tblcontainer').animate({
-					scrollTop: $('#tblcontainer').scrollTop() - 200
-				}, 200);
-			}
-			if ($(ui.helper).position().top > $('#tblcontainer').innerHeight() - 50) {
-				$('#tblcontainer').animate({
-					scrollTop: $('#tblcontainer').scrollTop() + 200
-				}, 200);
-			}
+		change: function(e, ui){
+			prevplaceholder = thisplaceholder
+			thisplaceholder = ui.placeholder.index()
 		},
-*/
-		drop: function (event, ui) {
-			
-			var dragTable = ui.item.closest("table").attr("id")
-			var dragcell = ui.item.children("td")
-			var dropcell = $(this).children("td")
-			var prevcell = $(this).prev().children("td")
-			var staffname = dragcell.eq(STAFFNAME).html()
-			var dragqn = dragcell.eq(QN).html()
-			var dropDate = dropcell.eq(OPDATE).html().numDate()
-			var dropqn = dropcell.eq(QN).html()
+		stop: function(e, ui){
+			var previtem = ui.item.prev()
+			var thisitem = ui.item
+			var nextitem = ui.item.next()
+			var stoppos = ui.position.top
+			var prevpos = previtem.offset().top
+			var thispos = thisitem.offset().top
+			var nextpos = nextitem.offset().top
+			var nearprev = Math.abs(stoppos - prevpos)
+			var nearplace = Math.abs(stoppos - thispos)
+			var nearnext = Math.abs(stoppos - nextpos)
+			var nearest = Math.min(nearprev, nearplace, nearnext)
+			if (nearprev == nearest) 
+				thisdrop = previtem
+			if (nearnext == nearest) 
+				thisdrop = nextitem
+			if (nearplace == nearest) 
+				if (prevplaceholder < thisplaceholder)
+					thisdrop = previtem
+				else
+					thisdrop = nextitem
 
-			if (!dragqn)
-				return false
-
-			var finalWaitnum = getfinalWaitnum(prevcell, dropqn, dropDate)
+			var prevopdate = previtem.children("td").eq(OPDATE).html().numDate()
+			var thisopdate = thisdrop.children("td").eq(OPDATE).html().numDate()
+			var nextopdate = nextitem.children("td").eq(OPDATE).html().numDate()
+			var prevcasenum = findcaseNum(previtem.children("td").eq(QN).html())
+			var thisqn = thisitem.children("td").eq(QN).html()
+			var nextcasenum = findcaseNum(nextitem.children("td").eq(QN).html())
+			if (thisdrop == previtem) {
+				finalWaitnum = prevWaitnum(prevcasenum, thisopdate)
+			}
+			if (thisdrop == nextitem) {
+				finalWaitnum = nextWaitnum(nextcasenum, thisopdate)
+			}
 
 			var sql = "sqlReturnbook=UPDATE book SET Waitnum = "+ finalWaitnum
-			sql += ", opdate='" + opdate
+			sql += ", opdate='" + thisopdate
 			sql += "', editor='"+ THISUSER
-			sql += "' WHERE qn="+ dragqn +";"
+			sql += "' WHERE qn="+ thisqn +";"
 
 			Ajax(MYSQLIPHP, sql, callbackDragDropStaff);
 
@@ -160,20 +170,6 @@ function sortable(id)
 	})
 }
 
-function getfinalWaitnum(prevcell, dropDate)
-{  
-	var prevDate
-	if (!(prevDate = prevcell.eq(OPDATE).html()))	//undefined
-		return 1		//no case in this date
-	if (prevDate != dropDate) {
-		return 1		//no case in this date
-	} else {
-		var prevqn = prevcell.eq(QN).html()	//case in this date
-		caseNum = findcaseNum(prevqn)	//look in BOOK
-		return finalWaitnum(caseNum, dropDate)
-	}
-}
-
 function findcaseNum(qn)
 {  
 	var i = 0
@@ -183,7 +179,7 @@ function findcaseNum(qn)
 	return i
 }
 
-function finalWaitnum(caseNum, dropDate)
+function prevWaitnum(caseNum, dropDate)
 {  
 	var dropWaitnum = Number(BOOK[caseNum].waitnum)
 	caseNum++
@@ -191,7 +187,20 @@ function finalWaitnum(caseNum, dropDate)
 		(BOOK[caseNum].opdate != dropDate)) {
 		return dropWaitnum + 1
 	} else {
-		var nextWaitnum = Number(BOOK[caseNum].waitnum)
-		return (nextWaitnum + dropWaitnum) / 2
+		var afterWaitnum = Number(BOOK[caseNum].waitnum)
+		return (afterWaitnum + dropWaitnum) / 2
+	}
+}
+
+function nextWaitnum(caseNum, dropDate)
+{  
+	var dropWaitnum = Number(BOOK[caseNum].waitnum)
+	caseNum--
+	if ((caseNum < 0) ||
+		(BOOK[caseNum].opdate != dropDate)) {
+		return 0
+	} else {
+		var beforeWaitnum = Number(BOOK[caseNum].waitnum)
+		return (beforeWaitnum + dropWaitnum) / 2
 	}
 }

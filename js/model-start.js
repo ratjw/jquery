@@ -50,8 +50,8 @@ function loadtable(userid)
 		return false
 	})
 
-	TIMER = setTimeout("sortable('#tbl')", 0)
-	//trick browser to render immediately
+	sortable('#tbl')
+	//let browser render fillupstart immediately
 	//because sortable takes long time
 	TIMER = setTimeout("updating()",10000);	//poke next 10 sec.
 }
