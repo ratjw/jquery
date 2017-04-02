@@ -17,7 +17,7 @@ function editing(event)
 
 	if (keycode == 9)
 	{
-		$(".ui-menu").hide()
+		closemenu()
 		savePreviouscell()
 		if (event.shiftKey)
 			thiscell = findPrevcell(event)
@@ -34,12 +34,12 @@ function editing(event)
 	}
 	else if (keycode == 13)
 	{
-		$(".ui-menu").hide()
+		closemenu()
 		if (event.shiftKey || event.ctrlKey) {
 			return
 		}
 		savePreviouscell()
-		thiscell = findNextcell(event)
+		thiscell = findNextHN(event)
 		if (thiscell) {
 			storePresentcell(thiscell)
 		} else {
@@ -51,12 +51,19 @@ function editing(event)
 	}
 	else if (keycode == 27)
 	{
-		$(".ui-menu").hide()
+		closemenu()
 		$("#editcell").hide()
 		window.focus()
 		event.preventDefault()
 		return false
 	}
+}
+
+function closemenu()
+{
+	$('#menu').hide();
+	$('#queuemenu').hide();
+	$('#stafflist').hide();
 }
 
 function savePreviouscell() 
@@ -97,6 +104,7 @@ function savePreviouscell()
 function saveContent(column, content)	//column name in MYSQL
 {
 	var tableID = $("#editcell").data("tableID")
+	var cellindex = $("#editcell").data("cellIndex")
 	var rowcell = $($("#editcell").data("tableRow")).children("td")
 	var opdate = rowcell.eq(OPDATE).html().numDate()
 	var staffname = rowcell.eq(STAFFNAME).html()
@@ -136,8 +144,14 @@ function saveContent(column, content)	//column name in MYSQL
 		else
 		{
 			updateBOOK(response);
-			staffqueue(staffname)
-			refillall()
+			if (tableID == 'tbl') {
+				if (($("#titlecontainer").css('display') == 'block') && 
+					($('#titlename').html() == staffname))
+
+					refillthis('queuetbl', cellindex, qn)
+			}
+			else
+				refillthis('tbl', cellindex, qn)
 		}
 	}
 }
@@ -145,6 +159,7 @@ function saveContent(column, content)	//column name in MYSQL
 function saveHNinput(hn, content)
 {
 	var tableID = $("#editcell").data("tableID")
+	var cellindex = $("#editcell").data("cellIndex")
 	var rowcell = $($("#editcell").data("tableRow")).children("td")
 	var opdate = rowcell.eq(OPDATE).html().numDate()
 	var staffname = rowcell.eq(STAFFNAME).html()
@@ -158,7 +173,7 @@ function saveHNinput(hn, content)
 		return
 	}
 
-	$($("#editcell").data("location")).html(content)	//just for show instantly
+	$($("#editcell").data("location")).html(content)
 
 	content = content.replace(/<br>/g, "")
 	content = content.replace(/^\s+/g, "")
@@ -183,8 +198,14 @@ function saveHNinput(hn, content)
 		else 
 		{
 			updateBOOK(response)
-			staffqueue(staffname)
-			refillall()
+			if (tableID == 'tbl') {
+				if (($("#titlecontainer").css('display') == 'block') && 
+					($('#titlename').html() == staffname))
+
+					refillthis('queuetbl', cellindex, qn)
+			}
+			else
+				refillthis('tbl', cellindex, qn)
 		}
 	}
 }
@@ -259,9 +280,6 @@ function findPrevcell(event)
 	var prevcell = $($("#editcell").data("location"))
 	var column = prevcell.index()
 
-	if ($("#editcell").data("tableID") == "queuetbl")
-		EDITABLE = EDITQUEUE
-
 	if (column = EDITABLE[($.inArray(column, EDITABLE) - 1)])
 	{
 		prevcell = $(prevcell).parent().children().eq(column)
@@ -291,9 +309,6 @@ function findNextcell(event)
 	var column = nextcell.index()
 	var lastrow = $('#tbl tr:last-child').index()
 
-	if ($("#editcell").data("tableID") == "queuetbl")
-		EDITABLE = EDITQUEUE
-
 	if (column = EDITABLE[($.inArray(column, EDITABLE) + 1)])
 	{
 		nextcell = $(nextcell).parent().children().eq(column)
@@ -303,7 +318,10 @@ function findNextcell(event)
 		if ($(nextcell).parent().index() < lastrow)
 		{	//go to next row first editable
 			do {
-				nextcell = $(nextcell).parent().next("tr").children().eq(EDITABLE[0])
+				if (!(nextcell = $(nextcell).parent().next("tr").children().eq(EDITABLE[0]))) {
+					event.preventDefault()
+					return false
+				}
 			}
 			while ($(nextcell).get(0).nodeName == "TH")	//THEAD row
 		}
@@ -312,6 +330,30 @@ function findNextcell(event)
 			event.preventDefault()
 			return false
 		}
+	}
+
+	return $(nextcell).get(0)
+}
+
+function findNextHN(event) 
+{
+	var nextcell = $($("#editcell").data("location"))
+	var lastrow = $('#tbl tr:last-child').index()
+
+	if ($(nextcell).parent().index() < lastrow)
+	{	//go to next row first editable
+		do {
+			if (!(nextcell = $(nextcell).parent().next("tr").children().eq(EDITABLE[0]))) {
+				event.preventDefault()
+				return false	
+			}
+		}
+		while ($(nextcell).get(0).nodeName == "TH")	//THEAD row
+	}
+	else
+	{	//#tbl tr:last-child td:last-child
+		event.preventDefault()
+		return false
 	}
 
 	return $(nextcell).get(0)

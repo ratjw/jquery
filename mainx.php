@@ -43,17 +43,47 @@
      <th style="width:20%">Note</th>
      <th style="display:none"></th>
     </TR>
+  <TR id="datatitle">
+    <td data-title="วันผ่าตัด">1a1</td>
+    <td style="display:none">a2</td>
+    <td data-title="Staff">a3</td>
+    <td data-title="HN">a4</td>
+    <td data-title="ชื่อ นามสกุล">a5</td>
+    <td data-title="อายุ">a6</td>
+    <td data-title="Diagnosis">a7</td>
+    <td data-title="Treatment">a8</td>
+    <td data-title="Note">a9</td>
+    <td style="display:none">a10</td>
+  </TR>
+  <TR id="datatitle">
+    <td data-title="วันผ่าตัด">2a1</td>
+    <td style="display:none">a2</td>
+    <td data-title="Staff">a3</td>
+    <td data-title="HN">a4</td>
+    <td data-title="ชื่อ นามสกุล">a5</td>
+    <td data-title="อายุ">a6</td>
+    <td data-title="Diagnosis">a7</td>
+    <td data-title="Treatment">a8</td>
+    <td data-title="Note">a9</td>
+    <td style="display:none">a10</td>
+  </TR>
+  <TR id="datatitle">
+    <td data-title="วันผ่าตัด">3a1</td>
+    <td style="display:none">a2</td>
+    <td data-title="Staff">a3</td>
+    <td data-title="HN">a4</td>
+    <td data-title="ชื่อ นามสกุล">a5</td>
+    <td data-title="อายุ">a6</td>
+    <td data-title="Diagnosis">a7</td>
+    <td data-title="Treatment">a8</td>
+    <td data-title="Note">a9</td>
+    <td style="display:none">a10</td>
+  </TR>
    </TBODY>
   </TABLE>
  </div>
 
- <div id="titlecontainer" style="display:none">
-  <div id="titlebar">
-	<span id="titlename"></span>
-	<span class="ui-icon ui-icon-closethick" onclick="closequeue()">
-	</span>
-  </div> 
-  <div id="queuecontainer">
+  <div id="queuecontainer" style="display:none">
    <TABLE id="queuetbl" data-role="table" class="ui-responsive">
     <TBODY class="connected">
      <TR>
@@ -68,10 +98,45 @@
       <th style="width:20%">Note</th>
       <th style="display:none"></th>
      </TR>
-    </TBODY>
+    <TR>
+     <td data-title="วันผ่าตัด">1q1</td>
+     <td data-title="Since">q2</td>
+     <td style="display:none">q3</td>
+     <td data-title="HN">q4</td>
+     <td data-title="ชื่อ นามสกุล">q5</td>
+     <td data-title="อายุ">q6</td>
+     <td data-title="Diagnosis">q7</td>
+     <td data-title="Treatment">q8</td>
+     <td data-title="Note">q9</td>
+     <td style="display:none">q10</td>
+	</TR>
+     <TR>
+     <td data-title="วันผ่าตัด">2q1</td>
+     <td data-title="Since">q2</td>
+     <td style="display:none">q3</td>
+     <td data-title="HN">q4</td>
+     <td data-title="ชื่อ นามสกุล">q5</td>
+     <td data-title="อายุ">q6</td>
+     <td data-title="Diagnosis">q7</td>
+     <td data-title="Treatment">q8</td>
+     <td data-title="Note">q9</td>
+     <td style="display:none">q10</td>
+	</TR>
+    <TR>
+     <td data-title="วันผ่าตัด">3q1</td>
+     <td data-title="Since">q2</td>
+     <td style="display:none">q3</td>
+     <td data-title="HN">q4</td>
+     <td data-title="ชื่อ นามสกุล">q5</td>
+     <td data-title="อายุ">q6</td>
+     <td data-title="Diagnosis">q7</td>
+     <td data-title="Treatment">q8</td>
+     <td data-title="Note">q9</td>
+     <td style="display:none">q10</td>
+	</TR>
+   </TBODY>
    </TABLE>
   </div>
- </div>
 </div>
 
 <TABLE style="display:none">	<!-- Used as cells template -->

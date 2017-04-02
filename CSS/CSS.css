@@ -8,24 +8,21 @@
 #tblcontainer {
 	float: left;
 	height: 100%;
-	width: 100%;
-	overflow-X: hidden;
-	overflow-Y: auto;
+	overflow: scroll;
 	box-sizing: border-box;
 	border-top: solid 2px silver;
 	border-right: solid 2px silver;
 	border-left: solid 2px silver;
 }
 
-#titlequeue {
+#titlecontainer {
 	float: right;
 	height: 100%;
 }
 
 #queuecontainer {
-	height: 90%;
-	overflow-X: hidden;
-	overflow-Y: auto;
+	height: 94%;
+	overflow: scroll;
 	box-sizing: border-box;
 	border-top: solid 2px silver;
 	border-right: solid 2px silver;
@@ -33,9 +30,9 @@
 }
 
 #tbl {
-	border-right: solid 1px slategray;
-	width: 100%;
 	table-layout: fixed;	/*make cell width = first row specified*/
+	width: auto;
+	border-right: solid 1px slategray;
 	border-collapse: collapse;
 }
 
@@ -84,9 +81,9 @@
 #tbl td.sat:before { content: "เสาร์ "; }
 
 #queuetbl, #historytable, #servicetable {
-	border-right: solid 1px slategray;
-	width: auto;
 	table-layout: fixed;	/*make cell width = first row specified*/
+	width: auto;
+	border-right: solid 1px slategray;
 	border-collapse: collapse;
 }
 

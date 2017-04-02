@@ -1,5 +1,22 @@
 function loadtable(userid)
 {
+	$("#login").remove()
+	$("#tblcontainer").show()
+
+	$("html, body").css( {
+		height: "100%",
+		overflow: "hidden",
+		margin: "0"
+	})
+	$("#queuecontainer").show()
+	$("#tblcontainer").css("width", "50%")
+	$("#queuecontainer").css("width", "50%")
+//	initResize("#tblcontainer")
+//	$('.ui-resizable-e').css('height', $("#tbl").css("height"))
+	$(".connected").sortable()
+
+return
+
 	Ajax(MYSQLIPHP, "nosqlReturnbook", loading);
 
 	THISUSER = userid
@@ -46,17 +63,13 @@ function loadtable(userid)
 			editing(event)
 	})
 	$(document).contextmenu( function (event) {
+		countReset();
 		return false
 	})
 
-	$("html, body").css( {
-		height: "100%",
-		overflow: "hidden",
-		margin: "0px"
-	})
 	sortable()
 	//let browser render fillupstart immediately
-	//call sortable before render, if after, render slower than 5 sec.
+	//because sortable takes long time
 	TIMER = setTimeout("updating()",10000);	//poke next 10 sec.
 }
 

@@ -12,7 +12,7 @@ Date.prototype.mysqlDate = function ()
 String.prototype.thDate = function () 
 {	//MySQL date (2014-05-11) to Thai date (11 พค. 2557) 
 	if (this < '1900-01-01')
-		return ""
+		return this
 	var yyyy = parseInt(this.substr(0, 4)) + 543;
 	var mm = this.substr(5, 2);
 	for (ThMonth in NUMMONTH)
@@ -23,8 +23,6 @@ String.prototype.thDate = function ()
 
 String.prototype.numDate = function () 
 {	//Thai date (11 พค. 2557) to MySQL date (2014-05-11)
-	if (!this.length || this == "0000-00-00")
-		return "0000-00-00"
     var mm = this.substring(this.indexOf(" ")+1, this.length-4);
     var yyyy = parseInt(this.substr(this.length-4)) - 543;
     return yyyy +"-"+ NUMMONTH[mm] +"-"+ this.substr(0, 2);
@@ -40,7 +38,7 @@ String.prototype.nextdays = function (days)
 String.prototype.getAge = function (toDate)
 {	//Calculate age at toDate (MySQL format) from MySQL birth date (2017-01-23)
 	if (!toDate || this < '1900-01-01')
-		return ""
+		return this
 	var birth = new Date(this);
 	var today = new Date(toDate);
 

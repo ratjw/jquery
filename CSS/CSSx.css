@@ -1,0 +1,43 @@
+#wrapper {
+	height: 100%;
+	width: 100%;
+	font-size: 0;
+	overflow: hidden;
+}
+
+#tblcontainer, #queuecontainer {
+	float: right;
+	height: 100%;
+	overflow: scroll;
+	box-sizing: border-box;
+	border-top: solid 2px silver;
+	border-right: solid 2px silver;
+	border-left: solid 2px silver;
+}
+
+#tbl, #queuetbl {
+	table-layout: fixed;	/*make cell width = first row specified*/
+	width: auto;
+	border-right: solid 1px slategray;
+	border-collapse: collapse;
+}
+
+#tbl th, #queuetbl th {
+	font-size: 16px;
+	font-weight: bold;
+	background-color: #D0E7FF;
+	color: #557799;
+	border-left: solid 1px silver;
+	border-top: solid 1px silver;
+	border-bottom: solid 1px silver;
+	height: 30px;
+}
+
+#tbl tr, #queuetbl tr {
+	height: 25px;
+}
+
+#tbl td, #queuetbl td {
+	empty-cells:show;
+	font-size: 14px;
+}

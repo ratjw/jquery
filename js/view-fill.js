@@ -13,7 +13,7 @@ function fillupstart()
 	//scroll to today
 	var today = new Date().mysqlDate().thDate()
 	var thishead = $("tr:contains(" + today + ")").eq(0).prevAll(":has(th)").first()
-	$('html, body').animate({
+	$('#tblcontainer').animate({
 		scrollTop: thishead.offset().top
 	}, 300);
 }
@@ -77,7 +77,8 @@ function fillall(start)
 		
 		date = date.nextdays(1)
 		//make table head row before every Sunday
-		if (((new Date(date)).getDay())%7 == 0)
+		if ((((new Date(date)).getDay())%7 == 0) &&
+			(date < until))
 		{
 			var clone = table.getElementsByTagName("TR")[0].cloneNode(true)
 			rowi.parentNode.appendChild(clone, rowi)
@@ -157,8 +158,7 @@ function refillall()
 			i++
 		}
 	}
-	sortable("#tbl")
-//	DragDrop()
+	sortable()
 }
 
 function makenextrow(i, date)
@@ -219,8 +219,33 @@ function staffqueue(staffname)
 
 	$("#queuecontainer").scrollTop(scrolled)
 
-//	DragDropStaff()
-	sortable("#queuetbl")
+	sortable()
+}
+
+function refillstaffqueue()
+{
+	var todate = new Date().mysqlDate()
+	var i = 0
+	var staffname = $('#titlename').html()
+
+	$.each( BOOK, function(q, each) {	// each == this
+		if ((this.opdate >= todate) && (this.staffname == staffname)) {
+			i++
+			if (i >= $('#queuetbl tr').length) {
+				$('#qdatatitle tr').clone()
+					.appendTo($('#queuetbl'))
+						.filldataQueue(this)
+			} else {
+				$('#queuetbl tr').eq(i)
+					.filldataQueue(this)
+			}
+		}
+	})
+
+	if (i < ($('#queuetbl tr').length - 1))
+		$('#queuetbl tr').slice(i+1).remove()
+
+	sortable()
 }
 
 jQuery.fn.extend({
@@ -239,91 +264,97 @@ jQuery.fn.extend({
 	}
 })
 
+function refillthis(tableID, cellindex, qn)
+{
+	var table = document.getElementById(tableID)
+
+	var i = 1
+	while (table.rows[i].cells[QN].innerHTML != qn)
+	{
+		i++
+		if (i >= table.rows.length)
+			return
+	}
+
+	var q = 0
+	while (BOOK[q].qn != qn)
+	{
+		q++
+		if (q >= BOOK.length)
+			return
+	}
+
+	var rowcell = table.rows[i].cells
+	var bookq = BOOK[q]
+
+	switch(cellindex)
+	{
+		case STAFFNAME:
+			rowcell[STAFFNAME].innerHTML = bookq.staffname
+			break
+		case HN:
+			rowcell[HN].innerHTML = bookq.hn
+			rowcell[NAME].innerHTML = bookq.patient
+			rowcell[AGE].innerHTML = bookq.dob? bookq.dob.getAge(bookq.opdate) : ""
+			break
+		case DIAGNOSIS:
+			rowcell[DIAGNOSIS].innerHTML = bookq.diagnosis
+			break
+		case TREATMENT:
+			rowcell[TREATMENT].innerHTML = bookq.treatment
+			break
+		case TEL:
+			rowcell[TEL].innerHTML = bookq.tel
+			break
+	}
+}
+
 function SplitPane()
 {
-	var tohead = findVisibleHead(window, '#tbl')
+	var tohead = findVisibleHead('#tbl')
 
-	$("html, body").css( {
-		height: "100%",
-		overflow: "hidden",
-		margin: "0"
-	})
-	$("#titlequeue").show()
+	$("#titlecontainer").show()
 	$("#tblcontainer").css("width", "60%")
-	$("#titlequeue").css("width", "40%")
-	initResize("#tblcontainer")
-	$('.ui-resizable-e').css('height', $("#tbl").css("height"))
+	$("#titlecontainer").css("width", "40%")
 
-	$('#tblcontainer').scrollTop($(tohead).offset().top - 300)
-	$('#tblcontainer').animate({
-		scrollTop: $('#tblcontainer').scrollTop() + 300
-	}, 500);
-	DragDrop()
+	scrollanimate("#tblcontainer", "#tbl", tohead)
 }
 
 function closequeue()
 {
-	var tohead = findVisibleHead(window, '#tbl')
+	var tohead = findVisibleHead('#tbl')
 	
-	$("html, body").css( {
-		height: "",
-		overflow: "",
-		margin: ""
-	})
+	$("#titlecontainer").hide()
 	$("#tblcontainer").css("width", "100%")
-	$("#titlequeue").css("width", "0%")
-	$("#titlequeue").hide()
-	$("#tblcontainer").resizable('destroy');
+	$("#titlecontainer").css("width", "0%")
 
-	$('html, body').scrollTop($(tohead).offset().top - 300)
-	$('html, body').animate({
-		scrollTop: $(window).scrollTop() + 300
-	}, 500);
-	DragDrop()
+	scrollanimate("#tblcontainer", "#tbl", tohead)
 }
 
-function findVisibleHead(container, table)
+function findVisibleHead(table)
 {
 	var tohead
-	var topscroll = $(container).scrollTop()
 
-	$.each($(table + ' tr:has(th)'), function() {
-		tohead = this
-		return (Math.round($(this).offset().top) < Math.round(topscroll))
+	$.each($(table + ' tr:has(th)'), function(i, tr) {
+		tohead = tr
+		return ($(tohead).offset().top < 0)
 	})
 	return tohead
 }
 
-function initResize(id)
+function scrollanimate(container, table, tohead)
 {
-	$(id).resizable(
+	if (tohead.offsetTop < 300)
+		return
+	if (tohead.offsetTop + $(container).height() < $(table).height())
 	{
-		autoHide: true,
-		handles: 'e',
-		resize: function(e, ui) 
-		{
-			var parent = ui.element.parent();
-			var remainSpace = parent.width() - ui.element.outerWidth()
-			var divTwo = ui.element.next()
-			var margin = divTwo.outerWidth() - divTwo.innerWidth()
-			var divTwoWidth = (remainSpace-margin)/parent.width()*100+"%";
-			divTwo.css("width", divTwoWidth);
-		},
-		stop: function(e, ui) 
-		{
-			var parent = ui.element.parent();
-			var remainSpace = parent.width() - ui.element.outerWidth()
-			var divTwo = ui.element.next()
-			ui.element.css(
-			{
-				width: ui.element.outerWidth()/parent.width()*100+"%",
-			});
-			ui.element.next().css(
-			{
-				width: remainSpace/parent.width()*100+"%",
-			});
-		}
-	});
+		$(container).scrollTop(tohead.offsetTop - 300)
+		$(container).animate({
+			scrollTop: $(container).scrollTop() + 300
+		}, 500);
+	}
+	else
+		$(container).scrollTop(tohead.offsetTop)
 }
 
 function holiday(date)

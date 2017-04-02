@@ -64,7 +64,7 @@ function fillSetTable(rownum, pointing)
 			{
 				case "item1":
 					staffqueue(ui.item.text())
-					if ($("#titlequeue").css("display") != "block")
+					if ($("#titlecontainer").css("display") != "block")
 						SplitPane()
 					break
 				case "item2":
@@ -170,7 +170,9 @@ function addnewrow(rowmain)
 		rowmain.parentNode.insertBefore(clone,rowmain)
 		for (i=1; i<rowmain.cells.length; i++)
 			rowmain.cells[i].innerHTML = ""	
-		DragDrop()
+
+		var tableID = $("#editcell").data("tableID")
+		sortable()
 	}
 }
 

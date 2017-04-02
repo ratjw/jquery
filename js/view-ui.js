@@ -1,126 +1,77 @@
-
-function DragDrop()
+function sortable()
 {
-	$("#tbl tr:has(td)").draggable({
-		revert: "true",
-		helper: function(){
-					var copy = $(this).clone();
-					copy.find("td").css({
-						"fontSize": "14px",
-						"border": "solid 1px silver",
-					})
-					return copy;
-				},
-		appendTo: 'body',
-		stack: ".ui-draggable",
-		zIndex: 1000,
-		start : function (event) {
-			$("#editcell").hide()
-			$(".ui-menu").hide()
-		}
-	});
-
-	$("#tbl tr:has(td)").droppable({
-		accept: "tr:has(td)",
-
-		over: function (event, ui){
-			if ($(ui.helper).position().top < 50) {
-				$('#tblcontainer').animate({
-					scrollTop: $('#tblcontainer').scrollTop() - 200
-				}, 200);
-			}
-			if ($(ui.helper).position().top > $('#tblcontainer').innerHeight() - 50) {
-				$('#tblcontainer').animate({
-					scrollTop: $('#tblcontainer').scrollTop() + 200
-				}, 200);
-			}
-		},
-
-		drop: function (event, ui) {
-			
-			var dragTable = $(ui.draggable).closest("table").attr("id")
-			var dragcell = $(ui.draggable).children("td")
-			var dropcell = $(this).children("td")
-			var prevcell = $(this).prev().children("td")
-			var staffname = dragcell.eq(STAFFNAME).html()
-			var dragqn = dragcell.eq(QN).html()
-			var dropDate = dropcell.eq(OPDATE).html().numDate()
-			var dropqn = dropcell.eq(QN).html()
-
-			if (!dragqn)
-				return false
-
-			var finalWaitnum = getfinalWaitnum(prevcell, dropqn, dropDate)
-
-			var sql = "sqlReturnbook=UPDATE book SET Waitnum = "+ finalWaitnum
-			sql += ", opdate='" + dropDate
-			sql += "', editor='"+ THISUSER
-			sql += "' WHERE qn="+ dragqn +";"
-
-			Ajax(MYSQLIPHP, sql, callbackDragDrop);
-
-			function callbackDragDrop(response)
-			{
-				if (!response || response.indexOf("DBfailed") != -1)
-				{
-					alert ("Move failed!\n" + response)
-				}
-				else
-				{
-					updateBOOK(response)
-					refillall()
-					DragDrop()
-					if (dragTable == "queuetbl")
-						staffqueue(staffname)
-				}
-			}
-		}
-	});
-}
-
-function sortable(id)
-{
-	var prevplaceholder
-	var thisplaceholder
-	var thisdrop
-	var finalWaitnum
-
-	$(id + " tbody").sortable({
+	$(".connected").sortable({
 		items: "> tr:has(td)",
+		connectWith: ".connected",
 		start: function(e, ui){
-			ui.placeholder.height(ui.item.height());
+			clearTimeout(TIMER);
+			closemenu()
+			$('#editcell').hide();
+			ui.placeholder.innerHeight(ui.item.outerHeight())
+			ui.placeholder.attr('data-thisindex', ui.placeholder.index());
+			ui.item.attr("data-sender", ui.item.closest('table').attr('id'))
 		},
 		forceHelperSize: true,
 		forcePlaceholderSize: true,
 		change: function(e, ui){
-			prevplaceholder = thisplaceholder
-			thisplaceholder = ui.placeholder.index()
+			ui.placeholder.attr('data-previndex', ui.placeholder.attr('data-thisindex'));
+			ui.placeholder.attr('data-thisindex', ui.placeholder.index());
 		},
 		stop: function(e, ui){
+			ui.item.attr("data-receiver", ui.item.closest('table').attr('id'))
+				
+			if (!ui.item.children().eq(QN).html()) {
+				return false
+			}
+
+			if (ui.item.attr("data-receiver") == "queuetbl") {
+				if (ui.item.children().eq(STAFFNAME).html() != $('#titlename').html()) {
+					return false
+				}
+				if (ui.item.attr("data-sender") == "tbl") {
+					ui.item.children().eq(SINCE).css("display", "block")
+					ui.item.children().eq(STAFFNAME).css("display", "none")
+				}
+			} else {
+				if (ui.item.attr("data-sender") == "queuetbl") {
+					ui.item.children().eq(SINCE).css("display", "none")
+					ui.item.children().eq(STAFFNAME).css("display", "block")
+				}
+			}
+
+			var thisdrop
+			var finalWaitnum
 			var previtem = ui.item.prev()
+			if (!previtem.length)
+				previtem = ui.item
 			var thisitem = ui.item
 			var nextitem = ui.item.next()
-			var stoppos = ui.position.top
+			if (!nextitem.length)
+				nextitem = ui.item
+			var helperpos = ui.offset.top
 			var prevpos = previtem.offset().top
 			var thispos = thisitem.offset().top
 			var nextpos = nextitem.offset().top
-			var nearprev = Math.abs(stoppos - prevpos)
-			var nearplace = Math.abs(stoppos - thispos)
-			var nearnext = Math.abs(stoppos - nextpos)
+			var nearprev = Math.abs(helperpos - prevpos)
+			var nearplace = Math.abs(helperpos - thispos)
+			var nearnext = Math.abs(helperpos - nextpos)
 			var nearest = Math.min(nearprev, nearplace, nearnext)
 			if (nearest == nearprev) 
 				thisdrop = previtem
 			if (nearest == nearnext) 
 				thisdrop = nextitem
 			if (nearest == nearplace) 
-				if (prevplaceholder < thisplaceholder)
+				if (ui.placeholder.attr('data-previndex') < ui.placeholder.attr('data-thisindex'))
 					thisdrop = previtem
 				else
 					thisdrop = nextitem
 
-			var prevopdate = previtem.children("td").eq(OPDATE).html().numDate()
-			var thisopdate = thisdrop.children("td").eq(OPDATE).html().numDate()
-			var nextopdate = nextitem.children("td").eq(OPDATE).html().numDate()
+			var thisopdate = thisdrop.children("td").eq(OPDATE).html()
+			if (thisopdate)
+				thisopdate = thisopdate.numDate()
+			else
+				thisopdate = thisitem.children("td").eq(OPDATE).html()
+			var staffname = thisitem.children("td").eq(STAFFNAME).html()
 			var prevqn = previtem.children("td").eq(QN).html()
 			var thisqn = thisitem.children("td").eq(QN).html()
 			var nextqn = nextitem.children("td").eq(QN).html()
@@ -136,23 +87,32 @@ function sortable(id)
 			sql += "', editor='"+ THISUSER
 			sql += "' WHERE qn="+ thisqn +";"
 
-			Ajax(MYSQLIPHP, sql, callbackDragDropStaff);
+			Ajax(MYSQLIPHP, sql, callbacksortable);
 
-			function callbackDragDropStaff(response)
+			function callbacksortable(response)
 			{
 				if (!response || response.indexOf("DBfailed") != -1)
 				{
 					alert ("Move failed!\n" + response)
-					$( id + " tbody" ).sortable( "cancel" )
+					$("#tbl tbody" ).sortable( "cancel" )
 				}
 				else
 				{
-//					$( id + " tbody" ).sortable( "refresh" )
-//					$( id + " tbody" ).sortable( "refreshPositions" )
 					updateBOOK(response)
-					refillall()
+					if (ui.item.attr("data-receiver") == "tbl") {
+						requestAnimationFrame(refillall())
+						if (($("#titlecontainer").css('display') == 'block') && 
+							($('#titlename').html() == staffname)) {
+
+								requestAnimationFrame(refillstaffqueue())								
+						}
+					} else {
+						requestAnimationFrame(refillstaffqueue())
+						requestAnimationFrame(refillall())
+					}
 				}
 			}
+			TIMER = setTimeout("updating()",10000);	//poke next 10 sec.
 		}
 	})
 }
@@ -169,7 +129,7 @@ function findcaseNum(qn)
 function prevWaitnum(prevqn, dropDate)
 {  
 	if (!prevqn)
-		return 0
+		return 1
 	var caseNum = findcaseNum(prevqn)
 	var dropWaitnum = Number(BOOK[caseNum].waitnum)
 	caseNum++
@@ -185,13 +145,13 @@ function prevWaitnum(prevqn, dropDate)
 function nextWaitnum(nextqn, dropDate)
 {  
 	if (!nextqn)
-		return 0
+		return 1
 	var caseNum = findcaseNum(nextqn)
 	var dropWaitnum = Number(BOOK[caseNum].waitnum)
 	caseNum--
 	if ((caseNum < 0) ||
 		(BOOK[caseNum].opdate != dropDate)) {
-		return 0
+		return dropWaitnum / 2
 	} else {
 		var beforeWaitnum = Number(BOOK[caseNum].waitnum)
 		return (beforeWaitnum + dropWaitnum) / 2
