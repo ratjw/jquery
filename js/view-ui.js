@@ -42,43 +42,43 @@ function sortable()
 			var thisdrop
 			var finalWaitnum
 			var previtem = ui.item.prev()
-			if (!previtem.length)
-				previtem = ui.item
 			var thisitem = ui.item
 			var nextitem = ui.item.next()
-			if (!nextitem.length)
-				nextitem = ui.item
-			var helperpos = ui.offset.top
-			var prevpos = previtem.offset().top
-			var thispos = thisitem.offset().top
-			var nextpos = nextitem.offset().top
-			var nearprev = Math.abs(helperpos - prevpos)
-			var nearplace = Math.abs(helperpos - thispos)
-			var nearnext = Math.abs(helperpos - nextpos)
-			var nearest = Math.min(nearprev, nearplace, nearnext)
-			if (nearest == nearprev) 
-				thisdrop = previtem
-			if (nearest == nearnext) 
+			if (!previtem.length) {
 				thisdrop = nextitem
-			if (nearest == nearplace) 
-				if (ui.placeholder.attr('data-previndex') < ui.placeholder.attr('data-thisindex'))
+			} else {
+				if (!nextitem.length) {
 					thisdrop = previtem
-				else
-					thisdrop = nextitem
+				} else {
+					var helperpos = ui.offset.top
+					var prevpos = previtem.offset().top
+					var thispos = thisitem.offset().top
+					var nextpos = nextitem.offset().top
+					var nearprev = Math.abs(helperpos - prevpos)
+					var nearplace = Math.abs(helperpos - thispos)
+					var nearnext = Math.abs(helperpos - nextpos)
+					var nearest = Math.min(nearprev, nearplace, nearnext)
+					if (nearest == nearprev) 
+						thisdrop = previtem
+					if (nearest == nearnext) 
+						thisdrop = nextitem
+					if (nearest == nearplace) 
+						if (ui.placeholder.attr('data-previndex') < ui.placeholder.attr('data-thisindex'))
+							thisdrop = previtem
+						else
+							thisdrop = nextitem
+				}
+			}
 
-			var thisopdate = thisdrop.children("td").eq(OPDATE).html()
-			if (thisopdate)
-				thisopdate = thisopdate.numDate()
-			else
-				thisopdate = thisitem.children("td").eq(OPDATE).html()
+			var thisopdate = thisdrop.children("td").eq(OPDATE).html().numDate()
 			var staffname = thisitem.children("td").eq(STAFFNAME).html()
-			var prevqn = previtem.children("td").eq(QN).html()
 			var thisqn = thisitem.children("td").eq(QN).html()
-			var nextqn = nextitem.children("td").eq(QN).html()
 			if (thisdrop == previtem) {
+				var prevqn = previtem.children("td").eq(QN).html()
 				finalWaitnum = prevWaitnum(prevqn, thisopdate)
 			}
 			if (thisdrop == nextitem) {
+				var nextqn = nextitem.children("td").eq(QN).html()
 				finalWaitnum = nextWaitnum(nextqn, thisopdate)
 			}
 
