@@ -100,15 +100,19 @@ function sortable()
 				{
 					updateBOOK(response)
 					if (ui.item.attr("data-receiver") == "tbl") {
-						requestAnimationFrame(refillall())
+//						requestAnimationFrame(refillall())
+						refillall()
 						if (($("#titlecontainer").css('display') == 'block') && 
 							($('#titlename').html() == staffname)) {
 
-								requestAnimationFrame(refillstaffqueue())								
+//								requestAnimationFrame(refillstaffqueue())								
+						refillstaffqueue()
 						}
 					} else {
-						requestAnimationFrame(refillstaffqueue())
-						requestAnimationFrame(refillall())
+//						requestAnimationFrame(refillstaffqueue())
+						refillstaffqueue()
+//						requestAnimationFrame(refillall())
+						refillall()
 					}
 				}
 			}

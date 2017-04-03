@@ -90,7 +90,8 @@ function fillall(start)
 function refillall()
 {
 	var table = document.getElementById("tbl")
-	var rowi = {}
+	var rows = table.rows
+	var head = table.rows[0]
 	var date = ""
 	var madedate
 	var start = $('#tbl tr:has("td"):first td').eq(OPDATE).html().numDate()
@@ -114,8 +115,7 @@ function refillall()
 				if (date != madedate)
 				{
 					//make a blank row for matched opday which is not already in the table
-					rowi = table.rows[i]	//existing row
-					fillOPDATE(rowi, date)
+					fillOPDATE(rows[i], date)	//existing row
 					i++
 					if (i >= tlength)
 						return
@@ -132,9 +132,8 @@ function refillall()
 						return
 				}
 			}
-			rowi = table.rows[i]	//existing row
-			fillOPDATE(rowi, date)
-			filldata(BOOK[q], rowi)
+			fillOPDATE(rows[i], date)	//existing row
+			filldata(BOOK[q], rows[i])
 			madedate = date
 			i++
 			q++
@@ -153,8 +152,7 @@ function refillall()
 			}
 
 			//make a blank row
-			rowi = table.rows[i]	//existing row
-			fillOPDATE(rowi, date)
+			fillOPDATE(rows[i], date)	//existing row
 			i++
 		}
 	}
@@ -180,7 +178,10 @@ function makenextrow(i, date)
 function fillOPDATE(rowi, date)
 {
 	var datatitle = document.getElementById("datatitle")
-	rowi.innerHTML = datatitle.innerHTML
+	for (var j = 0; j < rowi.cells.length; j++)
+		rowi.cells[j].innerHTML = datatitle.cells[j].innerHTML
+//	rowi.innerHTML = ""
+//	rowi.innerHTML = datatitle.innerHTML
 	rowi.cells[OPDATE].innerHTML = date.thDate()
 	rowi.cells[OPDATE].className = NAMEOFDAYABBR[(new Date(date)).getDay()]
 	rowi.className = NAMEOFDAYFULL[(new Date(date)).getDay()]
