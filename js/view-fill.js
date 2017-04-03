@@ -21,6 +21,8 @@ function fillupstart()
 function fillall(start)
 {
 	var table = document.getElementById("tbl")
+	var rows = table.rows
+	var head = table.rows[0]
 	var i = k = q = 0
 	var rowi = {}
 	var date = ""
@@ -43,8 +45,8 @@ function fillall(start)
 			if (date != madedate)
 			{
 				//make a blank row for matched opday which is not already in the table
+				makenextrow(date)	//insertRow
 				i++
-				rowi = makenextrow(i, date)	//insertRow
 				
 				madedate = date
 			}
@@ -52,14 +54,14 @@ function fillall(start)
 			//make table head row before every Sunday
 			if ((new Date(date).getDay())%7 == 0)
 			{
-				var clone = table.getElementsByTagName("TR")[0].cloneNode(true)
-				rowi.parentNode.appendChild(clone, rowi)
+				var clone = head.cloneNode(true)
+				rows[i].parentNode.appendChild(clone)
  				i++
 			}
 		}
+		makenextrow(date)	//insertRow
 		i++
-		rowi = makenextrow(i, date)	//insertRow
-		filldata(BOOK[q], rowi)
+		filldata(BOOK[q], rows[i])
 		madedate = date
 	}
 	//fill until 1 year from now
@@ -72,16 +74,16 @@ function fillall(start)
 	while (date < until)
 	{
 		//make a blank row
+		makenextrow(date)	//insertRow
 		i++
-		rowi = makenextrow(i, date)	//insertRow
 		
 		date = date.nextdays(1)
 		//make table head row before every Sunday
 		if ((((new Date(date)).getDay())%7 == 0) &&
 			(date < until))
 		{
-			var clone = table.getElementsByTagName("TR")[0].cloneNode(true)
-			rowi.parentNode.appendChild(clone, rowi)
+			var clone = head.cloneNode(true)
+			rows[i].parentNode.appendChild(clone)
 			i++
 		}
 	}
@@ -115,7 +117,7 @@ function refillall()
 				if (date != madedate)
 				{
 					//make a blank row for matched opday which is not already in the table
-					fillOPDATE(rows[i], date)	//existing row
+					fillOPDATE(rows, i, date)	//existing row
 					i++
 					if (i >= tlength)
 						return
@@ -126,13 +128,13 @@ function refillall()
 				//make table head row before every Sunday
 				if ((new Date(date).getDay())%7 == 0)
 				{
-					table.rows[i].innerHTML = table.getElementsByTagName("TR")[0].innerHTML
+					table.rows[i].innerHTML = head.innerHTML
 					i++
 					if (i >= tlength)
 						return
 				}
 			}
-			fillOPDATE(rows[i], date)	//existing row
+			fillOPDATE(rows, i, date)	//existing row
 			filldata(BOOK[q], rows[i])
 			madedate = date
 			i++
@@ -145,21 +147,21 @@ function refillall()
 			//make table head row before every Sunday
 			if (((new Date(date)).getDay())%7 == 0)
 			{
-				table.rows[i].innerHTML = table.getElementsByTagName("TR")[0].innerHTML
+				table.rows[i].innerHTML = head.innerHTML
 				i++
 				if (i >= tlength)
 					return
 			}
 
 			//make a blank row
-			fillOPDATE(rows[i], date)	//existing row
+			fillOPDATE(rows, i, date)	//existing row
 			i++
 		}
 	}
 	sortable()
 }
 
-function makenextrow(i, date)
+function makenextrow(date)
 {
 	var tbody = document.getElementById("tbl").getElementsByTagName("TBODY")[0]
 	var cols = tbody.rows[0].cells.length
@@ -172,20 +174,18 @@ function makenextrow(i, date)
 	rowi.cells[OPDATE].className = NAMEOFDAYABBR[(new Date(date)).getDay()]
 	rowi.className = NAMEOFDAYFULL[(new Date(date)).getDay()]
 	rowi.style.backgroundImage = holiday(date)
-	return rowi
 }
 
-function fillOPDATE(rowi, date)
+function fillOPDATE(rows, i, date)
 {
 	var datatitle = document.getElementById("datatitle")
-	for (var j = 0; j < rowi.cells.length; j++)
-		rowi.cells[j].innerHTML = datatitle.cells[j].innerHTML
-//	rowi.innerHTML = ""
-//	rowi.innerHTML = datatitle.innerHTML
-	rowi.cells[OPDATE].innerHTML = date.thDate()
-	rowi.cells[OPDATE].className = NAMEOFDAYABBR[(new Date(date)).getDay()]
-	rowi.className = NAMEOFDAYFULL[(new Date(date)).getDay()]
-	rowi.style.backgroundImage = holiday(date)
+	var row = datatitle.cloneNode(true)
+	row.id = ""
+	rows[i].parentNode.replaceChild(row, rows[i])
+	rows[i].cells[OPDATE].innerHTML = date.thDate()
+	rows[i].cells[OPDATE].className = NAMEOFDAYABBR[(new Date(date)).getDay()]
+	rows[i].className = NAMEOFDAYFULL[(new Date(date)).getDay()]
+	rows[i].style.backgroundImage = holiday(date)
 }
 
 function filldata(bookq, rowi)		//bookq = BOOK[q]
