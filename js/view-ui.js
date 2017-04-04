@@ -1,8 +1,8 @@
 function sortable()
 {
-	$(".connected").sortable({
-		items: "> tr:has(td)",
-		connectWith: ".connected",
+	$("#tbl tbody, #queuetbl tbody").sortable({
+		items: "tr",
+		connectWith: "#tbl tbody, #queuetbl tbody",
 		start: function(e, ui){
 			clearTimeout(TIMER);
 			closemenu()
@@ -44,13 +44,13 @@ function sortable()
 			var previtem = ui.item.prev()
 			var thisitem = ui.item
 			var nextitem = ui.item.next()
-			if (!previtem.length) {
+			if (!previtem.length || previtem.has('th').length) {
 				thisdrop = nextitem
 			} else {
-				if (!nextitem.length) {
+				if (!nextitem.length || nextitem.has('th').length) {
 					thisdrop = previtem
 				} else {
-					var helperpos = ui.offset.top
+					var helperpos = ui.offset.top	//ui.offset (no '()') = helper position
 					var prevpos = previtem.offset().top
 					var thispos = thisitem.offset().top
 					var nextpos = nextitem.offset().top

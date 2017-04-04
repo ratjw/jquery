@@ -30,7 +30,7 @@
 
  <div id="tblcontainer" style="display:none">
   <TABLE id="tbl" data-role="table" class="ui-responsive">
-   <TBODY class="connected">
+   <TBODY id="tblbody">
     <TR>
      <th style="width:10%">วันผ่าตัด</th>
      <th style="display:none"></th>
@@ -55,7 +55,7 @@
   </div> 
   <div id="queuecontainer">
    <TABLE id="queuetbl" data-role="table" class="ui-responsive">
-    <TBODY class="connected">
+    <TBODY>
      <TR>
       <th style="width:10%">วันผ่าตัด</th>
       <th style="width:4%">Since</th>
@@ -74,8 +74,9 @@
  </div>
 </div>
 
-<TABLE style="display:none">	<!-- Used as cells template -->
-  <TR id="datatitle">
+<TABLE id="datatitle" style="display:none">	<!-- Used as cells template -->
+  <TBODY>
+   <TR>
     <td data-title="วันผ่าตัด"></td>
     <td style="display:none"></td>
     <td data-title="Staff"></td>
@@ -86,7 +87,8 @@
     <td data-title="Treatment"></td>
     <td data-title="Note"></td>
     <td style="display:none"></td>
-  </TR>
+   </TR>
+  </TBODY>
 </TABLE>
 
 <TABLE id="qdatatitle" style="display:none">	<!--template for "staffqueue"-->

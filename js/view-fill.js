@@ -117,7 +117,8 @@ function refillall()
 				if (date != madedate)
 				{
 					//make a blank row for matched opday which is not already in the table
-					fillOPDATE(rows, i, date)	//existing row
+					fillrowdate(rows, i, date)	//existing row
+					fillblank(rows[i])
 					i++
 					if (i >= tlength)
 						return
@@ -128,13 +129,17 @@ function refillall()
 				//make table head row before every Sunday
 				if ((new Date(date).getDay())%7 == 0)
 				{
-					table.rows[i].innerHTML = head.innerHTML
+					if (rows[i].cells[OPDATE].nodeName != "TH") {
+						var rowh = head.cloneNode(true)
+						rows[i].parentNode.replaceChild(rowh, rows[i])
+					}
+
 					i++
 					if (i >= tlength)
 						return
 				}
 			}
-			fillOPDATE(rows, i, date)	//existing row
+			fillrowdate(rows, i, date)	//existing row
 			filldata(BOOK[q], rows[i])
 			madedate = date
 			i++
@@ -147,14 +152,19 @@ function refillall()
 			//make table head row before every Sunday
 			if (((new Date(date)).getDay())%7 == 0)
 			{
-				table.rows[i].innerHTML = head.innerHTML
+				if (rows[i].cells[OPDATE].nodeName != "TH") {
+					var rowh = head.cloneNode(true)
+					rows[i].parentNode.replaceChild(rowh, rows[i])
+				}
+
 				i++
 				if (i >= tlength)
 					return
 			}
 
 			//make a blank row
-			fillOPDATE(rows, i, date)	//existing row
+			fillrowdate(rows, i, date)	//existing row
+			fillblank(rows[i])
 			i++
 		}
 	}
@@ -163,11 +173,9 @@ function refillall()
 
 function makenextrow(date)
 {
-	var tbody = document.getElementById("tbl").getElementsByTagName("TBODY")[0]
-	var cols = tbody.rows[0].cells.length
+	var tbody = document.getElementById("tblbody")
 	var datatitle = document.getElementById("datatitle")
-	var row = datatitle.cloneNode(true)
-	row.id = ""
+	var row = datatitle.rows[0].cloneNode(true)
 	var rowi = tbody.appendChild(row)
 
 	rowi.cells[OPDATE].innerHTML = date.thDate()
@@ -176,16 +184,29 @@ function makenextrow(date)
 	rowi.style.backgroundImage = holiday(date)
 }
 
-function fillOPDATE(rows, i, date)
+function fillrowdate(rows, i, date)
 {
 	var datatitle = document.getElementById("datatitle")
-	var row = datatitle.cloneNode(true)
-	row.id = ""
-	rows[i].parentNode.replaceChild(row, rows[i])
+	if (rows[i].cells[OPDATE].nodeName != "TD") {
+		var row = datatitle.rows[0].cloneNode(true)
+		rows[i].parentNode.replaceChild(row, rows[i])
+	}
 	rows[i].cells[OPDATE].innerHTML = date.thDate()
 	rows[i].cells[OPDATE].className = NAMEOFDAYABBR[(new Date(date)).getDay()]
 	rows[i].className = NAMEOFDAYFULL[(new Date(date)).getDay()]
 	rows[i].style.backgroundImage = holiday(date)
+}
+
+function fillblank(rowi)
+{
+	rowi.cells[STAFFNAME].innerHTML = ""
+	rowi.cells[HN].innerHTML = ""
+	rowi.cells[NAME].innerHTML = ""
+	rowi.cells[AGE].innerHTML = ""
+	rowi.cells[DIAGNOSIS].innerHTML = ""
+	rowi.cells[TREATMENT].innerHTML = ""
+	rowi.cells[TEL].innerHTML = ""
+	rowi.cells[QN].innerHTML = ""
 }
 
 function filldata(bookq, rowi)		//bookq = BOOK[q]
