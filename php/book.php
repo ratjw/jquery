@@ -4,10 +4,10 @@
 //		exit("Connect failed: %s\n". $mysqli->connect_error);
 //	echo json_encode(book($mysqli));
 
- 	//waitnum = null :: deleted cases
-	//waitnum = 0 :: never in waitnum list
-	//waitnum > 0 :: is being or has been in waiting list
-	//qsince new case  from Javascript new Date()
+	//waitnum new case = 1
+	//waitnum > 0
+	//waitnum = null for deleted cases 
+	//qsince new case = new Date()
 	//qsince is never changed
 
 function book($mysqli)

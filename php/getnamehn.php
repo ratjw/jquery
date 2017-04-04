@@ -3,7 +3,7 @@ include "connect.php";
 require_once "book.php";
 
 	$hn = $staffname = $qn = $username = "";
-	$qsince = $opdate = '0000-00-00';
+	$qsince = $opdate = '1900-01-01';
 
 	extract($_GET);
 
