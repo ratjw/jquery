@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <HTML>
 <HEAD>
-<meta charset="utf-8"/>
-<meta http-equiv="X-UA-Compatible">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--meta charset="utf-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1"-->
 
 <link href="css/jquery-ui.css" rel="stylesheet">
 <link href="css/CSS.css" rel="stylesheet">
@@ -29,9 +29,8 @@
 <div id="wrapper">
 
  <div id="tblcontainer" style="display:none">
-  <TABLE id="tbl" data-role="table" class="ui-responsive">
-   <TBODY id="tblbody">
-    <TR>
+  <table id="tbl" data-role="table" class="ui-responsive">
+    <thead>
      <th style="width:10%">วันผ่าตัด</th>
      <th style="display:none"></th>
      <th style="width:6%">Staff</th>
@@ -42,9 +41,10 @@
      <th style="width:20%">Treatment</th>
      <th style="width:20%">Note</th>
      <th style="display:none"></th>
-    </TR>
-   </TBODY>
-  </TABLE>
+    </thead>
+   <tbody id="tblbody">
+   </tbody>
+  </table>
  </div>
 
  <div id="titlecontainer" style="display:none">
@@ -54,9 +54,8 @@
 	</span>
   </div> 
   <div id="queuecontainer">
-   <TABLE id="queuetbl" data-role="table" class="ui-responsive">
-    <TBODY>
-     <TR>
+   <table id="queuetbl" data-role="table" class="ui-responsive">
+     <thead>
       <th style="width:10%">วันผ่าตัด</th>
       <th style="width:4%">Since</th>
       <th style="display:none"></th>
@@ -67,9 +66,10 @@
       <th style="width:20%">Treatment</th>
       <th style="width:20%">Note</th>
       <th style="display:none"></th>
-     </TR>
-    </TBODY>
-   </TABLE>
+     </thead>
+    <tbody>
+    </tbody>
+   </table>
   </div>
  </div>
 </div>

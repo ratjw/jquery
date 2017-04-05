@@ -31,13 +31,13 @@
 
 #tbl {
 	table-layout: fixed;	/*make cell width = first row specified*/
-	width: auto;
 	border-right: solid 1px slategray;
+	width: auto;
 	border-collapse: collapse;
 }
 
 #tbl th {
-	font-size: 16px;
+	font-size: 14px;
 	font-weight: bold;
 	background-color: #D0E7FF;
 	color: #557799;
@@ -49,8 +49,7 @@
 
 #tbl tr {
 	background-repeat: no-repeat;
-	background-position: 300px;
-	height: 25px;
+	background-position: 100px;
 }
 
 #tbl td {
@@ -58,6 +57,7 @@
 	font-size: 14px;
 	border-left: solid 1px silver;
 	border-bottom: solid 1px silver;
+	height: 25px;
 }
 
 #tbl tr.sunday { background-color: #FAFAFA; }
@@ -104,14 +104,12 @@
 	border-bottom: solid 1px silver;
 }
 
-#queuetbl tr, #historytable tr, #servicetable tr {
-	height: 20px;
-}
 #queuetbl td, #historytable td, #servicetable td {
 	empty-cells:show;
 	font-size: 12px;
 	border-left: solid 1px silver;
 	border-bottom: solid 1px silver;
+	height: 20px;
 }
 
 #queuetbl td:first-child {

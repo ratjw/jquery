@@ -129,7 +129,7 @@ function showMenu(pointing, menuID)
 {
 	var pos = $(pointing).position();
 	var height = pos.top + $(pointing).outerHeight();	//bottom
-	var width = pos.left + $(pointing).outerWidth();	//right
+	var width = pos.left// + $(pointing).outerWidth();	//right
 
 	if ((height + $(menuID).outerHeight()) > 
 		$(window).innerHeight() + $(window).scrollTop())
