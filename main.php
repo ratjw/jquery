@@ -2,8 +2,8 @@
 <HTML>
 <HEAD>
 <!--meta charset="utf-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1"-->
+<meta http-equiv="X-UA-Compatible" content="IE=edge"-->
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
 <link href="css/jquery-ui.css" rel="stylesheet">
 <link href="css/CSS.css" rel="stylesheet">
@@ -31,6 +31,7 @@
  <div id="tblcontainer" style="display:none">
   <table id="tbl" data-role="table" class="ui-responsive">
     <thead>
+	 <tr>
      <th style="width:10%">วันผ่าตัด</th>
      <th style="display:none"></th>
      <th style="width:6%">Staff</th>
@@ -41,6 +42,7 @@
      <th style="width:20%">Treatment</th>
      <th style="width:20%">Note</th>
      <th style="display:none"></th>
+	 </tr>
     </thead>
    <tbody id="tblbody">
    </tbody>
@@ -56,6 +58,7 @@
   <div id="queuecontainer">
    <table id="queuetbl" data-role="table" class="ui-responsive">
      <thead>
+	  <tr>
       <th style="width:10%">วันผ่าตัด</th>
       <th style="width:4%">Since</th>
       <th style="display:none"></th>
@@ -66,6 +69,7 @@
       <th style="width:20%">Treatment</th>
       <th style="width:20%">Note</th>
       <th style="display:none"></th>
+	  </tr>
      </thead>
     <tbody>
     </tbody>

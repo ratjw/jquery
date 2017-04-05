@@ -69,7 +69,8 @@
 #tbl tr.saturday { background-color: #FAFAFA; }
 
 #tbl td:first-child {
-	font-size: 12px; background-color: #E0F0F7; 
+	font-size: 12px;
+	background-color: #E0F0F7; 
 }
 
 #tbl td.sun:before { content: "อาทิตย์ "; }
