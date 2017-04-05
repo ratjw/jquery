@@ -17,7 +17,7 @@ function editing(event)
 
 	if (keycode == 9)
 	{
-		$(".ui-menu").hide()
+		closemenu()
 		savePreviouscell()
 		if (event.shiftKey)
 			thiscell = findPrevcell(event)
@@ -34,12 +34,12 @@ function editing(event)
 	}
 	else if (keycode == 13)
 	{
-		$(".ui-menu").hide()
+		closemenu()
 		if (event.shiftKey || event.ctrlKey) {
 			return
 		}
 		savePreviouscell()
-		thiscell = findNextcell(event)
+		thiscell = findNextHN(event)
 		if (thiscell) {
 			storePresentcell(thiscell)
 		} else {
@@ -51,9 +51,7 @@ function editing(event)
 	}
 	else if (keycode == 27)
 	{
-		$(".ui-menu").hide()
-		if ($("#editcell").data("cellIndex").index() != OPDATE)
-			$("#editcell").hide()	//just do nothing
+		closemenu()
 		$("#editcell").hide()
 		window.focus()
 		event.preventDefault()
@@ -61,14 +59,20 @@ function editing(event)
 	}
 }
 
+function closemenu()
+{
+	$('#menu').hide();
+	$('#queuemenu').hide();
+	$('#stafflist').hide();
+}
+
 function savePreviouscell() 
 {
 	if (!$("#editcell").data("location"))
 		return
-	if ($("#editcell").data('tableID') != 'tbl')
-		return
 
-	var content = $("#editcell").html().replace(/^(\s*<br\s*\/?>)*\s*|\s*(<br\s*\/?>\s*)*$/g, '')
+	var trimBR = /^(\s*<br\s*\/?>)*\s*|\s*(<br\s*\/?>\s*)*$/g
+	var content = $("#editcell").html().replace(trimBR, '')
 	if (content == $("#editcell").data("content"))
 		return
 
@@ -99,8 +103,11 @@ function savePreviouscell()
 
 function saveContent(column, content)	//column name in MYSQL
 {
+	var tableID = $("#editcell").data("tableID")
+	var cellindex = $("#editcell").data("cellIndex")
 	var rowcell = $($("#editcell").data("tableRow")).children("td")
 	var opdate = rowcell.eq(OPDATE).html().numDate()
+	var staffname = rowcell.eq(STAFFNAME).html()
 	var qn = rowcell.eq(QN).html()
 	var sqlstring
 	var qsince
@@ -137,15 +144,25 @@ function saveContent(column, content)	//column name in MYSQL
 		else
 		{
 			updateBOOK(response);
-			fillthisDay(opdate)
+			if (tableID == 'tbl') {
+				if (($("#titlecontainer").css('display') == 'block') && 
+					($('#titlename').html() == staffname))
+
+					refillthis('queuetbl', cellindex, qn)
+			}
+			else
+				refillthis('tbl', cellindex, qn)
 		}
 	}
 }
 
 function saveHNinput(hn, content)
 {
+	var tableID = $("#editcell").data("tableID")
+	var cellindex = $("#editcell").data("cellIndex")
 	var rowcell = $($("#editcell").data("tableRow")).children("td")
 	var opdate = rowcell.eq(OPDATE).html().numDate()
+	var staffname = rowcell.eq(STAFFNAME).html()
 	var patient = rowcell.eq(NAME).html()
 	var qn = rowcell.eq(QN).html()
 	var qsince
@@ -156,7 +173,7 @@ function saveHNinput(hn, content)
 		return
 	}
 
-	$($("#editcell").data("location")).html(content)	//just for show instantly
+	$($("#editcell").data("location")).html(content)
 
 	content = content.replace(/<br>/g, "")
 	content = content.replace(/^\s+/g, "")
@@ -181,7 +198,14 @@ function saveHNinput(hn, content)
 		else 
 		{
 			updateBOOK(response)
-			fillthisDay(opdate)
+			if (tableID == 'tbl') {
+				if (($("#titlecontainer").css('display') == 'block') && 
+					($('#titlename').html() == staffname))
+
+					refillthis('queuetbl', cellindex, qn)
+			}
+			else
+				refillthis('tbl', cellindex, qn)
 		}
 	}
 }
@@ -213,6 +237,42 @@ function storePresentcell(pointing)
 			$("#editcell").data("content", pointing.innerHTML)
 			break
 	}
+}
+
+function editcell(pointing)
+{
+	var editcell = "#editcell"
+	saveDataPoint(editcell, pointing)
+	positioning(editcell, pointing)
+	$(editcell).show()
+	$(editcell).focus()
+}
+
+function saveDataPoint(editcell, pointing)
+{
+	var tableID = $(pointing).closest('table').attr('id')
+	var rowIndex = $(pointing).closest('tr').index()
+	var cellIndex = $(pointing).index()
+
+	$(editcell).data("location", "#"+ tableID +" tr:eq("+ rowIndex +") td:eq("+ cellIndex +")")
+	$(editcell).data("tableRow", "#"+ tableID +" tr:eq("+ rowIndex +")")
+	$(editcell).data("tableID", tableID)
+	$(editcell).data("rowIndex", rowIndex)
+	$(editcell).data("cellIndex", cellIndex)
+	$(editcell).html($(pointing).html())
+}
+
+function positioning(editcell, pointing)
+{
+	var pos = $(pointing).position()
+
+	$(editcell).css({
+		top: pos.top + "px",
+		left: pos.left + "px",
+		height: $(pointing).height() + "px",
+		width: $(pointing).width() + "px",
+		fontSize: $(pointing).css("fontSize"),
+	})
 }
 
 function findPrevcell(event) 
@@ -258,7 +318,10 @@ function findNextcell(event)
 		if ($(nextcell).parent().index() < lastrow)
 		{	//go to next row first editable
 			do {
-				nextcell = $(nextcell).parent().next("tr").children().eq(EDITABLE[0])
+				if (!(nextcell = $(nextcell).parent().next("tr").children().eq(EDITABLE[0]))) {
+					event.preventDefault()
+					return false
+				}
 			}
 			while ($(nextcell).get(0).nodeName == "TH")	//THEAD row
 		}
@@ -267,6 +330,30 @@ function findNextcell(event)
 			event.preventDefault()
 			return false
 		}
+	}
+
+	return $(nextcell).get(0)
+}
+
+function findNextHN(event) 
+{
+	var nextcell = $($("#editcell").data("location"))
+	var lastrow = $('#tbl tr:last-child').index()
+
+	if ($(nextcell).parent().index() < lastrow)
+	{	//go to next row first editable
+		do {
+			if (!(nextcell = $(nextcell).parent().next("tr").children().eq(EDITABLE[0]))) {
+				event.preventDefault()
+				return false	
+			}
+		}
+		while ($(nextcell).get(0).nodeName == "TH")	//THEAD row
+	}
+	else
+	{	//#tbl tr:last-child td:last-child
+		event.preventDefault()
+		return false
 	}
 
 	return $(nextcell).get(0)

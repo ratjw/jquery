@@ -9,26 +9,17 @@ var TIMESTAMP	= "";
 var TIMER		= "";
 
 var OPDATE		= 0;
-var STAFFNAME	= 1;
-var HN			= 2;
-var NAME		= 3;
-var AGE			= 4;
-var DIAGNOSIS	= 5;
-var TREATMENT	= 6;
-var TEL			= 7;
-var QN			= 8;
-var EDITABLE 	= [STAFFNAME, HN, DIAGNOSIS, TREATMENT, TEL];
+var SINCE		= 1;
+var STAFFNAME	= 2;
+var HN			= 3;
+var NAME		= 4;
+var AGE			= 5;
+var DIAGNOSIS	= 6;
+var TREATMENT	= 7;
+var TEL			= 8;
+var QN			= 9;
 
-var QOPDATE		= 0;
-var QSINCE		= 1;
-var QHN			= 2;
-var QNAME		= 3;
-var QAGE		= 4;
-var QDIAGNOSIS	= 5;
-var QTREATMENT	= 6;
-var QTEL		= 7;
-var QQN			= 8;
-var EDITQUEUE 	= [QHN, QDIAGNOSIS, QTREATMENT, QTEL];
+var EDITABLE 	= [HN, DIAGNOSIS, TREATMENT, TEL];
 
 var NAMEOFDAYTHAI	= ["อาทิตย์", "จันทร์", "อังคาร", "พุธ", "พฤหัส", "ศุกร์", "เสาร์"];
 var DAYOFTHAINAME	= {"อาทิตย์":0, "จันทร์":1, "อังคาร":2, "พุธ":3, "พฤหัส":4, "ศุกร์":5, "เสาร์":6};

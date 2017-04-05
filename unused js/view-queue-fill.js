@@ -21,8 +21,8 @@ function staffqueue(staffname)
 	if ($('#queuetbl tr').length == 1)	//no patient in waiting list
 	{
 		$('#qdatatitle tr').clone().insertAfter($('#queuetbl tr:last'))
-			.children("td").eq(QOPDATE).html(todate.thDate())
-			.parent().children("td").eq(QSINCE).html(todate.thDate().slice(0,-4))
+			.children("td").eq(OPDATE).html("0000-00-00")
+			.parent().children("td").eq(SINCE).html(todate.thDate())
 	}
 
 	$("#queuecontainer").scrollTop(scrolled)
@@ -33,27 +33,28 @@ function staffqueue(staffname)
 jQuery.fn.extend({
 	filldataQueue : function(bookq) {
 		cell = $(this).children()
-		cell.eq(QOPDATE).html(bookq.opdate.thDate())
-		cell.eq(QSINCE).html(bookq.qsince.thDate().slice(0,-4))
-		cell.eq(QHN).html(bookq.hn)
-		cell.eq(QNAME).html(bookq.patient)
-		cell.eq(QAGE).html(bookq.dob? bookq.dob.getAge(bookq.opdate) : "")
-		cell.eq(QDIAGNOSIS).html(bookq.diagnosis)
-		cell.eq(QTREATMENT).html(bookq.treatment)
-		cell.eq(QTEL).html(bookq.tel)
-		cell.eq(QQN).html(bookq.qn)
+		cell.eq(OPDATE).html(bookq.opdate.thDate())
+		cell.eq(SINCE).html(bookq.qsince.thDate().slice(0,-4))
+		cell.eq(STAFFNAME).html(bookq.staffname)
+		cell.eq(HN).html(bookq.hn)
+		cell.eq(NAME).html(bookq.patient)
+		cell.eq(AGE).html(bookq.dob? bookq.dob.getAge(bookq.opdate) : "")
+		cell.eq(DIAGNOSIS).html(bookq.diagnosis)
+		cell.eq(TREATMENT).html(bookq.treatment)
+		cell.eq(TEL).html(bookq.tel)
+		cell.eq(QN).html(bookq.qn)
 	}
 })
 
 function fillSetTableQueue(pointing)
 {
 	var rowmain = $(pointing).closest('tr')
-	var casename = rowmain.find('td').eq(QNAME).html()
-	var thisqqn = rowmain.find('td').eq(QQN).html()
+	var casename = rowmain.find('td').eq(NAME).html()
+	var thisqqn = rowmain.find('td').eq(QN).html()
 	var disabled = "ui-state-disabled"
 
 	casename = casename.substring(0, casename.indexOf(' '))
-	var lastqqn = $("#queuetbl tr:last td").eq(QQN).html()
+	var lastqqn = $("#queuetbl tr:last td").eq(QN).html()
 
 	$("#qitem1").html("เพิ่ม case")
 	if (lastqqn)		//no blank

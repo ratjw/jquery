@@ -12,7 +12,7 @@ Date.prototype.mysqlDate = function ()
 String.prototype.thDate = function () 
 {	//MySQL date (2014-05-11) to Thai date (11 พค. 2557) 
 	if (this < '1900-01-01')
-		return ""
+		return this
 	var yyyy = parseInt(this.substr(0, 4)) + 543;
 	var mm = this.substr(5, 2);
 	for (ThMonth in NUMMONTH)
@@ -38,7 +38,7 @@ String.prototype.nextdays = function (days)
 String.prototype.getAge = function (toDate)
 {	//Calculate age at toDate (MySQL format) from MySQL birth date (2017-01-23)
 	if (!toDate || this < '1900-01-01')
-		return ""
+		return this
 	var birth = new Date(this);
 	var today = new Date(toDate);
 
@@ -80,13 +80,6 @@ function getSunday(date)	//get Sunday in the same week
 	return today.mysqlDate();
 }
 
-function getMonday(date)	//get last Monday 
-{
-	var today = date? new Date(date) : new Date();
-	today.setDate(today.getDate() - ((today.getDay() + 6) % 7));	//make Monday=0, Sunday=6
-	return today.mysqlDate();
-}
-
 function Ajax(url, params, callback)
 {
 	var xmlHttp = new XMLHttpRequest();
@@ -99,35 +92,29 @@ function Ajax(url, params, callback)
 	xmlHttp.send(null);
 }
 
-function scrollUpDown()
-{
-	if ($("#tblcontainer").scrollTop() < 2)
-	{
-		fillupscroll(-1)
-	}
-	else if ($("#tbl").height() <= $("#tblcontainer").outerHeight() + $("#tblcontainer").scrollTop())
-	{
-		fillupscroll(+1)
-	}
-	$(".ui-resizable-e").css("height", $("#tbl").height())
-}
-
 function URIcomponent(qoute)
 {
 	qoute = qoute.replace(/\s+$/,'')
-	qoute = qoute.replace(/\"/g, "&#34;")	// w3 org recommend use numeric character references to represent 
-	qoute = qoute.replace(/\'/g, "&#39;")	// double quotes (&#34;) or (&quot); and single quotes (&#39;)
-	qoute = qoute.replace(/\\/g, "\\\\")
-	return encodeURIComponent(qoute)
+	qoute = qoute.replace(/\"/g, "&#34;")	// w3 org recommend use numeric
+	qoute = qoute.replace(/\'/g, "&#39;")	// character references to represent 
+	qoute = qoute.replace(/\\/g, "\\\\")	// double quotes ((&#34;) or (&quot))
+	return encodeURIComponent(qoute)		// and single quotes (&#39;)
 }
 
-function alert(message)	//get last Monday 
+function alert(message)
 {
-	$("#alert").find('div').text(message);
+	$('#message').html(message)
 	$("#alert").fadeIn();
+
+	var div = $('#message')
+	while (div.height() > div.parent().height() - 40) {	//-30 for header
+		div.css('font-size', (parseInt(div.css('font-size')) - 1) + "px")
+		if (parseInt(div.css('font-size')) < 8)
+			break
+	}
 }
 
-function closeAlert()	//get last Monday 
+function closeAlert()
 {
 	$("#alert").hide();
 }

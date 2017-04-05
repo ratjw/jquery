@@ -4,10 +4,10 @@
 //		exit("Connect failed: %s\n". $mysqli->connect_error);
 //	echo json_encode(book($mysqli));
 
- 	//waitnum = null :: deleted cases
-	//waitnum = 0 :: never in waitnum list
-	//waitnum > 0 :: is being or has been in waiting list
-	//qsince new case  from Javascript new Date()
+	//waitnum new case = 1
+	//waitnum > 0
+	//waitnum = null for deleted cases 
+	//qsince new case = new Date()
 	//qsince is never changed
 
 function book($mysqli)
@@ -22,8 +22,9 @@ function book($mysqli)
 
 	$sql = "SELECT * FROM book 
 		WHERE opdate >= curdate()-interval 1 year AND waitnum IS NOT NULL
-		ORDER BY opdate, staffname, waitnum;";
-    if (!$result = $mysqli->query ($sql))
+		ORDER BY opdate, waitnum;";
+
+	if (!$result = $mysqli->query ($sql))
 		return $mysqli->error;
 	while ($rowi = $result->fetch_assoc())
 	{
@@ -32,20 +33,8 @@ function book($mysqli)
 
 	if ($result = $mysqli->query ("SELECT now();"))
 		$time = current($result->fetch_row());	//array.toString()
-/*
-	$sql = "SELECT * FROM book 
-		WHERE waitnum > 0 AND opdate = '0000-00-00'
-		ORDER BY staffname, waitnum;";
 
-	if (!$result = $mysqli->query ($sql))
-		return $mysqli->error;
-	while ($rowi = $result->fetch_assoc())
-	{
-		$wait[] = $rowi;
-	}
-*/
-
-	$sql = "SELECT * FROM staff ORDER BY code;";
+	$sql = "SELECT * FROM staff;";
 
 	if (!$result = $mysqli->query ($sql))
 		return $mysqli->error;
@@ -54,7 +43,6 @@ function book($mysqli)
 
 	$allarray["BOOK"] = $case;
 	$allarray["QTIME"] = $time;
-//	$allarray["QWAIT"] = $wait;
 	$allarray["STAFF"] = $staff;
 
 	return $allarray;

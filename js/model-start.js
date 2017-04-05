@@ -5,14 +5,12 @@ function loadtable(userid)
 	THISUSER = userid
 	$("#login").remove()
 	$("#tblcontainer").show()
-	$("#wrapper").append($("#tblcontainer"))
-	$("#wrapper").append($("#queuecontainer"))
 
 	$(document).click( function (event) {
 		countReset();
 		var clickedCell = event.target
 		if(!$(clickedCell).closest('#menu').length) {
-			if($('#menu').is(":visible")) {
+			if($('#menu').is(":visible")) {	//visible == take up space even can't be seen
 				$('#menu').hide();
 			}
 		}
@@ -34,7 +32,7 @@ function loadtable(userid)
 		if ($(clickedCell).closest("table").attr("id") == "tbl")
 			clicktable(clickedCell)
 		else if ($(clickedCell).closest("table").attr("id") == "queuetbl")
-			Qclicktable(clickedCell)
+			clicktable(clickedCell)
 	})
 	$(document).keydown( function (event) {
 		countReset();
@@ -45,14 +43,21 @@ function loadtable(userid)
 		if (tableID == "tbl")
 			editing(event)
 		else if (tableID == "queuetbl")
-			editingqueue(event)
+			editing(event)
 	})
 	$(document).contextmenu( function (event) {
-		countReset();
 		return false
 	})
 
-	TIMER = setTimeout("updating()",10000)		//poke next 10 sec.
+	$("html, body").css( {
+		height: "100%",
+		overflow: "hidden",
+		margin: "0px"
+	})
+	sortable()
+	//let browser render fillupstart immediately
+	//call sortable before render, if after, render slower than 5 sec.
+	TIMER = setTimeout("updating()",10000);	//poke next 10 sec.
 }
 
 function loading(response)
@@ -92,14 +97,6 @@ function dataStafflist()
 
 function updating()
 {
-	if (document.getElementById("editmode") || document.getElementById("movemode"))
-	{
-		clearTimeout(TIMER);
-		TIMER = setTimeout("updating()",10000);	//poke next 10 sec.
-		return;
-	}
-	//poke database if not editmode, not movemode and not adding new case
-
 	Ajax(MYSQLIPHP, "functionName=checkupdate&time="+TIMESTAMP, updatingback);
 
 	function updatingback(response)	//only changed database by checkupdate&time
@@ -107,11 +104,12 @@ function updating()
 		if (response && response.indexOf("opdate") != -1)
 		{								//there is new entry after TIMESTAMP
 			updateBOOK(response)
-			refillall()
-			DragDrop()
 		}
 		clearTimeout(TIMER);
 		TIMER = setTimeout("updating()",10000);	//poke next 10 sec.
+		refillall()
+		if ($("#titlecontainer").css('display') == 'block')
+			refillstaffqueue()
 	}
 }
 

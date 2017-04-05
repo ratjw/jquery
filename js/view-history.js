@@ -11,7 +11,7 @@ function editHistory(rowmain, qn)
 	function callbackeditHistory(response)
 	{
 		if (!response || response.indexOf("DBfailed") != -1)
-			alert("Data history DBfailed!\n" + response);
+			alert("Data history DBfailed!\n" + response)
 		else
 			makehistory(rowmain, response)
 
@@ -45,29 +45,28 @@ function makehistory(rowmain, response)
 	}
 	HTML_String += '</table>';
 
-	$("#historytable").remove()
-	$('#historycontainer').prepend(HTML_String)
+	$('#dialogContainer').html(HTML_String)
 	var maxHeight = window.innerHeight * 8 / 10
-	var height = $("#historycontainer").height()
+	var height = $("#dialogContainer").height()
 	height = (height > maxHeight)? maxHeight : height
-	$('#historycontainer').dialog({
+	$('#dialogContainer').dialog({
 		title: rowmain.cells[HN].innerHTML +' '+ rowmain.cells[NAME].innerHTML,
 		width: $("#tblcontainer").width() * 6 / 10,
 		closeOnEscape: true
 	})
-	$('#historycontainer').css({
+	$('#dialogContainer').css({
 		height: height,
 		overflow: "auto"
 	})
 }
 
-function deleteHistory(rowmain, qn)
+function deleteHistory()
 {
 	var sql = "sqlReturnData=SELECT bh.editdatetime, b.opdate, b.staffname, "
 		sql += "b.hn, b.patient, b.diagnosis, b.treatment, b.tel, b.editor, b.qn "
 		sql += "FROM book b INNER JOIN bookhistory bh ON b.qn = bh.qn "
 		sql += "WHERE b.waitnum IS NULL AND bh.waitnum IS NULL "
-		sql += "ORDER BY editdatetime DESC;"
+		sql += "ORDER BY revision DESC;"
 
 		Ajax(MYSQLIPHP, sql, callbackdeleteHistory)
 
@@ -76,13 +75,13 @@ function deleteHistory(rowmain, qn)
 		if (!response || response.indexOf("DBfailed") != -1)
 			alert("Delete history DBfailed!\n" + response)
 		else
-			makeDeleteHistory(rowmain, response)
+			makeDeleteHistory(response)
 
 		$("#editcell").hide()
 	}
 }
 
-function makeDeleteHistory(rowmain, response)
+function makeDeleteHistory(response)
 {
 	var history = JSON.parse(response);
 
@@ -116,18 +115,17 @@ function makeDeleteHistory(rowmain, response)
 	}
 	HTML_String += '</table>';
 
-	$("#historytable").remove()
-	$('#undelete').hide()
-	$('#historycontainer').prepend(HTML_String)
+	$('#dialogContainer').html(HTML_String)
+	$('#historytable').after($('#nondelete').clone().attr("id", "undelete"))
 	var maxHeight = window.innerHeight * 8 / 10
-	var height = $("#historycontainer").height()
+	var height = $("#dialogContainer").height()
 	height = (height > maxHeight)? maxHeight : height
-	$('#historycontainer').dialog({
+	$('#dialogContainer').dialog({
 		title: "Deleted Cases",
 		width: $("#tblcontainer").width() * 7 / 10,
 		closeOnEscape: true
 	})
-	$('#historycontainer').css({
+	$('#dialogContainer').css({
 		height: height,
 		overflow: "auto"
 	})
@@ -135,7 +133,6 @@ function makeDeleteHistory(rowmain, response)
 
 function undelete(that) 
 {
-	$('#historytable').after($('#undelete'))
 	$('#undelete').show()
 	$('#undelete').position( {
 		my: "left center",
@@ -168,7 +165,7 @@ function undelete(that)
 				updateBOOK(response);
 				refillall()
 			}
-			$('#historycontainer').dialog("close")
+			$('#dialogContainer').dialog("close")
 		}
 	}
 }
@@ -196,94 +193,87 @@ function PACS(hn)
 
 } 
 
-function holiday(date)
+function serviceReview()
 {
-	var monthdate = date.substring(5)
-	var dayofweek = (new Date(date)).getDay()
-	var holidayname = ""
+	var datepicker = '<span style="margin:20px 0px 40px"> เดือน :</span>'
+	datepicker += '<input type="text" id="datepicker" style="margin-left:5px">'
+	datepicker += '<input type="text" id="datepicking" style="display:none">'
 
-	for (var key in HOLIDAY) 
-	{
-		if (key == date)
-			return HOLIDAY[key]	//matched a holiday
-		if (key > date)
-			break		//not a listed holiday
-						//either a fixed or a compensation holiday
-	}
-	switch (monthdate)
-	{
-	case "12-31":
-		holidayname = "url('pic/Yearend.jpg')"
-		break
-	case "01-01":
-		holidayname = "url('pic/Newyear.jpg')"
-		break
-	case "01-02":
-		if ((dayofweek == 1) || (dayofweek == 2))
-			holidayname = "url('pic/Yearendsub.jpg')"
-		break
-	case "01-03":
-		if ((dayofweek == 1) || (dayofweek == 2))
-			holidayname = "url('pic/Newyearsub.jpg')"
-		break
-	case "04-06":
-		holidayname = "url('pic/Chakri.jpg')"
-		break
-	case "04-07":
-	case "04-08":
-		if (dayofweek == 1)
-			holidayname = "url('pic/Chakrisub.jpg')"
-		break
-	case "04-13":
-	case "04-14":
-	case "04-15":
-		holidayname = "url('pic/Songkran.jpg')"
-		break
-	case "04-16":
-	case "04-17":
-		if (dayofweek && (dayofweek < 4))
-			holidayname = "url('pic/Songkransub.jpg')"
-		break
-	case "05-05":
-		holidayname = "url('pic/Coronation.jpg')"
-		break
-	case "05-06":
-	case "05-07":
-		if (dayofweek == 1)
-			holidayname = "url('pic/Coronationsub.jpg')"
-		break
-	case "08-12":
-		holidayname = "url('pic/Queen.jpg')"
-		break
-	case "08-13":
-	case "08-14":
-		if (dayofweek == 1)
-			holidayname = "url('pic/Queensub.jpg')"
-		break
-	case "10-23":
-		holidayname = "url('pic/Piya.jpg')"
-		break
-	case "10-24":
-	case "10-25":
-		if (dayofweek == 1)
-			holidayname = "url('pic/Piyasub.jpg')"
-		break
-	case "12-05":
-		holidayname = "url('pic/King.jpg')"
-		break
-	case "12-06":
-	case "12-07":
-		if (dayofweek == 1)
-			holidayname = "url('pic/Kingsub.jpg')"
-		break
-	case "12-10":
-		holidayname = "url('pic/Constitution.jpg')"
-		break
-	case "12-11":
-	case "12-12":
-		if (dayofweek == 1)
-			holidayname = "url('pic/Constitutionsub.jpg')"
-		break
-	}
-	return holidayname
+	$('#dialogContainer').html(datepicker)
+
+	$('#datepicker').datepicker( {
+		altField: $( "#datepicking" ),
+		altFormat: "yy-mm-dd",
+		autoSize: true,
+		dateFormat: "MM yy",
+		minDate: "-1y",
+		maxDate: "+1y",
+		monthNames: [ "มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", 
+					  "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม" ],
+		onChangeMonthYear: function(year, month, inst) {
+			$(this).datepicker('setDate', new Date(inst.selectedYear, inst.selectedMonth, 1))
+		},
+		onClose: function(){
+			entireMonth($('#datepicking').val())
+		}
+	}).datepicker("setDate", new Date());//first time show instantly on input boxes
+
+	$('#dialogContainer').dialog({
+		title: 'Service Review',
+		closeOnEscape: true,
+		width: $('.ui-datepicker').width() + $('#datepicker').width()
+	})
+	$('#datepicker').click(function() { //setDate follows input boxes
+		$('#datepicker').datepicker(
+			"setDate", $('#datepicking').val()? new Date($('#datepicking').val()) : new Date()
+		)
+	})
+}
+
+function entireMonth(fromDate)
+{
+	var from = new Date(fromDate)
+	var toDate = new Date(from.getFullYear(), from.getMonth()+1, 0)//day before 1st of next month
+	toDate = $.datepicker.formatDate('yy-mm-dd', toDate);	//end of this month
+	$('#dialogContainer input[type=button]').hide()
+	showCases(fromDate, toDate)
+}
+
+function showCases(fromDate, toDate)
+{
+	$('#servicetable').remove()
+	$('#dialogContainer').append($('#servicetbl').clone().attr("id", "servicetable").show())
+	$.each( STAFF, function() {	// each == this
+		var staffname = this.name
+		$('#sdatatitle tr').clone()
+			.insertAfter($('#servicetable tr:last'))
+				.children().eq(OPDATE)
+					.attr("colSpan", 6)
+						.css({
+							height: "40",
+							fontWeight: "bold",
+							fontSize: "14px"
+						})
+						.html(staffname)
+							.siblings().hide()
+		$.each( BOOK, function() {	// each == this
+			if (this.staffname == staffname && 
+				this.opdate >= fromDate &&
+				this.opdate <= toDate) {
+				$('#sdatatitle tr').clone()
+					.insertAfter($('#servicetable tr:last'))
+						.filldataQueue(this)
+			}
+		});
+	})
+
+	$('#dialogContainer').dialog().parent().css( {
+		maxHeight: window.innerHeight * 8 / 10,
+		width: $("#tblcontainer").width() * 7 / 10,
+		overflow: "auto"
+	}).position({
+		my : "center center",
+		at : "center center+20",
+		of : window
+	});
 }

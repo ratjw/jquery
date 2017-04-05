@@ -1,192 +1,163 @@
-
-function DragDrop()
+function sortable()
 {
-	$("#tbl tr:has(td)").draggable({
-		revert: "true",
-		helper: function(){
-					var copy = $(this).clone();
-					copy.find("td").css({
-						"fontSize": "14px",
-						"border": "solid 1px silver",
-					})
-					return copy;
-				},
-		appendTo: 'body',
-		stack: ".ui-draggable",
-		zIndex: 1000,
-		start : function (event) {
-			$("#editcell").hide()
-			$(".ui-menu").hide()
-		}
-	});
-
-	$("#tbl tr:has(td)").droppable({
-		accept: "tr",
-
-		over: function (event, ui){
-			if ($(ui.helper).position().top < 50) {
-				$('#tblcontainer').animate({
-					scrollTop: $('#tblcontainer').scrollTop() - 200
-				}, 200);
-			}
-			if ($(ui.helper).position().top > $('#tblcontainer').innerHeight() - 50) {
-				$('#tblcontainer').animate({
-					scrollTop: $('#tblcontainer').scrollTop() + 200
-				}, 200);
-			}
+	$("#tbl tbody, #queuetbl tbody").sortable({
+		items: "tr",
+		connectWith: "#tbl tbody, #queuetbl tbody",
+		start: function(e, ui){
+			clearTimeout(TIMER);
+			closemenu()
+			$('#editcell').hide();
+			ui.placeholder.innerHeight(ui.item.outerHeight())
+			ui.placeholder.attr('data-thisindex', ui.placeholder.index());
+			ui.item.attr("data-sender", ui.item.closest('table').attr('id'))
 		},
-
-		drop: function (event, ui) {
-			var that_row = ui.draggable
-			var this_row = $(this)
-			var uihelper = ui.helper
-			var prevdate
-			var nextdate
-			var dragTable = $(ui.draggable).closest("table").attr("id")
-			var thatdate = $(ui.draggable).children("td").eq(OPDATE).html()
-			var thisdate = $(this).children("td").eq(OPDATE).html()
-			if (thatdate)
-				thatdate = thatdate.numDate()
-			if (thisdate)
-				thisdate = thisdate.numDate()
-			var thisqn = $(this).children("td").eq(QN).html()
-
-			if (dragTable == "queuetbl") 
-			{
-				var thatqn = $(ui.draggable).children("td").eq(QQN).html()
-				if (!thatqn)
-					return false
-			}
-			else if (dragTable == "tbl")
-			{
-				var thatqn = $(ui.draggable).children("td").eq(QN).html()
-				if (!thatqn)
-					return false
+		forceHelperSize: true,
+		forcePlaceholderSize: true,
+		change: function(e, ui){
+			ui.placeholder.attr('data-previndex', ui.placeholder.attr('data-thisindex'));
+			ui.placeholder.attr('data-thisindex', ui.placeholder.index());
+		},
+		stop: function(e, ui){
+			ui.item.attr("data-receiver", ui.item.closest('table').attr('id'))
+				
+			if (!ui.item.children().eq(QN).html()) {
+				return false
 			}
 
-			var sql = "sqlReturnbook=UPDATE book SET "
-			sql += "opdate='" + thisdate
+			if (ui.item.attr("data-receiver") == "queuetbl") {
+				if (ui.item.children().eq(STAFFNAME).html() != $('#titlename').html()) {
+					return false
+				}
+				if (ui.item.attr("data-sender") == "tbl") {
+					ui.item.children().eq(SINCE).css("display", "block")
+					ui.item.children().eq(STAFFNAME).css("display", "none")
+				}
+			} else {
+				if (ui.item.attr("data-sender") == "queuetbl") {
+					ui.item.children().eq(SINCE).css("display", "none")
+					ui.item.children().eq(STAFFNAME).css("display", "block")
+				}
+			}
+
+			var thisdrop
+			var finalWaitnum
+			var previtem = ui.item.prev()
+			var thisitem = ui.item
+			var nextitem = ui.item.next()
+			if (!previtem.length || previtem.has('th').length) {
+				thisdrop = nextitem
+			} else {
+				if (!nextitem.length || nextitem.has('th').length) {
+					thisdrop = previtem
+				} else {
+					var helperpos = ui.offset.top	//ui.offset (no '()') = helper position
+					var prevpos = previtem.offset().top
+					var thispos = thisitem.offset().top
+					var nextpos = nextitem.offset().top
+					var nearprev = Math.abs(helperpos - prevpos)
+					var nearplace = Math.abs(helperpos - thispos)
+					var nearnext = Math.abs(helperpos - nextpos)
+					var nearest = Math.min(nearprev, nearplace, nearnext)
+					if (nearest == nearprev) 
+						thisdrop = previtem
+					if (nearest == nearnext) 
+						thisdrop = nextitem
+					if (nearest == nearplace) 
+						if (ui.placeholder.attr('data-previndex') < ui.placeholder.attr('data-thisindex'))
+							thisdrop = previtem
+						else
+							thisdrop = nextitem
+				}
+			}
+
+			var thisopdate = thisdrop.children("td").eq(OPDATE).html().numDate()
+			var staffname = thisitem.children("td").eq(STAFFNAME).html()
+			var thisqn = thisitem.children("td").eq(QN).html()
+			if (thisdrop == previtem) {
+				var prevqn = previtem.children("td").eq(QN).html()
+				finalWaitnum = prevWaitnum(prevqn, thisopdate)
+			}
+			if (thisdrop == nextitem) {
+				var nextqn = nextitem.children("td").eq(QN).html()
+				finalWaitnum = nextWaitnum(nextqn, thisopdate)
+			}
+
+			var sql = "sqlReturnbook=UPDATE book SET Waitnum = "+ finalWaitnum
+			sql += ", opdate='" + thisopdate
 			sql += "', editor='"+ THISUSER
-			sql += "' WHERE qn="+ thatqn +";"
+			sql += "' WHERE qn="+ thisqn +";"
 
-			Ajax(MYSQLIPHP, sql, callbackDragDrop);
+			Ajax(MYSQLIPHP, sql, callbacksortable);
 
-			function callbackDragDrop(response)
+			function callbacksortable(response)
 			{
 				if (!response || response.indexOf("DBfailed") != -1)
 				{
 					alert ("Move failed!\n" + response)
+					$("#tbl tbody" ).sortable( "cancel" )
 				}
 				else
 				{
 					updateBOOK(response)
-					if (dragTable == "tbl") {
-						deleteRow(that_row, thatdate)
+					if (ui.item.attr("data-receiver") == "tbl") {
+//						requestAnimationFrame(refillall())
+						refillall()
+						if (($("#titlecontainer").css('display') == 'block') && 
+							($('#titlename').html() == staffname)) {
+
+//								requestAnimationFrame(refillstaffqueue())								
+						refillstaffqueue()
+						}
+					} else {
+//						requestAnimationFrame(refillstaffqueue())
+						refillstaffqueue()
+//						requestAnimationFrame(refillall())
+						refillall()
 					}
-						
-					if (thisqn)
-						this_row.after(this_row.clone());
-
-					refillall()
-					staffqueue($( "#titlename" ).html())
-
-					DragDrop()
 				}
 			}
+			TIMER = setTimeout("updating()",10000);	//poke next 10 sec.
 		}
-	});
+	})
 }
 
-function DragDropStaff()
-{
-	$("#queuetbl tr:has(td)").draggable({
-		helper: "clone",
-		revert: "true",
-		stack: ".ui-draggable",
-		zIndex: 1000,
-		start : function () {
-			$("#editcell").hide()
-			$(".ui-menu").hide()
-		}
-	});
+function findcaseNum(qn)
+{  
+	var i = 0
+	while (i < BOOK.length && BOOK[i].qn != qn)
+		i++
 
-	$("#queuetbl tr:has(td)").droppable({
-		accept: "#tbl tr, #queuetbl tr",
+	return i
+}
 
-		over: function (event, ui) {
-			if ($(ui.helper).position().top < 50) {
-				$('#queuecontainer').animate({
-					scrollTop: $('#queuecontainer').scrollTop() - 100
-				}, 200);
-			}
-			if ($(ui.helper).position().top > $('#queuecontainer').innerHeight() - 50) {
-				$('#queuecontainer').animate({
-					scrollTop: $('#queuecontainer').scrollTop() + 100
-				}, 200);
-			}
-		},
+function prevWaitnum(prevqn, dropDate)
+{  
+	if (!prevqn)
+		return 1
+	var caseNum = findcaseNum(prevqn)
+	var dropWaitnum = Number(BOOK[caseNum].waitnum)
+	caseNum++
+	if ((caseNum > BOOK.length - 1) ||
+		(BOOK[caseNum].opdate != dropDate)) {
+		return dropWaitnum + 1
+	} else {
+		var afterWaitnum = Number(BOOK[caseNum].waitnum)
+		return (afterWaitnum + dropWaitnum) / 2
+	}
+}
 
-		drop: function (event, ui) {
-			var finalWaitnum, dropqn, nextqn
-			var staffname = $( "#titlename" ).html()
-			var thatRow = ui.draggable
-			var uidrag = $(ui.draggable).children("td")
-			var thatDate = uidrag.eq(OPDATE).html().numDate()	//only from '#tbl'
-			var dropDate = $(this).children("td").eq(QOPDATE).html().numDate()
-			var dragTable = $(ui.draggable).closest("table").attr("id")
-
-			if (dragTable == "tbl") {
-				var staffdrag = uidrag.eq(STAFFNAME).html()
-				if (staffdrag != staffname)
-					return
-				var dragqn = uidrag.eq(QN).html()
-			} else {
-				var dragqn = uidrag.eq(QQN).html()
-			}
-
-			if (dropqn = $(this).children("td").eq(QQN).html()) {
-				var dropWaitnum = findwaitnumQ(dropqn)
-				if (nextqn = $(this).next().children("td").eq(QQN).html()) {
-					if (nextqn == uidrag.eq(QQN).html()) {			//come from '#queuetbl'
-						finalWaitnum = Math.round(dropWaitnum + 1)	//move to last row
-					} else {
-						var nextWaitnum = findwaitnumQ(nextqn)
-						finalWaitnum = (nextWaitnum + dropWaitnum) / 2	//interposition
-					}
-				} else {	//come from '#tbl'
-					finalWaitnum = Math.round(dropWaitnum + 1)	//move to last row
-				}
-			} else {		//added new last row
-				var dropDate = $(this).prev().children("td").eq(QOPDATE).html()().numDate()
-				var prevqn = $(this).prev().children("td").eq(QQN).html()
-				var prevWaitnum = findwaitnumQ(prevqn)
-				finalWaitnum = Math.round(prevWaitnum + 1)		//added new last row
-			}
-
-			var sql = "sqlReturnbook=UPDATE book SET Waitnum = "+ finalWaitnum
-			sql += ", opdate='"+ dropDate
-			sql += "', editor='"+ THISUSER
-			sql += "' WHERE qn="+ dragqn +";"
-
-			Ajax(MYSQLIPHP, sql, callbackDragDropStaff);
-
-			function callbackDragDropStaff(response)
-			{
-				if (!response || response.indexOf("DBfailed") != -1)
-				{
-					alert ("Move failed!\n" + response)
-				}
-				else
-				{
-					updateBOOK(response);
-					staffqueue(staffname)
-					if (dragTable == "tbl") {
-						deleteRow(thatRow, thatDate)
-					}
-					refillall()
-					DragDropStaff()
-				}
-			}
-		}
-	});
+function nextWaitnum(nextqn, dropDate)
+{  
+	if (!nextqn)
+		return 1
+	var caseNum = findcaseNum(nextqn)
+	var dropWaitnum = Number(BOOK[caseNum].waitnum)
+	caseNum--
+	if ((caseNum < 0) ||
+		(BOOK[caseNum].opdate != dropDate)) {
+		return dropWaitnum / 2
+	} else {
+		var beforeWaitnum = Number(BOOK[caseNum].waitnum)
+		return (beforeWaitnum + dropWaitnum) / 2
+	}
 }

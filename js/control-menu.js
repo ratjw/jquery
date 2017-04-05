@@ -1,7 +1,8 @@
 
 function fillSetTable(rownum, pointing)
 {
-	var table = document.getElementById("tbl")
+	var tableID = $('#editcell').data("tableID")
+	var table = document.getElementById(tableID)
 	var rowmain = table.rows[rownum]
 	var tcell = rowmain.cells
 	var opdateth = tcell[OPDATE].innerHTML	//Thai date
@@ -13,6 +14,12 @@ function fillSetTable(rownum, pointing)
 	var disabled = "ui-state-disabled"
 
 	casename = casename.substring(0, casename.indexOf(' '))
+
+	$("#item2").html("เลื่อนทุกราย 1 สัปดาห์")
+	if ($('#editcell').data("tableID") == "queuetbl")
+		$("#item2").parent().removeClass(disabled)
+	else
+		$("#item2").parent().addClass(disabled)
 
 	$("#item3").html("เพิ่ม case วันที่ " + opdateth)
 	if (qn)
@@ -46,16 +53,7 @@ function fillSetTable(rownum, pointing)
 	else
 		$("#item8").parent().addClass(disabled)
 
-//	if ($('#moverow'))
-//	{
-//		$("#item9").html("วาง")
-//	} else {
-//		$("#item9").html("To Move")
-//		if (qn)
-//			$("#item9").parent().removeClass(disabled)
-//		else
-//			$("#item9").parent().addClass(disabled)
-//	}
+	$("#item9").html("Service Review ")
 
 	$("#menu").menu({
 		select: function( event, ui ) {
@@ -66,11 +64,11 @@ function fillSetTable(rownum, pointing)
 			{
 				case "item1":
 					staffqueue(ui.item.text())
-					if ($("#queuecontainer").css("display") != "block")
+					if ($("#titlecontainer").css("display") != "block")
 						SplitPane()
 					break
 				case "item2":
-					fillday(ui.item.text())
+//					postpone()
 					break
 				case "item3":
 					addnewrow(rowmain)
@@ -82,7 +80,7 @@ function fillSetTable(rownum, pointing)
 						deleteCase(rowmain, opdate, qn)
 					break
 				case "item5":
-					deleteHistory(rowmain, qn)
+					deleteHistory()
 					break
 				case "item6":
 					editHistory(rowmain, qn)
@@ -92,6 +90,9 @@ function fillSetTable(rownum, pointing)
 					break
 				case "item8":
 					fillEquipTable(rownum, qn)
+					break
+				case "item9":
+					serviceReview()
 					break
 			}
 
@@ -103,7 +104,7 @@ function fillSetTable(rownum, pointing)
 		}
 	});
 
-	showMenu(pointing, '#menu', '#tblcontainer')
+	showMenu(pointing, '#menu')
 }
 
 function stafflist(pointing)
@@ -116,18 +117,19 @@ function stafflist(pointing)
 			$("#editcell").data("location", "")
 			$("#editcell").hide()		//to disappear after selection
 			$('#stafflist').hide()		//to disappear after selection
+			event.stopPropagation()
 			return false
 		}
 	});
 
-	showMenu(pointing, '#stafflist', "#tblcontainer")
+	showMenu(pointing, '#stafflist')
 }
 
-function showMenu(pointing, menuID, container)
+function showMenu(pointing, menuID)
 {
 	var pos = $(pointing).position();
 	var height = pos.top + $(pointing).outerHeight();	//bottom
-	var width = pos.left + $(pointing).outerWidth();	//right
+	var width = pos.left// + $(pointing).outerWidth();	//right
 
 	if ((height + $(menuID).outerHeight()) > 
 		$(window).innerHeight() + $(window).scrollTop())
@@ -157,4 +159,74 @@ function checkblank(opdate, qn)
 		return true	//there is this opdate case in another row, can delete
 	else
 		return false	//No this opdate case in another row, do not delete
+}
+
+function addnewrow(rowmain)
+{
+	if (rowmain.cells[QN].innerHTML)	//not empty
+	{
+		var clone = rowmain.cloneNode(true)
+
+		rowmain.parentNode.insertBefore(clone,rowmain)
+		for (i=1; i<rowmain.cells.length; i++)
+			rowmain.cells[i].innerHTML = ""	
+
+		var tableID = $("#editcell").data("tableID")
+		sortable()
+	}
+}
+
+function deleteCase(rowmain, opdate, qn)
+{
+	$('#delete').show()
+	$('#delete').position( {
+		my: "left center",
+		at: "left center",
+		of: $(rowmain)
+	})
+
+	doDelete = function() 
+	{
+		//not actually delete the case but set waitnum=NULL
+		var sql = "sqlReturnbook=UPDATE book SET waitnum=NULL WHERE qn="+ qn +";"
+
+		Ajax(MYSQLIPHP, sql, callbackdeleterow)
+
+		function callbackdeleterow(response)
+		{
+			if (!response || response.indexOf("DBfailed") != -1)
+				alert ("Delete & Refresh failed!\n" + response)
+			else
+			{
+				updateBOOK(response);
+				deleteRow(rowmain, opdate)
+			}
+		}
+		$('#delete').hide()
+	}
+}
+
+function closeDel() 
+{
+	$('#delete').hide()
+}
+
+function deleteRow(rowmain, opdate)
+{
+	var prevDate = $(rowmain).prev().children().eq(OPDATE).html()
+	var nextDate = $(rowmain).next().children().eq(OPDATE).html()
+
+	if (prevDate)	//avoid "undefined" error message
+		prevDate = prevDate.numDate()
+
+	if (nextDate)
+		nextDate = nextDate.numDate()
+
+	if ((prevDate == opdate) ||
+		(nextDate == opdate))
+	{
+		$(rowmain).remove()
+	} else {
+		$(rowmain).children().eq(OPDATE).siblings().html("")
+	}
 }

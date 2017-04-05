@@ -8,20 +8,21 @@
 #tblcontainer {
 	float: left;
 	height: 100%;
-	width: 100%;
-	overflow-X: hidden;
-	overflow-Y: auto;
+	overflow: scroll;
 	box-sizing: border-box;
 	border-top: solid 2px silver;
 	border-right: solid 2px silver;
 	border-left: solid 2px silver;
 }
 
-#queuecontainer {
+#titlecontainer {
 	float: right;
 	height: 100%;
-	overflow-X: hidden;
-	overflow-Y: auto;
+}
+
+#queuecontainer {
+	height: 94%;
+	overflow: scroll;
 	box-sizing: border-box;
 	border-top: solid 2px silver;
 	border-right: solid 2px silver;
@@ -29,26 +30,26 @@
 }
 
 #tbl {
+	table-layout: fixed;	/*make cell width = first row specified*/
 	border-right: solid 1px slategray;
 	width: auto;
-	table-layout: fixed;	/*make cell width = first row specified*/
 	border-collapse: collapse;
 }
 
 #tbl th {
-	font-size: 16px;
+	font-size: 14px;
 	font-weight: bold;
 	background-color: #D0E7FF;
 	color: #557799;
 	border-left: solid 1px silver;
 	border-top: solid 1px silver;
 	border-bottom: solid 1px silver;
-	height: 35px;
+	height: 30px;
 }
 
 #tbl tr {
 	background-repeat: no-repeat;
-	background-position: 300px;
+	background-position: 100px;
 }
 
 #tbl td {
@@ -56,6 +57,7 @@
 	font-size: 14px;
 	border-left: solid 1px silver;
 	border-bottom: solid 1px silver;
+	height: 25px;
 }
 
 #tbl tr.sunday { background-color: #FAFAFA; }
@@ -67,7 +69,8 @@
 #tbl tr.saturday { background-color: #FAFAFA; }
 
 #tbl td:first-child {
-	font-size: 12px; background-color: #E0F0F7; 
+	font-size: 12px;
+	background-color: #E0F0F7; 
 }
 
 #tbl td.sun:before { content: "อาทิตย์ "; }
@@ -78,21 +81,23 @@
 #tbl td.fri:before { content: "ศุกร์ "; }
 #tbl td.sat:before { content: "เสาร์ "; }
 
-#queuetbl, #historytable {
-	border-right: solid 1px slategray;
-	width: auto;
+#queuetbl, #historytable, #servicetable {
 	table-layout: fixed;	/*make cell width = first row specified*/
+	width: auto;
+	border-right: solid 1px slategray;
 	border-collapse: collapse;
 }
 
-#queuetbl tr:nth-child(odd), #historytable tr:nth-child(odd) {
+#queuetbl tr:nth-child(odd), 
+#historytable tr:nth-child(odd), 
+#servicetable tr:nth-child(odd) {
     background-color: #F0FFF0;
 }
 
-#queuetbl th, #historytable th {
-	font-size: 12px;
+#queuetbl th, #historytable th, #servicetable th {
+	font-size: 14px;
 	font-weight: bold;
-	height: 20px;
+	height: 25px;
 	background-color: #7799AA;
 	color: white;
 	border-left: solid 1px silver;
@@ -100,11 +105,12 @@
 	border-bottom: solid 1px silver;
 }
 
-#queuetbl td, #historytable td {
+#queuetbl td, #historytable td, #servicetable td {
 	empty-cells:show;
 	font-size: 12px;
 	border-left: solid 1px silver;
 	border-bottom: solid 1px silver;
+	height: 20px;
 }
 
 #queuetbl td:first-child {
@@ -124,6 +130,10 @@
 	width: 100px;
 	padding-top: 10px;
 	padding-left: 25px;
+}
+
+.ui-sortable-helper {
+	display: table;
 }
 
 .ui-dialog {
@@ -210,8 +220,16 @@
 	color: black;
 	background-color: white;
 	border: 2px solid slategray;
-	text-align: center;
 	line-height: 25px;
+}
+
+#datepicker, #datepicking {
+	width: 150px;
+	font-size: 16px;
+}
+
+.ui-datepicker-calendar {
+	display: none;
 }
 
 #alert {
@@ -220,15 +238,23 @@
 	z-index: 1;
 	top:25%;
 	left:30%;
-	width: 300px;
-	height:200px;
-	background-color: snow;
+	max-width: 300px;
+	max-height:200px;
 	border: 2px solid silver;
+	border-radius: 10px;
+	background-color: slategray;
+	box-shadow: 20px 30px 40px slategray;
+}
+
+#message {
+	display:inline-block;
 	text-align:center;
 	font-weight: bold;
 	font-size: 20px;
 	color: slategray;
-	box-shadow: 20px 30px 40px slategray;
+	padding: 10px;
+	background-color: snow;
+	overflow:auto;
 }
 
 .paper {
