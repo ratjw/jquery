@@ -1,26 +1,26 @@
 
-@media only screen and (max-width: 600px) {
+@media only screen and (max-width: 640px) {
 
 	/* Force table to not be like tables anymore */
-	#tbl table, 
-	#tbl thead, 
-	#tbl tbody, 
-	#tbl th, 
-	#tbl td, 
-	#tbl tr { 
+	#tbl table, #queuetbl table, 
+	#tbl thead, #queuetbl thead, 
+	#tbl tbody, #queuetbl tbody, 
+	#tbl th, #queuetbl th, 
+	#tbl td, #queuetbl td, 
+	#tbl tr, #queuetbl tr { 
 		display: block; 
 	}
 
 	/* Hide table headers (but not display: none;, for accessibility) */
-	#tbl, #queuetbl, #tblday tr th { 
+	#tbl tr th, #queuetbl tr th { 
 		position: absolute;
 		top: -9999px;
 		left: -9999px;
 	}
  
-	#tbl, #queuetbl, #tblday tr { border: 1px solid #ccc; }
+	#tbl tr, #queuetbl tr { border: 1px solid #ccc; }
 
-	#tbl, #queuetbl, #tblday td { 
+	#tbl td, #queuetbl td { 
 		/* Behave  like a "row" */
 		border: none;
 		border-bottom: 1px solid #eee; 
@@ -30,7 +30,7 @@
 		text-align:left;
 	}
 
-	#tbl, #queuetbl, #tblday td:before { 
+	#tbl td:before, #queuetbl td:before { 
 		/* Now like a table header */
 		position: absolute;
 		/* Top/left values mimic padding */
@@ -47,13 +47,13 @@
 	/*
 	Label the data
 	*/
-	#tbl, #queuetbl, #tblday td:before { content: attr(data-title); }
+	#tbl td:before, #queuetbl td:before { content: attr(data-title); }
 
-	#tbl, #queuetbl, #tblday td.sun:before { content: "วันอาทิตย์ "; }
-	#tbl, #queuetbl, #tblday td.mon:before { content: "วันจันทร์ "; }
-	#tbl, #queuetbl, #tblday td.tue:before { content: "วันอังคาร "; }
-	#tbl, #queuetbl, #tblday td.wed:before { content: "วันพุธ "; }
-	#tbl, #queuetbl, #tblday td.thu:before { content: "วันพฤหัส "; }
-	#tbl, #queuetbl, #tblday td.fri:before { content: "วันศุกร์ "; }
-	#tbl, #queuetbl, #tblday td.sat:before { content: "วันเสาร์ "; }
+	#tbl td.sun:before { content: "วันอาทิตย์ "; }
+	#tbl td.mon:before { content: "วันจันทร์ "; }
+	#tbl td.tue:before { content: "วันอังคาร "; }
+	#tbl td.wed:before { content: "วันพุธ "; }
+	#tbl td.thu:before { content: "วันพฤหัส "; }
+	#tbl td.fri:before { content: "วันศุกร์ "; }
+	#tbl td.sat:before { content: "วันเสาร์ "; }
 }
