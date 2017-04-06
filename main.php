@@ -26,7 +26,10 @@
 </HEAD>
 <BODY>
 
+<div id="wrapper"><!-- data-role="page"-->
 
+ <div id="tblcontainer" style="display:none"><!-- role="main" class="ui-content"-->
+  <table id="tbl"><!-- data-role="table" class="ui-responsive"-->
     <thead>
 	 <tr>
      <th style="width:10%">วันผ่าตัด</th>
@@ -47,10 +50,13 @@
  </div>
 
  <div id="titlecontainer" style="display:none">
+  <div id="titlebar"><!-- data-role="header"-->
 	<span id="titlename"></span>
 	<span class="ui-icon ui-icon-closethick" onclick="closequeue()">
 	</span>
   </div> 
+  <div id="queuecontainer"><!-- role="main" class="ui-content"-->
+   <table id="queuetbl"><!-- data-role="table" class="ui-responsive"-->
      <thead>
 	  <tr>
       <th style="width:10%">วันผ่าตัด</th>
