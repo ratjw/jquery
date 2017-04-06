@@ -21,23 +21,22 @@ function fillupstart()
 function fillall(start)
 {
 	var table = document.getElementById("tbl")
+	var tbody = document.getElementById("tblbody")
 	var rows = table.rows
 	var head = table.rows[0]
-	var i = k = q = 0
-	var rowi = {}
-	var date = ""
+	var date
 	var madedate
 
 	date = start
+
+	//q for rows in BOOK
+	var q = 0
 	while ((q < BOOK.length) && (BOOK[q].opdate < start)) {
 		q++
 	}	
 
-	//delete previous queuetbl lest it accumulates
-	$('#tbl tr').slice(1).remove()
-
-	//i for rows in table
-	//q for rows in BOOK
+	//i for rows in table (with head as the first row)
+	var i = 0
 	for (q; q < BOOK.length; q++)
 	{	
 		while (date < BOOK[q].opdate)
@@ -55,7 +54,7 @@ function fillall(start)
 			if ((new Date(date).getDay())%7 == 0)
 			{
 				var clone = head.cloneNode(true)
-				rows[i].parentNode.appendChild(clone)
+				tbody.appendChild(clone)
  				i++
 			}
 		}
@@ -83,7 +82,7 @@ function fillall(start)
 			(date < until))
 		{
 			var clone = head.cloneNode(true)
-			rows[i].parentNode.appendChild(clone)
+			tbody.appendChild(clone)
 			i++
 		}
 	}
@@ -92,9 +91,10 @@ function fillall(start)
 function refillall()
 {
 	var table = document.getElementById("tbl")
+	var tbody = document.getElementById("tblbody")
 	var rows = table.rows
 	var head = table.rows[0]
-	var date = ""
+	var date
 	var madedate
 	var start = $('#tbl tr:has("td"):first td').eq(OPDATE).html().numDate()
 	var tlength = $('#tbl > tbody > tr').length
@@ -107,7 +107,7 @@ function refillall()
 		q++
 	}	
 
-	//i for rows in table with head as the first row
+	//i for rows in table (with head as the first row)
 	var i = 1
 	while (i < tlength)
 	{
@@ -131,7 +131,7 @@ function refillall()
 				{
 					if (rows[i].cells[OPDATE].nodeName != "TH") {
 						var rowh = head.cloneNode(true)
-						rows[i].parentNode.replaceChild(rowh, rows[i])
+						tbody.replaceChild(rowh, rows[i])
 					}
 
 					i++
@@ -154,7 +154,7 @@ function refillall()
 			{
 				if (rows[i].cells[OPDATE].nodeName != "TH") {
 					var rowh = head.cloneNode(true)
-					rows[i].parentNode.replaceChild(rowh, rows[i])
+					tbody.replaceChild(rowh, rows[i])
 				}
 
 				i++

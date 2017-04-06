@@ -3,8 +3,8 @@ function loadtable(userid)
 	Ajax(MYSQLIPHP, "nosqlReturnbook", loading);
 
 	THISUSER = userid
-	$("#login").remove()
-	$("#tblcontainer").show()
+	document.body.removeChild(document.getElementById("login"))
+	document.getElementById("tblcontainer").style.display = "block"
 
 	$(document).click( function (event) {
 		countReset();
@@ -91,8 +91,8 @@ function dataStafflist()
 		stafflist += '<li><div>' + STAFF[each].name + '</div></li>'
 		staffmenu += '<li><div id="item1">' + STAFF[each].name + '</div></li>'
 	}
-	$("#stafflist").html(stafflist)
-	$("#item0").html(staffmenu)
+	document.getElementById("stafflist").innerHTML = stafflist
+	document.getElementById("item0").innerHTML = staffmenu
 }
 
 function updating()
