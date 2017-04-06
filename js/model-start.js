@@ -34,6 +34,12 @@ function loadtable(userid)
 		else if ($(clickedCell).closest("table").attr("id") == "queuetbl")
 			clicktable(clickedCell)
 	})
+	$('#menu li > div').click(function(e){
+		if($(this).siblings('ul').length > 0){
+			e.preventDefault()
+			e.stopPropagation()
+		}
+	});
 	$(document).keydown( function (event) {
 		countReset();
 		if ($('#paperdiv').css('display') == 'block') {

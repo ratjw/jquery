@@ -112,7 +112,7 @@
   </TBODY>
 </TABLE>
 
-<TABLE id="servicetbl" data-role="table" class="ui-responsive" style="display:none">
+<TABLE id="servicetbl" style="display:none"><!-- data-role="table" class="ui-responsive"-->
   <TBODY>
     <TR>
      <th style="width:10%">วันผ่าตัด</th>
