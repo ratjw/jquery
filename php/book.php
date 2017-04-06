@@ -21,7 +21,7 @@ function book($mysqli)
 	$staff = array();
 
 	$sql = "SELECT * FROM book 
-		WHERE opdate >= curdate()-interval 1 year AND waitnum IS NOT NULL
+		WHERE opdate >= curdate()-interval 1 year AND waitnum > 0
 		ORDER BY opdate, waitnum;";
 
 	if (!$result = $mysqli->query ($sql))

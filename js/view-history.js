@@ -145,10 +145,10 @@ function undelete(that)
 		var qn = $(that).siblings(":last").html()
 
 		var sqlstring = "sqlReturnbook=UPDATE book SET "
-		sqlstring += "waitnum = 0"
+		sqlstring += "waitnum = 1"
 		sqlstring += ", editor = '"+ THISUSER
 		sqlstring += "' WHERE qn = " + qn + ";"
-		sqlstring += "DELETE FROM bookhistory "
+		sqlstring += "update bookhistory SET waitnum = -1 "
 		sqlstring += "WHERE qn = " + qn
 		sqlstring += " AND waitnum IS NULL;"
 
