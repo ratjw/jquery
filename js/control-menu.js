@@ -74,9 +74,10 @@ function fillSetTable(rownum, pointing)
 					addnewrow(rowmain)
 					break
 				case "item4":
-					if (checkblank(opdate, qn))		//from add new row (this opdate case in another row)
-						$(rowmain).remove()		//delete blank row
-					else
+					if (checkblank(opdate, qn))	{	//from add new row (this opdate case in another row)
+						$(rowmain).remove()			//delete blank row
+						deletebookblankqn()
+					} else
 						deleteCase(rowmain, opdate, qn)
 					break
 				case "item5":
@@ -163,17 +164,39 @@ function checkblank(opdate, qn)
 
 function addnewrow(rowmain)
 {
-	if (rowmain.cells[QN].innerHTML)	//not empty
+	var qn = rowmain.cells[QN].innerHTML
+	if (qn)	//not empty
 	{
+		var caseNum = findcaseNum(qn)
+		var bookq = {}
+		fillblankBOOK(bookq, caseNum)
+		BOOK.splice(caseNum + 1, 0, bookq)
+		
 		var clone = rowmain.cloneNode(true)
+		rowmain.parentNode.insertBefore(clone, rowmain)
+		fillblank(rowmain)
 
-		rowmain.parentNode.insertBefore(clone,rowmain)
-		for (i=1; i<rowmain.cells.length; i++)
-			rowmain.cells[i].innerHTML = ""	
-
-		var tableID = $("#editcell").data("tableID")
 		sortable()
 	}
+}
+
+function fillblankBOOK(bookq, caseNum)
+{
+	bookq.opdate = BOOK[caseNum].opdate
+	bookq.staffname = ""
+	bookq.hn = ""
+	bookq.patient = ""
+	bookq.dob = ""
+	bookq.diagnosis = ""
+	bookq.treatment = ""
+	bookq.tel = ""
+	bookq.qn = ""
+}
+
+function deletebookblankqn()
+{
+	var caseNum = findcaseNum("")
+	BOOK.splice(caseNum, 1)
 }
 
 function deleteCase(rowmain, opdate, qn)

@@ -37,7 +37,7 @@ String.prototype.nextdays = function (days)
 
 String.prototype.getAge = function (toDate)
 {	//Calculate age at toDate (MySQL format) from MySQL birth date (2017-01-23)
-	if (!toDate || this < '1900-01-01')
+	if (!toDate || this <= '1900-01-01')
 		return this
 	var birth = new Date(this);
 	var today = new Date(toDate);

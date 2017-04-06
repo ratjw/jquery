@@ -62,11 +62,11 @@ function makehistory(rowmain, response)
 
 function deleteHistory()
 {
-	var sql = "sqlReturnData=SELECT bh.editdatetime, b.opdate, b.staffname, "
+	var sql = "sqlReturnData=SELECT editdatetime, b.opdate, b.staffname, "
 		sql += "b.hn, b.patient, b.diagnosis, b.treatment, b.tel, b.editor, b.qn "
 		sql += "FROM book b INNER JOIN bookhistory bh ON b.qn = bh.qn "
 		sql += "WHERE b.waitnum IS NULL AND bh.waitnum IS NULL "
-		sql += "ORDER BY revision DESC;"
+		sql += "ORDER BY editdatetime DESC;"
 
 		Ajax(MYSQLIPHP, sql, callbackdeleteHistory)
 
@@ -154,6 +154,8 @@ function undelete(that)
 
 		Ajax(MYSQLIPHP, sqlstring, callbackUndelete);
 
+		$('#dialogContainer').dialog("close")
+
 		function callbackUndelete(response)
 		{
 			if (!response || response.indexOf("DBfailed") != -1)
@@ -165,7 +167,6 @@ function undelete(that)
 				updateBOOK(response);
 				refillall()
 			}
-			$('#dialogContainer').dialog("close")
 		}
 	}
 }

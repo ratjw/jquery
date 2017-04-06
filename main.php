@@ -30,7 +30,7 @@
 
  <div id="tblcontainer" style="display:none"><!-- role="main" class="ui-content"-->
   <table id="tbl"><!-- data-role="table" class="ui-responsive"-->
-    <thead>
+   <tbody id="tblbody">
 	 <tr>
      <th style="width:10%">วันผ่าตัด</th>
      <th style="display:none"></th>
@@ -43,8 +43,6 @@
      <th style="width:20%">Note</th>
      <th style="display:none"></th>
 	 </tr>
-    </thead>
-   <tbody id="tblbody">
    </tbody>
   </table>
  </div>
@@ -57,7 +55,7 @@
   </div> 
   <div id="queuecontainer"><!-- role="main" class="ui-content"-->
    <table id="queuetbl"><!-- data-role="table" class="ui-responsive"-->
-     <thead>
+    <tbody>
 	  <tr>
       <th style="width:10%">วันผ่าตัด</th>
       <th style="width:4%">Since</th>
@@ -70,8 +68,6 @@
       <th style="width:20%">Note</th>
       <th style="display:none"></th>
 	  </tr>
-     </thead>
-    <tbody>
     </tbody>
    </table>
   </div>
@@ -229,7 +225,7 @@ function delwrong()
 	if ($_SERVER["REQUEST_METHOD"] == "POST") {
 		$userid = $_POST["userid"];
 		$password = $_POST["password"];
-		echo '<SCRIPT type="text/javascript">loadtable('.$userid.')</SCRIPT>';
+		echo "<SCRIPT type='text/javascript'>loadtable('".$userid."')</SCRIPT>";
 	}
 /*
 		if (strpos($_SERVER["SERVER_NAME"], "surgery.rama") !== false)
