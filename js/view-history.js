@@ -33,9 +33,19 @@ function makehistory(rowmain, response)
 	HTML_String += '</tr>';
 	for (var j = 0; j < history.length; j++) 
 	{
-		if (!history[j].diagnosis && !history[j].treatment && !history[j].tel)
+		if ((history[j].action == 'insert' || history[j].action == 'update') && 
+			!history[j].diagnosis && 
+			!history[j].treatment && 
+			!history[j].tel)
 			continue
-		HTML_String += '<tr>';
+		if (history[j].action == 'delete') {
+			HTML_String += '<tr style="background-color:#FFCCCC">';
+		}
+		else if (history[j].action == 'undelete') {
+			HTML_String += '<tr style="background-color:#CCFFCC">';
+		} else {
+			HTML_String += '<tr>';
+		}
 		HTML_String += '<td>' + history[j].editdatetime +'</td>';
 		HTML_String += '<td>' + history[j].diagnosis +'</td>';
 		HTML_String += '<td>' + history[j].treatment +'</td>';
@@ -148,9 +158,6 @@ function undelete(that)
 		sqlstring += "waitnum = 1"
 		sqlstring += ", editor = '"+ THISUSER
 		sqlstring += "' WHERE qn = " + qn + ";"
-		sqlstring += "update bookhistory SET waitnum = -1 "
-		sqlstring += "WHERE qn = " + qn
-		sqlstring += " AND waitnum IS NULL;"
 
 		Ajax(MYSQLIPHP, sqlstring, callbackUndelete);
 

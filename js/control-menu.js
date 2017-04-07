@@ -175,8 +175,6 @@ function addnewrow(rowmain)
 		var clone = rowmain.cloneNode(true)
 		rowmain.parentNode.insertBefore(clone, rowmain)
 		fillblank(rowmain)
-
-		sortable()
 	}
 }
 

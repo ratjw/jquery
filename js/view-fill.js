@@ -168,7 +168,6 @@ function refillall()
 			i++
 		}
 	}
-	sortable()
 }
 
 function makenextrow(date)
@@ -240,8 +239,6 @@ function staffqueue(staffname)
 	});
 
 	$("#queuecontainer").scrollTop(scrolled)
-
-	sortable()
 }
 
 function refillstaffqueue()
@@ -266,8 +263,6 @@ function refillstaffqueue()
 
 	if (i < ($('#queuetbl tr').length - 1))
 		$('#queuetbl tr').slice(i+1).remove()
-
-	sortable()
 }
 
 jQuery.fn.extend({
