@@ -63,7 +63,8 @@ function sortable()
 					if (nearest == nearnext) 
 						thisdrop = nextitem
 					if (nearest == nearplace) 
-						if (ui.placeholder.attr('data-previndex') < ui.placeholder.attr('data-thisindex'))
+						if (ui.placeholder.attr('data-previndex') < 
+							ui.placeholder.attr('data-thisindex'))
 							thisdrop = previtem
 						else
 							thisdrop = nextitem

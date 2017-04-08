@@ -12,26 +12,24 @@ function loadtable(userid)
 		if(!$(clickedCell).closest('#menu').length) {
 			if($('#menu').is(":visible")) {	//visible == take up space even can't be seen
 				$('#menu').hide();
+				$("#editcell").hide()
 			}
 		}
 		if(!$(clickedCell).closest('#queuemenu').length) {
 			if($('#queuemenu').is(":visible")) {
 				$('#queuemenu').hide();
+				$("#editcell").hide()
 			}
 		}
 		if(!$(clickedCell).closest('#stafflist').length) {
 			if($('#stafflist').is(":visible")) {
 				$('#stafflist').hide();
+				$("#editcell").hide()
 			}
 		}
-		if(!$(clickedCell).closest('#editcell').length) {
-			if($('#editcell').is(":visible")) {
-				$('#editcell').hide();
-			}
-		}
-		if ($(clickedCell).closest("table").attr("id") == "tbl")
-			clicktable(clickedCell)
-		else if ($(clickedCell).closest("table").attr("id") == "queuetbl")
+		if (($(clickedCell).closest("table").attr("id") == "tbl") || 
+			($(clickedCell).closest("table").attr("id") == "queuetbl"))
+
 			clicktable(clickedCell)
 	})
 	$('#menu li > div').click(function(e){
@@ -56,13 +54,12 @@ function loadtable(userid)
 	})
 
 	$("html, body").css( {
-		height: "100%",
+		height: "100%",		//to make table scrollable while dragging
 		overflow: "hidden",
 		margin: "0px"
 	})
 	sortable()
-	//let browser render fillupstart immediately
-	//call sortable before render, if after, render slower than 5 sec.
+	//call sortable before render, if after, it renders very slow
 	TIMER = setTimeout("updating()",10000);	//poke next 10 sec.
 }
 
@@ -83,7 +80,7 @@ function updateBOOK(response)
 	var temp = JSON.parse(response)
 
 	BOOK = temp.BOOK? temp.BOOK : []
-	TIMESTAMP = temp.QTIME? temp.QTIME : ""	//last update time of BOOK in server
+	TIMESTAMP = temp.QTIME? temp.QTIME : ""	//last update BOOK in server
 	QWAIT = temp.QWAIT? temp.QWAIT : []
 	STAFF = temp.STAFF? temp.STAFF : []
 }

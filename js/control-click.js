@@ -3,8 +3,10 @@ function clicktable(clickedCell)
 	if (clickedCell.id == "editcell")
 		return
 
-	if  (clickedCell.nodeName != "TD")
+	if  (clickedCell.nodeName != "TD") {
+		$("#editcell").hide()
 		return	
+	}
 
 	savePreviouscell()
 	storePresentcell(clickedCell)
