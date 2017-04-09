@@ -17,25 +17,29 @@ function sortable()
 			ui.placeholder.attr('data-previndex', ui.placeholder.attr('data-thisindex'));
 			ui.placeholder.attr('data-thisindex', ui.placeholder.index());
 		},
+		revert: true,
 		stop: function(e, ui){
-			ui.item.attr("data-receiver", ui.item.closest('table').attr('id'))
+			var receiver = ui.item.closest('table').attr('id')
+			var height = ui.placeholder.height()
 				
 			if (!ui.item.children().eq(QN).html()) {
 				return false
 			}
 
-			if (ui.item.attr("data-receiver") == "queuetbl") {
+			if (receiver == "queuetbl") {
 				if (ui.item.children().eq(STAFFNAME).html() != $('#titlename').html()) {
 					return false
 				}
 				if (ui.item.attr("data-sender") == "tbl") {
 					ui.item.children().eq(SINCE).css("display", "block")
+					ui.item.children().eq(SINCE).css("height", height)
 					ui.item.children().eq(STAFFNAME).css("display", "none")
 				}
 			} else {
 				if (ui.item.attr("data-sender") == "queuetbl") {
 					ui.item.children().eq(SINCE).css("display", "none")
 					ui.item.children().eq(STAFFNAME).css("display", "block")
+					ui.item.children().eq(STAFFNAME).css("height", height)
 				}
 			}
 
@@ -100,7 +104,7 @@ function sortable()
 				else
 				{
 					updateBOOK(response)
-					if (ui.item.attr("data-receiver") == "tbl") {
+					if (receiver == "tbl") {
 //						requestAnimationFrame(refillall())
 						refillall()
 						if (($("#titlecontainer").css('display') == 'block') && 
