@@ -326,17 +326,6 @@ function refillthis(tableID, cellindex, qn)
 	}
 }
 
-function SplitPane()
-{
-	var tohead = findVisibleHead('#tbl')
-
-	$("#titlecontainer").show()
-	$("#tblcontainer").css("width", "60%")
-	$("#titlecontainer").css("width", "40%")
-
-	scrollanimate("#tblcontainer", "#tbl", tohead)
-}
-
 function closequeue()
 {
 	var tohead = findVisibleHead('#tbl')

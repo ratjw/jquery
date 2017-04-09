@@ -15,8 +15,8 @@ function fillSetTable(rownum, pointing)
 
 	casename = casename.substring(0, casename.indexOf(' '))
 
-	$("#item2").html("เลื่อนทุกราย 1 สัปดาห์")
-	if ($('#editcell').data("tableID") == "queuetbl")
+	$("#item2").html("เปลี่ยนวันผ่าตัด")
+	if (qn)
 		$("#item2").parent().removeClass(disabled)
 	else
 		$("#item2").parent().addClass(disabled)
@@ -65,18 +65,19 @@ function fillSetTable(rownum, pointing)
 				case "item1":
 					staffqueue(ui.item.text())
 					if ($("#titlecontainer").css("display") != "block")
-						SplitPane()
+						splitPane()
 					break
 				case "item2":
-//					postpone()
+					changeOpdate()
 					break
 				case "item3":
 					addnewrow(rowmain)
 					break
 				case "item4":
-					if (checkblank(opdate, qn))	{	//from add new row (this opdate case in another row)
+					if (checkblank(opdate, qn))	{	//from add new row (check case in this opdate)
 						$(rowmain).remove()			//delete blank row
-						deletebookblankqn()
+						var caseNum = findcaseNum("")
+						BOOK.splice(caseNum, 1)
 					} else
 						deleteCase(rowmain, opdate, qn)
 					break
@@ -162,6 +163,17 @@ function checkblank(opdate, qn)
 		return false	//No this opdate case in another row, do not delete
 }
 
+function splitPane()
+{
+	var tohead = findVisibleHead('#tbl')
+
+	$("#titlecontainer").show()
+	$("#tblcontainer").css("width", "60%")
+	$("#titlecontainer").css("width", "40%")
+
+	scrollanimate("#tblcontainer", "#tbl", tohead)
+}
+
 function addnewrow(rowmain)
 {
 	var qn = rowmain.cells[QN].innerHTML
@@ -189,12 +201,6 @@ function fillblankBOOK(bookq, caseNum)
 	bookq.treatment = ""
 	bookq.tel = ""
 	bookq.qn = ""
-}
-
-function deletebookblankqn()
-{
-	var caseNum = findcaseNum("")
-	BOOK.splice(caseNum, 1)
 }
 
 function deleteCase(rowmain, opdate, qn)

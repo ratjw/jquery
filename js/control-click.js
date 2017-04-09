@@ -230,6 +230,7 @@ function storePresentcell(pointing)
 			break
 		case NAME:
 		case AGE:
+			$("#editcell").hide()
 			break
 		case HN:
 		case DIAGNOSIS:
