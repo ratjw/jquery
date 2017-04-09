@@ -55,19 +55,14 @@ function makehistory(rowmain, response)
 	}
 	HTML_String += '</table>';
 
+	$("#dialogContainer").css("height", 0)
 	$('#dialogContainer').html(HTML_String)
-	var maxHeight = window.innerHeight * 8 / 10
-	var height = $("#dialogContainer").height()
-	height = (height > maxHeight)? maxHeight : height
 	$('#dialogContainer').dialog({
 		title: rowmain.cells[HN].innerHTML +' '+ rowmain.cells[NAME].innerHTML,
-		width: $("#tblcontainer").width() * 6 / 10,
+		width: $("#tblcontainer").width() * 7 / 10,
 		closeOnEscape: true
 	})
-	$('#dialogContainer').css({
-		height: height,
-		overflow: "auto"
-	})
+	adjustDialogHeight()
 }
 
 function deleteHistory()
@@ -125,19 +120,24 @@ function makeDeleteHistory(response)
 	}
 	HTML_String += '</table>';
 
+	$("#dialogContainer").css("height", 0)
 	$('#dialogContainer').html(HTML_String)
 	$('#historytable').after($('#nondelete').clone().attr("id", "undelete"))
-	var maxHeight = window.innerHeight * 8 / 10
-	var height = $("#dialogContainer").height()
-	height = (height > maxHeight)? maxHeight : height
 	$('#dialogContainer').dialog({
 		title: "Deleted Cases",
 		width: $("#tblcontainer").width() * 7 / 10,
 		closeOnEscape: true
 	})
+	adjustDialogHeight()
+}
+
+function adjustDialogHeight() 
+{
+	var maxHeight = window.innerHeight * 8 / 10
+	var height = $("#dialogContainer").height()
+	height = (height > maxHeight)? maxHeight : height
 	$('#dialogContainer').css({
 		height: height,
-		overflow: "auto"
 	})
 }
 

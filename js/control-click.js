@@ -146,7 +146,16 @@ function saveContent(column, content)	//column name in MYSQL
 		else
 		{
 			updateBOOK(response);
-			if (tableID == 'tbl') {
+			if (!qn) {
+//				requestAnimationFrame(refillall())
+				refillall()
+				if (($("#titlecontainer").css('display') == 'block') && 
+					($('#titlename').html() == staffname)) 
+
+//					requestAnimationFrame(refillstaffqueue())								
+					refillstaffqueue()
+			}//	fillnewCase()
+			else if (tableID == 'tbl') {
 				if (($("#titlecontainer").css('display') == 'block') && 
 					($('#titlename').html() == staffname))
 
@@ -200,7 +209,16 @@ function saveHNinput(hn, content)
 		else 
 		{
 			updateBOOK(response)
-			if (tableID == 'tbl') {
+			if (!qn) {
+//				requestAnimationFrame(refillall())
+				refillall()
+				if (($("#titlecontainer").css('display') == 'block') && 
+					($('#titlename').html() == staffname)) 
+
+//					requestAnimationFrame(refillstaffqueue())								
+					refillstaffqueue()
+			}//	fillnewCase()
+			else if (tableID == 'tbl') {
 				if (($("#titlecontainer").css('display') == 'block') && 
 					($('#titlename').html() == staffname))
 
