@@ -170,11 +170,6 @@
   <li><div id="item9"></div></li>
 </ul>
 
-<ul id="queuemenu" style="display:none">
-  <li><div id="qitem1"></div></li>
-  <li><div id="qitem2"></div></li>
-</ul>
-
 <ul id="stafflist" style="display:none"></ul>
 
 <div id="alert">

@@ -132,6 +132,11 @@
 	padding-left: 25px;
 }
 
+#menu, #stafflist {
+	position: absolute;
+	font-size: 14px;
+}
+
 .ui-sortable-helper {
 	display: table;
 }
@@ -142,9 +147,7 @@
 }
 
 .ui-menu {
-	position: absolute;
-	font-size: 14px;
-	box-shadow: 10px 20px 30px slategray;
+	position: relative;
 }
 
 .ui-icon-closethick {
@@ -183,7 +186,7 @@
 
 #editcell { 
 	display:none;
-	position: absolute;
+	position: relative;
 	text-align: left; 
 	overflow: hidden;
 	border: solid 1px #0099FF;
@@ -193,7 +196,8 @@
 
 #delete { 
 	display:none;
-	position: absolute;
+	position: relative;
+	width: 120px;
 }
 
 #del { 
@@ -209,7 +213,8 @@
 
 #undelete { 
 	display:none;
-	position: absolute;
+	position: relative;
+	width: 120px;
 }
 
 #undel { 

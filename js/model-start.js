@@ -15,22 +15,14 @@ function loadtable(userid)
 				$("#editcell").hide()
 			}
 		}
-		if(!$(clickedCell).closest('#queuemenu').length) {
-			if($('#queuemenu').is(":visible")) {
-				$('#queuemenu').hide();
-				$("#editcell").hide()
-			}
-		}
 		if(!$(clickedCell).closest('#stafflist').length) {
 			if($('#stafflist').is(":visible")) {
 				$('#stafflist').hide();
 				$("#editcell").hide()
 			}
 		}
-		if (($(clickedCell).closest("table").attr("id") == "tbl") || 
-			($(clickedCell).closest("table").attr("id") == "queuetbl"))
 
-			clicktable(clickedCell)
+		clicktable(event.target)
 	})
 	$('#menu li > div').click(function(e){
 		if($(this).siblings('ul').length > 0){

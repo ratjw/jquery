@@ -5,7 +5,8 @@ function sortable()
 		connectWith: "#tbl tbody, #queuetbl tbody",
 		start: function(e, ui){
 			clearTimeout(TIMER);
-			closemenu()
+			$('#menu').hide();
+			$('#stafflist').hide();
 			$('#editcell').hide();
 			ui.placeholder.innerHeight(ui.item.outerHeight())
 			ui.placeholder.attr('data-thisindex', ui.placeholder.index());

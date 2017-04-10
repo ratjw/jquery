@@ -1,7 +1,7 @@
 
 function fillSetTable(rownum, pointing)
 {
-	var tableID = $('#editcell').data("tableID")
+	var tableID = $(pointing).closest('table').attr('id')
 	var table = document.getElementById(tableID)
 	var rowmain = table.rows[rownum]
 	var tcell = rowmain.cells
@@ -98,7 +98,7 @@ function fillSetTable(rownum, pointing)
 					break
 			}
 
-			$("#editcell").data("location", "")
+			$("#editcell").data("editCell", "")
 			$("#editcell").hide()		//to disappear after selection
 			$("#menu").hide()		//to disappear after selection
 			event.stopPropagation()
@@ -106,7 +106,7 @@ function fillSetTable(rownum, pointing)
 		}
 	});
 
-	showMenu(pointing, '#menu')
+	reposition("#menu", "left top", "left bottom", pointing)
 }
 
 function stafflist(pointing)
@@ -116,7 +116,7 @@ function stafflist(pointing)
 			var staffname = ui.item.text()
 			$(pointing).html(staffname)
 			saveContent("staffname", staffname)
-			$("#editcell").data("location", "")
+			$("#editcell").data("editCell", "")
 			$("#editcell").hide()		//to disappear after selection
 			$('#stafflist').hide()		//to disappear after selection
 			event.stopPropagation()
@@ -124,25 +124,7 @@ function stafflist(pointing)
 		}
 	});
 
-	showMenu(pointing, '#stafflist')
-}
-
-function showMenu(pointing, menuID)
-{
-	var pos = $(pointing).position();
-	var height = pos.top + $(pointing).outerHeight();	//bottom
-	var width = pos.left// + $(pointing).outerWidth();	//right
-
-	if ((height + $(menuID).outerHeight()) > 
-		$(window).innerHeight() + $(window).scrollTop())
-	{
-		height = pos.top - $(menuID).innerHeight()
-	}
-	$(menuID).css({
-		top: height + "px",
-		left: width + "px"
-	})
-	$(menuID).show()
+	reposition("#stafflist", "left top", "left bottom", pointing)
 }
 
 function checkblank(opdate, qn)

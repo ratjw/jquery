@@ -19,7 +19,8 @@ function editing(event)
 
 	if (keycode == 9)
 	{
-		closemenu()
+		$('#menu').hide();
+		$('#stafflist').hide();
 		savePreviouscell()
 		if (event.shiftKey)
 			thiscell = findPrevcell(event)
@@ -36,7 +37,8 @@ function editing(event)
 	}
 	else if (keycode == 13)
 	{
-		closemenu()
+		$('#menu').hide();
+		$('#stafflist').hide();
 		if (event.shiftKey || event.ctrlKey) {
 			return
 		}
@@ -53,7 +55,8 @@ function editing(event)
 	}
 	else if (keycode == 27)
 	{
-		closemenu()
+		$('#menu').hide();
+		$('#stafflist').hide();
 		$("#editcell").hide()
 		window.focus()
 		event.preventDefault()
@@ -61,20 +64,15 @@ function editing(event)
 	}
 }
 
-function closemenu()
-{
-	$('#menu').hide();
-	$('#queuemenu').hide();
-	$('#stafflist').hide();
-}
-
 function savePreviouscell() 
 {
-	if (!$("#editcell").data("location"))
+	if (!$("#editcell").data("editCell"))
 		return
 
-	var trimBR = /^(\s*<br\s*\/?>)*\s*|\s*(<br\s*\/?>\s*)*$/g
-	var content = $("#editcell").html().replace(trimBR, '')
+	var trimHTML = /^(\s*<[^>]*>)*\s*|\s*(<[^>]*>\s*)*$/g
+	var content = $("#editcell").html().replace(trimHTML, '')
+	var HTMLnotBR =/(<((?!br)[^>]+)>)/ig
+	content = $("#editcell").html().replace(HTMLnotBR, '')
 	if (content == $("#editcell").data("content"))
 		return
 
@@ -107,7 +105,7 @@ function saveContent(column, content)	//column name in MYSQL
 {
 	var tableID = $("#editcell").data("tableID")
 	var cellindex = $("#editcell").data("cellIndex")
-	var rowcell = $($("#editcell").data("tableRow")).children("td")
+	var rowcell = $($("#editcell").data("editRow")).children("td")
 	var opdate = rowcell.eq(OPDATE).html().numDate()
 	var staffname = rowcell.eq(STAFFNAME).html()
 	var qn = rowcell.eq(QN).html()
@@ -117,7 +115,7 @@ function saveContent(column, content)	//column name in MYSQL
 	if (!qn)
 		qsince = new Date().mysqlDate()
 
-	$($("#editcell").data("location")).html(content)	//just for show instantly
+	$($("#editcell").data("editCell")).html(content)	//just for show instantly
 
 	content = URIcomponent(content)			//take care of white space, double qoute, 
 											//single qoute, and back slash
@@ -142,20 +140,18 @@ function saveContent(column, content)	//column name in MYSQL
 		if (!response || response.indexOf("DBfailed") != -1)
 		{
 			alert("Failed! update database \n\n" + response)
+			$($("#editcell").data("editCell")).html($("#editcell").data("content"))
+			//return to previous content
 		}
 		else
 		{
 			updateBOOK(response);
-			if (!qn) {
-//				requestAnimationFrame(refillall())
-				refillall()
-				if (($("#titlecontainer").css('display') == 'block') && 
-					($('#titlename').html() == staffname)) 
-
-//					requestAnimationFrame(refillstaffqueue())								
-					refillstaffqueue()
-			}//	fillnewCase()
-			else if (tableID == 'tbl') {
+			if (tableID == 'tbl') {
+				if (!qn) {
+					var Newqn = findNewqn(opdate)
+					var prevEditRow = $($("#editcell").data("editRow"))
+					prevEditRow.children().eq(QN).html(Newqn)
+				}
 				if (($("#titlecontainer").css('display') == 'block') && 
 					($('#titlename').html() == staffname))
 
@@ -171,7 +167,7 @@ function saveHNinput(hn, content)
 {
 	var tableID = $("#editcell").data("tableID")
 	var cellindex = $("#editcell").data("cellIndex")
-	var rowcell = $($("#editcell").data("tableRow")).children("td")
+	var rowcell = $($("#editcell").data("editRow")).children("td")
 	var opdate = rowcell.eq(OPDATE).html().numDate()
 	var staffname = rowcell.eq(STAFFNAME).html()
 	var patient = rowcell.eq(NAME).html()
@@ -184,7 +180,7 @@ function saveHNinput(hn, content)
 		return
 	}
 
-	$($("#editcell").data("location")).html(content)
+	$($("#editcell").data("editCell")).html(content)
 
 	content = content.replace(/<br>/g, "")
 	content = content.replace(/^\s+/g, "")
@@ -204,21 +200,21 @@ function saveHNinput(hn, content)
 
 	function callbackgetByHN(response)
 	{
-		if ((!response) || (response.indexOf("patient") == -1) || (response.indexOf("{") == -1))
+		if ((!response) || (response.indexOf("patient") == -1) || (response.indexOf("{") == -1)) 
+		{
 			alert(response)
+			$($("#editcell").data("editCell")).html($("#editcell").data("content"))
+			//return to previous content
+		}
 		else 
 		{
 			updateBOOK(response)
-			if (!qn) {
-//				requestAnimationFrame(refillall())
-				refillall()
-				if (($("#titlecontainer").css('display') == 'block') && 
-					($('#titlename').html() == staffname)) 
-
-//					requestAnimationFrame(refillstaffqueue())								
-					refillstaffqueue()
-			}//	fillnewCase()
-			else if (tableID == 'tbl') {
+			if (tableID == 'tbl') {
+				if (!qn) {
+					var Newqn = findNewqn(opdate)
+					var prevEditRow = $($("#editcell").data("editRow"))
+					prevEditRow.children().eq(QN).html(Newqn)
+				}
 				if (($("#titlecontainer").css('display') == 'block') && 
 					($('#titlename').html() == staffname))
 
@@ -230,8 +226,28 @@ function saveHNinput(hn, content)
 	}
 }
 
+function findNewqn(opdate)
+{
+	var q = 0
+	while (BOOK[q].opdate != opdate)
+	{
+		q++
+		if (q >= BOOK.length)
+			return ""
+	}
+
+	var qn = BOOK[q].qn
+	while (q < BOOK.length && BOOK[q].opdate == opdate) {
+		q++
+		if (BOOK[q].qn > qn) {
+			qn = BOOK[q].qn
+		}
+	}
+	return qn
+}
+
 function storePresentcell(pointing)
-{  
+{
 	var rindex = $(pointing).closest("tr").index()
 	var cindex = $(pointing).closest("td").index()
 
@@ -243,8 +259,8 @@ function storePresentcell(pointing)
 			break
 		case STAFFNAME:
 			editcell(pointing)
-			$("#editcell").data("content", pointing.innerHTML)
 			stafflist(pointing)
+			$("#editcell").data("content", pointing.innerHTML)
 			break
 		case NAME:
 		case AGE:
@@ -262,11 +278,34 @@ function storePresentcell(pointing)
 
 function editcell(pointing)
 {
-	var editcell = "#editcell"
-	saveDataPoint(editcell, pointing)
-	positioning(editcell, pointing)
-	$(editcell).show()
-	$(editcell).focus()
+	$("#editcell").css({
+		height: $(pointing).height() + "px",
+		width: $(pointing).width() + "px",
+		fontSize: $(pointing).css("fontSize")
+	})
+	reposition("#editcell", "center", "center", pointing)
+	saveDataPoint("#editcell", pointing)
+	$("#editcell").focus()
+}
+
+function reposition(me, mypos, atpos, target)
+{
+	$(me).appendTo($(target).closest('div'))
+
+	$(me).position({
+		my: mypos,
+		at: atpos,
+		of: target
+	}).show()
+	$(me).position({
+		my: mypos,
+		at: atpos,
+		of: target
+	}).show()
+	if ($(me).position().top > $(target).position().top)
+		$(me).css('boxShadow', '10px 20px 30px slategray')
+	else
+		$(me).css('boxShadow', '10px -20px 30px slategray')
 }
 
 function saveDataPoint(editcell, pointing)
@@ -275,30 +314,17 @@ function saveDataPoint(editcell, pointing)
 	var rowIndex = $(pointing).closest('tr').index()
 	var cellIndex = $(pointing).index()
 
-	$(editcell).data("location", "#"+ tableID +" tr:eq("+ rowIndex +") td:eq("+ cellIndex +")")
-	$(editcell).data("tableRow", "#"+ tableID +" tr:eq("+ rowIndex +")")
+	$(editcell).data("editCell", "#"+ tableID +" tr:eq("+ rowIndex +") td:eq("+ cellIndex +")")
+	$(editcell).data("editRow", "#"+ tableID +" tr:eq("+ rowIndex +")")
 	$(editcell).data("tableID", tableID)
 	$(editcell).data("rowIndex", rowIndex)
 	$(editcell).data("cellIndex", cellIndex)
 	$(editcell).html($(pointing).html())
 }
 
-function positioning(editcell, pointing)
-{
-	var pos = $(pointing).position()
-
-	$(editcell).css({
-		top: pos.top + "px",
-		left: pos.left + "px",
-		height: $(pointing).height() + "px",
-		width: $(pointing).width() + "px",
-		fontSize: $(pointing).css("fontSize"),
-	})
-}
-
 function findPrevcell(event) 
 {
-	var prevcell = $($("#editcell").data("location"))
+	var prevcell = $($("#editcell").data("editCell"))
 	var column = prevcell.index()
 
 	if (column = EDITABLE[($.inArray(column, EDITABLE) - 1)])
@@ -326,7 +352,7 @@ function findPrevcell(event)
 
 function findNextcell(event) 
 {
-	var nextcell = $($("#editcell").data("location"))
+	var nextcell = $($("#editcell").data("editCell"))
 	var column = nextcell.index()
 	var lastrow = $('#tbl tr:last-child').index()
 
@@ -358,7 +384,7 @@ function findNextcell(event)
 
 function findNextHN(event) 
 {
-	var nextcell = $($("#editcell").data("location"))
+	var nextcell = $($("#editcell").data("editCell"))
 	var lastrow = $('#tbl tr:last-child').index()
 
 	if ($(nextcell).parent().index() < lastrow)
