@@ -55,6 +55,8 @@ function fillSetTable(rownum, pointing)
 
 	$("#item9").html("Service Review ")
 
+	var width = $("#menu").width()
+
 	$("#menu").menu({
 		select: function( event, ui ) {
 
@@ -107,10 +109,13 @@ function fillSetTable(rownum, pointing)
 	});
 
 	reposition("#menu", "left top", "left bottom", pointing)
+	menustyle("#menu", pointing, width)
 }
 
 function stafflist(pointing)
 {
+	var width = $("#stafflist").outerWidth()
+
 	$("#stafflist").menu({
 		select: function( event, ui ) {
 			var staffname = ui.item.text()
@@ -125,6 +130,20 @@ function stafflist(pointing)
 	});
 
 	reposition("#stafflist", "left top", "left bottom", pointing)
+	menustyle("#stafflist", pointing, width)
+}
+
+function menustyle(me, target, width)
+{
+	if ($(me).position().top > $(target).position().top)
+		var shadow = '10px 20px 30px slategray'
+	else
+		var shadow = '10px -20px 30px slategray'
+
+	$(me).css({
+		width: width,
+		boxShadow: shadow
+	})
 }
 
 function checkblank(opdate, qn)

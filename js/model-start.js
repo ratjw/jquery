@@ -35,11 +35,7 @@ function loadtable(userid)
 		if ($('#paperdiv').css('display') == 'block') {
 			return
 		}
-		var tableID = $("#editcell").data('tableID')
-		if (tableID == "tbl")
-			editing(event)
-		else if (tableID == "queuetbl")
-			editing(event)
+		keyin(event)
 	})
 	$(document).contextmenu( function (event) {
 		return false

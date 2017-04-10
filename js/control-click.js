@@ -12,7 +12,7 @@ function clicktable(clickedCell)
 	storePresentcell(clickedCell)
 }
 
-function editing(event)
+function keyin(event)
 {
 	var keycode = event.which || window.event.keyCode
 	var thiscell
@@ -302,10 +302,6 @@ function reposition(me, mypos, atpos, target)
 		at: atpos,
 		of: target
 	}).show()
-	if ($(me).position().top > $(target).position().top)
-		$(me).css('boxShadow', '10px 20px 30px slategray')
-	else
-		$(me).css('boxShadow', '10px -20px 30px slategray')
 }
 
 function saveDataPoint(editcell, pointing)
