@@ -126,14 +126,13 @@ function makeDeleteHistory(response)
 	} else {
 		$('#dialogContainer').html(HTML_String)
 	}
-	$('#historytable').after($('#undelete'))
+	$("#undelete").insertAfter($('#historytable')).hide()
 	$('#dialogContainer').dialog({
 		title: "Deleted Cases",
 		width: $("#tblcontainer").width() * 7 / 10,
 		closeOnEscape: true
 	})
 	adjustDialogHeight()
-	$("#undelete").hide()
 }
 
 function adjustDialogHeight() 

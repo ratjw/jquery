@@ -17,7 +17,7 @@ function fillSetTable(rownum, pointing)
 
 	$("#item2").html("เปลี่ยนวันผ่าตัด")
 	if (qn)
-		$("#item2").parent().removeClass(disabled)
+		$("#item2").parent().addClass(disabled)
 	else
 		$("#item2").parent().addClass(disabled)
 
