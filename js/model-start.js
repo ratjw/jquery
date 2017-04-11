@@ -9,20 +9,36 @@ function loadtable(userid)
 	$(document).click( function (event) {
 		countReset();
 		var clickedCell = event.target
-		if(!$(clickedCell).closest('#menu').length) {
-			if($('#menu').is(":visible")) {	//visible == take up space even can't be seen
+		if($('#menu').is(":visible")) {	//visible == take up space even can't be seen
+			if(!$(clickedCell).closest('#menu').length) {
 				$('#menu').hide();
 				$("#editcell").hide()
 			}
 		}
-		if(!$(clickedCell).closest('#stafflist').length) {
-			if($('#stafflist').is(":visible")) {
+		if($('#stafflist').is(":visible")) {
+			if(!$(clickedCell).closest('#stafflist').length) {
 				$('#stafflist').hide();
 				$("#editcell").hide()
 			}
 		}
+		if($('#delete').is(":visible")) {
+			if(!$(clickedCell).closest('#delete').length) {
+				$('#delete').hide();
+			}
+		}
+		if (clickedCell.id == "editcell") {
+			return
+		}
+		if  (clickedCell.nodeName != "TD") {
+			$("#editcell").hide()
+			return	
+		}
+		if ($(clickedCell).closest('table').attr('id') == 'tbl' ||
+			$(clickedCell).closest('table').attr('id') == 'queuetbl' ||
+			$(clickedCell).closest('table').attr('id') == 'servicetbl') {
 
-		clicktable(event.target)
+			clicktable(event.target)
+		}
 	})
 	$('#menu li > div').click(function(e){
 		if($(this).siblings('ul').length > 0){

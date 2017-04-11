@@ -121,14 +121,19 @@ function makeDeleteHistory(response)
 	HTML_String += '</table>';
 
 	$("#dialogContainer").css("height", 0)
-	$('#dialogContainer').html(HTML_String)
-	$('#historytable').after($('#nondelete').clone().attr("id", "undelete"))
+	if ($('#dialogContainer').find('table').length) {
+		$('#dialogContainer').find('table').replaceWith(HTML_String)
+	} else {
+		$('#dialogContainer').html(HTML_String)
+	}
+	$('#historytable').after($('#undelete'))
 	$('#dialogContainer').dialog({
 		title: "Deleted Cases",
 		width: $("#tblcontainer").width() * 7 / 10,
 		closeOnEscape: true
 	})
 	adjustDialogHeight()
+	$("#undelete").hide()
 }
 
 function adjustDialogHeight() 
@@ -143,12 +148,7 @@ function adjustDialogHeight()
 
 function undelete(that) 
 {
-	$('#undelete').show()
-	$('#undelete').position( {
-		my: "left center",
-		at: "left center",
-		of: $(that)
-	})
+	reposition("#undelete", "left center", "left center", that)
 
 	doUndelete = function() 
 	{

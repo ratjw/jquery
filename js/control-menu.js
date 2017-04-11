@@ -60,6 +60,11 @@ function fillSetTable(rownum, pointing)
 	$("#menu").menu({
 		select: function( event, ui ) {
 
+			$("#editcell").data("editCell", "")
+			$("#editcell").hide()		//to disappear after selection
+			$("#menu").hide()		//to disappear after selection
+			event.stopPropagation()
+
 			var item = $(ui.item).find("div").attr("id")
 
 			switch(item)
@@ -81,7 +86,7 @@ function fillSetTable(rownum, pointing)
 						var caseNum = findcaseNum("")
 						BOOK.splice(caseNum, 1)
 					} else
-						deleteCase(rowmain, opdate, qn)
+						deleteCase(rowmain, opdate, qn, pointing)
 					break
 				case "item5":
 					deleteHistory()
@@ -99,12 +104,6 @@ function fillSetTable(rownum, pointing)
 					serviceReview()
 					break
 			}
-
-			$("#editcell").data("editCell", "")
-			$("#editcell").hide()		//to disappear after selection
-			$("#menu").hide()		//to disappear after selection
-			event.stopPropagation()
-			return false
 		}
 	});
 
@@ -204,14 +203,9 @@ function fillblankBOOK(bookq, caseNum)
 	bookq.qn = ""
 }
 
-function deleteCase(rowmain, opdate, qn)
+function deleteCase(rowmain, opdate, qn, pointing)
 {
-	$('#delete').show()
-	$('#delete').position( {
-		my: "left center",
-		at: "left center",
-		of: $(rowmain)
-	})
+	reposition('#delete', "left center", "left center", pointing)
 
 	doDelete = function() 
 	{

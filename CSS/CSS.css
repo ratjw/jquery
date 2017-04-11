@@ -193,7 +193,7 @@
 #delete { 
 	display:none;
 	position: relative;
-	width: 120px;
+	width: 125px;
 }
 
 #del { 
@@ -210,7 +210,7 @@
 #undelete { 
 	display:none;
 	position: relative;
-	width: 120px;
+	width: 125px;
 }
 
 #undel { 

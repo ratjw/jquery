@@ -1,13 +1,5 @@
 function clicktable(clickedCell)
 {
-	if (clickedCell.id == "editcell")
-		return
-
-	if  (clickedCell.nodeName != "TD") {
-		$("#editcell").hide()
-		return	
-	}
-
 	savePreviouscell()
 	storePresentcell(clickedCell)
 }
@@ -292,6 +284,11 @@ function reposition(me, mypos, atpos, target)
 {
 	$(me).appendTo($(target).closest('div'))
 
+	$(me).position({
+		my: mypos,
+		at: atpos,
+		of: target
+	}).show()
 	$(me).position({
 		my: mypos,
 		at: atpos,

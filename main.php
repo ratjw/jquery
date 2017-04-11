@@ -149,7 +149,7 @@
 
 <div id="dialogContainer"></div>
 
-<div id="nondelete" style="display:none">
+<div id="undelete">
   <span id="undel" onclick="doUndelete()">Undelete</span>
   <span class="ui-icon ui-icon-circle-close" onclick="closeUndel()"></span>
 </div>
