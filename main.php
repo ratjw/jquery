@@ -74,7 +74,7 @@
  </div>
 </div>
 
-<TABLE id="datatitle" style="display:none">	<!-- Used as cells template -->
+<table id="datatitle" style="display:none">	<!-- Used as cells template -->
   <TBODY>
    <TR>
     <td data-title="วันผ่าตัด"></td>
@@ -89,9 +89,9 @@
     <td style="display:none"></td>
    </TR>
   </TBODY>
-</TABLE>
+</table>
 
-<TABLE id="qdatatitle" style="display:none">	<!--template for "staffqueue"-->
+<table id="qdatatitle" style="display:none">	<!--template for "staffqueue"-->
   <TBODY>
     <TR>
      <td data-title="วันผ่าตัด"></td>
@@ -106,10 +106,14 @@
      <td style="display:none"></td>
 	</TR>
   </TBODY>
-</TABLE>
+</table>
 
-<TABLE id="servicetbl" style="display:none"><!-- data-role="table" class="ui-responsive"-->
-  <TBODY>
+<div id="dialogService" style="display:none">
+  <span style="margin:20px 0px 40px"> เดือน :</span>
+  <input type="text" id="datepicker" style="margin-left:5px">
+  <input type="text" id="datepicking" style="display:none">
+  <table id="servicetbl"><!-- data-role="table" class="ui-responsive"-->
+   <TBODY>
     <TR>
      <th style="width:10%">วันผ่าตัด</th>
      <th style="display:none"></th>
@@ -122,10 +126,11 @@
      <th style="display:none"></th>
      <th style="display:none"></th>
     </TR>
-  </TBODY>
-</TABLE>
+   </TBODY>
+  </table>
+</div>
 
-<TABLE id="sdatatitle" style="display:none">	<!--template for "servicetable"-->
+<table id="sdatatitle" style="display:none">	<!--template for "servicetbl"-->
   <TBODY>
    <TR>
     <td data-title="วันผ่าตัด"></td>
@@ -140,20 +145,23 @@
     <td style="display:none"></td>
    </TR>
   </TBODY>
-</TABLE>
+</table>
 
 <div id="delete">
 	<span id="del" onclick="doDelete()">Delete</span>
 	<span class="ui-icon ui-icon-circle-close" onclick="closeDel()"></span>
 </div>
 
-<div id="dialogContainer"></div>
+<div id="dialogOplog"></div>
 
-<div id="undelete">
-  <span id="undel" onclick="doUndelete()">Undelete</span>
-  <span class="ui-icon ui-icon-circle-close" onclick="closeUndel()"></span>
+<div id="dialogDeleted">
+  <table>
+  </table>
+  <div id="undelete">
+    <span id="undel" onclick="doUndelete()">Undelete</span>
+    <span class="ui-icon ui-icon-circle-close" onclick="closeUndel()"></span>
+  </div>
 </div>
-
 
 <ul id="menu" style="display:none">
   <li><div>คิวของอาจารย์</div>

@@ -179,8 +179,8 @@ function makenextrow(date)
 
 	rowi.cells[OPDATE].innerHTML = date.thDate()
 	rowi.cells[OPDATE].className = NAMEOFDAYABBR[(new Date(date)).getDay()]
+	rowi.cells[DIAGNOSIS].style.backgroundImage = holiday(date)
 	rowi.className = NAMEOFDAYFULL[(new Date(date)).getDay()]
-	rowi.style.backgroundImage = holiday(date)
 }
 
 function fillrowdate(rows, i, date)
@@ -192,8 +192,8 @@ function fillrowdate(rows, i, date)
 	}
 	rows[i].cells[OPDATE].innerHTML = date.thDate()
 	rows[i].cells[OPDATE].className = NAMEOFDAYABBR[(new Date(date)).getDay()]
+	rows[i].cells[DIAGNOSIS].style.backgroundImage = holiday(date)
 	rows[i].className = NAMEOFDAYFULL[(new Date(date)).getDay()]
-	rows[i].style.backgroundImage = holiday(date)
 }
 
 function fillblank(rowi)
@@ -411,13 +411,13 @@ function holiday(date)
 		if (dayofweek && (dayofweek < 4))
 			holidayname = "url('pic/Songkransub.jpg')"
 		break
-	case "05-05":
-		holidayname = "url('pic/Coronation.jpg')"
+	case "07-28":
+		holidayname = "url('pic/King10.jpg')"
 		break
-	case "05-06":
-	case "05-07":
+	case "07-29":
+	case "07-30":
 		if (dayofweek == 1)
-			holidayname = "url('pic/Coronationsub.jpg')"
+			holidayname = "url('pic/King10sub.jpg')"
 		break
 	case "08-12":
 		holidayname = "url('pic/Queen.jpg')"
@@ -426,6 +426,14 @@ function holiday(date)
 	case "08-14":
 		if (dayofweek == 1)
 			holidayname = "url('pic/Queensub.jpg')"
+		break
+	case "10-13":
+		holidayname = "url('pic/King09.jpg')"
+		break
+	case "10-14":
+	case "10-15":
+		if (dayofweek == 1)
+			holidayname = "url('pic/King09sub.jpg')"
 		break
 	case "10-23":
 		holidayname = "url('pic/Piya.jpg')"
@@ -436,7 +444,7 @@ function holiday(date)
 			holidayname = "url('pic/Piyasub.jpg')"
 		break
 	case "12-05":
-		holidayname = "url('pic/King.jpg')"
+		holidayname = "url('pic/King9.jpg')"
 		break
 	case "12-06":
 	case "12-07":

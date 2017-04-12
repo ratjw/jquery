@@ -145,16 +145,6 @@ function fillEquipTable(rownum, qn)
 	equipOR.style.fontSize = "12px"
 	if (equipOR.offsetHeight > window.innerHeight)
 		equipOR.style.height = window.innerHeight - 60 +"px"
-/*
-	$("#dialogContainer").html("")
-	$("#dialogContainer").append(equipOR)
-	$("#dialogContainer").dialog({
-		title: "Equipment",
-		height: window.innerHeight * 90 / 100,
-		width: window.innerWidth * 50 / 100,
-	})
-	$(".ui-dialog").show()
-*/
 
 	var q = 0
 

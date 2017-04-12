@@ -23,7 +23,7 @@ function makehistory(rowmain, response)
 {
 	var history = JSON.parse(response);
 
-	var HTML_String = '<table id = "historytable">';
+	var HTML_String = '<table id = "historytbl">';
 	HTML_String += '<tr>';
 	HTML_String += '<th style="width:10%">Date Time</th>';
 	HTML_String += '<th style="width:30%">Diagnosis</th>';
@@ -55,14 +55,14 @@ function makehistory(rowmain, response)
 	}
 	HTML_String += '</table>';
 
-	$("#dialogContainer").css("height", 0)
-	$('#dialogContainer').html(HTML_String)
-	$('#dialogContainer').dialog({
+	$("#dialogOplog").css("height", 0)
+	$('#dialogOplog').html(HTML_String)
+	$('#dialogOplog').dialog({
 		title: rowmain.cells[HN].innerHTML +' '+ rowmain.cells[NAME].innerHTML,
-		width: $("#tblcontainer").width() * 7 / 10,
+		width: $("#wrapper").width() * 7 / 10,
 		closeOnEscape: true
 	})
-	adjustDialogHeight()
+	adjustDialogHeight("#dialogOplog")
 }
 
 function deleteHistory()
@@ -90,7 +90,7 @@ function makeDeleteHistory(response)
 {
 	var history = JSON.parse(response);
 
-	var HTML_String = '<table id = "historytable">';
+	var HTML_String = '<table id = "historytbl">';
 	HTML_String += '<tr>';
 	HTML_String += '<th style="width:10%">Date Time</th>';
 	HTML_String += '<th style="width:5%">Op.Date</th>';
@@ -120,27 +120,23 @@ function makeDeleteHistory(response)
 	}
 	HTML_String += '</table>';
 
-	$("#dialogContainer").css("height", 0)
-	if ($('#dialogContainer').find('table').length) {
-		$('#dialogContainer').find('table').replaceWith(HTML_String)
-	} else {
-		$('#dialogContainer').html(HTML_String)
-	}
-	$("#undelete").insertAfter($('#historytable')).hide()
-	$('#dialogContainer').dialog({
+	$("#dialogDeleted").css("height", 0)
+	$('#dialogDeleted').find('table').replaceWith(HTML_String)
+	$("#undelete").hide()
+	$('#dialogDeleted').dialog({
 		title: "Deleted Cases",
-		width: $("#tblcontainer").width() * 7 / 10,
+		width: $("#wrapper").width() * 7 / 10,
 		closeOnEscape: true
 	})
-	adjustDialogHeight()
+	adjustDialogHeight('#dialogDeleted')
 }
 
-function adjustDialogHeight() 
+function adjustDialogHeight(dialogContainer) 
 {
 	var maxHeight = window.innerHeight * 8 / 10
-	var height = $("#dialogContainer").height()
+	var height = $(dialogContainer).height()
 	height = (height > maxHeight)? maxHeight : height
-	$('#dialogContainer').css({
+	$(dialogContainer).css({
 		height: height,
 	})
 }
@@ -160,7 +156,7 @@ function undelete(that)
 
 		Ajax(MYSQLIPHP, sqlstring, callbackUndelete);
 
-		$('#dialogContainer').dialog("close")
+		$('#dialogDeleted').dialog("close")
 
 		function callbackUndelete(response)
 		{
@@ -202,12 +198,6 @@ function PACS(hn)
 
 function serviceReview()
 {
-	var datepicker = '<span style="margin:20px 0px 40px"> เดือน :</span>'
-	datepicker += '<input type="text" id="datepicker" style="margin-left:5px">'
-	datepicker += '<input type="text" id="datepicking" style="display:none">'
-
-	$('#dialogContainer').html(datepicker)
-
 	$('#datepicker').datepicker( {
 		altField: $( "#datepicking" ),
 		altFormat: "yy-mm-dd",
@@ -225,16 +215,27 @@ function serviceReview()
 		}
 	}).datepicker("setDate", new Date());//first time show instantly on input boxes
 
-	$('#dialogContainer').dialog({
+	$('#dialogService').dialog({
 		title: 'Service Review',
 		closeOnEscape: true,
 		width: $('.ui-datepicker').width() + $('#datepicker').width()
+	})
+	$('.ui-datepicker-title').click(function(){
+		entireMonth($('#datepicking').val())
+//		$('.ui-datepicker').hide()
+		$('#datepicker').datepicker( "hide" )
 	})
 	$('#datepicker').click(function() { //setDate follows input boxes
 		$('#datepicker').datepicker(
 			"setDate", $('#datepicking').val()? new Date($('#datepicking').val()) : new Date()
 		)
+//		$('.ui-datepicker').show()
+//		$('.ui-datepicker-title').click(function(){
+//			entireMonth($('#datepicking').val())
+//			$('.ui-datepicker').hide()
+//		})
 	})
+	$('#servicetbl').hide()
 }
 
 function entireMonth(fromDate)
@@ -242,18 +243,20 @@ function entireMonth(fromDate)
 	var from = new Date(fromDate)
 	var toDate = new Date(from.getFullYear(), from.getMonth()+1, 0)//day before 1st of next month
 	toDate = $.datepicker.formatDate('yy-mm-dd', toDate);	//end of this month
-	$('#dialogContainer input[type=button]').hide()
+	$('#dialogService input[type=button]').hide()
 	showCases(fromDate, toDate)
 }
 
 function showCases(fromDate, toDate)
 {
-	$('#servicetable').remove()
-	$('#dialogContainer').append($('#servicetbl').clone().attr("id", "servicetable").show())
-	$.each( STAFF, function() {	// each == this
+	//delete previous servicetbl lest it accumulates
+	$('#servicetbl tr').slice(1).remove()
+	$('#servicetbl').show()
+
+	$.each( STAFF, function() {
 		var staffname = this.name
 		$('#sdatatitle tr').clone()
-			.insertAfter($('#servicetable tr:last'))
+			.insertAfter($('#servicetbl tr:last'))
 				.children().eq(OPDATE)
 					.attr("colSpan", 6)
 						.css({
@@ -263,24 +266,21 @@ function showCases(fromDate, toDate)
 						})
 						.html(staffname)
 							.siblings().hide()
-		$.each( BOOK, function() {	// each == this
+		$.each( BOOK, function() {
 			if (this.staffname == staffname && 
 				this.opdate >= fromDate &&
 				this.opdate <= toDate) {
 				$('#sdatatitle tr').clone()
-					.insertAfter($('#servicetable tr:last'))
+					.insertAfter($('#servicetbl tr:last'))
 						.filldataQueue(this)
 			}
 		});
 	})
 
-	$('#dialogContainer').dialog().parent().css( {
-		maxHeight: window.innerHeight * 8 / 10,
-		width: $("#tblcontainer").width() * 7 / 10,
-		overflow: "auto"
-	}).position({
-		my : "center center",
-		at : "center center+20",
-		of : window
-	});
+	$('#dialogService').dialog({
+		title: "Service Review",
+		width: $("#wrapper").width() * 7 / 10,
+		closeOnEscape: true
+	})
+	adjustDialogHeight('#dialogService')
 }

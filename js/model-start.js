@@ -21,13 +21,19 @@ function loadtable(userid)
 				$("#editcell").hide()
 			}
 		}
+		if (clickedCell.id == "editcell") {
+			return
+		}
 		if($('#delete').is(":visible")) {
 			if(!$(clickedCell).closest('#delete').length) {
 				$('#delete').hide();
 			}
 		}
-		if (clickedCell.id == "editcell") {
-			return
+		if ($(clickedCell).closest('table').attr('id') == 'historytbl') {
+			if ($(clickedCell).index()) {
+				$('#undelete').hide()
+				return false
+			}
 		}
 		if  (clickedCell.nodeName != "TD") {
 			$("#editcell").hide()
@@ -37,7 +43,7 @@ function loadtable(userid)
 			$(clickedCell).closest('table').attr('id') == 'queuetbl' ||
 			$(clickedCell).closest('table').attr('id') == 'servicetbl') {
 
-			clicktable(event.target)
+			clicktable(clickedCell)
 		}
 	})
 	$('#menu li > div').click(function(e){
@@ -48,8 +54,10 @@ function loadtable(userid)
 	});
 	$(document).keydown( function (event) {
 		countReset();
-		if ($('#paperdiv').css('display') == 'block') {
-			return
+		if ($('#paperdiv').is(':visible') ||
+			$('#datepicker').is(':visible')) {
+
+			return false
 		}
 		keyin(event)
 	})
