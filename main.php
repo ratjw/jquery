@@ -115,15 +115,13 @@
   <table id="servicetbl"><!-- data-role="table" class="ui-responsive"-->
    <TBODY>
     <TR>
-     <th style="width:10%">วันผ่าตัด</th>
-     <th style="display:none"></th>
-     <th style="display:none"></th>
-     <th style="width:5%">HN</th>
-     <th style="width:15%">ชื่อ นามสกุล</th>
-     <th style="width:4%">อายุ</th>
-     <th style="width:20%">Diagnosis</th>
+     <th style="width:3%">case</th>
+     <th style="width:12%">HN Name</th>
+     <th style="width:15%">Diagnosis</th>
      <th style="width:20%">Treatment</th>
-     <th style="display:none"></th>
+     <th style="width:25%">Clinical</th>
+     <th style="width:25%">Progress</th>
+     <th style="width:25%">Note</th>
      <th style="display:none"></th>
     </TR>
    </TBODY>
@@ -133,15 +131,13 @@
 <table id="sdatatitle" style="display:none">	<!--template for "servicetbl"-->
   <TBODY>
    <TR>
-    <td data-title="วันผ่าตัด"></td>
-    <td style="display:none"></td>
-    <td style="display:none"></td>
-    <td data-title="HN"></td>
-    <td data-title="ชื่อ นามสกุล"></td>
-    <td data-title="อายุ"></td>
+    <td data-title="case"></td>
+    <td data-title="HN Name"></td>
     <td data-title="Diagnosis"></td>
     <td data-title="Treatment"></td>
-    <td style="display:none"></td>
+    <td data-title="Clinical"></td>
+    <td data-title="Progress"></td>
+    <td data-title="Note"></td>
     <td style="display:none"></td>
    </TR>
   </TBODY>

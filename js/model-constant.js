@@ -19,7 +19,17 @@ var TREATMENT	= 7;
 var TEL			= 8;
 var QN			= 9;
 
+var SCASE		= 0;
+var SNAME		= 1;
+var SDIAGNOSIS	= 2;
+var STREATMENT	= 3;
+var SCLINICAL	= 4;
+var SPROGRESS	= 5;
+var SNOTE		= 6;
+var SQN			= 7;
+
 var EDITABLE 	= [HN, DIAGNOSIS, TREATMENT, TEL];
+var SEDITABLE	= [SNAME, SDIAGNOSIS, STREATMENT, SCLINICAL, SPROGRESS]
 
 var NAMEOFDAYTHAI	= ["อาทิตย์", "จันทร์", "อังคาร", "พุธ", "พฤหัส", "ศุกร์", "เสาร์"];
 var DAYOFTHAINAME	= {"อาทิตย์":0, "จันทร์":1, "อังคาร":2, "พุธ":3, "พฤหัส":4, "ศุกร์":5, "เสาร์":6};

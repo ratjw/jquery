@@ -21,7 +21,9 @@ function editHistory(rowmain, qn)
 
 function makehistory(rowmain, response)
 {
-	var history = JSON.parse(response);
+	var history = JSON.parse(response)
+
+	$('#historytbl').attr('id', '')
 
 	var HTML_String = '<table id = "historytbl">';
 	HTML_String += '<tr>';
@@ -59,10 +61,10 @@ function makehistory(rowmain, response)
 	$('#dialogOplog').html(HTML_String)
 	$('#dialogOplog').dialog({
 		title: rowmain.cells[HN].innerHTML +' '+ rowmain.cells[NAME].innerHTML,
-		width: $("#wrapper").width() * 7 / 10,
-		closeOnEscape: true
+		closeOnEscape: true,
+		modal: true
 	})
-	adjustDialogHeight("#dialogOplog")
+	adjustDialogSize('wrapper', '#dialogOplog', '#historytbl')
 }
 
 function deleteHistory()
@@ -89,6 +91,8 @@ function deleteHistory()
 function makeDeleteHistory(response)
 {
 	var history = JSON.parse(response);
+
+	$('#historytbl').attr('id', '')
 
 	var HTML_String = '<table id = "historytbl">';
 	HTML_String += '<tr>';
@@ -125,19 +129,29 @@ function makeDeleteHistory(response)
 	$("#undelete").hide()
 	$('#dialogDeleted').dialog({
 		title: "Deleted Cases",
-		width: $("#wrapper").width() * 7 / 10,
-		closeOnEscape: true
+		closeOnEscape: true,
+		modal: true
 	})
-	adjustDialogHeight('#dialogDeleted')
+	adjustDialogSize('wrapper', '#dialogDeleted', '#historytbl')
 }
 
-function adjustDialogHeight(dialogContainer) 
+function adjustDialogSize(wrapper, dialogContainer, dialogTable) 
 {
-	var maxHeight = window.innerHeight * 8 / 10
 	var height = $(dialogContainer).height()
-	height = (height > maxHeight)? maxHeight : height
+	var maxHeight = window.innerHeight * 8 / 10
+	var width = $(dialogTable).outerWidth()
+	var	maxWidth = $(wrapper).width() * 9 / 10
+
+	$(dialogContainer).dialog({
+		minWidth: 500,
+		width: width,
+		maxWidth: maxWidth,
+		maxHeight: maxHeight
+	})
+
 	$(dialogContainer).css({
-		height: height,
+		width: width,
+		height: height
 	})
 }
 
@@ -218,22 +232,19 @@ function serviceReview()
 	$('#dialogService').dialog({
 		title: 'Service Review',
 		closeOnEscape: true,
+		modal: true,
 		width: $('.ui-datepicker').width() + $('#datepicker').width()
 	})
-	$('.ui-datepicker-title').click(function(){
-		entireMonth($('#datepicking').val())
-//		$('.ui-datepicker').hide()
-		$('#datepicker').datepicker( "hide" )
+	$('.ui-datepicker').click(function() {
+		if (!$('#datepicker').is(":focus")) {
+			entireMonth($('#datepicking').val())
+			$('#datepicker').datepicker( "hide" )
+		}
 	})
 	$('#datepicker').click(function() { //setDate follows input boxes
 		$('#datepicker').datepicker(
 			"setDate", $('#datepicking').val()? new Date($('#datepicking').val()) : new Date()
 		)
-//		$('.ui-datepicker').show()
-//		$('.ui-datepicker-title').click(function(){
-//			entireMonth($('#datepicking').val())
-//			$('.ui-datepicker').hide()
-//		})
 	})
 	$('#servicetbl').hide()
 }
@@ -272,15 +283,26 @@ function showCases(fromDate, toDate)
 				this.opdate <= toDate) {
 				$('#sdatatitle tr').clone()
 					.insertAfter($('#servicetbl tr:last'))
-						.filldataQueue(this)
+						.filldataService(this)
 			}
 		});
 	})
 
-	$('#dialogService').dialog({
-		title: "Service Review",
-		width: $("#wrapper").width() * 7 / 10,
-		closeOnEscape: true
-	})
-	adjustDialogHeight('#dialogService')
+	adjustDialogSize('wrapper', '#dialogService', '#servicetbl')
 }
+
+jQuery.fn.extend({
+	filldataService : function(bookq) {
+		var rowcell = this[0].cells
+		rowcell[SCASE].innerHTML = bookq.opdate.thDate()
+		rowcell[SNAME].innerHTML = bookq.hn
+			+ bookq.patient
+			+ (bookq.dob? bookq.dob.getAge(bookq.opdate) : "")
+		rowcell[SDIAGNOSIS].innerHTML = bookq.diagnosis
+		rowcell[STREATMENT].innerHTML = bookq.treatment
+		rowcell[SCLINICAL].innerHTML = bookq.tel
+		rowcell[SPROGRESS].innerHTML = bookq.tel
+		rowcell[SNOTE].innerHTML = bookq.tel
+		rowcell[SQN].innerHTML = bookq.qn
+	}
+})
