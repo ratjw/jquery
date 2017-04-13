@@ -40,7 +40,7 @@
      <th style="width:4%">อายุ</th>
      <th style="width:20%">Diagnosis</th>
      <th style="width:20%">Treatment</th>
-     <th style="width:20%">Note</th>
+     <th style="width:20%">Contact</th>
      <th style="display:none"></th>
 	 </tr>
    </tbody>
@@ -58,14 +58,14 @@
     <tbody>
 	  <tr>
       <th style="width:10%">วันผ่าตัด</th>
-      <th style="width:4%">Since</th>
+      <th style="width:4%">since</th>
       <th style="display:none"></th>
       <th style="width:7%">HN</th>
       <th style="width:15%">ชื่อ นามสกุล</th>
       <th style="width:4%">อายุ</th>
       <th style="width:20%">Diagnosis</th>
       <th style="width:20%">Treatment</th>
-      <th style="width:20%">Note</th>
+      <th style="width:20%">Contact</th>
       <th style="display:none"></th>
 	  </tr>
     </tbody>
@@ -85,7 +85,7 @@
     <td data-title="อายุ"></td>
     <td data-title="Diagnosis"></td>
     <td data-title="Treatment"></td>
-    <td data-title="Note"></td>
+    <td data-title="Contact"></td>
     <td style="display:none"></td>
    </TR>
   </TBODY>
@@ -95,14 +95,14 @@
   <TBODY>
     <TR>
      <td data-title="วันผ่าตัด"></td>
-     <td data-title="Since"></td>
+     <td data-title="since"></td>
      <td style="display:none"></td>
      <td data-title="HN"></td>
      <td data-title="ชื่อ นามสกุล"></td>
      <td data-title="อายุ"></td>
      <td data-title="Diagnosis"></td>
      <td data-title="Treatment"></td>
-     <td data-title="Note"></td>
+     <td data-title="Contact"></td>
      <td style="display:none"></td>
 	</TR>
   </TBODY>

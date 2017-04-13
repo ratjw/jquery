@@ -87,8 +87,8 @@ function savePreviouscell()
 		case TREATMENT:
 			saveContent("treatment", content)
 			break
-		case TEL:
-			saveContent("tel", content)
+		case CONTACT:
+			saveContent("contact", content)
 			break
 	}
 }
@@ -102,10 +102,10 @@ function saveContent(column, content)	//column name in MYSQL
 	var staffname = rowcell.eq(STAFFNAME).html()
 	var qn = rowcell.eq(QN).html()
 	var sqlstring
-	var qsince
+	var since
 
 	if (!qn)
-		qsince = new Date().mysqlDate()
+		since = new Date().mysqlDate()
 
 	$($("#editcell").data("editCell")).html(content)	//just for show instantly
 
@@ -121,8 +121,8 @@ function saveContent(column, content)	//column name in MYSQL
 	else
 	{
 		sqlstring = "sqlReturnbook=INSERT INTO book ("
-		sqlstring += "qsince, opdate, "+ column +", editor) VALUES ('"
-		sqlstring += qsince +"', '"+ opdate +"', '"+ content +"', '"+ THISUSER +"');"
+		sqlstring += "since, opdate, "+ column +", editor) VALUES ('"
+		sqlstring += since +"', '"+ opdate +"', '"+ content +"', '"+ THISUSER +"');"
 	}
 
 	Ajax(MYSQLIPHP, sqlstring, callbacksaveContent);
@@ -164,7 +164,7 @@ function saveHNinput(hn, content)
 	var staffname = rowcell.eq(STAFFNAME).html()
 	var patient = rowcell.eq(NAME).html()
 	var qn = rowcell.eq(QN).html()
-	var qsince
+	var since
 
 	if (patient)
 	{
@@ -180,10 +180,10 @@ function saveHNinput(hn, content)
 	if (content.length != 7)
 		return
 	if (!qn)
-		qsince = new Date().mysqlDate()
+		since = new Date().mysqlDate()
 
 	var sqlstring = "hn=" + content
-	sqlstring += "&qsince="+ qsince
+	sqlstring += "&since="+ since
 	sqlstring += "&opdate="+ opdate
 	sqlstring += "&qn="+ qn
 	sqlstring += "&username="+ THISUSER
@@ -261,7 +261,7 @@ function storePresentcell(pointing)
 		case HN:
 		case DIAGNOSIS:
 		case TREATMENT:
-		case TEL:		//store content in "data" of editcell
+		case CONTACT:		//store content in "data" of editcell
 			editcell(pointing)
 			$("#editcell").data("content", pointing.innerHTML)
 			break

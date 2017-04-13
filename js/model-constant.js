@@ -16,7 +16,7 @@ var NAME		= 4;
 var AGE			= 5;
 var DIAGNOSIS	= 6;
 var TREATMENT	= 7;
-var TEL			= 8;
+var CONTACT		= 8;
 var QN			= 9;
 
 var SCASE		= 0;
@@ -29,8 +29,8 @@ var SADMIT		= 6;
 var SDISCHARGE	= 7;
 var SQN			= 8;
 
-var EDITABLE 	= [HN, DIAGNOSIS, TREATMENT, TEL];
-var SEDITABLE	= [SNAME, SDIAGNOSIS, STREATMENT, SADMISSION, SFINAL, SADMIT, SDISCHARGE]
+var EDITABLE 	= [HN, DIAGNOSIS, TREATMENT, CONTACT];
+var SEDITABLE	= [SDIAGNOSIS, STREATMENT, SADMISSION, SFINAL, SADMIT, SDISCHARGE]
 
 var NAMEOFDAYTHAI	= ["อาทิตย์", "จันทร์", "อังคาร", "พุธ", "พฤหัส", "ศุกร์", "เสาร์"];
 var DAYOFTHAINAME	= {"อาทิตย์":0, "จันทร์":1, "อังคาร":2, "พุธ":3, "พฤหัส":4, "ศุกร์":5, "เสาร์":6};

@@ -40,10 +40,12 @@ function loadtable(userid)
 			return	
 		}
 		if ($(clickedCell).closest('table').attr('id') == 'tbl' ||
-			$(clickedCell).closest('table').attr('id') == 'queuetbl' ||
-			$(clickedCell).closest('table').attr('id') == 'servicetbl') {
+			$(clickedCell).closest('table').attr('id') == 'queuetbl') {
 
 			clicktable(clickedCell)
+		}
+		if ($(clickedCell).closest('table').attr('id') == 'servicetbl') {
+			clickservice(clickedCell)
 		}
 	})
 	$('#menu li > div').click(function(e){
@@ -59,7 +61,11 @@ function loadtable(userid)
 
 			return false
 		}
-		keyin(event)
+		if ($('#dialogService').is(':visible')) {
+			Skeyin(event)
+		} else {
+			keyin(event)
+		}
 	})
 	$(document).contextmenu( function (event) {
 		return false

@@ -7,8 +7,8 @@
 	//waitnum new case = 1
 	//waitnum > 0
 	//waitnum = null for deleted cases 
-	//qsince new case = new Date()
-	//qsince is never changed
+	//since new case = new Date()
+	//since is never changed
 
 function book($mysqli)
 {

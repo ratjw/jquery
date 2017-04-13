@@ -204,7 +204,7 @@ function fillblank(rowi)
 	rowi.cells[AGE].innerHTML = ""
 	rowi.cells[DIAGNOSIS].innerHTML = ""
 	rowi.cells[TREATMENT].innerHTML = ""
-	rowi.cells[TEL].innerHTML = ""
+	rowi.cells[CONTACT].innerHTML = ""
 	rowi.cells[QN].innerHTML = ""
 }
 
@@ -216,7 +216,7 @@ function filldata(bookq, rowi)		//bookq = BOOK[q]
 	rowi.cells[AGE].innerHTML = bookq.dob? bookq.dob.getAge(bookq.opdate) : ""
 	rowi.cells[DIAGNOSIS].innerHTML = bookq.diagnosis
 	rowi.cells[TREATMENT].innerHTML = bookq.treatment
-	rowi.cells[TEL].innerHTML = bookq.tel
+	rowi.cells[CONTACT].innerHTML = bookq.contact
 	rowi.cells[QN].innerHTML = bookq.qn
 }
 
@@ -269,14 +269,14 @@ jQuery.fn.extend({
 	filldataQueue : function(bookq) {
 		var rowcell = this[0].cells
 		rowcell[OPDATE].innerHTML = bookq.opdate.thDate()
-		rowcell[SINCE].innerHTML = bookq.qsince.thDate().slice(0,-4)
+		rowcell[SINCE].innerHTML = bookq.since.thDate().slice(0,-4)
 		rowcell[STAFFNAME].innerHTML = bookq.staffname
 		rowcell[HN].innerHTML = bookq.hn
 		rowcell[NAME].innerHTML = bookq.patient
 		rowcell[AGE].innerHTML = bookq.dob? bookq.dob.getAge(bookq.opdate) : ""
 		rowcell[DIAGNOSIS].innerHTML = bookq.diagnosis
 		rowcell[TREATMENT].innerHTML = bookq.treatment
-		rowcell[TEL].innerHTML = bookq.tel
+		rowcell[CONTACT].innerHTML = bookq.contact
 		rowcell[QN].innerHTML = bookq.qn
 	}
 })
@@ -320,8 +320,8 @@ function refillthis(tableID, cellindex, qn)
 		case TREATMENT:
 			rowcell[TREATMENT].innerHTML = bookq.treatment
 			break
-		case TEL:
-			rowcell[TEL].innerHTML = bookq.tel
+		case CONTACT:
+			rowcell[CONTACT].innerHTML = bookq.contact
 			break
 	}
 }

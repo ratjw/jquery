@@ -32,13 +32,13 @@ function sortable()
 					return false
 				}
 				if (ui.item.attr("data-sender") == "tbl") {
-					ui.item.children().eq(SINCE).css("display", "block")
-					ui.item.children().eq(SINCE).css("height", height)
+					ui.item.children().eq(since).css("display", "block")
+					ui.item.children().eq(since).css("height", height)
 					ui.item.children().eq(STAFFNAME).css("display", "none")
 				}
 			} else {
 				if (ui.item.attr("data-sender") == "queuetbl") {
-					ui.item.children().eq(SINCE).css("display", "none")
+					ui.item.children().eq(since).css("display", "none")
 					ui.item.children().eq(STAFFNAME).css("display", "block")
 					ui.item.children().eq(STAFFNAME).css("height", height)
 				}

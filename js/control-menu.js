@@ -199,7 +199,7 @@ function fillblankBOOK(bookq, caseNum)
 	bookq.dob = ""
 	bookq.diagnosis = ""
 	bookq.treatment = ""
-	bookq.tel = ""
+	bookq.contact = ""
 	bookq.qn = ""
 }
 

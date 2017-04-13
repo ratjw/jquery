@@ -3,7 +3,7 @@ include "connect.php";
 require_once "book.php";
 
 	$hn = $staffname = $qn = $username = "";
-	$qsince = $opdate = '1900-01-01';
+	$since = $opdate = '1900-01-01';
 
 	extract($_GET);
 
@@ -38,12 +38,12 @@ require_once "book.php";
 	else	//new row, if from '#queuetbl' -> has waitnum
 	{		//new row, if from '#tbl' -> no waitnum (default = 1 in database)
 		if ($waitnum) {
-			$sql = "INSERT INTO book (waitnum, qsince, opdate, staffname, hn, patient, dob, gender, editor) "; 
-			$sql = $sql."VALUES ($waitnum, '$qsince', '$opdate', '$staffname', '$hn', ";
+			$sql = "INSERT INTO book (waitnum, since, opdate, staffname, hn, patient, dob, gender, editor) "; 
+			$sql = $sql."VALUES ($waitnum, '$since', '$opdate', '$staffname', '$hn', ";
 			$sql = $sql."'$initial_name"."$first_name"." "."$last_name', '$dob', '$gender', '$username');";
 		} else {
-			$sql = "INSERT INTO book (qsince, opdate, staffname, hn, patient, dob, gender, editor) "; 
-			$sql = $sql."VALUES ('$qsince', '$opdate', '$staffname', '$hn', ";
+			$sql = "INSERT INTO book (since, opdate, staffname, hn, patient, dob, gender, editor) "; 
+			$sql = $sql."VALUES ('$since', '$opdate', '$staffname', '$hn', ";
 			$sql = $sql."'$initial_name"."$first_name"." "."$last_name', '$dob', '$gender', '$username');";
 		}
 

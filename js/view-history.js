@@ -38,7 +38,7 @@ function makehistory(rowmain, response)
 		if ((history[j].action == 'insert' || history[j].action == 'update') && 
 			!history[j].diagnosis && 
 			!history[j].treatment && 
-			!history[j].tel)
+			!history[j].contact)
 			continue
 		if (history[j].action == 'delete') {
 			HTML_String += '<tr style="background-color:#FFCCCC">';
@@ -51,7 +51,7 @@ function makehistory(rowmain, response)
 		HTML_String += '<td>' + history[j].editdatetime +'</td>';
 		HTML_String += '<td>' + history[j].diagnosis +'</td>';
 		HTML_String += '<td>' + history[j].treatment +'</td>';
-		HTML_String += '<td>' + history[j].tel +'</td>';
+		HTML_String += '<td>' + history[j].contact +'</td>';
 		HTML_String += '<td>' + history[j].editor +'</td>';
 		HTML_String += '</tr>';
 	}
@@ -70,7 +70,7 @@ function makehistory(rowmain, response)
 function deleteHistory()
 {
 	var sql = "sqlReturnData=SELECT editdatetime, b.opdate, b.staffname, "
-		sql += "b.hn, b.patient, b.diagnosis, b.treatment, b.tel, b.editor, b.qn "
+		sql += "b.hn, b.patient, b.diagnosis, b.treatment, b.contact, b.editor, b.qn "
 		sql += "FROM book b INNER JOIN bookhistory bh ON b.qn = bh.qn "
 		sql += "WHERE b.waitnum IS NULL AND bh.waitnum IS NULL "
 		sql += "ORDER BY editdatetime DESC;"
@@ -103,7 +103,7 @@ function makeDeleteHistory(response)
 	HTML_String += '<th style="width:10%">Patient Name</th>';
 	HTML_String += '<th style="width:20%">Diagnosis</th>';
 	HTML_String += '<th style="width:20%">Treatment</th>';
-	HTML_String += '<th style="width:20%">Notice</th>';
+	HTML_String += '<th style="width:20%">Contact</th>';
 	HTML_String += '<th style="width:5%">Editor</th>';
 	HTML_String += '<th style="display:none"></th>';
 	HTML_String += '</tr>';
@@ -117,7 +117,7 @@ function makeDeleteHistory(response)
 		HTML_String += '<td>' + history[j].patient +'</td>';
 		HTML_String += '<td>' + history[j].diagnosis +'</td>';
 		HTML_String += '<td>' + history[j].treatment +'</td>';
-		HTML_String += '<td>' + history[j].tel +'</td>';
+		HTML_String += '<td>' + history[j].contact +'</td>';
 		HTML_String += '<td>' + history[j].editor +'</td>';
 		HTML_String += '<td style="display:none">' + history[j].qn +'</td>';
 		HTML_String += '</tr>';
@@ -275,7 +275,8 @@ function showCases(fromDate, toDate)
 						.css({
 							height: "40",
 							fontWeight: "bold",
-							fontSize: "14px"
+							fontSize: "14px",
+							textAlign: "left"
 						})
 						.html(staffname)
 							.siblings().hide()
@@ -304,10 +305,227 @@ jQuery.fn.extend({
 			+ " " + (bookq.dob? bookq.dob.getAge(bookq.opdate) : "")
 		rowcell[SDIAGNOSIS].innerHTML = bookq.diagnosis
 		rowcell[STREATMENT].innerHTML = bookq.treatment
-		rowcell[SADMISSION].innerHTML = bookq.tel
-		rowcell[SFINAL].innerHTML = bookq.tel
-		rowcell[SADMIT].innerHTML = bookq.tel
-		rowcell[SDISCHARGE].innerHTML = bookq.tel
+		rowcell[SADMISSION].innerHTML = bookq.admission
+		rowcell[SFINAL].innerHTML = bookq.final
+		rowcell[SADMIT].innerHTML = bookq.admit
+		rowcell[SDISCHARGE].innerHTML = bookq.discharge
 		rowcell[SQN].innerHTML = bookq.qn
 	}
 })
+
+function clickservice(clickedCell)
+{
+	savePreviousScell()
+	storePresentScell(clickedCell)
+}
+
+function Skeyin(event)
+{
+	var keycode = event.which || window.event.keyCode
+	var thiscell
+
+	if (keycode == 9)
+	{
+		savePreviousScell()
+		if (event.shiftKey)
+			thiscell = findPrevScell(event)
+		else
+			thiscell = findNextScell(event)
+		if (thiscell) {
+			storePresentScell(thiscell)
+		} else {
+			$("#editcell").hide()
+			window.focus()
+		}
+		event.preventDefault()
+		return false
+	}
+	else if (keycode == 13)
+	{
+		if (event.shiftKey || event.ctrlKey) {
+			return
+		}
+		savePreviousScell()
+		thiscell = findNextSHN(event)
+		if (thiscell) {
+			storePresentScell(thiscell)
+		} else {
+			$("#editcell").hide()
+			window.focus()
+		}
+		event.preventDefault()
+		return false
+	}
+	else if (keycode == 27)
+	{
+		$('#menu').hide();
+		$('#stafflist').hide();
+		$("#editcell").hide()
+		window.focus()
+		event.preventDefault()
+		return false
+	}
+}
+
+function savePreviousScell() 
+{
+	if (!$("#editcell").data("editCell"))
+		return
+
+	var trimHTML = /^(\s*<[^>]*>)*\s*|\s*(<[^>]*>\s*)*$/g
+	var content = $("#editcell").html().replace(trimHTML, '')
+	var HTMLnotBR =/(<((?!br)[^>]+)>)/ig
+	content = $("#editcell").html().replace(HTMLnotBR, '')
+	if (content == $("#editcell").data("content"))
+		return
+
+	switch($("#editcell").data("cellIndex"))
+	{
+		case SDIAGNOSIS:
+			saveSContent("diagnosis", content)	//column name in MYSQL
+			break
+		case STREATMENT:
+			saveSContent("treatment", content)
+			break
+		case SADMISSION:
+			saveSContent("admission", content)
+			break
+		case SFINAL:
+			saveSContent("final", content)
+			break
+		case SADMIT:
+			saveSContent("admit", content)
+			break
+		case SDISCHARGE:
+			saveSContent("discharge", content)
+			break
+	}
+}
+ 
+function saveSContent(column, content)	//column name in MYSQL
+{
+	var tableID = $("#editcell").data("tableID")
+	var cellindex = $("#editcell").data("cellIndex")
+	var rowcell = $($("#editcell").data("editRow")).children("td")
+	var opdate = rowcell.eq(OPDATE).html().numDate()
+	var staffname = rowcell.eq(STAFFNAME).html()
+	var qn = rowcell.eq(QN).html()
+	var sqlstring
+	var since
+
+	$($("#editcell").data("editCell")).html(content)	//just for show instantly
+
+	content = URIcomponent(content)			//take care of white space, double qoute, 
+											//single qoute, and back slash
+	sqlstring = "sqlReturnbook=UPDATE book SET "
+	sqlstring += column +" = '"+ content
+	sqlstring += "', editor='"+ THISUSER
+	sqlstring += "' WHERE qn = "+ qn +";"
+
+	Ajax(MYSQLIPHP, sqlstring, callbacksaveSContent);
+
+	function callbacksaveSContent(response)
+	{
+		if (!response || response.indexOf("DBfailed") != -1)
+		{
+			alert("Failed! update database \n\n" + response)
+			$($("#editcell").data("editCell")).html($("#editcell").data("content"))
+			//return to previous content
+		}
+		else
+		{
+			updateBOOK(response);
+			refillSthis('servicetbl', cellindex, qn)
+		}
+	}
+}
+
+function storePresentScell(pointing)
+{
+	editcell(pointing)
+	$("#editcell").data("content", pointing.innerHTML)
+}
+
+function findPrevScell(event) 
+{
+	var prevcell = $($("#editcell").data("editCell"))
+	var column = prevcell.index()
+
+	if ((column = SEDITABLE[($.inArray(column, SEDITABLE) - 1)]))
+	{
+		prevcell = $(prevcell).parent().children().eq(column)
+	}
+	else
+	{
+		if ($(prevcell).parent().index() > 1)
+		{	//go to prev row last editable
+			do {
+				prevcell = $(prevcell).parent().prev("tr").children().eq(SEDITABLE[SEDITABLE.length-1])
+			}
+			while ($(prevcell).get(0).nodeName == "TH")	//THEAD row
+		}
+		else
+		{	//#tbl tr:1 td:1
+			event.preventDefault()
+			return false
+		}
+	}
+
+	return $(prevcell).get(0)
+}
+
+function findNextScell(event) 
+{
+	var nextcell = $($("#editcell").data("editCell"))
+	var column = nextcell.index()
+	var lastrow = $('#tbl tr:last-child').index()
+
+	if ((column = SEDITABLE[($.inArray(column, SEDITABLE) + 1)]))
+	{
+		nextcell = $(nextcell).parent().children().eq(column)
+	}
+	else
+	{
+		if ($(nextcell).parent().index() < lastrow)
+		{	//go to next row first editable
+			do {
+				if (!((nextcell = $(nextcell).parent().next("tr").children().eq(SEDITABLE[0])))) {
+					event.preventDefault()
+					return false
+				}
+			}
+			while ($(nextcell).get(0).nodeName == "TH")	//THEAD row
+		}
+		else
+		{	//#tbl tr:last-child td:last-child
+			event.preventDefault()
+			return false
+		}
+	}
+
+	return $(nextcell).get(0)
+}
+
+function findNextSHN(event) 
+{
+	var nextcell = $($("#editcell").data("editCell"))
+	var lastrow = $('#tbl tr:last-child').index()
+
+	if ($(nextcell).parent().index() < lastrow)
+	{	//go to next row first editable
+		do {
+			if (!((nextcell = $(nextcell).parent().next("tr").children().eq(SEDITABLE[0])))) {
+				event.preventDefault()
+				return false	
+			}
+		}
+		while ($(nextcell).get(0).nodeName == "TH")	//THEAD row
+	}
+	else
+	{	//#tbl tr:last-child td:last-child
+		event.preventDefault()
+		return false
+	}
+
+	return $(nextcell).get(0)
+}
