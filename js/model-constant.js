@@ -23,13 +23,14 @@ var SCASE		= 0;
 var SNAME		= 1;
 var SDIAGNOSIS	= 2;
 var STREATMENT	= 3;
-var SCLINICAL	= 4;
-var SPROGRESS	= 5;
-var SNOTE		= 6;
-var SQN			= 7;
+var SADMISSION	= 4;
+var SFINAL		= 5;
+var SADMIT		= 6;
+var SDISCHARGE	= 7;
+var SQN			= 8;
 
 var EDITABLE 	= [HN, DIAGNOSIS, TREATMENT, TEL];
-var SEDITABLE	= [SNAME, SDIAGNOSIS, STREATMENT, SCLINICAL, SPROGRESS]
+var SEDITABLE	= [SNAME, SDIAGNOSIS, STREATMENT, SADMISSION, SFINAL, SADMIT, SDISCHARGE]
 
 var NAMEOFDAYTHAI	= ["อาทิตย์", "จันทร์", "อังคาร", "พุธ", "พฤหัส", "ศุกร์", "เสาร์"];
 var DAYOFTHAINAME	= {"อาทิตย์":0, "จันทร์":1, "อังคาร":2, "พุธ":3, "พฤหัส":4, "ศุกร์":5, "เสาร์":6};

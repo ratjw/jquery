@@ -115,13 +115,14 @@
   <table id="servicetbl"><!-- data-role="table" class="ui-responsive"-->
    <TBODY>
     <TR>
-     <th style="width:3%">case</th>
-     <th style="width:12%">HN Name</th>
-     <th style="width:15%">Diagnosis</th>
-     <th style="width:20%">Treatment</th>
-     <th style="width:25%">Clinical</th>
-     <th style="width:25%">Progress</th>
-     <th style="width:25%">Note</th>
+     <th style="width:2%">case</th>
+     <th style="width:13%">HN Name</th>
+     <th style="width:20%">Diagnosis</th>
+     <th style="width:15%">Treatment</th>
+     <th style="width:25%">Admission status</th>
+     <th style="width:15%">Final status</th>
+     <th style="width:5%">Admit</th>
+     <th style="width:5%">D/C</th>
      <th style="display:none"></th>
     </TR>
    </TBODY>
@@ -135,9 +136,10 @@
     <td data-title="HN Name"></td>
     <td data-title="Diagnosis"></td>
     <td data-title="Treatment"></td>
-    <td data-title="Clinical"></td>
-    <td data-title="Progress"></td>
-    <td data-title="Note"></td>
+    <td data-title="Admission status"></td>
+    <td data-title="Final status"></td>
+    <td data-title="Admit"></td>
+    <td data-title="D/C"></td>
     <td style="display:none"></td>
    </TR>
   </TBODY>

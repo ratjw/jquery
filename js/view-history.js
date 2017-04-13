@@ -142,16 +142,16 @@ function adjustDialogSize(wrapper, dialogContainer, dialogTable)
 	var width = $(dialogTable).outerWidth()
 	var	maxWidth = $(wrapper).width() * 9 / 10
 
-	$(dialogContainer).dialog({
-		minWidth: 500,
-		width: width,
-		maxWidth: maxWidth,
-		maxHeight: maxHeight
-	})
-
 	$(dialogContainer).css({
 		width: width,
 		height: height
+	})
+
+	$(dialogContainer).dialog({
+//		minWidth: 500,
+		width: $(dialogContainer).outerWidth() + 20,
+		maxWidth: maxWidth,
+		maxHeight: maxHeight
 	})
 }
 
@@ -264,12 +264,14 @@ function showCases(fromDate, toDate)
 	$('#servicetbl tr').slice(1).remove()
 	$('#servicetbl').show()
 
+	var scase = 0
+
 	$.each( STAFF, function() {
 		var staffname = this.name
 		$('#sdatatitle tr').clone()
 			.insertAfter($('#servicetbl tr:last'))
 				.children().eq(OPDATE)
-					.attr("colSpan", 6)
+					.attr("colSpan", 8)
 						.css({
 							height: "40",
 							fontWeight: "bold",
@@ -278,12 +280,14 @@ function showCases(fromDate, toDate)
 						.html(staffname)
 							.siblings().hide()
 		$.each( BOOK, function() {
-			if (this.staffname == staffname && 
-				this.opdate >= fromDate &&
-				this.opdate <= toDate) {
+			if (this.staffname == staffname
+				&& this.opdate >= fromDate
+				&& this.opdate <= toDate) {
+
+				scase++
 				$('#sdatatitle tr').clone()
 					.insertAfter($('#servicetbl tr:last'))
-						.filldataService(this)
+						.filldataService(this, scase)
 			}
 		});
 	})
@@ -292,17 +296,18 @@ function showCases(fromDate, toDate)
 }
 
 jQuery.fn.extend({
-	filldataService : function(bookq) {
+	filldataService : function(bookq, scase) {
 		var rowcell = this[0].cells
-		rowcell[SCASE].innerHTML = bookq.opdate.thDate()
+		rowcell[SCASE].innerHTML = scase
 		rowcell[SNAME].innerHTML = bookq.hn
-			+ bookq.patient
-			+ (bookq.dob? bookq.dob.getAge(bookq.opdate) : "")
+			+ " " + bookq.patient
+			+ " " + (bookq.dob? bookq.dob.getAge(bookq.opdate) : "")
 		rowcell[SDIAGNOSIS].innerHTML = bookq.diagnosis
 		rowcell[STREATMENT].innerHTML = bookq.treatment
-		rowcell[SCLINICAL].innerHTML = bookq.tel
-		rowcell[SPROGRESS].innerHTML = bookq.tel
-		rowcell[SNOTE].innerHTML = bookq.tel
+		rowcell[SADMISSION].innerHTML = bookq.tel
+		rowcell[SFINAL].innerHTML = bookq.tel
+		rowcell[SADMIT].innerHTML = bookq.tel
+		rowcell[SDISCHARGE].innerHTML = bookq.tel
 		rowcell[SQN].innerHTML = bookq.qn
 	}
 })

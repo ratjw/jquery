@@ -114,6 +114,10 @@
 	color: white;
 }
 
+#servicetbl td:first-child {
+	text-align: center;
+}
+
 #titlebar {
 	height: 40px;
 	background-color: #F0F0F0;
