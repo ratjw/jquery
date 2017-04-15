@@ -18,6 +18,7 @@ function sortable()
 			ui.placeholder.attr('data-previndex', ui.placeholder.attr('data-thisindex'));
 			ui.placeholder.attr('data-thisindex', ui.placeholder.index());
 		},
+		delay: 150,
 		revert: true,
 		stop: function(e, ui){
 			var receiver = ui.item.closest('table').attr('id')

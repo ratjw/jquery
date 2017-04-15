@@ -20,12 +20,12 @@ function keyin(event)
 		if (event.shiftKey) {
 			thiscell = findPrevcell(event, editable, pointing)
 			if ((thiscell.cellIndex == HN) && (thiscell.innerHTML != "")) {
-				thiscell = findPrevcell(event, editable, thiscell)
+				thiscell = findPrevcell(event, editable, $(thiscell))
 			}
 		} else {
 			thiscell = findNextcell(event, table, editable, pointing)
 			if ((thiscell.cellIndex == HN) && (thiscell.innerHTML != "")) {
-				thiscell = findNextcell(event, table, editable, thiscell)
+				thiscell = findNextcell(event, table, editable, $(thiscell))
 			}
 		}
 		if (thiscell) {
@@ -45,9 +45,9 @@ function keyin(event)
 			return
 		}
 		savePreviouscell()
-		thiscell = findNextRow(event, table, editable)
+		thiscell = findNextRow(event, table, editable, pointing)
 		if ((thiscell.cellIndex == HN) && (thiscell.innerHTML != "")) {
-			thiscell = findNextcell(event, table, editable, pointing)
+			thiscell = findNextcell(event, table, editable, $(thiscell))
 		}
 		if (thiscell) {
 			storePresentcell(thiscell)

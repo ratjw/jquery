@@ -9,42 +9,44 @@ function loadtable(userid)
 	$(document).click( function (event) {
 		countReset();
 		var clickedCell = event.target
-		if($('#menu').is(":visible")) {	//visible == take up space even can't be seen
-			if(!$(clickedCell).closest('#menu').length) {
+		if ($('#menu').is(":visible")) {	//visible == take up space even can't be seen
+			if (!$(clickedCell).closest('#menu').length) {
 				$('#menu').hide();
 				resetEditcell()
 			}
 		}
-		if($('#stafflist').is(":visible")) {
+		else if ($('#stafflist').is(":visible")) {
 			if(!$(clickedCell).closest('#stafflist').length) {
 				$('#stafflist').hide();
 				resetEditcell()
 			}
 		}
-		if (clickedCell.id == "editcell") {
-			return
-		}
-		if($('#delete').is(":visible")) {
+		else if($('#delete').is(":visible")) {
 			if(!$(clickedCell).closest('#delete').length) {
 				$('#delete').hide();
 			}
 		}
-		if ($(clickedCell).closest('table').attr('id') == 'historytbl') {
+		else if($('#undelete').is(":visible")) {
 			if ($(clickedCell).index()) {
 				$('#undelete').hide()
 				return false
 			}
 		}
-		if  (clickedCell.nodeName != "TD") {
+
+		if (clickedCell.id == "editcell") {
+			return
+		}
+		else if  (clickedCell.nodeName != "TD") {
 			resetEditcell()
 			return	
 		}
+
 		if ($(clickedCell).closest('table').attr('id') == 'tbl' ||
 			$(clickedCell).closest('table').attr('id') == 'queuetbl') {
 
 			clicktable(clickedCell)
 		}
-		if ($(clickedCell).closest('table').attr('id') == 'servicetbl') {
+		else if ($(clickedCell).closest('table').attr('id') == 'servicetbl') {
 			clickservice(clickedCell)
 		}
 	})
