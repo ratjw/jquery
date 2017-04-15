@@ -8,14 +8,14 @@ function editHistory(rowmain, qn)
 		Ajax(MYSQLIPHP, sql, callbackeditHistory)
 	}
 
+	resetEditcell()
+
 	function callbackeditHistory(response)
 	{
 		if (!response || response.indexOf("DBfailed") != -1)
 			alert("Data history DBfailed!\n" + response)
 		else
 			makehistory(rowmain, response)
-
-		$("#editcell").hide()
 	}
 }
 
@@ -64,7 +64,11 @@ function makehistory(rowmain, response)
 		closeOnEscape: true,
 		modal: true
 	})
-	adjustDialogSize('wrapper', '#dialogOplog', '#historytbl')
+
+	$('#dialogOplog').dialog({
+		width: window.innerWidth * 9 / 10,
+		height: window.innerHeight * 8 / 10
+	})
 }
 
 function deleteHistory()
@@ -75,7 +79,9 @@ function deleteHistory()
 		sql += "WHERE b.waitnum IS NULL AND bh.waitnum IS NULL "
 		sql += "ORDER BY editdatetime DESC;"
 
-		Ajax(MYSQLIPHP, sql, callbackdeleteHistory)
+	Ajax(MYSQLIPHP, sql, callbackdeleteHistory)
+
+	resetEditcell()
 
 	function callbackdeleteHistory(response)
 	{
@@ -83,8 +89,6 @@ function deleteHistory()
 			alert("Delete history DBfailed!\n" + response)
 		else
 			makeDeleteHistory(response)
-
-		$("#editcell").hide()
 	}
 }
 
@@ -132,26 +136,10 @@ function makeDeleteHistory(response)
 		closeOnEscape: true,
 		modal: true
 	})
-	adjustDialogSize('wrapper', '#dialogDeleted', '#historytbl')
-}
 
-function adjustDialogSize(wrapper, dialogContainer, dialogTable) 
-{
-	var height = $(dialogContainer).height()
-	var maxHeight = window.innerHeight * 8 / 10
-	var width = $(dialogTable).outerWidth()
-	var	maxWidth = $(wrapper).width() * 9 / 10
-
-	$(dialogContainer).css({
-		width: width,
-		height: height
-	})
-
-	$(dialogContainer).dialog({
-//		minWidth: 500,
-		width: $(dialogContainer).outerWidth() + 20,
-		maxWidth: maxWidth,
-		maxHeight: maxHeight
+	$('#dialogDeleted').dialog({
+		width: window.innerWidth * 9 / 10,
+		height: window.innerHeight * 8 / 10
 	})
 }
 
@@ -196,7 +184,9 @@ function PACS(hn)
 { 
 	var sql = "PAC=http://synapse/explore.asp"
 
-		Ajax(CHECKPAC, sql, callbackCHECKPAC)
+	Ajax(CHECKPAC, sql, callbackCHECKPAC)
+
+	resetEditcell()
 
 	function callbackCHECKPAC(response)
 	{
@@ -204,16 +194,13 @@ function PACS(hn)
 			alert(response)
 		else
 			open('http://synapse/explore.asp?path=/All Patients/InternalPatientUID='+hn);
-
-		$("#editcell").hide()
 	}
-
 } 
 
 function serviceReview()
 {
-	$('#datepicker').datepicker( {
-		altField: $( "#datepicking" ),
+	$('#monthpicker').datepicker( {
+		altField: $( "#monthpicking" ),
 		altFormat: "yy-mm-dd",
 		autoSize: true,
 		dateFormat: "MM yy",
@@ -224,27 +211,30 @@ function serviceReview()
 		onChangeMonthYear: function(year, month, inst) {
 			$(this).datepicker('setDate', new Date(inst.selectedYear, inst.selectedMonth, 1))
 		},
-		onClose: function(){
-			entireMonth($('#datepicking').val())
-		}
-	}).datepicker("setDate", new Date());//first time show instantly on input boxes
+	}).datepicker("setDate", new Date())
 
 	$('#dialogService').dialog({
 		title: 'Service Review',
 		closeOnEscape: true,
 		modal: true,
-		width: $('.ui-datepicker').width() + $('#datepicker').width()
+		height: "auto",
+		width: $('.ui-datepicker').width() + $('#monthpicker').width()
 	})
+
+	$('.ui-datepicker-calendar').css('display', 'none')
 	$('.ui-datepicker').click(function() {
-		if (!$('#datepicker').is(":focus")) {
-			entireMonth($('#datepicking').val())
-			$('#datepicker').datepicker( "hide" )
+		if (!$('#monthpicker').is(":focus")) {
+			entireMonth($('#monthpicking').val())
+			$('#monthpicker').datepicker( "hide" )
+		} else {
+			$('.ui-datepicker-calendar').css('display', 'none')
 		}
 	})
-	$('#datepicker').click(function() { //setDate follows input boxes
-		$('#datepicker').datepicker(
-			"setDate", $('#datepicking').val()? new Date($('#datepicking').val()) : new Date()
+	$('#monthpicker').click(function() { //setDate follows input boxes
+		$('#monthpicker').datepicker(
+			"setDate", $('#monthpicking').val()? new Date($('#monthpicking').val()) : new Date()
 		)
+		$('.ui-datepicker-calendar').css('display', 'none')
 	})
 	$('#servicetbl').hide()
 }
@@ -255,11 +245,35 @@ function entireMonth(fromDate)
 	var toDate = new Date(from.getFullYear(), from.getMonth()+1, 0)//day before 1st of next month
 	toDate = $.datepicker.formatDate('yy-mm-dd', toDate);	//end of this month
 	$('#dialogService input[type=button]').hide()
-	showCases(fromDate, toDate)
+	$('#monthpicker').data({
+		fromDate: fromDate,
+		toDate: toDate
+	})
+	getService(fromDate, toDate)
 }
 
-function showCases(fromDate, toDate)
+function getService(fromDate, toDate)
 {
+	var sql = "sqlReturnData=SELECT * FROM book "
+	sql += "WHERE opdate BETWEEN '"+ fromDate +"' AND '"+ toDate +"' "
+	sql += "AND waitnum > 0 ORDER BY staffname, opdate;"
+
+	Ajax(MYSQLIPHP, sql, callbackService);
+
+	function callbackService(response)
+	{
+		if ((!response) || (response.indexOf("DBfailed") != -1)) {
+			alert("Failed! retrieve database \n\n" + response)
+		} else {
+			showService(response)
+		}
+	}
+}
+
+function showService(response)
+{
+	var service = JSON.parse(response)
+
 	//delete previous servicetbl lest it accumulates
 	$('#servicetbl tr').slice(1).remove()
 	$('#servicetbl').show()
@@ -276,15 +290,13 @@ function showCases(fromDate, toDate)
 							height: "40",
 							fontWeight: "bold",
 							fontSize: "14px",
-							textAlign: "left"
+							textAlign: "left",
+							paddingLeft: "10px"
 						})
 						.html(staffname)
 							.siblings().hide()
-		$.each( BOOK, function() {
-			if (this.staffname == staffname
-				&& this.opdate >= fromDate
-				&& this.opdate <= toDate) {
-
+		$.each( service, function() {
+			if (this.staffname == staffname) {
 				scase++
 				$('#sdatatitle tr').clone()
 					.insertAfter($('#servicetbl tr:last'))
@@ -293,22 +305,25 @@ function showCases(fromDate, toDate)
 		});
 	})
 
-	adjustDialogSize('wrapper', '#dialogService', '#servicetbl')
+	$('#dialogService').dialog({
+		width: window.innerWidth,
+		height: window.innerHeight
+	})
 }
 
 jQuery.fn.extend({
 	filldataService : function(bookq, scase) {
 		var rowcell = this[0].cells
-		rowcell[SCASE].innerHTML = scase
-		rowcell[SNAME].innerHTML = bookq.hn
+		rowcell[CASE].innerHTML = scase
+		rowcell[PATIENT].innerHTML = bookq.hn
 			+ " " + bookq.patient
 			+ " " + (bookq.dob? bookq.dob.getAge(bookq.opdate) : "")
 		rowcell[SDIAGNOSIS].innerHTML = bookq.diagnosis
 		rowcell[STREATMENT].innerHTML = bookq.treatment
-		rowcell[SADMISSION].innerHTML = bookq.admission
-		rowcell[SFINAL].innerHTML = bookq.final
-		rowcell[SADMIT].innerHTML = bookq.admit
-		rowcell[SDISCHARGE].innerHTML = bookq.discharge
+		rowcell[ADMISSION].innerHTML = bookq.admission
+		rowcell[FINAL].innerHTML = bookq.final
+		rowcell[ADMIT].innerHTML = (bookq.admit? bookq.admit : "")
+		rowcell[DISCHARGE].innerHTML = (bookq.discharge? bookq.discharge : "")
 		rowcell[SQN].innerHTML = bookq.qn
 	}
 })
@@ -322,19 +337,22 @@ function clickservice(clickedCell)
 function Skeyin(event)
 {
 	var keycode = event.which || window.event.keyCode
+	var tableID = "#servicetbl"
+	var editable = SEDITABLE
+	var pointing = $($("#editcell").data("editCell"))
 	var thiscell
 
 	if (keycode == 9)
 	{
 		savePreviousScell()
 		if (event.shiftKey)
-			thiscell = findPrevScell(event)
+			thiscell = findPrevcell(event, editable, pointing)
 		else
-			thiscell = findNextScell(event)
+			thiscell = findNextcell(event, tableID, editable, pointing)
 		if (thiscell) {
 			storePresentScell(thiscell)
 		} else {
-			$("#editcell").hide()
+			resetEditcell()
 			window.focus()
 		}
 		event.preventDefault()
@@ -346,11 +364,11 @@ function Skeyin(event)
 			return
 		}
 		savePreviousScell()
-		thiscell = findNextSHN(event)
+		thiscell = findNextRow(event, tableID, editable, pointing)
 		if (thiscell) {
 			storePresentScell(thiscell)
 		} else {
-			$("#editcell").hide()
+			resetEditcell()
 			window.focus()
 		}
 		event.preventDefault()
@@ -358,9 +376,7 @@ function Skeyin(event)
 	}
 	else if (keycode == 27)
 	{
-		$('#menu').hide();
-		$('#stafflist').hide();
-		$("#editcell").hide()
+		resetEditcell()
 		window.focus()
 		event.preventDefault()
 		return false
@@ -369,60 +385,83 @@ function Skeyin(event)
 
 function savePreviousScell() 
 {
-	if (!$("#editcell").data("editCell"))
-		return
-
-	var trimHTML = /^(\s*<[^>]*>)*\s*|\s*(<[^>]*>\s*)*$/g
-	var content = $("#editcell").html().replace(trimHTML, '')
-	var HTMLnotBR =/(<((?!br)[^>]+)>)/ig
-	content = $("#editcell").html().replace(HTMLnotBR, '')
-	if (content == $("#editcell").data("content"))
-		return
-
 	switch($("#editcell").data("cellIndex"))
 	{
+		case CASE:
+		case PATIENT:
+			break
 		case SDIAGNOSIS:
-			saveSContent("diagnosis", content)	//column name in MYSQL
+			if ((content = getContent())) {
+				saveSContent("diagnosis", content)
+			}
 			break
 		case STREATMENT:
-			saveSContent("treatment", content)
+			if ((content = getContent())) {
+				saveSContent("treatment", content)
+			}
 			break
-		case SADMISSION:
-			saveSContent("admission", content)
+		case ADMISSION:
+			if ((content = getContent())) {
+				saveSContent("admission", content)
+			}
 			break
-		case SFINAL:
-			saveSContent("final", content)
+		case FINAL:
+			if ((content = getContent())) {
+				saveSContent("final", content)
+			}
 			break
-		case SADMIT:
-			saveSContent("admit", content)
+		case ADMIT:
+			if ($('#datepicker').val() != $("#editcell").data("content")) {
+				saveSContent("admit", $('#datepicker').val())
+			}
 			break
-		case SDISCHARGE:
-			saveSContent("discharge", content)
+		case DISCHARGE:
+			if ($('#datepicker').val() != $("#editcell").data("content")) {
+				saveSContent("discharge", $('#datepicker').val())
+			}
 			break
 	}
 }
  
+function getContent()
+{
+	var content = getData()
+	if (content == $("#editcell").data("content")) {
+		return false
+	} else {
+		return content
+	}
+}
+ 
+function getData()
+{
+	var trimHTML = /^(\s*<[^>]*>)*\s*|\s*(<[^>]*>\s*)*$/g
+	var content = $("#editcell").html().replace(trimHTML, '')
+	var HTMLnotBR =/(<((?!br)[^>]+)>)/ig
+	content = $("#editcell").html().replace(HTMLnotBR, '')
+	return content
+}
+
 function saveSContent(column, content)	//column name in MYSQL
 {
-	var tableID = $("#editcell").data("tableID")
-	var cellindex = $("#editcell").data("cellIndex")
 	var rowcell = $($("#editcell").data("editRow")).children("td")
-	var opdate = rowcell.eq(OPDATE).html().numDate()
-	var staffname = rowcell.eq(STAFFNAME).html()
-	var qn = rowcell.eq(QN).html()
-	var sqlstring
-	var since
+	var qn = rowcell.eq(SQN).html()
+	var fromDate = $('#monthpicker').data('fromDate')
+	var toDate = $('#monthpicker').data('toDate')
 
 	$($("#editcell").data("editCell")).html(content)	//just for show instantly
 
 	content = URIcomponent(content)			//take care of white space, double qoute, 
 											//single qoute, and back slash
-	sqlstring = "sqlReturnbook=UPDATE book SET "
-	sqlstring += column +" = '"+ content
-	sqlstring += "', editor='"+ THISUSER
-	sqlstring += "' WHERE qn = "+ qn +";"
+	var sql = "sqlReturnData=UPDATE book SET "
+	sql += column +" = '"+ content
+	sql += "', editor='"+ THISUSER
+	sql += "' WHERE qn = "+ qn +";"
+	sql += "SELECT * FROM book "
+	sql += "WHERE opdate BETWEEN '"+ fromDate +"' AND '"+ toDate +"' "
+	sql += "AND waitnum > 0 ORDER BY staffname, opdate;"
 
-	Ajax(MYSQLIPHP, sqlstring, callbacksaveSContent);
+	Ajax(MYSQLIPHP, sql, callbacksaveSContent);
 
 	function callbacksaveSContent(response)
 	{
@@ -434,98 +473,59 @@ function saveSContent(column, content)	//column name in MYSQL
 		}
 		else
 		{
-			updateBOOK(response);
-			refillSthis('servicetbl', cellindex, qn)
+			showService(response)
 		}
 	}
 }
 
 function storePresentScell(pointing)
 {
-	editcell(pointing)
-	$("#editcell").data("content", pointing.innerHTML)
+	var cindex = $(pointing).closest("td").index()
+
+	switch(cindex)
+	{
+		case CASE:
+		case PATIENT:
+			resetEditcell()
+			break
+		case SDIAGNOSIS:
+		case STREATMENT:
+		case ADMISSION:
+		case FINAL:
+			editcell(pointing)
+			saveDataPoint("#editcell", pointing)
+			break
+		case ADMIT:
+		case DISCHARGE:
+			editcell(pointing)
+			saveDataPoint("#editcell", pointing)
+			$('#editcell').hide()
+			selectDate(pointing)
+			break
+	}
 }
 
-function findPrevScell(event) 
+function selectDate(pointing)
 {
-	var prevcell = $($("#editcell").data("editCell"))
-	var column = prevcell.index()
+	$('#datepicker').css({
+		height: $(pointing).height(),
+		width: $(pointing).width()
+	})
+	reposition("#datepicker", "center", "center", pointing)
 
-	if ((column = SEDITABLE[($.inArray(column, SEDITABLE) - 1)]))
-	{
-		prevcell = $(prevcell).parent().children().eq(column)
-	}
-	else
-	{
-		if ($(prevcell).parent().index() > 1)
-		{	//go to prev row last editable
-			do {
-				prevcell = $(prevcell).parent().prev("tr").children().eq(SEDITABLE[SEDITABLE.length-1])
-			}
-			while ($(prevcell).get(0).nodeName == "TH")	//THEAD row
+	$('#datepicker').datepicker( {
+		dateFormat: "yy-mm-dd",
+		minDate: "-1y",
+		maxDate: "+1y",
+		onClose: function () {
+			$('.ui-datepicker').css( {
+				fontSize: ''
+			}).hide()
+			$('#datepicker').hide()
 		}
-		else
-		{	//#tbl tr:1 td:1
-			event.preventDefault()
-			return false
-		}
-	}
-
-	return $(prevcell).get(0)
-}
-
-function findNextScell(event) 
-{
-	var nextcell = $($("#editcell").data("editCell"))
-	var column = nextcell.index()
-	var lastrow = $('#tbl tr:last-child').index()
-
-	if ((column = SEDITABLE[($.inArray(column, SEDITABLE) + 1)]))
-	{
-		nextcell = $(nextcell).parent().children().eq(column)
-	}
-	else
-	{
-		if ($(nextcell).parent().index() < lastrow)
-		{	//go to next row first editable
-			do {
-				if (!((nextcell = $(nextcell).parent().next("tr").children().eq(SEDITABLE[0])))) {
-					event.preventDefault()
-					return false
-				}
-			}
-			while ($(nextcell).get(0).nodeName == "TH")	//THEAD row
-		}
-		else
-		{	//#tbl tr:last-child td:last-child
-			event.preventDefault()
-			return false
-		}
-	}
-
-	return $(nextcell).get(0)
-}
-
-function findNextSHN(event) 
-{
-	var nextcell = $($("#editcell").data("editCell"))
-	var lastrow = $('#tbl tr:last-child').index()
-
-	if ($(nextcell).parent().index() < lastrow)
-	{	//go to next row first editable
-		do {
-			if (!((nextcell = $(nextcell).parent().next("tr").children().eq(SEDITABLE[0])))) {
-				event.preventDefault()
-				return false	
-			}
-		}
-		while ($(nextcell).get(0).nodeName == "TH")	//THEAD row
-	}
-	else
-	{	//#tbl tr:last-child td:last-child
-		event.preventDefault()
-		return false
-	}
-
-	return $(nextcell).get(0)
+	}).datepicker("setDate", $(pointing).html()? new Date($(pointing).html()) : "")
+	$('.ui-datepicker').css( {
+		fontSize: '12px'
+	})
+	$('#datepicker').datepicker( 'show' )
 }

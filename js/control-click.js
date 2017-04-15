@@ -7,6 +7,9 @@ function clicktable(clickedCell)
 function keyin(event)
 {
 	var keycode = event.which || window.event.keyCode
+	var table = '#' + $('#editcell').data("tableID")
+	var editable = EDITABLE
+	var pointing = $($("#editcell").data("editCell"))
 	var thiscell
 
 	if (keycode == 9)
@@ -14,14 +17,21 @@ function keyin(event)
 		$('#menu').hide();
 		$('#stafflist').hide();
 		savePreviouscell()
-		if (event.shiftKey)
-			thiscell = findPrevcell(event)
-		else
-			thiscell = findNextcell(event)
+		if (event.shiftKey) {
+			thiscell = findPrevcell(event, editable, pointing)
+			if ((thiscell.cellIndex == HN) && (thiscell.innerHTML != "")) {
+				thiscell = findPrevcell(event, editable, thiscell)
+			}
+		} else {
+			thiscell = findNextcell(event, table, editable, pointing)
+			if ((thiscell.cellIndex == HN) && (thiscell.innerHTML != "")) {
+				thiscell = findNextcell(event, table, editable, thiscell)
+			}
+		}
 		if (thiscell) {
 			storePresentcell(thiscell)
 		} else {
-			$("#editcell").hide()
+			resetEditcell()
 			window.focus()
 		}
 		event.preventDefault()
@@ -35,11 +45,14 @@ function keyin(event)
 			return
 		}
 		savePreviouscell()
-		thiscell = findNextHN(event)
+		thiscell = findNextRow(event, table, editable)
+		if ((thiscell.cellIndex == HN) && (thiscell.innerHTML != "")) {
+			thiscell = findNextcell(event, table, editable, pointing)
+		}
 		if (thiscell) {
 			storePresentcell(thiscell)
 		} else {
-			$("#editcell").hide()
+			resetEditcell()
 			window.focus()
 		}
 		event.preventDefault()
@@ -49,7 +62,7 @@ function keyin(event)
 	{
 		$('#menu').hide();
 		$('#stafflist').hide();
-		$("#editcell").hide()
+		resetEditcell()
 		window.focus()
 		event.preventDefault()
 		return false
@@ -65,6 +78,7 @@ function savePreviouscell()
 	var content = $("#editcell").html().replace(trimHTML, '')
 	var HTMLnotBR =/(<((?!br)[^>]+)>)/ig
 	content = $("#editcell").html().replace(HTMLnotBR, '')
+
 	if (content == $("#editcell").data("content"))
 		return
 
@@ -141,16 +155,16 @@ function saveContent(column, content)	//column name in MYSQL
 			if (tableID == 'tbl') {
 				if (!qn) {
 					var Newqn = findNewqn(opdate)
-					var prevEditRow = $($("#editcell").data("editRow"))
-					prevEditRow.children().eq(QN).html(Newqn)
+					var editedRow = $($("#editcell").data("editRow"))
+					editedRow.children().eq(QN).html(Newqn)
 				}
 				if (($("#titlecontainer").css('display') == 'block') && 
 					($('#titlename').html() == staffname))
 
-					refillthis('queuetbl', cellindex, qn)
+					refillanother('queuetbl', cellindex, qn)
 			}
 			else
-				refillthis('tbl', cellindex, qn)
+				refillanother('tbl', cellindex, qn)
 		}
 	}
 }
@@ -165,12 +179,6 @@ function saveHNinput(hn, content)
 	var patient = rowcell.eq(NAME).html()
 	var qn = rowcell.eq(QN).html()
 	var since
-
-	if (patient)
-	{
-		$("#editcell").hide()	//just do nothing
-		return
-	}
 
 	$($("#editcell").data("editCell")).html(content)
 
@@ -210,10 +218,10 @@ function saveHNinput(hn, content)
 				if (($("#titlecontainer").css('display') == 'block') && 
 					($('#titlename').html() == staffname))
 
-					refillthis('queuetbl', cellindex, qn)
+					refillanother('queuetbl', cellindex, qn)
 			}
 			else
-				refillthis('tbl', cellindex, qn)
+				refillanother('tbl', cellindex, qn)
 		}
 	}
 }
@@ -246,24 +254,33 @@ function storePresentcell(pointing)
 	switch(cindex)
 	{
 		case OPDATE:
+			resetEditcell()
 			editcell(pointing)
+			var content = window.getComputedStyle(pointing,':before').content
+			content = content.replace(/\"/g, "")
+			$("#editcell").html(content + pointing.innerHTML)
 			fillSetTable(rindex, pointing)
 			break
 		case STAFFNAME:
 			editcell(pointing)
+			saveDataPoint("#editcell", pointing)
 			stafflist(pointing)
-			$("#editcell").data("content", pointing.innerHTML)
-			break
-		case NAME:
-		case AGE:
-			$("#editcell").hide()
 			break
 		case HN:
+			if (!pointing.innerHTML) {
+				editcell(pointing)
+				saveDataPoint("#editcell", pointing)
+				break
+			}
+		case NAME:
+		case AGE:
+			resetEditcell()
+			break
 		case DIAGNOSIS:
 		case TREATMENT:
 		case CONTACT:		//store content in "data" of editcell
 			editcell(pointing)
-			$("#editcell").data("content", pointing.innerHTML)
+			saveDataPoint("#editcell", pointing)
 			break
 	}
 }
@@ -275,15 +292,14 @@ function editcell(pointing)
 		width: $(pointing).width() + "px",
 		fontSize: $(pointing).css("fontSize")
 	})
-	reposition("#editcell", "center", "center", pointing)
-	saveDataPoint("#editcell", pointing)
+
+	$("#editcell").appendTo($(pointing).closest('div'))
 	$("#editcell").focus()
+	reposition("#editcell", "center", "center", pointing)
 }
 
 function reposition(me, mypos, atpos, target)
 {
-	$(me).appendTo($(target).closest('div'))
-
 	$(me).position({
 		my: mypos,
 		at: atpos,
@@ -312,26 +328,41 @@ function saveDataPoint(editcell, pointing)
 	$(editcell).data("tableID", tableID)
 	$(editcell).data("rowIndex", rowIndex)
 	$(editcell).data("cellIndex", cellIndex)
-	$(editcell).html($(pointing).html())
+	$(editcell).data("content", pointing.innerHTML)
+	$(editcell).html(pointing.innerHTML)
 }
 
-function findPrevcell(event) 
+function resetEditcell()
 {
-	var prevcell = $($("#editcell").data("editCell"))
+	var editcell = '#editcell'
+	$(editcell).data("editCell", "")
+	$(editcell).data("editRow", "")
+	$(editcell).data("tableID", "")
+	$(editcell).data("rowIndex", "")
+	$(editcell).data("cellIndex", "")
+	$(editcell).data("content", "")
+	$(editcell).html("")
+	$(editcell).hide()
+}
+
+function findPrevcell(event, editable, pointing) 
+{
+	var prevcell = pointing
 	var column = prevcell.index()
 
-	if (column = EDITABLE[($.inArray(column, EDITABLE) - 1)])
+	if ((column = editable[($.inArray(column, editable) - 1)]))
 	{
-		prevcell = $(prevcell).parent().children().eq(column)
+		prevcell = prevcell.parent().children().eq(column)
 	}
 	else
 	{
-		if ($(prevcell).parent().index() > 1)
+		if (prevcell.parent().index() > 1)
 		{	//go to prev row last editable
 			do {
-				prevcell = $(prevcell).parent().prev("tr").children().eq(EDITABLE[EDITABLE.length-1])
+				prevcell = prevcell.parent().prev("tr").children().eq(editable[editable.length-1])
 			}
-			while ($(prevcell).get(0).nodeName == "TH")	//THEAD row
+			while ((prevcell.get(0).nodeName == "TH")	//THEAD row
+				|| (!prevcell.is(':visible')))			//invisible due to colspan
 		}
 		else
 		{	//#tbl tr:1 td:1
@@ -340,30 +371,31 @@ function findPrevcell(event)
 		}
 	}
 
-	return $(prevcell).get(0)
+	return prevcell.get(0)
 }
 
-function findNextcell(event) 
+function findNextcell(event, table, editable, pointing) 
 {
-	var nextcell = $($("#editcell").data("editCell"))
+	var nextcell = pointing
 	var column = nextcell.index()
-	var lastrow = $('#tbl tr:last-child').index()
+	var lastrow = $(table + ' tr:last-child').index()
 
-	if (column = EDITABLE[($.inArray(column, EDITABLE) + 1)])
+	if ((column = editable[($.inArray(column, editable) + 1)]))
 	{
-		nextcell = $(nextcell).parent().children().eq(column)
+		nextcell = nextcell.parent().children().eq(column)
 	}
 	else
 	{
-		if ($(nextcell).parent().index() < lastrow)
+		if (nextcell.parent().index() < lastrow)
 		{	//go to next row first editable
 			do {
-				if (!(nextcell = $(nextcell).parent().next("tr").children().eq(EDITABLE[0]))) {
+				if (!((nextcell = $(nextcell).parent().next("tr").children().eq(editable[0])))) {
 					event.preventDefault()
 					return false
 				}
 			}
-			while ($(nextcell).get(0).nodeName == "TH")	//THEAD row
+			while ((nextcell.get(0).nodeName == "TH")	//THEAD row
+				|| (!nextcell.is(':visible')))			//invisible due to colspan
 		}
 		else
 		{	//#tbl tr:last-child td:last-child
@@ -372,23 +404,24 @@ function findNextcell(event)
 		}
 	}
 
-	return $(nextcell).get(0)
+	return nextcell.get(0)
 }
 
-function findNextHN(event) 
+function findNextRow(event, table, editable, pointing) 
 {
-	var nextcell = $($("#editcell").data("editCell"))
-	var lastrow = $('#tbl tr:last-child').index()
+	var nextcell = pointing
+	var lastrow = $(table + ' tr:last-child').index()
 
-	if ($(nextcell).parent().index() < lastrow)
+	if (nextcell.parent().index() < lastrow)
 	{	//go to next row first editable
 		do {
-			if (!(nextcell = $(nextcell).parent().next("tr").children().eq(EDITABLE[0]))) {
+			if (!((nextcell = $(nextcell).parent().next("tr").children().eq(editable[0])))) {
 				event.preventDefault()
 				return false	
 			}
 		}
-		while ($(nextcell).get(0).nodeName == "TH")	//THEAD row
+		while ((nextcell.get(0).nodeName == "TH")	//TH row
+			|| (!nextcell.is(':visible')))			//invisible due to colspan
 	}
 	else
 	{	//#tbl tr:last-child td:last-child
@@ -396,5 +429,5 @@ function findNextHN(event)
 		return false
 	}
 
-	return $(nextcell).get(0)
+	return nextcell.get(0)
 }

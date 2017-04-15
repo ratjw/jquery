@@ -281,7 +281,7 @@ jQuery.fn.extend({
 	}
 })
 
-function refillthis(tableID, cellindex, qn)
+function refillanother(tableID, cellindex, qn)
 {
 	var table = document.getElementById(tableID)
 

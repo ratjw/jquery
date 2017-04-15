@@ -13,7 +13,7 @@ function fillEquipTable(rownum, qn)
 	var equipOR = document.getElementById("paperdiv")
 
 	var txt = "<div id='equip'>";
-	txt += "<span style='width:250px;'></span>วันที่ผ่าตัด ";
+	txt += "<span style='width:250px;'></span>วันที่ ";
 	txt += "<span style='width:120px; font-size: 14px; font-weight: bold;'); >"+ opdate +"</span>";
 	txt += "<span style='width:20px;'></span>Surgeon "+ staffname;
 	txt += "<br>";

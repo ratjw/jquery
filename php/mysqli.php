@@ -14,7 +14,7 @@ require_once "book.php";
 		else
 			echo json_encode(book($mysqli));
 	}
-	else if (isset($_GET['sqlReturnData']))	//from edithistory
+	else if (isset($_GET['sqlReturnData']))	//from view-history
 	{
 		echo sqlexecute($mysqli, $_GET['sqlReturnData']);
 	}

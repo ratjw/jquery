@@ -15,7 +15,7 @@ function fillSetTable(rownum, pointing)
 
 	casename = casename.substring(0, casename.indexOf(' '))
 
-	$("#item2").html("เปลี่ยนวันผ่าตัด")
+	$("#item2").html("เปลี่ยนวันที่")
 	if (qn)
 		$("#item2").parent().addClass(disabled)
 	else
@@ -55,13 +55,10 @@ function fillSetTable(rownum, pointing)
 
 	$("#item9").html("Service Review ")
 
-	var width = $("#menu").width()
-
 	$("#menu").menu({
 		select: function( event, ui ) {
 
-			$("#editcell").data("editCell", "")
-			$("#editcell").hide()		//to disappear after selection
+			resetEditcell()
 			$("#menu").hide()		//to disappear after selection
 			event.stopPropagation()
 
@@ -107,27 +104,30 @@ function fillSetTable(rownum, pointing)
 		}
 	});
 
+	var width = $("#menu").outerWidth()
+
+	$("#menu").appendTo($(pointing).closest('div'))
 	reposition("#menu", "left top", "left bottom", pointing)
 	menustyle("#menu", pointing, width)
 }
 
 function stafflist(pointing)
 {
-	var width = $("#stafflist").outerWidth()
-
 	$("#stafflist").menu({
 		select: function( event, ui ) {
 			var staffname = ui.item.text()
 			$(pointing).html(staffname)
 			saveContent("staffname", staffname)
-			$("#editcell").data("editCell", "")
-			$("#editcell").hide()		//to disappear after selection
+			resetEditcell()
 			$('#stafflist').hide()		//to disappear after selection
 			event.stopPropagation()
 			return false
 		}
 	});
 
+	var width = $("#stafflist").outerWidth()
+
+	$("#stafflist").appendTo($(pointing).closest('div'))
 	reposition("#stafflist", "left top", "left bottom", pointing)
 	menustyle("#stafflist", pointing, width)
 }
@@ -205,6 +205,7 @@ function fillblankBOOK(bookq, caseNum)
 
 function deleteCase(rowmain, opdate, qn, pointing)
 {
+	$("#delete").appendTo($(pointing).closest('div'))
 	reposition('#delete', "left center", "left center", pointing)
 
 	doDelete = function() 

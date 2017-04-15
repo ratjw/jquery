@@ -19,18 +19,18 @@ var TREATMENT	= 7;
 var CONTACT		= 8;
 var QN			= 9;
 
-var SCASE		= 0;
-var SNAME		= 1;
+var CASE		= 0;
+var PATIENT		= 1;
 var SDIAGNOSIS	= 2;
 var STREATMENT	= 3;
-var SADMISSION	= 4;
-var SFINAL		= 5;
-var SADMIT		= 6;
-var SDISCHARGE	= 7;
+var ADMISSION	= 4;
+var FINAL		= 5;
+var ADMIT		= 6;
+var DISCHARGE	= 7;
 var SQN			= 8;
 
 var EDITABLE 	= [HN, DIAGNOSIS, TREATMENT, CONTACT];
-var SEDITABLE	= [SDIAGNOSIS, STREATMENT, SADMISSION, SFINAL, SADMIT, SDISCHARGE]
+var SEDITABLE	= [SDIAGNOSIS, STREATMENT, ADMISSION, FINAL, ADMIT, DISCHARGE]
 
 var NAMEOFDAYTHAI	= ["อาทิตย์", "จันทร์", "อังคาร", "พุธ", "พฤหัส", "ศุกร์", "เสาร์"];
 var DAYOFTHAINAME	= {"อาทิตย์":0, "จันทร์":1, "อังคาร":2, "พุธ":3, "พฤหัส":4, "ศุกร์":5, "เสาร์":6};

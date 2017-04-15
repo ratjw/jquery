@@ -12,13 +12,13 @@ function loadtable(userid)
 		if($('#menu').is(":visible")) {	//visible == take up space even can't be seen
 			if(!$(clickedCell).closest('#menu').length) {
 				$('#menu').hide();
-				$("#editcell").hide()
+				resetEditcell()
 			}
 		}
 		if($('#stafflist').is(":visible")) {
 			if(!$(clickedCell).closest('#stafflist').length) {
 				$('#stafflist').hide();
-				$("#editcell").hide()
+				resetEditcell()
 			}
 		}
 		if (clickedCell.id == "editcell") {
@@ -36,7 +36,7 @@ function loadtable(userid)
 			}
 		}
 		if  (clickedCell.nodeName != "TD") {
-			$("#editcell").hide()
+			resetEditcell()
 			return	
 		}
 		if ($(clickedCell).closest('table').attr('id') == 'tbl' ||
@@ -57,7 +57,7 @@ function loadtable(userid)
 	$(document).keydown( function (event) {
 		countReset();
 		if ($('#paperdiv').is(':visible') ||
-			$('#datepicker').is(':visible')) {
+			$('.ui-datepicker').is(':visible')) {
 
 			return false
 		}

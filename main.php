@@ -32,7 +32,7 @@
   <table id="tbl"><!-- data-role="table" class="ui-responsive"-->
    <tbody id="tblbody">
 	 <tr>
-     <th style="width:10%">วันผ่าตัด</th>
+     <th style="width:10%">Op/Service</th>
      <th style="display:none"></th>
      <th style="width:6%">Staff</th>
      <th style="width:5%">HN</th>
@@ -57,8 +57,8 @@
    <table id="queuetbl"><!-- data-role="table" class="ui-responsive"-->
     <tbody>
 	  <tr>
-      <th style="width:10%">วันผ่าตัด</th>
-      <th style="width:4%">since</th>
+      <th style="width:10%">Op/Service</th>
+      <th style="width:4%">Since</th>
       <th style="display:none"></th>
       <th style="width:7%">HN</th>
       <th style="width:15%">ชื่อ นามสกุล</th>
@@ -77,7 +77,7 @@
 <table id="datatitle" style="display:none">	<!-- Used as cells template -->
   <TBODY>
    <TR>
-    <td data-title="วันผ่าตัด"></td>
+    <td data-title="Op/Service"></td>
     <td style="display:none"></td>
     <td data-title="Staff"></td>
     <td data-title="HN"></td>
@@ -94,8 +94,8 @@
 <table id="qdatatitle" style="display:none">	<!--template for "staffqueue"-->
   <TBODY>
     <TR>
-     <td data-title="วันผ่าตัด"></td>
-     <td data-title="since"></td>
+     <td data-title="Op/Service"></td>
+     <td data-title="Since"></td>
      <td style="display:none"></td>
      <td data-title="HN"></td>
      <td data-title="ชื่อ นามสกุล"></td>
@@ -110,8 +110,8 @@
 
 <div id="dialogService" style="display:none">
   <span style="margin:20px 0px 40px"> เดือน :</span>
-  <input type="text" id="datepicker" style="margin-left:5px">
-  <input type="text" id="datepicking" style="display:none">
+  <input type="text" id="monthpicker" style="margin-left:5px">
+  <input type="text" id="monthpicking" style="display:none">
   <table id="servicetbl"><!-- data-role="table" class="ui-responsive"-->
    <TBODY>
     <TR>
@@ -127,6 +127,8 @@
     </TR>
    </TBODY>
   </table>
+  <input type="text" id="datepicker" style="display:none">
+  <input type="text" id="datepicking" style="display:none">
 </div>
 
 <table id="sdatatitle" style="display:none">	<!--template for "servicetbl"-->
@@ -179,8 +181,8 @@
 <ul id="stafflist" style="display:none"></ul>
 
 <div id="alert">
-  <div>
-	<span class="ui-icon ui-icon-closethick" style="float: right;height:20px;" onclick="closeAlert()"></span>
+  <div style="height:40px">
+	<span class="ui-icon ui-icon-closethick" onclick="closeAlert()"></span>
   </div>
   <div id="message"></div>
 </div>
