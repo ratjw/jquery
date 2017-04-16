@@ -199,6 +199,8 @@ function PACS(hn)
 
 function serviceReview()
 {
+	$('#month').show()
+	$('#monthpicker').show()
 	$('#monthpicker').datepicker( {
 		altField: $( "#monthpicking" ),
 		altFormat: "yy-mm-dd",
@@ -208,20 +210,28 @@ function serviceReview()
 		maxDate: "+1y",
 		monthNames: [ "มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", 
 					  "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม" ],
-		onChangeMonthYear: function(year, month, inst) {
+		onChangeMonthYear: function (year, month, inst) {
 			$(this).datepicker('setDate', new Date(inst.selectedYear, inst.selectedMonth, 1))
 		},
-	}).datepicker("setDate", new Date())
+		beforeShow: function () {
+			$('.ui-datepicker-calendar').css('display', 'none')
+		}
+	}).datepicker("setDate",  "-1m")
 
 	$('#dialogService').dialog({
-		title: 'Service Review',
+		title: 'Service Neurosurgery เดือน : ',
 		closeOnEscape: true,
 		modal: true,
-		height: "auto",
-		width: $('.ui-datepicker').width() + $('#monthpicker').width()
+		width: window.innerWidth - 10,
+		height: window.innerHeight
 	})
-
-	$('.ui-datepicker-calendar').css('display', 'none')
+/*
+$('#monthpicker').position ({
+	my: 'left',
+	at: 'center',
+	of: '.ui-dialog-title'
+})
+*/
 	$('.ui-datepicker').click(function() {
 		if (!$('#monthpicker').is(":focus")) {
 			entireMonth($('#monthpicking').val())
@@ -234,8 +244,11 @@ function serviceReview()
 		$('#monthpicker').datepicker(
 			"setDate", $('#monthpicking').val()? new Date($('#monthpicking').val()) : new Date()
 		)
+		$('.ui-datepicker').show()
 		$('.ui-datepicker-calendar').css('display', 'none')
 	})
+	$( "#monthpicker" ).datepicker('setDate', new Date($('#monthpicking').val()))
+	$('.ui-datepicker-calendar').css('display', 'none')
 	$('#servicetbl').hide()
 }
 
@@ -265,15 +278,16 @@ function getService(fromDate, toDate)
 		if ((!response) || (response.indexOf("DBfailed") != -1)) {
 			alert("Failed! retrieve database \n\n" + response)
 		} else {
-			showService(response)
+			var service = JSON.parse(response)
+
+			showService(service)
+			countService(service, fromDate, toDate)
 		}
 	}
 }
 
-function showService(response)
+function showService(service)
 {
-	var service = JSON.parse(response)
-
 	//delete previous servicetbl lest it accumulates
 	$('#servicetbl tr').slice(1).remove()
 	$('#servicetbl').show()
@@ -305,9 +319,10 @@ function showService(response)
 		});
 	})
 
+	$('#month').hide()
+	$('#monthpicker').hide()
 	$('#dialogService').dialog({
-		width: window.innerWidth - 10,
-		height: window.innerHeight,
+		title: 'Service Neurosurgery เดือน : ' + $('#monthpicker').val(),
 		close: function() {
 			$('#datepicker').hide()
 		}
@@ -330,6 +345,58 @@ jQuery.fn.extend({
 		rowcell[SQN].innerHTML = bookq.qn
 	}
 })
+
+function countService(service, fromDate, toDate)
+{
+	var Admission = 0
+	var Discharge = 0
+	var Operation = 0
+	var Reoperation = 0
+	var Readmission = 0
+	var Infection = 0
+	var Morbidity = 0
+	var Dead = 0
+
+	$.each( service, function() {
+		if ((this.admission >= fromDate) && (this.admission <= toDate)) {
+			Admission++
+		}
+		if ((this.discharge >= fromDate) && (this.discharge <= toDate)) {
+			Discharge++
+		}
+		var that = this.treatment
+		$.each( neuroSx, function(i, each) {
+			if (that.toLowerCase().indexOf(each) >= 0) {
+				Operation++
+				return false
+			}
+		})
+		if (this.treatment.toLowerCase().indexOf("re-op") >= 0) {
+			Reoperation++
+		}
+		if (this.admission.toLowerCase().indexOf("re-ad") >= 0) {
+			Readmission++
+		}
+		if (this.admission.toLowerCase().indexOf("infect") >= 0) {
+			Infection++
+		}
+		if (this.admission.toLowerCase().indexOf("morbid") >= 0) {
+			Morbidity++
+		}
+		if (this.final.toLowerCase().indexOf("dead") >= 0) {
+			Dead++
+		}
+	})
+	document.getElementById("Admission").innerHTML = Admission
+	document.getElementById("Discharge").innerHTML = Discharge
+	document.getElementById("Operation").innerHTML = Operation
+	document.getElementById("Morbidity").innerHTML = Morbidity
+	document.getElementById("Re-admission").innerHTML = Readmission
+	document.getElementById("Infection").innerHTML = Infection
+	document.getElementById("Re-operation").innerHTML = Reoperation
+	document.getElementById("Dead").innerHTML = Dead
+	
+}
 
 function clickservice(clickedCell)
 {
@@ -478,7 +545,12 @@ function saveSContent(column, content)	//column name in MYSQL
 		}
 		else
 		{
-			showService(response)
+			var fromDate = $('#monthpicker').data('fromDate')
+			var toDate = $('#monthpicker').data('toDate')
+			var service = JSON.parse(response)
+
+			showService(service)
+			countService(service, fromDate, toDate)
 		}
 	}
 }
@@ -526,8 +598,11 @@ function selectDate(pointing)
 			$('.ui-datepicker').css( {
 				fontSize: ''
 			}).hide()
+			$(pointing).html($('#datepicker').val())
+			savePreviousScell() 
 		}
-	}).datepicker("setDate", $(pointing).html()? new Date($(pointing).html()) 
+	})
+	$('#datepicker').datepicker("setDate", $(pointing).html()? new Date($(pointing).html()) 
 												: $('#monthpicking').val())
 	$('.ui-datepicker').css( {
 		fontSize: '12px'

@@ -137,8 +137,14 @@ function updating()
 		clearTimeout(TIMER);
 		TIMER = setTimeout("updating()",10000);	//poke next 10 sec.
 		refillall()
-		if ($("#titlecontainer").css('display') == 'block')
+		if ($("#titlecontainer").css('display') == 'block') {
 			refillstaffqueue()
+		}
+		if ($("#dialogService").css('display') == 'block') {
+			var fromDate = $('#monthpicker').data('fromDate')
+			var toDate = $('#monthpicker').data('toDate')
+			getService(fromDate, toDate)
+		}
 	}
 }
 

@@ -58,6 +58,7 @@ function fillSetTable(rownum, pointing)
 	$("#menu").menu({
 		select: function( event, ui ) {
 
+			$("#editcell").hide()
 			$("#menu").hide()		//to disappear after selection
 			event.stopPropagation()
 

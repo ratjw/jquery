@@ -66,3 +66,10 @@ var HOLIDAY = {
 	"2019-07-16" : "url('pic/Asalha.jpg')",		//วันอาสาฬหบูชา
 	"2019-07-17" : "url('pic/Vassa.jpg')"		//วันเข้าพรรษา
 	}
+
+var neuroSx = [
+	"biopsy", "aspirat", "Burr", "ectomy", "decomp", "drain", "removal", 
+	"approach", "otomy", "clip", "Repair", "plasty", "ostomy", "shunt", "DBS", "stim", 
+	"insert", "lesion", "Untether", "lysis", "transect", "scope", "transpos", 
+	"block", "anast", "occlu", "fusion", "fix", "operat", "screw", "revis"
+	]

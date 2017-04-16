@@ -296,6 +296,7 @@ function editcell(pointing)
 	$("#editcell").appendTo($(pointing).closest('div'))
 	$("#editcell").focus()
 	reposition("#editcell", "center", "center", pointing)
+	$("#editcell").focus()
 }
 
 function reposition(me, mypos, atpos, target)

@@ -109,9 +109,23 @@
 </table>
 
 <div id="dialogService" style="display:none">
-  <span style="margin:20px 0px 40px"> เดือน :</span>
+  <div id="servicehead">
+    <div>
+	  <span class="item">Admit : <span id="Admission"></span></span>
+	  <span class="item">Discharge : <span id="Discharge"></span></span>
+	  <span class="item hilight">Operation : <span id="Operation"></span></span>
+	  <span class="item hilight">Morbidity : <span id="Morbidity"></span></span>
+	</div>
+	<div>
+	  <span class="item hilight">Re-admission : <span id="Re-admission"></span></span>
+	  <span class="item">Infection : <span id="Infection"></span></span>
+	  <span class="item hilight">Re-operation : <span id="Re-operation"></span></span>
+	  <span class="item hilight">Dead : <span id="Dead"></span></span>
+	</div>
+  </div>
+  <span id="month" style="margin:20px 0px 40px"> เดือน :</span>
   <input type="text" id="monthpicker" style="margin-left:5px">
-  <input type="text" id="monthpicking" style="display:none">
+  <input type="text" id="monthpicking" style="visibility:hidden">
   <table id="servicetbl"><!-- data-role="table" class="ui-responsive"-->
    <TBODY>
     <TR>
