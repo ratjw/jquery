@@ -8,7 +8,7 @@ function editHistory(rowmain, qn)
 		Ajax(MYSQLIPHP, sql, callbackeditHistory)
 	}
 
-	resetEditcell()
+	clearEditcell()
 
 	function callbackeditHistory(response)
 	{
@@ -81,7 +81,7 @@ function deleteHistory()
 
 	Ajax(MYSQLIPHP, sql, callbackdeleteHistory)
 
-	resetEditcell()
+	clearEditcell()
 
 	function callbackdeleteHistory(response)
 	{
@@ -186,7 +186,7 @@ function PACS(hn)
 
 	Ajax(CHECKPAC, sql, callbackCHECKPAC)
 
-	resetEditcell()
+	clearEditcell()
 
 	function callbackCHECKPAC(response)
 	{
@@ -306,8 +306,11 @@ function showService(response)
 	})
 
 	$('#dialogService').dialog({
-		width: window.innerWidth,
-		height: window.innerHeight
+		width: window.innerWidth - 10,
+		height: window.innerHeight,
+		close: function() {
+			$('#datepicker').hide()
+		}
 	})
 }
 
@@ -352,7 +355,7 @@ function Skeyin(event)
 		if (thiscell) {
 			storePresentScell(thiscell)
 		} else {
-			resetEditcell()
+			clearEditcell()
 			window.focus()
 		}
 		event.preventDefault()
@@ -368,7 +371,7 @@ function Skeyin(event)
 		if (thiscell) {
 			storePresentScell(thiscell)
 		} else {
-			resetEditcell()
+			clearEditcell()
 			window.focus()
 		}
 		event.preventDefault()
@@ -376,7 +379,7 @@ function Skeyin(event)
 	}
 	else if (keycode == 27)
 	{
-		resetEditcell()
+		clearEditcell()
 		window.focus()
 		event.preventDefault()
 		return false
@@ -414,11 +417,13 @@ function savePreviousScell()
 			if ($('#datepicker').val() != $("#editcell").data("content")) {
 				saveSContent("admit", $('#datepicker').val())
 			}
+			$('#datepicker').hide()
 			break
 		case DISCHARGE:
 			if ($('#datepicker').val() != $("#editcell").data("content")) {
 				saveSContent("discharge", $('#datepicker').val())
 			}
+			$('#datepicker').hide()
 			break
 	}
 }
@@ -486,7 +491,7 @@ function storePresentScell(pointing)
 	{
 		case CASE:
 		case PATIENT:
-			resetEditcell()
+			clearEditcell()
 			break
 		case SDIAGNOSIS:
 		case STREATMENT:
@@ -521,9 +526,9 @@ function selectDate(pointing)
 			$('.ui-datepicker').css( {
 				fontSize: ''
 			}).hide()
-			$('#datepicker').hide()
 		}
-	}).datepicker("setDate", $(pointing).html()? new Date($(pointing).html()) : "")
+	}).datepicker("setDate", $(pointing).html()? new Date($(pointing).html()) 
+												: $('#monthpicking').val())
 	$('.ui-datepicker').css( {
 		fontSize: '12px'
 	})

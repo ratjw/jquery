@@ -31,7 +31,7 @@ function keyin(event)
 		if (thiscell) {
 			storePresentcell(thiscell)
 		} else {
-			resetEditcell()
+			clearEditcell()
 			window.focus()
 		}
 		event.preventDefault()
@@ -52,7 +52,7 @@ function keyin(event)
 		if (thiscell) {
 			storePresentcell(thiscell)
 		} else {
-			resetEditcell()
+			clearEditcell()
 			window.focus()
 		}
 		event.preventDefault()
@@ -62,7 +62,7 @@ function keyin(event)
 	{
 		$('#menu').hide();
 		$('#stafflist').hide();
-		resetEditcell()
+		clearEditcell()
 		window.focus()
 		event.preventDefault()
 		return false
@@ -254,7 +254,7 @@ function storePresentcell(pointing)
 	switch(cindex)
 	{
 		case OPDATE:
-			resetEditcell()
+			clearEditcell()
 			editcell(pointing)
 			var content = window.getComputedStyle(pointing,':before').content
 			content = content.replace(/\"/g, "")
@@ -274,7 +274,7 @@ function storePresentcell(pointing)
 			}
 		case NAME:
 		case AGE:
-			resetEditcell()
+			clearEditcell()
 			break
 		case DIAGNOSIS:
 		case TREATMENT:
@@ -332,7 +332,7 @@ function saveDataPoint(editcell, pointing)
 	$(editcell).html(pointing.innerHTML)
 }
 
-function resetEditcell()
+function clearEditcell()
 {
 	var editcell = '#editcell'
 	$(editcell).data("editCell", "")

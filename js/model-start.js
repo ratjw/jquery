@@ -12,21 +12,21 @@ function loadtable(userid)
 		if ($('#menu').is(":visible")) {	//visible == take up space even can't be seen
 			if (!$(clickedCell).closest('#menu').length) {
 				$('#menu').hide();
-				resetEditcell()
+				clearEditcell()
 			}
 		}
-		else if ($('#stafflist').is(":visible")) {
-			if(!$(clickedCell).closest('#stafflist').length) {
+		if ($('#stafflist').is(":visible")) {
+			if (!$(clickedCell).closest('#stafflist').length) {
 				$('#stafflist').hide();
-				resetEditcell()
+				clearEditcell()
 			}
 		}
-		else if($('#delete').is(":visible")) {
+		if ($('#delete').is(":visible")) {
 			if(!$(clickedCell).closest('#delete').length) {
 				$('#delete').hide();
 			}
 		}
-		else if($('#undelete').is(":visible")) {
+		if ($('#undelete').is(":visible")) {
 			if ($(clickedCell).index()) {
 				$('#undelete').hide()
 				return false
@@ -36,8 +36,14 @@ function loadtable(userid)
 		if (clickedCell.id == "editcell") {
 			return
 		}
-		else if  (clickedCell.nodeName != "TD") {
-			resetEditcell()
+		if ($(clickedCell).closest('#datepicker').length) {
+			return	
+		}
+		if ($(clickedCell).closest('.ui-datepicker').length) {
+			return	
+		}
+		if (clickedCell.nodeName == "TH") {
+			clearEditcell()
 			return	
 		}
 
@@ -51,15 +57,15 @@ function loadtable(userid)
 		}
 	})
 	$('#menu li > div').click(function(e){
-		if($(this).siblings('ul').length > 0){
+		if ($(this).siblings('ul').length > 0){
 			e.preventDefault()
 			e.stopPropagation()
 		}
 	});
 	$(document).keydown( function (event) {
 		countReset();
-		if ($('#paperdiv').is(':visible') ||
-			$('.ui-datepicker').is(':visible')) {
+		if ($('#paperdiv').is(':focus') ||
+			$('#monthpicker').is(':focus')) {
 
 			return false
 		}

@@ -58,7 +58,6 @@ function fillSetTable(rownum, pointing)
 	$("#menu").menu({
 		select: function( event, ui ) {
 
-			resetEditcell()
 			$("#menu").hide()		//to disappear after selection
 			event.stopPropagation()
 
@@ -118,7 +117,7 @@ function stafflist(pointing)
 			var staffname = ui.item.text()
 			$(pointing).html(staffname)
 			saveContent("staffname", staffname)
-			resetEditcell()
+			clearEditcell()
 			$('#stafflist').hide()		//to disappear after selection
 			event.stopPropagation()
 			return false

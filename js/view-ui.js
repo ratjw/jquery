@@ -7,7 +7,7 @@ function sortable()
 			clearTimeout(TIMER);
 			$('#menu').hide();
 			$('#stafflist').hide();
-			resetEditcell();
+			clearEditcell();
 			ui.placeholder.innerHeight(ui.item.outerHeight())
 			ui.placeholder.attr('data-thisindex', ui.placeholder.index());
 			ui.item.attr("data-sender", ui.item.closest('table').attr('id'))
