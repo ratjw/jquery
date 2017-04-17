@@ -111,15 +111,15 @@
 <div id="dialogService" style="display:none">
   <div id="servicehead">
     <div>
-	  <span class="item">Admit : <span id="Admission"></span></span>
+	  <span class="item">Admit : <span id="Admit"></span></span>
 	  <span class="item">Discharge : <span id="Discharge"></span></span>
 	  <span class="item hilight">Operation : <span id="Operation"></span></span>
 	  <span class="item hilight">Morbidity : <span id="Morbidity"></span></span>
 	</div>
 	<div>
-	  <span class="item hilight">Re-admission : <span id="Re-admission"></span></span>
+	  <span class="item hilight">Re-admission : <span id="Readmission"></span></span>
 	  <span class="item">Infection : <span id="Infection"></span></span>
-	  <span class="item hilight">Re-operation : <span id="Re-operation"></span></span>
+	  <span class="item hilight">Re-operation : <span id="Reoperation"></span></span>
 	  <span class="item hilight">Dead : <span id="Dead"></span></span>
 	</div>
   </div>

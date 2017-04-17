@@ -7,7 +7,7 @@ function sortable()
 			clearTimeout(TIMER);
 			$('#menu').hide();
 			$('#stafflist').hide();
-			clearEditcell();
+			clearEditcellData("hide");
 			ui.placeholder.innerHeight(ui.item.outerHeight())
 			ui.placeholder.attr('data-thisindex', ui.placeholder.index());
 			ui.item.attr("data-sender", ui.item.closest('table').attr('id'))
@@ -112,7 +112,7 @@ function sortable()
 						if (($("#titlecontainer").css('display') == 'block') && 
 							($('#titlename').html() == staffname)) {
 
-//								requestAnimationFrame(refillstaffqueue())								
+//						requestAnimationFrame(refillstaffqueue())								
 						refillstaffqueue()
 						}
 					} else {
@@ -124,6 +124,9 @@ function sortable()
 				}
 			}
 			TIMER = setTimeout("updating()",10000);	//poke next 10 sec.
+			$('#editcell').hide()
+			//after sorting, sometimes editcell is placed at row 0 column 1
+			//but display at placeholder position in entire width
 		}
 	})
 }

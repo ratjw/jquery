@@ -124,15 +124,20 @@
 }
 
 #servicehead span.item {
-	display: inline-block;
 	border: solid 1px white;
-	width: 150px;
+	width: 170px;
 	padding: 2px 10px;
 }
 
 #servicehead span.hilight {
 	background-color: #AABBCC;
 }
+
+#servicetbl tr.Readmission { background-color: #CCCCAA; }
+#servicetbl tr.Reoperation { background-color: #AACCCC; }
+#servicetbl tr.Infection { background-color: #CCAAAA; }
+#servicetbl tr.Morbidity { background-color: #AAAACC; }
+#servicetbl tr.Dead { background-color: #CCCCCC; }
 
 #titlebar {
 	height: 40px;

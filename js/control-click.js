@@ -9,7 +9,7 @@ function keyin(event)
 	var keycode = event.which || window.event.keyCode
 	var table = '#' + $('#editcell').data("tableID")
 	var editable = EDITABLE
-	var pointing = $($("#editcell").data("editCell"))
+	var pointing = $("#editcell").data("editCell")
 	var thiscell
 
 	if (keycode == 9)
@@ -31,7 +31,7 @@ function keyin(event)
 		if (thiscell) {
 			storePresentcell(thiscell)
 		} else {
-			clearEditcell()
+			clearEditcellData("hide")
 			window.focus()
 		}
 		event.preventDefault()
@@ -52,7 +52,7 @@ function keyin(event)
 		if (thiscell) {
 			storePresentcell(thiscell)
 		} else {
-			clearEditcell()
+			clearEditcellData("hide")
 			window.focus()
 		}
 		event.preventDefault()
@@ -62,7 +62,7 @@ function keyin(event)
 	{
 		$('#menu').hide();
 		$('#stafflist').hide();
-		clearEditcell()
+		clearEditcellData("hide")
 		window.focus()
 		event.preventDefault()
 		return false
@@ -121,7 +121,7 @@ function saveContent(column, content)	//column name in MYSQL
 	if (!qn)
 		since = new Date().mysqlDate()
 
-	$($("#editcell").data("editCell")).html(content)	//just for show instantly
+	$("#editcell").data("editCell").html(content)	//just for show instantly
 
 	content = URIcomponent(content)			//take care of white space, double qoute, 
 											//single qoute, and back slash
@@ -146,7 +146,7 @@ function saveContent(column, content)	//column name in MYSQL
 		if (!response || response.indexOf("DBfailed") != -1)
 		{
 			alert("Failed! update database \n\n" + response)
-			$($("#editcell").data("editCell")).html($("#editcell").data("content"))
+			$("#editcell").data("editCell").html($("#editcell").data("content"))
 			//return to previous content
 		}
 		else
@@ -180,7 +180,7 @@ function saveHNinput(hn, content)
 	var qn = rowcell.eq(QN).html()
 	var since
 
-	$($("#editcell").data("editCell")).html(content)
+	$("#editcell").data("editCell").html(content)
 
 	content = content.replace(/<br>/g, "")
 	content = content.replace(/^\s+/g, "")
@@ -203,7 +203,7 @@ function saveHNinput(hn, content)
 		if ((!response) || (response.indexOf("patient") == -1) || (response.indexOf("{") == -1)) 
 		{
 			alert(response)
-			$($("#editcell").data("editCell")).html($("#editcell").data("content"))
+			$("#editcell").data("editCell").html($("#editcell").data("content"))
 			//return to previous content
 		}
 		else 
@@ -251,35 +251,33 @@ function storePresentcell(pointing)
 	var rindex = $(pointing).closest("tr").index()
 	var cindex = $(pointing).closest("td").index()
 
+	editcell(pointing)
+
 	switch(cindex)
 	{
 		case OPDATE:
-			clearEditcell()
-			editcell(pointing)
+			clearEditcellData()
 			var content = window.getComputedStyle(pointing,':before').content
 			content = content.replace(/\"/g, "")
 			$("#editcell").html(content + pointing.innerHTML)
 			fillSetTable(rindex, pointing)
 			break
 		case STAFFNAME:
-			editcell(pointing)
 			saveDataPoint("#editcell", pointing)
 			stafflist(pointing)
 			break
 		case HN:
 			if (!pointing.innerHTML) {
-				editcell(pointing)
 				saveDataPoint("#editcell", pointing)
 				break
 			}
 		case NAME:
 		case AGE:
-			clearEditcell()
+			clearEditcellData("hide")
 			break
 		case DIAGNOSIS:
 		case TREATMENT:
 		case CONTACT:		//store content in "data" of editcell
-			editcell(pointing)
 			saveDataPoint("#editcell", pointing)
 			break
 	}
@@ -324,7 +322,7 @@ function saveDataPoint(editcell, pointing)
 	var rowIndex = $(pointing).closest('tr').index()
 	var cellIndex = $(pointing).index()
 
-	$(editcell).data("editCell", "#"+ tableID +" tr:eq("+ rowIndex +") td:eq("+ cellIndex +")")
+	$(editcell).data("editCell", $("#"+ tableID +" tr:eq("+ rowIndex +") td:eq("+ cellIndex +")"))
 	$(editcell).data("editRow", "#"+ tableID +" tr:eq("+ rowIndex +")")
 	$(editcell).data("tableID", tableID)
 	$(editcell).data("rowIndex", rowIndex)
@@ -333,9 +331,9 @@ function saveDataPoint(editcell, pointing)
 	$(editcell).html(pointing.innerHTML)
 }
 
-function clearEditcell()
+function clearEditcellData(display)
 {
-	var editcell = '#editcell'
+	var editcell = "#editcell"
 	$(editcell).data("editCell", "")
 	$(editcell).data("editRow", "")
 	$(editcell).data("tableID", "")
@@ -343,7 +341,9 @@ function clearEditcell()
 	$(editcell).data("cellIndex", "")
 	$(editcell).data("content", "")
 	$(editcell).html("")
-	$(editcell).hide()
+	if (display == "hide") {
+		$(editcell).hide()
+	}
 }
 
 function findPrevcell(event, editable, pointing) 

@@ -12,13 +12,13 @@ function loadtable(userid)
 		if ($('#menu').is(":visible")) {	//visible == take up space even can't be seen
 			if (!$(clickedCell).closest('#menu').length) {
 				$('#menu').hide();
-				clearEditcell()
+				clearEditcellData("hide")
 			}
 		}
 		if ($('#stafflist').is(":visible")) {
 			if (!$(clickedCell).closest('#stafflist').length) {
 				$('#stafflist').hide();
-				clearEditcell()
+				clearEditcellData("hide")
 			}
 		}
 		if ($('#delete').is(":visible")) {
@@ -43,7 +43,7 @@ function loadtable(userid)
 			return	
 		}
 		if (clickedCell.nodeName == "TH") {
-			clearEditcell()
+			clearEditcellData("hide")
 			return	
 		}
 
@@ -128,28 +128,52 @@ function updating()
 {
 	Ajax(MYSQLIPHP, "functionName=checkupdate&time="+TIMESTAMP, updatingback);
 
-	function updatingback(response)	//only changed database by checkupdate&time
+	function updatingback(response)
 	{
 		if (response && response.indexOf("opdate") != -1)
-		{								//there is new entry after TIMESTAMP
-			updateBOOK(response)
+		{	//there is some change in database
+//			if (!$('#editcell').data("editCell")) {
+				updateTables(response)
+/*
+				clearEditcellData("hide")
+				$('#menu').hide()	//editcell may be on first column
+			}
+			else if ($('input').css('display') == "block") {
+				updateTables(response)
+				clearEditcellData("hide")
+			}
+			else if (($('#editcell').html() == $('#editcell').data("editCell").html())
+			&& ($('#editcell').html() == $('#editcell').data('content'))) {
+				updateTables(response)
+				clearEditcellData("hide")
+				$('#stafflist').hide()	//editcell may be on staff
+			}
+			else if (1) {
+				updateTables(response)
+			}
+*/
 		}
 		clearTimeout(TIMER);
-		TIMER = setTimeout("updating()",10000);	//poke next 10 sec.
-		refillall()
-		if ($("#titlecontainer").css('display') == 'block') {
-			refillstaffqueue()
-		}
-		if ($("#dialogService").css('display') == 'block') {
-			var fromDate = $('#monthpicker').data('fromDate')
-			var toDate = $('#monthpicker').data('toDate')
-			getService(fromDate, toDate)
-		}
+		TIMER = setTimeout("updating()",10000);	//idle, poke next 5 sec.
+	}
+}
+
+function updateTables(response)
+{
+	updateBOOK(response)
+	if ($("#dialogService").css('display') == 'block') {
+		var fromDate = $('#monthpicker').data('fromDate')
+		var toDate = $('#monthpicker').data('toDate')
+		getService(fromDate, toDate)
+	}
+	refillall()
+	if ($("#titlecontainer").css('display') == 'block') {
+		refillstaffqueue()
 	}
 }
 
 function countReset()
 {
 	clearTimeout(TIMER);
-	TIMER = setTimeout("updating()",10000);	//poke after 10 sec.
+	TIMER = setTimeout("updating()",10000);	//active, poke after 10 sec.
 }

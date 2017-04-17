@@ -68,8 +68,8 @@ var HOLIDAY = {
 	}
 
 var neuroSx = [
-	"biopsy", "aspirat", "Burr", "ectomy", "decomp", "drain", "removal", 
-	"approach", "otomy", "clip", "Repair", "plasty", "ostomy", "shunt", "DBS", "stim", 
-	"insert", "lesion", "Untether", "lysis", "transect", "scope", "transpos", 
-	"block", "anast", "occlu", "fusion", "fix", "operat", "screw", "revis"
+	"anast", "approa", "aspirat", "biop", "block", "burr", "clip", 
+	"decom", "dbs", "drain", "ectomy", "fix", "fusion", "insert", "lesion", "lysis", 
+	"occlu", "oper", "ostom", "otom", "plast", "remov", "repa", "revis", 
+	"scope", "screw", "shunt", "stim", "transpos", "transect", "untether"
 	]

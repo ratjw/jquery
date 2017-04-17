@@ -8,7 +8,7 @@ function editHistory(rowmain, qn)
 		Ajax(MYSQLIPHP, sql, callbackeditHistory)
 	}
 
-	clearEditcell()
+	clearEditcellData("hide")
 
 	function callbackeditHistory(response)
 	{
@@ -81,7 +81,7 @@ function deleteHistory()
 
 	Ajax(MYSQLIPHP, sql, callbackdeleteHistory)
 
-	clearEditcell()
+	clearEditcellData("hide")
 
 	function callbackdeleteHistory(response)
 	{
@@ -186,7 +186,7 @@ function PACS(hn)
 
 	Ajax(CHECKPAC, sql, callbackCHECKPAC)
 
-	clearEditcell()
+	clearEditcellData("hide")
 
 	function callbackCHECKPAC(response)
 	{
@@ -225,13 +225,6 @@ function serviceReview()
 		width: window.innerWidth - 10,
 		height: window.innerHeight
 	})
-/*
-$('#monthpicker').position ({
-	my: 'left',
-	at: 'center',
-	of: '.ui-dialog-title'
-})
-*/
 	$('.ui-datepicker').click(function() {
 		if (!$('#monthpicker').is(":focus")) {
 			entireMonth($('#monthpicking').val())
@@ -267,6 +260,38 @@ function entireMonth(fromDate)
 
 function getService(fromDate, toDate)
 {
+	var SERVICE
+
+	if (fromDate >= BOOK[0].opdate) {
+		SERVICE = getfromBOOK(fromDate, toDate)
+	} else {
+		SERVICE = getfromServer(fromDate, toDate)
+	}
+
+	if (SERVICE) {
+		showService(SERVICE, fromDate, toDate)
+//		countService(SERVICE, fromDate, toDate)
+	}
+}
+
+function getfromBOOK(fromDate, toDate)
+{
+	var SERV = []
+	var i = 0
+	for (var q = 0; q < BOOK.length; q++) {
+		if ((BOOK[q].opdate >= fromDate) && (BOOK[q].opdate <= toDate)) {
+			SERV[i] = BOOK[q]
+			i++
+		}
+		if (BOOK[q].opdate > toDate) {
+			break
+		}
+	}
+	return SERV
+}
+
+function getfromServer(fromDate, toDate)
+{
 	var sql = "sqlReturnData=SELECT * FROM book "
 	sql += "WHERE opdate BETWEEN '"+ fromDate +"' AND '"+ toDate +"' "
 	sql += "AND waitnum > 0 ORDER BY staffname, opdate;"
@@ -277,22 +302,28 @@ function getService(fromDate, toDate)
 	{
 		if ((!response) || (response.indexOf("DBfailed") != -1)) {
 			alert("Failed! retrieve database \n\n" + response)
+			return	//undefined
 		} else {
-			var service = JSON.parse(response)
-
-			showService(service)
-			countService(service, fromDate, toDate)
+			return JSON.parse(response)
 		}
 	}
 }
 
-function showService(service)
+function showService(SERVICE, fromDate, toDate)
 {
+	var Admit = 0
+	var Discharge = 0
+	var Operation = 0
+	var Reoperation = 0
+	var Readmission = 0
+	var Infection = 0
+	var Morbidity = 0
+	var Dead = 0
+	var scase = 0
+
 	//delete previous servicetbl lest it accumulates
 	$('#servicetbl tr').slice(1).remove()
 	$('#servicetbl').show()
-
-	var scase = 0
 
 	$.each( STAFF, function() {
 		var staffname = this.name
@@ -309,16 +340,26 @@ function showService(service)
 						})
 						.html(staffname)
 							.siblings().hide()
-		$.each( service, function() {
+		$.each( SERVICE, function() {
 			if (this.staffname == staffname) {
+				var color = countService(this)
 				scase++
 				$('#sdatatitle tr').clone()
 					.insertAfter($('#servicetbl tr:last'))
-						.filldataService(this, scase)
+						.filldataService(this, scase, color)
 			}
 		});
 	})
 
+	document.getElementById("Admit").innerHTML = Admit
+	document.getElementById("Discharge").innerHTML = Discharge
+	document.getElementById("Operation").innerHTML = Operation
+	document.getElementById("Morbidity").innerHTML = Morbidity
+	document.getElementById("Readmission").innerHTML = Readmission
+	document.getElementById("Infection").innerHTML = Infection
+	document.getElementById("Reoperation").innerHTML = Reoperation
+	document.getElementById("Dead").innerHTML = Dead
+		
 	$('#month').hide()
 	$('#monthpicker').hide()
 	$('#dialogService').dialog({
@@ -327,10 +368,54 @@ function showService(service)
 			$('#datepicker').hide()
 		}
 	})
+
+	function countService(that)
+	{
+		var color
+
+		if ((that.admit >= fromDate) && (that.admit <= toDate)) {
+			Admit++
+		}
+		if ((that.discharge >= fromDate) && (that.discharge <= toDate)) {
+			Discharge++
+		}
+		$.each( neuroSx, function(i, each) {
+			if (that.treatment.toLowerCase().indexOf(each) >= 0) {
+				Operation++
+				return false
+			}
+			if (that.treatment.toLowerCase().indexOf("op") >= 0) {
+				Operation++
+				return false
+			}
+		})
+		if (that.treatment.toLowerCase().indexOf("re-op") >= 0) {
+			Reoperation++
+			color = "Reoperation"
+		}
+		if (that.admission.toLowerCase().indexOf("re-ad") >= 0) {
+			Readmission++
+			color = "Readmission"
+		}
+		if (that.admission.toLowerCase().indexOf("infect") >= 0) {
+			Infection++
+			color = "Infection"
+		}
+		if (that.admission.toLowerCase().indexOf("morbid") >= 0) {
+			Morbidity++
+			color = "Morbidity"
+		}
+		if (that.final.toLowerCase().indexOf("dead") >= 0) {
+			Dead++
+			color = "Dead"
+		}
+		return color
+	}
 }
 
 jQuery.fn.extend({
-	filldataService : function(bookq, scase) {
+	filldataService : function(bookq, scase, color) {
+		this[0].className = color
 		var rowcell = this[0].cells
 		rowcell[CASE].innerHTML = scase
 		rowcell[PATIENT].innerHTML = bookq.hn
@@ -346,58 +431,6 @@ jQuery.fn.extend({
 	}
 })
 
-function countService(service, fromDate, toDate)
-{
-	var Admission = 0
-	var Discharge = 0
-	var Operation = 0
-	var Reoperation = 0
-	var Readmission = 0
-	var Infection = 0
-	var Morbidity = 0
-	var Dead = 0
-
-	$.each( service, function() {
-		if ((this.admission >= fromDate) && (this.admission <= toDate)) {
-			Admission++
-		}
-		if ((this.discharge >= fromDate) && (this.discharge <= toDate)) {
-			Discharge++
-		}
-		var that = this.treatment
-		$.each( neuroSx, function(i, each) {
-			if (that.toLowerCase().indexOf(each) >= 0) {
-				Operation++
-				return false
-			}
-		})
-		if (this.treatment.toLowerCase().indexOf("re-op") >= 0) {
-			Reoperation++
-		}
-		if (this.admission.toLowerCase().indexOf("re-ad") >= 0) {
-			Readmission++
-		}
-		if (this.admission.toLowerCase().indexOf("infect") >= 0) {
-			Infection++
-		}
-		if (this.admission.toLowerCase().indexOf("morbid") >= 0) {
-			Morbidity++
-		}
-		if (this.final.toLowerCase().indexOf("dead") >= 0) {
-			Dead++
-		}
-	})
-	document.getElementById("Admission").innerHTML = Admission
-	document.getElementById("Discharge").innerHTML = Discharge
-	document.getElementById("Operation").innerHTML = Operation
-	document.getElementById("Morbidity").innerHTML = Morbidity
-	document.getElementById("Re-admission").innerHTML = Readmission
-	document.getElementById("Infection").innerHTML = Infection
-	document.getElementById("Re-operation").innerHTML = Reoperation
-	document.getElementById("Dead").innerHTML = Dead
-	
-}
-
 function clickservice(clickedCell)
 {
 	savePreviousScell()
@@ -409,7 +442,7 @@ function Skeyin(event)
 	var keycode = event.which || window.event.keyCode
 	var tableID = "#servicetbl"
 	var editable = SEDITABLE
-	var pointing = $($("#editcell").data("editCell"))
+	var pointing = $("#editcell").data("editCell")
 	var thiscell
 
 	if (keycode == 9)
@@ -422,7 +455,7 @@ function Skeyin(event)
 		if (thiscell) {
 			storePresentScell(thiscell)
 		} else {
-			clearEditcell()
+			clearEditcellData("hide")
 			window.focus()
 		}
 		event.preventDefault()
@@ -438,7 +471,7 @@ function Skeyin(event)
 		if (thiscell) {
 			storePresentScell(thiscell)
 		} else {
-			clearEditcell()
+			clearEditcellData("hide")
 			window.focus()
 		}
 		event.preventDefault()
@@ -446,7 +479,7 @@ function Skeyin(event)
 	}
 	else if (keycode == 27)
 	{
-		clearEditcell()
+		clearEditcellData("hide")
 		window.focus()
 		event.preventDefault()
 		return false
@@ -521,7 +554,7 @@ function saveSContent(column, content)	//column name in MYSQL
 	var fromDate = $('#monthpicker').data('fromDate')
 	var toDate = $('#monthpicker').data('toDate')
 
-	$($("#editcell").data("editCell")).html(content)	//just for show instantly
+	$("#editcell").data("editCell").html(content)	//just for show instantly
 
 	content = URIcomponent(content)			//take care of white space, double qoute, 
 											//single qoute, and back slash
@@ -540,7 +573,7 @@ function saveSContent(column, content)	//column name in MYSQL
 		if (!response || response.indexOf("DBfailed") != -1)
 		{
 			alert("Failed! update database \n\n" + response)
-			$($("#editcell").data("editCell")).html($("#editcell").data("content"))
+			$("#editcell").data("editCell").html($("#editcell").data("content"))
 			//return to previous content
 		}
 		else
@@ -549,8 +582,8 @@ function saveSContent(column, content)	//column name in MYSQL
 			var toDate = $('#monthpicker').data('toDate')
 			var service = JSON.parse(response)
 
-			showService(service)
-			countService(service, fromDate, toDate)
+			showService(service, fromDate, toDate)
+//			countService(service, fromDate, toDate)
 		}
 	}
 }
@@ -563,7 +596,7 @@ function storePresentScell(pointing)
 	{
 		case CASE:
 		case PATIENT:
-			clearEditcell()
+			clearEditcellData("hide")
 			break
 		case SDIAGNOSIS:
 		case STREATMENT:
@@ -574,9 +607,8 @@ function storePresentScell(pointing)
 			break
 		case ADMIT:
 		case DISCHARGE:
-			editcell(pointing)
-			saveDataPoint("#editcell", pointing)
 			$('#editcell').hide()
+			saveDataPoint("#editcell", pointing)
 			selectDate(pointing)
 			break
 	}

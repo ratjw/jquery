@@ -118,7 +118,7 @@ function stafflist(pointing)
 			var staffname = ui.item.text()
 			$(pointing).html(staffname)
 			saveContent("staffname", staffname)
-			clearEditcell()
+			clearEditcellData("hide")
 			$('#stafflist').hide()		//to disappear after selection
 			event.stopPropagation()
 			return false
