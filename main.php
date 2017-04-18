@@ -14,15 +14,16 @@
 <!--script src="js/jquery-1.12.4.min.js"></script-->
 <script src="js/jquery-3.1.1.js"></script>
 <script src="js/jquery-ui.js"></script>
-<script src="js/control-click.js"></script>
-<script src="js/control-function.js"></script>
-<script src="js/control-menu.js"></script>
-<script src="js/model-constant.js"></script>
-<script src="js/model-equip.js"></script>
-<script src="js/model-start.js"></script>
-<script src="js/view-fill.js"></script>
-<script src="js/view-history.js"></script>
-<script src="js/view-ui.js"></script>
+<script src="js/click.js"></script>
+<script src="js/constant.js"></script>
+<script src="js/equip.js"></script>
+<script src="js/fill.js"></script>
+<script src="js/function.js"></script>
+<script src="js/history.js"></script>
+<script src="js/menu.js"></script>
+<script src="js/service.js"></script>
+<script src="js/start.js"></script>
+<script src="js/ui.js"></script>
 </HEAD>
 <BODY>
 

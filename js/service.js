@@ -1,201 +1,3 @@
-function editHistory(rowmain, qn)
-{
-	if (rowmain.cells[QN].innerHTML)
-	{
-		var sql = "sqlReturnData=SELECT * FROM bookhistory "
-		sql += "WHERE qn="+ qn +";"
-
-		Ajax(MYSQLIPHP, sql, callbackeditHistory)
-	}
-
-	clearEditcellData("hide")
-
-	function callbackeditHistory(response)
-	{
-		if (!response || response.indexOf("DBfailed") != -1)
-			alert("Data history DBfailed!\n" + response)
-		else
-			makehistory(rowmain, response)
-	}
-}
-
-function makehistory(rowmain, response)
-{
-	var history = JSON.parse(response)
-
-	$('#historytbl').attr('id', '')
-
-	var HTML_String = '<table id = "historytbl">';
-	HTML_String += '<tr>';
-	HTML_String += '<th style="width:10%">Date Time</th>';
-	HTML_String += '<th style="width:30%">Diagnosis</th>';
-	HTML_String += '<th style="width:30%">Treatment</th>';
-	HTML_String += '<th style="width:25%">Notice</th>';
-	HTML_String += '<th style="width:5%">Editor</th>';
-	HTML_String += '</tr>';
-	for (var j = 0; j < history.length; j++) 
-	{
-		if ((history[j].action == 'insert' || history[j].action == 'update') && 
-			!history[j].diagnosis && 
-			!history[j].treatment && 
-			!history[j].contact)
-			continue
-		if (history[j].action == 'delete') {
-			HTML_String += '<tr style="background-color:#FFCCCC">';
-		}
-		else if (history[j].action == 'undelete') {
-			HTML_String += '<tr style="background-color:#CCFFCC">';
-		} else {
-			HTML_String += '<tr>';
-		}
-		HTML_String += '<td>' + history[j].editdatetime +'</td>';
-		HTML_String += '<td>' + history[j].diagnosis +'</td>';
-		HTML_String += '<td>' + history[j].treatment +'</td>';
-		HTML_String += '<td>' + history[j].contact +'</td>';
-		HTML_String += '<td>' + history[j].editor +'</td>';
-		HTML_String += '</tr>';
-	}
-	HTML_String += '</table>';
-
-	$("#dialogOplog").css("height", 0)
-	$('#dialogOplog').html(HTML_String)
-	$('#dialogOplog').dialog({
-		title: rowmain.cells[HN].innerHTML +' '+ rowmain.cells[NAME].innerHTML,
-		closeOnEscape: true,
-		modal: true
-	})
-
-	$('#dialogOplog').dialog({
-		width: window.innerWidth * 9 / 10,
-		height: window.innerHeight * 8 / 10
-	})
-}
-
-function deleteHistory()
-{
-	var sql = "sqlReturnData=SELECT editdatetime, b.opdate, b.staffname, "
-		sql += "b.hn, b.patient, b.diagnosis, b.treatment, b.contact, b.editor, b.qn "
-		sql += "FROM book b INNER JOIN bookhistory bh ON b.qn = bh.qn "
-		sql += "WHERE b.waitnum IS NULL AND bh.waitnum IS NULL "
-		sql += "ORDER BY editdatetime DESC;"
-
-	Ajax(MYSQLIPHP, sql, callbackdeleteHistory)
-
-	clearEditcellData("hide")
-
-	function callbackdeleteHistory(response)
-	{
-		if (!response || response.indexOf("DBfailed") != -1)
-			alert("Delete history DBfailed!\n" + response)
-		else
-			makeDeleteHistory(response)
-	}
-}
-
-function makeDeleteHistory(response)
-{
-	var history = JSON.parse(response);
-
-	$('#historytbl').attr('id', '')
-
-	var HTML_String = '<table id = "historytbl">';
-	HTML_String += '<tr>';
-	HTML_String += '<th style="width:10%">Date Time</th>';
-	HTML_String += '<th style="width:5%">Op.Date</th>';
-	HTML_String += '<th style="width:5%">Staff</th>';
-	HTML_String += '<th style="width:5%">HN</th>';
-	HTML_String += '<th style="width:10%">Patient Name</th>';
-	HTML_String += '<th style="width:20%">Diagnosis</th>';
-	HTML_String += '<th style="width:20%">Treatment</th>';
-	HTML_String += '<th style="width:20%">Contact</th>';
-	HTML_String += '<th style="width:5%">Editor</th>';
-	HTML_String += '<th style="display:none"></th>';
-	HTML_String += '</tr>';
-	for (var j = 0; j < history.length; j++) 
-	{
-		HTML_String += '<tr>';
-		HTML_String += '<td onclick="undelete(this)">' + history[j].editdatetime +'</td>';
-		HTML_String += '<td>' + history[j].opdate +'</td>';
-		HTML_String += '<td>' + history[j].staffname +'</td>';
-		HTML_String += '<td>' + history[j].hn +'</td>';
-		HTML_String += '<td>' + history[j].patient +'</td>';
-		HTML_String += '<td>' + history[j].diagnosis +'</td>';
-		HTML_String += '<td>' + history[j].treatment +'</td>';
-		HTML_String += '<td>' + history[j].contact +'</td>';
-		HTML_String += '<td>' + history[j].editor +'</td>';
-		HTML_String += '<td style="display:none">' + history[j].qn +'</td>';
-		HTML_String += '</tr>';
-	}
-	HTML_String += '</table>';
-
-	$("#dialogDeleted").css("height", 0)
-	$('#dialogDeleted').find('table').replaceWith(HTML_String)
-	$("#undelete").hide()
-	$('#dialogDeleted').dialog({
-		title: "Deleted Cases",
-		closeOnEscape: true,
-		modal: true
-	})
-
-	$('#dialogDeleted').dialog({
-		width: window.innerWidth * 9 / 10,
-		height: window.innerHeight * 8 / 10
-	})
-}
-
-function undelete(that) 
-{
-	reposition("#undelete", "left center", "left center", that)
-
-	doUndelete = function() 
-	{
-		var qn = $(that).siblings(":last").html()
-
-		var sqlstring = "sqlReturnbook=UPDATE book SET "
-		sqlstring += "waitnum = 1"
-		sqlstring += ", editor = '"+ THISUSER
-		sqlstring += "' WHERE qn = " + qn + ";"
-
-		Ajax(MYSQLIPHP, sqlstring, callbackUndelete);
-
-		$('#dialogDeleted').dialog("close")
-
-		function callbackUndelete(response)
-		{
-			if (!response || response.indexOf("DBfailed") != -1)
-			{
-				alert("Failed! update database \n\n" + response)
-			}
-			else
-			{
-				updateBOOK(response);
-				refillall()
-			}
-		}
-	}
-}
-
-function closeUndel() 
-{
-	$('#undelete').hide()
-}
-
-function PACS(hn) 
-{ 
-	var sql = "PAC=http://synapse/explore.asp"
-
-	Ajax(CHECKPAC, sql, callbackCHECKPAC)
-
-	clearEditcellData("hide")
-
-	function callbackCHECKPAC(response)
-	{
-		if (!response || response.indexOf("PAC") == -1)
-			alert(response)
-		else
-			open('http://synapse/explore.asp?path=/All Patients/InternalPatientUID='+hn);
-	}
-} 
 
 function serviceReview()
 {
@@ -243,6 +45,7 @@ function serviceReview()
 	$( "#monthpicker" ).datepicker('setDate', new Date($('#monthpicking').val()))
 	$('.ui-datepicker-calendar').css('display', 'none')
 	$('#servicetbl').hide()
+	resetcountService()
 }
 
 function entireMonth(fromDate)
@@ -311,20 +114,13 @@ function getfromServer(fromDate, toDate)
 
 function showService(SERVICE, fromDate, toDate)
 {
-	var Admit = 0
-	var Discharge = 0
-	var Operation = 0
-	var Reoperation = 0
-	var Readmission = 0
-	var Infection = 0
-	var Morbidity = 0
-	var Dead = 0
-	var scase = 0
+	resetcountService()
 
 	//delete previous servicetbl lest it accumulates
 	$('#servicetbl tr').slice(1).remove()
 	$('#servicetbl').show()
 
+	var scase = 0
 	$.each( STAFF, function() {
 		var staffname = this.name
 		$('#sdatatitle tr').clone()
@@ -342,7 +138,7 @@ function showService(SERVICE, fromDate, toDate)
 							.siblings().hide()
 		$.each( SERVICE, function() {
 			if (this.staffname == staffname) {
-				var color = countService(this)
+				var color = countService(this, fromDate, toDate)
 				scase++
 				$('#sdatatitle tr').clone()
 					.insertAfter($('#servicetbl tr:last'))
@@ -351,15 +147,6 @@ function showService(SERVICE, fromDate, toDate)
 		});
 	})
 
-	document.getElementById("Admit").innerHTML = Admit
-	document.getElementById("Discharge").innerHTML = Discharge
-	document.getElementById("Operation").innerHTML = Operation
-	document.getElementById("Morbidity").innerHTML = Morbidity
-	document.getElementById("Readmission").innerHTML = Readmission
-	document.getElementById("Infection").innerHTML = Infection
-	document.getElementById("Reoperation").innerHTML = Reoperation
-	document.getElementById("Dead").innerHTML = Dead
-		
 	$('#month').hide()
 	$('#monthpicker').hide()
 	$('#dialogService').dialog({
@@ -368,49 +155,6 @@ function showService(SERVICE, fromDate, toDate)
 			$('#datepicker').hide()
 		}
 	})
-
-	function countService(that)
-	{
-		var color
-
-		if ((that.admit >= fromDate) && (that.admit <= toDate)) {
-			Admit++
-		}
-		if ((that.discharge >= fromDate) && (that.discharge <= toDate)) {
-			Discharge++
-		}
-		$.each( neuroSx, function(i, each) {
-			if (that.treatment.toLowerCase().indexOf(each) >= 0) {
-				Operation++
-				return false
-			}
-			if (that.treatment.toLowerCase().indexOf("op") >= 0) {
-				Operation++
-				return false
-			}
-		})
-		if (that.treatment.toLowerCase().indexOf("re-op") >= 0) {
-			Reoperation++
-			color = "Reoperation"
-		}
-		if (that.admission.toLowerCase().indexOf("re-ad") >= 0) {
-			Readmission++
-			color = "Readmission"
-		}
-		if (that.admission.toLowerCase().indexOf("infect") >= 0) {
-			Infection++
-			color = "Infection"
-		}
-		if (that.admission.toLowerCase().indexOf("morbid") >= 0) {
-			Morbidity++
-			color = "Morbidity"
-		}
-		if (that.final.toLowerCase().indexOf("dead") >= 0) {
-			Dead++
-			color = "Dead"
-		}
-		return color
-	}
 }
 
 jQuery.fn.extend({
@@ -430,6 +174,127 @@ jQuery.fn.extend({
 		rowcell[SQN].innerHTML = bookq.qn
 	}
 })
+
+function resetcountService()
+{
+	document.getElementById("Admit").innerHTML = 0
+	document.getElementById("Discharge").innerHTML = 0
+	document.getElementById("Operation").innerHTML = 0
+	document.getElementById("Morbidity").innerHTML = 0
+	document.getElementById("Readmission").innerHTML = 0
+	document.getElementById("Infection").innerHTML = 0
+	document.getElementById("Reoperation").innerHTML = 0
+	document.getElementById("Dead").innerHTML = 0
+}
+
+function countService(thiscase, fromDate, toDate)
+{
+	var color
+
+	if (isAdmit(thiscase, fromDate, toDate)) {
+		var Admit = document.getElementById("Admit")
+		Admit.innerHTML = Number(Admit.innerHTML) + 1
+	}
+	if (isDischarge(thiscase, fromDate, toDate)) {
+		var Discharge = document.getElementById("Discharge")
+		Discharge.innerHTML = Number(Discharge.innerHTML) + 1
+	}
+	if (isOperation(thiscase)) {
+		var Operation = document.getElementById("Operation")
+		Operation.innerHTML = Number(Operation.innerHTML) + 1
+	}
+	if (isReoperation(thiscase)) {
+		var Reoperation = document.getElementById("Reoperation")
+		Reoperation.innerHTML = Number(Reoperation.innerHTML) + 1
+		color = "Reoperation"
+	}
+	if (isReadmission(thiscase)) {
+		var Readmission = document.getElementById("Readmission")
+		Readmission.innerHTML = Number(Readmission.innerHTML) + 1
+		color = "Readmission"
+	}
+	if (isInfection(thiscase)) {
+		var Infection = document.getElementById("Infection")
+		Infection.innerHTML = Number(Infection.innerHTML) + 1
+		color = "Infection"
+	}
+	if (isMorbidity(thiscase)) {
+		var Morbidity = document.getElementById("Morbidity")
+		Morbidity.innerHTML = Number(Morbidity.innerHTML) + 1
+		color = "Morbidity"
+	}
+	if (isDead(thiscase)) {
+		var Dead = document.getElementById("Dead")
+		Dead.innerHTML = Number(Dead.innerHTML) + 1
+		color = "Dead"
+	}
+	return color
+}
+
+function isAdmit(thiscase, fromDate, toDate)
+{
+	if ((thiscase.admit >= fromDate) && (thiscase.admit <= toDate)) {
+		return true
+	}
+}
+
+function isDischarge(thiscase, fromDate, toDate)
+{
+	if ((thiscase.discharge >= fromDate) && (thiscase.discharge <= toDate)) {
+		return true
+	}
+}
+
+function isOperation(thiscase)
+{
+	var Operation = false
+	$.each( neuroSx, function(i, each) {
+		if (thiscase.treatment.toLowerCase().indexOf(each) >= 0) {
+			Operation = true
+			return false
+		}
+		if (thiscase.treatment.toLowerCase().indexOf("op") >= 0) {
+			Operation = true
+			return false
+		}
+	})
+	return Operation
+}
+
+function isReoperation(thiscase)
+{
+	if (thiscase.treatment.toLowerCase().indexOf("re-op") >= 0) {
+		return true
+	}
+}
+
+function isReadmission(thiscase)
+{
+	if (thiscase.admission.toLowerCase().indexOf("re-ad") >= 0) {
+		return true
+	}
+}
+
+function isInfection(thiscase)
+{
+	if (thiscase.final.toLowerCase().indexOf("infect") >= 0) {
+		return true
+	}
+}
+
+function isMorbidity(thiscase)
+{
+	if (thiscase.final.toLowerCase().indexOf("morbid") >= 0) {
+		return true
+	}
+}
+
+function isDead(thiscase)
+{
+	if (thiscase.final.toLowerCase().indexOf("dead") >= 0) {
+		return true
+	}
+}
 
 function clickservice(clickedCell)
 {

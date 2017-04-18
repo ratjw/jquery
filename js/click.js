@@ -77,7 +77,7 @@ function savePreviouscell()
 	var trimHTML = /^(\s*<[^>]*>)*\s*|\s*(<[^>]*>\s*)*$/g
 	var content = $("#editcell").html().replace(trimHTML, '')
 	var HTMLnotBR =/(<((?!br)[^>]+)>)/ig
-	content = $("#editcell").html().replace(HTMLnotBR, '')
+	content = content.replace(HTMLnotBR, '')
 
 	if (content == $("#editcell").data("content"))
 		return
