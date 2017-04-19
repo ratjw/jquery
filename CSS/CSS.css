@@ -139,6 +139,12 @@
 #servicetbl tr.Morbidity { background-color: #AAAACC; }
 #servicetbl tr.Dead { background-color: #CCCCCC; }
 
+#servicetbl td.Readmission { background-color: #CCCCAA; }
+#servicetbl td.Reoperation { background-color: #AACCCC; }
+#servicetbl td.Infection { background-color: #CCAAAA; }
+#servicetbl td.Morbidity { background-color: #AAAACC; }
+#servicetbl td.Dead { background-color: #CCCCCC; }
+
 #titlebar {
 	height: 40px;
 	background-color: #F0F0F0;

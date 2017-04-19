@@ -9,6 +9,38 @@ Date.prototype.mysqlDate = function ()
     return yyyy + "-" + mm + "-" + dd;
 } 
 
+String.prototype.mysqlDateparse = function () 
+{	//check if valid MySQL date (2017-04-19)
+	if (!this) {
+		return false
+	}
+	var date = this.split("-")
+	if (Number(date[0]) > 1900) {
+		if (Number(date[1]) > 0) {
+			if (Number(date[2]) > 0) {
+				return true
+			}
+		}
+	}
+	return false
+} 
+
+String.prototype.slashDateparse = function () 
+{	//check if valid MySQL date (2017-04-19)
+	if (!this) {
+		return false
+	}
+	var date = this.split("/")
+	if (Number(date[0])) {
+		if (Number(date[1])) {
+			if (Number(date[2])) {
+				return true
+			}
+		}
+	}
+	return false
+} 
+
 String.prototype.thDate = function () 
 {	//MySQL date (2014-05-11) to Thai date (11 พค. 2557) 
 	if (this < '1900-01-01')
@@ -94,11 +126,14 @@ function Ajax(url, params, callback)
 
 function URIcomponent(qoute)
 {
-	qoute = qoute.replace(/\s+$/,'')
-	qoute = qoute.replace(/\"/g, "&#34;")	// w3 org recommend use numeric
-	qoute = qoute.replace(/\'/g, "&#39;")	// character references to represent 
-	qoute = qoute.replace(/\\/g, "\\\\")	// double quotes ((&#34;) or (&quot))
-	return encodeURIComponent(qoute)		// and single quotes (&#39;)
+	if (qoute) {
+		qoute = qoute.replace(/\s+$/,'')
+		qoute = qoute.replace(/\"/g, "&#34;")	// double quotes ((&#34;) or (&quot))
+		qoute = qoute.replace(/\'/g, "&#39;")	// and single quotes (&#39;)
+		qoute = qoute.replace(/\\/g, "\\\\")
+		qoute = encodeURIComponent(qoute)
+	}
+	return qoute
 }
 
 function alert(message)

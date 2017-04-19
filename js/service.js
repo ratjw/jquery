@@ -120,7 +120,6 @@ function showService(SERVICE, fromDate, toDate)
 	$('#servicetbl tr').slice(1).remove()
 	$('#servicetbl').show()
 
-	var scase = 0
 	$.each( STAFF, function() {
 		var staffname = this.name
 		$('#sdatatitle tr').clone()
@@ -136,6 +135,7 @@ function showService(SERVICE, fromDate, toDate)
 						})
 						.html(staffname)
 							.siblings().hide()
+		var scase = 0
 		$.each( SERVICE, function() {
 			if (this.staffname == staffname) {
 				var color = countService(this, fromDate, toDate)
@@ -245,6 +245,22 @@ function isDischarge(thiscase, fromDate, toDate)
 	}
 }
 
+function regexDate(str)
+{
+//	dd/mm/yyyy ==> \b(?:[012][1-9]|3[01])/(?:0[1-9]|1[012])/\d{4}\b
+//	dd/mm/yy ==> \b(?:[012][1-9]|3[01])/(?:0[1-9]|1[012])/\d{2}\b
+//	mm/yy ==> \b(?:0[1-9]|1[012])/\d\d\b
+//	d/m/yy ==> \b[1-9]/[1-9]/\d\d\b
+
+//	var fullDate = /\b([012][1-9]|3[01])/(0[1-9]|1[012])/\d{4}\b/g
+//	var halfDate = /\b([012][1-9]|3[01])/(0[1-9]|1[012])/\d{2}\b/g
+//	var abbrDate = /\b[1-9]/[1-9]/\d\d\b/g
+
+	return str.match(fullDate)
+				.concat(str.match(halfDate))
+					.concat(str.match(abbrDate))
+}
+
 function isOperation(thiscase)
 {
 	var Operation = false
@@ -264,6 +280,9 @@ function isOperation(thiscase)
 function isReoperation(thiscase)
 {
 	if (thiscase.treatment.toLowerCase().indexOf("re-op") >= 0) {
+		return true
+	}
+	if (thiscase.treatment.slashDateparse()) {
 		return true
 	}
 }
@@ -291,7 +310,7 @@ function isMorbidity(thiscase)
 
 function isDead(thiscase)
 {
-	if (thiscase.final.toLowerCase().indexOf("dead") >= 0) {
+	if (thiscase.final.indexOf("Dead") >= 0) {
 		return true
 	}
 }
@@ -305,18 +324,20 @@ function clickservice(clickedCell)
 function Skeyin(event)
 {
 	var keycode = event.which || window.event.keyCode
-	var tableID = "#servicetbl"
-	var editable = SEDITABLE
-	var pointing = $("#editcell").data("editCell")
+	var pointing = getEditTD()
 	var thiscell
+
+	if (!pointing) {
+		return
+	}
 
 	if (keycode == 9)
 	{
 		savePreviousScell()
 		if (event.shiftKey)
-			thiscell = findPrevcell(event, editable, pointing)
+			thiscell = findPrevcell(event, SEDITABLE, pointing)
 		else
-			thiscell = findNextcell(event, tableID, editable, pointing)
+			thiscell = findNextcell(event, SEDITABLE, pointing)
 		if (thiscell) {
 			storePresentScell(thiscell)
 		} else {
@@ -332,7 +353,7 @@ function Skeyin(event)
 			return
 		}
 		savePreviousScell()
-		thiscell = findNextRow(event, tableID, editable, pointing)
+		thiscell = findNextRow(event, SEDITABLE, pointing)
 		if (thiscell) {
 			storePresentScell(thiscell)
 		} else {
@@ -353,63 +374,52 @@ function Skeyin(event)
 
 function savePreviousScell() 
 {
+	if (!getEditTD())
+		return
+
+	var content = ""
 	switch($("#editcell").data("cellIndex"))
 	{
 		case CASE:
 		case PATIENT:
 			break
 		case SDIAGNOSIS:
-			if ((content = getContent())) {
-				saveSContent("diagnosis", content)
-			}
+			content = getData()
+			saveSContent("diagnosis", content)
 			break
 		case STREATMENT:
-			if ((content = getContent())) {
-				saveSContent("treatment", content)
-			}
+			content = getData()
+			saveSContent("treatment", content)
 			break
 		case ADMISSION:
-			if ((content = getContent())) {
-				saveSContent("admission", content)
-			}
+			content = getData()
+			saveSContent("admission", content)
 			break
 		case FINAL:
-			if ((content = getContent())) {
-				saveSContent("final", content)
-			}
+			content = getData()
+			saveSContent("final", content)
 			break
 		case ADMIT:
-			if ($('#datepicker').val() != $("#editcell").data("content")) {
-				saveSContent("admit", $('#datepicker').val())
+			content = $('#datepicker').val()
+			if (content != $("#editcell").data("content")) {
+				if (!content || !content.mysqlDateparse()) {
+					content = null
+				}
+				saveSContent("admit", content)
 			}
 			$('#datepicker').hide()
 			break
 		case DISCHARGE:
-			if ($('#datepicker').val() != $("#editcell").data("content")) {
-				saveSContent("discharge", $('#datepicker').val())
+			content = $('#datepicker').val()
+			if (content != $("#editcell").data("content")) {
+				if (!content || !content.mysqlDateparse()) {
+					content = null
+				}
+				saveSContent("discharge", content)
 			}
 			$('#datepicker').hide()
 			break
 	}
-}
- 
-function getContent()
-{
-	var content = getData()
-	if (content == $("#editcell").data("content")) {
-		return false
-	} else {
-		return content
-	}
-}
- 
-function getData()
-{
-	var trimHTML = /^(\s*<[^>]*>)*\s*|\s*(<[^>]*>\s*)*$/g
-	var content = $("#editcell").html().replace(trimHTML, '')
-	var HTMLnotBR =/(<((?!br)[^>]+)>)/ig
-	content = $("#editcell").html().replace(HTMLnotBR, '')
-	return content
 }
 
 function saveSContent(column, content)	//column name in MYSQL
@@ -419,13 +429,19 @@ function saveSContent(column, content)	//column name in MYSQL
 	var fromDate = $('#monthpicker').data('fromDate')
 	var toDate = $('#monthpicker').data('toDate')
 
-	$("#editcell").data("editCell").html(content)	//just for show instantly
+	if (content == $("#editcell").data("content")) {
+		return
+	}
+	getEditTD().html(content)	//just for show instantly
 
-	content = URIcomponent(content)			//take care of white space, double qoute, 
-											//single qoute, and back slash
+	if (content) {
+		content = URIcomponent(content)	//take care of white space, double qoute, 
+										//single qoute, and back slash
+		content = "'" + content + "'"
+	}
 	var sql = "sqlReturnData=UPDATE book SET "
-	sql += column +" = '"+ content
-	sql += "', editor='"+ THISUSER
+	sql += column +" = "+ content
+	sql += ", editor='"+ THISUSER
 	sql += "' WHERE qn = "+ qn +";"
 	sql += "SELECT * FROM book "
 	sql += "WHERE opdate BETWEEN '"+ fromDate +"' AND '"+ toDate +"' "
@@ -438,7 +454,7 @@ function saveSContent(column, content)	//column name in MYSQL
 		if (!response || response.indexOf("DBfailed") != -1)
 		{
 			alert("Failed! update database \n\n" + response)
-			$("#editcell").data("editCell").html($("#editcell").data("content"))
+			getEditTD().html($("#editcell").data("content"))
 			//return to previous content
 		}
 		else
@@ -448,25 +464,28 @@ function saveSContent(column, content)	//column name in MYSQL
 			var service = JSON.parse(response)
 
 			showService(service, fromDate, toDate)
-//			countService(service, fromDate, toDate)
 		}
 	}
 }
 
 function storePresentScell(pointing)
 {
-	var cindex = $(pointing).closest("td").index()
+	var cindex = pointing.cellIndex
 
 	switch(cindex)
 	{
 		case CASE:
 		case PATIENT:
+			$('#datepicker').hide()
+			$('#datepicker').datepicker( 'hide' )
 			clearEditcellData("hide")
 			break
 		case SDIAGNOSIS:
 		case STREATMENT:
 		case ADMISSION:
 		case FINAL:
+			$('#datepicker').hide()
+			$('#datepicker').datepicker( 'hide' )
 			editcell(pointing)
 			saveDataPoint("#editcell", pointing)
 			break

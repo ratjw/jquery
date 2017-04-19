@@ -1,5 +1,8 @@
 function loadtable(userid)
 {
+//var str = "1/2/69"
+//console.log(regexDate(str))
+//return
 	Ajax(MYSQLIPHP, "nosqlReturnbook", loading);
 
 	THISUSER = userid
@@ -8,6 +11,7 @@ function loadtable(userid)
 
 	$(document).click( function (event) {
 		countReset();
+		event.stopPropagation()
 		var clickedCell = event.target
 		if ($('#menu').is(":visible")) {	//visible == take up space even can't be seen
 			if (!$(clickedCell).closest('#menu').length) {
@@ -132,7 +136,7 @@ function updating()
 	{
 		if (response && response.indexOf("opdate") != -1)
 		{	//there is some change in database
-//			if (!$('#editcell').data("editCell")) {
+//			if (!$('#editcell').data("editCellXXX")) {
 				updateTables(response)
 /*
 				clearEditcellData("hide")
@@ -143,7 +147,7 @@ function updating()
 				clearEditcellData("hide")
 			}
 			else if (($('#editcell').html() == $('#editcell').data("editCell").html())
-			&& ($('#editcell').html() == $('#editcell').data('content'))) {
+			&& ($('#editcell').html() == $('#editcellXXX').data('content'))) {
 				updateTables(response)
 				clearEditcellData("hide")
 				$('#stafflist').hide()	//editcell may be on staff
@@ -161,7 +165,7 @@ function updating()
 function updateTables(response)
 {
 	updateBOOK(response)
-	if ($("#dialogService").css('display') == 'block') {
+	if ($("#dialogService").parent().css('display') == 'block') {
 		var fromDate = $('#monthpicker').data('fromDate')
 		var toDate = $('#monthpicker').data('toDate')
 		getService(fromDate, toDate)

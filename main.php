@@ -22,8 +22,8 @@
 <script src="js/history.js"></script>
 <script src="js/menu.js"></script>
 <script src="js/service.js"></script>
+<script src="js/sortable.js"></script>
 <script src="js/start.js"></script>
-<script src="js/ui.js"></script>
 </HEAD>
 <BODY>
 
