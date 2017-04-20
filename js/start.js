@@ -1,8 +1,5 @@
 function loadtable(userid)
 {
-//var str = "1/2/69"
-//console.log(regexDate(str))
-//return
 	Ajax(MYSQLIPHP, "nosqlReturnbook", loading);
 
 	THISUSER = userid

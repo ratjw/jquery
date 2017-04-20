@@ -16,6 +16,7 @@
 <script src="js/jquery-ui.js"></script>
 <script src="js/click.js"></script>
 <script src="js/constant.js"></script>
+<script src="js/countservice.js"></script>
 <script src="js/equip.js"></script>
 <script src="js/fill.js"></script>
 <script src="js/function.js"></script>

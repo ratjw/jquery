@@ -23,22 +23,37 @@ String.prototype.mysqlDateparse = function ()
 		}
 	}
 	return false
+}
+
+String.prototype.toMysqlDate = function () 
+{	//swap dd-mm-yy to yyyy-mm-dd
+	if (!this) {
+		return this
+	}
+	var date = this.split("-")
+	if (date[2].length == 2) {
+		date[2] = "25" + date[2]
+		date[2] = date[2] - 543
+	}
+
+	return (date[2] + "-" + date[1] + "-" + date[0])
 } 
 
-String.prototype.slashDateparse = function () 
-{	//check if valid MySQL date (2017-04-19)
+String.prototype.toJavascriptDate = function () 
+{	//swap dd/mm/yy to mm/dd/yyyy
 	if (!this) {
-		return false
+		return this
 	}
 	var date = this.split("/")
-	if (Number(date[0])) {
-		if (Number(date[1])) {
-			if (Number(date[2])) {
-				return true
-			}
-		}
+	var temp = date[0]
+	date[0] = date[1]
+	date[1] = temp
+	if (date[2].length == 2) {
+		date[2] = "25" + date[2]
+		date[2] = date[2] - 543
 	}
-	return false
+
+	return date.join("/")
 } 
 
 String.prototype.thDate = function () 
@@ -103,6 +118,53 @@ String.prototype.getAge = function (toDate)
 	var agedays = days? days + " ว." : "";
 
 	return years? ageyears : months? agemonths : agedays;
+}
+
+function regexDate(str)
+{
+	var fullDate = /\b(?:[012][1-9]|10|20|3[01])\/(?:0[1-9]|1[012])\/\d{4}\b/g
+	var halfDate = /\b(?:[012][1-9]|10|20|3[01])\/(?:0[1-9]|1[012])\/\d{2}\b/g
+	var abbrDate = /\b[1-9]\/[1-9]\/\d\d\b/g
+
+	var fulDate = /\b(?:[012][1-9]|10|20|3[01])\-(?:0[1-9]|1[012])\-\d{4}\b/g
+	var halDate = /\b(?:[012][1-9]|10|20|3[01])\-(?:0[1-9]|1[012])\-\d{2}\b/g
+	var abbDate = /\b[1-9]\-[1-9]\-\d\d\b/g
+
+	var full = str.match(fullDate)
+	var half = str.match(halfDate)
+	var abbr = str.match(abbrDate)
+
+	var ful = str.match(fulDate)
+	var hal = str.match(halDate)
+	var abb = str.match(abbDate)
+
+	var arr = []
+
+	if (full) {
+		arr = arr.concat(full)
+	}
+	if (half) {
+		arr = arr.concat(half)
+	}
+	if (abbr) {
+		arr = arr.concat(abbr)
+	}
+	if (ful) {
+		arr = arr.concat(ful)
+	}
+	if (hal) {
+		arr = arr.concat(hal)
+	}
+	if (abb) {
+		arr = arr.concat(abb)
+	}
+	return arr
+}
+
+function dateDiff(from, to)	//get Sunday in the same week
+{
+	var timeDiff = to.getTime() - from.getTime()
+	return Math.ceil(timeDiff / (1000 * 3600 * 24))
 }
 
 function getSunday(date)	//get Sunday in the same week
