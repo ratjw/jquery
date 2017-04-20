@@ -60,7 +60,7 @@ function isDischarge(thiscase, fromDate, toDate)
 function isOperation(thiscase)
 {
 	var Operation = false
-	$.each( neuroSx, function(i, each) {
+	$.each( neuroSxOp, function(i, each) {
 		if (thiscase.treatment.toLowerCase().indexOf(each) >= 0) {
 			Operation = true
 			return false

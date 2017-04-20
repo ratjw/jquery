@@ -116,7 +116,7 @@ function dataStafflist()
 {
 	var stafflist = ''
 	var staffmenu = ''
-	for (var each=0; each<STAFF.length; each++)
+	for (var each = 0; each < STAFF.length; each++)
 	{
 		stafflist += '<li><div>' + STAFF[each].name + '</div></li>'
 		staffmenu += '<li><div id="item1">' + STAFF[each].name + '</div></li>'

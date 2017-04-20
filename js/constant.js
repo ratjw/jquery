@@ -67,7 +67,7 @@ var HOLIDAY = {
 	"2019-07-17" : "url('pic/Vassa.jpg')"		//วันเข้าพรรษา
 	}
 
-var neuroSx = [
+var neuroSxOp = [
 	"anast", "approa", "aspirat", "biop", "block", "burr", "clip", 
 	"decom", "dbs", "drain", "ectomy", "fix", "fusion", "insert", "lesion", "lysis", 
 	"occlu", "oper", "ostom", "otom", "plast", "remov", "repa", "revis", 
