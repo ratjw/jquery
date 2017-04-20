@@ -78,41 +78,34 @@ function isReoperation(thiscase)
 	if (thiscase.treatment.toLowerCase().indexOf("re-op") >= 0) {
 		return true
 	}
-/*
+
 	var diag = regexDate(thiscase.diagnosis)
 	var treat = regexDate(thiscase.treatment)
 
 	if (treat.length > 1) {
-		for (var i = 0; i < treat.length; i++) {
-			treat[i] = treat[i].toJavascriptDate() //assume entry dd/mm/yy (Buddhist)
-			treat[i] = new Date(treat[i])
-		}
-		for (var i = 0; i < treat.length; i++) {
-			treat[i] = treat[i].toJavascriptDate() //assume entry dd/mm/yy (Buddhist)
-			treat[i] = new Date(treat[i])
-		}
+		return true
 	}
 
-	return true
-	}
-
-	var diagDate = 0
-	var treatDate = 0
-	var tempDate = 0
 	if (diag.length && treat.length) {
-		for (var i = 0; i < diag.length; i++) {
-			tempDate = new Date(diag[i])
-			if (diagDate <= tempDate) {
+		var diagDate = new Date(diag[0].toJavascriptDate())
+		var treatDate = new Date(treat[0].toJavascriptDate())
+		var tempDate = ""
+		for (var i = 1; i < diag.length; i++) {	//find max diagDate
+			tempDate = new Date(diag[i].toJavascriptDate())
+			if (diagDate < tempDate) { //assume entry dd/mm/yy (Buddhist)
 				diagDate = tempDate
 			}
 		}
-		treatDate = new Date(treat[i])
-		var timeDiff = Math.abs(treatDate.getTime() - diagDate.getTime())
-		var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24))
-		if (diffDays <= 30) {
+		for (var i = 0; i < treat.length; i++) {	//find min treatDate
+			tempDate = new Date(treat[i].toJavascriptDate())
+			if (treatDate > tempDate) { //assume entry dd/mm/yy (Buddhist)
+				treatDate = tempDate
+			}
+		}
+		if (dateDiff(diagDate, treatDate) <= 30) {
 			return true
 		}
-	}*/
+	}
 }
 
 function isReadmission(thiscase)
@@ -120,8 +113,33 @@ function isReadmission(thiscase)
 	if (thiscase.admission.toLowerCase().indexOf("re-ad") >= 0) {
 		return true
 	}
-	if (regexDate(thiscase.treatment).length > 1) {
+
+	var diag = regexDate(thiscase.diagnosis)
+	var admit = regexDate(thiscase.admission)
+
+	if (admit.length > 1) {
 		return true
+	}
+
+	if (diag.length && admit.length) {
+		var diagDate = new Date(diag[0].toJavascriptDate())
+		var admitDate = new Date(admit[0].toJavascriptDate())
+		var tempDate = ""
+		for (var i = 1; i < diag.length; i++) {	//find max diagDate
+			tempDate = new Date(diag[i].toJavascriptDate())
+			if (diagDate < tempDate) { //assume entry dd/mm/yy (Buddhist)
+				diagDate = tempDate
+			}
+		}
+		for (var i = 0; i < admit.length; i++) {	//find min treatDate
+			tempDate = new Date(admit[i].toJavascriptDate())
+			if (admitDate > tempDate) { //assume entry dd/mm/yy (Buddhist)
+				admitDate = tempDate
+			}
+		}
+		if (dateDiff(diagDate, admitDate) <= 30) {
+			return true
+		}
 	}
 }
 

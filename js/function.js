@@ -161,10 +161,10 @@ function regexDate(str)
 	return arr
 }
 
-function dateDiff(from, to)	//get Sunday in the same week
+function dateDiff(from, to)	//assume mm/dd/yy(yy) or yyyy-mm-dd
 {
-	var timeDiff = to.getTime() - from.getTime()
-	return Math.ceil(timeDiff / (1000 * 3600 * 24))
+	var timeDiff = new Date(to) - new Date(from)
+	return Math.ceil(timeDiff / (1000 * 60 * 60 * 24))
 }
 
 function getSunday(date)	//get Sunday in the same week

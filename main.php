@@ -115,14 +115,14 @@
     <div>
 	  <span class="item">Admit : <span id="Admit"></span></span>
 	  <span class="item">Discharge : <span id="Discharge"></span></span>
-	  <span class="item hilight">Operation : <span id="Operation"></span></span>
-	  <span class="item hilight">Morbidity : <span id="Morbidity"></span></span>
+	  <span class="item">Operation : <span id="Operation"></span></span>
+	  <span class="item Morbidity">Morbidity : <span id="Morbidity"></span></span>
 	</div>
 	<div>
-	  <span class="item hilight">Re-admission : <span id="Readmission"></span></span>
-	  <span class="item">Infection : <span id="Infection"></span></span>
-	  <span class="item hilight">Re-operation : <span id="Reoperation"></span></span>
-	  <span class="item hilight">Dead : <span id="Dead"></span></span>
+	  <span class="item Readmission">Re-admission : <span id="Readmission"></span></span>
+	  <span class="item Infection">Infection : <span id="Infection"></span></span>
+	  <span class="item Reoperation">Re-operation : <span id="Reoperation"></span></span>
+	  <span class="item Dead">Dead : <span id="Dead"></span></span>
 	</div>
   </div>
   <span id="month" style="margin:20px 0px 40px"> เดือน :</span>
