@@ -155,7 +155,33 @@ function isMorbidity(thiscase)
 	if (thiscase.final.toLowerCase().indexOf("morbid") >= 0) {
 		return true
 	}
-}//spastic, leak, donor, seizure, post-op paresis, post-op palsy, delirium, post-op weakness
+	if (thiscase.final.toLowerCase().indexOf("spastic") >= 0) {
+		return true
+	}
+	if (thiscase.final.toLowerCase().indexOf("leak") >= 0) {
+		return true
+	}
+	if (thiscase.final.toLowerCase().indexOf("donor") >= 0) {
+		return true
+	}
+	if (thiscase.final.toLowerCase().indexOf("seizure") >= 0) {
+		return true
+	}
+	if (thiscase.final.toLowerCase().indexOf("delirium") >= 0) {
+		return true
+	}
+	if (thiscase.final.toLowerCase().indexOf("post-op") >= 0) {
+		if (thiscase.final.toLowerCase().indexOf("paresis") >= 0) {
+			return true
+		}
+		if (thiscase.final.toLowerCase().indexOf("palsy") >= 0) {
+			return true
+		}
+		if (thiscase.final.toLowerCase().indexOf("weakness") >= 0) {
+			return true
+		}
+	}
+}
 
 function isDead(thiscase)
 {
