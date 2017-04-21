@@ -47,23 +47,14 @@ String.prototype.toISOdate = function ()
 		return (datejoin("-"))
 
 	} else {	//assume dd-mm-yy, dd-mm-yyyy, dd/mm/yy, dd/mm/yyyy
-		var BE = (yyyy + 543).substr(-2)
-		if (date[2].length == 2) {
-			if (date[2] >= 50) {	//49 => 2049, 50 => 1950 by browser
-				date[2] = "25" + date[2]	//assume Buddhist year
-				date[2] = date[2] - 543
-			} else {
-				if (date[2] >= 50) {	//49 => 2049, 50 => 1950 by browser
-					date[2] = "25" + date[2]	//assume Buddhist year
-					date[2] = date[2] - 543
-				} else {
-					date[2] = "20" + date[2]	//assume Christian year
-				}
-			}
+		if (date[2].length == 2) {	//assume Buddhist year
+			date[2] = "25" + date[2]
+			date[2] = date[2] - 543
 		}
 		else if (date[2].length == 4) {
-			if ((date[0] > yyyy + 300)) {	//assume Buddhist year
-				date[0] = date[0] - 543
+			if ((date[2] > yyyy + 300)) {	//assume Buddhist year
+				date[2] = date[2] - 543
+			}
 		}
 
 		return (date[2] + "-" + date[1] + "-" + date[0])
