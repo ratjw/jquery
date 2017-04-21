@@ -97,7 +97,7 @@ function getfromServer(fromDate, toDate)
 {
 	var sql = "sqlReturnData=SELECT * FROM book "
 	sql += "WHERE opdate BETWEEN '"+ fromDate +"' AND '"+ toDate +"' "
-	sql += "AND waitnum > 0 ORDER BY staffname, opdate;"
+	sql += "AND waitnum > 0 ORDER BY opdate, waitnum;"	//prevent jumping
 
 	Ajax(MYSQLIPHP, sql, callbackService);
 
@@ -296,8 +296,8 @@ function savePreviousScell()
 
 function saveSContent(column, content)	//column name in MYSQL
 {
-	var rowcell = $($("#editcell").data("editRow")).children("td")
-	var qn = rowcell.eq(SQN).html()
+	var editTR = $($("#editcell").data("editRow"))
+	var qn = editTR.children("td").eq(SQN).html()
 	var fromDate = $('#monthpicker').data('fromDate')
 	var toDate = $('#monthpicker').data('toDate')
 
@@ -315,9 +315,7 @@ function saveSContent(column, content)	//column name in MYSQL
 	sql += column +" = "+ content
 	sql += ", editor='"+ THISUSER
 	sql += "' WHERE qn = "+ qn +";"
-	sql += "SELECT * FROM book "
-	sql += "WHERE opdate BETWEEN '"+ fromDate +"' AND '"+ toDate +"' "
-	sql += "AND waitnum > 0 ORDER BY staffname, opdate;"
+	sql += "SELECT * FROM book WHERE qn = "+ qn +";"
 
 	Ajax(MYSQLIPHP, sql, callbacksaveSContent);
 
@@ -333,9 +331,13 @@ function saveSContent(column, content)	//column name in MYSQL
 		{
 			var fromDate = $('#monthpicker').data('fromDate')
 			var toDate = $('#monthpicker').data('toDate')
-			var service = JSON.parse(response)
+			var thisrow = JSON.parse(response)
 
-			showService(service, fromDate, toDate)
+//			showService(service, fromDate, toDate)
+			//This makes next editTD return to old value
+			//when fast entry because of slow return from Ajax
+
+			editTR[0].className = countService(thisrow[0], fromDate, toDate)
 		}
 	}
 }

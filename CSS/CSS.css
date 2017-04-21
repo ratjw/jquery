@@ -104,7 +104,7 @@
 
 #queuetbl td, #historytbl td, #servicetbl td {
 	empty-cells:show;
-	font-size: 12px;
+	font-size: 14px;
 	border-left: solid 1px silver;
 	border-bottom: solid 1px silver;
 	height: 20px;
@@ -120,22 +120,23 @@
 }
 
 #servicehead span.item {
+	display:inline-block; 
 	border: solid 1px white;
 	width: 170px;
 	padding: 2px 10px;
 }
 
-#servicetbl tr.Readmission { background-color: #CCCCAA; }
-#servicetbl tr.Reoperation { background-color: #AACCCC; }
+#servicetbl tr.Readmission { background-color: #AACCCC; }
+#servicetbl tr.Reoperation { background-color: #CCCCAA; }
 #servicetbl tr.Infection { background-color: #CCAAAA; }
 #servicetbl tr.Morbidity { background-color: #AAAACC; }
-#servicetbl tr.Dead { background-color: #CCCCCC; }
+#servicetbl tr.Dead { background-color: #AAAAAA; }
 
-span.Readmission { background-color: #CCCCAA; }
-span.Reoperation { background-color: #AACCCC; }
+span.Readmission { background-color: #AACCCC; }
+span.Reoperation { background-color: #CCCCAA; }
 span.Infection { background-color: #CCAAAA; }
 span.Morbidity { background-color: #AAAACC; }
-span.Dead { background-color: #CCCCCC; }
+span.Dead { background-color: #AAAAAA; }
 
 #titlebar {
 	height: 40px;
@@ -163,6 +164,10 @@ span.Dead { background-color: #CCCCCC; }
 .ui-dialog {
 	position: fixed;
 	box-shadow: 10px 20px 30px slategray;
+}
+
+.ui-dialog-title{
+    font-size: 150%;
 }
 
 .ui-icon-closethick {
@@ -303,6 +308,6 @@ span.Dead { background-color: #CCCCCC; }
 	overflow-y: hidden;
 }
 
-span {
+#equip span {
 	display:inline-block; 
 }

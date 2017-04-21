@@ -25,35 +25,49 @@ String.prototype.mysqlDateparse = function ()
 	return false
 }
 
-String.prototype.toMysqlDate = function () 
-{	//swap dd-mm-yy to yyyy-mm-dd
+String.prototype.toISOdate = function () 
+{	//change dd-mm-yy, dd-mm-yyyy to yyyy-mm-dd
+	//change dd/mm/yy, dd/mm/yyyy to yyyy-mm-dd
 	if (!this) {
 		return this
 	}
-	var date = this.split("-")
-	if (date[2].length == 2) {
-		date[2] = "25" + date[2]
-		date[2] = date[2] - 543
+	if (/-/.test(this)) {
+		var date = this.split("-")
+	}
+	else if (/\//.test(this)) {
+		var date = this.split("/")
 	}
 
-	return (date[2] + "-" + date[1] + "-" + date[0])
-} 
+	var yyyy = new Date().getFullYear()
+	if (date[0].length == 4) {	//assume yyyy-mm-dd, yyyy/mm/dd
+		if ((date[0] > yyyy + 300)) {	//assume Buddhist year
+			date[0] = date[0] - 543
+		}
 
-String.prototype.toJavascriptDate = function () 
-{	//swap dd/mm/yy to mm/dd/yyyy
-	if (!this) {
-		return this
-	}
-	var date = this.split("/")
-	var temp = date[0]
-	date[0] = date[1]
-	date[1] = temp
-	if (date[2].length == 2) {
-		date[2] = "25" + date[2]
-		date[2] = date[2] - 543
-	}
+		return (datejoin("-"))
 
-	return date.join("/")
+	} else {	//assume dd-mm-yy, dd-mm-yyyy, dd/mm/yy, dd/mm/yyyy
+		var BE = (yyyy + 543).substr(-2)
+		if (date[2].length == 2) {
+			if (date[2] >= 50) {	//49 => 2049, 50 => 1950 by browser
+				date[2] = "25" + date[2]	//assume Buddhist year
+				date[2] = date[2] - 543
+			} else {
+				if (date[2] >= 50) {	//49 => 2049, 50 => 1950 by browser
+					date[2] = "25" + date[2]	//assume Buddhist year
+					date[2] = date[2] - 543
+				} else {
+					date[2] = "20" + date[2]	//assume Christian year
+				}
+			}
+		}
+		else if (date[2].length == 4) {
+			if ((date[0] > yyyy + 300)) {	//assume Buddhist year
+				date[0] = date[0] - 543
+		}
+
+		return (date[2] + "-" + date[1] + "-" + date[0])
+	}
 } 
 
 String.prototype.thDate = function () 
@@ -122,21 +136,19 @@ String.prototype.getAge = function (toDate)
 
 function regexDate(str)
 {
-	var fullDate = /\b(?:[012][1-9]|10|20|3[01])\/(?:0[1-9]|1[012])\/\d{4}\b/g
-	var halfDate = /\b(?:[012][1-9]|10|20|3[01])\/(?:0[1-9]|1[012])\/\d{2}\b/g
-	var abbrDate = /\b[1-9]\/[1-9]\/\d\d\b/g
+	var fullDate = /\b([012]?[1-9]|10|20|3[01])\/(0?[1-9]|1[012])\/\d{4}\b/g
+	var halfDate = /\b([012]?[1-9]|10|20|3[01])\/(0?[1-9]|1[012])\/\d{2}\b/g
 
-	var fulDate = /\b(?:[012][1-9]|10|20|3[01])\-(?:0[1-9]|1[012])\-\d{4}\b/g
-	var halDate = /\b(?:[012][1-9]|10|20|3[01])\-(?:0[1-9]|1[012])\-\d{2}\b/g
-	var abbDate = /\b[1-9]\-[1-9]\-\d\d\b/g
+	var isoDate = /\b\d{4}\-(0?[1-9]|1[012])\-([012]?[1-9]|10|20|3[01])\b/g
+	var fulDate = /\b([012]?[1-9]|10|20|3[01])\-(0?[1-9]|1[012])\-\d{4}\b/g
+	var halDate = /\b([012]?[1-9]|10|20|3[01])\-(0?[1-9]|1[012])\-\d{2}\b/g
 
 	var full = str.match(fullDate)
 	var half = str.match(halfDate)
-	var abbr = str.match(abbrDate)
 
+	var iso = str.match(isoDate)
 	var ful = str.match(fulDate)
 	var hal = str.match(halDate)
-	var abb = str.match(abbDate)
 
 	var arr = []
 
@@ -146,17 +158,14 @@ function regexDate(str)
 	if (half) {
 		arr = arr.concat(half)
 	}
-	if (abbr) {
-		arr = arr.concat(abbr)
+	if (iso) {
+		arr = arr.concat(iso)
 	}
 	if (ful) {
 		arr = arr.concat(ful)
 	}
 	if (hal) {
 		arr = arr.concat(hal)
-	}
-	if (abb) {
-		arr = arr.concat(abb)
 	}
 	return arr
 }

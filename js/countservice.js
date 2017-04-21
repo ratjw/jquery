@@ -15,15 +15,15 @@ function countService(thiscase, fromDate, toDate)
 		var Operation = document.getElementById("Operation")
 		Operation.innerHTML = Number(Operation.innerHTML) + 1
 	}
-	if (isReoperation(thiscase)) {
-		var Reoperation = document.getElementById("Reoperation")
-		Reoperation.innerHTML = Number(Reoperation.innerHTML) + 1
-		color = "Reoperation"
-	}
 	if (isReadmission(thiscase)) {
 		var Readmission = document.getElementById("Readmission")
 		Readmission.innerHTML = Number(Readmission.innerHTML) + 1
 		color = "Readmission"
+	}
+	if (isReoperation(thiscase)) {
+		var Reoperation = document.getElementById("Reoperation")
+		Reoperation.innerHTML = Number(Reoperation.innerHTML) + 1
+		color = "Reoperation"
 	}
 	if (isInfection(thiscase)) {
 		var Infection = document.getElementById("Infection")
@@ -86,23 +86,24 @@ function isReoperation(thiscase)
 		return true
 	}
 
-	if (diag.length && treat.length) {
-		var diagDate = new Date(diag[0].toJavascriptDate())
-		var treatDate = new Date(treat[0].toJavascriptDate())
+	if (diag.length && treat.length) { //assume entry dd/mm/yy (Buddhist)
+		var diagDate = new Date(diag[0].toISOdate())
+		var treatDate = new Date(treat[0].toISOdate())
 		var tempDate = ""
 		for (var i = 1; i < diag.length; i++) {	//find max diagDate
-			tempDate = new Date(diag[i].toJavascriptDate())
-			if (diagDate < tempDate) { //assume entry dd/mm/yy (Buddhist)
+			tempDate = new Date(diag[i].toISOdate())
+			if (diagDate < tempDate) {
 				diagDate = tempDate
 			}
 		}
 		for (var i = 0; i < treat.length; i++) {	//find min treatDate
-			tempDate = new Date(treat[i].toJavascriptDate())
-			if (treatDate > tempDate) { //assume entry dd/mm/yy (Buddhist)
+			tempDate = new Date(treat[i].toISOdate())
+			if (treatDate > tempDate) {
 				treatDate = tempDate
 			}
 		}
-		if (dateDiff(diagDate, treatDate) <= 30) {
+		if ((diagDate < treatDate)
+			&& (dateDiff(diagDate, treatDate) <= 30)) {
 			return true
 		}
 	}
@@ -121,23 +122,24 @@ function isReadmission(thiscase)
 		return true
 	}
 
-	if (diag.length && admit.length) {
-		var diagDate = new Date(diag[0].toJavascriptDate())
-		var admitDate = new Date(admit[0].toJavascriptDate())
+	if (diag.length && admit.length) { //assume entry dd/mm/yy (Buddhist)
+		var diagDate = new Date(diag[0].toISOdate())
+		var admitDate = new Date(admit[0].toISOdate())
 		var tempDate = ""
 		for (var i = 1; i < diag.length; i++) {	//find max diagDate
-			tempDate = new Date(diag[i].toJavascriptDate())
-			if (diagDate < tempDate) { //assume entry dd/mm/yy (Buddhist)
+			tempDate = new Date(diag[i].toISOdate())
+			if (diagDate < tempDate) {
 				diagDate = tempDate
 			}
 		}
 		for (var i = 0; i < admit.length; i++) {	//find min treatDate
-			tempDate = new Date(admit[i].toJavascriptDate())
-			if (admitDate > tempDate) { //assume entry dd/mm/yy (Buddhist)
+			tempDate = new Date(admit[i].toISOdate())
+			if (admitDate > tempDate) {
 				admitDate = tempDate
 			}
 		}
-		if (dateDiff(diagDate, admitDate) <= 30) {
+		if ((diagDate < admitDate)
+			&& (dateDiff(diagDate, admitDate) <= 30)) {
 			return true
 		}
 	}
