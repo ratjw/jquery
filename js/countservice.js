@@ -96,14 +96,7 @@ function isReoperation(thiscase)
 				diagDate = tempDate
 			}
 		}
-		for (var i = 0; i < treat.length; i++) {	//find min treatDate
-			tempDate = new Date(treat[i].toISOdate())
-			if (treatDate > tempDate) {
-				treatDate = tempDate
-			}
-		}
-		if ((diagDate < treatDate)
-			&& (dateDiff(diagDate, treatDate) <= 30)) {
+		if ((diagDate < treatDate) && (dateDiff(diagDate, treatDate) <= 30)) {
 			return true
 		}
 	}
@@ -132,14 +125,7 @@ function isReadmission(thiscase)
 				diagDate = tempDate
 			}
 		}
-		for (var i = 0; i < admit.length; i++) {	//find min treatDate
-			tempDate = new Date(admit[i].toISOdate())
-			if (admitDate > tempDate) {
-				admitDate = tempDate
-			}
-		}
-		if ((diagDate < admitDate)
-			&& (dateDiff(diagDate, admitDate) <= 30)) {
+		if ((diagDate < admitDate) && (dateDiff(diagDate, admitDate) <= 30)) {
 			return true
 		}
 	}
@@ -172,22 +158,40 @@ function isMorbidity(thiscase)
 	if (thiscase.final.toLowerCase().indexOf("delirium") >= 0) {
 		return true
 	}
+	if (thiscase.final.toLowerCase().indexOf("brain death") >= 0) {
+		return true
+	}
+	if (thiscase.final.toLowerCase().indexOf("brain swelling") >= 0) {
+		return true
+	}
 	if (thiscase.final.toLowerCase().indexOf("post-op") >= 0) {
-		if (thiscase.final.toLowerCase().indexOf("paresis") >= 0) {
+		if (thiscase.final.indexOf("plegia") >= 0) {
 			return true
 		}
-		if (thiscase.final.toLowerCase().indexOf("palsy") >= 0) {
+		if (thiscase.final.indexOf("paresis") >= 0) {
 			return true
 		}
-		if (thiscase.final.toLowerCase().indexOf("weakness") >= 0) {
+		if (thiscase.final.indexOf("palsy") >= 0) {
 			return true
 		}
+		if (thiscase.final.indexOf("weakness") >= 0) {
+			return true
+		}
+		if (/gr [0123]/.test(thiscase.final)) {
+			return true
+		}
+	}
+ 	if (thiscase.final.indexOf("DI") >= 0) {
+		return true
 	}
 }
 
 function isDead(thiscase)
 {
 	if (thiscase.final.indexOf("Dead") >= 0) {
+		return true
+	}
+	if (thiscase.final.indexOf("passed away") >= 0) {
 		return true
 	}
 }

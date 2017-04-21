@@ -58,22 +58,10 @@ function entireMonth(fromDate)
 		fromDate: fromDate,
 		toDate: toDate
 	})
-	getService(fromDate, toDate)
-}
-
-function getService(fromDate, toDate)
-{
-	var SERVICE
 
 	if (fromDate >= BOOK[0].opdate) {
-		SERVICE = getfromBOOK(fromDate, toDate)
-	} else {
-		SERVICE = getfromServer(fromDate, toDate)
-	}
-
-	if (SERVICE) {
+		var SERVICE = getfromBOOK(fromDate, toDate)
 		showService(SERVICE, fromDate, toDate)
-//		countService(SERVICE, fromDate, toDate)
 	}
 }
 
@@ -91,25 +79,6 @@ function getfromBOOK(fromDate, toDate)
 		}
 	}
 	return SERV
-}
-
-function getfromServer(fromDate, toDate)
-{
-	var sql = "sqlReturnData=SELECT * FROM book "
-	sql += "WHERE opdate BETWEEN '"+ fromDate +"' AND '"+ toDate +"' "
-	sql += "AND waitnum > 0 ORDER BY opdate, waitnum;"	//prevent jumping
-
-	Ajax(MYSQLIPHP, sql, callbackService);
-
-	function callbackService(response)
-	{
-		if ((!response) || (response.indexOf("DBfailed") != -1)) {
-			alert("Failed! retrieve database \n\n" + response)
-			return	//undefined
-		} else {
-			return JSON.parse(response)
-		}
-	}
 }
 
 function showService(SERVICE, fromDate, toDate)
