@@ -119,6 +119,11 @@
 	text-align: center;
 }
 
+#servicehead {
+	width: 800px;
+	margin: 0 auto;
+}
+
 #servicehead span.item {
 	display:inline-block; 
 	border: solid 1px white;
@@ -126,17 +131,11 @@
 	padding: 2px 10px;
 }
 
-#servicetbl tr.Readmission { background-color: #AACCCC; }
-#servicetbl tr.Reoperation { background-color: #CCCCAA; }
-#servicetbl tr.Infection { background-color: #CCAAAA; }
-#servicetbl tr.Morbidity { background-color: #AAAACC; }
-#servicetbl tr.Dead { background-color: #AAAAAA; }
-
-span.Readmission { background-color: #AACCCC; }
-span.Reoperation { background-color: #CCCCAA; }
-span.Infection { background-color: #CCAAAA; }
-span.Morbidity { background-color: #AAAACC; }
-span.Dead { background-color: #AAAAAA; }
+tr.Readmission, span.Readmission { background-color: #AACCCC; }
+tr.Reoperation, span.Reoperation { background-color: #CCCCAA; }
+tr.Infection, span.Infection { background-color: #CCAAAA; }
+tr.Morbidity, span.Morbidity { background-color: #AAAACC; }
+tr.Dead, span.Dead { background-color: #AAAAAA; }
 
 #titlebar {
 	height: 40px;
@@ -168,6 +167,7 @@ span.Dead { background-color: #AAAAAA; }
 
 .ui-dialog-title{
     font-size: 120%;
+	text-align: center; 
 }
 
 .ui-icon-closethick {
@@ -256,11 +256,6 @@ span.Dead { background-color: #AAAAAA; }
 	width: 150px;
 	font-size: 16px;
 }
-/*
-.ui-datepicker-calendar {
-	display: none;
-}
-*/
 
 #alert {
 	position: fixed;

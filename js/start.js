@@ -165,7 +165,8 @@ function updateTables(response)
 	if ($("#dialogService").parent().css('display') == 'block') {
 		var fromDate = $('#monthpicker').data('fromDate')
 		var toDate = $('#monthpicker').data('toDate')
-		getService(fromDate, toDate)
+		var SERVICE = getfromBOOK(fromDate, toDate)
+		showService(SERVICE, fromDate, toDate)
 	}
 	refillall()
 	if ($("#titlecontainer").css('display') == 'block') {

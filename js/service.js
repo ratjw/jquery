@@ -1,8 +1,8 @@
 
 function serviceReview()
 {
-	$('#month').show()
 	$('#monthpicker').show()
+	$('#servicehead').hide()
 	$('#monthpicker').datepicker( {
 		altField: $( "#monthpicking" ),
 		altFormat: "yy-mm-dd",
@@ -46,6 +46,7 @@ function serviceReview()
 	$('.ui-datepicker-calendar').css('display', 'none')
 	$('#servicetbl').hide()
 	resetcountService()
+	reposition('.ui-datepicker', 'left center', 'left center', $('#monthpicker'))
 }
 
 function entireMonth(fromDate)
@@ -116,8 +117,9 @@ function showService(SERVICE, fromDate, toDate)
 		});
 	})
 
-	$('#month').hide()
 	$('#monthpicker').hide()
+	$('#servicehead').show()
+	$('.ui-datepicker').off( "click")
 	$('#dialogService').dialog({
 		title: 'Service Neurosurgery เดือน : ' + $('#monthpicker').val(),
 		close: function() {
@@ -361,7 +363,8 @@ function selectDate(pointing)
 			savePreviousScell() 
 		}
 	})
-	$('#datepicker').datepicker("setDate", $(pointing).html()? new Date($(pointing).html()) 
+	$('#datepicker').datepicker("setDate", $(pointing).html()
+												? new Date($(pointing).html()) 
 												: $('#monthpicking').val())
 	$('.ui-datepicker').css( {
 		fontSize: '12px'

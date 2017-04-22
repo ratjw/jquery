@@ -75,6 +75,9 @@ function isOperation(thiscase)
 
 function isReoperation(thiscase)
 {
+	if (thiscase.final.toLowerCase().indexOf("(1)") >= 0) {
+		return false
+	}
 	if (thiscase.treatment.toLowerCase().indexOf("re-op") >= 0) {
 		return true
 	}
@@ -104,6 +107,9 @@ function isReoperation(thiscase)
 
 function isReadmission(thiscase)
 {
+	if (thiscase.final.toLowerCase().indexOf("(1)") >= 0) {
+		return false
+	}
 	if (thiscase.admission.toLowerCase().indexOf("re-ad") >= 0) {
 		return true
 	}
@@ -133,6 +139,9 @@ function isReadmission(thiscase)
 
 function isInfection(thiscase)
 {
+	if (thiscase.final.toLowerCase().indexOf("improved") >= 0) {
+		return false
+	}
 	if (thiscase.final.toLowerCase().indexOf("infect") >= 0) {
 		return true
 	}
@@ -140,6 +149,9 @@ function isInfection(thiscase)
 
 function isMorbidity(thiscase)
 {
+	if (thiscase.final.toLowerCase().indexOf("improved") >= 0) {
+		return false
+	}
 	if (thiscase.final.toLowerCase().indexOf("morbid") >= 0) {
 		return true
 	}
@@ -188,6 +200,9 @@ function isMorbidity(thiscase)
 
 function isDead(thiscase)
 {
+	if (thiscase.final.toLowerCase().indexOf("improved") >= 0) {
+		return false
+	}
 	if (thiscase.final.indexOf("Dead") >= 0) {
 		return true
 	}

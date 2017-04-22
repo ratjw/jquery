@@ -125,7 +125,6 @@
 	  <span class="item Dead">Dead : <span id="Dead"></span></span>
 	</div>
   </div>
-  <span id="month" style="margin:20px 0px 40px"> เดือน :</span>
   <input type="text" id="monthpicker" style="margin-left:5px">
   <input type="text" id="monthpicking" style="visibility:hidden">
   <table id="servicetbl"><!-- data-role="table" class="ui-responsive"-->
