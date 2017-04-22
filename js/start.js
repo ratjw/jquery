@@ -109,7 +109,7 @@ function updateBOOK(response)
 	BOOK = temp.BOOK? temp.BOOK : []
 	TIMESTAMP = temp.QTIME? temp.QTIME : ""	//last update BOOK in server
 	QWAIT = temp.QWAIT? temp.QWAIT : []
-	STAFF = temp.STAFF? temp.STAFF : []
+//	STAFF = temp.STAFF? temp.STAFF : []
 }
 
 function dataStafflist()
@@ -118,8 +118,8 @@ function dataStafflist()
 	var staffmenu = ''
 	for (var each = 0; each < STAFF.length; each++)
 	{
-		stafflist += '<li><div>' + STAFF[each].name + '</div></li>'
-		staffmenu += '<li><div id="item1">' + STAFF[each].name + '</div></li>'
+		stafflist += '<li><div>' + STAFF[each] + '</div></li>'
+		staffmenu += '<li><div id="item1">' + STAFF[each] + '</div></li>'
 	}
 	document.getElementById("stafflist").innerHTML = stafflist
 	document.getElementById("item0").innerHTML = staffmenu

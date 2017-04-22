@@ -44,7 +44,7 @@ String.prototype.toISOdate = function ()
 			date[0] = date[0] - 543
 		}
 
-		return (datejoin("-"))
+		return (date.join("-"))
 
 	} else {	//assume dd-mm-yy, dd-mm-yyyy, dd/mm/yy, dd/mm/yyyy
 		if (date[2].length == 2) {	//assume Buddhist year

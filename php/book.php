@@ -33,17 +33,17 @@ function book($mysqli)
 
 	if ($result = $mysqli->query ("SELECT now();"))
 		$time = current($result->fetch_row());	//array.toString()
-
+/*
 	$sql = "SELECT * FROM staff;";
 
 	if (!$result = $mysqli->query ($sql))
 		return $mysqli->error;
 	while ($rowi = $result->fetch_assoc())
 		$staff[] = $rowi;
-
+*/
 	$allarray["BOOK"] = $case;
 	$allarray["QTIME"] = $time;
-	$allarray["STAFF"] = $staff;
+//	$allarray["STAFF"] = $staff;
 
 	return $allarray;
 }

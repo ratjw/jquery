@@ -131,11 +131,16 @@
 	padding: 2px 10px;
 }
 
-tr.Readmission, span.Readmission { background-color: #AACCCC; }
-tr.Reoperation, span.Reoperation { background-color: #CCCCAA; }
-tr.Infection, span.Infection { background-color: #CCAAAA; }
-tr.Morbidity, span.Morbidity { background-color: #AAAACC; }
-tr.Dead, span.Dead { background-color: #AAAAAA; }
+#servicetbl tr.Readmission, 
+#servicehead span.Readmission { background-color: #AACCCC; }
+#servicetbl tr.Reoperation, 
+#servicehead span.Reoperation { background-color: #CCCCAA; }
+#servicetbl tr.Infection, 
+#servicehead span.Infection { background-color: #CCAAAA; }
+#servicetbl tr.Morbidity, 
+#servicehead span.Morbidity { background-color: #AAAACC; }
+#servicetbl tr.Dead, 
+#servicehead span.Dead { background-color: #AAAAAA; }
 
 #titlebar {
 	height: 40px;

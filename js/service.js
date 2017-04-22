@@ -91,7 +91,7 @@ function showService(SERVICE, fromDate, toDate)
 	$('#servicetbl').show()
 
 	$.each( STAFF, function() {
-		var staffname = this.name
+		var staffname = this
 		$('#sdatatitle tr').clone()
 			.insertAfter($('#servicetbl tr:last'))
 				.children().eq(OPDATE)
@@ -280,11 +280,13 @@ function saveSContent(column, content)	//column name in MYSQL
 	if (content) {
 		content = URIcomponent(content)	//take care of white space, double qoute, 
 										//single qoute, and back slash
-		content = "'" + content + "'"
 	}
 	var sql = "sqlReturnData=UPDATE book SET "
-	sql += column +" = "+ content
-	sql += ", editor='"+ THISUSER
+	if (content === null) {
+		sql += column +" = null, editor='"+ THISUSER
+	} else {
+		sql += column +" = '"+ content + "', editor='"+ THISUSER
+	}
 	sql += "' WHERE qn = "+ qn +";"
 	sql += "SELECT * FROM book WHERE qn = "+ qn +";"
 

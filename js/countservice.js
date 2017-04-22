@@ -1,7 +1,7 @@
 
 function countService(thiscase, fromDate, toDate)
 {
-	var color
+	var color = ""
 
 	if (isAdmit(thiscase, fromDate, toDate)) {
 		var Admit = document.getElementById("Admit")
@@ -61,11 +61,7 @@ function isOperation(thiscase)
 {
 	var Operation = false
 	$.each( neuroSxOp, function(i, each) {
-		if (thiscase.treatment.toLowerCase().indexOf(each) >= 0) {
-			Operation = true
-			return false
-		}
-		if (thiscase.treatment.toLowerCase().indexOf("op") >= 0) {
+		if (thiscase.treatment.indexOf(each) >= 0) {
 			Operation = true
 			return false
 		}
@@ -75,10 +71,13 @@ function isOperation(thiscase)
 
 function isReoperation(thiscase)
 {
-	if (thiscase.final.toLowerCase().indexOf("(1)") >= 0) {
+	if (thiscase.treatment.indexOf("(1)") >= 0) {
 		return false
 	}
-	if (thiscase.treatment.toLowerCase().indexOf("re-op") >= 0) {
+	if (thiscase.treatment.indexOf("re-op") >= 0) {
+		return true
+	}
+	if (thiscase.treatment.indexOf("Re-op") >= 0) {
 		return true
 	}
 
@@ -107,10 +106,13 @@ function isReoperation(thiscase)
 
 function isReadmission(thiscase)
 {
-	if (thiscase.final.toLowerCase().indexOf("(1)") >= 0) {
+	if (thiscase.admission.indexOf("(1)") >= 0) {
 		return false
 	}
-	if (thiscase.admission.toLowerCase().indexOf("re-ad") >= 0) {
+	if (thiscase.admission.indexOf("re-ad") >= 0) {
+		return true
+	}
+	if (thiscase.admission.indexOf("Re-ad") >= 0) {
 		return true
 	}
 
@@ -139,68 +141,58 @@ function isReadmission(thiscase)
 
 function isInfection(thiscase)
 {
-	if (thiscase.final.toLowerCase().indexOf("improved") >= 0) {
+	if (thiscase.final.indexOf("Improved") >= 0) {
 		return false
 	}
-	if (thiscase.final.toLowerCase().indexOf("infect") >= 0) {
+	if (thiscase.final.indexOf("improved") >= 0) {
+		return false
+	}
+	if (thiscase.final.indexOf("Infect") >= 0) {
+		return true
+	}
+	if (thiscase.final.indexOf("infect") >= 0) {
 		return true
 	}
 }
 
 function isMorbidity(thiscase)
 {
-	if (thiscase.final.toLowerCase().indexOf("improved") >= 0) {
+	if (thiscase.final.indexOf("Improved") >= 0) {
 		return false
 	}
-	if (thiscase.final.toLowerCase().indexOf("morbid") >= 0) {
-		return true
+	if (thiscase.final.indexOf("improved") >= 0) {
+		return false
 	}
-	if (thiscase.final.toLowerCase().indexOf("spastic") >= 0) {
-		return true
-	}
-	if (thiscase.final.toLowerCase().indexOf("leak") >= 0) {
-		return true
-	}
-	if (thiscase.final.toLowerCase().indexOf("donor") >= 0) {
-		return true
-	}
-	if (thiscase.final.toLowerCase().indexOf("seizure") >= 0) {
-		return true
-	}
-	if (thiscase.final.toLowerCase().indexOf("delirium") >= 0) {
-		return true
-	}
-	if (thiscase.final.toLowerCase().indexOf("brain death") >= 0) {
-		return true
-	}
-	if (thiscase.final.toLowerCase().indexOf("brain swelling") >= 0) {
-		return true
-	}
-	if (thiscase.final.toLowerCase().indexOf("post-op") >= 0) {
-		if (thiscase.final.indexOf("plegia") >= 0) {
-			return true
+
+	var Morbid = false
+	$.each( neuroMorbid, function(i, each) {
+		if (thiscase.final.indexOf(each) >= 0) {
+			Morbid = true
+			return false
 		}
-		if (thiscase.final.indexOf("paresis") >= 0) {
-			return true
-		}
-		if (thiscase.final.indexOf("palsy") >= 0) {
-			return true
-		}
-		if (thiscase.final.indexOf("weakness") >= 0) {
-			return true
-		}
-		if (/gr [0123]/.test(thiscase.final)) {
-			return true
-		}
+	})
+	if (Morbid) {
+		return Morbid
 	}
- 	if (thiscase.final.indexOf("DI") >= 0) {
-		return true
+
+	if (thiscase.final.indexOf("post-op") >= 0) {
+		var Morbid = false
+		$.each( neuroPostop, function(i, each) {
+			if (each.test(thiscase.final)) {
+				Morbid = true
+				return false
+			}
+		})
+		return Morbid
 	}
 }
 
 function isDead(thiscase)
 {
-	if (thiscase.final.toLowerCase().indexOf("improved") >= 0) {
+	if (thiscase.final.indexOf("Improved") >= 0) {
+		return false
+	}
+	if (thiscase.final.indexOf("improved") >= 0) {
 		return false
 	}
 	if (thiscase.final.indexOf("Dead") >= 0) {
