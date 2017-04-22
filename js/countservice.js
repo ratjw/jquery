@@ -183,8 +183,8 @@ function isMorbidity(thiscase)
 				return false
 			}
 		})
-		return Morbid
 	}
+	return Morbid
 }
 
 function isDead(thiscase)

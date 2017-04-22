@@ -3,7 +3,6 @@ var MYSQLIPHP		= "php/mysqli.php";
 var CHECKPAC		= "php/checkpac.php";
 
 var BOOK		= [];
-var STAFF		= ["อ.เอก", "อ.อัตถพร", "อ.สรยุทธ", "อ.วัฒนา", "อ.เกรียงศักดิ์", "อ.พีรพงศ์"];
 
 var THISUSER	= "";
 var TIMESTAMP	= "";
@@ -45,6 +44,8 @@ var NAMEOFDAYFULL	= ["sunday", "monday", "tuesday", "wednesday",
 
 var NUMMONTH	= {"มค.":"01","กพ.":"02","มีค.":"03","เมย.":"04","พค.":"05","มิย.":"06",
 					"กค.":"07","สค.":"08","กย.":"09","ตค.":"10","พย.":"11","ธค.":"12"};
+
+var STAFF		= ["อ.เอก", "อ.อัตถพร", "อ.สรยุทธ", "อ.วัฒนา", "อ.เกรียงศักดิ์", "อ.พีรพงศ์"];
 
 var HOLIDAY = {
 	"2017-02-11" : "url('pic/Magha.jpg')",
