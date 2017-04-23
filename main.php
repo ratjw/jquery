@@ -206,55 +206,57 @@
 
 <div id="paperdiv" class="paper"></div>
 
-<script type="text/javascript">
-function namesix()
-{
-	var userid = document.getElementById("userid").value
-	if (userid.length == 6 && /^\d+$/.test(userid)) {
-		document.getElementById("password").focus()
-	}
-}
-
-function delwrong()
-{
-	document.getElementById("err").innerHTML = ""
-}
-</script>
-
 <DIV id="login">
+
 	<h3>Queue book for Neurosurgery</h3>
+
 	<form method="post" action="">
+
 		<?php $userid = $password = $passworderr = "";?>
+
 		Login ID: <input id="userid" type="text" maxlength="6" size="6" name="userid"
-					value="<?php echo $userid;?>" oninput="namesix()" onpropertychange="namesix()">
+					value="<?php echo $userid;?>" oninput="namesix()" 
+					onpropertychange="namesix()">
 		<br><br>
-		Password: <input id="password" type="password" name="password" onkeyup="delwrong()"
+		Password: <input id="password" type="password" name="password""
 					maxlength="16" size="8" value="<?php echo $password;?>">
 		<br>
 		<span id="err" style="color:blue;"><?php echo $passworderr;?></span>
 		<br>
-		<input id="submit" type="submit" value="Submit">
+		<input type="submit" value="Submit">
 		<br><br>
 	</form>
 </DIV>
+
+<script type="text/javascript">
+
+function namesix()
+{
+	var userid = document.getElementById("userid").value
+	if (/^\d{6}$/.test(userid)) {	//six digits only
+		document.getElementById("password").focus()
+	}
+}
+
+</script>
 
 <?php
 	if ($_SERVER["REQUEST_METHOD"] == "POST") {
 		$userid = $_POST["userid"];
 		$password = $_POST["password"];
 
-//		if (strpos($_SERVER["SERVER_NAME"], "surgery.rama") !== false)
-//		{
+		if (strpos($_SERVER["SERVER_NAME"], "surgery.rama") !== false)
+		{
 			$wsdl="http://appcenter/webservice/patientservice.wsdl";
 			$client = new SoapClient($wsdl);
 			$resultx = $client->Get_staff_detail($userid, $password);
 			$resulty = simplexml_load_string($resultx);
 			$resultz = $resulty->children()->children()->role;
-//		}
-//		else
-//		{
-//			$resultz = "S";
-//		}
+		}
+		else	// if (preg_match('/^\d{6}$/', $userid))	//six digits only
+		{
+			$resultz = "S";
+		}
 		if ($resultz == "S" || $resultz == "R")
 		{
 			echo "<SCRIPT type='text/javascript'>loadtable('".$userid."')</SCRIPT>";
