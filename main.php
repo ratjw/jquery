@@ -206,6 +206,21 @@
 
 <div id="paperdiv" class="paper"></div>
 
+<script type="text/javascript">
+function namesix()
+{
+	var userid = document.getElementById("userid").value
+	if (userid.length == 6 && /^\d+$/.test(userid)) {
+		document.getElementById("password").focus()
+	}
+}
+
+function delwrong()
+{
+	document.getElementById("err").innerHTML = ""
+}
+</script>
+
 <DIV id="login">
 	<h3>Queue book for Neurosurgery</h3>
 	<form method="post" action="">
@@ -214,59 +229,41 @@
 					value="<?php echo $userid;?>" oninput="namesix()" onpropertychange="namesix()">
 		<br><br>
 		Password: <input id="password" type="password" name="password" onkeyup="delwrong()"
-					maxlength="6" size="6" value="<?php echo $password;?>">
+					maxlength="16" size="8" value="<?php echo $password;?>">
 		<br>
-		<span id="span" style="color:blue;"><?php echo $passworderr;?></span>
+		<span id="err" style="color:blue;"><?php echo $passworderr;?></span>
 		<br>
 		<input id="submit" type="submit" value="Submit">
 		<br><br>
 	</form>
 </DIV>
 
-<script type="text/javascript">
-function namesix()
-{
-	var userid = document.getElementById("userid").value
-	if (userid.length == 6 && /^\d+$/.test(userid))
-		document.getElementById("password").focus()
-	else
-		document.getElementById("span").innerHTML = ""
-}
-
-function delwrong()
-{
-	document.getElementById("span").innerHTML = ""
-}
-</script>
-
 <?php
 	if ($_SERVER["REQUEST_METHOD"] == "POST") {
 		$userid = $_POST["userid"];
 		$password = $_POST["password"];
-		echo "<SCRIPT type='text/javascript'>loadtable('".$userid."')</SCRIPT>";
-	}
-/*
-		if (strpos($_SERVER["SERVER_NAME"], "surgery.rama") !== false)
-		{
+
+//		if (strpos($_SERVER["SERVER_NAME"], "surgery.rama") !== false)
+//		{
 			$wsdl="http://appcenter/webservice/patientservice.wsdl";
 			$client = new SoapClient($wsdl);
-			$resultx = $client->Get_staff_detail($userid,$password);
+			$resultx = $client->Get_staff_detail($userid, $password);
 			$resulty = simplexml_load_string($resultx);
 			$resultz = $resulty->children()->children()->role;
-		}
-		else
-		{
-			$resultz = "S";
-		}
+//		}
+//		else
+//		{
+//			$resultz = "S";
+//		}
 		if ($resultz == "S" || $resultz == "R")
 		{
-			echo $begin.$userid.$end;
+			echo "<SCRIPT type='text/javascript'>loadtable('".$userid."')</SCRIPT>";
 		}
 		else
 		{ 
 			$passworderr = "Wrong password";
 		}
-*/
+	}
 ?>
 
 </BODY>
