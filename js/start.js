@@ -133,36 +133,24 @@ function updating()
 	{
 		if (response && response.indexOf("opdate") != -1)
 		{	//there is some change in database
-//			if (!$('#editcell').data("editCellXXX")) {
-				updateTables(response)
-/*
+			updateBOOK(response)
+			updateTables()
+			if ((getEditTD() === false) || 
+				(getEditTD().html() == $(editcell).data("content"))) {
 				clearEditcellData("hide")
 				$('#menu').hide()	//editcell may be on first column
-			}
-			else if ($('input').css('display') == "block") {
-				updateTables(response)
-				clearEditcellData("hide")
-			}
-			else if (($('#editcell').html() == $('#editcell').data("editCell").html())
-			&& ($('#editcell').html() == $('#editcellXXX').data('content'))) {
-				updateTables(response)
-				clearEditcellData("hide")
 				$('#stafflist').hide()	//editcell may be on staff
+				$('#datepicker').datepicker("hide")
 			}
-			else if (1) {
-				updateTables(response)
-			}
-*/
 		}
 		clearTimeout(TIMER);
 		TIMER = setTimeout("updating()",10000);	//idle, poke next 5 sec.
 	}
 }
 
-function updateTables(response)
+function updateTables()
 {
-	updateBOOK(response)
-	if ($("#dialogService").parent().css('display') == 'block') {
+	if ($("#dialogService").dialog('isOpen')) {
 		var fromDate = $('#monthpicker').data('fromDate')
 		var toDate = $('#monthpicker').data('toDate')
 		var SERVICE = getfromBOOK(fromDate, toDate)

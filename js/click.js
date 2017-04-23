@@ -151,25 +151,28 @@ function saveContent(column, content)	//column name in MYSQL
 
 	Ajax(MYSQLIPHP, sql, callbacksaveContent);
 
+	var tableID = $("#editcell").data("tableID")
+	var cellindex = $("#editcell").data("cellIndex")
+	var updateCell = $($("#editcell").data("editRow")).children()
+	var gotEditTD = getEditTD()
+	var oldContent = $("#editcell").data("content")
+
 	function callbacksaveContent(response)
 	{
 		if (!response || response.indexOf("DBfailed") != -1)
 		{
 			alert("Failed! update database \n\n" + response)
-			getEditTD().html($("#editcell").data("content"))
+			gotEditTD.html(oldContent)
 			//return to previous content
 		}
 		else
 		{
 			updateBOOK(response);
-			var tableID = $("#editcell").data("tableID")
-			var cellindex = $("#editcell").data("cellIndex")
 
 			if (tableID == 'tbl') {
 				if (!qn) {
-					var Newqn = findNewqn(opdate)
-					var editedRow = $($("#editcell").data("editRow"))
-					editedRow.children().eq(QN).html(Newqn)
+					var NewRow = findNewRow(opdate)
+					updateCell.eq(QN).html(BOOK[NewRow].qn)
 				}
 				if (($("#titlecontainer").css('display') == 'block') && 
 					($('#titlename').html() == staffname)) {
@@ -210,39 +213,40 @@ function saveHNinput(hn, content)
 
 	Ajax(GETNAMEHN, sql, callbackgetByHN)
 
+	var tableID = $("#editcell").data("tableID")
+	var cellindex = $("#editcell").data("cellIndex")
+	var updateCell = $($("#editcell").data("editRow")).children()
+	var gotEditTD = getEditTD()
+	var oldContent = $("#editcell").data("content")
+
 	function callbackgetByHN(response)
 	{
 		if ((!response) || (response.indexOf("patient") == -1) || (response.indexOf("{") == -1)) 
 		{
 			alert(response)
-			getEditTD().html($("#editcell").data("content"))
+			gotEditTD.html(oldContent)
 			//return to previous content
 		}
 		else 
 		{
 			updateBOOK(response)
-			var tableID = $("#editcell").data("tableID")
-			var cellindex = $("#editcell").data("cellIndex")
+			if (!qn) {	//No HN input in staffqueue table
+				var NewRow = findNewRow(opdate)
+				var bookq = BOOK[NewRow]
+				updateCell.eq(NAME).html(bookq.patient)
+				updateCell.eq(AGE).html(bookq.dob? bookq.dob.getAge(bookq.opdate) : "")
+				updateCell.eq(QN).html(bookq.qn)
+			}
+			if (($("#titlecontainer").css('display') == 'block') && 
+				($('#titlename').html() == staffname)) {
 
-			if (tableID == 'tbl') {
-				if (!qn) {
-					var Newqn = findNewqn(opdate)
-					var prevEditRow = $($("#editcell").data("editRow"))
-					prevEditRow.children().eq(QN).html(Newqn)
-				}
-				if (($("#titlecontainer").css('display') == 'block') && 
-					($('#titlename').html() == staffname)) {
-
-					refillanother('queuetbl', cellindex, qn)
-				}
-			} else {
-				refillanother('tbl', cellindex, qn)
+				refillanother('queuetbl', cellindex, qn)
 			}
 		}
 	}
 }
 
-function findNewqn(opdate)
+function findNewRow(opdate)	//find new row (max. qn)
 {
 	var q = 0
 	while (BOOK[q].opdate != opdate)
@@ -252,14 +256,17 @@ function findNewqn(opdate)
 			return ""
 	}
 
-	var qn = BOOK[q].qn
+	var qn = Number(BOOK[q].qn)
+	var newq = q
+	q++
 	while (q < BOOK.length && BOOK[q].opdate == opdate) {
-		q++
-		if (BOOK[q].qn > qn) {
-			qn = BOOK[q].qn
+		if (Number(BOOK[q].qn) > qn) {
+			qn = Number(BOOK[q].qn)
+			newq = q
 		}
+		q++
 	}
-	return qn
+	return newq
 }
 
 function storePresentcell(pointing)
@@ -267,7 +274,7 @@ function storePresentcell(pointing)
 	var rindex = $(pointing).closest("tr").index()
 	var cindex = $(pointing).closest("td").index()
 
-	editcell(pointing)
+	createEditcell(pointing)
 
 	switch(cindex)
 	{
@@ -299,7 +306,7 @@ function storePresentcell(pointing)
 	}
 }
 
-function editcell(pointing)
+function createEditcell(pointing)
 {
 	$("#editcell").css({
 		height: $(pointing).height() + "px",
@@ -354,6 +361,8 @@ function getEditTD()
 
 	if (rowIndex) {
 		return $("#" + tableID + " tr:eq(" + rowIndex + ") td:eq(" + cellIndex + ")")	
+	} else {
+		return false
 	}
 }
 

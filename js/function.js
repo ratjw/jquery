@@ -15,9 +15,9 @@ String.prototype.mysqlDateparse = function ()
 		return false
 	}
 	var date = this.split("-")
-	if (Number(date[0]) > 1900) {
-		if (Number(date[1]) > 0) {
-			if (Number(date[2]) > 0) {
+	if (date[0] > 1900) {
+		if (date[1] > 0) {
+			if (date[2] > 0) {
 				return true
 			}
 		}
@@ -40,7 +40,7 @@ String.prototype.toISOdate = function ()
 
 	var yyyy = new Date().getFullYear()
 	if (date[0].length == 4) {	//assume yyyy-mm-dd, yyyy/mm/dd
-		if ((date[0] > yyyy + 300)) {	//assume Buddhist year
+		if (Number(date[0]) > yyyy + 300) {	//assume Buddhist year
 			date[0] = date[0] - 543
 		}
 
@@ -52,7 +52,7 @@ String.prototype.toISOdate = function ()
 			date[2] = date[2] - 543
 		}
 		else if (date[2].length == 4) {
-			if ((date[2] > yyyy + 300)) {	//assume Buddhist year
+			if (Number(date[2]) > yyyy + 300) {	//assume Buddhist year
 				date[2] = date[2] - 543
 			}
 		}

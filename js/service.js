@@ -335,7 +335,7 @@ function storePresentScell(pointing)
 		case FINAL:
 			$('#datepicker').hide()
 			$('#datepicker').datepicker( 'hide' )
-			editcell(pointing)
+			createEditcell(pointing)
 			saveDataPoint("#editcell", pointing)
 			break
 		case ADMIT:
@@ -362,8 +362,8 @@ function selectDate(pointing)
 		onClose: function () {
 			$('.ui-datepicker').css( {
 				fontSize: ''
-			}).hide()
-			$(pointing).html($('#datepicker').val())
+			})//.hide()
+//			$(pointing).html($('#datepicker').val())
 			savePreviousScell() 
 		}
 	})

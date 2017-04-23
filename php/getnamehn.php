@@ -35,17 +35,12 @@ require_once "book.php";
 		$sql = $sql." dob = '$dob', gender = '$gender', editor = '$username' ";
 		$sql = $sql."WHERE qn = $qn;";
 	}
-	else	//new row, if from '#queuetbl' -> has waitnum
-	{		//new row, if from '#tbl' -> no waitnum (default = 1 in database)
-		if ($waitnum) {
-			$sql = "INSERT INTO book (waitnum, since, opdate, staffname, hn, patient, dob, gender, editor) "; 
-			$sql = $sql."VALUES ($waitnum, '$since', '$opdate', '$staffname', '$hn', ";
-			$sql = $sql."'$initial_name"."$first_name"." "."$last_name', '$dob', '$gender', '$username');";
-		} else {
-			$sql = "INSERT INTO book (since, opdate, staffname, hn, patient, dob, gender, editor) "; 
-			$sql = $sql."VALUES ('$since', '$opdate', '$staffname', '$hn', ";
-			$sql = $sql."'$initial_name"."$first_name"." "."$last_name', '$dob', '$gender', '$username');";
-		}
+	else
+	{			//new row -> no waitnum (default = 1 in database)
+		$sql = "INSERT INTO book (since, opdate, staffname, hn, patient, dob, gender, editor) "; 
+		$sql = $sql."VALUES ('$since', '$opdate', '$staffname', '$hn', ";
+		$sql = $sql."'$initial_name"."$first_name"." "."$last_name', '$dob', '$gender', '$username');";
+	}
 
 	$query = $mysqli->query ($sql);
 	if (!$query)
