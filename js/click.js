@@ -179,7 +179,7 @@ function saveContent(column, content)	//column name in MYSQL
 
 					refillanother('queuetbl', cellindex, qn)
 				}
-			} else {
+			} else {	//No new case input in staffqueue table
 				refillanother('tbl', cellindex, qn)
 			}
 		}
@@ -230,17 +230,23 @@ function saveHNinput(hn, content)
 		else 
 		{
 			updateBOOK(response)
-			if (!qn) {	//No HN input in staffqueue table
-				var NewRow = findNewRow(opdate)
-				var bookq = BOOK[NewRow]
-				updateCell.eq(NAME).html(bookq.patient)
-				updateCell.eq(AGE).html(bookq.dob? bookq.dob.getAge(bookq.opdate) : "")
-				updateCell.eq(QN).html(bookq.qn)
-			}
-			if (($("#titlecontainer").css('display') == 'block') && 
-				($('#titlename').html() == staffname)) {
 
-				refillanother('queuetbl', cellindex, qn)
+			var NewRow = findNewRow(opdate)
+			var bookq = BOOK[NewRow]
+			updateCell.eq(NAME).html(bookq.patient)
+			updateCell.eq(AGE).html(bookq.dob? bookq.dob.getAge(bookq.opdate) : "")
+
+			if (tableID == 'tbl') {
+				if (!qn) {
+					updateCell.eq(QN).html(bookq.qn)
+				}
+				if (($("#titlecontainer").css('display') == 'block') && 
+					($('#titlename').html() == staffname)) {
+
+					refillanother('queuetbl', cellindex, qn)
+				}
+			} else {	//No new case input in staffqueue table
+				refillanother('tbl', cellindex, qn)
 			}
 		}
 	}
@@ -331,11 +337,11 @@ function reposition(me, mypos, atpos, target)
 		at: atpos,
 		of: target
 	}).show()
-	$(me).position({
+/*	$(me).position({
 		my: mypos,
 		at: atpos,
 		of: target
-	}).show()
+	}).show()*/
 }
 
 function saveDataPoint(editcell, pointing)

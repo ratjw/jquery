@@ -15,9 +15,9 @@ String.prototype.mysqlDateparse = function ()
 		return false
 	}
 	var date = this.split("-")
-	if (date[0] > 1900) {
-		if (date[1] > 0) {
-			if (date[2] > 0) {
+	if (/^\d\d\d\d$/.test(date[0])) {
+		if (/^\d\d$/.test(date[1])) {
+			if (/^\d\d$/.test(date[2])) {
 				return true
 			}
 		}

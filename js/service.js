@@ -247,20 +247,26 @@ function savePreviousScell()
 		case ADMIT:
 			content = $('#datepicker').val()
 			if (content != $("#editcell").data("content")) {
-				if (!content || !content.mysqlDateparse()) {
+				if (!content) {
 					content = null
+					saveSContent("admit", content)
 				}
-				saveSContent("admit", content)
+				if (content.mysqlDateparse()) {
+					saveSContent("admit", content)
+				}
 			}
 			$('#datepicker').hide()
 			break
 		case DISCHARGE:
 			content = $('#datepicker').val()
 			if (content != $("#editcell").data("content")) {
-				if (!content || !content.mysqlDateparse()) {
+				if (!content) {
 					content = null
+					saveSContent("discharge", content)
 				}
-				saveSContent("discharge", content)
+				if (content.mysqlDateparse()) {
+					saveSContent("discharge", content)
+				}
 			}
 			$('#datepicker').hide()
 			break
@@ -284,7 +290,7 @@ function saveSContent(column, content)	//column name in MYSQL
 										//single qoute, and back slash
 	}
 	var sql = "sqlReturnData=UPDATE book SET "
-	if (content === null) {
+	if (content === null) {	//mysql date field accept null not ""
 		sql += column +" = null, editor='"+ THISUSER
 	} else {
 		sql += column +" = '"+ content + "', editor='"+ THISUSER
