@@ -257,11 +257,6 @@
 	font-size: 12px;
 }
 
-#monthpicker, #monthpicking {
-	width: 150px;
-	font-size: 16px;
-}
-
 #alert {
 	position: fixed;
 	z-index: 1000;
@@ -293,20 +288,21 @@
 	overflow:auto;
 }
 
-.paper {
+#equipdiv {
 	position: fixed;
 	display:none;
 	z-index: 1;
-	font-size: 12px;
+	line-height:150%;
+	font-size: 14px;
 	color: black;
 	background-color: white;
 	border: 2px solid slategray;
 	padding-top: 30px;
 	padding-right: 30px;
 	padding-bottom: 30px;
-	padding-left: 50px;
+	padding-left: 30px;
 	overflow-x: hidden;
-	overflow-y: hidden;
+	overflow-y: auto;
 }
 
 #equip span {

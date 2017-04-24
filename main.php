@@ -204,7 +204,7 @@
 
 <div id="editcell" contenteditable="true"></div>
 
-<div id="equipdiv" class="paper"></div>
+<div id="equipdiv"></div>
 
 <DIV id="login">
 
