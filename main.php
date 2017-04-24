@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <HTML>
 <HEAD>
-<!--meta charset="utf-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge"-->
+<meta charset="utf-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <link href="css/jquery-ui.css" rel="stylesheet">
@@ -204,24 +204,28 @@
 
 <div id="editcell" contenteditable="true"></div>
 
-<div id="paperdiv" class="paper"></div>
+<div id="equipdiv" class="paper"></div>
 
 <DIV id="login">
 
+	<br>
 	<h3>Queue book for Neurosurgery</h3>
 
 	<form method="post" action="">
 
-		<?php $userid = $password = $passworderr = "";?>
+		<?php $userid = $password = "";
+			$passworderr = "Beware of Th key"; ?>
 
 		Login ID: <input id="userid" type="text" maxlength="6" size="6" name="userid"
 					value="<?php echo $userid;?>" oninput="namesix()" 
 					onpropertychange="namesix()">
-		<br><br>
+		<br>
+		<br>
 		Password: <input id="password" type="password" name="password""
 					maxlength="16" size="8" value="<?php echo $password;?>">
 		<br>
-		<span id="err" style="color:blue;"><?php echo $passworderr;?></span>
+		<span id="err" style="color:blue;font-size:10px"><?php echo $passworderr;?></span>
+		<br>
 		<br>
 		<input type="submit" value="Submit">
 		<br><br>
@@ -245,25 +249,32 @@ function namesix()
 		$userid = $_POST["userid"];
 		$password = $_POST["password"];
 
-		if (strpos($_SERVER["SERVER_NAME"], "surgery.rama") !== false)
+		if (preg_match('/^\d{6}$/', $userid))	//six digits only
 		{
-			$wsdl="http://appcenter/webservice/patientservice.wsdl";
-			$client = new SoapClient($wsdl);
-			$resultx = $client->Get_staff_detail($userid, $password);
-			$resulty = simplexml_load_string($resultx);
-			$resultz = $resulty->children()->children()->role;
-		}
-		else	// if (preg_match('/^\d{6}$/', $userid))	//six digits only
-		{
-			$resultz = "S";
-		}
-		if ($resultz == "S" || $resultz == "R")
-		{
-			echo "<SCRIPT type='text/javascript'>loadtable('".$userid."')</SCRIPT>";
+			if (strpos($_SERVER["SERVER_NAME"], "surgery.rama") !== false)
+			{
+				$wsdl="http://appcenter/webservice/patientservice.wsdl";
+				$client = new SoapClient($wsdl);
+				$resultx = $client->Get_staff_detail($userid, $password);
+				$resulty = simplexml_load_string($resultx);
+				$resultz = $resulty->children()->children()->role;
+			}
+			else
+			{
+				$resultz = "S";
+			}
+			if ($resultz == "S" || $resultz == "R")
+			{
+				echo "<SCRIPT type='text/javascript'>loadtable('".$userid."')</SCRIPT>";
+			}
+			else
+			{ 
+				$passworderr = "Wrong password";
+			}
 		}
 		else
 		{ 
-			$passworderr = "Wrong password";
+			$passworderr = "Wrong ID";
 		}
 	}
 ?>

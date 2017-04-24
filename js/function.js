@@ -11,18 +11,30 @@ Date.prototype.mysqlDate = function ()
 
 String.prototype.mysqlDateparse = function () 
 {	//check if valid MySQL date (2017-04-19)
-	if (!this) {
+	if (/^\d\d\d\d-\d\d-\d\d$/.test(this)) {
+		return true
+	} else {
 		return false
 	}
-	var date = this.split("-")
-	if (/^\d\d\d\d$/.test(date[0])) {
-		if (/^\d\d$/.test(date[1])) {
-			if (/^\d\d$/.test(date[2])) {
-				return true
-			}
-		}
+}
+
+String.prototype.hyphenDateparse = function () 
+{	//check if valid MySQL date (2017-04-19)
+	if ((/^\d\d\d\d-\d\d-\d\d$/.test(this))
+		|| (/^\d\d-\d\d-\d\d\d\d$/.test(this))) {
+		return true
+	} else {
+		return false
 	}
-	return false
+}
+
+String.prototype.slashDateparse = function () 
+{	//check if valid MySQL date (2017-04-19)
+	if (/^\d\d\/\d\d\/\d\d\d\d$/.test(this)) {
+		return true
+	} else {
+		return false
+	}
 }
 
 String.prototype.toISOdate = function () 
@@ -31,11 +43,14 @@ String.prototype.toISOdate = function ()
 	if (!this) {
 		return this
 	}
-	if (/-/.test(this)) {
+	if (this.hyphenDateparse()) {
 		var date = this.split("-")
 	}
-	else if (/\//.test(this)) {
+	else if (this.slashDateparse()) {
 		var date = this.split("/")
+	}
+	else {
+		return this
 	}
 
 	var yyyy = new Date().getFullYear()

@@ -10,12 +10,15 @@ function fillEquipTable(rownum, qn)
 	var age = rowmain.cells[AGE].innerHTML
 	var diagnosis = rowmain.cells[DIAGNOSIS].innerHTML
 	var treatment = rowmain.cells[TREATMENT].innerHTML
-	var equipOR = document.getElementById("paperdiv")
+	var equipOR = document.getElementById("equipdiv")
 
 	var txt = "<div id='equip'>";
+	txt += "<br>";
+	txt += "<br>";
 	txt += "<span style='width:250px;'></span>วันที่ ";
 	txt += "<span style='width:120px; font-size: 14px; font-weight: bold;'); >"+ opdate +"</span>";
 	txt += "<span style='width:20px;'></span>Surgeon "+ staffname;
+	txt += "<br>";
 	txt += "<br>";
 	txt += "<span style='width:100px;'>ชื่อ-นามสกุล</span>"+ patientname;
 	txt += "<span style='width:20px;'></span>อายุ "+ age;
@@ -25,11 +28,22 @@ function fillEquipTable(rownum, qn)
 	txt += "<br>";
 	txt += "<span style='width:100px;'>Operation</span>"+ treatment;
 	txt += "<br>";
+	txt += "<br>";
 	txt += "<span style='width:120px;'>Position </span>";
-	txt += "<span style='width:60px;'><label><input type='radio' name='pose' id='prone'>คว่ำ</label></span>";
-	txt += "<span style='width:60px;'><label><input type='radio' name='pose' id='supine'>หงาย</label></span>";
-	txt += "<span style='width:120px;'><label><input type='radio' name='pose' id='rightLateral'>ตะแคงขวาลง</label></span>";
-	txt += "<span style='width:120px;'><label><input type='radio' name='pose' id='leftLateral'>ตะแคงซ้ายลง</label></span>";
+	txt += "<span style='width:120px;'><label><input type='radio' name='pose' id='Supine'>หงายตรง</label></span>";
+	txt += "<span style='width:120px;'><label><input type='radio' name='pose' id='rightSupine'>หงายหันขวา</label></span>";
+	txt += "<span style='width:120px;'><label><input type='radio' name='pose' id='leftSupine'>หงายหันซ้าย</label></span>";
+	txt += "<br>";
+	txt += "<span style='width:120px;'></span>";
+	txt += "<span style='width:120px;'><label><input type='radio' name='pose' id='rightLateral'>Lateral ขวาลง</label></span>";
+	txt += "<span style='width:120px;'><label><input type='radio' name='pose' id='leftLateral'>Lateral ซ้ายลง</label></span>";
+	txt += "<span style='width:120px;'><label><input type='radio' name='pose' id='rightProne'>3/4 ขวาลง</label></span>";
+	txt += "<span style='width:120px;'><label><input type='radio' name='pose' id='leftProne'>3/4 ซ้ายลง</label></span>";
+	txt += "<br>";
+	txt += "<span style='width:120px;'></span>";
+	txt += "<span style='width:120px;'><label><input type='radio' name='pose' id='rightParkbench'>Parkbench ขวาลง</label></span>";
+	txt += "<span style='width:120px;'><label><input type='radio' name='pose' id='leftParkbench'>Parkbench ซ้ายลง</label></span>";
+	txt += "<span style='width:120px;'><label><input type='radio' name='pose' id='prone'>คว่ำ</label></span>";
 	txt += "<span>อื่นๆ<input type='text' size='7' id='position'></span>";
 	txt += "<br>";
 	txt += "<span style='width:120px;'></span>";
@@ -72,7 +86,7 @@ function fillEquipTable(rownum, qn)
 	txt += "<span>อื่นๆ<input type='text' size='7' id='Other4'></span>";
 	txt += "<br>";
 	txt += "<span style='width:120px;'>7.U/S</span>";
-	txt += "<span style='width:120px;'><label><input type='checkbox' id='Ultrasound'>Ultrasound</label></span>";
+	txt += "<span style='width:120px;'><label><input type='checkbox' id='ultrasound'>Ultrasound</label></span>";
 	txt += "<span><label><input type='checkbox' id='Doppler'>Doppler</label></span>";
 	txt += "<br>";
 	txt += "<span style='width:120px;'>8.Shunt</span>";
@@ -94,15 +108,15 @@ function fillEquipTable(rownum, qn)
 	txt += "<span style='width:120px;'><label><input type='checkbox' id='shuntCodman'>Codman</label></span>";
 	txt += "<span>อื่นๆ<input type='text' size='7' id='Other5'></span>";
 	txt += "<br>";
-	txt += "<span style='width:160px;'>9.เครื่องมือของบริษัท </span>เวลาส่งเครื่อง ";
+	txt += "<span style='width:120px;'>9.เครื่องมือของบริษัท </span>เวลาส่งเครื่อง ";
 	txt += "<span><input type='text' size='4' id='equiptime'></span>น ";
 	txt += "<span style='width:20px;'></span>";
-	txt += "<span><input type='text' size='25' id='Other6'></span>";
+	txt += "<span>ชื่อ<input type='text' size='44' id='Other6'></span>";
 	txt += "<br>";
 	txt += "<span style='width:120px;'>10.อุปกรณ์อื่นๆ</span>";
-	txt += "<span style='width:150px;'><label><input type='checkbox' id='CranioplasticCement'>Cranioplastic cement</label></span>";
-	txt += "<span style='width:150px;'><label><input type='checkbox' id='artificialSkull'>MTEC artificial skull</label></span>";
-	txt += "<span>อื่นๆ<input type='text' size='7' id='Other7'></span>";
+	txt += "<span style='width:120px;'><label><input type='checkbox' id='cranioCement'>Cranio cement</label></span>";
+	txt += "<span style='width:120px;'><label><input type='checkbox' id='artificialSkull'>MTEC skull</label></span>";
+	txt += "<span>อื่นๆ<input type='text' size='25' id='Other7'></span>";
 	txt += "<br>";
 	txt += "<span style='width:120px;'>11.Monitor</span>";
 	txt += "<span style='width:120px;'><label><input type='checkbox' id='CN5'>CN5</label></span>";
@@ -117,8 +131,8 @@ function fillEquipTable(rownum, qn)
 	txt += "<span><label><input type='checkbox' id='MEP'>MEP</label></span>";
 	txt += "<br>";
 	txt += "<span style='width:120px;'></span>";
-	txt += "<span style='width:120px;'><label><input type='checkbox' id='DirectStim'>Direct Stim</label></span>";
-	txt += "<span style='width:120px;'><label><input type='checkbox' id='PhaseReversal'>Phase Reversal</label></span>";
+	txt += "<span style='width:120px;'><label><input type='checkbox' id='directStim'>Direct Stim</label></span>";
+	txt += "<span style='width:120px;'><label><input type='checkbox' id='phaseReversal'>Phase Reversal</label></span>";
 	txt += "<span style='width:120px;'><label><input type='checkbox' id='ECOG'>ECoG</label></span>";
 	txt += "<span><label><input type='checkbox' id='EEG'>EEG</label></span>";
 	txt += "<br>";
@@ -128,11 +142,13 @@ function fillEquipTable(rownum, qn)
 	txt += "<span>อื่นๆ<input type='text' size='7' id='Other8'></span>";
 	txt += "<br>";
 	txt += "<br>";
+	txt += "<span id='editedby'>";
 	txt += "<button onclick=saveequip("+ qn +")> SAVE </button>";
 	txt += "<span style='width:20px;'></span>";
 	txt += "<button onclick=printpaper("+ qn +")> Print </button>";
 	txt += "<span style='width:20px;'></span>";
 	txt += "<button onClick=cancelset()> Close </button>";
+	txt += "</span>"
 	txt += "<br>";
 	txt += "<br>";
 	txt += "</div>";
@@ -143,14 +159,10 @@ function fillEquipTable(rownum, qn)
 	equipOR.style.left = rowmain.cells[OPDATE].offsetWidth +"px"	//show first column
 	equipOR.style.overflowY = "auto"
 	equipOR.style.fontSize = "12px"
-	if (equipOR.offsetHeight > window.innerHeight)
-		equipOR.style.height = window.innerHeight - 60 +"px"
-
-	var q = 0
-
-	while (BOOK[q].qn != qn)	//find the case
-		q++
-
+	if (equipOR.offsetHeight > window.innerHeight) {
+		equipOR.style.height = window.innerHeight - 30 +"px"
+	}
+	var q = findBOOKrow(qn)
 	if ( BOOK[q].equipment )
 	{								//fill checked equip if any
 		$.each(JSON.parse(BOOK[q].equipment), function(key, val){
@@ -166,12 +178,12 @@ function fillEquipTable(rownum, qn)
 function saveequip(qn) 
 {
 	Checklistequip(qn)
-	$("#paperdiv").hide()
+	$("#equipdiv").hide()
 }
 
 function cancelset()
 {
-	$("#paperdiv").hide()
+	$("#equipdiv").hide()
 }
 
 function Checklistequip(qn) 
@@ -206,10 +218,12 @@ function Checklistequip(qn)
 	}
 }
 
-function printpaper(qn)	//*** have to set paperdiv padding to top:70px; bottom:70px
+function printpaper(qn)	//*** have to set equipdiv padding to top:70px; bottom:70px
 {
-	if (/Edge | MS/.test(navigator.userAgent)) {
+	if (/Edge|MS/.test(navigator.userAgent)) {
 		var equip = document.getElementById('equip');
+		var editby = getEditedby(qn)
+		$('#editedby').html("Edited by : " + editby)
 		var win = window.open();
 		win.document.open();
 		win.document.write('<LINK type="text/css" rel="stylesheet" href="print.css">');
@@ -238,6 +252,8 @@ function printpaper(qn)	//*** have to set paperdiv padding to top:70px; bottom:7
 	else {
 		var original = document.body.innerHTML;
 		var orgequip = document.getElementById('equip');
+		var editby = getEditedby(qn)
+		$('#editedby').html("Edited by : " + editby)
 		document.body.innerHTML = orgequip.outerHTML;
 		var equip = document.getElementById('equip');
 
@@ -261,4 +277,9 @@ function printpaper(qn)	//*** have to set paperdiv padding to top:70px; bottom:7
 		document.getElementById('equip').scrollIntoView(true);
 		location.reload();
 	}
+}
+
+function getEditedby(qn)
+{
+	
 }

@@ -285,21 +285,11 @@ function refillanother(tableID, cellindex, qn)
 {
 	var table = document.getElementById(tableID)
 
-	var i = 1
-	while (table.rows[i].cells[QN].innerHTML != qn)
-	{
-		i++
-		if (i >= table.rows.length)
-			return
-	}
+	var i = findTablerow(table, qn)
+	if ( !i ) { return }
 
-	var q = 0
-	while (BOOK[q].qn != qn)
-	{
-		q++
-		if (q >= BOOK.length)
-			return
-	}
+	var q = findBOOKrow(qn)
+	if ( !q ) { return }
 
 	var rowcell = table.rows[i].cells
 	var bookq = BOOK[q]
@@ -324,6 +314,30 @@ function refillanother(tableID, cellindex, qn)
 			rowcell[CONTACT].innerHTML = bookq.contact
 			break
 	}
+}
+
+function findTablerow(table, qn)
+{
+	var i = 1
+	while (table.rows[i].cells[QN].innerHTML != qn)
+	{
+		i++
+		if (i >= table.rows.length)
+			return false
+	}
+	return i
+}
+
+function findBOOKrow(qn)
+{
+	var q = 0
+	while (BOOK[q].qn != qn)
+	{
+		q++
+		if (q >= BOOK.length)
+			return false
+	}
+	return q
 }
 
 function closequeue()

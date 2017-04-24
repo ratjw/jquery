@@ -65,7 +65,7 @@ function loadtable(userid)
 	});
 	$(document).keydown( function (event) {
 		countReset();
-		if ($('#paperdiv').is(':focus') ||
+		if ($('#equipdiv').is(':focus') ||
 			$('#monthpicker').is(':focus')) {
 
 			return false
