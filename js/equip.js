@@ -111,7 +111,7 @@ function fillEquipTable(rownum, qn)
 	txt += "<span style='width:120px;'>9.เครื่องมือของบริษัท </span>เวลาส่งเครื่อง ";
 	txt += "<span><input type='text' size='4' id='equiptime'></span>น ";
 	txt += "<span style='width:20px;'></span>";
-	txt += "<span>ชื่อ<input type='text' size='44' id='Other6'></span>";
+	txt += "<span>ชื่อ<input type='text' size='35' id='Other6'></span>";
 	txt += "<br>";
 	txt += "<span style='width:120px;'>10.อุปกรณ์อื่นๆ</span>";
 	txt += "<span style='width:120px;'><label><input type='checkbox' id='cranioCement'>Cranio cement</label></span>";
@@ -142,13 +142,13 @@ function fillEquipTable(rownum, qn)
 	txt += "<span>อื่นๆ<input type='text' size='7' id='Other8'></span>";
 	txt += "<br>";
 	txt += "<br>";
-	txt += "<span id='editedby'>";
-	txt += "<button onclick=saveequip("+ qn +")> SAVE </button>";
-	txt += "<span style='width:20px;'></span>";
-	txt += "<button onclick=printpaper("+ qn +")> Print </button>";
-	txt += "<span style='width:20px;'></span>";
-	txt += "<button onClick=cancelset()> Close </button>";
-	txt += "</span>"
+	txt += "<div>";
+	txt += "<span style='width:120px;'><button onclick=saveequip("+ qn +")> SAVE </button></span>";
+	txt += "<span style='width:120px;'><button onclick=printpaper("+ qn +")> Print </button></span>";
+	txt += "<span style='width:120px;'><button onClick=cancelset()> Close </button></span>";
+	txt += "<span style='width:60px;'> Edited by </span>";
+	txt += "<span style='width:200px;position:absolute' id='editedby'></span>";
+	txt += "</div>";
 	txt += "<br>";
 	txt += "<br>";
 	txt += "</div>";
@@ -160,19 +160,20 @@ function fillEquipTable(rownum, qn)
 	equipOR.style.overflowY = "auto"
 	equipOR.style.fontSize = "12px"
 	if (equipOR.offsetHeight > window.innerHeight) {
-		equipOR.style.height = window.innerHeight - 30 +"px"
+		equipOR.style.height = window.innerHeight - 60 +"px"
 	}
 	var q = findBOOKrow(qn)
 	if ( BOOK[q].equipment )
 	{								//fill checked equip if any
 		$.each(JSON.parse(BOOK[q].equipment), function(key, val){
-			if (val == 'checked')
+			if (val == 'checked') {	//radio and checkbox
 				$("#"+ key).prop("checked", true)
-			else
+			} else {	//Other1...8
 				$("#"+ key).val(val)
+			}
 		});
-
  	}
+	getEditedby(qn)
 }
 
 function saveequip(qn) 
@@ -222,8 +223,7 @@ function printpaper(qn)	//*** have to set equipdiv padding to top:70px; bottom:7
 {
 	if (/Edge|MS/.test(navigator.userAgent)) {
 		var equip = document.getElementById('equip');
-		var editby = getEditedby(qn)
-		$('#editedby').html("Edited by : " + editby)
+		$('#equipdiv span:lastChild').remove()
 		var win = window.open();
 		win.document.open();
 		win.document.write('<LINK type="text/css" rel="stylesheet" href="print.css">');
@@ -251,9 +251,7 @@ function printpaper(qn)	//*** have to set equipdiv padding to top:70px; bottom:7
 	}
 	else {
 		var original = document.body.innerHTML;
-		var orgequip = document.getElementById('equip');
-		var editby = getEditedby(qn)
-		$('#editedby').html("Edited by : " + editby)
+		$('#equipdiv span:lastChild').remove()
 		document.body.innerHTML = orgequip.outerHTML;
 		var equip = document.getElementById('equip');
 
@@ -281,5 +279,21 @@ function printpaper(qn)	//*** have to set equipdiv padding to top:70px; bottom:7
 
 function getEditedby(qn)
 {
-	
+	var sql = "sqlReturnData=SELECT editor, editdatetime FROM bookhistory "
+	sql += "WHERE qn="+ qn + " AND equipment <> '';"
+
+	Ajax(MYSQLIPHP, sql, callbackgetEditedby)
+
+	function callbackgetEditedby(response)
+	{
+		if (!response || response.indexOf("DBfailed") != -1) {
+			alert("DBfailed!\n" + response)
+		} else {
+			var Editedby = ""
+			$.each(JSON.parse(response), function(key, val) {
+				Editedby += (val.editor + " : " + val.editdatetime + "<br>")
+			});
+			$('#editedby').html(Editedby)
+		}
+	}
 }
