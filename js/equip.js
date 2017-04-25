@@ -106,15 +106,14 @@ function fillEquipTable(rownum, qn)
 	txt += "<span style='width:120px;'><label><input type='radio' name='program' id='shuntCodman'>Codman</label></span>";
 	txt += "<span>อื่นๆ <input type='text' size='7' id='Other5'></span>";
 	txt += "<br>";
-	txt += "<span style='width:120px;'>9.เครื่องมือบริษัท </span>เวลาส่งเครื่อง ";
-	txt += "<span><input type='text' size='3' id='equiptime'></span> น. ";
-	txt += "<span style='width:20px;'></span>";
-	txt += "<span>ชื่อ <input type='text' size='35' id='Other6'></span>";
+	txt += "<span style='width:120px;'>9.เครื่องมือบริษัท </span>";
+	txt += "<span style='width:140px;'>เวลาส่งเครื่อง <input type='text' size='1' id='equiptime'> น. </span>";
+	txt += "<span style='width:340px;'>ชื่อ <input type='text' size='35' id='Other6'></span>";
 	txt += "<br>";
 	txt += "<span style='width:120px;'>10.อุปกรณ์อื่นๆ</span>";
 	txt += "<span style='width:140px;'><label><input type='checkbox' id='cranioCement'>Cranio cement</label></span>";
 	txt += "<span style='width:140px;'><label><input type='checkbox' id='artificialSkull'>MTEC skull</label></span>";
-	txt += "<span>อื่นๆ <input type='text' size='25' id='Other7'></span>";
+	txt += "<span>อื่นๆ <input type='text' id='Other7'></span>";
 	txt += "<br>";
 	txt += "<span style='width:120px;'>11.Monitor</span>";
 	txt += "<span style='width:70px;'><label><input type='checkbox' id='CN5'>CN5</label></span>";
@@ -142,9 +141,9 @@ function fillEquipTable(rownum, qn)
 	txt += "<span>อื่นๆ <input type='text' size='25' id='Other8'></span>";
 	txt += "<br>";
 	txt += "<br>";
-	txt += "<span style='width:90px;'><button onclick=saveequip("+ qn +")> SAVE </button></span>";
-	txt += "<span style='width:80px;'><button onclick=printpaper("+ qn +")> Print </button></span>";
-	txt += "<span style='width:200px;'><button onClick=cancelset()> Close </button></span>";
+	txt += "<span style='width:70px;'><button onclick=saveequip("+ qn +")> SAVE </button></span>";
+	txt += "<span style='width:60px;'><button onclick=printpaper("+ qn +")> Print </button></span>";
+	txt += "<span style='width:250px;'><button onClick=cancelset()> Close </button></span>";
 	txt += "<span style='width:70px;'> Edited by </span>";
 	txt += "<span style='position:absolute' id='editedby'></span>";
 	txt += "<br>";
@@ -221,7 +220,7 @@ function printpaper(qn)	//*** have to set equipdiv padding to top:70px; bottom:7
 		var equip = document.getElementById('equip');
 		var win = window.open();
 		win.document.open();
-		win.document.write('<LINK type="text/css" rel="stylesheet" href="css/print.css">');
+		win.document.write('<LINK type="text/css" rel="stylesheet" href="css/printIE.css">');
 		win.document.writeln(equip.outerHTML);
 
 		var newequip = equip.getElementsByTagName("INPUT");
@@ -250,18 +249,18 @@ function printpaper(qn)	//*** have to set equipdiv padding to top:70px; bottom:7
 		document.body.innerHTML = orgequip.outerHTML;
 		var equip = document.getElementById('equip');
 
-		var newequip = orgequip.getElementsByTagName("INPUT");
-		var winequip = equip.getElementsByTagName("INPUT");
-		for (var i = 0; i < newequip.length; i++) 
+		var oldinput = orgequip.getElementsByTagName("INPUT");
+		var wininput = equip.getElementsByTagName("INPUT");
+		for (var i = 0; i < oldinput.length; i++) 
 		{
-			winequip[i].checked = newequip[i].checked
-			winequip[i].value = newequip[i].value
-			if (!winequip[i].checked || !winequip[i].value)
-			{	//pale color for no input items
-				temp = winequip[i]
+			wininput[i].checked = oldinput[i].checked
+			wininput[i].value = oldinput[i].value
+			if (!wininput[i].checked || !wininput[i].value)
+			{
+				var temp = wininput[i]
 				while (temp.nodeName != "SPAN")
 					temp = temp.parentNode
-				temp.className = "pale"
+				temp.className = "pale"	//pale color for no input items
 			}
 		}
 

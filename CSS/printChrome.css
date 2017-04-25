@@ -3,21 +3,19 @@
 		font-size: 16px; 
 		line-height: 170%; 
 		background: white;
+		padding-top: 30px;
+		padding-left: 30px;
 	}
+
 	.pale {
 		color: #CCCCCC;
-		color:rgba (0, 0, 0, 0);
-		text-shadow: 0 0 0 #707070;
-		font-weight: 200;
 	}
+
 	input, input[type=checkbox] { 
 		font-size: 16px; 
-		border-top: 0px; 
-		border-left: 0px; 
-		border-bottom: 0px; 
-		border-right: 0px; 
-		border-color: rgb(100, 100, 100);
+		border: 0px; 
 	}
+
 	span { 
 		display:inline-block; 
 	} 

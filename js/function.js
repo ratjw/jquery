@@ -12,8 +12,8 @@ Date.prototype.mysqlDate = function ()
 String.prototype.hyphenDateparse = function () 
 {
 	if ((ISODATE.test(this))				//yyyy-mm-dd
-		|| (FULLhyphenDATE.test(this))		//dd-mm-yyyy
-		|| (HALFhyphenDATE.test(this))) {	//dd-mm-yy
+		|| (HYPHENYYYYDATE.test(this))		//dd-mm-yyyy
+		|| (HYPHENYYDATE.test(this))) {	//dd-mm-yy
 		return true
 	} else {
 		return false
@@ -22,8 +22,8 @@ String.prototype.hyphenDateparse = function ()
 
 String.prototype.slashDateparse = function () 
 {
-	if ((FULLslashDATE.test(this)) ||		//dd/mm/yyyy
-		(HALFslashDATE.test(this))) {		//dd/mm/yy
+	if ((SLASHYYYYDATE.test(this)) ||		//dd/mm/yyyy
+		(SLASHYYDATE.test(this))) {		//dd/mm/yy
 		return true
 	} else {
 		return false
@@ -135,11 +135,11 @@ String.prototype.getAge = function (toDate)
 
 function regexDate(str)
 {
-	var iso = str.match((ISODATEg))
-	var ful = str.match((FULLhyphenDATEg))
-	var hal = str.match((HALFhyphenDATEg))
-	var full = str.match((FULLslashDATEg))
-	var half = str.match((HALFslashDATEg))
+	var iso = str.match((ISODATEG))
+	var ful = str.match((HYPHENYYYYDATEG))
+	var hal = str.match((HYPHENYYDATEG))
+	var full = str.match((SLASHYYYYDATEG))
+	var half = str.match((SLASHYYDATEG))
 
 	var arr = []
 
