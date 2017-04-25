@@ -9,19 +9,11 @@ Date.prototype.mysqlDate = function ()
     return yyyy + "-" + mm + "-" + dd;
 } 
 
-String.prototype.mysqlDateparse = function () 
-{	//check if valid MySQL date (2017-04-19)
-	if (/^\d\d\d\d-\d\d-\d\d$/.test(this)) {
-		return true
-	} else {
-		return false
-	}
-}
-
 String.prototype.hyphenDateparse = function () 
-{	//check if valid MySQL date (2017-04-19)
-	if ((/^\d\d\d\d-\d\d-\d\d$/.test(this))
-		|| (/^\d\d-\d\d-\d\d\d\d$/.test(this))) {
+{
+	if ((ISODATE.test(this))				//yyyy-mm-dd
+		|| (FULLhyphenDATE.test(this))		//dd-mm-yyyy
+		|| (HALFhyphenDATE.test(this))) {	//dd-mm-yy
 		return true
 	} else {
 		return false
@@ -29,8 +21,9 @@ String.prototype.hyphenDateparse = function ()
 }
 
 String.prototype.slashDateparse = function () 
-{	//check if valid MySQL date (2017-04-19)
-	if (/^\d\d\/\d\d\/\d\d\d\d$/.test(this)) {
+{
+	if ((FULLslashDATE.test(this)) ||		//dd/mm/yyyy
+		(HALFslashDATE.test(this))) {		//dd/mm/yy
 		return true
 	} else {
 		return false
@@ -142,28 +135,14 @@ String.prototype.getAge = function (toDate)
 
 function regexDate(str)
 {
-	var fullDate = /\b([012]?[1-9]|10|20|3[01])\/(0?[1-9]|1[012])\/\d{4}\b/g
-	var halfDate = /\b([012]?[1-9]|10|20|3[01])\/(0?[1-9]|1[012])\/\d{2}\b/g
-
-	var isoDate = /\b\d{4}\-(0?[1-9]|1[012])\-([012]?[1-9]|10|20|3[01])\b/g
-	var fulDate = /\b([012]?[1-9]|10|20|3[01])\-(0?[1-9]|1[012])\-\d{4}\b/g
-	var halDate = /\b([012]?[1-9]|10|20|3[01])\-(0?[1-9]|1[012])\-\d{2}\b/g
-
-	var full = str.match(fullDate)
-	var half = str.match(halfDate)
-
-	var iso = str.match(isoDate)
-	var ful = str.match(fulDate)
-	var hal = str.match(halDate)
+	var iso = str.match((ISODATEg))
+	var ful = str.match((FULLhyphenDATEg))
+	var hal = str.match((HALFhyphenDATEg))
+	var full = str.match((FULLslashDATEg))
+	var half = str.match((HALFslashDATEg))
 
 	var arr = []
 
-	if (full) {
-		arr = arr.concat(full)
-	}
-	if (half) {
-		arr = arr.concat(half)
-	}
 	if (iso) {
 		arr = arr.concat(iso)
 	}
@@ -172,6 +151,12 @@ function regexDate(str)
 	}
 	if (hal) {
 		arr = arr.concat(hal)
+	}
+	if (full) {
+		arr = arr.concat(full)
+	}
+	if (half) {
+		arr = arr.concat(half)
 	}
 	return arr
 }

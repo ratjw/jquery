@@ -71,13 +71,7 @@ function isOperation(thiscase)
 
 function isReoperation(thiscase)
 {
-	if (thiscase.treatment.indexOf("(1)") >= 0) {
-		return false
-	}
-	if (thiscase.treatment.indexOf("re-op") >= 0) {
-		return true
-	}
-	if (thiscase.treatment.indexOf("Re-op") >= 0) {
+	if (/[Rr]e-op/.test(thiscase.treatment)) {
 		return true
 	}
 
@@ -106,13 +100,7 @@ function isReoperation(thiscase)
 
 function isReadmission(thiscase)
 {
-	if (thiscase.admission.indexOf("(1)") >= 0) {
-		return false
-	}
-	if (thiscase.admission.indexOf("re-ad") >= 0) {
-		return true
-	}
-	if (thiscase.admission.indexOf("Re-ad") >= 0) {
+	if (/[Rr]e-ad/.test(thiscase.admission)) {
 		return true
 	}
 
@@ -141,58 +129,33 @@ function isReadmission(thiscase)
 
 function isInfection(thiscase)
 {
-	if (thiscase.final.indexOf("Improved") >= 0) {
+	if (/[Ii]mproved/.test(thiscase.final)) {
 		return false
 	}
-	if (thiscase.final.indexOf("improved") >= 0) {
-		return false
-	}
-	if (thiscase.final.indexOf("Infect") >= 0) {
-		return true
-	}
-	if (thiscase.final.indexOf("infect") >= 0) {
+	if (/[Ii]nfect/.test(thiscase.final)) {
 		return true
 	}
 }
 
 function isMorbidity(thiscase)
 {
-	if (thiscase.final.indexOf("Improved") >= 0) {
-		return false
-	}
-	if (thiscase.final.indexOf("improved") >= 0) {
+	if (/[Ii]mproved/.test(thiscase.final)) {
 		return false
 	}
 
 	var Morbid = false
 	$.each( neuroMorbid, function(i, each) {
-		if (thiscase.final.indexOf(each) >= 0) {
+		if (each.test(thiscase.final)) {
 			Morbid = true
 			return false
 		}
 	})
-	if (Morbid) {
-		return Morbid
-	}
-
-	if (thiscase.final.indexOf("post-op") >= 0) {
-		var Morbid = false
-		$.each( neuroPostop, function(i, each) {
-			if (each.test(thiscase.final)) {
-				Morbid = true
-				return false
-			}
-		})
-	}
 	return Morbid
 }
 
 function isDead(thiscase)
 {
-	if (thiscase.final.indexOf("Improved") >= 0) {
-		return false
-	}
-	if (thiscase.final.indexOf("improved") >= 0) {
+	if (/[Ii]mproved/.test(thiscase.final)) {
 		return false
 	}
 	if (thiscase.final.indexOf("Dead") >= 0) {

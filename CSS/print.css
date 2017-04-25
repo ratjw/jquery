@@ -3,10 +3,10 @@
 		font-size: 16px; 
 		line-height: 170%; 
 		background: white;
-/*		margin: 25mm 25mm 25mm 25mm;*/
 	}
 	.pale {
-		color: rgba(0, 0, 0, 0);
+		color: #CCCCCC;
+		color:rgba (0, 0, 0, 0);
 		text-shadow: 0 0 0 #707070;
 		font-weight: 200;
 	}

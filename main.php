@@ -8,6 +8,7 @@
 <link href="css/jquery-ui.css" rel="stylesheet">
 <link href="css/CSS.css" rel="stylesheet">
 <link href="css/NoMoreTable.css" rel="stylesheet">
+<LINK href="css/print.css" rel="stylesheet">
 <!--link href="css/jquery.mobile-1.4.5.css" rel="stylesheet"-->
 
 <!--script src="js/jquery.mobile-1.4.5.js"></script-->
@@ -183,14 +184,14 @@
 	<ul id="item0" style="width:120px">
 	</ul>
   </li>
-  <li><div id="item2"></div></li>
-  <li><div id="item3"></div></li>
-  <li><div id="item4"></div></li>
-  <li><div id="item5"></div></li>
-  <li><div id="item6"></div></li>
-  <li><div id="item7"></div></li>
-  <li><div id="item8"></div></li>
-  <li><div id="item9"></div></li>
+  <li id="item2"><div></div></li>
+  <li id="item3"><div></div></li>
+  <li id="item4"><div></div></li>
+  <li id="item5"><div></div></li>
+  <li id="item6"><div></div></li>
+  <li id="item7"><div></div></li>
+  <li id="item8"><div></div></li>
+  <li id="item9"><div></div></li>
 </ul>
 
 <ul id="stafflist" style="display:none"></ul>

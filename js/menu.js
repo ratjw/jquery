@@ -15,45 +15,47 @@ function fillSetTable(rownum, pointing)
 
 	casename = casename.substring(0, casename.indexOf(' '))
 
-	$("#item2").html("เปลี่ยนวันที่")
+	$("#item2 div").html("เปลี่ยนวันที่")
 	if (qn)
-		$("#item2").parent().addClass(disabled)
+		$("#item2").addClass(disabled)
 	else
-		$("#item2").parent().addClass(disabled)
+		$("#item2").addClass(disabled)
 
-	$("#item3").html("เพิ่ม case วันที่ " + opdateth)
+	$("#item3 div").html("เพิ่ม case วันที่ " + opdateth)
 	if (qn)
-		$("#item3").parent().removeClass(disabled)
+		$("#item3").removeClass(disabled)
 	else
-		$("#item3").parent().addClass(disabled)
+		$("#item3").addClass(disabled)
 
-	$("#item4").html("Delete " + casename)
+	$("#item4 div").html("Delete " + casename)
 	if (!qn && !(checkblank(opdate, qn)))
-		$("#item4").parent().addClass(disabled)
+		$("#item4").addClass(disabled)
 	else
-		$("#item4").parent().removeClass(disabled)
+		$("#item4").removeClass(disabled)
 
-	$("#item5").html("List of Deleted Cases")
+	$("#item5 div").html("List of Deleted Cases")
 
 	$("#item6").html("การแก้ไขของ " + casename)
 	if (qn)
-		$("#item6").parent().removeClass(disabled)
+		$("#item6 div").removeClass(disabled)
 	else
-		$("#item6").parent().addClass(disabled)
+		$("#item6").addClass(disabled)
 
-	$("#item7").html("PACS")
+	$("#item7 div").html("PACS")
 	if (hn)
-		$("#item7").parent().removeClass(disabled)
+		$("#item7").removeClass(disabled)
 	else
-		$("#item7").parent().addClass(disabled)
+		$("#item7").addClass(disabled)
 
-	$("#item8").html("Equipment")
+	$("#item8 div").html("Equipment")
 	if (qn)
-		$("#item8").parent().removeClass(disabled)
+		$("#item8").removeClass(disabled)
 	else
-		$("#item8").parent().addClass(disabled)
+		$("#item8").addClass(disabled)
 
-	$("#item9").html("Service Review ")
+	$("#item9 div").html("Service Review")
+
+	$("#item10 div").html("Readme")
 
 	$("#menu").menu({
 		select: function( event, ui ) {
@@ -62,7 +64,7 @@ function fillSetTable(rownum, pointing)
 			$("#menu").hide()		//to disappear after selection
 			event.stopPropagation()
 
-			var item = $(ui.item).find("div").attr("id")
+			var item = $(ui.item).attr("id")
 
 			switch(item)
 			{

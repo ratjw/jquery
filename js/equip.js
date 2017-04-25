@@ -90,20 +90,20 @@ function fillEquipTable(rownum, qn)
 	txt += "<span style='width:120px;'>8.Shunt</span>";
 	txt += "<span style='width:100px;'>Pudenz</span>";
 	txt += "<span style='width:40px;'>หัว</span>";
-	txt += "<span style='width:140px;'><label><input type='checkbox' id='proximalLow'>low</label></span>";
-	txt += "<span style='width:120px;'><label><input type='checkbox' id='proximalMedium'>medium</label></span>";
-	txt += "<span><label><input type='checkbox' id='proximalHigh'>high</label></span>";
+	txt += "<span style='width:140px;'><label><input type='radio' name='head' id='proximalLow'>low</label></span>";
+	txt += "<span style='width:120px;'><label><input type='radio' name='head' id='proximalMedium'>medium</label></span>";
+	txt += "<span><label><input type='radio' name='head' id='proximalHigh'>high</label></span>";
 	txt += "<br>";
 	txt += "<span style='width:220px;'></span>";
 	txt += "<span style='width:40px;'>ท้อง</span>";
-	txt += "<span style='width:140px;'><label><input type='checkbox' id='distalLow'>low</label></span>";
-	txt += "<span style='width:120px;'><label><input type='checkbox' id='distalMedium'>medium</label></span>";
-	txt += "<span><label><input type='checkbox' id='distalHigh'>high</label></span>";
+	txt += "<span style='width:140px;'><label><input type='radio' name='peritoneum' id='distalLow'>low</label></span>";
+	txt += "<span style='width:120px;'><label><input type='radio' name='peritoneum' id='distalMedium'>medium</label></span>";
+	txt += "<span><label><input type='radio' name='peritoneum' id='distalHigh'>high</label></span>";
 	txt += "<br>";
 	txt += "<span style='width:120px;'></span>";
 	txt += "<span style='width:140px;'>Programmable</span>";
-	txt += "<span style='width:140px;'><label><input type='checkbox' id='shuntMedtronic'>Medtronic</label></span>";
-	txt += "<span style='width:120px;'><label><input type='checkbox' id='shuntCodman'>Codman</label></span>";
+	txt += "<span style='width:140px;'><label><input type='radio' name='program' id='shuntMedtronic'>Medtronic</label></span>";
+	txt += "<span style='width:120px;'><label><input type='radio' name='program' id='shuntCodman'>Codman</label></span>";
 	txt += "<span>อื่นๆ <input type='text' size='7' id='Other5'></span>";
 	txt += "<br>";
 	txt += "<span style='width:120px;'>9.เครื่องมือบริษัท </span>เวลาส่งเครื่อง ";
@@ -246,7 +246,7 @@ function printpaper(qn)	//*** have to set equipdiv padding to top:70px; bottom:7
 	}
 	else {
 		var original = document.body.innerHTML;
-		var orgequip = document.getElementById('equipdiv');
+		var orgequip = document.getElementById('equip');
 		document.body.innerHTML = orgequip.outerHTML;
 		var equip = document.getElementById('equip');
 

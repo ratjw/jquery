@@ -45,7 +45,19 @@ var NAMEOFDAYFULL	= ["sunday", "monday", "tuesday", "wednesday",
 var NUMMONTH	= {"มค.":"01","กพ.":"02","มีค.":"03","เมย.":"04","พค.":"05","มิย.":"06",
 					"กค.":"07","สค.":"08","กย.":"09","ตค.":"10","พย.":"11","ธค.":"12"};
 
-var STAFF		= ["อ.เอก", "อ.อัตถพร", "อ.สรยุทธ", "อ.วัฒนา", "อ.เกรียงศักดิ์", "อ.พีรพงศ์"];
+var ISODATE			= /\b\d{4}\-(0?[1-9]|1[012])\-([012]?[1-9]|10|20|3[01])\b/
+var FULLhyphenDATE	= /\b([012]?[1-9]|10|20|3[01])\-(0?[1-9]|1[012])\-\d{4}\b/
+var HALFhyphenDATE	= /\b([012]?[1-9]|10|20|3[01])\-(0?[1-9]|1[012])\-\d{2}\b/
+var FULLslashDATE	= /\b([012]?[1-9]|10|20|3[01])\/(0?[1-9]|1[012])\/\d{4}\b/
+var HALFslashDATE	= /\b([012]?[1-9]|10|20|3[01])\/(0?[1-9]|1[012])\/\d{2}\b/
+
+var ISODATEg		= /\b\d{4}\-(0?[1-9]|1[012])\-([012]?[1-9]|10|20|3[01])\b/g
+var FULLhyphenDATEg	= /\b([012]?[1-9]|10|20|3[01])\-(0?[1-9]|1[012])\-\d{4}\b/g
+var HALFhyphenDATEg	= /\b([012]?[1-9]|10|20|3[01])\-(0?[1-9]|1[012])\-\d{2}\b/g
+var FULLslashDATEg	= /\b([012]?[1-9]|10|20|3[01])\/(0?[1-9]|1[012])\/\d{4}\b/g
+var HALFslashDATEg	= /\b([012]?[1-9]|10|20|3[01])\/(0?[1-9]|1[012])\/\d{2}\b/g
+
+var STAFF = ["อ.เอก", "อ.อัตถพร", "อ.สรยุทธ", "อ.วัฒนา", "อ.เกรียงศักดิ์", "อ.พีรพงศ์"];
 
 var HOLIDAY = {
 	"2017-02-11" : "url('pic/Magha.jpg')",
@@ -71,23 +83,15 @@ var HOLIDAY = {
 	}
 
 var neuroSxOp = [
-	"Anast", "Approa", "Aspirat", "Biop", "Block", "Burr", "Clip", 
-	"Decom", "DBS", "Drain", "Ectomy", "Fix", "Fusion", "Insert", "Lesion", "Lysis", 
-	"Occlu", "Oper", "ostom", "otom", "plast", "Remov", "Repa", "Revis", 
-	"scope", "Screw", "Shunt", "Stim", "Transpos", "Transect", "Untether",
-	"anast", "approa", "aspirat", "biop", "block", "burr", "clip", 
-	"decom", "dbs", "drain", "ectomy", "fix", "fusion", "insert", "lesion", "lysis", 
-	"occlu", "oper", "remov", "repa", "revis", 
-	"screw", "shunt", "stim", "transpos", "transect", "untether"
+	/[Aa]nast/, /[Aa]pproa/, /[Aa]spirat/, /[Bb]iop/, /[Bb]lock/, /[Bb]urr/, /[Cc]lip/, 
+	/[Dd]ecom/, /DBS/, /[Dd]rain/, /[Ee]ctomy/, /[Ff]ix/, /[Ff]usion/, /[Ii]nsert/, /[Ll]esion/, /[Ll]ysis/, 
+	/[Oo]cclu/, /[Oo]per/, /ostom/, /otom/, /plast/, /[Rr]emov/, /[Rr]epa/, /[Rr]evis/, 
+	/scope/, /[Ss]crew/, /[Ss]hunt/, /[Ss]tim/, /[Tt]ranspos/, /[Tt]ransect/, /[Uu]ntether/
 	]
 
 var neuroMorbid = [
-	"Brain death", "Brain swelling", "Delirium", "Donor", 
-	"Leak", "Morbid", "Spastic", "Seizure", 
-	"brain death", "brain swelling", "delirium", "donor", 
-	"leak", "morbid", "spastic", "seizure", "DI"
-	]
-
-var	neuroPostop = [
-	/palsy/, /paresis/, /plegia/, /weakness/, /gr [0123]/
+	/[Bb]rain death/, /[Bb]rain swelling/, /[Dd]elirium/, /[Dd]onor/, 
+	/[Ll]eak/, /[Mm]orbid/, /[Ss]pastic/, /[Ss]eizure/, /DI/, 
+	/[Pp]ost-op.*palsy/, /[Pp]ost-op.*paresis/, /[Pp]ost-op.*weakness/, 
+	/[Pp]ost-op.*plegia/, /[Pp]ost-op.*gr [0123]/
 	]

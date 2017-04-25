@@ -86,7 +86,7 @@ function loadtable(userid)
 		margin: "0px"
 	})
 	sortable()
-	//call sortable before render, if after, it renders very slow
+	//call sortable before render, if after, it renders very slowly
 	TIMER = setTimeout("updating()",10000);	//poke next 10 sec.
 }
 
@@ -96,7 +96,7 @@ function loading(response)
 	{
 		updateBOOK(response)
 		fillupstart();
-		dataStafflist()
+		fillStafflist()
 	}
 	else
 		alert("Cannot load BOOK");
@@ -112,14 +112,14 @@ function updateBOOK(response)
 //	STAFF = temp.STAFF? temp.STAFF : []
 }
 
-function dataStafflist()
+function fillStafflist()
 {
 	var stafflist = ''
 	var staffmenu = ''
 	for (var each = 0; each < STAFF.length; each++)
 	{
 		stafflist += '<li><div>' + STAFF[each] + '</div></li>'
-		staffmenu += '<li><div id="item1">' + STAFF[each] + '</div></li>'
+		staffmenu += '<li id="item1"><div>' + STAFF[each] + '</div></li>'
 	}
 	document.getElementById("stafflist").innerHTML = stafflist
 	document.getElementById("item0").innerHTML = staffmenu

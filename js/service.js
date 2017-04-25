@@ -251,7 +251,7 @@ function savePreviousScell()
 					content = null
 					saveSContent("admit", content)
 				}
-				if (content.mysqlDateparse()) {
+				if (ISODATE.test(content)) {
 					saveSContent("admit", content)
 				}
 			}
@@ -264,7 +264,7 @@ function savePreviousScell()
 					content = null
 					saveSContent("discharge", content)
 				}
-				if (content.mysqlDateparse()) {
+				if (ISODATE.test(content)) {
 					saveSContent("discharge", content)
 				}
 			}
