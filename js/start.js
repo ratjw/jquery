@@ -109,7 +109,6 @@ function updateBOOK(response)
 	BOOK = temp.BOOK? temp.BOOK : []
 	TIMESTAMP = temp.QTIME? temp.QTIME : ""	//last update BOOK in server
 	QWAIT = temp.QWAIT? temp.QWAIT : []
-//	STAFF = temp.STAFF? temp.STAFF : []
 }
 
 function fillStafflist()
@@ -125,23 +124,36 @@ function fillStafflist()
 	document.getElementById("item0").innerHTML = staffmenu
 }
 
-function updating()
+function updating()	//update or save data every 10 sec.
 {
+	var pointing = $("#editcell").data("pointing")
+	if (pointing.innerHTML != $("#editcell").data("content")) {
+		if ($(editcell).data("tableID") == "servicetbl") {
+			savePreviousScell()
+		} else {
+			savePreviouscell()
+		}
+		return
+	}
+
 	Ajax(MYSQLIPHP, "functionName=checkupdate&time="+TIMESTAMP, updatingback);
 
 	function updatingback(response)
 	{
 		if (response && response.indexOf("opdate") != -1)
 		{	//there is some change in database
-			updateBOOK(response)
-			updateTables()
-			if ((getEditTD() === false) || 
-				(getEditTD().html() == $(editcell).data("content"))) {
+			var pointing = $("#editcell").data("pointing")
+			if (!(pointing) || 
+				(pointing.innerHTML == $("#editcell").data("content"))) {
+
 				clearEditcellData("hide")
 				$('#menu').hide()	//editcell may be on first column
 				$('#stafflist').hide()	//editcell may be on staff
 				$('#datepicker').datepicker("hide")
 			}
+
+			updateBOOK(response)
+			updateTables()
 		}
 		clearTimeout(TIMER);
 		TIMER = setTimeout("updating()",10000);	//idle, poke next 5 sec.

@@ -7,7 +7,7 @@ function clicktable(clickedCell)
 function keyin(event)
 {
 	var keycode = event.which || window.event.keyCode
-	var pointing = getEditTD()
+	var pointing = $("#editcell").data("pointing")
 	var thiscell
 
 	if (!pointing) {
@@ -73,7 +73,7 @@ function keyin(event)
 
 function savePreviouscell() 
 {
-	if (!getEditTD())
+	if (!$("#editcell").data("pointing"))
 		return
 
 	var content = ""
@@ -127,7 +127,7 @@ function saveContent(column, content)	//column name in MYSQL
 	var qn = rowcell.eq(QN).html()
 	var sql
 
-	getEditTD().html(content)	//just for show instantly
+	$("#editcell").data("pointing").innerHTML = content	//just for show instantly
 
 	if (content) {
 		 content = URIcomponent(content)	//take care of white space, double qoute, 
@@ -154,7 +154,6 @@ function saveContent(column, content)	//column name in MYSQL
 	var tableID = $("#editcell").data("tableID")
 	var cellindex = $("#editcell").data("cellIndex")
 	var updateCell = $($("#editcell").data("editRow")).children()
-	var gotEditTD = getEditTD()
 	var oldContent = $("#editcell").data("content")
 
 	function callbacksaveContent(response)
@@ -162,7 +161,7 @@ function saveContent(column, content)	//column name in MYSQL
 		if (!response || response.indexOf("DBfailed") != -1)
 		{
 			alert("Failed! update database \n\n" + response)
-			gotEditTD.html(oldContent)
+			$("#editcell").data("pointing").innerHTML = oldContent
 			//return to previous content
 		}
 		else
@@ -195,7 +194,7 @@ function saveHNinput(hn, content)
 	var qn = rowcell.eq(QN).html()
 	var since
 
-	getEditTD().html(content)
+	$("#editcell").data("pointing").innerHTML = content
 
 	content = content.replace(/<br>/g, "")
 	content = content.replace(/^\s+/g, "")
@@ -216,7 +215,6 @@ function saveHNinput(hn, content)
 	var tableID = $("#editcell").data("tableID")
 	var cellindex = $("#editcell").data("cellIndex")
 	var updateCell = $($("#editcell").data("editRow")).children()
-	var gotEditTD = getEditTD()
 	var oldContent = $("#editcell").data("content")
 
 	function callbackgetByHN(response)
@@ -224,7 +222,7 @@ function saveHNinput(hn, content)
 		if ((!response) || (response.indexOf("patient") == -1) || (response.indexOf("{") == -1)) 
 		{
 			alert(response)
-			gotEditTD.html(oldContent)
+			$("#editcell").data("pointing").innerHTML = oldContent
 			//return to previous content
 		}
 		else 
@@ -359,7 +357,7 @@ function saveDataPoint(editcell, pointing)
 	$(editcell).html(pointing.innerHTML)
 }
 
-function getEditTD()
+function getEditTD()	//use $(editcell).data("pointing")
 {
 	var editcell = "#editcell"
 	var tableID = $(editcell).data("tableID")
@@ -376,11 +374,11 @@ function getEditTD()
 function clearEditcellData(display)
 {
 	var editcell = "#editcell"
-	$(editcell).data("editCell", "")
-	$(editcell).data("editRow", "")
 	$(editcell).data("tableID", "")
 	$(editcell).data("rowIndex", "")
 	$(editcell).data("cellIndex", "")
+	$(editcell).data("editRow", "")
+	$(editcell).data("pointing", "")
 	$(editcell).data("content", "")
 	$(editcell).html("")
 	if (display == "hide") {
@@ -390,7 +388,7 @@ function clearEditcellData(display)
 
 function findPrevcell(event, editable, pointing) 
 {
-	var prevcell = pointing
+	var prevcell = $(pointing)
 	var column = prevcell.index()
 
 	if ((column = editable[($.inArray(column, editable) - 1)]))
@@ -419,7 +417,7 @@ function findPrevcell(event, editable, pointing)
 
 function findNextcell(event, editable, pointing) 
 {
-	var nextcell = pointing
+	var nextcell = $(pointing)
 	var column = nextcell.index()
 
 	if ((column = editable[($.inArray(column, editable) + 1)]))
@@ -444,11 +442,11 @@ function findNextcell(event, editable, pointing)
 
 function findNextRow(event, editable, pointing) 
 {
-	var nextcell = pointing
+	var nextcell = $(pointing)
 
 	//go to next row first editable
 	do {
-		nextcell = $(nextcell).parent().next("tr").children().eq(editable[0])
+		nextcell = nextcell.parent().next("tr").children().eq(editable[0])
 		if (!(nextcell.length)) {
 			event.preventDefault()
 			return false	

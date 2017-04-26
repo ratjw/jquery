@@ -206,7 +206,7 @@ function clickservice(clickedCell)
 function Skeyin(event)
 {
 	var keycode = event.which || window.event.keyCode
-	var pointing = getEditTD()
+	var pointing = $("#editcell").data("pointing")
 	var thiscell
 
 	if (!pointing) {
@@ -254,9 +254,9 @@ function Skeyin(event)
 	}
 }
 
-function savePreviousScell() 
+function savePreviousScell()
 {
-	if (!getEditTD())
+	if (!$("#editcell").data("pointing"))
 		return
 
 	var content = ""
@@ -320,7 +320,7 @@ function saveSContent(column, content)	//column name in MYSQL
 	if (content == $("#editcell").data("content")) {
 		return
 	}
-	getEditTD().html(content)	//just for show instantly
+	$("#editcell").data("pointing").innerHTML = content	//just for show instantly
 
 	if (content) {
 		content = URIcomponent(content)	//take care of white space, double qoute, 
@@ -342,7 +342,7 @@ function saveSContent(column, content)	//column name in MYSQL
 		if (!response || response.indexOf("DBfailed") != -1)
 		{
 			alert("Failed! update database \n\n" + response)
-			getEditTD().html($("#editcell").data("content"))
+			$("#editcell").data("pointing").innerHTML = $("#editcell").data("content")
 			//return to previous content
 		}
 		else
