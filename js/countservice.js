@@ -61,7 +61,7 @@ function isOperation(thiscase)
 {
 	var Operation = false
 	$.each( neuroSxOp, function(i, each) {
-		if (thiscase.treatment.indexOf(each) >= 0) {
+		if (each.test(thiscase.treatment)) {
 			Operation = true
 			return false
 		}

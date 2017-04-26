@@ -53,7 +53,7 @@ var SLASHYYDATE	= /\b([012]?[1-9]|10|20|3[01])\/(0?[1-9]|1[012])\/\d{2}\b/
 
 var ISODATEG		= /\b\d{4}\-(0?[1-9]|1[012])\-([012]?[1-9]|10|20|3[01])\b/g
 var HYPHENYYYYDATEG	= /\b([012]?[1-9]|10|20|3[01])\-(0?[1-9]|1[012])\-\d{4}\b/g
-var HYPHENYYDATEEG	= /\b([012]?[1-9]|10|20|3[01])\-(0?[1-9]|1[012])\-\d{2}\b/g
+var HYPHENYYDATEG	= /\b([012]?[1-9]|10|20|3[01])\-(0?[1-9]|1[012])\-\d{2}\b/g
 var SLASHYYYYDATEG	= /\b([012]?[1-9]|10|20|3[01])\/(0?[1-9]|1[012])\/\d{4}\b/g
 var SLASHYYDATEG	= /\b([012]?[1-9]|10|20|3[01])\/(0?[1-9]|1[012])\/\d{2}\b/g
 
@@ -84,7 +84,8 @@ var HOLIDAY = {
 
 var neuroSxOp = [
 	/[Aa]nast/, /[Aa]pproa/, /[Aa]spirat/, /[Bb]iop/, /[Bb]lock/, /[Bb]urr/, /[Cc]lip/, 
-	/[Dd]ecom/, /DBS/, /[Dd]rain/, /[Ee]ctomy/, /[Ff]ix/, /[Ff]usion/, /[Ii]nsert/, /[Ll]esion/, /[Ll]ysis/, 
+	/[Dd]ecom/, /DBS/, /[Dd]rain/, /[Ee]ctomy/, /ETS/,
+	/[Ff]ix/, /[Ff]usion/, /[Ii]nsert/, /[Ll]esion/, /[Ll]ysis/, 
 	/[Oo]cclu/, /[Oo]per/, /ostom/, /otom/, /plast/, /[Rr]emov/, /[Rr]epa/, /[Rr]evis/, 
 	/scope/, /[Ss]crew/, /[Ss]hunt/, /[Ss]tim/, /[Tt]ranspos/, /[Tt]ransect/, /[Uu]ntether/
 	]

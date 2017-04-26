@@ -87,9 +87,6 @@ function getfromBOOK(fromDate, toDate)
 function showService(SERVICE, fromDate, toDate)
 {
 	resetcountService()
-
-	//delete previous servicetbl lest it accumulates
-	$('#servicetbl tr').slice(1).remove()
 	$('#servicetbl').show()
 
 	$.each( STAFF, function() {
@@ -97,7 +94,7 @@ function showService(SERVICE, fromDate, toDate)
 		$('#sdatatitle tr').clone()
 			.insertAfter($('#servicetbl tr:last'))
 				.children().eq(OPDATE)
-					.attr("colSpan", 8)
+					.prop("colSpan", 8)
 						.css({
 							height: "40",
 							fontWeight: "bold",
@@ -127,6 +124,46 @@ function showService(SERVICE, fromDate, toDate)
 		close: function() {
 			$('#datepicker').hide()
 		}
+	})
+}
+
+function refillService(SERVICE, fromDate, toDate)
+{
+	resetcountService()
+
+	var i = 0
+	$.each( STAFF, function() {
+		var staffname = this
+		i++
+		var thisCase = $('#servicetbl tr').eq(i).children().eq(CASE)
+		if (thisCase.prop('colSpan') == 1) {
+			thisCase.prop("colSpan", 8)
+				.css({
+					height: "40",
+					fontWeight: "bold",
+					fontSize: "14px",
+					textAlign: "left",
+					paddingLeft: "10px"
+				})
+				.siblings().hide()
+		}
+		thisCase.html(staffname)
+
+		var scase = 0
+		$.each( SERVICE, function() {
+			if (this.staffname == staffname) {
+				var color = countService(this, fromDate, toDate)
+				i++
+				scase++
+				var thisRow = $('#servicetbl tr').eq(i).children()
+				if (thisRow.eq(CASE).prop('colSpan') > 1) {
+					thisRow.eq(CASE).prop("colSpan", 1)
+						.nextUntil(thisRow.eq(SQN)).show()
+				}
+				$('#servicetbl tr').eq(i)
+						.filldataService(this, scase, color)
+			}
+		});
 	})
 }
 

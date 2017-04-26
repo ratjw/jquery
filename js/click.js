@@ -350,10 +350,11 @@ function saveDataPoint(editcell, pointing)
 	var rowIndex = $(pointing).closest('tr').index()
 	var cellIndex = $(pointing).index()
 
-	$(editcell).data("editRow", "#"+ tableID +" tr:eq("+ rowIndex +")")
 	$(editcell).data("tableID", tableID)
 	$(editcell).data("rowIndex", rowIndex)
 	$(editcell).data("cellIndex", cellIndex)
+	$(editcell).data("editRow", "#"+ tableID +" tr:eq("+ rowIndex +")")
+	$(editcell).data("pointing", pointing)
 	$(editcell).data("content", pointing.innerHTML)
 	$(editcell).html(pointing.innerHTML)
 }

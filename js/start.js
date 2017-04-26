@@ -154,12 +154,17 @@ function updateTables()
 		var fromDate = $('#monthpicker').data('fromDate')
 		var toDate = $('#monthpicker').data('toDate')
 		var SERVICE = getfromBOOK(fromDate, toDate)
-		showService(SERVICE, fromDate, toDate)
+		refillService(SERVICE, fromDate, toDate)
 	}
 	refillall()
 	if ($("#titlecontainer").css('display') == 'block') {
 		refillstaffqueue()
 	}
+}
+
+function findpresentRow(qn)
+{
+	$('#editcell').data("rowIndex")
 }
 
 function countReset()
