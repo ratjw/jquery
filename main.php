@@ -222,7 +222,7 @@
 					onpropertychange="namesix()">
 		<br>
 		<br>
-		Password: <input id="password" type="password" name="password""
+		Password: <input id="password" type="password" name="password"
 					maxlength="16" size="8" value="<?php echo $password;?>">
 		<br>
 		<span id="err" style="color:blue;font-size:10px"><?php echo $passworderr;?></span>

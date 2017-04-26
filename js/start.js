@@ -127,37 +127,41 @@ function fillStafflist()
 function updating()	//update or save data every 10 sec.
 {
 	var pointing = $("#editcell").data("pointing")
-	if (pointing.innerHTML != $("#editcell").data("content")) {
+
+	if (pointing && (pointing.innerHTML != $("#editcell").data("content"))) {
+
+		//being editing on screen
 		if ($(editcell).data("tableID") == "servicetbl") {
-			savePreviousScell()
+			savePreviousScell()		//Service table
 		} else {
-			savePreviouscell()
+			savePreviouscell()		//Main and Staffqueue tables
 		}
-		return
-	}
+	} else {
 
-	Ajax(MYSQLIPHP, "functionName=checkupdate&time="+TIMESTAMP, updatingback);
+		Ajax(MYSQLIPHP, "functionName=checkupdate&time="+TIMESTAMP, updatingback);
 
-	function updatingback(response)
-	{
-		if (response && response.indexOf("opdate") != -1)
-		{	//there is some change in database
-			var pointing = $("#editcell").data("pointing")
-			if (!(pointing) || 
-				(pointing.innerHTML == $("#editcell").data("content"))) {
+		function updatingback(response)
+		{
+			if (!(pointing) || (pointing.innerHTML == $("#editcell").data("content"))) {
 
+				//not being editing on screen
 				clearEditcellData("hide")
 				$('#menu').hide()	//editcell may be on first column
 				$('#stafflist').hide()	//editcell may be on staff
+				$('#datepicker').hide()
 				$('#datepicker').datepicker("hide")
 			}
+			if (response && response.indexOf("opdate") != -1)	//some changes in database
+			{
+				var pointing = $("#editcell").data("pointing")
 
-			updateBOOK(response)
-			updateTables()
+				updateBOOK(response)
+				updateTables()
+			}
 		}
-		clearTimeout(TIMER);
-		TIMER = setTimeout("updating()",10000);	//idle, poke next 5 sec.
 	}
+	clearTimeout(TIMER);
+	TIMER = setTimeout("updating()",10000);	//idle, poke next 5 sec.
 }
 
 function updateTables()

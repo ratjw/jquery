@@ -192,7 +192,6 @@ function saveHNinput(hn, content)
 	var staffname = rowcell.eq(STAFFNAME).html()
 	var patient = rowcell.eq(NAME).html()
 	var qn = rowcell.eq(QN).html()
-	var since
 
 	$("#editcell").data("pointing").innerHTML = content
 
@@ -201,11 +200,11 @@ function saveHNinput(hn, content)
 
 	if (content.length != 7)
 		return
-	if (!qn)
-		since = new Date().mysqlDate()
 
 	var sql = "hn=" + content
-	sql += "&since="+ since
+	if (!qn) {
+		sql += "&since="+ new Date().mysqlDate()
+	}
 	sql += "&opdate="+ opdate
 	sql += "&qn="+ qn
 	sql += "&username="+ THISUSER
@@ -275,8 +274,9 @@ function findNewRow(opdate)	//find new row (max. qn)
 
 function storePresentcell(pointing)
 {
-	var rindex = $(pointing).closest("tr").index()
-	var cindex = $(pointing).closest("td").index()
+	var rindex = pointing.parentNode.rowIndex
+	var cindex = pointing.cellIndex
+	var content = ""
 
 	createEditcell(pointing)
 
@@ -284,8 +284,10 @@ function storePresentcell(pointing)
 	{
 		case OPDATE:
 			clearEditcellData()
-			var content = window.getComputedStyle(pointing,':before').content
-			content = content.replace(/\"/g, "")
+			if ($(pointing).closest('table').attr('id') == 'tbl') {
+				content = window.getComputedStyle(pointing,':before').content
+				content = content.replace(/\"/g, "")
+			}
 			$("#editcell").html(content + pointing.innerHTML)
 			fillSetTable(rindex, pointing)
 			break
@@ -294,7 +296,7 @@ function storePresentcell(pointing)
 			stafflist(pointing)
 			break
 		case HN:
-			if (!pointing.innerHTML) {
+			if ((!pointing.innerHTML) || (!pointing.nextSibling.innerHTML)) {
 				saveDataPoint("#editcell", pointing)
 				break
 			}
