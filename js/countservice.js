@@ -92,7 +92,7 @@ function isReoperation(thiscase)
 				diagDate = tempDate
 			}
 		}
-		if ((diagDate < treatDate) && (dateDiff(diagDate, treatDate) <= 30)) {
+		if ((diagDate <= treatDate) && (dateDiff(diagDate, treatDate) <= 30)) {
 			return true
 		}
 	}
@@ -121,7 +121,7 @@ function isReadmission(thiscase)
 				diagDate = tempDate
 			}
 		}
-		if ((diagDate < admitDate) && (dateDiff(diagDate, admitDate) <= 30)) {
+		if ((diagDate <= admitDate) && (dateDiff(diagDate, admitDate) <= 30)) {
 			return true
 		}
 	}

@@ -137,7 +137,7 @@ function refillService(SERVICE, fromDate, toDate)
 		var staffname = this
 		i++
 		var thisCase = $('#servicetbl tr').eq(i).children().eq(CASE)
-		if (thisCase.prop('colSpan') == 1) {
+		if (thisCase.prop("colSpan") == 1) {
 			thisCase.prop("colSpan", 8)
 				.css({
 					height: "40",
@@ -157,7 +157,7 @@ function refillService(SERVICE, fromDate, toDate)
 				i++
 				scase++
 				var thisRow = $('#servicetbl tr').eq(i).children()
-				if (thisRow.eq(CASE).prop('colSpan') > 1) {
+				if (thisRow.eq(CASE).prop("colSpan") > 1) {
 					thisRow.eq(CASE).prop("colSpan", 1)
 						.nextUntil(thisRow.eq(SQN)).show()
 				}
