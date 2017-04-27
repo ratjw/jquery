@@ -256,7 +256,7 @@
 #datepicker, #datepicking {
 	font-size: 12px;
 }
-
+#monthpicker .ui-datepicker-calendar { display: none; }
 #alert {
 	position: fixed;
 	z-index: 1000;

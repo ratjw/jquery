@@ -87,6 +87,9 @@ function savePreviouscell()
 			break
 		case HN:
 			content = getData()
+			if (content.length != 7) {
+				return
+			}
 			saveHNinput("hn", content)
 			break
 		case NAME:
@@ -125,9 +128,10 @@ function saveContent(column, content)	//column name in MYSQL
 	var opdate = rowcell.eq(OPDATE).html().numDate()
 	var staffname = rowcell.eq(STAFFNAME).html()
 	var qn = rowcell.eq(QN).html()
+	var pointing = $("#editcell").data("pointing")
 	var sql
 
-	$("#editcell").data("pointing").innerHTML = content	//just for show instantly
+	pointing.innerHTML = content	//just for show instantly
 
 	if (content) {
 		 content = URIcomponent(content)	//take care of white space, double qoute, 
@@ -161,7 +165,7 @@ function saveContent(column, content)	//column name in MYSQL
 		if (!response || response.indexOf("DBfailed") != -1)
 		{
 			alert("Failed! update database \n\n" + response)
-			$("#editcell").data("pointing").innerHTML = oldContent
+			pointing.innerHTML = oldContent
 			//return to previous content
 		}
 		else
@@ -192,14 +196,12 @@ function saveHNinput(hn, content)
 	var staffname = rowcell.eq(STAFFNAME).html()
 	var patient = rowcell.eq(NAME).html()
 	var qn = rowcell.eq(QN).html()
+	var pointing = $("#editcell").data("pointing")
 
-	$("#editcell").data("pointing").innerHTML = content
+	pointing.innerHTML = content
 
 	content = content.replace(/<br>/g, "")
 	content = content.replace(/^\s+/g, "")
-
-	if (content.length != 7)
-		return
 
 	var sql = "hn=" + content
 	if (!qn) {
@@ -221,7 +223,7 @@ function saveHNinput(hn, content)
 		if ((!response) || (response.indexOf("patient") == -1) || (response.indexOf("{") == -1)) 
 		{
 			alert(response)
-			$("#editcell").data("pointing").innerHTML = oldContent
+			pointing.innerHTML = oldContent
 			//return to previous content
 		}
 		else 
@@ -296,7 +298,7 @@ function storePresentcell(pointing)
 			stafflist(pointing)
 			break
 		case HN:
-			if ((!pointing.innerHTML) || (!pointing.nextSibling.innerHTML)) {
+			if (!pointing.innerHTML) {
 				saveDataPoint("#editcell", pointing)
 				break
 			}
@@ -357,20 +359,6 @@ function saveDataPoint(editcell, pointing)
 	$(editcell).data("pointing", pointing)
 	$(editcell).data("content", pointing.innerHTML)
 	$(editcell).html(pointing.innerHTML)
-}
-
-function getEditTD()	//use $(editcell).data("pointing")
-{
-	var editcell = "#editcell"
-	var tableID = $(editcell).data("tableID")
-	var rowIndex = $(editcell).data("rowIndex")
-	var cellIndex = $(editcell).data("cellIndex")
-
-	if (rowIndex) {
-		return $("#" + tableID + " tr:eq(" + rowIndex + ") td:eq(" + cellIndex + ")")	
-	} else {
-		return false
-	}
 }
 
 function clearEditcellData(display)

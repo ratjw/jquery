@@ -5,6 +5,8 @@ function loadtable(userid)
 	THISUSER = userid
 	document.body.removeChild(document.getElementById("login"))
 	document.getElementById("tblcontainer").style.display = "block"
+	$("#dialogService").dialog()
+	$("#dialogService").dialog('close')	//prevent updateTables() call 'isOpen' before initialization
 
 	$(document).click( function (event) {
 		countReset();
@@ -126,9 +128,8 @@ function fillStafflist()
 
 function updating()	//update or save data every 10 sec.
 {
-	var pointing = $("#editcell").data("pointing")
-
-	if (pointing && (pointing.innerHTML != $("#editcell").data("content"))) {
+	var editing = ($("#editcell").data("content") != getData())? true : false
+	if (editing) {
 
 		//being editing on screen
 		if ($(editcell).data("tableID") == "servicetbl") {
@@ -142,7 +143,7 @@ function updating()	//update or save data every 10 sec.
 
 		function updatingback(response)
 		{
-			if (!(pointing) || (pointing.innerHTML == $("#editcell").data("content"))) {
+			if (!editing) {
 
 				//not being editing on screen
 				clearEditcellData("hide")
@@ -153,8 +154,6 @@ function updating()	//update or save data every 10 sec.
 			}
 			if (response && response.indexOf("opdate") != -1)	//some changes in database
 			{
-				var pointing = $("#editcell").data("pointing")
-
 				updateBOOK(response)
 				updateTables()
 			}

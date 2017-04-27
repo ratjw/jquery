@@ -24,8 +24,8 @@ function serviceReview()
 		title: 'Service Neurosurgery เดือน : ',
 		closeOnEscape: true,
 		modal: true,
-		width: window.innerWidth - 10,
-		height: window.innerHeight
+		width: window.innerWidth * 95 / 100,
+		height: window.innerHeight * 95 / 100
 	})
 	$('.ui-datepicker').click(function() {
 		if (!$('#monthpicker').is(":focus")) {
@@ -62,10 +62,8 @@ function entireMonth(fromDate)
 		toDate: toDate
 	})
 
-	if (fromDate >= BOOK[0].opdate) {
-		var SERVICE = getfromBOOK(fromDate, toDate)
-		showService(SERVICE, fromDate, toDate)
-	}
+	var SERVICE = getfromBOOK(fromDate, toDate)
+	showService(SERVICE, fromDate, toDate)
 }
 
 function getfromBOOK(fromDate, toDate)
@@ -87,6 +85,9 @@ function getfromBOOK(fromDate, toDate)
 function showService(SERVICE, fromDate, toDate)
 {
 	resetcountService()
+
+	//delete previous servicetbl lest it accumulates
+	$('#servicetbl tr').slice(1).remove()
 	$('#servicetbl').show()
 
 	$.each( STAFF, function() {
@@ -165,6 +166,8 @@ function refillService(SERVICE, fromDate, toDate)
 			}
 		});
 	})
+	if (i < ($('#servicetbl tr').length - 1))
+		$('#servicetbl tr').slice(i+1).remove()
 }
 
 jQuery.fn.extend({
@@ -316,11 +319,12 @@ function saveSContent(column, content)	//column name in MYSQL
 	var qn = editTR.children("td").eq(SQN).html()
 	var fromDate = $('#monthpicker').data('fromDate')
 	var toDate = $('#monthpicker').data('toDate')
+	var pointing = $("#editcell").data("pointing")
 
 	if (content == $("#editcell").data("content")) {
 		return
 	}
-	$("#editcell").data("pointing").innerHTML = content	//just for show instantly
+	pointing.innerHTML = content? content : ''	//just for show instantly
 
 	if (content) {
 		content = URIcomponent(content)	//take care of white space, double qoute, 
@@ -342,7 +346,7 @@ function saveSContent(column, content)	//column name in MYSQL
 		if (!response || response.indexOf("DBfailed") != -1)
 		{
 			alert("Failed! update database \n\n" + response)
-			$("#editcell").data("pointing").innerHTML = $("#editcell").data("content")
+			pointing.innerHTML = $("#editcell").data("content")
 			//return to previous content
 		}
 		else
@@ -351,11 +355,10 @@ function saveSContent(column, content)	//column name in MYSQL
 			var toDate = $('#monthpicker').data('toDate')
 			var thisrow = JSON.parse(response)
 
-//			showService(service, fromDate, toDate)
-			//This makes next editTD return to old value
-			//when fast entry because of slow return from Ajax
-
 			editTR[0].className = countService(thisrow[0], fromDate, toDate)
+
+			//No refill because it may make next editTD return to old value
+			//when fast entry, due to slow return from Ajax
 		}
 	}
 }
