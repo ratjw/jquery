@@ -14,61 +14,59 @@ function keyin(event)
 		return
 	}
 		
-	if (keycode == 9)
+	switch(keycode)
 	{
-		$('#menu').hide();
-		$('#stafflist').hide();
-		savePreviouscell()
-		if (event.shiftKey) {
-			thiscell = findPrevcell(event, EDITABLE, pointing)
-			if ((thiscell.cellIndex == HN) && (thiscell.innerHTML != "")) {
-				thiscell = findPrevcell(event, EDITABLE, $(thiscell))
+		case 9:
+			$('#menu').hide();
+			$('#stafflist').hide();
+			savePreviouscell()
+			if (event.shiftKey) {
+				thiscell = findPrevcell(event, EDITABLE, pointing)
+				if ((thiscell.cellIndex == HN) && (thiscell.innerHTML != "")) {
+					thiscell = findPrevcell(event, EDITABLE, $(thiscell))
+				}
+			} else {
+				thiscell = findNextcell(event, EDITABLE, pointing)
+				if ((thiscell.cellIndex == HN) && (thiscell.innerHTML != "")) {
+					thiscell = findNextcell(event, EDITABLE, $(thiscell))
+				}
 			}
-		} else {
-			thiscell = findNextcell(event, EDITABLE, pointing)
+			if (thiscell) {
+				storePresentcell(thiscell)
+			} else {
+				clearEditcellData("hide")
+				window.focus()
+			}
+			break
+		case 13:
+			$('#menu').hide();
+			$('#stafflist').hide();
+			if (event.shiftKey || event.ctrlKey) {
+				return
+			}
+			savePreviouscell()
+			thiscell = findNextRow(event, EDITABLE, pointing)
 			if ((thiscell.cellIndex == HN) && (thiscell.innerHTML != "")) {
 				thiscell = findNextcell(event, EDITABLE, $(thiscell))
 			}
-		}
-		if (thiscell) {
-			storePresentcell(thiscell)
-		} else {
+			if (thiscell) {
+				storePresentcell(thiscell)
+			} else {
+				clearEditcellData("hide")
+				window.focus()
+			}
+			break
+		case 27:
+			$('#menu').hide();
+			$('#stafflist').hide();
 			clearEditcellData("hide")
 			window.focus()
-		}
-		event.preventDefault()
-		return false
-	}
-	else if (keycode == 13)
-	{
-		$('#menu').hide();
-		$('#stafflist').hide();
-		if (event.shiftKey || event.ctrlKey) {
+			break
+		default:
 			return
-		}
-		savePreviouscell()
-		thiscell = findNextRow(event, EDITABLE, pointing)
-		if ((thiscell.cellIndex == HN) && (thiscell.innerHTML != "")) {
-			thiscell = findNextcell(event, EDITABLE, $(thiscell))
-		}
-		if (thiscell) {
-			storePresentcell(thiscell)
-		} else {
-			clearEditcellData("hide")
-			window.focus()
-		}
-		event.preventDefault()
-		return false
 	}
-	else if (keycode == 27)
-	{
-		$('#menu').hide();
-		$('#stafflist').hide();
-		clearEditcellData("hide")
-		window.focus()
-		event.preventDefault()
-		return false
-	}
+	event.preventDefault()
+	return false
 }
 
 function savePreviouscell() 
@@ -112,11 +110,7 @@ function savePreviouscell()
  
 function getData()
 {
-	var trimHTML = /^(\s*<[^>]*>)*\s*|\s*(<[^>]*>\s*)*$/g
-	var HTMLnotBR =/(<((?!br)[^>]+)>)/ig
-	var content = ""
-
-	return $("#editcell").html().replace(trimHTML, '').replace(HTMLnotBR, '')
+	return $("#editcell").html().replace(TRIMHTML, '').replace(HTMLNOTBR, '')
 }
 
 function saveContent(column, content)	//column name in MYSQL
@@ -278,7 +272,7 @@ function storePresentcell(pointing)
 {
 	var rindex = pointing.parentNode.rowIndex
 	var cindex = pointing.cellIndex
-	var content = ""
+	var context = ""
 
 	createEditcell(pointing)
 
@@ -287,10 +281,13 @@ function storePresentcell(pointing)
 		case OPDATE:
 			clearEditcellData()
 			if ($(pointing).closest('table').attr('id') == 'tbl') {
-				content = window.getComputedStyle(pointing,':before').content
-				content = content.replace(/\"/g, "")
+				context = window.getComputedStyle(pointing,':before').content
+				context = context.replace(/\"/g, "")
 			}
-			$("#editcell").html(content + pointing.innerHTML)
+			context = context + pointing.innerHTML
+			$("#editcell").html(context)
+			$("#editcell").data("content", context)
+			$("#editcell").data("pointing", pointing)
 			fillSetTable(rindex, pointing)
 			break
 		case STAFFNAME:

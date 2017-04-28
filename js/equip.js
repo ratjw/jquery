@@ -10,147 +10,18 @@ function fillEquipTable(rownum, qn)
 	var age = rowmain.cells[AGE].innerHTML
 	var diagnosis = rowmain.cells[DIAGNOSIS].innerHTML
 	var treatment = rowmain.cells[TREATMENT].innerHTML
-	var equipOR = document.getElementById("equipdiv")
+	var equipOR = document.getElementById("equip")
 
-	var txt = "<div id='equip'>";
-	txt += "<span style='width:250px;'></span>วันที่ ";
-	txt += "<span style='width:120px; font-size: 14px; font-weight: bold;'); >"+ opdate +"</span>";
-	txt += "<span style='width:20px;'></span>Surgeon "+ staffname;
-	txt += "<br>";
-	txt += "<br>";
-	txt += "<span style='width:100px;'>ชื่อ-นามสกุล</span>"+ patientname;
-	txt += "<span style='width:20px;'></span>อายุ "+ age;
-	txt += "<span style='width:20px;'></span>HN "+ hn;
-	txt += "<br>";
-	txt += "<span style='width:100px;'>Diagnosis</span>";
-	txt += "<span style='width:540px;'>" + diagnosis + "</span>";
-	txt += "<br>";
-	txt += "<span style='width:100px;'>Operation</span>";
-	txt += "<span style='width:540px;'>" + treatment + "</span>";
-	txt += "<br>";
-	txt += "<br>";
-	txt += "<span style='width:120px;'>Position </span>";
-	txt += "<span style='width:140px;'><label><input type='radio' name='pose' id='rightSupine'>หงายหันขวา</label></span>";
-	txt += "<span style='width:140px;'><label><input type='radio' name='pose' id='leftSupine'>หงายหันซ้าย</label></span>";
-	txt += "<span style='width:120px;'><label><input type='radio' name='pose' id='Supine'>หงาย</label></span>";
-	txt += "<br>";
-	txt += "<span style='width:120px;'></span>";
-	txt += "<span style='width:140px;'><label><input type='radio' name='pose' id='rightLateral'>Lateral ขวาลง</label></span>";
-	txt += "<span style='width:140px;'><label><input type='radio' name='pose' id='leftLateral'>Lateral ซ้ายลง</label></span>";
-	txt += "<span style='width:120px;'><label><input type='radio' name='pose' id='rightProne'>3/4 ขวาลง</label></span>";
-	txt += "<span style='width:120px;'><label><input type='radio' name='pose' id='leftProne'>3/4 ซ้ายลง</label></span>";
-	txt += "<br>";
-	txt += "<span style='width:120px;'></span>";
-	txt += "<span style='width:140px;'><label><input type='radio' name='pose' id='rightParkbench'>Parkbench ขวาลง</label></span>";
-	txt += "<span style='width:140px;'><label><input type='radio' name='pose' id='leftParkbench'>Parkbench ซ้ายลง</label></span>";
-	txt += "<span style='width:120px;'><label><input type='radio' name='pose' id='prone'>คว่ำ</label></span>";
-	txt += "<span>อื่นๆ <input type='text' size='7' id='position'></span>";
-	txt += "<br>";
-	txt += "<br>";
-	txt += "<span style='width:120px;'></span>";
-	txt += "<span style='width:360px;'><label><input type='checkbox' id='selfpay'><i>**ผู้ป่วยและญาติสามารถ<b><u>จ่ายส่วนเกินได้ </b></u>(เบิกไม่ได้)</i>**</label></span>";
-	txt += "<br>";
-	txt += "<span style='width:120px;'>1.Imaging</span>";
-	txt += "<span style='width:70px;'><label><input type='checkbox' id='iMRI'>iMRI</label></span>";
-	txt += "<span style='width:70px;'><label><input type='checkbox' id='iCT'>iCT</label></span>";
-	txt += "<span style='width:140px;'><label><input type='checkbox' id='Navigator'>Navigator</label></span>";
-	txt += "<span style='width:120px;'><label><input type='checkbox' id='Fluoroscope'>Fluoroscope</label></span>";
-	txt += "<span>อื่นๆ <input type='text' size='7' id='Other1'></span>";
-	txt += "<br>";
-	txt += "<span style='width:120px;'>2.อุปกรณ์ยึดศีรษะ</span>";
-	txt += "<span style='width:140px;'><label><input type='checkbox' id='Mayfield'>Mayfield</label></span>";
-	txt += "<span style='width:140px;'><label><input type='checkbox' id='Horseshoe'>Horseshoe</label></span>";
-	txt += "<span>อื่นๆ <input type='text' size='7' id='Other2'></span>";
-	txt += "<br>";
-	txt += "<span style='width:120px;'>3.เครื่องตัดกระดูก</span>";
-	txt += "<span style='width:140px;'><label><input type='checkbox' id='HighSpeedDrill'>High Speed Drill</label></span>";
-	txt += "<span style='width:140px;'><label><input type='checkbox' id='SagittalSaw'>Sagittal Saw</label></span>";
-	txt += "<span style='width:120px;'><label><input type='checkbox' id='Osteotome'>Osteotome</label></span>";
-	txt += "<span>อื่นๆ <input type='text' size='7' id='Other3'></span>";
-	txt += "<br>";
-	txt += "<span style='width:120px;'>4.กล้อง</span>";
-	txt += "<span style='width:140px;'><label><input type='checkbox' id='Microscope'>Microscope</label></span>";
-	txt += "<span style='width:140px;'><label><input type='checkbox' id='ICG'>ICG</label></span>";
-	txt += "<span><label><input type='checkbox' id='Endoscope'>Endoscope</label></span>";
-	txt += "<br>";
-	txt += "<span style='width:120px;'>5.CUSA</span>";
-	txt += "<span style='width:140px;'><label><input type='checkbox' id='Excell'>Excell</label></span>";
-	txt += "<span style='width:140px;'><label><input type='checkbox' id='Soring'>Soring</label></span>";
-	txt += "<br>";
-	txt += "<span style='width:120px;'>6.Retractor</span>";
-	txt += "<span style='width:140px;'><label><input type='checkbox' id='Leylar'>Leylar</label></span>";
-	txt += "<span style='width:140px;'><label><input type='checkbox' id='Halo'>Halo</label></span>";
-	txt += "<span style='width:120px;'><label><input type='checkbox' id='Greenberg'>Greenberg</label></span>";
-	txt += "<span>อื่นๆ <input type='text' size='7' id='Other4'></span>";
-	txt += "<br>";
-	txt += "<span style='width:120px;'>7.U/S</span>";
-	txt += "<span style='width:140px;'><label><input type='checkbox' id='ultrasound'>Ultrasound</label></span>";
-	txt += "<span><label><input type='checkbox' id='Doppler'>Doppler</label></span>";
-	txt += "<br>";
-	txt += "<span style='width:120px;'>8.Shunt</span>";
-	txt += "<span style='width:100px;'>Pudenz</span>";
-	txt += "<span style='width:40px;'>หัว</span>";
-	txt += "<span style='width:140px;'><label><input type='radio' name='head' id='proximalLow'>low</label></span>";
-	txt += "<span style='width:120px;'><label><input type='radio' name='head' id='proximalMedium'>medium</label></span>";
-	txt += "<span><label><input type='radio' name='head' id='proximalHigh'>high</label></span>";
-	txt += "<br>";
-	txt += "<span style='width:220px;'></span>";
-	txt += "<span style='width:40px;'>ท้อง</span>";
-	txt += "<span style='width:140px;'><label><input type='radio' name='peritoneum' id='distalLow'>low</label></span>";
-	txt += "<span style='width:120px;'><label><input type='radio' name='peritoneum' id='distalMedium'>medium</label></span>";
-	txt += "<span><label><input type='radio' name='peritoneum' id='distalHigh'>high</label></span>";
-	txt += "<br>";
-	txt += "<span style='width:120px;'></span>";
-	txt += "<span style='width:140px;'>Programmable</span>";
-	txt += "<span style='width:140px;'><label><input type='radio' name='program' id='shuntMedtronic'>Medtronic</label></span>";
-	txt += "<span style='width:120px;'><label><input type='radio' name='program' id='shuntCodman'>Codman</label></span>";
-	txt += "<span>อื่นๆ <input type='text' size='7' id='Other5'></span>";
-	txt += "<br>";
-	txt += "<span style='width:120px;'>9.เครื่องมือบริษัท </span>";
-	txt += "<span style='width:140px;'>เวลาส่งเครื่อง <input type='text' size='1' id='equiptime'> น. </span>";
-	txt += "<span style='width:340px;'>ชื่อ <input type='text' size='35' id='Other6'></span>";
-	txt += "<br>";
-	txt += "<span style='width:120px;'>10.อุปกรณ์อื่นๆ</span>";
-	txt += "<span style='width:140px;'><label><input type='checkbox' id='cranioCement'>Cranio cement</label></span>";
-	txt += "<span style='width:140px;'><label><input type='checkbox' id='artificialSkull'>MTEC skull</label></span>";
-	txt += "<span>อื่นๆ <input type='text' id='Other7'></span>";
-	txt += "<br>";
-	txt += "<span style='width:120px;'>11.Monitor</span>";
-	txt += "<span style='width:70px;'><label><input type='checkbox' id='CN5'>CN5</label></span>";
-	txt += "<span style='width:70px;'><label><input type='checkbox' id='CN6'>CN6</label></span>";
-	txt += "<span style='width:70px;'><label><input type='checkbox' id='CN7'>CN7</label></span>";
-	txt += "<span style='width:70px;'><label><input type='checkbox' id='CN8'>CN8</label></span>";
-	txt += "<span style='width:60px;'><label><input type='checkbox' id='CN9'>CN9</label></span>";
-	txt += "<span style='width:60px;'><label><input type='checkbox' id='CN10'>CN10</label></span>";
-	txt += "<span style='width:60px;'><label><input type='checkbox' id='CN11'>CN11</label></span>";
-	txt += "<span style='width:60px;'><label><input type='checkbox' id='CN12'>CN12</label></span>";
-	txt += "<br>";
-	txt += "<span style='width:120px;'></span>";
-	txt += "<span style='width:140px;'><label><input type='checkbox' id='SSEP'>SSEP</label></span>";
-	txt += "<span style='width:140px;'><label><input type='checkbox' id='MEP'>MEP</label></span>";
-	txt += "<span style='width:120px;'><label><input type='checkbox' id='ECOG'>ECoG</label></span>";
-	txt += "<span style='width:60px;'><label><input type='checkbox' id='EEG'>EEG</label></span>";
-	txt += "<br>";
-	txt += "<span style='width:120px;'></span>";
-	txt += "<span style='width:140px;'><label><input type='checkbox' id='directStim'>Direct Stim</label></span>";
-	txt += "<span style='width:140px;'><label><input type='checkbox' id='phaseReversal'>Phase Reversal</label></span>";
-	txt += "<span style='width:120px;'><label><input type='checkbox' id='EMG'>EMG</label></span>";
-	txt += "<span style='width:80px;'><label><input type='checkbox' id='D-wave'>D-wave</label></span>";
-	txt += "<br>";
-	txt += "<span style='width:120px;'></span>";
-	txt += "<span>อื่นๆ <input type='text' size='25' id='Other8'></span>";
-	txt += "<br>";
-	txt += "<br>";
-	txt += "<span style='width:70px;'><button onclick=saveequip("+ qn +")> SAVE </button></span>";
-	txt += "<span style='width:60px;'><button onclick=printpaper("+ qn +")> Print </button></span>";
-	txt += "<span style='width:250px;'><button onClick=cancelset()> Close </button></span>";
-	txt += "<span style='width:70px;'> Edited by </span>";
-	txt += "<span style='position:absolute' id='editedby'></span>";
-	txt += "<br>";
-	txt += "<br>";
-	txt += "</div>";
+	document.getElementById("opdate").innerHTML = opdate
+	document.getElementById("staffname").innerHTML = staffname
+	document.getElementById("patientname").innerHTML = patientname
+	document.getElementById("age").innerHTML = age
+	document.getElementById("hn").innerHTML = hn
+	document.getElementById("diagnosis").innerHTML = diagnosis
+	document.getElementById("treatment").innerHTML = treatment
+	document.getElementById("SAVE").value = qn
+	document.getElementById("Print").value = qn
 
-	equipOR.innerHTML = txt;
 	equipOR.style.display = "block"
 	equipOR.style.top = "0px"
 	equipOR.style.left = rowmain.cells[OPDATE].offsetWidth +"px"	//show first column
@@ -174,12 +45,12 @@ function fillEquipTable(rownum, qn)
 function saveequip(qn) 
 {
 	Checklistequip(qn)
-	$("#equipdiv").hide()
+	$("#equip").hide()
 }
 
 function cancelset()
 {
-	$("#equipdiv").hide()
+	$("#equip").hide()
 }
 
 function Checklistequip(qn) 
@@ -214,7 +85,7 @@ function Checklistequip(qn)
 	}
 }
 
-function printpaper(qn)	//*** have to set equipdiv padding to top:70px; bottom:70px
+function printpaper(qn)	//*** have to set equip padding to top:70px; bottom:70px
 {
 	if (/Edge|MS/.test(navigator.userAgent)) {
 		var equip = document.getElementById('equip');

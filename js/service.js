@@ -215,46 +215,44 @@ function Skeyin(event)
 	if (!pointing) {
 		return
 	}
-
-	if (keycode == 9)
+		
+	switch(keycode)
 	{
-		savePreviousScell()
-		if (event.shiftKey)
-			thiscell = findPrevcell(event, SEDITABLE, pointing)
-		else
-			thiscell = findNextcell(event, SEDITABLE, pointing)
-		if (thiscell) {
-			storePresentScell(thiscell)
-		} else {
+		case 9:
+			savePreviousScell()
+			if (event.shiftKey)
+				thiscell = findPrevcell(event, SEDITABLE, pointing)
+			else
+				thiscell = findNextcell(event, SEDITABLE, pointing)
+			if (thiscell) {
+				storePresentScell(thiscell)
+			} else {
+				clearEditcellData("hide")
+				window.focus()
+			}
+			break
+		case 13:
+			if (event.shiftKey || event.ctrlKey) {
+				return
+			}
+			savePreviousScell()
+			thiscell = findNextRow(event, SEDITABLE, pointing)
+			if (thiscell) {
+				storePresentScell(thiscell)
+			} else {
+				clearEditcellData("hide")
+				window.focus()
+			}
+			break
+		case 27:
 			clearEditcellData("hide")
 			window.focus()
-		}
-		event.preventDefault()
-		return false
-	}
-	else if (keycode == 13)
-	{
-		if (event.shiftKey || event.ctrlKey) {
+			break
+		default:
 			return
-		}
-		savePreviousScell()
-		thiscell = findNextRow(event, SEDITABLE, pointing)
-		if (thiscell) {
-			storePresentScell(thiscell)
-		} else {
-			clearEditcellData("hide")
-			window.focus()
-		}
-		event.preventDefault()
-		return false
 	}
-	else if (keycode == 27)
-	{
-		clearEditcellData("hide")
-		window.focus()
-		event.preventDefault()
-		return false
-	}
+	event.preventDefault()
+	return false
 }
 
 function savePreviousScell()

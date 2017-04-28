@@ -136,10 +136,11 @@ function stafflist(pointing)
 
 function menustyle(me, target, width)
 {
-	if ($(me).position().top > $(target).position().top)
+	if ($(me).position().top > $(target).position().top) {
 		var shadow = '10px 20px 30px slategray'
-	else
+	} else {
 		var shadow = '10px -20px 30px slategray'
+	}
 
 	$(me).css({
 		width: width,
@@ -148,21 +149,26 @@ function menustyle(me, target, width)
 }
 
 function checkblank(opdate, qn)
-{	//No case in this date? 
+{	//Is this a blank row?
+	//If blank, is there a case(s) in this date? 
 	var q = 0
 
-	if (qn)
-		return false	//No, it's not empty
-	while (opdate > BOOK[q].opdate)
+	if (qn) {
+		return false	//No, this is not a blank row
+	}
+	//the following is a blank row
+	while (opdate > BOOK[q].opdate)	//find this opdate in BOOK
 	{
 		q++
-		if (q >= BOOK.length)
-			return false	//beyond BOOK, do not delete
+		if (q >= BOOK.length) {			//not found
+			return false	//beyond BOOK, do not delete blank row
+		}
 	}
-	if (opdate == BOOK[q].opdate)
-		return true	//there is this opdate case in another row, can delete
-	else
-		return false	//No this opdate case in another row, do not delete
+	if (opdate == BOOK[q].opdate) {	//found
+		return true	//there is a case(s) in this opdate, can delete blank row
+	} else {
+		return false	//No case in this opdate, do not delete blank row
+	}
 }
 
 function splitPane()

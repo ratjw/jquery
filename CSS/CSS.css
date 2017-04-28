@@ -288,7 +288,7 @@
 	overflow:auto;
 }
 
-#equipdiv {
+#equip {
 	position: fixed;
 	display:none;
 	z-index: 1;
@@ -307,4 +307,24 @@
 
 #equip span {
 	display:inline-block; 
+}
+
+input[type=radio] + label {
+	color: #999999;
+	background-color: white;
+}
+ 
+input[type=radio]:checked + label {
+	color: #000000;
+	background-color: yellow;
+}
+
+input[type=checkbox] + label {
+	color: #999999;
+	background-color: white;
+}
+ 
+input[type=checkbox]:checked + label {
+	color: #000000;
+	background-color: yellow;
 }
