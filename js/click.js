@@ -375,19 +375,19 @@ function clearEditcellData(display)
 
 function findPrevcell(event, editable, pointing) 
 {
-	var prevcell = $(pointing)
-	var column = prevcell.index()
+	var $prevcell = $(pointing)
+	var column = $prevcell.index()
 
 	if ((column = editable[($.inArray(column, editable) - 1)]))
 	{
-		prevcell = prevcell.parent().children().eq(column)
+		$prevcell = $prevcell.parent().children().eq(column)
 	}
 	else
 	{
 		do {
-			if (prevcell.parent().index() > 1)
+			if ($prevcell.parent().index() > 1)
 			{	//go to prev row last editable
-				prevcell = prevcell.parent().prev("tr").children().eq(editable[editable.length-1])
+				$prevcell = $prevcell.parent().prev("tr").children().eq(editable[editable.length-1])
 			}
 			else
 			{	//#tbl tr:1 td:1
@@ -395,52 +395,52 @@ function findPrevcell(event, editable, pointing)
 				return false
 			}
 		}
-		while ((prevcell.get(0).nodeName == "TH")	//THEAD row
-			|| (!prevcell.is(':visible')))			//invisible due to colspan
+		while (($prevcell.get(0).nodeName == "TH")	//THEAD row
+			|| (!$prevcell.is(':visible')))			//invisible due to colspan
 	}
 
-	return prevcell.get(0)
+	return $prevcell.get(0)
 }
 
 function findNextcell(event, editable, pointing) 
 {
-	var nextcell = $(pointing)
-	var column = nextcell.index()
+	var $nextcell = $(pointing)
+	var column = $nextcell.index()
 
 	if ((column = editable[($.inArray(column, editable) + 1)]))
 	{
-		nextcell = nextcell.parent().children().eq(column)
+		$nextcell = $nextcell.parent().children().eq(column)
 	}
 	else
 	{
 		do {//go to next row first editable
-			nextcell = $(nextcell).parent().next("tr").children().eq(editable[0])
-			if (!(nextcell.length)) {
+			$nextcell = $($nextcell).parent().next("tr").children().eq(editable[0])
+			if (!($nextcell.length)) {
 				event.preventDefault()
 				return false
 			}
 		}
-		while ((!nextcell.is(':visible'))	//invisible due to colspan
-			|| (nextcell.get(0).nodeName == "TH"))	//TH row
+		while ((!$nextcell.is(':visible'))	//invisible due to colspan
+			|| ($nextcell.get(0).nodeName == "TH"))	//TH row
 	}
 
-	return nextcell.get(0)
+	return $nextcell.get(0)
 }
 
 function findNextRow(event, editable, pointing) 
 {
-	var nextcell = $(pointing)
+	var $nextcell = $(pointing)
 
 	//go to next row first editable
 	do {
-		nextcell = nextcell.parent().next("tr").children().eq(editable[0])
-		if (!(nextcell.length)) {
+		$nextcell = $nextcell.parent().next("tr").children().eq(editable[0])
+		if (!($nextcell.length)) {
 			event.preventDefault()
 			return false	
 		}
 	}
-	while ((!nextcell.is(':visible'))	//invisible due to colspan
-		|| (nextcell.get(0).nodeName == "TH"))	//TH row
+	while ((!$nextcell.is(':visible'))	//invisible due to colspan
+		|| ($nextcell.get(0).nodeName == "TH"))	//TH row
 
-	return nextcell.get(0)
+	return $nextcell.get(0)
 }

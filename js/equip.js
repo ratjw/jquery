@@ -28,9 +28,12 @@ function fillEquipTable(rownum, qn)
 	if (equipOR.offsetHeight > window.innerHeight) {
 		equipOR.style.height = window.innerHeight - 60 +"px"
 	}
+	$('#equip input').prop('checked', false)
+	$('#equip input').val('')
+	document.getElementById("SAVE").innerHTML = " SAVE "
+
 	var q = findBOOKrow(qn)
-	if ( BOOK[q].equipment )
-	{								//fill checked equip if any
+	if ( BOOK[q].equipment ) {				//fill checked equip if any
 		$.each(JSON.parse(BOOK[q].equipment), function(key, val){
 			if (val == 'checked') {
 				$("#"+ key).prop("checked", true)	//radio and checkbox
@@ -38,14 +41,23 @@ function fillEquipTable(rownum, qn)
 				$("#"+ key).val(val)	//Other1...8
 			}
 		});
+		document.getElementById("SAVE").value = ""
+		document.getElementById("SAVE").innerHTML = " แก้ไข "
+		$('#equip input').prop('disabled', true)
+		getEditedby(qn)
  	}
-	getEditedby(qn)
 }
 
 function saveequip(qn) 
 {
-	Checklistequip(qn)
-	$("#equip").hide()
+	if (qn) {
+		Checklistequip(qn)
+		$("#equip").hide()
+	} else {
+		document.getElementById("SAVE").value = document.getElementById("Print").value
+		document.getElementById("SAVE").innerHTML = " SAVE "
+		$('#equip input').prop('disabled', false)
+	}
 }
 
 function cancelset()
@@ -56,12 +68,13 @@ function cancelset()
 function Checklistequip(qn) 
 {
 	var equipment = {}
-	$( "input:checked" ).each( function() {
+	$( "#equip input:checked" ).each( function() {
 		equipment[this.id] = "checked"
 	})
-	$('input[type=text]').each(function() {
-		if (this.value)
+	$("#equip input[type=text]").each(function() {
+		if (this.value) {
 			equipment[this.id] = this.value
+		}
 	})
 	equipment = JSON.stringify(equipment)
 

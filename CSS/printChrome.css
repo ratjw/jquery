@@ -1,6 +1,6 @@
 @media print { 
 	BODY {
-		font-size: 16px; 
+		font-size: 14px; 
 		line-height: 170%; 
 		background: white;
 		padding-top: 30px;
@@ -12,7 +12,7 @@
 	}
 
 	input, input[type=checkbox] { 
-		font-size: 16px; 
+		font-size: 14px; 
 		border: 0px; 
 	}
 
