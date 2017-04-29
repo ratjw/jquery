@@ -453,9 +453,15 @@
   <span>อื่นๆ <input type="text" size="25" id="Other8"></span>
   <br>
   <br>
-  <span style="width:70px;"><button id="SAVE" onclick=saveequip(this.value)> SAVE </button></span>
-  <span style="width:60px;"><button id="Print" onclick=printpaper(this.value)> Print </button></span>
-  <span style="width:250px;"><button onClick=cancelset()> Close </button></span>
+  <span style="width:70px;">
+	<button id="SAVE" value="" onclick=saveequip(this.value)> SAVE </button>
+  </span>
+  <span style="width:65px;">
+	<button id="Print" value="" onclick=printpaper(this.value)> Print </button>
+  </span>
+  <span style="width:200px;">
+	<button onClick=cancelset()> Close </button>
+  </span>
   <span style="width:70px;"> Edited by </span>
   <span style="position:absolute" id="editedby"></span>
   <br>

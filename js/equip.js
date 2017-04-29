@@ -48,6 +48,27 @@ function fillEquipTable(rownum, qn)
  	}
 }
 
+function getEditedby(qn)
+{
+	var sql = "sqlReturnData=SELECT editor, editdatetime FROM bookhistory "
+	sql += "WHERE qn="+ qn + " AND equipment <> '';"
+
+	Ajax(MYSQLIPHP, sql, callbackgetEditedby)
+
+	function callbackgetEditedby(response)
+	{
+		if (!response || response.indexOf("DBfailed") != -1) {
+			alert("DBfailed!\n" + response)
+		} else {
+			var Editedby = ""
+			$.each(JSON.parse(response), function(key, val) {
+				Editedby += (val.editor + " : " + val.editdatetime + "<br>")
+			});
+			$('#editedby').html(Editedby)
+		}
+	}
+}
+
 function saveequip(qn) 
 {
 	if (qn) {
@@ -135,6 +156,7 @@ function printpaper(qn)	//*** have to set equip padding to top:70px; bottom:70px
 
 		var oldinput = orgequip.getElementsByTagName("INPUT");
 		var wininput = equip.getElementsByTagName("INPUT");
+
 		for (var i = 0; i < oldinput.length; i++) 
 		{
 			wininput[i].checked = oldinput[i].checked
@@ -152,26 +174,5 @@ function printpaper(qn)	//*** have to set equip padding to top:70px; bottom:70px
 		document.body.innerHTML = original;
 		document.getElementById('equip').scrollIntoView(true);
 		location.reload();
-	}
-}
-
-function getEditedby(qn)
-{
-	var sql = "sqlReturnData=SELECT editor, editdatetime FROM bookhistory "
-	sql += "WHERE qn="+ qn + " AND equipment <> '';"
-
-	Ajax(MYSQLIPHP, sql, callbackgetEditedby)
-
-	function callbackgetEditedby(response)
-	{
-		if (!response || response.indexOf("DBfailed") != -1) {
-			alert("DBfailed!\n" + response)
-		} else {
-			var Editedby = ""
-			$.each(JSON.parse(response), function(key, val) {
-				Editedby += (val.editor + " : " + val.editdatetime + "<br>")
-			});
-			$('#editedby').html(Editedby)
-		}
 	}
 }
