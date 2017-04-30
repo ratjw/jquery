@@ -56,7 +56,7 @@ function makehistory(rowmain, response)
 		HTML_String += '<td>' + history[j].treatment +'</td>';
 		HTML_String += '<td>' + history[j].admission +'</td>';
 		HTML_String += '<td>' + history[j].final +'</td>';
-		HTML_String += '<td>' + history[j].equipment +'</td>';
+		HTML_String += '<td>' + showEquip(history[j].equipment) +'</td>';
 		HTML_String += '<td>' + history[j].contact +'</td>';
 		HTML_String += '<td>' + history[j].editor +'</td>';
 		HTML_String += '</tr>';
@@ -75,6 +75,23 @@ function makehistory(rowmain, response)
 		width: window.innerWidth * 9 / 10,
 		height: window.innerHeight * 8 / 10
 	})
+}
+
+function showEquip(equipString)
+{
+	var equip = ""
+
+	if (equipString) {
+		var equipHistory = JSON.parse(equipString)
+		$.each(equipHistory, function(key, value) {
+			if (value == "checked") {
+				equip += (key + ", ")
+			} else {
+				equip += (key + " : " + value + ", ")
+			}
+		} )
+	}
+	return equip
 }
 
 function deleteHistory()

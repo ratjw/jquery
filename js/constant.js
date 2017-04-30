@@ -65,8 +65,8 @@ var STAFF = ["อ.เอก", "อ.อัตถพร", "อ.สรยุทธ"
 var HOLIDAY = {
 	"2017-02-11" : "url('pic/Magha.jpg')",
 	"2017-02-13" : "url('pic/Maghasub.jpg')",	//หยุดชดเชยวันมาฆบูชา
-	"2017-05-09" : "url('pic/Ploughing.jpg')",
 	"2017-05-10" : "url('pic/Vesak.jpg')",
+	"2017-05-12" : "url('pic/Ploughing.jpg')",
 	"2017-07-08" : "url('pic/Asalha.jpg')",
 	"2017-07-09" : "url('pic/Vassa.jpg')",
 	"2017-07-10" : "url('pic/Asalhasub.jpg')",
