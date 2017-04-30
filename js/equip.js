@@ -29,7 +29,7 @@ function fillEquipTable(rownum, qn)
 	$('#equip input').val('')
 
 	if ( BOOK[q].equipment ) {			// If any, fill checked & others
-		$.each(JSON.parse(BOOK[q].equipment), function(key, val){
+		$.each(JSON.parse(BOOK[q].equipment), function(key, val) {
 			if (val == 'checked') {
 				$("#"+ key).prop("checked", true)	//radio and checkbox
 			} else {
@@ -41,10 +41,9 @@ function fillEquipTable(rownum, qn)
 			showSaveEquip(qn)
 		}
 		$('#equip input').prop('disabled', true)
-		document.getElementById("editedby").innerHTML = getEditedby(qn)
+		getEditedby(qn)
  	} else {
 		showSaveEquip(qn)
-		$('#equip input').prop('disabled', false)
 		document.getElementById("editedby").innerHTML = ""
 	}
 }
@@ -56,6 +55,7 @@ function showSaveEquip(qn)
 		Checklistequip(qn)
 		$("#equip").hide()
 	}
+	$('#equip input').prop('disabled', false)
 }
 
 function getEditedby(qn)
@@ -65,17 +65,16 @@ function getEditedby(qn)
 
 	Ajax(MYSQLIPHP, sql, callbackgetEditedby)
 
-	return function callbackgetEditedby(response)
+	function callbackgetEditedby(response)
 		{
 			if (!response || response.indexOf("DBfailed") != -1) {
 				alert("DBfailed!\n" + response)
-				return ""
 			} else {
 				var Editedby = ""
 				$.each(JSON.parse(response), function(key, val) {
 					Editedby += (val.editor + " : " + val.editdatetime + "<br>")
 				});
-				return Editedby
+				document.getElementById("editedby").innerHTML = Editedby
 			}
 		}
 }
@@ -119,17 +118,20 @@ function printpaper(qn)	//*** have to set equip padding to top:70px; bottom:70px
 		var equip = document.getElementById('equip');
 		var win = window.open();
 		win.document.open();
-		win.document.write('<LINK type="text/css" rel="stylesheet" href="css/printIE.css">');
+		win.document.write('<LINK type="text/css" rel="stylesheet" href="css/print.css">');
 		win.document.writeln(equip.outerHTML);
 
 		var newequip = equip.getElementsByTagName("INPUT");
 		var winequip = win.equip.getElementsByTagName("INPUT");
 		for (var i = 0; i < newequip.length; i++) 
 		{
-			winequip[i].checked = newequip[i].checked
-			winequip[i].value = newequip[i].value
-			if (!winequip[i].checked || !winequip[i].value)
-			{	//pale color for no input items
+			if (newequip[i].checked) {
+				winequip[i].checked = newequip[i].checked
+			}
+			else if (newequip[i].value) {
+				winequip[i].value = newequip[i].value
+			}
+			else {	//pale color for no input items
 				temp = winequip[i]
 				while (temp.nodeName != "SPAN")
 					temp = temp.parentNode
@@ -145,22 +147,27 @@ function printpaper(qn)	//*** have to set equip padding to top:70px; bottom:70px
 	else {
 		var original = document.body.innerHTML;
 		var orgequip = document.getElementById('equip');
+		orgequip.style.height = orgequip.offsetHeight + 200 + "px"
+		orgequip.style.width = orgequip.offsetWidth + 100 + "px"
 		document.body.innerHTML = orgequip.outerHTML;
 		var equip = document.getElementById('equip');
 
-		var oldinput = orgequip.getElementsByTagName("INPUT");
-		var wininput = equip.getElementsByTagName("INPUT");
+		var newequip = orgequip.getElementsByTagName("INPUT");
+		var winequip = equip.getElementsByTagName("INPUT");
 
-		for (var i = 0; i < oldinput.length; i++) 
+		for (var i = 0; i < newequip.length; i++) 
 		{
-			wininput[i].checked = oldinput[i].checked
-			wininput[i].value = oldinput[i].value
-			if (!wininput[i].checked || !wininput[i].value)
-			{
-				var temp = wininput[i]
+			if (newequip[i].checked) {
+				winequip[i].checked = newequip[i].checked
+			}
+			else if (newequip[i].value) {
+				winequip[i].value = newequip[i].value
+			}
+			else {	//pale color for no input items
+				temp = winequip[i]
 				while (temp.nodeName != "SPAN")
 					temp = temp.parentNode
-				temp.className = "pale"	//pale color for no input items
+				temp.className = "pale"
 			}
 		}
 

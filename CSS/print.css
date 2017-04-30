@@ -1,0 +1,32 @@
+@media print { 
+	BODY {
+		padding: 0px;
+		margin-top: 50px;
+		overflow: visible;
+	}
+
+	#equip {
+		line-height:170%;
+		font-size: 14px;
+		background-color: white;
+		border: 0px;
+		margin-top: 25px;
+		padding-left: 0px;
+		margin-left: 0px;
+	}
+
+	.pale {
+		color: #CCCCCC;
+		color: rgba(0, 0, 0, .5);
+		font-weight: 200;
+	}
+
+	input, input[type=checkbox] { 
+		font-size: 14px; 
+		border: 0px; 
+	}
+
+	span { 
+		display:inline-block; 
+	} 
+}
