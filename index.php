@@ -429,39 +429,20 @@
   <span>อื่นๆ <input type="text" id="Other7"></span>
   <br>
   <span style="width:120px;">11.Monitor</span>
-  <span style="width:70px;"><input type="checkbox" id="CN5"><label for="CN5">CN5</label></span>
-  <span style="width:66px;"><input type="checkbox" id="CN6"><label for="CN6">CN6</label></span>
   <span style="width:70px;"><input type="checkbox" id="CN7"><label for="CN7">CN7</label></span>
   <span style="width:66px;"><input type="checkbox" id="CN8"><label for="CN8">CN8</label></span>
-  <span style="width:60px;"><input type="checkbox" id="CN9"><label for="CN9">CN9</label></span>
-  <span style="width:56px;"><input type="checkbox" id="CN11"><label for="CN11">CN11</label></span>
-  <span style="width:56px;"><input type="checkbox" id="CN12"><label for="CN12">CN12</label></span>
-  <br>
-  <span style="width:120px;"></span>
-  <span style="width:140px;"><input type="checkbox" id="SSEP"><label for="SSEP">SSEP</label></span>
-  <span style="width:140px;"><input type="checkbox" id="phaseReversal"><label for="phaseReversal">Phase Reversal</label></span>
-  <span style="width:120px;"><input type="checkbox" id="ECOG"><label for="ECOG">ECoG</label></span>
-  <span style="width:60px;"><input type="checkbox" id="EEG"><label for="EEG">EEG</label></span>
-  <br>
-  <span style="width:120px;"></span>
-  <span style="width:140px;"><input type="checkbox" id="directStim"><label for="directStim">Direct Stim</label></span>
-  <span style="width:140px;"><input type="checkbox" id="EMG"><label for="EMG">EMG</label></span>
-  <span style="width:120px;"><input type="checkbox" id="MEP"><label for="MEP">MEP</label></span>
-  <span style="width:80px;"><input type="checkbox" id="Dwave"><label for="Dwave">D-wave</label></span>
-  <br>
-  <span style="width:120px;"></span>
-  <span>อื่นๆ <input type="text" size="25" id="Other8"></span>
+  <span style="width:70px;"><input type="checkbox" id="CN9"><label for="CN9">CN9</label></span>
+  <span style="width:66px;"><input type="checkbox" id="SSEP"><label for="SSEP">SSEP</label></span>
+  <span style="width:60px;"><input type="checkbox" id="MEP"><label for="MEP">MEP</label></span>
+  <span>อื่นๆ <input type="text" size="15" id="Other8"></span>
   <br>
   <br>
-  <span style="width:70px;">
-	<button id="SAVE" value="" onclick=saveequip(this.value)> SAVE </button>
-  </span>
-  <span style="width:65px;">
-	<button id="Print" value="" onclick=printpaper(this.value)> Print </button>
-  </span>
-  <span style="width:200px;">
-	<button onClick=cancelset()> Close </button>
-  </span>
+  <button id="SAVEEquip"> SAVE </button>
+  <span style="width:20px;"></span>
+  <button id="PrintEquip"> Print </button>
+  <span style="width:20px;"></span>
+  <button id="CloseEquip"> Close </button>
+  <span style="width:150px;"></span>
   <span style="width:70px;"> Edited by </span>
   <span style="position:absolute" id="editedby"></span>
   <br>

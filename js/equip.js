@@ -1,39 +1,34 @@
 
 function fillEquipTable(rownum, qn)
 {
-	var table = document.getElementById("tbl")
-	var rowmain = table.rows[rownum]
-	var opdate = rowmain.cells[OPDATE].innerHTML
-	var staffname = rowmain.cells[STAFFNAME].innerHTML
-	var hn = rowmain.cells[HN].innerHTML
-	var patientname = rowmain.cells[NAME].innerHTML
-	var age = rowmain.cells[AGE].innerHTML
-	var diagnosis = rowmain.cells[DIAGNOSIS].innerHTML
-	var treatment = rowmain.cells[TREATMENT].innerHTML
+	var q = findBOOKrow(qn)
+	var bookq = BOOK[q]
 	var equipOR = document.getElementById("equip")
 
-	document.getElementById("opdate").innerHTML = opdate
-	document.getElementById("staffname").innerHTML = staffname
-	document.getElementById("patientname").innerHTML = patientname
-	document.getElementById("age").innerHTML = age
-	document.getElementById("hn").innerHTML = hn
-	document.getElementById("diagnosis").innerHTML = diagnosis
-	document.getElementById("treatment").innerHTML = treatment
-	document.getElementById("SAVE").value = qn
-	document.getElementById("Print").value = qn
+	document.getElementById("opdate").innerHTML = bookq.opdate.thDate()
+	document.getElementById("staffname").innerHTML = bookq.staffname
+	document.getElementById("hn").innerHTML = bookq.hn
+	document.getElementById("patientname").innerHTML = bookq.patient
+	document.getElementById("age").innerHTML = bookq.dob? bookq.dob.getAge(bookq.opdate) : ""
+	document.getElementById("diagnosis").innerHTML = bookq.diagnosis
+	document.getElementById("treatment").innerHTML = bookq.treatment
+	document.getElementById("PrintEquip").onclick = function () {
+		printpaper(qn)
+	}
+	document.getElementById("CloseEquip").onclick = function () {
+		$('#equip').hide()
+	}
 
 	equipOR.style.display = "block"
 	equipOR.style.top = "0px"
-	equipOR.style.left = rowmain.cells[OPDATE].offsetWidth +"px"	//show first column
+	equipOR.style.left = $('#editcell').data('pointing').offsetWidth +"px"
 	if (equipOR.offsetHeight > window.innerHeight) {
 		equipOR.style.height = window.innerHeight - 60 +"px"
 	}
 	$('#equip input').prop('checked', false)
 	$('#equip input').val('')
-	document.getElementById("SAVE").innerHTML = " SAVE "
 
-	var q = findBOOKrow(qn)
-	if ( BOOK[q].equipment ) {				//fill checked equip if any
+	if ( BOOK[q].equipment ) {			// If any, fill checked & others
 		$.each(JSON.parse(BOOK[q].equipment), function(key, val){
 			if (val == 'checked') {
 				$("#"+ key).prop("checked", true)	//radio and checkbox
@@ -41,11 +36,26 @@ function fillEquipTable(rownum, qn)
 				$("#"+ key).val(val)	//Other1...8
 			}
 		});
-		document.getElementById("SAVE").value = ""
-		document.getElementById("SAVE").innerHTML = " แก้ไข "
+		document.getElementById("SAVEEquip").innerHTML = " แก้ไข "
+		document.getElementById("SAVEEquip").onclick = function () {
+			showSaveEquip(qn)
+		}
 		$('#equip input').prop('disabled', true)
-		getEditedby(qn)
- 	}
+		document.getElementById("editedby").innerHTML = getEditedby(qn)
+ 	} else {
+		showSaveEquip(qn)
+		$('#equip input').prop('disabled', false)
+		document.getElementById("editedby").innerHTML = ""
+	}
+}
+
+function showSaveEquip(qn)
+{
+	document.getElementById("SAVEEquip").innerHTML = " SAVE "
+	document.getElementById("SAVEEquip").onclick = function () {
+		Checklistequip(qn)
+		$("#equip").hide()
+	}
 }
 
 function getEditedby(qn)
@@ -55,35 +65,19 @@ function getEditedby(qn)
 
 	Ajax(MYSQLIPHP, sql, callbackgetEditedby)
 
-	function callbackgetEditedby(response)
-	{
-		if (!response || response.indexOf("DBfailed") != -1) {
-			alert("DBfailed!\n" + response)
-		} else {
-			var Editedby = ""
-			$.each(JSON.parse(response), function(key, val) {
-				Editedby += (val.editor + " : " + val.editdatetime + "<br>")
-			});
-			$('#editedby').html(Editedby)
+	return function callbackgetEditedby(response)
+		{
+			if (!response || response.indexOf("DBfailed") != -1) {
+				alert("DBfailed!\n" + response)
+				return ""
+			} else {
+				var Editedby = ""
+				$.each(JSON.parse(response), function(key, val) {
+					Editedby += (val.editor + " : " + val.editdatetime + "<br>")
+				});
+				return Editedby
+			}
 		}
-	}
-}
-
-function saveequip(qn) 
-{
-	if (qn) {
-		Checklistequip(qn)
-		$("#equip").hide()
-	} else {
-		document.getElementById("SAVE").value = document.getElementById("Print").value
-		document.getElementById("SAVE").innerHTML = " SAVE "
-		$('#equip input').prop('disabled', false)
-	}
-}
-
-function cancelset()
-{
-	$("#equip").hide()
 }
 
 function Checklistequip(qn) 
