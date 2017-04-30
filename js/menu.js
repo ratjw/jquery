@@ -35,9 +35,9 @@ function fillSetTable(rownum, pointing)
 
 	$("#item5 div").html("List of Deleted Cases")
 
-	$("#item6").html("การแก้ไขของ " + casename)
+	$("#item6 div").html("การแก้ไขของ " + casename)
 	if (qn)
-		$("#item6 div").removeClass(disabled)
+		$("#item6").removeClass(disabled)
 	else
 		$("#item6").addClass(disabled)
 

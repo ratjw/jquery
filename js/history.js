@@ -27,19 +27,22 @@ function makehistory(rowmain, response)
 
 	var HTML_String = '<table id = "historytbl">';
 	HTML_String += '<tr>';
-	HTML_String += '<th style="width:10%">Date Time</th>';
-	HTML_String += '<th style="width:30%">Diagnosis</th>';
-	HTML_String += '<th style="width:30%">Treatment</th>';
-	HTML_String += '<th style="width:25%">Notice</th>';
+	HTML_String += '<th style="width:5%">Date Time</th>';
+	HTML_String += '<th style="width:15%">Diagnosis</th>';
+	HTML_String += '<th style="width:15%">Treatment</th>';
+	HTML_String += '<th style="width:15%">Admission</th>';
+	HTML_String += '<th style="width:15%">Final Status</th>';
+	HTML_String += '<th style="width:15%">Equipment</th>';
+	HTML_String += '<th style="width:15%">Notice</th>';
 	HTML_String += '<th style="width:5%">Editor</th>';
 	HTML_String += '</tr>';
 	for (var j = 0; j < history.length; j++) 
 	{
-		if ((history[j].action == 'insert' || history[j].action == 'update') && 
+/*		if ((history[j].action == 'insert' || history[j].action == 'update') && 
 			!history[j].diagnosis && 
 			!history[j].treatment && 
 			!history[j].contact)
-			continue
+			continue*/
 		if (history[j].action == 'delete') {
 			HTML_String += '<tr style="background-color:#FFCCCC">';
 		}
@@ -51,6 +54,9 @@ function makehistory(rowmain, response)
 		HTML_String += '<td>' + history[j].editdatetime +'</td>';
 		HTML_String += '<td>' + history[j].diagnosis +'</td>';
 		HTML_String += '<td>' + history[j].treatment +'</td>';
+		HTML_String += '<td>' + history[j].admission +'</td>';
+		HTML_String += '<td>' + history[j].final +'</td>';
+		HTML_String += '<td>' + history[j].equipment +'</td>';
 		HTML_String += '<td>' + history[j].contact +'</td>';
 		HTML_String += '<td>' + history[j].editor +'</td>';
 		HTML_String += '</tr>';
