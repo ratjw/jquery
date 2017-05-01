@@ -219,7 +219,7 @@ function deleteCase(rowmain, opdate, qn, pointing)
 	doDelete = function() 
 	{
 		//not actually delete the case but set waitnum=NULL
-		var sql = "sqlReturnbook=UPDATE book SET waitnum=NULL WHERE qn="+ qn +";"
+		var sql = "sqlReturnbook=UPDATE book SET waitnum=NULL WHERE qn="+ qn +", editor = '"+ THISUSER +"';"
 
 		Ajax(MYSQLIPHP, sql, callbackdeleterow)
 

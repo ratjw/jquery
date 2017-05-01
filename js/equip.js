@@ -116,6 +116,8 @@ function printpaper(qn)	//*** have to set equip padding to top:70px; bottom:70px
 {
 	if (/Edge|MS/.test(navigator.userAgent)) {
 		var equip = document.getElementById('equip');
+		equip.style.paddingLeft = 0 + "px"
+		equip.style.marginLeft = 0 + "px"
 		var win = window.open();
 		win.document.open();
 		win.document.write('<LINK type="text/css" rel="stylesheet" href="css/print.css">');
@@ -149,6 +151,8 @@ function printpaper(qn)	//*** have to set equip padding to top:70px; bottom:70px
 		var orgequip = document.getElementById('equip');
 		orgequip.style.height = orgequip.offsetHeight + 200 + "px"
 		orgequip.style.width = orgequip.offsetWidth + 100 + "px"
+		orgequip.style.paddingLeft = 0 + "px"
+		orgequip.style.marginLeft = 0 + "px"
 		document.body.innerHTML = orgequip.outerHTML;
 		var equip = document.getElementById('equip');
 

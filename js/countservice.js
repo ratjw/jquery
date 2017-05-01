@@ -78,10 +78,6 @@ function isReoperation(thiscase)
 	var diag = regexDate(thiscase.diagnosis)
 	var treat = regexDate(thiscase.treatment)
 
-	if (treat.length > 1) {
-		return true
-	}
-
 	if (diag.length && treat.length) { //assume entry dd/mm/yy (Buddhist)
 		var diagDate = new Date(diag[0].toISOdate())
 		var treatDate = new Date(treat[0].toISOdate())
@@ -107,10 +103,6 @@ function isReadmission(thiscase)
 	var diag = regexDate(thiscase.diagnosis)
 	var admit = regexDate(thiscase.admission)
 
-	if (admit.length > 1) {
-		return true
-	}
-
 	if (diag.length && admit.length) { //assume entry dd/mm/yy (Buddhist)
 		var diagDate = new Date(diag[0].toISOdate())
 		var admitDate = new Date(admit[0].toISOdate())
@@ -132,7 +124,7 @@ function isInfection(thiscase)
 	if (/[Ii]mproved/.test(thiscase.final)) {
 		return false
 	}
-	if (/[Ii]nfect/.test(thiscase.final)) {
+	if (/SSI/i.test(thiscase.final)) {
 		return true
 	}
 }

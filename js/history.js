@@ -3,7 +3,7 @@ function editHistory(rowmain, qn)
 	if (rowmain.cells[QN].innerHTML)
 	{
 		var sql = "sqlReturnData=SELECT * FROM bookhistory "
-		sql += "WHERE qn="+ qn +";"
+		sql += "WHERE qn="+ qn +" ORDER BY editdatetime DESC;"
 
 		Ajax(MYSQLIPHP, sql, callbackeditHistory)
 	}
@@ -85,9 +85,10 @@ function showEquip(equipString)
 		var equipHistory = JSON.parse(equipString)
 		$.each(equipHistory, function(key, value) {
 			if (value == "checked") {
-				equip += (key + ", ")
+				var itemname = $('#' + key).parent().prevAll('div').first().html()
+				equip += (itemname + ":" + key + ", ")
 			} else {
-				equip += (key + " : " + value + ", ")
+				equip += (key + ":" + value + ", ")
 			}
 		} )
 	}

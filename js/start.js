@@ -128,22 +128,14 @@ function fillStafflist()
 
 function updating()	//update or save data every 10 sec.
 {
-	var editing = ($("#editcell").data("content") != getData())? true : false
-	if (editing) {
-
-		//being editing on screen
-		if ($(editcell).data("tableID") == "servicetbl") {
-			savePreviousScell()		//Service table
-		} else {
-			savePreviouscell()		//Main and Staffqueue tables
-		}
-	} else {
+	var notEditing = ($("#editcell").data("pointing").innerHTML == getData())? true : false
+	if (notEditing) {
 
 		Ajax(MYSQLIPHP, "functionName=checkupdate&time="+TIMESTAMP, updatingback);
 
 		function updatingback(response)
 		{
-			if (!editing) {
+			if (notEditing) {
 
 				//not being editing on screen
 				clearEditcellData("hide")
@@ -157,6 +149,14 @@ function updating()	//update or save data every 10 sec.
 				updateBOOK(response)
 				updateTables()
 			}
+		}
+	} else {
+
+		//being editing on screen
+		if ($(editcell).data("tableID") == "servicetbl") {
+			savePreviousScell()		//Service table
+		} else {
+			savePreviouscell()		//Main and Staffqueue tables
 		}
 	}
 	clearTimeout(TIMER);
