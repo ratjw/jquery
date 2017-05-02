@@ -128,22 +128,25 @@ function fillStafflist()
 
 function updating()	//update or save data every 10 sec.
 {
-	var notEditing = ($("#editcell").data("pointing").innerHTML == getData())? true : false
+	var notEditing
+	var editPoint = $("#editcell").data("pointing")
+	if (editPoint) {
+		notEditing = (editPoint.innerHTML == getData())? true : false
+	} else {
+		notEditing = true
+	}
 	if (notEditing) {
 
 		Ajax(MYSQLIPHP, "functionName=checkupdate&time="+TIMESTAMP, updatingback);
 
 		function updatingback(response)
 		{
-			if (notEditing) {
-
-				//not being editing on screen
-				clearEditcellData("hide")
-				$('#menu').hide()	//editcell may be on first column
-				$('#stafflist').hide()	//editcell may be on staff
-				$('#datepicker').hide()
-				$('#datepicker').datepicker("hide")
-			}
+			//not being editing on screen
+			clearEditcellData("hide")
+			$('#menu').hide()	//editcell may be on first column
+			$('#stafflist').hide()	//editcell may be on staff
+			$('#datepicker').hide()
+			$('#datepicker').datepicker("hide")
 			if (response && response.indexOf("opdate") != -1)	//some changes in database
 			{
 				updateBOOK(response)

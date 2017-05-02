@@ -3,7 +3,8 @@ function fillEquipTable(rownum, qn)
 {
 	var q = findBOOKrow(qn)
 	var bookq = BOOK[q]
-	var equipOR = document.getElementById("equip")
+	var bookqEquip = bookq.equipment
+	var equipdiv = document.getElementById("equipdiv")
 
 	document.getElementById("opdate").innerHTML = bookq.opdate.thDate()
 	document.getElementById("staffname").innerHTML = bookq.staffname
@@ -12,50 +13,63 @@ function fillEquipTable(rownum, qn)
 	document.getElementById("age").innerHTML = bookq.dob? bookq.dob.getAge(bookq.opdate) : ""
 	document.getElementById("diagnosis").innerHTML = bookq.diagnosis
 	document.getElementById("treatment").innerHTML = bookq.treatment
-	document.getElementById("PrintEquip").onclick = function () {
+	document.getElementById("printEquip").onclick = function () {
 		printpaper(qn)
 	}
-	document.getElementById("CloseEquip").onclick = function () {
-		$('#equip').hide()
+	document.getElementById("closeEquip").onclick = function () {
+		$('#equipdiv').hide()
 	}
 
-	equipOR.style.display = "block"
-	equipOR.style.top = "0px"
-	equipOR.style.left = $('#editcell').data('pointing').offsetWidth +"px"
-	if (equipOR.offsetHeight > window.innerHeight) {
-		equipOR.style.height = window.innerHeight - 60 +"px"
+	equipdiv.style.display = "block"
+	equipdiv.style.top = "0px"
+	equipdiv.style.left = $('#editcell').data('pointing').offsetWidth +"px"
+	if (equipdiv.offsetHeight > window.innerHeight) {
+		equipdiv.style.height = window.innerHeight - 60 +"px"
 	}
 	$('#equip input').prop('checked', false)
 	$('#equip input').val('')
+	$('#equip input[type=text]').prop('disabled', false)//make it easier to see
 
-	if ( BOOK[q].equipment ) {			// If any, fill checked & others
-		$.each(JSON.parse(BOOK[q].equipment), function(key, val) {
+	if ( bookqEquip ) {			// If any, fill checked & others
+		$.each(JSON.parse(bookqEquip), function(key, val) {
 			if (val == 'checked') {
 				$("#"+ key).prop("checked", true)	//radio and checkbox
 			} else {
 				$("#"+ key).val(val)	//Other1...8
 			}
 		});
-		document.getElementById("SAVEEquip").innerHTML = " แก้ไข "
-		document.getElementById("SAVEEquip").onclick = function () {
-			showSaveEquip(qn)
-		}
-		$('#equip input').prop('disabled', true)
+		showNonEditableEquip(qn, bookqEquip)
 		getEditedby(qn)
  	} else {
-		showSaveEquip(qn)
+		showEditableEquip(qn, bookqEquip)
 		document.getElementById("editedby").innerHTML = ""
 	}
 }
 
-function showSaveEquip(qn)
+function showNonEditableEquip(qn, bookqEquip)
 {
-	document.getElementById("SAVEEquip").innerHTML = " SAVE "
-	document.getElementById("SAVEEquip").onclick = function () {
-		Checklistequip(qn)
-		$("#equip").hide()
+	document.getElementById("saveEquip").innerHTML = " แก้ไข "
+	document.getElementById("saveEquip").onclick = function () {
+		showEditableEquip(qn, bookqEquip)
+	}
+	$('#equip input[type=radio]').prop("disabled", true)
+	$('#equip input[type=text]').click(function() {
+		$(this).prop('disabled', true)
+	})
+	$('#equip input').click(function() {
+		return false
+	})
+}
+
+function showEditableEquip(qn, bookqEquip)
+{
+	document.getElementById("saveEquip").innerHTML = " SAVE "
+	document.getElementById("saveEquip").onclick = function () {
+		Checklistequip(qn, bookqEquip)
+		showNonEditableEquip(qn, bookqEquip)
 	}
 	$('#equip input').prop('disabled', false)
+	$('#equip input').off("click")
 }
 
 function getEditedby(qn)
@@ -79,7 +93,7 @@ function getEditedby(qn)
 		}
 }
 
-function Checklistequip(qn) 
+function Checklistequip(qn, bookqEquip) 
 {
 	var equipment = {}
 	$( "#equip input:checked" ).each( function() {
@@ -91,7 +105,9 @@ function Checklistequip(qn)
 		}
 	})
 	equipment = JSON.stringify(equipment)
-
+	if (equipment == bookqEquip) {
+		return
+	}
 	var sql = "UPDATE book SET ";
 	sql += "equipment='"+ equipment +"' ,";
 	sql += "editor='"+ THISUSER +"' ";

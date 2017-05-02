@@ -205,7 +205,15 @@
 
 <div id="editcell" contenteditable="true"></div>
 
-<div id='equip'>
+<div id="equipdiv">
+ <div id="equipHead">
+  <button id="saveEquip"> SAVE </button>
+  <span style="width:20px;"></span>
+  <button id="printEquip"> Print </button>
+  <span style="width:20px;"></span>
+  <span id="closeEquip" class="ui-icon ui-icon-closethick"></span>
+ </div>
+ <div id="equip">
   <span style="width:250px;"></span>วันที่ 
   <span style="width:120px; font-size: 14px; font-weight: bold;" id="opdate"></span>
   <span style="width:20px;"></span>Surgeon <span id="staffname"></span>
@@ -452,16 +460,12 @@
   <span> <input type="text" size="21" id="Monitor"></span>
   <br>
   <br>
-  <button id="SAVEEquip"> SAVE </button>
-  <span style="width:20px;"></span>
-  <button id="PrintEquip"> Print </button>
-  <span style="width:20px;"></span>
-  <button id="CloseEquip"> Close </button>
-  <span style="width:100px;"></span>
+  <span style="width:300px;"></span>
   <span style="width:70px;"> Edited by </span>
   <span style="position:absolute" id="editedby"></span>
   <br>
   <br>
+ </div>
 </div>
 
 <DIV id="login">

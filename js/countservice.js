@@ -79,17 +79,18 @@ function isReoperation(thiscase)
 	var treat = regexDate(thiscase.treatment)
 
 	if (diag.length && treat.length) { //assume entry dd/mm/yy (Buddhist)
-		var diagDate = new Date(diag[0].toISOdate())
-		var treatDate = new Date(treat[0].toISOdate())
-		var tempDate = ""
-		for (var i = 1; i < diag.length; i++) {	//find max diagDate
-			tempDate = new Date(diag[i].toISOdate())
-			if (diagDate < tempDate) {
-				diagDate = tempDate
+		var diagDate
+		var treatDate
+		for (var i = 0; i < diag.length; i++) {
+			for (var j = 0; j < treat.length; j++) {
+				diagDate = new Date(diag[i].toISOdate())
+				treatDate = new Date(treat[j].toISOdate())
+				if (diagDate <= treatDate) {
+					if (dateDiff(diagDate, treatDate) <= 30) {
+						return true
+					}
+				}
 			}
-		}
-		if ((diagDate <= treatDate) && (dateDiff(diagDate, treatDate) <= 30)) {
-			return true
 		}
 	}
 }
@@ -104,17 +105,18 @@ function isReadmission(thiscase)
 	var admit = regexDate(thiscase.admission)
 
 	if (diag.length && admit.length) { //assume entry dd/mm/yy (Buddhist)
-		var diagDate = new Date(diag[0].toISOdate())
-		var admitDate = new Date(admit[0].toISOdate())
-		var tempDate = ""
-		for (var i = 1; i < diag.length; i++) {	//find max diagDate
-			tempDate = new Date(diag[i].toISOdate())
-			if (diagDate < tempDate) {
-				diagDate = tempDate
+		var diagDate
+		var admitDate
+		for (var i = 0; i < diag.length; i++) {
+			for (var j = 0; j < admit.length; j++) {
+				diagDate = new Date(diag[i].toISOdate())
+				admitDate = new Date(admit[j].toISOdate())
+				if (diagDate <= admitDate) {
+					if (dateDiff(diagDate, admitDate) <= 30) {
+						return true
+					}
+				}
 			}
-		}
-		if ((diagDate <= admitDate) && (dateDiff(diagDate, admitDate) <= 30)) {
-			return true
 		}
 	}
 }
