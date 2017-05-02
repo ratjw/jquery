@@ -205,15 +205,7 @@
 
 <div id="editcell" contenteditable="true"></div>
 
-<div id="equipdiv">
- <div id="equipHead">
-  <button id="saveEquip"> SAVE </button>
-  <span style="width:20px;"></span>
-  <button id="printEquip"> Print </button>
-  <span style="width:20px;"></span>
-  <span id="closeEquip" class="ui-icon ui-icon-closethick"></span>
- </div>
- <div id="equip">
+<div id="dialogEquip">
   <span style="width:250px;"></span>วันที่ 
   <span style="width:120px; font-size: 14px; font-weight: bold;" id="opdate"></span>
   <span style="width:20px;"></span>Surgeon <span id="staffname"></span>
@@ -296,12 +288,12 @@
 	<input type="checkbox" id="iCT">
 	<label for="iCT">iCT</label></span>
   <span style="width:140px;">
-	<input type="checkbox" id="Navigator">
-	<label for="Navigator">Navigator</label>
-  </span>
-  <span style="width:100px;">
 	<input type="checkbox" id="Fluoroscope">
 	<label for="Fluoroscope">Fluoroscope</label>
+  </span>
+  <span style="width:100px;">
+	<input type="checkbox" id="Navigator">
+	<label for="Navigator">Navigator</label>
   </span>
   <span> <input type="text" size="15" id="Imaging"></span>
   <br>
@@ -463,13 +455,9 @@
   <span style="width:300px;"></span>
   <span style="width:70px;"> Edited by </span>
   <span style="position:absolute" id="editedby"></span>
-  <br>
-  <br>
- </div>
 </div>
 
 <DIV id="login">
-
 	<br>
 	<h3>Queue book for Neurosurgery</h3>
 

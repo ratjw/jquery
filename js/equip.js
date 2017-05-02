@@ -4,7 +4,6 @@ function fillEquipTable(rownum, qn)
 	var q = findBOOKrow(qn)
 	var bookq = BOOK[q]
 	var bookqEquip = bookq.equipment
-	var equipdiv = document.getElementById("equipdiv")
 
 	document.getElementById("opdate").innerHTML = bookq.opdate.thDate()
 	document.getElementById("staffname").innerHTML = bookq.staffname
@@ -13,22 +12,11 @@ function fillEquipTable(rownum, qn)
 	document.getElementById("age").innerHTML = bookq.dob? bookq.dob.getAge(bookq.opdate) : ""
 	document.getElementById("diagnosis").innerHTML = bookq.diagnosis
 	document.getElementById("treatment").innerHTML = bookq.treatment
-	document.getElementById("printEquip").onclick = function () {
-		printpaper(qn)
-	}
-	document.getElementById("closeEquip").onclick = function () {
-		$('#equipdiv').hide()
-	}
 
-	equipdiv.style.display = "block"
-	equipdiv.style.top = "0px"
-	equipdiv.style.left = $('#editcell').data('pointing').offsetWidth +"px"
-	if (equipdiv.offsetHeight > window.innerHeight) {
-		equipdiv.style.height = window.innerHeight - 60 +"px"
-	}
-	$('#equip input').prop('checked', false)
-	$('#equip input').val('')
-	$('#equip input[type=text]').prop('disabled', false)//make it easier to see
+	$('#dialogEquip').show()
+	$('#dialogEquip input').prop('checked', false)
+	$('#dialogEquip input').val('')
+	$('#dialogEquip input[type=text]').prop('disabled', false)//make it easier to see
 
 	if ( bookqEquip ) {			// If any, fill checked & others
 		$.each(JSON.parse(bookqEquip), function(key, val) {
@@ -44,32 +32,74 @@ function fillEquipTable(rownum, qn)
 		showEditableEquip(qn, bookqEquip)
 		document.getElementById("editedby").innerHTML = ""
 	}
+	$('#dialogEquip').dialog({
+		title: "Equipment",
+		closeOnEscape: true,
+		modal: true,
+		width: window.innerWidth * 9 / 10,
+		height: window.innerHeight * 9 / 10,
+		open: function(event, ui) {
+			$("input").blur();
+		}
+	})
 }
 
 function showNonEditableEquip(qn, bookqEquip)
 {
-	document.getElementById("saveEquip").innerHTML = " แก้ไข "
-	document.getElementById("saveEquip").onclick = function () {
-		showEditableEquip(qn, bookqEquip)
-	}
-	$('#equip input[type=radio]').prop("disabled", true)
-	$('#equip input[type=text]').click(function() {
+	$('#dialogEquip').dialog("option", "buttons", [
+		{
+			text: "แก้ไข",
+			fontSize: "6",
+			height: "25",
+			width: "100",
+			click: function () {
+				showEditableEquip(qn, bookqEquip)
+			}
+		},
+		{
+			text: "Cancel",
+			fontSize: "6",
+			height: "25",
+			width: "100",
+			click: function () {
+				printpaper(qn);
+			}
+		}
+	]);
+	$('#dialogEquip input[type=radio]').prop("disabled", true)
+	$('#dialogEquip input[type=text]').click(function() {
 		$(this).prop('disabled', true)
 	})
-	$('#equip input').click(function() {
+	$('#dialogEquip input').click(function() {
 		return false
 	})
 }
 
 function showEditableEquip(qn, bookqEquip)
 {
-	document.getElementById("saveEquip").innerHTML = " SAVE "
-	document.getElementById("saveEquip").onclick = function () {
-		Checklistequip(qn, bookqEquip)
-		showNonEditableEquip(qn, bookqEquip)
-	}
-	$('#equip input').prop('disabled', false)
-	$('#equip input').off("click")
+	$('#dialogEquip').dialog("option", "buttons", [
+		{
+			text: "Save",
+			fontSize: "6",
+			height: "25",
+			width: "100",
+			click: function () {
+				Checklistequip(qn, bookqEquip)
+				showNonEditableEquip(qn, bookqEquip)
+			}
+		},
+		{
+			text: "Print",
+			fontSize: "6",
+			height: "25",
+			width: "100",
+			click: function () {
+				printpaper(qn);
+			}
+		}
+	]);
+	$('#dialogEquip input').prop('disabled', false)
+	$('#dialogEquip input').off("click")
 }
 
 function getEditedby(qn)
@@ -96,10 +126,10 @@ function getEditedby(qn)
 function Checklistequip(qn, bookqEquip) 
 {
 	var equipment = {}
-	$( "#equip input:checked" ).each( function() {
+	$( "#dialogEquip input:checked" ).each( function() {
 		equipment[this.id] = "checked"
 	})
-	$("#equip input[type=text]").each(function() {
+	$("#dialogEquip input[type=text]").each(function() {
 		if (this.value) {
 			equipment[this.id] = this.value
 		}
@@ -131,16 +161,16 @@ function Checklistequip(qn, bookqEquip)
 function printpaper(qn)	//*** have to set equip padding to top:70px; bottom:70px
 {
 	if (/Edge|MS/.test(navigator.userAgent)) {
-		var equip = document.getElementById('equip');
-		equip.style.paddingLeft = 0 + "px"
-		equip.style.marginLeft = 0 + "px"
+		var dialogEquip = document.getElementById('dialogEquip');
+		dialogEquip.style.paddingLeft = 0 + "px"
+		dialogEquip.style.marginLeft = 0 + "px"
 		var win = window.open();
 		win.document.open();
 		win.document.write('<LINK type="text/css" rel="stylesheet" href="css/print.css">');
-		win.document.writeln(equip.outerHTML);
+		win.document.writeln(dialogEquip.outerHTML);
 
-		var newequip = equip.getElementsByTagName("INPUT");
-		var winequip = win.equip.getElementsByTagName("INPUT");
+		var newequip = dialogEquip.getElementsByTagName("INPUT");
+		var winequip = win.dialogEquip.getElementsByTagName("INPUT");
 		for (var i = 0; i < newequip.length; i++) 
 		{
 			if (newequip[i].checked) {
@@ -164,16 +194,16 @@ function printpaper(qn)	//*** have to set equip padding to top:70px; bottom:70px
 	}
 	else {
 		var original = document.body.innerHTML;
-		var orgequip = document.getElementById('equip');
+		var orgequip = document.getElementById('dialogEquip');
 		orgequip.style.height = orgequip.offsetHeight + 200 + "px"
 		orgequip.style.width = orgequip.offsetWidth + 100 + "px"
 		orgequip.style.paddingLeft = 0 + "px"
 		orgequip.style.marginLeft = 0 + "px"
 		document.body.innerHTML = orgequip.outerHTML;
-		var equip = document.getElementById('equip');
+		var dialogEquip = document.getElementById('dialogEquip');
 
 		var newequip = orgequip.getElementsByTagName("INPUT");
-		var winequip = equip.getElementsByTagName("INPUT");
+		var winequip = dialogEquip.getElementsByTagName("INPUT");
 
 		for (var i = 0; i < newequip.length; i++) 
 		{
@@ -193,7 +223,7 @@ function printpaper(qn)	//*** have to set equip padding to top:70px; bottom:70px
 
 		window.print();
 		document.body.innerHTML = original;
-		document.getElementById('equip').scrollIntoView(true);
+		document.getElementById('dialogEquip').scrollIntoView(true);
 		location.reload();
 	}
 }

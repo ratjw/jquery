@@ -68,10 +68,7 @@ function makehistory(rowmain, response)
 	$('#dialogOplog').dialog({
 		title: rowmain.cells[HN].innerHTML +' '+ rowmain.cells[NAME].innerHTML,
 		closeOnEscape: true,
-		modal: true
-	})
-
-	$('#dialogOplog').dialog({
+		modal: true,
 		width: window.innerWidth * 9 / 10,
 		height: window.innerHeight * 8 / 10
 	})
@@ -158,10 +155,7 @@ function makeDeleteHistory(response)
 	$('#dialogDeleted').dialog({
 		title: "Deleted Cases",
 		closeOnEscape: true,
-		modal: true
-	})
-
-	$('#dialogDeleted').dialog({
+		modal: true,
 		width: window.innerWidth * 9 / 10,
 		height: window.innerHeight * 8 / 10
 	})

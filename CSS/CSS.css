@@ -199,6 +199,15 @@
 	width: 15px;
 }
 
+.ui-dialog-buttonpane {
+	font-size: 0px;
+	height: 0px;
+}
+
+.ui-dialog-buttonset {
+	font-size: 12px;
+}
+
 #login {
 	width:300px; 
 	margin-left:auto; 
@@ -292,40 +301,16 @@
 	overflow:auto;
 }
 
-#equipdiv {
+#dialogEquip {
 	display: none;
-	position: fixed;
-	z-index: 1;
-	padding-left: 30px;
-	background-color: white;
-	overflow-x: hidden;
-	overflow-y: auto;
-	border: 2px solid #DDDDDD;
-	border-radius: 10px;
-	box-shadow: 20px 30px 40px slategray;
-}
-
-#equipHead {
-	height: 35px;
-	line-height: 35px;
-	text-align: right;
-	background-color: #77CC99;
-	border-radius: 0 10px 0 0;
-}
-
-#equipHead span {
-	display:inline-block;
-}
-
-#equip {
 	line-height:150%;
 	font-size: 14px;
 	color: black;
 	background-color: white;
 }
 
-#equip div,
-#equip span {
+#dialogEquip div,
+#dialogEquip span {
 	display:inline-block;
 	padding: 0;
 	margin: 0;

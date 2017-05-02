@@ -5,61 +5,62 @@ function loadtable(userid)
 	THISUSER = userid
 	document.body.removeChild(document.getElementById("login"))
 	document.getElementById("tblcontainer").style.display = "block"
+	$("#dialogOplog").dialog()
+	$("#dialogOplog").dialog('close')
+	$("#dialogDeleted").dialog()
+	$("#dialogDeleted").dialog('close')
+	$("#dialogEquip").dialog()
+	$("#dialogEquip").dialog('close')
 	$("#dialogService").dialog()
 	$("#dialogService").dialog('close')	//prevent updateTables() call 'isOpen' before initialization
 
 	$(document).click( function (event) {
 		countReset();
 		event.stopPropagation()
-		var clickedCell = event.target
+		var target = event.target
 		if ($('#menu').is(":visible")) {	//visible == take up space even can't be seen
-			if (!$(clickedCell).closest('#menu').length) {
+			if (!$(target).closest('#menu').length) {
 				$('#menu').hide();
 				clearEditcellData("hide")
 			}
 		}
 		if ($('#stafflist').is(":visible")) {
-			if (!$(clickedCell).closest('#stafflist').length) {
+			if (!$(target).closest('#stafflist').length) {
 				$('#stafflist').hide();
 				clearEditcellData("hide")
 			}
 		}
 		if ($('#delete').is(":visible")) {
-			if(!$(clickedCell).closest('#delete').length) {
+			if(!$(target).closest('#delete').length) {
 				$('#delete').hide();
 			}
 		}
 		if ($('#undelete').is(":visible")) {
-			if ($(clickedCell).index()) {
+			if ($(target).index()) {
 				$('#undelete').hide()
 				return false
 			}
 		}
 
-		if (clickedCell.id == "editcell") {
+		if (target.id == "editcell") {
 			return
 		}
-		if ($(clickedCell).closest('#datepicker').length) {
-			return	
-		}
-		if ($(clickedCell).closest('.ui-datepicker').length) {
-			return	
-		}
-		if (clickedCell.nodeName == "TH") {
+		
+		if (target.nodeName == "TH") {
 			clearEditcellData("hide")
 			return	
 		}
 
-		if ($(clickedCell).closest('table').attr('id') == 'tbl' ||
-			$(clickedCell).closest('table').attr('id') == 'queuetbl') {
+		if ($(target).closest('table').attr('id') == 'tbl' ||
+			$(target).closest('table').attr('id') == 'queuetbl') {
 
-			clicktable(clickedCell)
+			clicktable(target)
 		}
-		else if ($(clickedCell).closest('table').attr('id') == 'servicetbl') {
-			clickservice(clickedCell)
+		else if ($(target).closest('table').attr('id') == 'servicetbl') {
+			clickservice(target)
 		}
 	})
-	$('#menu li > div').click(function(e){
+	$('#menu li > div').click(function(e){	//click on parent of submenu
 		if ($(this).siblings('ul').length > 0){
 			e.preventDefault()
 			e.stopPropagation()
