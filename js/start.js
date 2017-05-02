@@ -41,7 +41,6 @@ function loadtable(userid)
 				return false
 			}
 		}
-
 		if (target.id == "editcell") {
 			return
 		}
@@ -68,10 +67,11 @@ function loadtable(userid)
 	});
 	$(document).keydown( function (event) {
 		countReset();
-		if ($('#equip').is(':focus') ||
-			$('#monthpicker').is(':focus')) {
-
-			return false
+		if ($('#monthpicker').is(':focus')) {
+			return
+		}
+		if ($('#dialogEquip').is(':visible')) {
+			return
 		}
 		if ($('#dialogService').is(':visible')) {
 			Skeyin(event)

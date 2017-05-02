@@ -33,13 +33,13 @@ function fillEquipTable(rownum, qn)
 		document.getElementById("editedby").innerHTML = ""
 	}
 	$('#dialogEquip').dialog({
-		title: "Equipment",
+		title: "เครื่องมือผ่าตัด",
 		closeOnEscape: true,
 		modal: true,
-		width: window.innerWidth * 9 / 10,
+		width: 700,
 		height: window.innerHeight * 9 / 10,
 		open: function(event, ui) {
-			$("input").blur();
+			$("input").blur();	//disable default autofocus on text input
 		}
 	})
 }
@@ -49,17 +49,13 @@ function showNonEditableEquip(qn, bookqEquip)
 	$('#dialogEquip').dialog("option", "buttons", [
 		{
 			text: "แก้ไข",
-			fontSize: "6",
-			height: "25",
 			width: "100",
 			click: function () {
 				showEditableEquip(qn, bookqEquip)
 			}
 		},
 		{
-			text: "Cancel",
-			fontSize: "6",
-			height: "25",
+			text: "Print",
 			width: "100",
 			click: function () {
 				printpaper(qn);
@@ -80,8 +76,6 @@ function showEditableEquip(qn, bookqEquip)
 	$('#dialogEquip').dialog("option", "buttons", [
 		{
 			text: "Save",
-			fontSize: "6",
-			height: "25",
 			width: "100",
 			click: function () {
 				Checklistequip(qn, bookqEquip)
@@ -90,8 +84,6 @@ function showEditableEquip(qn, bookqEquip)
 		},
 		{
 			text: "Print",
-			fontSize: "6",
-			height: "25",
 			width: "100",
 			click: function () {
 				printpaper(qn);

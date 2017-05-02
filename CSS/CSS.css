@@ -201,11 +201,11 @@
 
 .ui-dialog-buttonpane {
 	font-size: 0px;
-	height: 0px;
 }
 
 .ui-dialog-buttonset {
-	font-size: 12px;
+	font-size: 14px;
+	margin: 0 30px 0 0;
 }
 
 #login {
@@ -324,7 +324,6 @@ input[type=radio] + label {
  
 input[type=radio]:checked + label {
 	color: #000000;
-/*	background-color: #FFFF99;*/
 }
 
 input[type=checkbox] + label {
@@ -334,5 +333,4 @@ input[type=checkbox] + label {
  
 input[type=checkbox]:checked + label {
 	color: #000000;
-/*	background-color: #FFFF99;*/
 }
