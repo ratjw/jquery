@@ -441,7 +441,7 @@
 	<input type="checkbox" id="MTECSkull">
 	<label for="MTECSkull">MTEC skull</label>
   </span>
-  <span> <input type="text" size="30" id="skull"></span>
+  <span> <input type="text" size="30" id="Other"></span>
   <br>
   <div style="width:100px;">Monitor</div>
   <span style="width:70px;"><input type="checkbox" id="CN7"><label for="CN7">CN7</label></span>
