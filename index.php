@@ -225,7 +225,7 @@
   <span style="width:540px;" id="treatment"></span>
   <br>
   <br>
-  <div style="width:110px;">Position</div>
+  <div style="width:105px;">Position</div>
   <span style="width:150px;">
 	<input type="radio" name="pose" id="leftSupine">
 	<label for="leftSupine">หงาย ซ้ายขึ้น</label>
@@ -239,7 +239,7 @@
 	<label for="Supine">หงาย</label>
   </span>
   <br>
-  <span style="width:110px;"></span>
+  <span style="width:105px;"></span>
   <span style="width:150px;">
 	<input type="radio" name="pose" id="rightParkbench">
 	<label for="rightParkbench">Parkbench ขวาลง</label>
@@ -257,12 +257,12 @@
 	<label for="prone">คว่ำ</label>
   </span>
   <br>
-  <span style="width:110px;"></span>
-  <span style="width:150px;">
+  <span style="width:105px;"></span>
+  <span style="width:155px;">
 	<input type="radio" name="pose" id="leftParkbench">
 	<label for="leftParkbench">Parkbench ซ้ายลง</label>
   </span>
-  <span style="width:140px;">
+  <span style="width:135px;">
 	<input type="radio" name="pose" id="leftLateral">
 	<label for="leftLateral">Lateral ซ้ายลง</label>
   </span>
@@ -291,7 +291,7 @@
 	<input type="checkbox" id="Fluoroscope">
 	<label for="Fluoroscope">Fluoroscope</label>
   </span>
-  <span style="width:100px;">
+  <span style="width:110px;">
 	<input type="checkbox" id="Navigator">
 	<label for="Navigator">Navigator</label>
   </span>
@@ -351,7 +351,7 @@
 	<input type="checkbox" id="Soring">
 	<label for="Soring">Soring</label>
   </span>
-  <span style="width:100px;">
+  <span style="width:110px;">
 	<input type="checkbox" id="Sonar">
 	<label for="Sonar">Sonar</label>
   </span>
@@ -381,7 +381,7 @@
 	<input type="checkbox" id="Doppler">
 	<label for="Doppler">Doppler</label>
   </span>
-  <span style="width:100px;">
+  <span style="width:110px;">
 	<input type="checkbox" id="Duplex">
 	<label for="Duplex">Duplex</label>
   </span>
@@ -422,7 +422,7 @@
 	<input type="radio" name="program" id="shuntMedtronic">
 	<label for="shuntMedtronic">Medtronic</label>
   </span>
-  <span style="width:100px;">
+  <span style="width:105px;">
 	<input type="radio" name="program" id="shuntCodman">
 	<label for="shuntCodman">Codman</label>
   </span>
@@ -430,7 +430,7 @@
   <br>
   <span style="width:110px;">เครื่องมือบริษัท </span>
   <span style="width:150px;">เวลาส่งเครื่อง <input type="text" size="1" id="equiptime"> น. </span>
-  <span style="width:300px;"><input type="text" size="52" id="company"></span>
+  <span style="width:300px;"><input type="text" size="50" id="company"></span>
   <br>
   <div style="width:110px;">อุปกรณ์อื่นๆ</div>
   <span style="width:150px;">
@@ -446,9 +446,9 @@
   <div style="width:110px;">Monitor</div>
   <span style="width:73px;"><input type="checkbox" id="CN5"><label for="CN5">CN5</label></span>
   <span style="width:73px;"><input type="checkbox" id="CN6"><label for="CN6">CN6</label></span>
-  <span style="width:72px;"><input type="checkbox" id="CN7"><label for="CN7">CN7</label></span>
-  <span style="width:72px;"><input type="checkbox" id="CN8"><label for="CN8">CN8</label></span>
-  <span style="width:72px;"><input type="checkbox" id="SSEP"><label for="SSEP">SSEP</label></span>
+  <span style="width:70px;"><input type="checkbox" id="CN7"><label for="CN7">CN7</label></span>
+  <span style="width:70px;"><input type="checkbox" id="CN8"><label for="CN8">CN8</label></span>
+  <span style="width:70px;"><input type="checkbox" id="SSEP"><label for="SSEP">SSEP</label></span>
   <span style="width:65px;"><input type="checkbox" id="EMG"><label for="EMG">EMG</label></span>
   <span style="width:65px;"><input type="checkbox" id="MEP"><label for="MEP">MEP</label></span>
   <br>
