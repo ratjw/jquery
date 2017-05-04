@@ -211,36 +211,36 @@
   <span style="width:20px;"></span>Surgeon <span id="staffname"></span>
   <br>
   <br>
-  <span style="width:100px;">ชื่อ-นามสกุล </span><span id="patientname"></span>
+  <span style="width:110px;">ชื่อ-นามสกุล </span><span id="patientname"></span>
   <span style="width:20px;"></span>อายุ <span id="age"></span>
   <span style="width:20px;"></span>HN <span id="hn"></span>
   
   
   
   <br>
-  <span style="width:100px;">Diagnosis</span>
+  <span style="width:110px;">Diagnosis</span>
   <span style="width:540px;" id="diagnosis"></span>
   <br>
-  <span style="width:100px;">Operation</span>
+  <span style="width:110px;">Operation</span>
   <span style="width:540px;" id="treatment"></span>
   <br>
   <br>
-  <div style="width:100px;">Position</div>
-  <span style="width:140px;">
-	<input type="radio" name="pose" id="rightSupine">
-	<label for="rightSupine">หงาย หันขวา</label>
+  <div style="width:110px;">Position</div>
+  <span style="width:150px;">
+	<input type="radio" name="pose" id="leftSupine">
+	<label for="leftSupine">หงาย ซ้ายขึ้น</label>
   </span>
   <span style="width:140px;">
-	<input type="radio" name="pose" id="leftSupine">
-	<label for="leftSupine">หงาย หันซ้าย</label>
+	<input type="radio" name="pose" id="rightSupine">
+	<label for="rightSupine">หงาย ขวาขึ้น</label>
   </span>
   <span style="width:120px;">
 	<input type="radio" name="pose" id="Supine">
 	<label for="Supine">หงาย</label>
   </span>
   <br>
-  <span style="width:100px;"></span>
-  <span style="width:140px;">
+  <span style="width:110px;"></span>
+  <span style="width:150px;">
 	<input type="radio" name="pose" id="rightParkbench">
 	<label for="rightParkbench">Parkbench ขวาลง</label>
   </span>
@@ -248,7 +248,7 @@
 	<input type="radio" name="pose" id="rightLateral">
 	<label for="rightLateral">Lateral ขวาลง</label>
   </span>
-  <span style="width:100px;">
+  <span style="width:110px;">
 	<input type="radio" name="pose" id="rightProne">
 	<label for="rightProne">3/4 ขวาลง</label>
   </span>
@@ -257,8 +257,8 @@
 	<label for="prone">คว่ำ</label>
   </span>
   <br>
-  <span style="width:100px;"></span>
-  <span style="width:140px;">
+  <span style="width:110px;"></span>
+  <span style="width:150px;">
 	<input type="radio" name="pose" id="leftParkbench">
 	<label for="leftParkbench">Parkbench ซ้ายลง</label>
   </span>
@@ -266,25 +266,25 @@
 	<input type="radio" name="pose" id="leftLateral">
 	<label for="leftLateral">Lateral ซ้ายลง</label>
   </span>
-  <span style="width:100px;">
+  <span style="width:110px;">
 	<input type="radio" name="pose" id="leftProne">
 	<label for="leftProne">3/4 ซ้ายลง</label>
   </span>
   <span> <input type="text" size="15" id="position"></span>
   <br>
   <br>
-  <span style="width:100px;"></span>
-  <span style="width:360px;">
+  <span style="width:110px;"></span>
+  <span style="width:400px;">
 	<input type="checkbox" id="selfpay">
 	<label for="selfpay"><i>**ผู้ป่วยและญาติสามารถ<b><u>จ่ายส่วนเกินได้ </u></b>(เบิกไม่ได้)</i>**</label>
   </span>
   <br>
-  <div style="width:100px;">Imaging</div>
+  <div style="width:110px;">Imaging</div>
   <span style="width:70px;">
 	<input type="checkbox" id="iMRI">
 	<label for="iMRI">iMRI</label>
   </span>
-  <span style="width:66px;">
+  <span style="width:76px;">
 	<input type="checkbox" id="iCT">
 	<label for="iCT">iCT</label></span>
   <span style="width:140px;">
@@ -297,8 +297,8 @@
   </span>
   <span> <input type="text" size="15" id="Imaging"></span>
   <br>
-  <div style="width:100px;">อุปกรณ์ยึดศีรษะ</div>
-  <span style="width:140px;">
+  <div style="width:110px;">อุปกรณ์ยึดศีรษะ</div>
+  <span style="width:150px;">
 	<input type="checkbox" id="Mayfield">
 	<label for="Mayfield">Mayfield</label>
   </span>
@@ -306,14 +306,14 @@
 	<input type="checkbox" id="GelHeadRing">
 	<label for="GelHeadRing">Gel Head Ring</label>
   </span>
-  <span style="width:100px;">
+  <span style="width:110px;">
 	<input type="checkbox" id="Horseshoe">
 	<label for="Horseshoe">Horseshoe</label>
   </span>
   <span> <input type="text" size="15" id="headHolder"></span>
   <br>
-  <div style="width:100px;">เครื่องตัดกระดูก</div>
-  <span style="width:140px;">
+  <div style="width:110px;">เครื่องตัดกระดูก</div>
+  <span style="width:150px;">
 	<input type="checkbox" id="HighSpeedDrill">
 	<label for="HighSpeedDrill">High Speed Drill</label>
   </span>
@@ -321,14 +321,14 @@
 	<input type="checkbox" id="SagittalSaw">
 	<label for="SagittalSaw">Sagittal Saw</label>
   </span>
-  <span style="width:100px;">
+  <span style="width:110px;">
 	<input type="checkbox" id="Osteotome">
 	<label for="Osteotome">Osteotome</label>
   </span>
   <span> <input type="text" size="15" id="Craniotome"></span>
   <br>
-  <div style="width:100px;">กล้อง</div>
-  <span style="width:140px;">
+  <div style="width:110px;">กล้อง</div>
+  <span style="width:150px;">
 	<input type="checkbox" id="Microscope">
 	<label for="Microscope">Microscope</label>
   </span>
@@ -336,14 +336,14 @@
 	<input type="checkbox" id="ICG">
 	<label for="ICG">ICG</label>
   </span>
-  <span style="width:100px;">
+  <span style="width:110px;">
 	<input type="checkbox" id="Endoscope">
 	<label for="Endoscope">Endoscope</label>
   </span>
   <span> <input type="text" size="15" id="scope"></span>
   <br>
-  <div style="width:100px;">CUSA</div>
-  <span style="width:140px;">
+  <div style="width:110px;">CUSA</div>
+  <span style="width:150px;">
 	<input type="checkbox" id="Excell">
 	<label for="Excell">Excell</label>
   </span>
@@ -357,8 +357,8 @@
   </span>
   <span> <input type="text" size="15" id="CUSA"></span>
   <br>
-  <div style="width:100px;">Retractor</div>
-  <span style="width:140px;">
+  <div style="width:110px;">Retractor</div>
+  <span style="width:150px;">
 	<input type="checkbox" id="Leylar">
 	<label for="Leylar">Leylar</label>
   </span>
@@ -366,14 +366,14 @@
 	<input type="checkbox" id="Halo">
 	<label for="Halo">Halo</label>
   </span>
-  <span style="width:100px;">
+  <span style="width:110px;">
 	<input type="checkbox" id="Greenberg">
 	<label for="Greenberg">Greenberg</label>
   </span>
   <span> <input type="text" size="15" id="Retractor"></span>
   <br>
-  <div style="width:100px;">U/S</div>
-  <span style="width:140px;">
+  <div style="width:110px;">U/S</div>
+  <span style="width:150px;">
 	<input type="checkbox" id="ultrasound">
 	<label for="ultrasound">Ultrasound</label>
   </span>
@@ -387,8 +387,8 @@
   </span>
   <span> <input type="text" size="15" id="U/S"></span>
   <br>
-  <div style="width:100px;">Shunt</div>
-  <span style="width:96px;">Pudenz</span>
+  <div style="width:110px;">Shunt</div>
+  <span style="width:106px;">Pudenz</span>
   <span style="width:40px;">หัว</span>
   <span style="width:140px;">
 	<input type="radio" name="head" id="proximalLow">
@@ -402,7 +402,7 @@
 	<input type="radio" name="head" id="proximalHigh">
 	<label for="proximalHigh">high</label></span>
   <br>
-  <span style="width:200px;"></span>
+  <span style="width:220px;"></span>
   <span style="width:40px;">ท้อง</span>
   <span style="width:140px;">
 	<input type="radio" name="peritoneum" id="distalLow">
@@ -416,8 +416,8 @@
 	<input type="radio" name="peritoneum" id="distalHigh">
 	<label for="distalHigh">high</label></span>
   <br>
-  <span style="width:100px;"></span>
-  <span style="width:140px;">Programmable</span>
+  <span style="width:110px;"></span>
+  <span style="width:150px;">Programmable</span>
   <span style="width:140px;">
 	<input type="radio" name="program" id="shuntMedtronic">
 	<label for="shuntMedtronic">Medtronic</label>
@@ -428,12 +428,12 @@
   </span>
   <span> <input type="text" size="15" id="Shunt"></span>
   <br>
-  <span style="width:100px;">เครื่องมือบริษัท </span>
-  <span style="width:140px;">เวลาส่งเครื่อง <input type="text" size="1" id="equiptime"> น. </span>
-  <span style="width:340px;">ชื่อ <input type="text" size="52" id="company"></span>
+  <span style="width:110px;">เครื่องมือบริษัท </span>
+  <span style="width:150px;">เวลาส่งเครื่อง <input type="text" size="1" id="equiptime"> น. </span>
+  <span style="width:300px;"><input type="text" size="52" id="company"></span>
   <br>
-  <div style="width:100px;">อุปกรณ์อื่นๆ</div>
-  <span style="width:140px;">
+  <div style="width:110px;">อุปกรณ์อื่นๆ</div>
+  <span style="width:150px;">
 	<input type="checkbox" id="cranioCement">
 	<label for="cranioCement">Cranio cement</label>
   </span>
@@ -443,12 +443,16 @@
   </span>
   <span> <input type="text" size="30" id="Other"></span>
   <br>
-  <div style="width:100px;">Monitor</div>
-  <span style="width:70px;"><input type="checkbox" id="CN7"><label for="CN7">CN7</label></span>
-  <span style="width:66px;"><input type="checkbox" id="CN8"><label for="CN8">CN8</label></span>
-  <span style="width:70px;"><input type="checkbox" id="CN9"><label for="CN9">CN9</label></span>
-  <span style="width:66px;"><input type="checkbox" id="SSEP"><label for="SSEP">SSEP</label></span>
-  <span style="width:60px;"><input type="checkbox" id="MEP"><label for="MEP">MEP</label></span>
+  <div style="width:110px;">Monitor</div>
+  <span style="width:73px;"><input type="checkbox" id="CN5"><label for="CN5">CN5</label></span>
+  <span style="width:73px;"><input type="checkbox" id="CN6"><label for="CN6">CN6</label></span>
+  <span style="width:72px;"><input type="checkbox" id="CN7"><label for="CN7">CN7</label></span>
+  <span style="width:72px;"><input type="checkbox" id="CN8"><label for="CN8">CN8</label></span>
+  <span style="width:72px;"><input type="checkbox" id="SSEP"><label for="SSEP">SSEP</label></span>
+  <span style="width:65px;"><input type="checkbox" id="EMG"><label for="EMG">EMG</label></span>
+  <span style="width:65px;"><input type="checkbox" id="MEP"><label for="MEP">MEP</label></span>
+  <br>
+  <span style="width:110px;"></span>
   <span> <input type="text" size="21" id="Monitor"></span>
   <br>
   <br>
@@ -486,9 +490,9 @@
 
 function namesix()
 {
-	var userid = document.getElementById("userid").value
+	var userid = $("#userid").val()
 	if (/^\d{6}$/.test(userid)) {	//six digits only
-		document.getElementById("password").focus()
+		$("#password").focus()
 	}
 }
 

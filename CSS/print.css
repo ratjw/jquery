@@ -9,26 +9,47 @@
 
 	#dialogEquip {
 		line-height:170%;
-		font-size: 14px;
+		font-size: 16px;
+		font-family: sans-serif;
 		background-color: white;
 		border: 0px;
 		margin-top: 25px;
 		padding-left: 0px;
 		margin-left: 0px;
 	}
-
+/*
 	.pale {
-		color: #CCCCCC;
+		color: #000000;
 		color: rgba(0, 0, 0, .5);
-		font-weight: 200;
+		font-weight: 300;
 	}
-
+*/
 	input, input[type=checkbox] { 
 		font-size: 14px; 
 		border: 0px; 
 	}
 
-	span { 
+input[type=radio] + label {
+	color: #FFFFFF;
+	background-color: white;
+}
+ 
+input[type=radio]:checked + label {
+	color: #000000;
+	border: 2px; 
+}
+
+input[type=checkbox] + label {
+	color: #FFFFFF;
+	background-color: white;
+}
+ 
+input[type=checkbox]:checked + label {
+	color: #000000;
+	border: 2px black; 
+}
+
+	div, span { 
 		display:inline-block; 
 	} 
 }

@@ -3,8 +3,8 @@ function loadtable(userid)
 	Ajax(MYSQLIPHP, "nosqlReturnbook", loading);
 
 	THISUSER = userid
-	document.body.removeChild(document.getElementById("login"))
-	document.getElementById("tblcontainer").style.display = "block"
+	$("#login").remove()
+	$("#tblcontainer").show()
 	$("#dialogOplog").dialog()
 	$("#dialogOplog").dialog('close')
 	$("#dialogDeleted").dialog()

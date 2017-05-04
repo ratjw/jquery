@@ -3,11 +3,13 @@
 	width: 100%;
 	font-size: 0;
 	overflow: hidden;
+	font-family: sans-serif;
 }
 
 #tblcontainer {
 	float: left;
 	height: 100%;
+	width: 100%;
 	overflow: scroll;
 	box-sizing: border-box;
 	border-top: solid 2px silver;
@@ -17,7 +19,6 @@
 
 #titlecontainer {
 	float: right;
-	height: 100%;
 }
 
 #queuecontainer {
@@ -39,7 +40,7 @@
 #tbl th {
 	font-size: 14px;
 	font-weight: bold;
-	background-color: #D0E7FF;
+	background-color: #DDFFFF;
 	color: #557799;
 	border-left: solid 1px silver;
 	border-top: solid 1px silver;
@@ -67,7 +68,7 @@
 */
 #tbl td:first-child {
 	font-size: 12px;
-	background-color: #E0F0F7; 
+	background-color: #DDFFFF; 
 }
 
 #tbl td.sun:before { content: "อาทิตย์ "; }
@@ -77,6 +78,20 @@
 #tbl td.thu:before { content: "พฤหัส "; }
 #tbl td.fri:before { content: "ศุกร์ "; }
 #tbl td.sat:before { content: "เสาร์ "; }
+
+#titlebar {
+	height: 40px;
+	background-color: #7799AA;
+}
+
+#titlename {
+	font-size: 20px;
+	font-weight: bold;
+	color: white;
+	width: 100px;
+	line-height: 35px;
+	margin-left: 25px;
+}
 
 #queuetbl, #historytbl, #servicetbl {
 	table-layout: fixed;	/*make cell width = first row specified*/
@@ -111,8 +126,8 @@
 }
 
 #queuetbl td:first-child {
-	background-color: #7799AA;
-	color: white;
+	background-color: #DDFFFF;
+	color: 557799;
 }
 
 #servicetbl td:first-child {
@@ -131,35 +146,16 @@
 	padding: 2px 10px;
 }
 
-#servicetbl tr.Readmission, 
-#servicehead span.Readmission { background-color: #AACCCC; }
-#servicetbl tr.Reoperation, 
-#servicehead span.Reoperation { background-color: #CCCCAA; }
-#servicetbl tr.Infection, 
-#servicehead span.Infection { background-color: #CCAAAA; }
-#servicetbl tr.Morbidity, 
-#servicehead span.Morbidity { background-color: #AAAACC; }
-#servicetbl tr.Dead, 
-#servicehead span.Dead { background-color: #AAAAAA; }
-
-#titlebar {
-	height: 40px;
-	background-color: #F0F0F0;
-}
-
-#titlename {
-	font-size: 16px;
-	font-weight: bold;
-	color: #777777;
-	width: 100px;
-	padding-top: 10px;
-	padding-left: 25px;
-}
-
-#menu, #stafflist {
-	position: relative;
-	font-size: 14px;
-}
+#servicehead span.Readmission,
+#servicetbl tr.Readmission { background-color: #AACCCC; }
+#servicehead span.Reoperation,
+#servicetbl tr.Reoperation { background-color: #CCCCAA; }
+#servicehead span.Infection,
+#servicetbl tr.Infection { background-color: #CCAAAA; }
+#servicehead span.Morbidity,
+#servicetbl tr.Morbidity { background-color: #AAAACC; }
+#servicehead span.Dead,
+#servicetbl tr.Dead { background-color: #AAAAAA; }
 
 .ui-sortable-helper {
 	display: table;
@@ -226,6 +222,11 @@
 	border: solid 1px #0099FF;
 	background-color: white; 
 	box-shadow: 5px 5px 10px slategray;
+}
+
+#menu, #stafflist {
+	position: relative;
+	font-size: 14px;
 }
 
 #delete { 

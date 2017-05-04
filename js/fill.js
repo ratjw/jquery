@@ -316,28 +316,38 @@ function refillanother(tableID, cellindex, qn)
 	}
 }
 
-function findTablerow(table, qn)
+function splitPane()
 {
-	var i = 1
-	while (table.rows[i].cells[QN].innerHTML != qn)
-	{
-		i++
-		if (i >= table.rows.length)
-			return false
-	}
-	return i
-}
+	var tohead = findVisibleHead('#tbl')
+	var width = screen.availWidth
+	var height = screen.availHeight
 
-function findBOOKrow(qn)
-{
-	var q = 0
-	while (BOOK[q].qn != qn)
-	{
-		q++
-		if (q >= BOOK.length)
-			return false
+	if (width > height) {
+		$("#tblcontainer").css({
+		"float": "left",
+		"height": "100%",
+		"width": "60%"
+		})
+		$("#titlecontainer").css({
+		"float": "right",
+		"height": "100%",
+		"width": "40%"
+		})
+	} else {
+		$("#tblcontainer").css({
+		"float": "left",
+		"height": "60%",
+		"width": "100%"
+		})
+		$("#titlecontainer").css({
+		"float": "left",
+		"height": "40%",
+		"width": "100%"
+		})
 	}
-	return q
+	$("#titlecontainer").show()
+
+	scrollanimate("#tblcontainer", "#tbl", tohead)
 }
 
 function closequeue()
@@ -345,7 +355,9 @@ function closequeue()
 	var tohead = findVisibleHead('#tbl')
 	
 	$("#titlecontainer").hide()
+	$("#tblcontainer").css("height", "100%")
 	$("#tblcontainer").css("width", "100%")
+	$("#titlecontainer").css("height", "0%")
 	$("#titlecontainer").css("width", "0%")
 
 	scrollanimate("#tblcontainer", "#tbl", tohead)

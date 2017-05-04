@@ -171,17 +171,6 @@ function checkblank(opdate, qn)
 	}
 }
 
-function splitPane()
-{
-	var tohead = findVisibleHead('#tbl')
-
-	$("#titlecontainer").show()
-	$("#tblcontainer").css("width", "60%")
-	$("#titlecontainer").css("width", "40%")
-
-	scrollanimate("#tblcontainer", "#tbl", tohead)
-}
-
 function addnewrow(rowmain)
 {
 	var qn = rowmain.cells[QN].innerHTML

@@ -32,12 +32,16 @@ function fillEquipTable(rownum, qn)
 		showEditableEquip(qn, bookqEquip)
 		document.getElementById("editedby").innerHTML = ""
 	}
+	var height = window.innerHeight
+	if (height > 800) {
+		height = 800
+	}
 	$('#dialogEquip').dialog({
 		title: "เครื่องมือผ่าตัด",
 		closeOnEscape: true,
 		modal: true,
 		width: 700,
-		height: window.innerHeight * 9 / 10,
+		height: height,
 		open: function(event, ui) {
 			$("input").blur();	//disable default autofocus on text input
 		}
@@ -153,26 +157,27 @@ function Checklistequip(qn, bookqEquip)
 function printpaper(qn)	//*** have to set equip padding to top:70px; bottom:70px
 {
 	if (/Edge|MS/.test(navigator.userAgent)) {
-		var dialogEquip = document.getElementById('dialogEquip');
-		dialogEquip.style.paddingLeft = 0 + "px"
-		dialogEquip.style.marginLeft = 0 + "px"
+		var orgEquip = document.getElementById('dialogEquip');
+		orgEquip.style.paddingLeft = 0 + "px"
+		orgEquip.style.marginLeft = 0 + "px"
 		var win = window.open();
 		win.document.open();
 		win.document.write('<LINK type="text/css" rel="stylesheet" href="css/print.css">');
-		win.document.writeln(dialogEquip.outerHTML);
+		win.document.writeln(orgEquip.outerHTML);
+		win.document.getElementById('dialogEquip').id = "printEquip" 
 
-		var newequip = dialogEquip.getElementsByTagName("INPUT");
-		var winequip = win.dialogEquip.getElementsByTagName("INPUT");
-		for (var i = 0; i < newequip.length; i++) 
+		var newEquip = orgEquip.getElementsByTagName("INPUT");
+		var winEquip = win.document.getElementById('printEquip').getElementsByTagName("INPUT");
+		for (var i = 0; i < newEquip.length; i++) 
 		{
-			if (newequip[i].checked) {
-				winequip[i].checked = newequip[i].checked
+			if (newEquip[i].checked) {
+				winEquip[i].checked = newEquip[i].checked
 			}
-			else if (newequip[i].value) {
-				winequip[i].value = newequip[i].value
+			else if (newEquip[i].value) {
+				winEquip[i].value = newEquip[i].value
 			}
 			else {	//pale color for no input items
-				temp = winequip[i]
+				temp = winEquip[i]
 				while (temp.nodeName != "SPAN")
 					temp = temp.parentNode
 				temp.className = "pale"
@@ -186,27 +191,27 @@ function printpaper(qn)	//*** have to set equip padding to top:70px; bottom:70px
 	}
 	else {
 		var original = document.body.innerHTML;
-		var orgequip = document.getElementById('dialogEquip');
-		orgequip.style.height = orgequip.offsetHeight + 200 + "px"
-		orgequip.style.width = orgequip.offsetWidth + 100 + "px"
-		orgequip.style.paddingLeft = 0 + "px"
-		orgequip.style.marginLeft = 0 + "px"
-		document.body.innerHTML = orgequip.outerHTML;
+		var orgEquip = document.getElementById('dialogEquip');
+		orgEquip.style.height = orgEquip.offsetHeight + 200 + "px"
+		orgEquip.style.width = orgEquip.offsetWidth + 100 + "px"
+		orgEquip.style.paddingLeft = 0 + "px"
+		orgEquip.style.marginLeft = 0 + "px"
+		document.body.innerHTML = orgEquip.outerHTML;
 		var dialogEquip = document.getElementById('dialogEquip');
 
-		var newequip = orgequip.getElementsByTagName("INPUT");
-		var winequip = dialogEquip.getElementsByTagName("INPUT");
+		var newEquip = orgEquip.getElementsByTagName("INPUT");
+		var winEquip = dialogEquip.getElementsByTagName("INPUT");
 
-		for (var i = 0; i < newequip.length; i++) 
+		for (var i = 0; i < newEquip.length; i++) 
 		{
-			if (newequip[i].checked) {
-				winequip[i].checked = newequip[i].checked
+			if (newEquip[i].checked) {
+				winEquip[i].checked = newEquip[i].checked
 			}
-			else if (newequip[i].value) {
-				winequip[i].value = newequip[i].value
+			else if (newEquip[i].value) {
+				winEquip[i].value = newEquip[i].value
 			}
 			else {	//pale color for no input items
-				temp = winequip[i]
+				temp = winEquip[i]
 				while (temp.nodeName != "SPAN")
 					temp = temp.parentNode
 				temp.className = "pale"

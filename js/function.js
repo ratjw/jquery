@@ -215,3 +215,27 @@ function closeAlert()
 {
 	$("#alert").hide();
 }
+
+function findTablerow(table, qn)
+{
+	var i = 1
+	while (table.rows[i].cells[QN].innerHTML != qn)
+	{
+		i++
+		if (i >= table.rows.length)
+			return false
+	}
+	return i
+}
+
+function findBOOKrow(qn)
+{
+	var q = 0
+	while (BOOK[q].qn != qn)
+	{
+		q++
+		if (q >= BOOK.length)
+			return false
+	}
+	return q
+}
