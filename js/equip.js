@@ -40,7 +40,7 @@ function fillEquipTable(rownum, qn)
 		title: "เครื่องมือผ่าตัด",
 		closeOnEscape: true,
 		modal: true,
-		width: 720,
+		width: 750,
 		height: height,
 		open: function(event, ui) {
 			$("input").blur();	//disable default autofocus on text input

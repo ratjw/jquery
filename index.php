@@ -226,21 +226,21 @@
   <br>
   <br>
   <div style="width:105px;">Position</div>
-  <span style="width:150px;">
+  <span style="width:240px;">
 	<input type="radio" name="pose" id="leftSupine">
-	<label for="leftSupine">หงาย ซ้ายขึ้น</label>
+	<label for="leftSupine">หงาย ซ้ายขึ้น หันหน้าไปทางขวา</label>
   </span>
-  <span style="width:140px;">
+  <span style="width:240px;">
 	<input type="radio" name="pose" id="rightSupine">
-	<label for="rightSupine">หงาย ขวาขึ้น</label>
+	<label for="rightSupine">หงาย ขวาขึ้น หันหน้าไปทางซ้าย</label>
   </span>
-  <span style="width:120px;">
+  <span style="width:70px;">
 	<input type="radio" name="pose" id="Supine">
 	<label for="Supine">หงาย</label>
   </span>
   <br>
   <span style="width:105px;"></span>
-  <span style="width:150px;">
+  <span style="width:155px;">
 	<input type="radio" name="pose" id="rightParkbench">
 	<label for="rightParkbench">Parkbench ขวาลง</label>
   </span>
@@ -248,11 +248,11 @@
 	<input type="radio" name="pose" id="rightLateral">
 	<label for="rightLateral">Lateral ขวาลง</label>
   </span>
-  <span style="width:110px;">
+  <span style="width:180px;">
 	<input type="radio" name="pose" id="rightProne">
 	<label for="rightProne">3/4 ขวาลง</label>
   </span>
-  <span style="width:120px;">
+  <span style="width:70px;">
 	<input type="radio" name="pose" id="prone">
 	<label for="prone">คว่ำ</label>
   </span>
@@ -262,7 +262,7 @@
 	<input type="radio" name="pose" id="leftParkbench">
 	<label for="leftParkbench">Parkbench ซ้ายลง</label>
   </span>
-  <span style="width:135px;">
+  <span style="width:140px;">
 	<input type="radio" name="pose" id="leftLateral">
 	<label for="leftLateral">Lateral ซ้ายลง</label>
   </span>
