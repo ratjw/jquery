@@ -269,7 +269,6 @@ jQuery.fn.extend({
 	filldataQueue : function(bookq) {
 		var rowcell = this[0].cells
 		rowcell[OPDATE].innerHTML = bookq.opdate.thDate()
-		rowcell[SINCE].innerHTML = bookq.since.thDate().slice(0,-4)
 		rowcell[STAFFNAME].innerHTML = bookq.staffname
 		rowcell[HN].innerHTML = bookq.hn
 		rowcell[NAME].innerHTML = bookq.patient
@@ -324,25 +323,17 @@ function splitPane()
 
 	if (width > height) {
 		$("#tblcontainer").css({
-		"float": "left",
-		"height": "100%",
-		"width": "60%"
+			"float": "left", "height": "100%", "width": "60%"
 		})
 		$("#titlecontainer").css({
-		"float": "right",
-		"height": "100%",
-		"width": "40%"
+			"float": "right", "height": "100%", "width": "40%"
 		})
 	} else {
 		$("#tblcontainer").css({
-		"float": "left",
-		"height": "60%",
-		"width": "100%"
+			"float": "left", "height": "60%", "width": "100%"
 		})
 		$("#titlecontainer").css({
-		"float": "left",
-		"height": "40%",
-		"width": "100%"
+			"float": "left", "height": "40%", "width": "100%"
 		})
 	}
 	$("#titlecontainer").show()
@@ -355,10 +346,12 @@ function closequeue()
 	var tohead = findVisibleHead('#tbl')
 	
 	$("#titlecontainer").hide()
-	$("#tblcontainer").css("height", "100%")
-	$("#tblcontainer").css("width", "100%")
-	$("#titlecontainer").css("height", "0%")
-	$("#titlecontainer").css("width", "0%")
+	$("#tblcontainer").css({
+		"height": "100%", "width": "100%"
+	})
+//	$("#titlecontainer").css({
+//		"height": "0%", "width": "0%"
+//	})
 
 	scrollanimate("#tblcontainer", "#tbl", tohead)
 }

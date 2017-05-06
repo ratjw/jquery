@@ -140,11 +140,9 @@ function saveContent(column, content)	//column name in MYSQL
 	}
 	else
 	{
-		var since = new Date().mysqlDate()
-
 		sql = "sqlReturnbook=INSERT INTO book ("
-		sql += "since, opdate, "+ column +", editor) VALUES ('"
-		sql += since +"', '"+ opdate +"', '"+ content +"', '"+ THISUSER +"');"
+		sql += "opdate, "+ column +", editor) VALUES ('"
+		sql += opdate +"', '"+ content +"', '"+ THISUSER +"');"
 	}
 
 	Ajax(MYSQLIPHP, sql, callbacksaveContent);
@@ -171,10 +169,15 @@ function saveContent(column, content)	//column name in MYSQL
 					var NewRow = findNewRow(opdate)
 					updateCell.eq(QN).html(BOOK[NewRow].qn)
 				}
-				if (($("#titlecontainer").css('display') == 'block') && 
-					($('#titlename').html() == staffname)) {
-
-					refillanother('queuetbl', cellindex, qn)
+				if ($("#titlecontainer").css('display') == 'block') {
+					if ((column == "staffname")
+					&& ($('#titlename').html() == pointing.innerHTML)) {
+						refillstaffqueue()
+					} else {
+						if ($('#titlename').html() == staffname) {
+							refillanother('queuetbl', cellindex, qn)
+						}
+					}
 				}
 			} else {	//No new case input in staffqueue table
 				refillanother('tbl', cellindex, qn)
@@ -198,9 +201,6 @@ function saveHNinput(hn, content)
 	content = content.replace(/^\s+/g, "")
 
 	var sql = "hn=" + content
-	if (!qn) {
-		sql += "&since="+ new Date().mysqlDate()
-	}
 	sql += "&opdate="+ opdate
 	sql += "&qn="+ qn
 	sql += "&username="+ THISUSER

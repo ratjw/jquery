@@ -3,7 +3,6 @@ include "connect.php";
 require_once "book.php";
 
 	$hn = $staffname = $qn = $username = "";
-	$since = $opdate = '1900-01-01';
 
 	extract($_GET);
 
@@ -11,10 +10,10 @@ require_once "book.php";
 	$client = new SoapClient($wsdl);
 	$resultx = $client->Get_demographic_short($hn);
 	$resulty = simplexml_load_string($resultx);
-	while ($resulty->children())
-		$resulty = $resulty->children();	//numeric array
-	$resultj = json_encode($resulty);		//use json encode-decode
-	$resultz = json_decode($resultj,true);	//to make assoc array
+	while ($resulty->children())			//find last children
+		$resulty = $resulty->children();
+	$resultj = json_encode($resulty);		//use json encode-decode to make
+	$resultz = json_decode($resultj,true);	//numeric array	into assoc array
 
 	if (empty($resultz["initial_name"]))
 		$resultz["initial_name"] = "";
@@ -23,23 +22,33 @@ require_once "book.php";
 	if (empty($resultz["last_name"]))
 		$resultz["last_name"] = "";
 	if (empty($resultz["dob"]))
-		$resultz["dob"] = "0000-00-00";
+		$resultz["dob"] = "";
 	if (empty($resultz["gender"]))
 		$resultz["gender"] = "";
 
 	extract($resultz);
 
-	if ($qn)	//existing row, just update patient's name. waitnum not concern
+	if ($qn)	//existing row
 	{
-		$sql = "UPDATE book SET hn = '$hn', patient = '$initial_name"."$first_name"." "."$last_name',";
-		$sql = $sql." dob = '$dob', gender = '$gender', editor = '$username' ";
-		$sql = $sql."WHERE qn = $qn;";
+		if ($dob) {
+			$sql = "UPDATE book SET hn = '$hn', patient = '$initial_name$first_name $last_name',
+					dob = '$dob', gender = '$gender', editor = '$username' WHERE qn = $qn;";
+		} else {
+			$sql = "UPDATE book SET hn = '$hn', patient = '$initial_name$first_name $last_name',
+					gender = '$gender', editor = '$username' WHERE qn = $qn;";
+		}
 	}
 	else
-	{			//new row -> no waitnum (default = 1 in database)
-		$sql = "INSERT INTO book (since, opdate, staffname, hn, patient, dob, gender, editor) "; 
-		$sql = $sql."VALUES ('$since', '$opdate', '$staffname', '$hn', ";
-		$sql = $sql."'$initial_name"."$first_name"." "."$last_name', '$dob', '$gender', '$username');";
+	{			//new row -> waitnum default = 1 in database
+		if ($dob) {
+			$sql = "INSERT INTO book (opdate, staffname, hn, patient, dob, gender, editor) 
+					VALUES ('$opdate', '$staffname', '$hn', 
+					'$initial_name$first_name $last_name', '$dob', '$gender', '$username');";
+		} else {
+			$sql = "INSERT INTO book (opdate, staffname, hn, patient, gender, editor) 
+					VALUES ('$opdate', '$staffname', '$hn', 
+					'$initial_name$first_name $last_name', '$gender', '$username');";
+		}
 	}
 
 	$query = $mysqli->query ($sql);

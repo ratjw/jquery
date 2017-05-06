@@ -9,15 +9,14 @@ var TIMESTAMP	= "";
 var TIMER		= "";
 
 var OPDATE		= 0;
-var SINCE		= 1;
-var STAFFNAME	= 2;
-var HN			= 3;
-var NAME		= 4;
-var AGE			= 5;
-var DIAGNOSIS	= 6;
-var TREATMENT	= 7;
-var CONTACT		= 8;
-var QN			= 9;
+var STAFFNAME	= 1;
+var HN			= 2;
+var NAME		= 3;
+var AGE			= 4;
+var DIAGNOSIS	= 5;
+var TREATMENT	= 6;
+var CONTACT		= 7;
+var QN			= 8;
 
 var CASE		= 0;
 var PATIENT		= 1;
