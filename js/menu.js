@@ -77,7 +77,7 @@ function fillSetTable(rownum, pointing)
 					changeOpdate()
 					break
 				case "item3":
-					addnewrow(rowmain)
+					addnewrow(tableID, rowmain)
 					break
 				case "item4":
 					if (checkblank(opdate, qn))	{	//from add new row (check case in this opdate)
@@ -171,13 +171,14 @@ function checkblank(opdate, qn)
 	}
 }
 
-function addnewrow(rowmain)
+function addnewrow(tableID, rowmain)
 {
 	var qn = rowmain.cells[QN].innerHTML
 	if (qn)	//not empty
 	{
 		var caseNum = findcaseNum(qn)
-		var bookq = JSON.parse(JSON.stringify(BOOK[0]))
+		var staffname = BOOK[caseNum].staffname
+		var bookq = JSON.parse(JSON.stringify(BOOK[caseNum]))
 		$.each( bookq, function(key, val) {
 			bookq[key] = ""
 		})
@@ -187,6 +188,14 @@ function addnewrow(rowmain)
 		var clone = rowmain.cloneNode(true)
 		rowmain.parentNode.insertBefore(clone, rowmain)
 		fillblank(rowmain)
+		
+		if (tableID == "queuetbl") {
+			var rownum = rowmain.rowIndex
+			$("#editcell").data("editRow", "#"+ tableID +" tr:eq("+ rownum +")")
+			var pointing = $($("#editcell").data("editRow")).children().eq(STAFFNAME)
+			$("#editcell").data("pointing", pointing)
+			saveContent("staffname", staffname)
+		}
 	}
 }
 

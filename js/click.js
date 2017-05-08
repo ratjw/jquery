@@ -81,7 +81,7 @@ function savePreviouscell()
 			break
 		case STAFFNAME:
 			content = getData()
-			saveContent("staffname", content)	//column name in MYSQL
+			saveContent("staffname", content)
 			break
 		case HN:
 			content = getData()
@@ -163,24 +163,28 @@ function saveContent(column, content)	//column name in MYSQL
 		else
 		{
 			updateBOOK(response);
+			if (!qn) {	//New case input
+				var NewRow = findNewRowBOOK(opdate)
+				updateCell.eq(QN).html(BOOK[NewRow].qn)
+			}
 
 			if (tableID == 'tbl') {
-				if (!qn) {
-					var NewRow = findNewRow(opdate)
-					updateCell.eq(QN).html(BOOK[NewRow].qn)
-				}
 				if ($("#titlecontainer").css('display') == 'block') {
 					if ((column == "staffname")
 					&& ($('#titlename').html() == pointing.innerHTML)) {
-						refillstaffqueue()
+						refillstaffqueue()		//New case or change staffname from tbl
 					} else {
 						if ($('#titlename').html() == staffname) {
 							refillanother('queuetbl', cellindex, qn)
 						}
 					}
 				}
-			} else {	//No new case input in staffqueue table
-				refillanother('tbl', cellindex, qn)
+			} else {
+				if (qn) {
+					refillanother('tbl', cellindex, qn)
+				} else {
+					refillall()		//New case input from queuetbl
+				}
 			}
 		}
 	}
@@ -224,15 +228,15 @@ function saveHNinput(hn, content)
 		{
 			updateBOOK(response)
 
-			var NewRow = findNewRow(opdate)
+			var NewRow = findNewRowBOOK(opdate)
 			var bookq = BOOK[NewRow]
 			updateCell.eq(NAME).html(bookq.patient)
 			updateCell.eq(AGE).html(bookq.dob? bookq.dob.getAge(bookq.opdate) : "")
+			if (!qn) {	//New case input
+				updateCell.eq(QN).html(BOOK[NewRow].qn)
+			}
 
 			if (tableID == 'tbl') {
-				if (!qn) {
-					updateCell.eq(QN).html(bookq.qn)
-				}
 				if (($("#titlecontainer").css('display') == 'block') && 
 					($('#titlename').html() == staffname)) {
 
@@ -245,7 +249,7 @@ function saveHNinput(hn, content)
 	}
 }
 
-function findNewRow(opdate)	//find new row (max. qn)
+function findNewRowBOOK(opdate)	//find new row (max. qn)
 {
 	var q = 0
 	while (BOOK[q].opdate != opdate)
