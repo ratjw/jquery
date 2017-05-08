@@ -320,7 +320,7 @@ function splitPane()
 	var tohead = findVisibleHead('#tbl')
 	var width = screen.availWidth
 	var height = screen.availHeight
-
+/*
 	if (width > height) {
 		$("#tblcontainer").css({
 			"float": "left", "height": "100%", "width": "60%"
@@ -329,13 +329,13 @@ function splitPane()
 			"float": "right", "height": "100%", "width": "40%"
 		})
 	} else {
-		$("#tblcontainer").css({
+*/		$("#tblcontainer").css({
 			"float": "left", "height": "60%", "width": "100%"
 		})
 		$("#titlecontainer").css({
 			"float": "left", "height": "40%", "width": "100%"
 		})
-	}
+//	}
 	$("#titlecontainer").show()
 
 	scrollanimate("#tblcontainer", "#tbl", tohead)

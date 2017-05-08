@@ -177,27 +177,17 @@ function addnewrow(rowmain)
 	if (qn)	//not empty
 	{
 		var caseNum = findcaseNum(qn)
-		var bookq = {}
-		fillblankBOOK(bookq, caseNum)
+		var bookq = JSON.parse(JSON.stringify(BOOK[0]))
+		$.each( bookq, function(key, val) {
+			bookq[key] = ""
+		})
+		bookq.opdate = BOOK[caseNum].opdate
 		BOOK.splice(caseNum + 1, 0, bookq)
 		
 		var clone = rowmain.cloneNode(true)
 		rowmain.parentNode.insertBefore(clone, rowmain)
 		fillblank(rowmain)
 	}
-}
-
-function fillblankBOOK(bookq, caseNum)
-{
-	bookq.opdate = BOOK[caseNum].opdate
-	bookq.staffname = ""
-	bookq.hn = ""
-	bookq.patient = ""
-	bookq.dob = ""
-	bookq.diagnosis = ""
-	bookq.treatment = ""
-	bookq.contact = ""
-	bookq.qn = ""
 }
 
 function deleteCase(rowmain, opdate, qn, pointing)
