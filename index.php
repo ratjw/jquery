@@ -159,11 +159,6 @@
   </TBODY>
 </table>
 
-<div id="delete">
-	<div id="dele" onclick="doDelete()">Delete</div>
-	<span class="ui-icon ui-icon-circle-close" onclick="closeDel()"></span>
-</div>
-
 <div id="dialogOplog"></div>
 
 <div id="dialogDeleted">

@@ -199,36 +199,23 @@ function addnewrow(tableID, rowmain)
 	}
 }
 
-function deleteCase(rowmain, opdate, qn, pointing)
+function deleteCase(rowmain, opdate, qn)
 {
-	$("#delete").appendTo($(pointing).closest('div'))
-	reposition('#delete', "left center", "left center", pointing)
+	//not actually delete the case but set waitnum=NULL
+	var sql = "sqlReturnbook=UPDATE book SET waitnum=NULL, "
+	sql += "editor = '" + THISUSER + "' WHERE qn="+ qn + ";"
 
-	doDelete = function() 
+	Ajax(MYSQLIPHP, sql, callbackdeleterow)
+
+	function callbackdeleterow(response)
 	{
-		//not actually delete the case but set waitnum=NULL
-		var sql = "sqlReturnbook=UPDATE book SET waitnum=NULL, "
-		sql += "editor = '" + THISUSER + "' WHERE qn="+ qn + ";"
-
-		Ajax(MYSQLIPHP, sql, callbackdeleterow)
-
-		function callbackdeleterow(response)
-		{
-			if (!response || response.indexOf("DBfailed") != -1)
-				alert ("Delete & Refresh failed!\n" + response)
-			else
-			{
-				updateBOOK(response);
-				deleteRow(rowmain, opdate)
-			}
+		if (!response || response.indexOf("DBfailed") != -1) {
+			alert ("Delete & Refresh failed!\n" + response)
+		} else {
+			updateBOOK(response);
+			deleteRow(rowmain, opdate)
 		}
-		$('#delete').hide()
 	}
-}
-
-function closeDel() 
-{
-	$('#delete').hide()
 }
 
 function deleteRow(rowmain, opdate)
@@ -242,9 +229,7 @@ function deleteRow(rowmain, opdate)
 	if (nextDate)
 		nextDate = nextDate.numDate()
 
-	if ((prevDate == opdate) ||
-		(nextDate == opdate))
-	{
+	if ((prevDate == opdate) || (nextDate == opdate)) {
 		$(rowmain).remove()
 	} else {
 		$(rowmain).children().eq(OPDATE).siblings().html("")
