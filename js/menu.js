@@ -193,8 +193,9 @@ function addnewrow(tableID, rowmain)
 			var rownum = rowmain.rowIndex
 			$("#editcell").data("editRow", "#"+ tableID +" tr:eq("+ rownum +")")
 			var pointing = $($("#editcell").data("editRow")).children().eq(STAFFNAME)
-			$("#editcell").data("pointing", pointing)
+			$("#editcell").data("pointing", pointing[0])
 			saveContent("staffname", staffname)
+			pointing.html(staffname)
 		}
 	}
 }
