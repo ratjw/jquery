@@ -16,43 +16,43 @@ function fillSetTable(rownum, pointing)
 	casename = casename.substring(0, casename.indexOf(' '))
 
 	$("#item2 div").html("เปลี่ยนวันที่")
-	if (qn)
+	if (qn) {
 		$("#item2").addClass(disabled)
-	else
+	} else {
 		$("#item2").addClass(disabled)
-
+	}
 	$("#item3 div").html("เพิ่ม case วันที่ " + opdateth)
-	if (qn)
+	if (qn) {
 		$("#item3").removeClass(disabled)
-	else
+	} else {
 		$("#item3").addClass(disabled)
-
+	}
 	$("#item4 div").html("Delete " + casename)
-	if (!qn && !(checkblank(opdate, qn)))
+	if (!qn && !(checkblank(opdate, qn))) {
 		$("#item4").addClass(disabled)
-	else
+	} else {
 		$("#item4").removeClass(disabled)
-
+	}
 	$("#item5 div").html("List of Deleted Cases")
 
 	$("#item6 div").html("การแก้ไขของ " + casename)
-	if (qn)
+	if (qn) {
 		$("#item6").removeClass(disabled)
-	else
+	} else {
 		$("#item6").addClass(disabled)
-
+	}
 	$("#item7 div").html("PACS")
-	if (hn)
+	if (hn) {
 		$("#item7").removeClass(disabled)
-	else
+	} else {
 		$("#item7").addClass(disabled)
-
+	}
 	$("#item8 div").html("Equipment")
-	if (qn)
+	if (qn) {
 		$("#item8").removeClass(disabled)
-	else
+	} else {
 		$("#item8").addClass(disabled)
-
+	}
 	$("#item9 div").html("Service Review")
 
 	$("#item10 div").html("Readme")

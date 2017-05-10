@@ -313,8 +313,8 @@ function savePreviousScell()
 
 function saveSContent(column, content)	//column name in MYSQL
 {
-	var editTR = $($("#editcell").data("editRow"))
-	var qn = editTR.children("td").eq(SQN).html()
+	var $editTR = $($("#editcell").data("editRow"))
+	var qn = $editTR.children("td").eq(SQN).html()
 	var fromDate = $('#monthpicker').data('fromDate')
 	var toDate = $('#monthpicker').data('toDate')
 	var pointing = $("#editcell").data("pointing")

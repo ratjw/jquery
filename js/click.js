@@ -118,10 +118,10 @@ function saveContent(column, content)	//column name in MYSQL
 	if (content == $("#editcell").data("content")) {
 		return
 	}
-	var rowcell = $($("#editcell").data("editRow")).children("td")
-	var opdate = rowcell.eq(OPDATE).html().numDate()
-	var staffname = rowcell.eq(STAFFNAME).html()
-	var qn = rowcell.eq(QN).html()
+	var $rowcell = $($("#editcell").data("editRow")).children("td")
+	var opdate = $rowcell.eq(OPDATE).html().numDate()
+	var staffname = $rowcell.eq(STAFFNAME).html()
+	var qn = $rowcell.eq(QN).html()
 	var pointing = $("#editcell").data("pointing")
 	var sql
 
@@ -149,7 +149,7 @@ function saveContent(column, content)	//column name in MYSQL
 
 	var tableID = $("#editcell").data("tableID")
 	var cellindex = $("#editcell").data("cellIndex")
-	var updateCell = $($("#editcell").data("editRow")).children()
+	var $updateCell = $($("#editcell").data("editRow")).children()
 	var oldContent = $("#editcell").data("content")
 
 	function callbacksaveContent(response)
@@ -165,7 +165,7 @@ function saveContent(column, content)	//column name in MYSQL
 			updateBOOK(response);
 			if (!qn) {	//New case input
 				var NewRow = findNewRowBOOK(opdate)
-				updateCell.eq(QN).html(BOOK[NewRow].qn)
+				$updateCell.eq(QN).html(BOOK[NewRow].qn)
 			}
 
 			if (tableID == 'tbl') {
@@ -192,11 +192,11 @@ function saveContent(column, content)	//column name in MYSQL
 
 function saveHNinput(hn, content)
 {
-	var rowcell = $($("#editcell").data("editRow")).children("td")
-	var opdate = rowcell.eq(OPDATE).html().numDate()
-	var staffname = rowcell.eq(STAFFNAME).html()
-	var patient = rowcell.eq(NAME).html()
-	var qn = rowcell.eq(QN).html()
+	var $rowcell = $($("#editcell").data("editRow")).children("td")
+	var opdate = $rowcell.eq(OPDATE).html().numDate()
+	var staffname = $rowcell.eq(STAFFNAME).html()
+	var patient = $rowcell.eq(NAME).html()
+	var qn = $rowcell.eq(QN).html()
 	var pointing = $("#editcell").data("pointing")
 
 	pointing.innerHTML = content
@@ -213,7 +213,7 @@ function saveHNinput(hn, content)
 
 	var tableID = $("#editcell").data("tableID")
 	var cellindex = $("#editcell").data("cellIndex")
-	var updateCell = $($("#editcell").data("editRow")).children()
+	var $updateCell = $($("#editcell").data("editRow")).children()
 	var oldContent = $("#editcell").data("content")
 
 	function callbackgetByHN(response)
@@ -229,10 +229,10 @@ function saveHNinput(hn, content)
 
 			var NewRow = findNewRowBOOK(opdate)
 			var bookq = BOOK[NewRow]
-			updateCell.eq(NAME).html(bookq.patient)
-			updateCell.eq(AGE).html(bookq.dob? bookq.dob.getAge(bookq.opdate) : "")
+			$updateCell.eq(NAME).html(bookq.patient)
+			$updateCell.eq(AGE).html(bookq.dob? bookq.dob.getAge(bookq.opdate) : "")
 			if (!qn) {	//New case input
-				updateCell.eq(QN).html(BOOK[NewRow].qn)
+				$updateCell.eq(QN).html(BOOK[NewRow].qn)
 			}
 
 			if (tableID == 'tbl') {	//New case has no staffname
@@ -339,11 +339,6 @@ function reposition(me, mypos, atpos, target)
 		at: atpos,
 		of: target
 	}).show()
-/*	$(me).position({
-		my: mypos,
-		at: atpos,
-		of: target
-	}).show()*/
 }
 
 function saveDataPoint(editcell, pointing)

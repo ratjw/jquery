@@ -13,9 +13,11 @@ function loadtable(userid)
 	$("#dialogEquip").dialog('close')
 	$("#dialogService").dialog()
 	$("#dialogService").dialog('close')	//prevent updateTables() call 'isOpen' before initialization
+	clearEditcellData()
 
 	$(document).click( function (event) {
 		countReset();
+		updating.timer = 0
 		event.stopPropagation()
 		var target = event.target
 		if ($('#menu').is(":visible")) {	//visible == take up space even can't be seen
@@ -67,6 +69,7 @@ function loadtable(userid)
 	});
 	$(document).keydown( function (event) {
 		countReset();
+		updating.timer = 0
 		if ($('#monthpicker').is(':focus')) {
 			return
 		}
@@ -90,7 +93,8 @@ function loadtable(userid)
 	})
 	sortable()
 	//call sortable before render, if after, it renders very slowly
-	TIMER = setTimeout("updating()",10000);	//poke next 10 sec.
+	TIMER = setTimeout("updating()",10000);	//poke server every 10 sec.
+	updating.timer = 0
 }
 
 function loading(response)
@@ -110,7 +114,7 @@ function updateBOOK(response)
 	var temp = JSON.parse(response)
 
 	BOOK = temp.BOOK? temp.BOOK : []
-	TIMESTAMP = temp.QTIME? temp.QTIME : ""	//last update BOOK in server
+	TIMESTAMP = temp.QTIME? temp.QTIME : ""	//datetime of last change in server
 	QWAIT = temp.QWAIT? temp.QWAIT : []
 }
 
@@ -127,34 +131,12 @@ function fillStafflist()
 	document.getElementById("item0").innerHTML = staffmenu
 }
 
-function updating()	//update or save data every 10 sec.
+function updating()
 {
-	var notEditing
 	var editPoint = $("#editcell").data("pointing")
-	if (editPoint) {
-		notEditing = (editPoint.innerHTML == getData())? true : false
-	} else {
-		notEditing = true
-	}
-	if (notEditing) {
-
-		Ajax(MYSQLIPHP, "functionName=checkupdate&time="+TIMESTAMP, updatingback);
-
-		function updatingback(response)
-		{
-			//not being editing on screen
-			clearEditcellData("hide")
-			$('#menu').hide()	//editcell may be on first column
-			$('#stafflist').hide()	//editcell may be on staff
-			$('#datepicker').hide()
-			$('#datepicker').datepicker("hide")
-			if (response && response.indexOf("opdate") != -1)	//some changes in database
-			{
-				updateBOOK(response)
-				updateTables()
-			}
-		}
-	} else {
+	if ((editPoint) 
+	&& (editPoint.innerHTML != getData())
+	&& (editPoint.cellIndex != OPDATE)) {
 
 		//being editing on screen
 		if ($(editcell).data("tableID") == "servicetbl") {
@@ -162,9 +144,32 @@ function updating()	//update or save data every 10 sec.
 		} else {
 			savePreviouscell()		//Main and Staffqueue tables
 		}
+		updating.timer = 0
+	} else {
+
+		Ajax(MYSQLIPHP, "functionName=checkupdate&time="+TIMESTAMP, updatingback);
+
+		function updatingback(response)
+		{
+			//not being editing on screen
+			if (updating.timer == 10) {	//do only one time even if idle for a long time
+				clearEditcellData("hide")
+				$('#menu').hide()		//editcell may be on first column
+				$('#stafflist').hide()	//editcell may be on staff
+				$('#datepicker').hide()
+				$('#datepicker').datepicker("hide")
+			} else {
+				updating.timer++
+			}
+			if (response && response.indexOf("opdate") != -1)	//some changes in database
+			{
+				updateBOOK(response)
+				updateTables()
+			}
+		}
 	}
-	clearTimeout(TIMER);
-	TIMER = setTimeout("updating()",10000);	//idle, poke next 5 sec.
+
+	countReset()
 }
 
 function updateTables()
@@ -181,13 +186,8 @@ function updateTables()
 	}
 }
 
-function findpresentRow(qn)
-{
-	$('#editcell').data("rowIndex")
-}
-
 function countReset()
 {
 	clearTimeout(TIMER);
-	TIMER = setTimeout("updating()",10000);	//active, poke after 10 sec.
+	TIMER = setTimeout("updating()",10000);	//poke server every 10 sec.
 }
