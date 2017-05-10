@@ -221,8 +221,7 @@ function saveHNinput(hn, content)
 		if ((!response) || (response.indexOf("patient") == -1) || (response.indexOf("{") == -1)) 
 		{
 			alert(response)
-			pointing.innerHTML = oldContent
-			//return to previous content
+			pointing.innerHTML = oldContent		//return to previous content
 		}
 		else 
 		{
@@ -236,13 +235,13 @@ function saveHNinput(hn, content)
 				updateCell.eq(QN).html(BOOK[NewRow].qn)
 			}
 
-			if (tableID == 'tbl') {
+			if (tableID == 'tbl') {	//New case has no staffname
 				if (($("#titlecontainer").css('display') == 'block') && 
 					($('#titlename').html() == staffname)) {
 
 					refillanother('queuetbl', cellindex, qn)
 				}
-			} else {	//No new case input in staffqueue table
+			} else {	//New case row was already in tbl
 				refillanother('tbl', cellindex, qn)
 			}
 		}

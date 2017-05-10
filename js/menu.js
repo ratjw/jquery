@@ -192,10 +192,10 @@ function addnewrow(tableID, rowmain)
 		if (tableID == "queuetbl") {
 			var rownum = rowmain.rowIndex
 			$("#editcell").data("editRow", "#"+ tableID +" tr:eq("+ rownum +")")
-			var pointing = $($("#editcell").data("editRow")).children().eq(STAFFNAME)
-			$("#editcell").data("pointing", pointing[0])
+			var $pointing = $($("#editcell").data("editRow")).children().eq(STAFFNAME)
+			$("#editcell").data("pointing", $pointing[0])
 			saveContent("staffname", staffname)
-			pointing.html(staffname)
+			$pointing.html(staffname)
 		}
 	}
 }
