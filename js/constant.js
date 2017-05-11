@@ -1,4 +1,5 @@
 var GETNAMEHN		= "php/getnamehn.php";
+var GETIPD			= "php/getipd.php";
 var MYSQLIPHP		= "php/mysqli.php";
 var CHECKPAC		= "php/checkpac.php";
 
@@ -85,11 +86,15 @@ var HOLIDAY = {
 	}
 
 var neuroSxOp = [
-	/[Aa]nast/, /[Aa]pproa/, /[Aa]spirat/, /[Bb]iop/, /[Bb]lock/, /[Bb]urr/, /[Cc]lip/, 
+	/[Aa]nast/, /[Aa]pproa/, /[Aa]spirat/, /advancement/,
+	/[Bb]iop/, /[Bb]lock/, /[Bb]urr/, /[Cc]lip/, 
 	/[Dd]ecom/, /DBS/, /[Dd]rain/, /[Ee]ctomy/, /ETS/,
 	/[Ff]ix/, /[Ff]usion/, /[Ii]nsert/, /[Ll]esion/, /[Ll]ysis/, 
-	/[Oo]cclu/, /[Oo]per/, /ostom/, /otom/, /plast/, /[Rr]emov/, /[Rr]epa/, /[Rr]evis/, 
-	/scope/, /[Ss]crew/, /[Ss]hunt/, /[Ss]tim/, /[Tt]ranspos/, /[Tt]ransect/, /[Uu]ntether/
+	/OLIF/, /[Oo]cclu/, /[Oo]per/, /ostom/, /otom/,
+	/plast/, /PLF/, /PLIF/,
+	/[Rr]emov/, /[Rr]epa/, /[Rr]evis/, 
+	/scope/, /[Ss]crew/, /[Ss]hunt/, /[Ss]tim/,
+	/TLIF/, /[Tt]ranspos/, /[Tt]ransect/, /[Uu]ntether/
 	]
 
 var neuroMorbid = [

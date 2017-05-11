@@ -129,6 +129,9 @@ function isInfection(thiscase)
 	if (/SSI/i.test(thiscase.final)) {
 		return true
 	}
+	if (/Infect/.test(thiscase.final)) {
+		return true
+	}
 }
 
 function isMorbidity(thiscase)
