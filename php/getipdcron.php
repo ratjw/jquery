@@ -32,15 +32,15 @@ require_once "book.php";
 		}
 		if (!$OldAdmit) {
 			if (!$OldDischarge) {
-				$mysqli->query ("UPDATE book SET admit = '$admit', discharge = '$discharge' WHERE qn = $qn;";)
+				$mysqli->query ("UPDATE book SET admit = '$admit', discharge = '$discharge' WHERE qn = $qn;")
 			} else {
-				$mysqli->query ("UPDATE book SET admit = '$admit', discharge = '$discharge' WHERE qn = $qn;";)
+				$mysqli->query ("UPDATE book SET admit = '$admit', discharge = '$discharge' WHERE qn = $qn;")
 			}
 
 			if (!$case[$i].admit && !$case[$i].discharge) {
 				if () {
 				}
-				$mysqli->query ("UPDATE book SET admit = '$admit', discharge = '$discharge' WHERE qn = $qn;";)
+				$mysqli->query ("UPDATE book SET admit = '$admit', discharge = '$discharge' WHERE qn = $qn;")
 			}
 			elseif ($case[$i].admit && !$case[$i].discharge) {
 				$mysqli->query ("UPDATE book SET admit = '$admit' WHERE qn = $qn;";)
@@ -50,7 +50,7 @@ require_once "book.php";
 			}
 		} else {
 			if (!$OldDischarge) {
-				$mysqli->query ("UPDATE book SET admit = '$admit', discharge = '$discharge' WHERE qn = $qn;";)
+				$mysqli->query ("UPDATE book SET admit = '$admit', discharge = '$discharge' WHERE qn = $qn;")
 			}
 		}
 	}

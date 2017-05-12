@@ -71,7 +71,7 @@ function isOperation(thiscase)
 
 function isReoperation(thiscase)
 {
-	if (/[Rr]e-op/.test(thiscase.treatment)) {
+	if (/\b[Rr]e-op/.test(thiscase.treatment)) {
 		return true
 	}
 
@@ -97,7 +97,7 @@ function isReoperation(thiscase)
 
 function isReadmission(thiscase)
 {
-	if (/[Rr]e-ad/.test(thiscase.admission)) {
+	if (/\b[Rr]e-ad/.test(thiscase.admission)) {
 		return true
 	}
 

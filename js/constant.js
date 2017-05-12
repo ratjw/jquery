@@ -1,5 +1,6 @@
 var GETNAMEHN		= "php/getnamehn.php";
-var GETIPD			= "php/getipd.php";
+var GETIPDCRON		= "php/getipdcron.php";
+var GETIPDAJAX		= "php/getipdajax.php";
 var MYSQLIPHP		= "php/mysqli.php";
 var CHECKPAC		= "php/checkpac.php";
 
@@ -92,7 +93,7 @@ var neuroSxOp = [
 	/[Ff]ix/, /[Ff]usion/, /[Ii]nsert/, /[Ll]esion/, /[Ll]ysis/, 
 	/OLIF/, /[Oo]cclu/, /[Oo]per/, /ostom/, /otom/,
 	/plast/, /PLF/, /PLIF/,
-	/[Rr]emov/, /[Rr]epa/, /[Rr]evis/, 
+	/[Rr]emov/, /[Rr]epa/, /[Rr]evis/, /[Rr]obot/,
 	/scope/, /[Ss]crew/, /[Ss]hunt/, /[Ss]tim/,
 	/TLIF/, /[Tt]ranspos/, /[Tt]ransect/, /[Uu]ntether/
 	]

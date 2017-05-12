@@ -131,7 +131,7 @@ function fillStafflist()
 	document.getElementById("item0").innerHTML = staffmenu
 }
 
-function updating()
+function updating()	//updating.timer : local variable
 {
 	var editPoint = $("#editcell").data("pointing")
 	if ((editPoint) 
@@ -152,7 +152,7 @@ function updating()
 		function updatingback(response)
 		{
 			//not being editing on screen
-			if (updating.timer == 10) {	//do only one time even if idle for a long time
+			if (updating.timer == 10) {	//do only once even if idle for a long time
 				clearEditcellData("hide")
 				$('#menu').hide()		//editcell may be on first column
 				$('#stafflist').hide()	//editcell may be on staff

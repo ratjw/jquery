@@ -18,7 +18,7 @@ function serviceReview()
 		beforeShow: function () {
 			$('.ui-datepicker-calendar').css('display', 'none')
 		}
-	}).datepicker("setDate",  "-1m")
+	})
 
 	$('#dialogService').dialog({
 		title: 'Service Neurosurgery เดือน : ',
@@ -28,14 +28,16 @@ function serviceReview()
 		height: window.innerHeight * 95 / 100
 	})
 	$('.ui-datepicker').click(function() {
-		if (!$('#monthpicker').is(":focus")) {
+		if (!$('#monthpicker').is(":focus")) {	//click on month name
 			entireMonth($('#monthpicking').val())
 			$('#monthpicker').datepicker( "hide" )
 		} else {
 			$('.ui-datepicker-calendar').css('display', 'none')
+			//click on <prev next> month
+			//display the month without date
 		}
 	})
-	$('#monthpicker').click(function() { //setDate follows input boxes
+	$('#monthpicker').click(function() { //setDate follows input box
 		$('#monthpicker').datepicker(
 			"setDate", $('#monthpicking').val()
 						? new Date($('#monthpicking').val())
@@ -126,6 +128,7 @@ function showService(SERVICE, fromDate, toDate)
 			$('#datepicker').hide()
 		}
 	})
+	getAdmitDischargeDate(SERVICE, fromDate, toDate)
 }
 
 function refillService(SERVICE, fromDate, toDate)
@@ -136,9 +139,9 @@ function refillService(SERVICE, fromDate, toDate)
 	$.each( STAFF, function() {
 		var staffname = this
 		i++
-		var thisCase = $('#servicetbl tr').eq(i).children().eq(CASE)
-		if (thisCase.prop("colSpan") == 1) {
-			thisCase.prop("colSpan", 8)
+		var $thisCase = $('#servicetbl tr').eq(i).children().eq(CASE)
+		if ($thisCase.prop("colSpan") == 1) {
+			$thisCase.prop("colSpan", 8)
 				.css({
 					height: "40",
 					fontWeight: "bold",
@@ -148,7 +151,7 @@ function refillService(SERVICE, fromDate, toDate)
 				})
 				.siblings().hide()
 		}
-		thisCase.html(staffname)
+		$thisCase.html(staffname)
 
 		var scase = 0
 		$.each( SERVICE, function() {
@@ -156,10 +159,10 @@ function refillService(SERVICE, fromDate, toDate)
 				var color = countService(this, fromDate, toDate)
 				i++
 				scase++
-				var thisRow = $('#servicetbl tr').eq(i).children()
-				if (thisRow.eq(CASE).prop("colSpan") > 1) {
-					thisRow.eq(CASE).prop("colSpan", 1)
-						.nextUntil(thisRow.eq(SQN)).show()
+				var $thisRow = $('#servicetbl tr').eq(i).children()
+				if ($thisRow.eq(CASE).prop("colSpan") > 1) {
+					$thisRow.eq(CASE).prop("colSpan", 1)
+						.nextUntil($thisRow.eq(SQN)).show()
 				}
 				$('#servicetbl tr').eq(i)
 						.filldataService(this, scase, color)
@@ -198,6 +201,47 @@ function resetcountService()
 	document.getElementById("Infection").innerHTML = 0
 	document.getElementById("Reoperation").innerHTML = 0
 	document.getElementById("Dead").innerHTML = 0
+}
+
+function getAdmitDischargeDate(SERVICE, fromDate, toDate)
+{
+	var i = 0
+	$.each( STAFF, function() {
+		var staffname = this
+		i++
+		$.each( SERVICE, function() {
+			if (this.staffname == staffname) {
+				i++
+				var $thisRow = $('#servicetbl tr').eq(i).children()
+				var hn = this.hn
+				var qn = this.qn
+				var admit = this.admit
+				var discharge = this.discharge
+				var that = this
+
+				if (!admit || !discharge) {
+
+					Ajax(GETIPDAJAX, "hn=" + hn + "&qn="+ qn, callbackgetipdajax)
+
+					function callbackgetipdajax(response)
+					{
+						if ((!response) || (response.indexOf("patient") == -1) || (response.indexOf("{") == -1)) 
+						{
+							alert(response)
+						}
+						else 
+						{
+							var ipd = JSONparse(response)
+							$thisRow.eq(ADMIT).html(ipd.admission_date)
+							$thisRow.eq(DISCHARGE).html(ipd.discharge_date)
+							that.admit = ipd.admission_date
+							that.discharge = ipd.discharge_date
+						}
+					}
+				}
+			}
+		});
+	})
 }
 
 function clickservice(clickedCell)
@@ -353,7 +397,7 @@ function saveSContent(column, content)	//column name in MYSQL
 			var toDate = $('#monthpicker').data('toDate')
 			var thisrow = JSON.parse(response)
 
-			editTR[0].className = countService(thisrow[0], fromDate, toDate)
+			$editTR[0].className = countService(thisrow[0], fromDate, toDate)
 
 			//No refill because it may make next editTD return to old value
 			//when fast entry, due to slow return from Ajax
