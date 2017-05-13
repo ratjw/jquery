@@ -1,11 +1,10 @@
 ﻿<?php
 include "connect.php";
-echo ("$opdate = ");exit;
 
 	$opdate = $_GET["opdate"];
 	$hn = $_GET["hn"];
 	$qn = $_GET["qn"];
-echo ("$opdate = ".$opdate." "."$hn = ".$hn." "."$qn = ".$qn);exit;
+
 	$wsdl="http://appcenter/webservice/patientservice.wsdl";
 	$client = new SoapClient($wsdl);
 	$resultx = $client->Get_ipd_detail($hn);
@@ -22,7 +21,7 @@ echo ("$opdate = ".$opdate." "."$hn = ".$hn." "."$qn = ".$qn);exit;
 	$diff = date_diff($date1, $date2);
 	$datediff = $diff->format("%R%a");
 	if (($datediff >=0) && ($datediff < 30)) {
-		$query = $mysqli->query ("UPDATE book SET admit = '$admit', discharge = '$discharge' WHERE qn = $qn;")
+		$query = $mysqli->query ("UPDATE book SET admit = '$admit', discharge = '$discharge' WHERE qn = $qn;");
 		if (!$query)
 			echo $mysqli->error . $sql;
 		else

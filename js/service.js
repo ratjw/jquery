@@ -222,7 +222,7 @@ function getAdmitDischargeDate(SERVICE, fromDate, toDate)
 
 				if (!admit || !discharge) {
 
-					Ajax(GETIPDAJAX, "opdate=" + opdate + "hn=" + hn + "&qn="+ qn, callbackgetipdajax)
+					Ajax(GETIPDAJAX, "opdate=" + opdate + "&hn=" + hn + "&qn="+ qn, callbackgetipdajax)
 
 					function callbackgetipdajax(response)
 					{
