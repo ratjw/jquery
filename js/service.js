@@ -18,7 +18,7 @@ function serviceReview()
 		beforeShow: function () {
 			$('.ui-datepicker-calendar').css('display', 'none')
 		}
-	})
+	}).datepicker("setDate", new Date(new Date().getFullYear(), new Date().getMonth(), 1))
 
 	$('#dialogService').dialog({
 		title: 'Service Neurosurgery เดือน : ',
@@ -213,6 +213,7 @@ function getAdmitDischargeDate(SERVICE, fromDate, toDate)
 			if (this.staffname == staffname) {
 				i++
 				var $thisRow = $('#servicetbl tr').eq(i).children()
+				var opdate = this.opdate
 				var hn = this.hn
 				var qn = this.qn
 				var admit = this.admit
@@ -221,16 +222,16 @@ function getAdmitDischargeDate(SERVICE, fromDate, toDate)
 
 				if (!admit || !discharge) {
 
-					Ajax(GETIPDAJAX, "hn=" + hn + "&qn="+ qn, callbackgetipdajax)
+					Ajax(GETIPDAJAX, "opdate=" + opdate + "hn=" + hn + "&qn="+ qn, callbackgetipdajax)
 
 					function callbackgetipdajax(response)
 					{
-						if ((!response) || (response.indexOf("patient") == -1) || (response.indexOf("{") == -1)) 
-						{
-							alert(response)
+						if (!response) {
+							return
 						}
-						else 
-						{
+						if (response.indexOf("{") == -1) {
+							alert(response)
+						} else {
 							var ipd = JSONparse(response)
 							$thisRow.eq(ADMIT).html(ipd.admission_date)
 							$thisRow.eq(DISCHARGE).html(ipd.discharge_date)

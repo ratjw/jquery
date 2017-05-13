@@ -60,12 +60,12 @@ function getipd($hn)
 {
 	$wsdl="http://appcenter/webservice/patientservice.wsdl";
 	$client = new SoapClient($wsdl);
-	$resultx = $client->Get_demographic_short($hn);
+	$resultx = $client->Get_ipd_detail($hn);
 	$resulty = simplexml_load_string($resultx);
 	while ($resulty->children())			//find last children
 		$resulty = $resulty->children();
-	$resultj = json_encode($resulty);		//use json encode-decode to make
-	return json_decode($resultj,true);		//numeric array	into assoc array
+	$resultj = json_encode($resulty);		//use json encode-decode to
+	return json_decode($resultj,true);		//convert XML to assoc array
 /*
 	array(16) { ["an"]=> string(7) "1788094" ["iseq"]=> string(1) "0" ["admission_date"]=> string(10) "2017-04-29" ["attending_doc_code"]=> string(6) "004606" ["attending_doc_name"]=> string(59) "เกรียงศักดิ์ แซ่เตีย" ["referring_doc_code"]=> array(0) { } ["referring_doc_name"]=> array(0) { } ["referring_doc_dept_code"]=> array(0) { } ["referring_doc_dept_name"]=> array(0) { } ["primary_location"]=> array(0) { } ["current_location"]=> string(3) "9SE" ["current_loc_tel_no"]=> string(21) "02-2011501,02-2011591" ["discharge_date"]=> array(0) { } ["discharge_time"]=> array(0) { } ["current_bed"]=> string(2) "12" ["enc_type"]=> string(3) "IMP" } 
 */
