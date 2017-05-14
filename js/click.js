@@ -71,8 +71,12 @@ function keyin(event)
 
 function savePreviouscell() 
 {
-	if (!$("#editcell").data("pointing"))
+	var editPoint = $("#editcell").data("pointing")
+	if (!(editPoint) 
+	|| (editPoint.innerHTML == getData())
+	|| (editPoint.cellIndex == OPDATE)) {
 		return
+	}
 
 	var content = ""
 	switch($("#editcell").data("cellIndex"))
@@ -119,7 +123,12 @@ function saveContent(column, content)	//column name in MYSQL
 		return
 	}
 	var $rowcell = $($("#editcell").data("editRow")).children("td")
-	var opdate = $rowcell.eq(OPDATE).html().numDate()
+	var opdate = $rowcell.eq(OPDATE).html()
+	if (!opdate) {
+		opdate = LARGESTDATE
+	} else {
+		opdate = opdate.numDate()
+	}
 	var staffname = $rowcell.eq(STAFFNAME).html()
 	var qn = $rowcell.eq(QN).html()
 	var pointing = $("#editcell").data("pointing")
@@ -193,7 +202,12 @@ function saveContent(column, content)	//column name in MYSQL
 function saveHNinput(hn, content)
 {
 	var $rowcell = $($("#editcell").data("editRow")).children("td")
-	var opdate = $rowcell.eq(OPDATE).html().numDate()
+	var opdate = $rowcell.eq(OPDATE).html()
+	if (!opdate) {
+		opdate = LARGESTDATE
+	} else {
+		opdate = opdate.numDate()
+	}
 	var staffname = $rowcell.eq(STAFFNAME).html()
 	var patient = $rowcell.eq(NAME).html()
 	var qn = $rowcell.eq(QN).html()
@@ -230,7 +244,7 @@ function saveHNinput(hn, content)
 			var NewRow = findNewRowBOOK(opdate)
 			var bookq = BOOK[NewRow]
 			$updateCell.eq(NAME).html(bookq.patient)
-			$updateCell.eq(AGE).html(bookq.dob? bookq.dob.getAge(bookq.opdate) : "")
+			$updateCell.eq(AGE).html(putAgeOpdate(bookq.dob, bookq.opdate))
 			if (!qn) {	//New case input
 				$updateCell.eq(QN).html(BOOK[NewRow].qn)
 			}

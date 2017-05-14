@@ -133,6 +133,33 @@ String.prototype.getAge = function (toDate)
 	return years? ageyears : months? agemonths : agedays;
 }
 
+function getOpdate(date)
+{
+	if ((date === "") || (date === LARGESTDATE)) {
+		return LARGESTDATE
+	} else {
+		return date.numDate()
+	}
+}
+
+function putOpdate(date)
+{
+	if ((date === "") || (date === LARGESTDATE)) {
+		return ""
+	} else {
+		return date.thDate()
+	}
+}
+
+function putAgeOpdate(dob, date)
+{
+	if ((!dob) || (date === LARGESTDATE)) {
+		return ""
+	} else {
+		return dob.getAge(date)
+	}
+}
+
 function regexDate(str)
 {
 	var iso = str.match((ISODATEG))

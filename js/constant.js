@@ -1,5 +1,4 @@
 var GETNAMEHN		= "php/getnamehn.php";
-var GETIPDCRON		= "php/getipdcron.php";
 var GETIPDAJAX		= "php/getipdajax.php";
 var MYSQLIPHP		= "php/mysqli.php";
 var CHECKPAC		= "php/checkpac.php";
@@ -9,6 +8,7 @@ var BOOK		= [];
 var THISUSER	= "";
 var TIMESTAMP	= "";
 var TIMER		= "";
+var LARGESTDATE	= "9999-12-31";
 
 var OPDATE		= 0;
 var STAFFNAME	= 1;

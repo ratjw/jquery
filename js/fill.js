@@ -39,6 +39,9 @@ function fillall(start)
 	var i = 0
 	for (q; q < BOOK.length; q++)
 	{	
+		if (BOOK[q].opdate == LARGESTDATE) {
+			break
+		}
 		while (date < BOOK[q].opdate)
 		{	//step over each day that is not in QBOOK
 			if (date != madedate)
@@ -111,6 +114,9 @@ function refillall()
 	var i = 1
 	while (i < tlength)
 	{
+		if (BOOK[q].opdate == LARGESTDATE) {
+			break
+		}
 		if (q < BOOK.length) {
 			while (date < BOOK[q].opdate)
 			{	//step over each day that is not in QBOOK
@@ -268,11 +274,11 @@ function refillstaffqueue()
 jQuery.fn.extend({
 	filldataQueue : function(bookq) {
 		var rowcell = this[0].cells
-		rowcell[OPDATE].innerHTML = bookq.opdate.thDate()
+		rowcell[OPDATE].innerHTML = putOpdate(bookq.opdate)
 		rowcell[STAFFNAME].innerHTML = bookq.staffname
 		rowcell[HN].innerHTML = bookq.hn
 		rowcell[NAME].innerHTML = bookq.patient
-		rowcell[AGE].innerHTML = bookq.dob? bookq.dob.getAge(bookq.opdate) : ""
+		rowcell[AGE].innerHTML = putAgeOpdate(bookq.dob, bookq.opdate)
 		rowcell[DIAGNOSIS].innerHTML = bookq.diagnosis
 		rowcell[TREATMENT].innerHTML = bookq.treatment
 		rowcell[CONTACT].innerHTML = bookq.contact
@@ -301,7 +307,9 @@ function refillanother(tableID, cellindex, qn)
 		case HN:
 			rowcell[HN].innerHTML = bookq.hn
 			rowcell[NAME].innerHTML = bookq.patient
-			rowcell[AGE].innerHTML = bookq.dob? bookq.dob.getAge(bookq.opdate) : ""
+			rowcell[AGE].innerHTML = (bookq.opdate != LARGESTDATE)
+				? (bookq.dob? bookq.dob.getAge(bookq.opdate) : "")
+				: ""
 			break
 		case DIAGNOSIS:
 			rowcell[DIAGNOSIS].innerHTML = bookq.diagnosis

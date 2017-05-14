@@ -5,8 +5,8 @@ function fillSetTable(rownum, pointing)
 	var table = document.getElementById(tableID)
 	var rowmain = table.rows[rownum]
 	var tcell = rowmain.cells
-	var opdateth = tcell[OPDATE].innerHTML	//Thai date
-	var opdate = opdateth.numDate()		//Thai to mysql date
+	var opdateth = tcell[OPDATE].innerHTML
+	var opdate = getOpdate(opdateth)		//Thai to ISO date
 	var staffname = tcell[STAFFNAME].innerHTML
 	var casename = tcell[NAME].innerHTML
 	var hn = tcell[HN].innerHTML
@@ -15,9 +15,9 @@ function fillSetTable(rownum, pointing)
 
 	casename = casename.substring(0, casename.indexOf(' '))
 
-	$("#item2 div").html("เปลี่ยนวันที่")
-	if (qn) {
-		$("#item2").addClass(disabled)
+	$("#item2 div").html("เพิ่ม case ต่อท้าย")
+	if (tableID == "queuetbl") {
+		$("#item2").removeClass(disabled)
 	} else {
 		$("#item2").addClass(disabled)
 	}
@@ -74,7 +74,7 @@ function fillSetTable(rownum, pointing)
 						splitPane()
 					break
 				case "item2":
-					changeOpdate()
+					largestOpdate()
 					break
 				case "item3":
 					addnewrow(tableID, rowmain)
@@ -171,6 +171,30 @@ function checkblank(opdate, qn)
 	}
 }
 
+function largestOpdate()
+{
+	var table = document.getElementById("queuetbl")
+	var rownum = table.rows.length
+	var clone = table.rows[rownum-1].cloneNode(true)
+	var newrow = table.appendChild(clone)
+	fillblank(table.rows[rownum])
+	newrow.cells[OPDATE].innerHTML = ""
+
+	var caseNum = BOOK.length
+	var staffname = $('#titlename').html()
+	var bookq = JSON.parse(JSON.stringify(BOOK[0]))
+	$.each( bookq, function(key, val) {
+		bookq[key] = ""
+	})
+	bookq.opdate = LARGESTDATE
+	BOOK.push(bookq)
+	
+	$("#editcell").data("editRow", "#queuetbl tr:eq("+ rownum +")")
+	var $pointing = $($("#editcell").data("editRow")).children().eq(STAFFNAME)
+	$("#editcell").data("pointing", $pointing[0])
+	saveContent("staffname", staffname)
+}
+
 function addnewrow(tableID, rowmain)
 {
 	var qn = rowmain.cells[QN].innerHTML
@@ -224,7 +248,7 @@ function deleteRow(rowmain, opdate)
 	var prevDate = $(rowmain).prev().children().eq(OPDATE).html()
 	var nextDate = $(rowmain).next().children().eq(OPDATE).html()
 
-	if (prevDate)	//avoid "undefined" error message
+	if (prevDate)	//LARGESTDATE shown as blank
 		prevDate = prevDate.numDate()
 
 	if (nextDate)

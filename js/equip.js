@@ -5,11 +5,11 @@ function fillEquipTable(rownum, qn)
 	var bookq = BOOK[q]
 	var bookqEquip = bookq.equipment
 
-	document.getElementById("opdate").innerHTML = bookq.opdate.thDate()
+	document.getElementById("opdate").innerHTML = putOpdate(bookq.opdate)
 	document.getElementById("staffname").innerHTML = bookq.staffname
 	document.getElementById("hn").innerHTML = bookq.hn
 	document.getElementById("patientname").innerHTML = bookq.patient
-	document.getElementById("age").innerHTML = bookq.dob? bookq.dob.getAge(bookq.opdate) : ""
+	document.getElementById("age").innerHTML = putAgeOpdate(bookq.dob, bookq.opdate)
 	document.getElementById("diagnosis").innerHTML = bookq.diagnosis
 	document.getElementById("treatment").innerHTML = bookq.treatment
 
