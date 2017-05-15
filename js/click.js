@@ -10,10 +10,17 @@ function keyin(event)
 	var pointing = $("#editcell").data("pointing")
 	var thiscell
 
+	if (keycode == 27)	{
+		$('#menu').hide();
+		$('#stafflist').hide();
+		clearEditcellData("hide")
+		window.focus()
+		return false
+	}
 	if (!pointing) {
 		return
 	}
-		
+	
 	switch(keycode)
 	{
 		case 9:
@@ -36,6 +43,8 @@ function keyin(event)
 			} else {
 				clearEditcellData("hide")
 				window.focus()
+				event.preventDefault()
+				return false
 			}
 			break
 		case 13:
@@ -54,27 +63,17 @@ function keyin(event)
 			} else {
 				clearEditcellData("hide")
 				window.focus()
+				event.preventDefault()
+				return false
 			}
 			break
-		case 27:
-			$('#menu').hide();
-			$('#stafflist').hide();
-			clearEditcellData("hide")
-			window.focus()
-			break
-		default:
-			return
 	}
-	event.preventDefault()
-	return false
 }
 
 function savePreviouscell() 
 {
 	var editPoint = $("#editcell").data("pointing")
-	if (!(editPoint) 
-	|| (editPoint.innerHTML == getData())
-	|| (editPoint.cellIndex == OPDATE)) {
+	if (!(editPoint) || (editPoint.innerHTML == getData())) {
 		return
 	}
 
@@ -365,9 +364,7 @@ function storePresentcell(pointing)
 				context = context.replace(/\"/g, "")
 			}
 			context = context + pointing.innerHTML
-			$("#editcell").html(context)
-			$("#editcell").data("content", context)
-			$("#editcell").data("pointing", pointing)
+			$("#editcell").html(context)	//to show in editcell div
 			fillSetTable(rindex, pointing)
 			break
 		case STAFFNAME:

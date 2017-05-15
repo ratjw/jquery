@@ -135,7 +135,7 @@ String.prototype.getAge = function (toDate)
 
 function getOpdate(date)
 {
-	if (!date) { return date }
+	if (date === undefined) { return date }
 	if ((date === "") || (date === LARGESTDATE)) {
 		return LARGESTDATE
 	} else {
@@ -145,7 +145,7 @@ function getOpdate(date)
 
 function putOpdate(date)
 {
-	if (!date) { return date }
+	if (date === undefined) { return date }
 	if ((date === "") || (date === LARGESTDATE)) {
 		return ""
 	} else {
@@ -155,8 +155,7 @@ function putOpdate(date)
 
 function putAgeOpdate(dob, date)
 {
-	if (!date) { return "" }
-	if ((!dob) || (date === LARGESTDATE)) {
+	if (!date || !dob || (date === LARGESTDATE)) {
 		return ""
 	} else {
 		return dob.getAge(date)

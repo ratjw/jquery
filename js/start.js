@@ -134,9 +134,7 @@ function fillStafflist()
 function updating()	//updating.timer : local variable
 {
 	var editPoint = $("#editcell").data("pointing")
-	if ((editPoint) 
-	&& (editPoint.innerHTML != getData())
-	&& (editPoint.cellIndex != OPDATE)) {
+	if ((editPoint) && (editPoint.innerHTML != getData())) {
 
 		//being editing on screen
 		if ($(editcell).data("tableID") == "servicetbl") {

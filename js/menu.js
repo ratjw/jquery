@@ -190,10 +190,10 @@ function largestOpdate()
 	BOOK.push(bookq)
 	
 	$("#editcell").data("editRow", "#queuetbl tr:eq("+ rownum +")")
-	var $pointing = $($("#editcell").data("editRow")).children().eq(STAFFNAME)
-	$("#editcell").data("pointing", $pointing[0])
+	var pointing = $($("#editcell").data("editRow")).children().eq(STAFFNAME)[0]
+	$("#editcell").data("pointing", pointing)	//change pointing to STAFFNAME
 	saveContent("staffname", staffname)
-	$pointing.html(staffname)
+	pointing.innerHTML = staffname
 }
 
 function addnewrow(tableID, rowmain, qn)
@@ -214,10 +214,10 @@ function addnewrow(tableID, rowmain, qn)
 	if (tableID == "queuetbl") {
 		var rownum = rowmain.rowIndex
 		$("#editcell").data("editRow", "#"+ tableID +" tr:eq("+ rownum +")")
-		var $pointing = $($("#editcell").data("editRow")).children().eq(STAFFNAME)
-		$("#editcell").data("pointing", $pointing[0])
+		var pointing = $($("#editcell").data("editRow")).children().eq(STAFFNAME)[0]
+		$("#editcell").data("pointing", pointing)	//change pointing to STAFFNAME
 		saveContent("staffname", staffname)
-		$pointing.html(staffname)
+		pointing.innerHTML = staffname
 	}
 }
 
@@ -245,11 +245,8 @@ function deleteRow(rowmain, opdate)
 	var prevDate = $(rowmain).prev().children().eq(OPDATE).html()
 	var nextDate = $(rowmain).next().children().eq(OPDATE).html()
 
-	if (prevDate)	//LARGESTDATE shown as blank
-		prevDate = prevDate.numDate()
-
-	if (nextDate)
-		nextDate = nextDate.numDate()
+	prevDate = getOpdate(prevDate)
+	nextDate = getOpdate(nextDate)
 
 	if ((prevDate == opdate) || (nextDate == opdate)) {
 		$(rowmain).remove()
