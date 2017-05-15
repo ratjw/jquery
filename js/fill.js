@@ -176,7 +176,7 @@ function refillall()
 	}
 }
 
-function makenextrow(date)
+function makenextrow(date)	//create new row
 {
 	var tbody = document.getElementById("tblbody")
 	var datatitle = document.getElementById("datatitle")
@@ -189,7 +189,7 @@ function makenextrow(date)
 	rowi.className = NAMEOFDAYFULL[(new Date(date)).getDay()]
 }
 
-function fillrowdate(rows, i, date)
+function fillrowdate(rows, i, date)	//renew existing row
 {
 	var datatitle = document.getElementById("datatitle")
 	if (rows[i].cells[OPDATE].nodeName != "TD") {
@@ -224,6 +224,7 @@ function filldata(bookq, rowi)		//bookq = BOOK[q]
 	rowi.cells[TREATMENT].innerHTML = bookq.treatment
 	rowi.cells[CONTACT].innerHTML = bookq.contact
 	rowi.cells[QN].innerHTML = bookq.qn
+	rowi.title = bookq.waitnum
 }
 
 function staffqueue(staffname)
@@ -283,6 +284,7 @@ jQuery.fn.extend({
 		rowcell[TREATMENT].innerHTML = bookq.treatment
 		rowcell[CONTACT].innerHTML = bookq.contact
 		rowcell[QN].innerHTML = bookq.qn
+		this[0].title = bookq.waitnum
 	}
 })
 

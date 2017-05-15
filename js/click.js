@@ -139,19 +139,31 @@ function saveContent(column, content)	//column name in MYSQL
 	if (content) {
 		 content = URIcomponent(content)	//take care of white space, double qoute, 
 	}										//single qoute, and back slash
-
-	if (qn)
-	{
-		sql = "sqlReturnbook=UPDATE book SET "
-		sql += column +" = '"+ content
-		sql += "', editor='"+ THISUSER
-		sql += "' WHERE qn = "+ qn +";"
-	}
-	else
-	{
-		sql = "sqlReturnbook=INSERT INTO book ("
-		sql += "opdate, "+ column +", editor) VALUES ('"
-		sql += opdate +"', '"+ content +"', '"+ THISUSER +"');"
+	if (column == "staffname") {
+		var waitnum = getWaitnum(opdate, staffname)
+		$($("#editcell").data("editRow"))[0].title = waitnum
+		if (qn) {
+			sql = "sqlReturnbook=UPDATE book SET "
+			sql += "waitnum = "+ waitnum + ", "
+			sql += column +" = '"+ content
+			sql += "', editor='"+ THISUSER
+			sql += "' WHERE qn = "+ qn +";"
+		} else {
+			sql = "sqlReturnbook=INSERT INTO book ("
+			sql += "waitnum, opdate, "+ column +", editor) VALUES ("
+			sql += waitnum + ", '" + opdate +"', '"+ content +"', '"+ THISUSER +"');"
+		}
+	} else {
+		if (qn) {
+			sql = "sqlReturnbook=UPDATE book SET "
+			sql += column +" = '"+ content
+			sql += "', editor='"+ THISUSER
+			sql += "' WHERE qn = "+ qn +";"
+		} else {
+			sql = "sqlReturnbook=INSERT INTO book ("
+			sql += "opdate, "+ column +", editor) VALUES ('"
+			sql += opdate +"', '"+ content +"', '"+ THISUSER +"');"
+		}
 	}
 
 	Ajax(MYSQLIPHP, sql, callbacksaveContent);
@@ -285,6 +297,51 @@ function findNewRowBOOK(opdate)	//find new row (max. qn)
 	return newq
 }
 
+function getWaitnum(opdate, staffname)
+{
+	var prevWaitNum = Number($($("#editcell").data("editRow")).prev()[0].title)
+	var nextWaitNum = Number($($("#editcell").data("editRow")).next()[0].title)
+	var prevRowCell = $($("#editcell").data("editRow")).prev().children("td")
+	var nextRowCell = $($("#editcell").data("editRow")).next().children("td")
+	var prevOpdate = getOpdate(prevRowCell.eq(OPDATE).html())
+	var nextOpdate = getOpdate(nextRowCell.eq(OPDATE).html())
+	var prevStaffname = prevRowCell.eq(STAFFNAME).html()
+	var nextStaffname = nextRowCell.eq(STAFFNAME).html()
+
+	if (prevOpdate != opdate && opdate != nextOpdate) {
+		return 1
+	}
+	else if (prevOpdate == opdate && opdate != nextOpdate) {
+		if (prevStaffname == staffname) {
+			return prevWaitNum + 1
+		} else {
+			return 1
+		}
+	}
+	else if (prevOpdate != opdate && opdate == nextOpdate) {
+		if (staffname == nextStaffname) {
+			return nextWaitNum / 2
+		} else {
+			return 1
+		}
+	}
+	else if (prevOpdate == opdate && opdate == nextOpdate) {
+		if (prevStaffname == staffname) {
+			if (staffname == nextStaffname) {
+				return (prevWaitNum + nextWaitNum) / 2
+			} else {
+				return prevWaitNum + 1
+			}
+		} else {
+			if (staffname == nextStaffname) {
+				return nextWaitNum / 2
+			} else {
+				return 1
+			}
+		}
+	}
+}
+
 function storePresentcell(pointing)
 {
 	var rindex = pointing.parentNode.rowIndex
@@ -358,8 +415,8 @@ function reposition(me, mypos, atpos, target)
 function saveDataPoint(editcell, pointing)
 {
 	var tableID = $(pointing).closest('table').attr('id')
-	var rowIndex = $(pointing).closest('tr').index()
-	var cellIndex = $(pointing).index()
+	var rowIndex = pointing.parentNode.rowIndex
+	var cellIndex = pointing.cellIndex
 
 	$(editcell).data("tableID", tableID)
 	$(editcell).data("rowIndex", rowIndex)

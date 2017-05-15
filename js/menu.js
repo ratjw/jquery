@@ -77,7 +77,7 @@ function fillSetTable(rownum, pointing)
 					largestOpdate()
 					break
 				case "item3":
-					addnewrow(tableID, rowmain)
+					addnewrow(tableID, rowmain, qn)
 					break
 				case "item4":
 					if (checkblank(opdate, qn))	{	//from add new row (check case in this opdate)
@@ -195,32 +195,28 @@ function largestOpdate()
 	saveContent("staffname", staffname)
 }
 
-function addnewrow(tableID, rowmain)
+function addnewrow(tableID, rowmain, qn)
 {
-	var qn = rowmain.cells[QN].innerHTML
-	if (qn)	//not empty
-	{
-		var caseNum = findcaseNum(qn)
-		var staffname = BOOK[caseNum].staffname
-		var bookq = JSON.parse(JSON.stringify(BOOK[caseNum]))
-		$.each( bookq, function(key, val) {
-			bookq[key] = ""
-		})
-		bookq.opdate = BOOK[caseNum].opdate
-		BOOK.splice(caseNum + 1, 0, bookq)
-		
-		var clone = rowmain.cloneNode(true)
-		rowmain.parentNode.insertBefore(clone, rowmain)
-		fillblank(rowmain)
-		
-		if (tableID == "queuetbl") {
-			var rownum = rowmain.rowIndex
-			$("#editcell").data("editRow", "#"+ tableID +" tr:eq("+ rownum +")")
-			var $pointing = $($("#editcell").data("editRow")).children().eq(STAFFNAME)
-			$("#editcell").data("pointing", $pointing[0])
-			saveContent("staffname", staffname)
-			$pointing.html(staffname)
-		}
+	var caseNum = findcaseNum(qn)
+	var staffname = BOOK[caseNum].staffname
+	var bookq = JSON.parse(JSON.stringify(BOOK[caseNum]))
+	$.each( bookq, function(key, val) {
+		bookq[key] = ""
+	})
+	bookq.opdate = BOOK[caseNum].opdate
+	BOOK.splice(caseNum + 1, 0, bookq)
+	
+	var clone = rowmain.cloneNode(true)
+	rowmain.parentNode.insertBefore(clone, rowmain)
+	fillblank(rowmain)
+	
+	if (tableID == "queuetbl") {
+		var rownum = rowmain.rowIndex
+		$("#editcell").data("editRow", "#"+ tableID +" tr:eq("+ rownum +")")
+		var $pointing = $($("#editcell").data("editRow")).children().eq(STAFFNAME)
+		$("#editcell").data("pointing", $pointing[0])
+		saveContent("staffname", staffname)
+		$pointing.html(staffname)
 	}
 }
 
