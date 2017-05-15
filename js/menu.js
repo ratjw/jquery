@@ -15,7 +15,7 @@ function fillSetTable(rownum, pointing)
 
 	casename = casename.substring(0, casename.indexOf(' '))
 
-	$("#item2 div").html("เพิ่ม case ต่อท้าย")
+	$("#item2 div").html("เพิ่ม case ต่อท้าย ไม่ระบุวันที่")
 	if (tableID == "queuetbl") {
 		$("#item2").removeClass(disabled)
 	} else {
@@ -193,6 +193,7 @@ function largestOpdate()
 	var $pointing = $($("#editcell").data("editRow")).children().eq(STAFFNAME)
 	$("#editcell").data("pointing", $pointing[0])
 	saveContent("staffname", staffname)
+	$pointing.html(staffname)
 }
 
 function addnewrow(tableID, rowmain, qn)

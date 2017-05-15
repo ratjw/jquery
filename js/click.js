@@ -299,8 +299,14 @@ function findNewRowBOOK(opdate)	//find new row (max. qn)
 
 function getWaitnum(opdate, staffname)
 {
-	var prevWaitNum = Number($($("#editcell").data("editRow")).prev()[0].title)
-	var nextWaitNum = Number($($("#editcell").data("editRow")).next()[0].title)
+	var prevWaitNum = $($("#editcell").data("editRow")).prev()[0]
+	var nextWaitNum = $($("#editcell").data("editRow")).next()[0]
+	if (prevWaitNum) {
+		prevWaitNum = Number(prevWaitNum.title)
+	}
+	if (nextWaitNum) {
+		nextWaitNum = Number(nextWaitNum.title)
+	}
 	var prevRowCell = $($("#editcell").data("editRow")).prev().children("td")
 	var nextRowCell = $($("#editcell").data("editRow")).next().children("td")
 	var prevOpdate = getOpdate(prevRowCell.eq(OPDATE).html())
