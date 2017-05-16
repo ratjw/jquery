@@ -136,7 +136,7 @@ function saveContent(column, content)	//column name in MYSQL
 		 content = URIcomponent(content)	//take care of white space, double qoute, 
 	}										//single qoute, and back slash
 	if (column == "staffname") {
-		var waitnum = getWaitnum(opdate, staffname)
+		var waitnum = getWaitnum($row, opdate, staffname)
 		$row[0].title = waitnum
 		if (qn) {
 			sql = "sqlReturnbook=UPDATE book SET "
@@ -289,22 +289,22 @@ function findNewRowBOOK(opdate)	//find new row (max. qn)
 	return newq
 }
 
-function getWaitnum(opdate, staffname)
+function getWaitnum($row, opdate, staffname)
 {
-	var prevWaitNum = $($("#editcell").data("editRow")).prev()[0]
-	var nextWaitNum = $($("#editcell").data("editRow")).next()[0]
+	var prevWaitNum = $row.prev()[0]
+	var nextWaitNum = $row.next()[0]
 	if (prevWaitNum) {
 		prevWaitNum = Number(prevWaitNum.title)
 	}
 	if (nextWaitNum) {
 		nextWaitNum = Number(nextWaitNum.title)
 	}
-	var prevRowCell = $($("#editcell").data("editRow")).prev().children("td")
-	var nextRowCell = $($("#editcell").data("editRow")).next().children("td")
-	var prevOpdate = getOpdate(prevRowCell.eq(OPDATE).html())
-	var nextOpdate = getOpdate(nextRowCell.eq(OPDATE).html())
-	var prevStaffname = prevRowCell.eq(STAFFNAME).html()
-	var nextStaffname = nextRowCell.eq(STAFFNAME).html()
+	var $prevRowCell = $row.prev().children("td")
+	var $nextRowCell = $row.next().children("td")
+	var prevOpdate = getOpdate($prevRowCell.eq(OPDATE).html())
+	var nextOpdate = getOpdate($nextRowCell.eq(OPDATE).html())
+	var prevStaffname = $prevRowCell.eq(STAFFNAME).html()
+	var nextStaffname = $nextRowCell.eq(STAFFNAME).html()
 
 	if (prevOpdate != opdate && opdate != nextOpdate) {
 		return 1
