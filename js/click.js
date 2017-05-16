@@ -15,6 +15,7 @@ function keyin(event)
 		$('#stafflist').hide();
 		clearEditcellData("hide")
 		window.focus()
+		event.preventDefault()
 		return false
 	}
 	if (!pointing) {
@@ -43,8 +44,6 @@ function keyin(event)
 			} else {
 				clearEditcellData("hide")
 				window.focus()
-				event.preventDefault()
-				return false
 			}
 			break
 		case 13:
@@ -63,11 +62,13 @@ function keyin(event)
 			} else {
 				clearEditcellData("hide")
 				window.focus()
-				event.preventDefault()
-				return false
 			}
 			break
+		default:
+			return
 	}
+	event.preventDefault()
+	return false
 }
 
 function savePreviouscell() 

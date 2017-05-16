@@ -251,6 +251,12 @@ function Skeyin(event)
 	var pointing = $("#editcell").data("pointing")
 	var thiscell
 
+	if (keycode == 27) {
+		clearEditcellData("hide")
+		window.focus()
+		event.preventDefault()
+		return false
+	}
 	if (!pointing) {
 		return
 	}
@@ -282,10 +288,6 @@ function Skeyin(event)
 				clearEditcellData("hide")
 				window.focus()
 			}
-			break
-		case 27:
-			clearEditcellData("hide")
-			window.focus()
 			break
 		default:
 			return

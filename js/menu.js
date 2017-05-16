@@ -82,7 +82,7 @@ function fillSetTable(rownum, pointing)
 				case "item4":
 					if (checkblank(opdate, qn))	{	//from add new row (check case in this opdate)
 						$(rowmain).remove()			//delete blank row
-						var caseNum = findcaseNum("")
+						var caseNum = findBOOKrow("")
 						BOOK.splice(caseNum, 1)
 					} else
 						deleteCase(rowmain, opdate, qn, pointing)
@@ -195,7 +195,7 @@ function largestOpdate()
 
 function addnewrow(tableID, rowmain, qn)
 {
-	var caseNum = findcaseNum(qn)
+	var caseNum = findBOOKrow(qn)
 	var staffname = BOOK[caseNum].staffname
 	var bookq = JSON.parse(JSON.stringify(BOOK[caseNum]))
 	$.each( bookq, function(key, val) {

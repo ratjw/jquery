@@ -248,23 +248,25 @@ function closeAlert()
 function findTablerow(table, qn)
 {
 	var i = 1
-	while (table.rows[i].cells[QN].innerHTML != qn)
-	{
+	while ((i < table.rows.length) && (table.rows[i].cells[QN].innerHTML != qn)) {
 		i++
-		if (i >= table.rows.length)
-			return false
 	}
-	return i
+	if (i < table.rows.length) {
+		return i
+	} else {
+		return null
+	}
 }
 
 function findBOOKrow(qn)
-{
+{  
 	var q = 0
-	while (BOOK[q].qn != qn)
-	{
+	while ((q < BOOK.length) && (BOOK[q].qn != qn)) {
 		q++
-		if (q >= BOOK.length)
-			return false
 	}
-	return q
+	if (q < BOOK.length) {
+		return q
+	} else {
+		return null
+	}
 }
