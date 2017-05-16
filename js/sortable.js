@@ -41,7 +41,6 @@ function sortable()
 			}
 
 			var thisdrop
-			var finalWaitnum
 			var previtem = ui.item.prev()
 			var thisitem = ui.item
 			var nextitem = ui.item.next()
@@ -74,17 +73,8 @@ function sortable()
 
 			var thisopdate = getOpdate(thisdrop.children("td").eq(OPDATE).html())
 			var staffname = thisitem.children("td").eq(STAFFNAME).html()
+			var finalWaitnum = getWaitnum(thisopdate, staffname)
 			var thisqn = thisitem.children("td").eq(QN).html()
-
-			if (thisdrop == previtem) {
-				var prevqn = previtem.children("td").eq(QN).html()
-				finalWaitnum = prevWaitnum(prevqn, thisopdate)
-			}
-			if (thisdrop == nextitem) {
-				var nextqn = nextitem.children("td").eq(QN).html()
-				finalWaitnum = nextWaitnum(nextqn, thisopdate)
-			}
-			var dropRowIndex = thisdrop.index()
 
 			var sql = "sqlReturnbook=UPDATE book SET Waitnum = "+ finalWaitnum
 			sql += ", opdate='" + thisopdate
@@ -93,6 +83,7 @@ function sortable()
 
 			Ajax(MYSQLIPHP, sql, callbacksortable);
 
+			thisitem[0].title = finalWaitnum
 			ui.item.children().eq(STAFFNAME).css("height", thisdrop.height())
 
 			function callbacksortable(response)

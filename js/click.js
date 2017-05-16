@@ -121,13 +121,9 @@ function saveContent(column, content)	//column name in MYSQL
 	if (content == $("#editcell").data("content")) {
 		return
 	}
-	var $rowcell = $($("#editcell").data("editRow")).children("td")
-	var opdate = $rowcell.eq(OPDATE).html()
-	if (!opdate) {
-		opdate = LARGESTDATE
-	} else {
-		opdate = opdate.numDate()
-	}
+	var $row = $($("#editcell").data("editRow"))
+	var $rowcell = $row.children("td")
+	var opdate = getOpdate($rowcell.eq(OPDATE).html())
 	var staffname = $rowcell.eq(STAFFNAME).html()
 	var qn = $rowcell.eq(QN).html()
 	var pointing = $("#editcell").data("pointing")
@@ -140,7 +136,7 @@ function saveContent(column, content)	//column name in MYSQL
 	}										//single qoute, and back slash
 	if (column == "staffname") {
 		var waitnum = getWaitnum(opdate, staffname)
-		$($("#editcell").data("editRow"))[0].title = waitnum
+		$row[0].title = waitnum
 		if (qn) {
 			sql = "sqlReturnbook=UPDATE book SET "
 			sql += "waitnum = "+ waitnum + ", "
@@ -169,7 +165,7 @@ function saveContent(column, content)	//column name in MYSQL
 
 	var tableID = $("#editcell").data("tableID")
 	var cellindex = $("#editcell").data("cellIndex")
-	var $updateCell = $($("#editcell").data("editRow")).children()
+	var $updateCell = $row.children()
 	var oldContent = $("#editcell").data("content")
 
 	function callbacksaveContent(response)
@@ -212,13 +208,9 @@ function saveContent(column, content)	//column name in MYSQL
 
 function saveHNinput(hn, content)
 {
-	var $rowcell = $($("#editcell").data("editRow")).children("td")
-	var opdate = $rowcell.eq(OPDATE).html()
-	if (!opdate) {
-		opdate = LARGESTDATE
-	} else {
-		opdate = opdate.numDate()
-	}
+	var $row = $($("#editcell").data("editRow"))
+	var $rowcell = $row.children("td")
+	var opdate = getOpdate($rowcell.eq(OPDATE).html())
 	var staffname = $rowcell.eq(STAFFNAME).html()
 	var patient = $rowcell.eq(NAME).html()
 	var qn = $rowcell.eq(QN).html()
@@ -238,7 +230,7 @@ function saveHNinput(hn, content)
 
 	var tableID = $("#editcell").data("tableID")
 	var cellindex = $("#editcell").data("cellIndex")
-	var $updateCell = $($("#editcell").data("editRow")).children()
+	var $updateCell = $row.children()
 	var oldContent = $("#editcell").data("content")
 
 	function callbackgetByHN(response)
