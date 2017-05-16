@@ -14,8 +14,18 @@ include "connect.php";
 	$resultj = json_encode($resulty);		//use json encode-decode to
 	$ipd = json_decode($resultj,true);		//convert XML to assoc array
 
-	$admit = $ipd[admission_date];
-	$discharge = $ipd[discharge_date];
+	if (empty($ipd[admission_date])) {
+		$ipd[admission_date] = null;
+		$admit = null;
+	} else {
+		$admit = "'" . $ipd[admission_date] . "'";
+	}
+	if (empty($ipd[discharge_date])) {
+		$ipd[discharge_date] = null;
+		$discharge = null;
+	} else {
+		$discharge = "'" . $ipd[discharge_date] . "'";
+	}
 	$date1 = date_create($admit);
 	$date2 = date_create($opdate);
 	$diff = date_diff($date1, $date2);

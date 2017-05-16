@@ -205,6 +205,25 @@ function resetcountService()
 
 function getAdmitDischargeDate(SERVICE, fromDate, toDate)
 {
+	Ajax(GETIPDCRON, "from=" + fromDate + "&to=" + toDate, callbackgetipdcron)
+
+	function callbackgetipdcron(response)
+	{
+		if (!response) {
+			return
+		}
+		if (response.indexOf("{") == -1) {
+			alert("getAdmitDischargeDate\n\n" + response)
+		} else {
+			updateBOOK(response)
+			var SERVICE = getfromBOOK(fromDate, toDate)
+			fillAdmitDischargeDate(SERVICE)
+		}
+	}
+}
+
+function fillAdmitDischargeDate(SERVICE)
+{
 	var i = 0
 	$.each( STAFF, function() {
 		var staffname = this
@@ -213,33 +232,8 @@ function getAdmitDischargeDate(SERVICE, fromDate, toDate)
 			if (this.staffname == staffname) {
 				i++
 				var $thisRow = $('#servicetbl tr').eq(i).children()
-				var opdate = this.opdate
-				var hn = this.hn
-				var qn = this.qn
-				var admit = this.admit
-				var discharge = this.discharge
-				var that = this
-
-				if (!admit || !discharge) {
-
-					Ajax(GETIPDAJAX, "opdate=" + opdate + "&hn=" + hn + "&qn="+ qn, callbackgetipdajax)
-
-					function callbackgetipdajax(response)
-					{
-						if (!response) {
-							return
-						}
-						if (response.indexOf("{") == -1) {
-							alert(response)
-						} else {
-							var ipd = JSONparse(response)
-							$thisRow.eq(ADMIT).html(ipd.admission_date)
-							$thisRow.eq(DISCHARGE).html(ipd.discharge_date)
-							that.admit = ipd.admission_date
-							that.discharge = ipd.discharge_date
-						}
-					}
-				}
+				$thisRow.eq(ADMIT).html(this.admit)
+				$thisRow.eq(DISCHARGE).html(this.discharge)
 			}
 		});
 	})
@@ -388,7 +382,7 @@ function saveSContent(column, content)	//column name in MYSQL
 	{
 		if (!response || response.indexOf("DBfailed") != -1)
 		{
-			alert("Failed! update database \n\n" + response)
+			alert("saveSContent Failed! update database \n\n" + response)
 			pointing.innerHTML = $("#editcell").data("content")
 			//return to previous content
 		}

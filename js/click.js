@@ -176,7 +176,7 @@ function saveContent(column, content)	//column name in MYSQL
 	{
 		if (!response || response.indexOf("DBfailed") != -1)
 		{
-			alert("Failed! update database \n\n" + response)
+			alert("saveContent Failed! update database \n\n" + response)
 			pointing.innerHTML = oldContent
 			//return to previous content
 		}

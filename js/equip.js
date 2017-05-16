@@ -145,7 +145,7 @@ function Checklistequip(qn, bookqEquip)
 	{
 		if (!response || response.indexOf("QTIME") == -1)
 		{
-			alert("Failed! update database \n\n" + response)
+			alert("Checklistequip Failed! update database \n\n" + response)
 		}
 		else	//there is some change
 		{

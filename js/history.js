@@ -182,7 +182,7 @@ function undelete(thiscase)
 		{
 			if (!response || response.indexOf("DBfailed") != -1)
 			{
-				alert("Failed! update database \n\n" + response)
+				alert("undelete Failed! update database \n\n" + response)
 			}
 			else
 			{

@@ -173,12 +173,9 @@ function checkblank(opdate, qn)
 
 function largestOpdate()
 {
-	var table = document.getElementById("queuetbl")
-	var rownum = table.rows.length
-	var clone = table.rows[rownum-1].cloneNode(true)
-	var newrow = table.appendChild(clone)
-	fillblank(table.rows[rownum])
-	newrow.cells[OPDATE].innerHTML = ""
+	//must use jQuery in order to be recognized
+	$("#queuetbl tbody").append($("#queuetbl tr:last").clone())
+	$("#queuetbl tr:last").children().html("")
 
 	var caseNum = BOOK.length
 	var staffname = $('#titlename').html()
@@ -189,8 +186,8 @@ function largestOpdate()
 	bookq.opdate = LARGESTDATE
 	BOOK.push(bookq)
 	
-	$("#editcell").data("editRow", "#queuetbl tr:eq("+ rownum +")")
-	var pointing = $($("#editcell").data("editRow")).children().eq(STAFFNAME)[0]
+	$("#editcell").data("editRow", "#queuetbl tr:last") //provide editrow for savecontent
+	var pointing = $("#queuetbl tr:last td").eq(STAFFNAME)[0]
 	$("#editcell").data("pointing", pointing)	//change pointing to STAFFNAME
 	saveContent("staffname", staffname)
 	pointing.innerHTML = staffname
