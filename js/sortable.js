@@ -72,9 +72,7 @@ function sortable()
 				}
 			}
 
-			var thisopdate = thisdrop.children("td").eq(OPDATE).html()
-			if (!thisopdate) { return }
-			thisopdate = thisopdate.numDate()
+			var thisopdate = getOpdate(thisdrop.children("td").eq(OPDATE).html())
 			var staffname = thisitem.children("td").eq(STAFFNAME).html()
 			var thisqn = thisitem.children("td").eq(QN).html()
 
