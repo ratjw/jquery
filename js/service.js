@@ -213,7 +213,7 @@ function getAdmitDischargeDate(SERVICE, fromDate, toDate)
 			return
 		}
 		if (response.indexOf("{") == -1) {
-			alert("getAdmitDischargeDate\n\n" + response)
+			alert("getAdmitDischargeDate", response)
 		} else {
 			updateBOOK(response)
 			var SERVICE = getfromBOOK(fromDate, toDate)
@@ -241,7 +241,7 @@ function fillAdmitDischargeDate(SERVICE)
 
 function clickservice(clickedCell)
 {
-	savePreviousScell()
+	savePreviouscellService()
 	storePresentScell(clickedCell)
 }
 
@@ -260,91 +260,92 @@ function Skeyin(event)
 	if (!pointing) {
 		return
 	}
-		
-	switch(keycode)
-	{
-		case 9:
-			savePreviousScell()
-			if (event.shiftKey)
-				thiscell = findPrevcell(event, SEDITABLE, pointing)
-			else
-				thiscell = findNextcell(event, SEDITABLE, pointing)
-			if (thiscell) {
-				storePresentScell(thiscell)
-			} else {
-				clearEditcellData("hide")
-				window.focus()
-			}
-			break
-		case 13:
-			if (event.shiftKey || event.ctrlKey) {
-				return
-			}
-			savePreviousScell()
-			thiscell = findNextRow(event, SEDITABLE, pointing)
-			if (thiscell) {
-				storePresentScell(thiscell)
-			} else {
-				clearEditcellData("hide")
-				window.focus()
-			}
-			break
-		default:
-			return
+	if (keycode == 9) {
+		savePreviouscellService()
+		if (event.shiftKey)
+			thiscell = findPrevcell(event, SEDITABLE, pointing)
+		else
+			thiscell = findNextcell(event, SEDITABLE, pointing)
+		if (thiscell) {
+			storePresentScell(thiscell)
+		} else {
+			clearEditcellData("hide")
+			window.focus()
+		}
+		event.preventDefault()
+		return false
 	}
-	event.preventDefault()
-	return false
+	if (keycode == 13) {
+		if (event.shiftKey || event.ctrlKey) {
+			return
+		}
+		savePreviouscellService()
+		thiscell = findNextRow(event, SEDITABLE, pointing)
+		if (thiscell) {
+			storePresentScell(thiscell)
+		} else {
+			clearEditcellData("hide")
+			window.focus()
+		}
+		event.preventDefault()
+		return false
+	}
 }
 
-function savePreviousScell()
+function savePreviouscellService()
 {
-	if (!$("#editcell").data("pointing"))
-		return
+	var editPoint = $("#editcell").data("pointing")
+	if (editPoint && (editPoint.innerHTML != getEditcellHtml())) {
+		saveEditPointDataService(editPoint)
+	}
+}
 
+function saveEditPointDataService(pointed)
+{
 	var content = ""
-	switch($("#editcell").data("cellIndex"))
+	switch(pointed.cellIndex)
 	{
 		case CASE:
 		case PATIENT:
 			break
 		case SDIAGNOSIS:
-			content = getData()
-			saveSContent("diagnosis", content)
+			content = getEditcellHtml()
+			saveSContent(pointed, "diagnosis", content)
 			break
 		case STREATMENT:
-			content = getData()
-			saveSContent("treatment", content)
+			content = getEditcellHtml()
+			saveSContent(pointed, "treatment", content)
 			break
 		case ADMISSION:
-			content = getData()
-			saveSContent("admission", content)
+			content = getEditcellHtml()
+			saveSContent(pointed, "admission", content)
 			break
 		case FINAL:
-			content = getData()
-			saveSContent("final", content)
+			content = getEditcellHtml()
+			saveSContent(pointed, "final", content)
 			break
 		case ADMIT:
 			content = $('#datepicker').val()
-			if (content != $("#editcell").data("content")) {
+			if (content != pointed.innerHTML) {
 				if (!content) {
 					content = null
-					saveSContent("admit", content)
+					saveSContent(pointed, "admit", content)
 				}
 				if (ISODATE.test(content)) {
-					saveSContent("admit", content)
+					saveSContent(pointed, "admit", content)
 				}
 			}
 			$('#datepicker').hide()
 			break
 		case DISCHARGE:
 			content = $('#datepicker').val()
-			if (content != $("#editcell").data("content")) {
+			if (content != pointed.innerHTML) {
 				if (!content) {
 					content = null
-					saveSContent("discharge", content)
+					saveSContent(pointed, "discharge", content)
 				}
 				if (ISODATE.test(content)) {
-					saveSContent("discharge", content)
+					saveSContent(pointed, "discharge", content)
 				}
 			}
 			$('#datepicker').hide()
@@ -352,18 +353,15 @@ function savePreviousScell()
 	}
 }
 
-function saveSContent(column, content)	//column name in MYSQL
+function saveSContent(pointed, column, content)	//column name in MYSQL
 {
-	var $editTR = $($("#editcell").data("editRow"))
-	var qn = $editTR.children("td").eq(SQN).html()
+	var rowmain = $(pointing).closest('tr')[0]
+	var qn = rowmain.cells[SQN].innerHTML
 	var fromDate = $('#monthpicker').data('fromDate')
 	var toDate = $('#monthpicker').data('toDate')
-	var pointing = $("#editcell").data("pointing")
+	var oldContent = pointed.innerHTML
 
-	if (content == $("#editcell").data("content")) {
-		return
-	}
-	pointing.innerHTML = content? content : ''	//just for show instantly
+	pointed.innerHTML = content? content : ''	//just for show instantly
 
 	if (content) {
 		content = URIcomponent(content)	//take care of white space, double qoute, 
@@ -384,19 +382,16 @@ function saveSContent(column, content)	//column name in MYSQL
 	{
 		if (!response || response.indexOf("DBfailed") != -1)
 		{
-			alert("saveSContent Failed! update database \n\n" + response)
-			pointing.innerHTML = $("#editcell").data("content")
-			//return to previous content
-		}
-		else
-		{
+			alert("saveSContent", response)
+			pointed.innerHTML = oldContent		//return to previous content
+		} else {
 			var fromDate = $('#monthpicker').data('fromDate')
 			var toDate = $('#monthpicker').data('toDate')
 			var thisrow = JSON.parse(response)
 
-			$editTR[0].className = countService(thisrow[0], fromDate, toDate)
+			rowmain.className = countService(thisrow[0], fromDate, toDate)
 
-			//No refill because it may make next editTD return to old value
+			//Not refill because it may make next editTD return to old value
 			//when fast entry, due to slow return from Ajax
 		}
 	}
@@ -421,12 +416,12 @@ function storePresentScell(pointing)
 			$('#datepicker').hide()
 			$('#datepicker').datepicker( 'hide' )
 			createEditcell(pointing)
-			saveDataPoint("#editcell", pointing)
+			saveEditcellData(pointing)
 			break
 		case ADMIT:
 		case DISCHARGE:
 			$('#editcell').hide()
-			saveDataPoint("#editcell", pointing)
+			saveEditcellData(pointing)
 			selectDate(pointing)
 			break
 	}
@@ -449,7 +444,7 @@ function selectDate(pointing)
 				fontSize: ''
 			})//.hide()
 //			$(pointing).html($('#datepicker').val())
-			savePreviousScell() 
+			savePreviouscellService() 
 		}
 	})
 	$('#datepicker').datepicker("setDate", $(pointing).html()

@@ -45,7 +45,6 @@ require_once "book.php";
 		$date2 = date_create($opdate);
 		$diff = date_diff($date1, $date2);
 		$datediff = $diff->format("%R%a");
-//	echo "hn ".$hn." admit ".$admit." datediff ".$datediff."\n";
 
 		if (($datediff < 0) || ($datediff > 30)) {
 			continue;
@@ -59,7 +58,6 @@ require_once "book.php";
 			} else {
 				if ($admit) {
 					$mysqli->query ("UPDATE book SET admit = '$admit' WHERE qn = $qn;");
-//					echo "UPDATE book SET admit = '$admit' WHERE qn = $qn;\n";
 				}
 			}
 		} else {

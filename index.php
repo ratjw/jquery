@@ -171,6 +171,8 @@
   </div>
 </div>
 
+<div id="dialogAlert"></div>
+
 <ul id="menu" style="display:none">
   <li><div>คิวของอาจารย์</div>
 	<ul id="item0" style="width:120px">
@@ -188,13 +190,6 @@
 
 <ul id="stafflist" style="display:none"></ul>
 
-<div id="alert">
-  <div style="height:40px">
-	<span class="ui-icon ui-icon-closethick" onclick="closeAlert()"></span>
-  </div>
-  <div id="message"></div>
-</div>
-
 <div id="editcell" contenteditable="true"></div>
 
 <div id="dialogEquip">
@@ -206,9 +201,6 @@
   <span style="width:110px;">ชื่อ-นามสกุล </span><span id="patientname"></span>
   <span style="width:20px;"></span>อายุ <span id="age"></span>
   <span style="width:20px;"></span>HN <span id="hn"></span>
-  
-  
-  
   <br>
   <span style="width:110px;">Diagnosis</span>
   <span style="width:540px;" id="diagnosis"></span>

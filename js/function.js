@@ -227,24 +227,6 @@ function URIcomponent(qoute)
 	return qoute
 }
 
-function alert(message)
-{
-	$('#message').html(message)
-	$("#alert").fadeIn();
-
-	var div = $('#message')
-	while (div.height() > div.parent().height() - 40) {	//-30 for header
-		div.css('font-size', (parseInt(div.css('font-size')) - 1) + "px")
-		if (parseInt(div.css('font-size')) < 8)
-			break
-	}
-}
-
-function closeAlert()
-{
-	$("#alert").hide();
-}
-
 function findTablerow(table, qn)
 {
 	var i = 1
@@ -269,4 +251,261 @@ function findBOOKrow(qn)
 	} else {
 		return null
 	}
+}
+
+function findNewRowBOOK(opdate)	//find new row (max. qn)
+{
+	var q = 0
+	while (BOOK[q].opdate != opdate)
+	{
+		q++
+		if (q >= BOOK.length)
+			return ""
+	}
+
+	var qn = Number(BOOK[q].qn)
+	var newq = q
+	q++
+	while (q < BOOK.length && BOOK[q].opdate == opdate) {
+		if (Number(BOOK[q].qn) > qn) {
+			qn = Number(BOOK[q].qn)
+			newq = q
+		}
+		q++
+	}
+	return newq
+}
+
+function findVisibleHead(table)
+{
+	var tohead
+
+	$.each($(table + ' tr:has(th)'), function(i, tr) {
+		tohead = tr
+		return ($(tohead).offset().top < 0)
+	})
+	return tohead
+}
+
+function calculateWaitnum($row, opdate, staffname)
+{
+	var prevWaitNum = $row.prev()[0]
+	var nextWaitNum = $row.next()[0]
+	if (prevWaitNum) {
+		prevWaitNum = Number(prevWaitNum.title)
+	}
+	if (nextWaitNum) {
+		nextWaitNum = Number(nextWaitNum.title)
+	}
+	var $prevRowCell = $row.prev().children("td")
+	var $nextRowCell = $row.next().children("td")
+	var prevOpdate = getOpdate($prevRowCell.eq(OPDATE).html())
+	var nextOpdate = getOpdate($nextRowCell.eq(OPDATE).html())
+	var prevStaffname = $prevRowCell.eq(STAFFNAME).html()
+	var nextStaffname = $nextRowCell.eq(STAFFNAME).html()
+
+	if (prevOpdate != opdate && opdate != nextOpdate) {
+		return 1
+	}
+	else if (prevOpdate == opdate && opdate != nextOpdate) {
+		if (prevStaffname == staffname) {
+			return prevWaitNum + 1
+		} else {
+			return 1
+		}
+	}
+	else if (prevOpdate != opdate && opdate == nextOpdate) {
+		if (staffname == nextStaffname) {
+			return nextWaitNum / 2
+		} else {
+			return 1
+		}
+	}
+	else if (prevOpdate == opdate && opdate == nextOpdate) {
+		if (prevStaffname == staffname) {
+			if (staffname == nextStaffname) {
+				return (prevWaitNum + nextWaitNum) / 2
+			} else {
+				return prevWaitNum + 1
+			}
+		} else {
+			if (staffname == nextStaffname) {
+				return nextWaitNum / 2
+			} else {
+				return 1
+			}
+		}
+	}
+}
+
+function findPrevcell(event, editable, pointing) 
+{
+	var $prevcell = $(pointing)
+	var column = $prevcell.index()
+
+	if ((column = editable[($.inArray(column, editable) - 1)]))
+	{
+		$prevcell = $prevcell.parent().children().eq(column)
+	}
+	else
+	{
+		do {
+			if ($prevcell.parent().index() > 1)
+			{	//go to prev row last editable
+				$prevcell = $prevcell.parent().prev("tr").children().eq(editable[editable.length-1])
+			}
+			else
+			{	//#tbl tr:1 td:1
+				event.preventDefault()
+				return false
+			}
+		}
+		while (($prevcell.get(0).nodeName == "TH")	//THEAD row
+			|| (!$prevcell.is(':visible')))			//invisible due to colspan
+	}
+
+	return $prevcell.get(0)
+}
+
+function findNextcell(event, editable, pointing) 
+{
+	var $nextcell = $(pointing)
+	var column = $nextcell.index()
+
+	if ((column = editable[($.inArray(column, editable) + 1)]))
+	{
+		$nextcell = $nextcell.parent().children().eq(column)
+	}
+	else
+	{
+		do {//go to next row first editable
+			$nextcell = $($nextcell).parent().next("tr").children().eq(editable[0])
+			if (!($nextcell.length)) {
+				event.preventDefault()
+				return false
+			}
+		}
+		while ((!$nextcell.is(':visible'))	//invisible due to colspan
+			|| ($nextcell.get(0).nodeName == "TH"))	//TH row
+	}
+
+	return $nextcell.get(0)
+}
+
+function findNextRow(event, editable, pointing) 
+{
+	var $nextcell = $(pointing)
+
+	//go to next row first editable
+	do {
+		$nextcell = $nextcell.parent().next("tr").children().eq(editable[0])
+		if (!($nextcell.length)) {
+			event.preventDefault()
+			return false	
+		}
+	}
+	while ((!$nextcell.is(':visible'))	//invisible due to colspan
+		|| ($nextcell.get(0).nodeName == "TH"))	//TH row
+
+	return $nextcell.get(0)
+}
+
+function holiday(date)
+{
+	var monthdate = date.substring(5)
+	var dayofweek = (new Date(date)).getDay()
+	var holidayname = ""
+
+	for (var key in HOLIDAY) 
+	{
+		if (key == date)
+			return HOLIDAY[key]	//matched a holiday
+		if (key > date)
+			break		//not a listed holiday
+						//either a fixed or a compensation holiday
+	}
+	switch (monthdate)
+	{
+	case "12-31":
+		holidayname = "url('pic/Yearend.jpg')"
+		break
+	case "01-01":
+		holidayname = "url('pic/Newyear.jpg')"
+		break
+	case "01-02":
+		if ((dayofweek == 1) || (dayofweek == 2))
+			holidayname = "url('pic/Yearendsub.jpg')"
+		break
+	case "01-03":
+		if ((dayofweek == 1) || (dayofweek == 2))
+			holidayname = "url('pic/Newyearsub.jpg')"
+		break
+	case "04-06":
+		holidayname = "url('pic/Chakri.jpg')"
+		break
+	case "04-07":
+	case "04-08":
+		if (dayofweek == 1)
+			holidayname = "url('pic/Chakrisub.jpg')"
+		break
+	case "04-13":
+	case "04-14":
+	case "04-15":
+		holidayname = "url('pic/Songkran.jpg')"
+		break
+	case "04-16":
+	case "04-17":
+		if (dayofweek && (dayofweek < 4))
+			holidayname = "url('pic/Songkransub.jpg')"
+		break
+	case "07-28":
+		holidayname = "url('pic/King10.jpg')"
+		break
+	case "07-29":
+	case "07-30":
+		if (dayofweek == 1)
+			holidayname = "url('pic/King10sub.jpg')"
+		break
+	case "08-12":
+		holidayname = "url('pic/Queen.jpg')"
+		break
+	case "08-13":
+	case "08-14":
+		if (dayofweek == 1)
+			holidayname = "url('pic/Queensub.jpg')"
+		break
+	case "10-13":
+		holidayname = "url('pic/King09.jpg')"
+		break
+	case "10-14":
+	case "10-15":
+		if (dayofweek == 1)
+			holidayname = "url('pic/King09sub.jpg')"
+		break
+	case "10-23":
+		holidayname = "url('pic/Piya.jpg')"
+		break
+	case "10-24":
+	case "10-25":
+		if (dayofweek == 1)
+			holidayname = "url('pic/Piyasub.jpg')"
+		break
+	case "12-05":
+		holidayname = "url('pic/King9.jpg')"
+		break
+	case "12-06":
+	case "12-07":
+		if (dayofweek == 1)
+			holidayname = "url('pic/Kingsub.jpg')"
+		break
+	case "12-10":
+		holidayname = "url('pic/Constitution.jpg')"
+		break
+	case "12-11":
+	case "12-12":
+		if (dayofweek == 1)
+			holidayname = "url('pic/Constitutionsub.jpg')"
+		break
+	}
+	return holidayname
 }

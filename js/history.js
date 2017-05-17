@@ -13,7 +13,7 @@ function editHistory(rowmain, qn)
 	function callbackeditHistory(response)
 	{
 		if (!response || response.indexOf("DBfailed") != -1)
-			alert("Data history DBfailed!\n" + response)
+			alert("editHistory", response)
 		else
 			makehistory(rowmain, response)
 	}
@@ -107,7 +107,7 @@ function deleteHistory()
 	function callbackdeleteHistory(response)
 	{
 		if (!response || response.indexOf("DBfailed") != -1)
-			alert("Delete history DBfailed!\n" + response)
+			alert("deleteHistory", response)
 		else
 			makeDeleteHistory(response)
 	}
@@ -182,7 +182,7 @@ function undelete(thiscase)
 		{
 			if (!response || response.indexOf("DBfailed") != -1)
 			{
-				alert("undelete Failed! update database \n\n" + response)
+				alert("undelete", response)
 			}
 			else
 			{
@@ -208,9 +208,28 @@ function PACS(hn)
 
 	function callbackCHECKPAC(response)
 	{
-		if (!response || response.indexOf("PAC") == -1)
-			alert(response)
-		else
+		if (!response || response.indexOf("PAC") == -1) {
+			alert("PACS", response)
+		} else {
 			open('http://synapse/explore.asp?path=/All Patients/InternalPatientUID='+hn);
+		}
 	}
 } 
+
+function alert(title, message)
+{
+	$("#dialogAlert").css("height", 0)
+	$('#dialogAlert').html(message)
+	$('#dialogAlert').dialog({
+		title: title,
+		closeOnEscape: true,
+		modal: true,
+		width: window.innerWidth * 5 / 10,
+		height: window.innerHeight * 5 / 10
+	}).fadeIn();
+}
+
+function closeAlert()
+{
+	$("#alert").hide();
+}

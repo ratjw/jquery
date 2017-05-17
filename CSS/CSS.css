@@ -255,37 +255,6 @@
 	display: none;
 }
 
-#alert {
-	position: fixed;
-	z-index: 1000;
-	display:none;
-	top:25%;
-	left:30%;
-	max-width: 300px;
-	max-height:200px;
-	border: 2px solid #DDDDDD;
-	border-radius: 10px;
-	padding: 10px;
-	background-color: #CCCCCC;
-	box-shadow: 20px 30px 40px slategray;
-}
-
-#alert span {
-	float: right;
-	height: 17px;
-}
-
-#message {
-	display:inline-block;
-	text-align:center;
-	font-weight: bold;
-	font-size: 20px;
-	color: slategray;
-	padding: 10px;
-	background-color: snow;
-	overflow:auto;
-}
-
 #dialogEquip {
 	display: none;
 	line-height:150%;

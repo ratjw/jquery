@@ -18,7 +18,7 @@ function sortable()
 			ui.placeholder.attr('data-previndex', ui.placeholder.attr('data-thisindex'));
 			ui.placeholder.attr('data-thisindex', ui.placeholder.index());
 		},
-		delay: 150,
+		delay: 100,
 		revert: true,
 		stop: function(e, ui){
 			var $item = ui.item
@@ -50,8 +50,8 @@ function sortable()
 			} else {
 				if (!$nextitem.length || $nextitem.has('th').length) {
 					$thisdrop = $previtem
-				} else {
-					var helperpos = ui.offset.top	//ui.offset (no '()') = helper position
+				} else {		//ui.offset (no '()') = helper position
+					var helperpos = ui.offset.top
 					var prevpos = $previtem.offset().top
 					var thispos = $item.offset().top
 					var nextpos = $nextitem.offset().top
@@ -74,7 +74,7 @@ function sortable()
 
 			var thisopdate = getOpdate($thisdrop.children("td").eq(OPDATE).html())
 			var staffname = $itemcell.eq(STAFFNAME).html()
-			var finalWaitnum = getWaitnum($item, thisopdate, staffname)
+			var finalWaitnum = calculateWaitnum($item, thisopdate, staffname)
 			var thisqn = $itemcell.eq(QN).html()
 
 			var sql = "sqlReturnbook=UPDATE book SET Waitnum = "+ finalWaitnum
@@ -91,7 +91,7 @@ function sortable()
 			{
 				if (!response || response.indexOf("DBfailed") != -1)
 				{
-					alert ("Move failed!\n" + response)
+					alert ("Sortable", response)
 					$("#tbl tbody" ).sortable( "cancel" )
 				}
 				else

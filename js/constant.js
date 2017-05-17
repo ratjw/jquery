@@ -1,6 +1,5 @@
 var GETNAMEHN		= "php/getnamehn.php";
-var GETIPDAJAX		= "php/getipdajax.php";
-var GETIPDCRON		= "php/getipdcron.php";
+var GETIPD			= "php/getipd.php";
 var MYSQLIPHP		= "php/mysqli.php";
 var CHECKPAC		= "php/checkpac.php";
 

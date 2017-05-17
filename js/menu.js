@@ -1,9 +1,8 @@
 
-function fillSetTable(rownum, pointing)
+function fillSetTable(pointing)
 {
 	var tableID = $(pointing).closest('table').attr('id')
-	var table = document.getElementById(tableID)
-	var rowmain = table.rows[rownum]
+	var rowmain = $(pointing).closest('tr')[0]
 	var tcell = rowmain.cells
 	var opdateth = tcell[OPDATE].innerHTML
 	var opdate = getOpdate(opdateth)		//Thai to ISO date
@@ -60,10 +59,6 @@ function fillSetTable(rownum, pointing)
 	$("#menu").menu({
 		select: function( event, ui ) {
 
-			$("#editcell").hide()
-			$("#menu").hide()		//to disappear after selection
-			event.stopPropagation()
-
 			var item = $(ui.item).attr("id")
 
 			switch(item)
@@ -97,12 +92,16 @@ function fillSetTable(rownum, pointing)
 					PACS(hn)
 					break
 				case "item8":
-					fillEquipTable(rownum, qn)
+					fillEquipTable(qn)
 					break
 				case "item9":
 					serviceReview()
 					break
 			}
+
+			clearEditcellData("hide")
+			$("#menu").hide()		//to disappear after selection
+			event.stopPropagation()
 		}
 	});
 
@@ -119,7 +118,7 @@ function stafflist(pointing)
 		select: function( event, ui ) {
 			var staffname = ui.item.text()
 			$(pointing).html(staffname)
-			saveContent("staffname", staffname)
+			saveContent(pointing, "staffname", staffname)
 			clearEditcellData("hide")
 			$('#stafflist').hide()		//to disappear after selection
 			event.stopPropagation()
@@ -177,7 +176,6 @@ function largestOpdate()
 	$("#queuetbl tbody").append($("#queuetbl tr:last").clone())
 	$("#queuetbl tr:last").children().html("")
 
-	var caseNum = BOOK.length
 	var staffname = $('#titlename').html()
 	var bookq = JSON.parse(JSON.stringify(BOOK[0]))
 	$.each( bookq, function(key, val) {
@@ -186,11 +184,9 @@ function largestOpdate()
 	bookq.opdate = LARGESTDATE
 	BOOK.push(bookq)
 	
-	$("#editcell").data("editRow", "#queuetbl tr:last") //provide editrow for savecontent
+	//change pointing to STAFFNAME
 	var pointing = $("#queuetbl tr:last td").eq(STAFFNAME)[0]
-	$("#editcell").data("pointing", pointing)	//change pointing to STAFFNAME
-	saveContent("staffname", staffname)
-	pointing.innerHTML = staffname
+	saveContent(pointing, "staffname", staffname)
 }
 
 function addnewrow(tableID, rowmain, qn)
@@ -209,12 +205,9 @@ function addnewrow(tableID, rowmain, qn)
 	fillblank(rowmain)
 	
 	if (tableID == "queuetbl") {
-		var rownum = rowmain.rowIndex
-		$("#editcell").data("editRow", "#"+ tableID +" tr:eq("+ rownum +")")
-		var pointing = $($("#editcell").data("editRow")).children().eq(STAFFNAME)[0]
-		$("#editcell").data("pointing", pointing)	//change pointing to STAFFNAME
-		saveContent("staffname", staffname)
-		pointing.innerHTML = staffname
+		//change pointing to STAFFNAME
+		var pointing = $(rowmain).children().eq(STAFFNAME)[0]
+		saveContent(pointing, "staffname", staffname)
 	}
 }
 
@@ -229,7 +222,7 @@ function deleteCase(rowmain, opdate, qn)
 	function callbackdeleterow(response)
 	{
 		if (!response || response.indexOf("DBfailed") != -1) {
-			alert ("Delete & Refresh failed!\n" + response)
+			alert ("deleteCase", response)
 		} else {
 			updateBOOK(response);
 			deleteRow(rowmain, opdate)

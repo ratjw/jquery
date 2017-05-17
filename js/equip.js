@@ -1,5 +1,5 @@
 
-function fillEquipTable(rownum, qn)
+function fillEquipTable(qn)
 {
 	var q = findBOOKrow(qn)
 	var bookq = BOOK[q]
@@ -108,7 +108,7 @@ function getEditedby(qn)
 	function callbackgetEditedby(response)
 		{
 			if (!response || response.indexOf("DBfailed") != -1) {
-				alert("DBfailed!\n" + response)
+				alert("getEditedby", response)
 			} else {
 				var Editedby = ""
 				$.each(JSON.parse(response), function(key, val) {
@@ -145,7 +145,7 @@ function Checklistequip(qn, bookqEquip)
 	{
 		if (!response || response.indexOf("QTIME") == -1)
 		{
-			alert("Checklistequip Failed! update database \n\n" + response)
+			alert("Checklistequip", response)
 		}
 		else	//there is some change
 		{

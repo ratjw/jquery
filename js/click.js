@@ -21,122 +21,120 @@ function keyin(event)
 	if (!pointing) {
 		return
 	}
-	
-	switch(keycode)
-	{
-		case 9:
-			$('#menu').hide();
-			$('#stafflist').hide();
-			savePreviouscell()
-			if (event.shiftKey) {
-				thiscell = findPrevcell(event, EDITABLE, pointing)
-				if ((thiscell.cellIndex == HN) && (thiscell.innerHTML != "")) {
-					thiscell = findPrevcell(event, EDITABLE, $(thiscell))
-				}
-			} else {
-				thiscell = findNextcell(event, EDITABLE, pointing)
-				if ((thiscell.cellIndex == HN) && (thiscell.innerHTML != "")) {
-					thiscell = findNextcell(event, EDITABLE, $(thiscell))
-				}
+	if (keycode == 9) {
+		$('#menu').hide();
+		$('#stafflist').hide();
+		savePreviouscell()
+		if (event.shiftKey) {
+			thiscell = findPrevcell(event, EDITABLE, pointing)
+			if ((thiscell.cellIndex == HN) && (thiscell.innerHTML != "")) {
+				thiscell = findPrevcell(event, EDITABLE, $(thiscell))
 			}
-			if (thiscell) {
-				storePresentcell(thiscell)
-			} else {
-				clearEditcellData("hide")
-				window.focus()
-			}
-			break
-		case 13:
-			$('#menu').hide();
-			$('#stafflist').hide();
-			if (event.shiftKey || event.ctrlKey) {
-				return
-			}
-			savePreviouscell()
-			thiscell = findNextRow(event, EDITABLE, pointing)
+		} else {
+			thiscell = findNextcell(event, EDITABLE, pointing)
 			if ((thiscell.cellIndex == HN) && (thiscell.innerHTML != "")) {
 				thiscell = findNextcell(event, EDITABLE, $(thiscell))
 			}
-			if (thiscell) {
-				storePresentcell(thiscell)
-			} else {
-				clearEditcellData("hide")
-				window.focus()
-			}
-			break
-		default:
-			return
+		}
+		if (thiscell) {
+			storePresentcell(thiscell)
+		} else {
+			clearEditcellData("hide")
+			window.focus()
+		}
+		event.preventDefault()
+		return false
 	}
-	event.preventDefault()
-	return false
+	if (keycode == 13) {
+		$('#menu').hide();
+		$('#stafflist').hide();
+		if (event.shiftKey || event.ctrlKey) {
+			return
+		}
+		savePreviouscell()
+		thiscell = findNextRow(event, EDITABLE, pointing)
+		if ((thiscell.cellIndex == HN) && (thiscell.innerHTML != "")) {
+			thiscell = findNextcell(event, EDITABLE, $(thiscell))
+		}
+		if (thiscell) {
+			storePresentcell(thiscell)
+		} else {
+			clearEditcellData("hide")
+			window.focus()
+		}
+		event.preventDefault()
+		return false
+	}
 }
 
 function savePreviouscell() 
 {
 	var editPoint = $("#editcell").data("pointing")
-	if (!(editPoint) || (editPoint.innerHTML == getData())) {
-		return
+	if (editPoint && (editPoint.innerHTML != getEditcellHtml())) {
+		saveEditPointData(editPoint)
 	}
+}
 
+function saveEditPointData(pointed)
+{
 	var content = ""
-	switch($("#editcell").data("cellIndex"))
+	switch(pointed.cellIndex)
 	{
 		case OPDATE:
 			break
 		case STAFFNAME:
-			content = getData()
-			saveContent("staffname", content)
+			content = getEditcellHtml()
+			saveContent(pointed, "staffname", content)
 			break
 		case HN:
-			content = getData()
+			content = getEditcellHtml()
 			if (content.length != 7) {
 				return
 			}
-			saveHNinput("hn", content)
+			saveHNinput(pointed, "hn", content)
 			break
 		case NAME:
 		case AGE:
 			break
 		case DIAGNOSIS:
-			content = getData()
-			saveContent("diagnosis", content)
+			content = getEditcellHtml()
+			saveContent(pointed, "diagnosis", content)
 			break
 		case TREATMENT:
-			content = getData()
-			saveContent("treatment", content)
+			content = getEditcellHtml()
+			saveContent(pointed, "treatment", content)
 			break
 		case CONTACT:
-			content = getData()
-			saveContent("contact", content)
+			content = getEditcellHtml()
+			saveContent(pointed, "contact", content)
 			break
 	}
 }
  
-function getData()
+function getEditcellHtml()
 {
-	return $("#editcell").html().replace(TRIMHTML, '').replace(HTMLNOTBR, '')
+	return $("#editcell").html()
+			.replace(TRIMHTML, '')
+			.replace(HTMLNOTBR, '')
 }
 
-function saveContent(column, content)	//column name in MYSQL
+function saveContent(pointed, column, content)	//column name in MYSQL
 {
-	if (content == $("#editcell").data("content")) {
-		return
-	}
-	var $row = $($("#editcell").data("editRow"))
+	var $row = $(pointed).closest('tr')
 	var $rowcell = $row.children("td")
 	var opdate = getOpdate($rowcell.eq(OPDATE).html())
-	var staffname = $rowcell.eq(STAFFNAME).html()
 	var qn = $rowcell.eq(QN).html()
-	var pointing = $("#editcell").data("pointing")
+	var oldContent = pointed.innerHTML
 	var sql
 
-	pointing.innerHTML = content	//just for show instantly
+	pointed.innerHTML = content	//just for show instantly
+	var staffname = $rowcell.eq(STAFFNAME).html()
 
 	if (content) {
 		 content = URIcomponent(content)	//take care of white space, double qoute, 
 	}										//single qoute, and back slash
 	if (column == "staffname") {
-		var waitnum = getWaitnum($row, opdate, staffname)
+		var waitnum = calculateWaitnum($row, opdate, staffname)
 		$row[0].title = waitnum
 		if (qn) {
 			sql = "sqlReturnbook=UPDATE book SET "
@@ -164,17 +162,15 @@ function saveContent(column, content)	//column name in MYSQL
 
 	Ajax(MYSQLIPHP, sql, callbacksaveContent);
 
-	var tableID = $("#editcell").data("tableID")
-	var cellindex = $("#editcell").data("cellIndex")
-	var $updateCell = $row.children()
-	var oldContent = $("#editcell").data("content")
+	var tableID = $(pointed).closest("table").attr("id")
+	var cellindex = pointed.cellIndex
 
 	function callbacksaveContent(response)
 	{
-		if (!response || response.indexOf("DBfailed") != -1)
+ 		if (!response || response.indexOf("DBfailed") != -1)
 		{
-			alert("saveContent Failed! update database \n\n" + response)
-			pointing.innerHTML = oldContent
+			alert("saveContent", response)
+			pointed.innerHTML = oldContent
 			//return to previous content
 		}
 		else
@@ -182,13 +178,13 @@ function saveContent(column, content)	//column name in MYSQL
 			updateBOOK(response);
 			if (!qn) {	//New case input
 				var NewRow = findNewRowBOOK(opdate)
-				$updateCell.eq(QN).html(BOOK[NewRow].qn)
+				$rowcell.eq(QN).html(BOOK[NewRow].qn)
 			}
 
 			if (tableID == 'tbl') {
 				if ($("#titlecontainer").css('display') == 'block') {
 					if ((column == "staffname")
-					&& ($('#titlename').html() == pointing.innerHTML)) {
+					&& ($('#titlename').html() == pointed.innerHTML)) {
 						refillstaffqueue()		//New case or change staffname from tbl
 					} else {
 						if ($('#titlename').html() == staffname) {
@@ -207,20 +203,17 @@ function saveContent(column, content)	//column name in MYSQL
 	}
 }
 
-function saveHNinput(hn, content)
+function saveHNinput(pointed, hn, content)
 {
-	var $row = $($("#editcell").data("editRow"))
+	var $row = $(pointed).closest('tr')
 	var $rowcell = $row.children("td")
 	var opdate = getOpdate($rowcell.eq(OPDATE).html())
 	var staffname = $rowcell.eq(STAFFNAME).html()
 	var patient = $rowcell.eq(NAME).html()
 	var qn = $rowcell.eq(QN).html()
-	var pointing = $("#editcell").data("pointing")
+	var oldContent = pointed.innerHTML
 
-	pointing.innerHTML = content
-
-	content = content.replace(/<br>/g, "")
-	content = content.replace(/^\s+/g, "")
+	pointed.innerHTML = content
 
 	var sql = "hn=" + content
 	sql += "&opdate="+ opdate
@@ -229,17 +222,15 @@ function saveHNinput(hn, content)
 
 	Ajax(GETNAMEHN, sql, callbackgetByHN)
 
-	var tableID = $("#editcell").data("tableID")
-	var cellindex = $("#editcell").data("cellIndex")
-	var $updateCell = $row.children()
-	var oldContent = $("#editcell").data("content")
+	var tableID = $(pointed).closest("table").attr("id")
+	var cellindex = pointed.cellIndex
 
 	function callbackgetByHN(response)
 	{
 		if ((!response) || (response.indexOf("patient") == -1) || (response.indexOf("{") == -1)) 
 		{
-			alert(response)
-			pointing.innerHTML = oldContent		//return to previous content
+			alert("saveHNinput", response)
+			pointed.innerHTML = oldContent		//return to previous content
 		}
 		else 
 		{
@@ -247,10 +238,10 @@ function saveHNinput(hn, content)
 
 			var NewRow = findNewRowBOOK(opdate)
 			var bookq = BOOK[NewRow]
-			$updateCell.eq(NAME).html(bookq.patient)
-			$updateCell.eq(AGE).html(putAgeOpdate(bookq.dob, bookq.opdate))
+			$rowcell.eq(NAME).html(bookq.patient)
+			$rowcell.eq(AGE).html(putAgeOpdate(bookq.dob, bookq.opdate))
 			if (!qn) {	//New case input
-				$updateCell.eq(QN).html(BOOK[NewRow].qn)
+				$rowcell.eq(QN).html(BOOK[NewRow].qn)
 			}
 
 			if (tableID == 'tbl') {	//New case has no staffname
@@ -266,107 +257,31 @@ function saveHNinput(hn, content)
 	}
 }
 
-function findNewRowBOOK(opdate)	//find new row (max. qn)
-{
-	var q = 0
-	while (BOOK[q].opdate != opdate)
-	{
-		q++
-		if (q >= BOOK.length)
-			return ""
-	}
-
-	var qn = Number(BOOK[q].qn)
-	var newq = q
-	q++
-	while (q < BOOK.length && BOOK[q].opdate == opdate) {
-		if (Number(BOOK[q].qn) > qn) {
-			qn = Number(BOOK[q].qn)
-			newq = q
-		}
-		q++
-	}
-	return newq
-}
-
-function getWaitnum($row, opdate, staffname)
-{
-	var prevWaitNum = $row.prev()[0]
-	var nextWaitNum = $row.next()[0]
-	if (prevWaitNum) {
-		prevWaitNum = Number(prevWaitNum.title)
-	}
-	if (nextWaitNum) {
-		nextWaitNum = Number(nextWaitNum.title)
-	}
-	var $prevRowCell = $row.prev().children("td")
-	var $nextRowCell = $row.next().children("td")
-	var prevOpdate = getOpdate($prevRowCell.eq(OPDATE).html())
-	var nextOpdate = getOpdate($nextRowCell.eq(OPDATE).html())
-	var prevStaffname = $prevRowCell.eq(STAFFNAME).html()
-	var nextStaffname = $nextRowCell.eq(STAFFNAME).html()
-
-	if (prevOpdate != opdate && opdate != nextOpdate) {
-		return 1
-	}
-	else if (prevOpdate == opdate && opdate != nextOpdate) {
-		if (prevStaffname == staffname) {
-			return prevWaitNum + 1
-		} else {
-			return 1
-		}
-	}
-	else if (prevOpdate != opdate && opdate == nextOpdate) {
-		if (staffname == nextStaffname) {
-			return nextWaitNum / 2
-		} else {
-			return 1
-		}
-	}
-	else if (prevOpdate == opdate && opdate == nextOpdate) {
-		if (prevStaffname == staffname) {
-			if (staffname == nextStaffname) {
-				return (prevWaitNum + nextWaitNum) / 2
-			} else {
-				return prevWaitNum + 1
-			}
-		} else {
-			if (staffname == nextStaffname) {
-				return nextWaitNum / 2
-			} else {
-				return 1
-			}
-		}
-	}
-}
-
 function storePresentcell(pointing)
 {
-	var rindex = pointing.parentNode.rowIndex
-	var cindex = pointing.cellIndex
-	var context = ""
-
 	createEditcell(pointing)
 
-	switch(cindex)
+	switch(pointing.cellIndex)
 	{
 		case OPDATE:
 			clearEditcellData()
+			var context = ""
+			//to show Thai name of day in editcell div
 			if ($(pointing).closest('table').attr('id') == 'tbl') {
 				context = window.getComputedStyle(pointing,':before').content
 				context = context.replace(/\"/g, "")
 			}
 			context = context + pointing.innerHTML
-			$("#editcell").html(context)	//to show in editcell div
-			fillSetTable(rindex, pointing)
+			$("#editcell").html(context)
+			fillSetTable(pointing)
 			break
 		case STAFFNAME:
-			saveDataPoint("#editcell", pointing)
+			saveEditcellData(pointing)
 			stafflist(pointing)
 			break
 		case HN:
 			if (!pointing.innerHTML) {
-				saveDataPoint("#editcell", pointing)
+				saveEditcellData(pointing)
 				break
 			}
 		case NAME:
@@ -375,23 +290,24 @@ function storePresentcell(pointing)
 			break
 		case DIAGNOSIS:
 		case TREATMENT:
-		case CONTACT:		//store content in "data" of editcell
-			saveDataPoint("#editcell", pointing)
+		case CONTACT:
+			saveEditcellData(pointing)
 			break
 	}
 }
 
 function createEditcell(pointing)
 {
-	$("#editcell").css({
+	var $editcell = $("#editcell")
+	$editcell.css({
 		height: $(pointing).height() + "px",
 		width: $(pointing).width() + "px",
 		fontSize: $(pointing).css("fontSize")
 	})
 
-	$("#editcell").appendTo($(pointing).closest('div'))
+	$editcell.appendTo($(pointing).closest('div'))
 	reposition("#editcell", "center", "center", pointing)
-	$("#editcell").focus()
+	$editcell.focus()
 }
 
 function reposition(me, mypos, atpos, target)
@@ -406,106 +322,21 @@ function reposition(me, mypos, atpos, target)
 		at: atpos,
 		of: target
 	}).show()
-}
+}	//Don't know why have to repeat 2 times
 
-function saveDataPoint(editcell, pointing)
+function saveEditcellData(pointing)
 {
-	var tableID = $(pointing).closest('table').attr('id')
-	var rowIndex = pointing.parentNode.rowIndex
-	var cellIndex = pointing.cellIndex
-
-	$(editcell).data("tableID", tableID)
-	$(editcell).data("rowIndex", rowIndex)
-	$(editcell).data("cellIndex", cellIndex)
-	$(editcell).data("editRow", "#"+ tableID +" tr:eq("+ rowIndex +")")
-	$(editcell).data("pointing", pointing)
-	$(editcell).data("content", pointing.innerHTML)
-	$(editcell).html(pointing.innerHTML)
-}
+	var $editcell = $("#editcell")
+	$editcell.data("pointing", pointing)
+	$editcell.html(pointing.innerHTML)
+}	//the data is normal HTML, not jQuery
 
 function clearEditcellData(display)
 {
-	var editcell = "#editcell"
-	$(editcell).data("tableID", "")
-	$(editcell).data("rowIndex", "")
-	$(editcell).data("cellIndex", "")
-	$(editcell).data("editRow", "")
-	$(editcell).data("pointing", "")
-	$(editcell).data("content", "")
-	$(editcell).html("")
+	var $editcell = $("#editcell")
+	$editcell.data("pointing", "")
+	$editcell.html("")
 	if (display == "hide") {
-		$(editcell).hide()
+		$editcell.hide()
 	}
-}
-
-function findPrevcell(event, editable, pointing) 
-{
-	var $prevcell = $(pointing)
-	var column = $prevcell.index()
-
-	if ((column = editable[($.inArray(column, editable) - 1)]))
-	{
-		$prevcell = $prevcell.parent().children().eq(column)
-	}
-	else
-	{
-		do {
-			if ($prevcell.parent().index() > 1)
-			{	//go to prev row last editable
-				$prevcell = $prevcell.parent().prev("tr").children().eq(editable[editable.length-1])
-			}
-			else
-			{	//#tbl tr:1 td:1
-				event.preventDefault()
-				return false
-			}
-		}
-		while (($prevcell.get(0).nodeName == "TH")	//THEAD row
-			|| (!$prevcell.is(':visible')))			//invisible due to colspan
-	}
-
-	return $prevcell.get(0)
-}
-
-function findNextcell(event, editable, pointing) 
-{
-	var $nextcell = $(pointing)
-	var column = $nextcell.index()
-
-	if ((column = editable[($.inArray(column, editable) + 1)]))
-	{
-		$nextcell = $nextcell.parent().children().eq(column)
-	}
-	else
-	{
-		do {//go to next row first editable
-			$nextcell = $($nextcell).parent().next("tr").children().eq(editable[0])
-			if (!($nextcell.length)) {
-				event.preventDefault()
-				return false
-			}
-		}
-		while ((!$nextcell.is(':visible'))	//invisible due to colspan
-			|| ($nextcell.get(0).nodeName == "TH"))	//TH row
-	}
-
-	return $nextcell.get(0)
-}
-
-function findNextRow(event, editable, pointing) 
-{
-	var $nextcell = $(pointing)
-
-	//go to next row first editable
-	do {
-		$nextcell = $nextcell.parent().next("tr").children().eq(editable[0])
-		if (!($nextcell.length)) {
-			event.preventDefault()
-			return false	
-		}
-	}
-	while ((!$nextcell.is(':visible'))	//invisible due to colspan
-		|| ($nextcell.get(0).nodeName == "TH"))	//TH row
-
-	return $nextcell.get(0)
 }

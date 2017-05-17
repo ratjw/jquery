@@ -13,6 +13,8 @@ function loadtable(userid)
 	$("#dialogEquip").dialog('close')
 	$("#dialogService").dialog()
 	$("#dialogService").dialog('close')	//prevent updateTables() call 'isOpen' before initialization
+	$("#dialogAlert").dialog()
+	$("#dialogAlert").dialog('close')
 	clearEditcellData()
 
 	$(document).click( function (event) {
@@ -106,7 +108,7 @@ function loading(response)
 		fillStafflist()
 	}
 	else
-		alert("Cannot load BOOK");
+		alert("loading BOOK no response");
 }
 
 function updateBOOK(response)
@@ -134,23 +136,25 @@ function fillStafflist()
 function updating()	//updating.timer : local variable
 {
 	var editPoint = $("#editcell").data("pointing")
-	if ((editPoint) && (editPoint.innerHTML != getData())) {
+	if (editPoint && (editPoint.innerHTML != getEditcellHtml())) {
 
-		//being editing on screen
-		if ($(editcell).data("tableID") == "servicetbl") {
-			savePreviousScell()		//Service table
+		//making some change
+		if ($(editPoint).closest("table").attr("id") == "servicetbl") {
+			saveEditPointDataService(editPoint)		//Service table
 		} else {
-			savePreviouscell()		//Main and Staffqueue tables
+			saveEditPointData(editPoint)		//Main and Staffqueue tables
 		}
 		updating.timer = 0
 	} else {
-
+		//idling
 		Ajax(MYSQLIPHP, "functionName=checkupdate&time="+TIMESTAMP, updatingback);
 
 		function updatingback(response)
 		{
 			//not being editing on screen
-			if (updating.timer == 10) {	//do only once even if idle for a long time
+			if (updating.timer == 10) {
+				//delay 100 seconds and
+				//do this only once even if idle for a long time
 				clearEditcellData("hide")
 				$('#menu').hide()		//editcell may be on first column
 				$('#stafflist').hide()	//editcell may be on staff
