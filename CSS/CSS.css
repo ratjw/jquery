@@ -57,21 +57,21 @@
 	background-repeat: no-repeat;
 	background-position: center;
 }
-tr.sunday { background-color: #FFE0E7; }
+tr.sunday { background-color: #FFE7E7; }
 tr.monday { background-color: #FFFFEE; }
 tr.tuesday { background-color: #FFF7F7; }
 tr.wednesday { background-color: #EEFFEE; }
-tr.thursday { background-color: #FFEEE7; }
+tr.thursday { background-color: #FFF7E0; }
 tr.friday { background-color: #EEEEFF; }
 tr.saturday { background-color: #FFEEFF; }
 
-td.sun { background-color: #FFD0D7; }
-td.mon { background-color: #FFFFD7; }
-td.tue { background-color: #FFE7E7; }
-td.wed { background-color: #D7FFD7; }
-td.thu { background-color: #FFEED7; }
-td.fri { background-color: #DDDDFF; }
-td.sat { background-color: #FFDDFF; }
+td.sun { background-color: #FFD0D0; }
+td.mon { background-color: #FFFFD0; }
+td.tue { background-color: #FFE0E0; }
+td.wed { background-color: #D0FFD0; }
+td.thu { background-color: #FFEED0; }
+td.fri { background-color: #D7D7FF; }
+td.sat { background-color: #FFD7FF; }
 
 #tbl td:first-child {
 	font-size: 12px;
