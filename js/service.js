@@ -409,7 +409,7 @@ function storePresentScell(pointing)
 			$('#datepicker').datepicker( 'hide' )
 			clearEditcellData("hide")
 			var hn = pointing.innerHTML
-			hn = hn.substr(0, 7)
+			hn = hn.match(/\d{7}/)[0]
 			PACS(hn)
 			break
 		case SDIAGNOSIS:

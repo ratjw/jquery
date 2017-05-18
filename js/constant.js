@@ -87,15 +87,15 @@ var HOLIDAY = {
 	}
 
 var neuroSxOp = [
-	/[Aa]nast/, /[Aa]pproa/, /[Aa]spirat/, /advancement/,
-	/[Bb]iop/, /[Bb]lock/, /[Bb]urr/, /[Cc]lip/, 
-	/[Dd]ecom/, /DBS/, /[Dd]rain/, /[Ee]ctomy/, /ETS/,
+	/ACDF/, /ALIF/, /[Aa]nast/, /[Aa]pproa/, /[Aa]spirat/, /advance/,
+	/[Bb]iop/, /[Bb]lock/, /[Bb]urr/, /[Bb]x/, /[Cc]lip/, 
+	/[Dd]ecom/, /DBS/, /[Dd]rain/, /[Ee]ctomy/, /[Ee]ndo/, /ETS/, /ETV/,
 	/[Ff]ix/, /[Ff]usion/, /[Ii]nsert/, /[Ll]esion/, /[Ll]ysis/, 
-	/OLIF/, /[Oo]cclu/, /[Oo]per/, /ostom/, /otom/,
+	/MIDLIF/, /OLIF/, /[Oo]cclu/, /[Oo]p/, /ostom/, /otom/,
 	/plast/, /PLF/, /PLIF/,
 	/[Rr]emov/, /[Rr]epa/, /[Rr]evis/, /[Rr]obot/,
-	/scope/, /[Ss]crew/, /[Ss]hunt/, /[Ss]tim/,
-	/TLIF/, /[Tt]ranspos/, /[Tt]ransect/, /[Uu]ntether/
+	/scope/, /[Ss]crew/, /[Ss]hunt/, /[Ss]tim/, /TSP/,
+	/TLIF/, /[Tt]rans/, /[Uu]ntether/
 	]
 
 var neuroMorbid = [

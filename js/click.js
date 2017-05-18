@@ -128,11 +128,9 @@ function saveContent(pointed, column, content)	//column name in MYSQL
 	var sql
 
 	pointed.innerHTML = content	//just for show instantly
-	var staffname = $rowcell.eq(STAFFNAME).html()
 
-	if (content) {
-		 content = URIcomponent(content)	//take care of white space, double qoute, 
-	}										//single qoute, and back slash
+	content = URIcomponent(content)	//take care of white space, double qoute, 
+									//single qoute, and back slash
 	if (column == "staffname") {
 		var waitnum = calculateWaitnum($row, opdate)
 		$row[0].title = waitnum
@@ -187,7 +185,7 @@ function saveContent(pointed, column, content)	//column name in MYSQL
 					&& ($('#titlename').html() == pointed.innerHTML)) {
 						refillstaffqueue()		//New case or change staffname from tbl
 					} else {
-						if ($('#titlename').html() == staffname) {
+						if ($('#titlename').html() == $rowcell.eq(STAFFNAME).html()) {
 							refillanother('queuetbl', cellindex, qn)
 						}
 					}
