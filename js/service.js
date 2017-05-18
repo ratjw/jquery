@@ -30,7 +30,6 @@ function serviceReview()
 	$('.ui-datepicker').click(function() {
 		if (!$('#monthpicker').is(":focus")) {	//click on month name
 			entireMonth($('#monthpicking').val())
-			$('#monthpicker').datepicker( "hide" )
 		} else {
 			$('.ui-datepicker-calendar').css('display', 'none')
 			//click on <prev next> month
@@ -43,7 +42,7 @@ function serviceReview()
 						? new Date($('#monthpicking').val())
 						: new Date()
 		)
-		$('.ui-datepicker').show()
+//		$('.ui-datepicker').show()
 		$('.ui-datepicker-calendar').css('display', 'none')
 	})
 	$( "#monthpicker" ).datepicker('setDate', new Date($('#monthpicking').val()))
@@ -120,8 +119,9 @@ function showService(SERVICE, fromDate, toDate)
 	})
 
 	$('#monthpicker').hide()
+	$('#monthpicker').datepicker( "hide" )
 	$('#servicehead').show()
-	$('.ui-datepicker').off("click")
+//	$('.ui-datepicker').off("click")
 	$('#dialogService').dialog({
 		title: 'Service Neurosurgery เดือน : ' + $('#monthpicker').val(),
 		close: function() {
@@ -355,7 +355,7 @@ function saveEditPointDataService(pointed)
 
 function saveSContent(pointed, column, content)	//column name in MYSQL
 {
-	var rowmain = $(pointing).closest('tr')[0]
+	var rowmain = $(pointed).closest('tr')[0]
 	var qn = rowmain.cells[SQN].innerHTML
 	var fromDate = $('#monthpicker').data('fromDate')
 	var toDate = $('#monthpicker').data('toDate')
@@ -408,6 +408,9 @@ function storePresentScell(pointing)
 			$('#datepicker').hide()
 			$('#datepicker').datepicker( 'hide' )
 			clearEditcellData("hide")
+			var hn = pointing.innerHTML
+			hn = hn.substr(0, 7)
+			PACS(hn)
 			break
 		case SDIAGNOSIS:
 		case STREATMENT:

@@ -74,7 +74,7 @@ function sortable()
 
 			var thisopdate = getOpdate($thisdrop.children("td").eq(OPDATE).html())
 			var staffname = $itemcell.eq(STAFFNAME).html()
-			var finalWaitnum = calculateWaitnum($item, thisopdate, staffname)
+			var finalWaitnum = calculateWaitnum($item, thisopdate)
 			var thisqn = $itemcell.eq(QN).html()
 
 			var sql = "sqlReturnbook=UPDATE book SET Waitnum = "+ finalWaitnum

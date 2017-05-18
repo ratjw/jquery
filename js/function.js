@@ -287,7 +287,7 @@ function findVisibleHead(table)
 	return tohead
 }
 
-function calculateWaitnum($row, opdate, staffname)
+function calculateWaitnum($row, opdate)
 {
 	var prevWaitNum = $row.prev()[0]
 	var nextWaitNum = $row.next()[0]
@@ -301,40 +301,18 @@ function calculateWaitnum($row, opdate, staffname)
 	var $nextRowCell = $row.next().children("td")
 	var prevOpdate = getOpdate($prevRowCell.eq(OPDATE).html())
 	var nextOpdate = getOpdate($nextRowCell.eq(OPDATE).html())
-	var prevStaffname = $prevRowCell.eq(STAFFNAME).html()
-	var nextStaffname = $nextRowCell.eq(STAFFNAME).html()
 
 	if (prevOpdate != opdate && opdate != nextOpdate) {
 		return 1
 	}
 	else if (prevOpdate == opdate && opdate != nextOpdate) {
-		if (prevStaffname == staffname) {
-			return prevWaitNum + 1
-		} else {
-			return 1
-		}
+		return prevWaitNum + 1
 	}
 	else if (prevOpdate != opdate && opdate == nextOpdate) {
-		if (staffname == nextStaffname) {
-			return nextWaitNum / 2
-		} else {
-			return 1
-		}
+		return nextWaitNum? (nextWaitNum / 2) : 1
 	}
 	else if (prevOpdate == opdate && opdate == nextOpdate) {
-		if (prevStaffname == staffname) {
-			if (staffname == nextStaffname) {
-				return (prevWaitNum + nextWaitNum) / 2
-			} else {
-				return prevWaitNum + 1
-			}
-		} else {
-			if (staffname == nextStaffname) {
-				return nextWaitNum / 2
-			} else {
-				return 1
-			}
-		}
+		return nextWaitNum? ((prevWaitNum + nextWaitNum) / 2) : (prevWaitNum + 1)
 	}
 }
 

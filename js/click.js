@@ -134,7 +134,7 @@ function saveContent(pointed, column, content)	//column name in MYSQL
 		 content = URIcomponent(content)	//take care of white space, double qoute, 
 	}										//single qoute, and back slash
 	if (column == "staffname") {
-		var waitnum = calculateWaitnum($row, opdate, staffname)
+		var waitnum = calculateWaitnum($row, opdate)
 		$row[0].title = waitnum
 		if (qn) {
 			sql = "sqlReturnbook=UPDATE book SET "
