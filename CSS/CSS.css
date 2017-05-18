@@ -22,7 +22,7 @@
 }
 
 #queuecontainer {
-	height: 94%;
+	height: 92%;
 	overflow: scroll;
 	box-sizing: border-box;
 	border-top: solid 2px silver;
@@ -40,8 +40,8 @@
 #tbl th {
 	font-size: 14px;
 	font-weight: bold;
-	background-color: #DDFFFF;
-	color: #557799;
+	background-color: #7799AA;
+	color: white;
 	border-left: solid 1px silver;
 	border-top: solid 1px silver;
 	border-bottom: solid 1px silver;
@@ -57,18 +57,25 @@
 	background-repeat: no-repeat;
 	background-position: center;
 }
-/*
-#tbl tr.sunday { background-color: #FAFAFA; }
-#tbl tr.monday { background-color: #F0FFF0; }
-#tbl tr.tuesday { background-color: #FAFAFA; }
-#tbl tr.wednesday { background-color: #F0FFF0; }
-#tbl tr.thursday { background-color: #FAFAFA; }
-#tbl tr.friday { background-color: #F0FFF0; }
-#tbl tr.saturday { background-color: #FAFAFA; }
-*/
+tr.sunday { background-color: #FFE0E7; }
+tr.monday { background-color: #FFFFEE; }
+tr.tuesday { background-color: #FFF7F7; }
+tr.wednesday { background-color: #EEFFEE; }
+tr.thursday { background-color: #FFEEE7; }
+tr.friday { background-color: #EEEEFF; }
+tr.saturday { background-color: #FFEEFF; }
+
+td.sun { background-color: #FFD0D7; }
+td.mon { background-color: #FFFFD7; }
+td.tue { background-color: #FFE7E7; }
+td.wed { background-color: #D7FFD7; }
+td.thu { background-color: #FFEED7; }
+td.fri { background-color: #DDDDFF; }
+td.sat { background-color: #FFDDFF; }
+
 #tbl td:first-child {
 	font-size: 12px;
-	background-color: #DDFFFF; 
+/*	background-color: #DDFFFF; */
 }
 
 #tbl td.sun:before { content: "อาทิตย์ "; }
@@ -100,7 +107,7 @@
 	border-collapse: collapse;
 }
 
-#queuetbl tr:nth-child(odd), 
+/*#queuetbl tr:nth-child(odd), */
 #historytbl tr:nth-child(odd), 
 #servicetbl tr:nth-child(odd) {
     background-color: #F0FFF0;
@@ -124,12 +131,12 @@
 	border-bottom: solid 1px silver;
 	height: 20px;
 }
-
+/*
 #queuetbl td:first-child {
 	background-color: #DDFFFF;
 	color: 557799;
 }
-
+*/
 #servicetbl td:first-child {
 	text-align: center;
 }

@@ -275,6 +275,8 @@ function refillstaffqueue()
 jQuery.fn.extend({
 	filldataQueue : function(bookq) {
 		var rowcell = this[0].cells
+		rowcell[OPDATE].className = NAMEOFDAYABBR[(new Date(bookq.opdate)).getDay()]
+		this[0].className = NAMEOFDAYFULL[(new Date(bookq.opdate)).getDay()]
 		rowcell[OPDATE].innerHTML = putOpdate(bookq.opdate)
 		rowcell[STAFFNAME].innerHTML = bookq.staffname
 		rowcell[HN].innerHTML = bookq.hn

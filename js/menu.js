@@ -69,7 +69,7 @@ function fillSetTable(pointing)
 						splitPane()
 					break
 				case "item2":
-					largestOpdate()
+					noOpdate()
 					break
 				case "item3":
 					addnewrow(tableID, rowmain, qn)
@@ -170,29 +170,29 @@ function checkblank(opdate, qn)
 	}
 }
 
-function largestOpdate()
+function noOpdate()
 {
 	//must use jQuery in order to be recognized
 	$("#queuetbl tbody").append($("#queuetbl tr:last").clone())
 	$("#queuetbl tr:last").children().html("")
 
-	var staffname = $('#titlename').html()
-	var bookq = JSON.parse(JSON.stringify(BOOK[0]))
-	$.each( bookq, function(key, val) {
-		bookq[key] = ""
-	})
-	bookq.opdate = LARGESTDATE
-	BOOK.push(bookq)
-	
 	//change pointing to STAFFNAME
+	var staffname = $('#titlename').html()
 	var pointing = $("#queuetbl tr:last td").eq(STAFFNAME)[0]
 	saveContent(pointing, "staffname", staffname)
+
+	var queue = $("#queuetbl").height()
+	var container = $("#queuecontainer").height()
+	var scrolltop = $("#queuecontainer").scrollTop()
+	var toscroll = queue - container + scrolltop
+	$("#queuecontainer").animate({
+		scrollTop: toscroll + 50
+	}, 500);
 }
 
 function addnewrow(tableID, rowmain, qn)
 {
 	var caseNum = findBOOKrow(qn)
-	var staffname = BOOK[caseNum].staffname
 	var bookq = JSON.parse(JSON.stringify(BOOK[caseNum]))
 	$.each( bookq, function(key, val) {
 		bookq[key] = ""
@@ -206,6 +206,7 @@ function addnewrow(tableID, rowmain, qn)
 	
 	if (tableID == "queuetbl") {
 		//change pointing to STAFFNAME
+		var staffname = $('#titlename').html()
 		var pointing = $(rowmain).children().eq(STAFFNAME)[0]
 		saveContent(pointing, "staffname", staffname)
 	}
@@ -238,7 +239,9 @@ function deleteRow(rowmain, opdate)
 	prevDate = getOpdate(prevDate)
 	nextDate = getOpdate(nextDate)
 
-	if ((prevDate == opdate) || (nextDate == opdate)) {
+	if ((prevDate == opdate)
+	|| (nextDate == opdate)
+	|| $(rowmain).closest("tr").is(":last-child")) {
 		$(rowmain).remove()
 	} else {
 		$(rowmain).children().eq(OPDATE).siblings().html("")
