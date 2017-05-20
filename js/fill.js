@@ -46,7 +46,7 @@ function fillall(start)
 		{	//step over each day that is not in QBOOK
 			if (date != madedate)
 			{
-				//make a blank row for matched opday which is not already in the table
+				//make a blank row for each day which is not in BOOK
 				makenextrow(date)	//insertRow
 				i++
 				
@@ -112,7 +112,7 @@ function refillall()
 
 	//i for rows in table (with head as the first row)
 	var i = 1
-	while (i < tlength)
+	while (i < tlength)		//make blank rows till the end of existing table
 	{
 		if (BOOK[q].opdate == LARGESTDATE) {
 			break
@@ -122,9 +122,8 @@ function refillall()
 			{	//step over each day that is not in QBOOK
 				if (date != madedate)
 				{
-					//make a blank row for matched opday which is not already in the table
 					fillrowdate(rows, i, date)	//existing row
-					fillblank(rows[i])
+					fillblank(rows[i])	//clear a row for the day not in BOOK
 					i++
 					if (i >= tlength)
 						return
@@ -146,7 +145,7 @@ function refillall()
 				}
 			}
 			fillrowdate(rows, i, date)	//existing row
-			filldata(BOOK[q], rows[i])
+			filldata(BOOK[q], rows[i])	//fill a row for the day in BOOK
 			madedate = date
 			i++
 			q++
@@ -176,7 +175,7 @@ function refillall()
 	}
 }
 
-function makenextrow(date)	//create new row
+function makenextrow(date)	//create and decorate new row
 {
 	var tbody = document.getElementById("tblbody")
 	var datatitle = document.getElementById("datatitle")
@@ -189,7 +188,7 @@ function makenextrow(date)	//create new row
 	rowi.className = NAMEOFDAYFULL[(new Date(date)).getDay()]
 }
 
-function fillrowdate(rows, i, date)	//renew existing row
+function fillrowdate(rows, i, date)	//renew and decorate existing row
 {
 	var datatitle = document.getElementById("datatitle")
 	if (rows[i].cells[OPDATE].nodeName != "TD") {
@@ -276,7 +275,6 @@ jQuery.fn.extend({
 	filldataQueue : function(bookq) {
 		var rowcell = this[0].cells
 		rowcell[OPDATE].className = NAMEOFDAYABBR[(new Date(bookq.opdate)).getDay()]
-		this[0].className = NAMEOFDAYFULL[(new Date(bookq.opdate)).getDay()]
 		rowcell[OPDATE].innerHTML = putOpdate(bookq.opdate)
 		rowcell[STAFFNAME].innerHTML = bookq.staffname
 		rowcell[HN].innerHTML = bookq.hn
@@ -287,6 +285,8 @@ jQuery.fn.extend({
 		rowcell[CONTACT].innerHTML = bookq.contact
 		rowcell[QN].innerHTML = bookq.qn
 		this[0].title = bookq.waitnum
+		addColor(this, bookq.opdate)
+		//tr[0] has className "ui-sortable-handle", so first case has no className 
 	}
 })
 
@@ -334,23 +334,15 @@ function splitPane()
 	var height = screen.availHeight
 
 	if (width > height) {
-		$("#tblcontainer").css({
-			"float": "left", "height": "100%", "width": "60%"
-		})
-		$("#titlecontainer").css({
-			"float": "right", "height": "100%", "width": "40%"
-		})
+		$("#tblcontainer").css({"float":"left", "height":"100%", "width":"60%"})
+		$("#titlecontainer").css({"float":"right", "height":"100%", "width":"40%"})
 	} else {
-		$("#tblcontainer").css({
-			"float": "left", "height": "60%", "width": "100%"
-		})
-		$("#titlecontainer").css({
-			"float": "left", "height": "40%", "width": "100%"
-		})
+		$("#tblcontainer").css({"float":"left", "height":"60%", "width":"100%"})
+		$("#titlecontainer").css({"float":"left", "height":"40%", "width":"100%"})
 	}
 	$("#titlecontainer").show()
 
-	scrollanimate("#tblcontainer", "#tbl", tohead)
+	fakeScrollAnimate("#tblcontainer", "#tbl", tohead)
 }
 
 function closequeue()
@@ -361,14 +353,11 @@ function closequeue()
 	$("#tblcontainer").css({
 		"height": "100%", "width": "100%"
 	})
-//	$("#titlecontainer").css({
-//		"height": "0%", "width": "0%"
-//	})
 
-	scrollanimate("#tblcontainer", "#tbl", tohead)
+	fakeScrollAnimate("#tblcontainer", "#tbl", tohead)
 }
 
-function scrollanimate(container, table, tohead)
+function fakeScrollAnimate(container, table, tohead)
 {
 	if (tohead.offsetTop < 300)
 		return

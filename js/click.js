@@ -118,50 +118,29 @@ function getEditcellHtml()
 			.replace(HTMLNOTBR, '')
 }
 
-function saveContent(pointed, column, content)	//column name in MYSQL
+function saveContent(pointed, column, content)	//use only "pointed" to save data
 {
+	var tableID = $(pointed).closest("table").attr("id")
 	var $row = $(pointed).closest('tr')
 	var $rowcell = $row.children("td")
+	var cellindex = pointed.cellIndex
 	var opdate = getOpdate($rowcell.eq(OPDATE).html())
 	var qn = $rowcell.eq(QN).html()
 	var oldContent = pointed.innerHTML
-	var sql
 
 	pointed.innerHTML = content	//just for show instantly
 
 	content = URIcomponent(content)	//take care of white space, double qoute, 
 									//single qoute, and back slash
-	if (column == "staffname") {
-		var waitnum = calculateWaitnum($row, opdate)
-		$row[0].title = waitnum
-		if (qn) {
-			sql = "sqlReturnbook=UPDATE book SET "
-			sql += "waitnum = "+ waitnum + ", "
-			sql += column +" = '"+ content
-			sql += "', editor='"+ THISUSER
-			sql += "' WHERE qn = "+ qn +";"
-		} else {
-			sql = "sqlReturnbook=INSERT INTO book ("
-			sql += "waitnum, opdate, "+ column +", editor) VALUES ("
-			sql += waitnum + ", '" + opdate +"', '"+ content +"', '"+ THISUSER +"');"
-		}
+	if (column == "staffname") {	//if data is staffname, calculate waitnum
+		waitnum = calculateWaitnum($row, opdate)
+		$row[0].title = waitnum		//store waitnum in row title
+		var sql = sqlText(waitnum, opdate, column, content, qn)
 	} else {
-		if (qn) {
-			sql = "sqlReturnbook=UPDATE book SET "
-			sql += column +" = '"+ content
-			sql += "', editor='"+ THISUSER
-			sql += "' WHERE qn = "+ qn +";"
-		} else {
-			sql = "sqlReturnbook=INSERT INTO book ("
-			sql += "opdate, "+ column +", editor) VALUES ('"
-			sql += opdate +"', '"+ content +"', '"+ THISUSER +"');"
-		}
+		var sql = sqlTextNoWaitnum(opdate, column, content, qn)
 	}
 
 	Ajax(MYSQLIPHP, sql, callbacksaveContent);
-
-	var tableID = $(pointed).closest("table").attr("id")
-	var cellindex = pointed.cellIndex
 
 	function callbacksaveContent(response)
 	{
@@ -174,40 +153,88 @@ function saveContent(pointed, column, content)	//column name in MYSQL
 		else
 		{
 			updateBOOK(response);
-			if (!qn) {	//New case input
-				var NewRow = findNewRowBOOK(opdate)
+
+			//fill qn of new case input in that row, either tbl or queuetbl
+			if (!qn) {
+				var NewRow = findNewBOOKrow(opdate)
 				$rowcell.eq(QN).html(BOOK[NewRow].qn)
 			}
 
-			if (tableID == 'tbl') {
-				if ($("#titlecontainer").css('display') == 'block') {
-					if ((column == "staffname")
-					&& ($('#titlename').html() == pointed.innerHTML)) {
-						refillstaffqueue()		//New case or change staffname from tbl
-					} else {
-						if ($('#titlename').html() == $rowcell.eq(STAFFNAME).html()) {
-							refillanother('queuetbl', cellindex, qn)
-						}
-					}
-				}
-			} else {
-				if (qn) {
-					refillanother('tbl', cellindex, qn)
-				} else {
-					refillall()		//New case input from queuetbl
+			if (tableID == 'tbl') {	//is editing on tbl
+				updateQueuetbl()
+			} else {				//is editing on queuetbl
+				updateTbl()
+			}
+		}
+	}
+
+	function updateQueuetbl()
+	{
+		if ($("#titlecontainer").css('display') == 'block') {	//staffqueue showing
+			var staffname = $('#titlename').html()
+			if ((column == "staffname")
+			&& (content == staffname)) {	//if input is this staffname
+				//New case or change staffname from tbl, update all queuetbl
+				//because there is one more row inserted
+				refillstaffqueue()
+			} else {	//input is not staffname, but on this staffname row
+				if (staffname == $rowcell.eq(STAFFNAME).html()) {
+					refillanother('queuetbl', cellindex, qn)
 				}
 			}
 		}
+	}
+
+	function updateTbl()
+	{
+		if (qn) {	//is editing on existing row, just fill corresponding row
+			refillanother('tbl', cellindex, qn)
+		} else {
+			refillall()		//New case input from queuetbl, update tbl all
+		}					//because there is one more row inserted
+	}
+
+	function sqlText(waitnum, opdate, column, content, qn)
+	{
+		var sql = ""
+		if (qn) {	//existing row, to update
+			sql = "sqlReturnbook=UPDATE book SET "
+			sql += "waitnum = "+ waitnum + ", "
+			sql += column +" = '"+ content
+			sql += "', editor='"+ THISUSER
+			sql += "' WHERE qn = "+ qn +";"
+		} else {	//new row, to insert
+			sql = "sqlReturnbook=INSERT INTO book ("
+			sql += "waitnum, opdate, "+ column +", editor) VALUES ("
+			sql += waitnum + ", '" + opdate +"', '"+ content +"', '"+ THISUSER +"');"
+		}
+		return sql
+	}
+
+	function sqlTextNoWaitnum(opdate, column, content, qn)
+	{
+		var sql = ""
+		if (qn) {	//existing row, to update
+			sql = "sqlReturnbook=UPDATE book SET "
+			sql += column +" = '"+ content
+			sql += "', editor='"+ THISUSER
+			sql += "' WHERE qn = "+ qn +";"
+		} else {	//new row, to insert
+			sql = "sqlReturnbook=INSERT INTO book ("
+			sql += "opdate, "+ column +", editor) VALUES ('"
+			sql += opdate +"', '"+ content +"', '"+ THISUSER +"');"
+		}
+		return sql
 	}
 }
 
 function saveHNinput(pointed, hn, content)
 {
+	var tableID = $(pointed).closest("table").attr("id")
 	var $row = $(pointed).closest('tr')
 	var $rowcell = $row.children("td")
+	var cellindex = pointed.cellIndex
 	var opdate = getOpdate($rowcell.eq(OPDATE).html())
-	var staffname = $rowcell.eq(STAFFNAME).html()
-	var patient = $rowcell.eq(NAME).html()
 	var qn = $rowcell.eq(QN).html()
 	var oldContent = pointed.innerHTML
 
@@ -220,9 +247,6 @@ function saveHNinput(pointed, hn, content)
 
 	Ajax(GETNAMEHN, sql, callbackgetByHN)
 
-	var tableID = $(pointed).closest("table").attr("id")
-	var cellindex = pointed.cellIndex
-
 	function callbackgetByHN(response)
 	{
 		if ((!response) || (response.indexOf("patient") == -1) || (response.indexOf("{") == -1)) 
@@ -234,7 +258,7 @@ function saveHNinput(pointed, hn, content)
 		{
 			updateBOOK(response)
 
-			var NewRow = findNewRowBOOK(opdate)
+			var NewRow = findNewBOOKrow(opdate)
 			var bookq = BOOK[NewRow]
 			$rowcell.eq(NAME).html(bookq.patient)
 			$rowcell.eq(AGE).html(putAgeOpdate(bookq.dob, bookq.opdate))
@@ -242,13 +266,13 @@ function saveHNinput(pointed, hn, content)
 				$rowcell.eq(QN).html(BOOK[NewRow].qn)
 			}
 
-			if (tableID == 'tbl') {	//New case has no staffname
+			if (tableID == 'tbl') {
 				if (($("#titlecontainer").css('display') == 'block') && 
-					($('#titlename').html() == staffname)) {
-
+					($('#titlename').html() == $rowcell.eq(STAFFNAME).html())) {
+					//input is on this staffname row
 					refillanother('queuetbl', cellindex, qn)
 				}
-			} else {	//New case row was already in tbl
+			} else {	//no need to refillall because new case row was already in tbl
 				refillanother('tbl', cellindex, qn)
 			}
 		}

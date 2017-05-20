@@ -173,13 +173,17 @@ function checkblank(opdate, qn)
 function noOpdate()
 {
 	//must use jQuery in order to be recognized
-	$("#queuetbl tbody").append($("#queuetbl tr:last").clone())
-	$("#queuetbl tr:last").children().html("")
+	$("#queuetbl tr:last").clone()
+							.appendTo($("#queuetbl tbody"))
+								.children().html("")
 
 	//change pointing to STAFFNAME
 	var staffname = $('#titlename').html()
-	var pointing = $("#queuetbl tr:last td").eq(STAFFNAME)[0]
+	var pointing = $("#queuetbl tr:last td")[STAFFNAME]
+	var $addedRow = $("#queuetbl tr:last")
 	saveContent(pointing, "staffname", staffname)
+	addColor($addedRow, LARGESTDATE)
+	$addedRow.children()[OPDATE].className = NAMEOFDAYABBR[(new Date(LARGESTDATE)).getDay()]
 
 	var queue = $("#queuetbl").height()
 	var container = $("#queuecontainer").height()
@@ -200,9 +204,11 @@ function addnewrow(tableID, rowmain, qn)
 	bookq.opdate = BOOK[caseNum].opdate
 	BOOK.splice(caseNum + 1, 0, bookq)
 	
-	var clone = rowmain.cloneNode(true)
-	rowmain.parentNode.insertBefore(clone, rowmain)
-	fillblank(rowmain)
+	$(rowmain).clone()
+		.insertAfter($(rowmain))
+			.find("td").eq(OPDATE)
+				.siblings()
+					.html("")
 	
 	if (tableID == "queuetbl") {
 		//change pointing to STAFFNAME

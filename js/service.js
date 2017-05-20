@@ -391,8 +391,8 @@ function saveSContent(pointed, column, content)	//column name in MYSQL
 
 			rowmain.className = countService(thisrow[0], fromDate, toDate)
 
-			//Not refill because it may make next editTD return to old value
-			//when fast entry, due to slow return from Ajax
+			//Not refill because it may make next editTD return to old value when fast entry
+			//due to slow return from Ajax of previous input
 		}
 	}
 }

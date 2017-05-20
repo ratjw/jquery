@@ -96,7 +96,7 @@ String.prototype.nextdays = function (days)
 }
 
 String.prototype.getAge = function (toDate)
-{	//Calculate age at toDate (MySQL format) from MySQL birth date (2017-01-23)
+{	//Calculate age at (toDate) (iso format) from birth date
 	if (!toDate || this <= '1900-01-01')
 		return this
 	var birth = new Date(this);
@@ -133,27 +133,27 @@ String.prototype.getAge = function (toDate)
 	return years? ageyears : months? agemonths : agedays;
 }
 
-function getOpdate(date)
+function getOpdate(date)	//change date from table to iso date
 {
 	if (date === undefined) { return date }
-	if ((date === "") || (date === LARGESTDATE)) {
+	if (date === "") {
 		return LARGESTDATE
 	} else {
 		return date.numDate()
 	}
 }
 
-function putOpdate(date)
+function putOpdate(date)	//change date in BOOK to show on table
 {
-	if (date === undefined) { return date }
-	if ((date === "") || (date === LARGESTDATE)) {
+	if (!date) { return date }
+	if ((date === LARGESTDATE)) {
 		return ""
 	} else {
 		return date.thDate()
 	}
 }
 
-function putAgeOpdate(dob, date)
+function putAgeOpdate(dob, date)	//calc age regarding largest date
 {
 	if (!date || !dob || (date === LARGESTDATE)) {
 		return ""
@@ -162,32 +162,32 @@ function putAgeOpdate(dob, date)
 	}
 }
 
-function regexDate(str)
-{
+function findDateArray(str)	//find date string
+{							//in diagnosis, treatment, admission status
 	var iso = str.match((ISODATEG))
-	var ful = str.match((HYPHENYYYYDATEG))
-	var hal = str.match((HYPHENYYDATEG))
-	var full = str.match((SLASHYYYYDATEG))
-	var half = str.match((SLASHYYDATEG))
+	var fullhyphen = str.match((HYPHENYYYYDATEG))
+	var halfhyphen = str.match((HYPHENYYDATEG))
+	var fullslash = str.match((SLASHYYYYDATEG))
+	var halfslash = str.match((SLASHYYDATEG))
 
-	var arr = []
+	var dateArray = []
 
 	if (iso) {
-		arr = arr.concat(iso)
+		dateArray = dateArray.concat( iso )
 	}
-	if (ful) {
-		arr = arr.concat(ful)
+	if (fullhyphen) {
+		dateArray = dateArray.concat( fullhyphen )
 	}
-	if (hal) {
-		arr = arr.concat(hal)
+	if (halfhyphen) {
+		dateArray = dateArray.concat( halfhyphen )
 	}
-	if (full) {
-		arr = arr.concat(full)
+	if (fullslash) {
+		dateArray = dateArray.concat( fullslash )
 	}
-	if (half) {
-		arr = arr.concat(half)
+	if (halfslash) {
+		dateArray = dateArray.concat( halfslash )
 	}
-	return arr
+	return dateArray
 }
 
 function dateDiff(from, to)	//assume mm/dd/yy(yy) or yyyy-mm-dd
@@ -253,7 +253,7 @@ function findBOOKrow(qn)
 	}
 }
 
-function findNewRowBOOK(opdate)	//find new row (max. qn)
+function findNewBOOKrow(opdate)	//find new row (max. qn)
 {
 	var q = 0
 	while (BOOK[q].opdate != opdate)
@@ -287,8 +287,8 @@ function findVisibleHead(table)
 	return tohead
 }
 
-function calculateWaitnum($row, opdate)
-{
+function calculateWaitnum($row, opdate)	//opdate depend on adjacent row
+{	//queue within each day is sorted by waitnum only, not staffname
 	var prevWaitNum = $row.prev()[0]
 	var nextWaitNum = $row.next()[0]
 	if (prevWaitNum) {
@@ -316,6 +316,18 @@ function calculateWaitnum($row, opdate)
 	}
 }
 
+function addColor($this, thisopdate) 
+{
+	var prevdate = $this.prev().children().eq(OPDATE).html()
+	prevdate = prevdate? prevdate.numDate() : ""
+	if (((thisopdate != prevdate) && ($this.prev()[0].className.indexOf("odd") < 0))
+	|| ((thisopdate == prevdate) && ($this.prev()[0].className.indexOf("odd") >= 0))) {
+		$this.addClass("odd")
+	} else {
+		$this.removeClass("odd")	//clear colored row that is moved to non-color opdate
+	}
+}
+
 function findPrevcell(event, editable, pointing) 
 {
 	var $prevcell = $(pointing)
@@ -330,7 +342,8 @@ function findPrevcell(event, editable, pointing)
 		do {
 			if ($prevcell.parent().index() > 1)
 			{	//go to prev row last editable
-				$prevcell = $prevcell.parent().prev("tr").children().eq(editable[editable.length-1])
+				$prevcell = $prevcell.parent().prev("tr")
+										.children().eq(editable[editable.length-1])
 			}
 			else
 			{	//#tbl tr:1 td:1
@@ -357,7 +370,8 @@ function findNextcell(event, editable, pointing)
 	else
 	{
 		do {//go to next row first editable
-			$nextcell = $($nextcell).parent().next("tr").children().eq(editable[0])
+			$nextcell = $($nextcell).parent().next("tr")
+										.children().eq(editable[0])
 			if (!($nextcell.length)) {
 				event.preventDefault()
 				return false

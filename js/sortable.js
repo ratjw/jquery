@@ -106,7 +106,7 @@ function sortable()
 //						requestAnimationFrame(refillstaffqueue())								
 						refillstaffqueue()
 						}
-					} else {
+					} else {	//receiver == "queuetbl"
 //						requestAnimationFrame(refillstaffqueue())
 						refillstaffqueue()
 //						requestAnimationFrame(refillall())

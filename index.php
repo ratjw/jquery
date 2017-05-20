@@ -26,7 +26,7 @@
 <script src="js/service.js"></script>
 <script src="js/sortable.js"></script>
 <script src="js/start.js"></script>
-<script src="js/touch.js"></script>
+<!--script src="js/touch.js"></script-->
 </HEAD>
 <BODY>
 
@@ -209,7 +209,7 @@
   <span style="width:540px;" id="treatment"></span>
   <br>
   <br>
-  <div style="width:105px;">Position</div>
+  <div id="clearPosition" style="width:105px;">Position</div>
   <span style="width:240px;">
 	<input type="radio" name="pose" id="leftSupine">
 	<label for="leftSupine">หงาย ซ้ายขึ้น หันหน้าไปทางขวา</label>
@@ -371,7 +371,7 @@
   </span>
   <span> <input type="text" size="15" id="U/S"></span>
   <br>
-  <div style="width:110px;">Shunt</div>
+  <div id="clearShunt" style="width:110px;">Shunt</div>
   <span style="width:106px;">Pudenz</span>
   <span style="width:40px;">หัว</span>
   <span style="width:140px;">

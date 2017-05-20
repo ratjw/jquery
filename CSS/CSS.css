@@ -107,10 +107,10 @@ td.sat { background-color: #CCBBFF; }
 	border-collapse: collapse;
 }
 
-/*#queuetbl tr:nth-child(odd), */
+#queuetbl tr.odd, 
 #historytbl tr:nth-child(odd), 
 #servicetbl tr:nth-child(odd) {
-    background-color: #F0FFF0;
+    background-color: #E0FFE0;
 }
 
 #queuetbl th, #historytbl th, #servicetbl th {

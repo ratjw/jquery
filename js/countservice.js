@@ -75,8 +75,8 @@ function isReoperation(thiscase)
 		return true
 	}
 
-	var diag = regexDate(thiscase.diagnosis)
-	var treat = regexDate(thiscase.treatment)
+	var diag = findDateArray(thiscase.diagnosis)
+	var treat = findDateArray(thiscase.treatment)
 
 	if (diag.length && treat.length) { //assume entry dd/mm/yy (Buddhist)
 		var diagDate
@@ -101,8 +101,8 @@ function isReadmission(thiscase)
 		return true
 	}
 
-	var diag = regexDate(thiscase.diagnosis)
-	var admit = regexDate(thiscase.admission)
+	var diag = findDateArray(thiscase.diagnosis)
+	var admit = findDateArray(thiscase.admission)
 
 	if (diag.length && admit.length) { //assume entry dd/mm/yy (Buddhist)
 		var diagDate

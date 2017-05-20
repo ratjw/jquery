@@ -17,6 +17,14 @@ function fillEquipTable(qn)
 	$('#dialogEquip input').prop('checked', false)
 	$('#dialogEquip input').val('')
 	$('#dialogEquip input[type=text]').prop('disabled', false)//make it easier to see
+	$('#clearPosition').click(function() {	//uncheck radio button of all Positions
+		$('#dialogEquip input[name=pose]').prop('checked', false)
+	})
+	$('#clearShunt').click(function() {	//uncheck radio button of all Shunts
+		$('#dialogEquip input[name=head]').prop('checked', false)
+		$('#dialogEquip input[name=peritoneum]').prop('checked', false)
+		$('#dialogEquip input[name=program]').prop('checked', false)
+	})
 
 	if ( bookqEquip ) {			// If any, fill checked & others
 		$.each(JSON.parse(bookqEquip), function(key, val) {
