@@ -324,7 +324,7 @@ function addColor($this, thisopdate)
 	|| ((thisopdate == prevdate) && ($this.prev()[0].className.indexOf("odd") >= 0))) {
 		$this.addClass("odd")
 	} else {
-		$this.removeClass("odd")	//clear colored row that is moved to non-color opdate
+		$this.removeClass()	//clear colored row that is moved to non-color opdate
 	}
 }
 
