@@ -109,9 +109,12 @@ td.sat { background-color: #CCBBFF; }
 	width: auto;
 	border-right: solid 1px slategray;
 	border-collapse: collapse;
+}
+/*
+#queuetbl {
 	border-bottom: solid 100px silver;
 }
-
+*/
 #queuetbl tr.odd, 
 #historytbl tr:nth-child(odd), 
 #servicetbl tr:nth-child(odd) {

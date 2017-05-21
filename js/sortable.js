@@ -2,7 +2,8 @@ function sortable()
 {
 	var prevplace
 	var thisplace
-	var itemsender
+	var sender
+	var receiver
 	$("#tbl tbody, #queuetbl tbody").sortable({
 		items: "tr",
 		connectWith: "#tbl tbody, #queuetbl tbody",
@@ -18,7 +19,7 @@ function sortable()
 			ui.placeholder.innerHeight(ui.item.outerHeight())
 			prevplace = ui.placeholder.index()
 			thisplace = ui.placeholder.index()
-			itemsender = ui.item.closest('table').attr('id')
+			sender = ui.item.closest('table').attr('id')
 			if ($("#tblwrapper").is('.ui-resizable')) {
 				$("#tblwrapper").resizable("destroy")
 			}
@@ -30,7 +31,7 @@ function sortable()
 		stop: function(e, ui){
 			var $item = ui.item
 			var $itemcell = $item.children()
-			var receiver = $item.closest('table').attr('id')
+			receiver = $item.closest('table').attr('id')
 				
 			if (!$itemcell.eq(QN).html()) {
 				$('#editcell').hide()
@@ -42,11 +43,11 @@ function sortable()
 					$('#editcell').hide()
 					return false
 				}
-				if ($item.attr("data-sender") == "tbl") {
+				if (sender == "tbl") {
 					$itemcell.eq(STAFFNAME).css("display", "none")
 				}
 			} else {	//receiver == "tbl"
-				if ($item.attr("data-sender") == "queuetbl") {
+				if (sender == "queuetbl") {
 					$itemcell.eq(STAFFNAME).css("display", "block")
 				}
 			}
@@ -112,18 +113,14 @@ function sortable()
 				{
 					updateBOOK(response)
 					if (receiver == "tbl") {
-//						requestAnimationFrame(refillall())
 						refillall()
 						if (($("#queuewrapper").css('display') == 'block') && 
 							($('#titlename').html() == staffname)) {
 
-//						requestAnimationFrame(refillstaffqueue())								
 						refillstaffqueue()
 						}
 					} else {	//receiver == "queuetbl"
-//						requestAnimationFrame(refillstaffqueue())
 						refillstaffqueue()
-//						requestAnimationFrame(refillall())
 						refillall()
 					}
 				}
