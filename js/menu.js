@@ -65,7 +65,7 @@ function fillSetTable(pointing)
 			{
 				case "item1":
 					staffqueue(ui.item.text())
-					if ($("#titlecontainer").css("display") != "block")
+					if ($("#queuewrapper").css("display") != "block")
 						splitPane()
 					break
 				case "item2":
@@ -168,6 +168,53 @@ function checkblank(opdate, qn)
 	} else {
 		return false	//No case in this opdate, do not delete blank row
 	}
+}
+
+function splitPane()
+{
+	var tohead = findVisibleHead('#tbl')
+	var width = screen.availWidth
+	var height = screen.availHeight
+
+	if (width > height) {
+		$("#tblwrapper").css({"float":"left", "height":"100%", "width":"60%"})
+		$("#queuewrapper").css({"float":"right", "height":"100%", "width":"40%"})
+	} else {
+		$("#tblwrapper").css({"float":"left", "height":"60%", "width":"100%"})
+		$("#queuewrapper").css({"float":"left", "height":"40%", "width":"100%"})
+	}
+	$("#queuewrapper").show()
+	initResize("#tblwrapper")
+	$('.ui-resizable-e').css('height', $("#tbl").css("height"))
+
+	fakeScrollAnimate("#tblcontainer", "#tbl", tohead)
+}
+
+function closequeue()
+{
+	var tohead = findVisibleHead('#tbl')
+	
+	$("#queuewrapper").hide()
+	$("#tblwrapper").css({
+		"height": "100%", "width": "100%"
+	})
+
+	fakeScrollAnimate("#tblcontainer", "#tbl", tohead)
+}
+
+function fakeScrollAnimate(container, table, tohead)
+{
+	if (tohead.offsetTop < 300)
+		return
+	if (tohead.offsetTop + $(container).height() < $(table).height())
+	{
+		$(container).scrollTop(tohead.offsetTop - 300)
+		$(container).animate({
+			scrollTop: $(container).scrollTop() + 300
+		}, 500);
+	}
+	else
+		$(container).scrollTop(tohead.offsetTop)
 }
 
 function noOpdate()

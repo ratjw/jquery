@@ -6,6 +6,12 @@
 	font-family: sans-serif;
 }
 
+#tblwrapper {
+	height: 100%;
+	font-size: 0;
+	overflow: hidden;
+}
+
 #tblcontainer {
 	float: left;
 	height: 100%;
@@ -17,7 +23,7 @@
 	border-left: solid 2px silver;
 }
 
-#titlecontainer {
+#queuewrapper {
 	float: right;
 }
 
@@ -105,6 +111,7 @@ td.sat { background-color: #CCBBFF; }
 	width: auto;
 	border-right: solid 1px slategray;
 	border-collapse: collapse;
+	border-bottom: solid 100px silver;
 }
 
 #queuetbl tr.odd, 
@@ -187,7 +194,6 @@ td.sat { background-color: #CCBBFF; }
 	cursor: e-resize; 
 	width: 10px; 
 	top: 0; 
-	right: -2px;
 }
 
 .ui-icon:hover {

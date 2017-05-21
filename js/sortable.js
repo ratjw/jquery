@@ -1,36 +1,45 @@
 function sortable()
 {
+	var prevplace
+	var thisplace
+	var itemsender
 	$("#tbl tbody, #queuetbl tbody").sortable({
 		items: "tr",
 		connectWith: "#tbl tbody, #queuetbl tbody",
+		forceHelperSize: true,
+		forcePlaceholderSize: true,
+		delay: 100,
+		revert: true,
 		start: function(e, ui){
 			clearTimeout(TIMER);
 			$('#menu').hide();
 			$('#stafflist').hide();
 			clearEditcellData("hide");
 			ui.placeholder.innerHeight(ui.item.outerHeight())
-			ui.placeholder.attr('data-thisindex', ui.placeholder.index());
-			ui.item.attr("data-sender", ui.item.closest('table').attr('id'))
+			prevplace = ui.placeholder.index()
+			thisplace = ui.placeholder.index()
+			itemsender = ui.item.closest('table').attr('id')
+			if ($("#tblwrapper").is('.ui-resizable')) {
+				$("#tblwrapper").resizable("destroy")
+			}
 		},
-		forceHelperSize: true,
-		forcePlaceholderSize: true,
 		change: function(e, ui){
-			ui.placeholder.attr('data-previndex', ui.placeholder.attr('data-thisindex'));
-			ui.placeholder.attr('data-thisindex', ui.placeholder.index());
+			prevplace = thisplace
+			thisplace = ui.placeholder.index()
 		},
-		delay: 100,
-		revert: true,
 		stop: function(e, ui){
 			var $item = ui.item
 			var $itemcell = $item.children()
 			var receiver = $item.closest('table').attr('id')
 				
 			if (!$itemcell.eq(QN).html()) {
+				$('#editcell').hide()
 				return false
 			}
 
 			if (receiver == "queuetbl") {
 				if ($itemcell.eq(STAFFNAME).html() != $('#titlename').html()) {
+					$('#editcell').hide()
 					return false
 				}
 				if ($item.attr("data-sender") == "tbl") {
@@ -63,12 +72,17 @@ function sortable()
 						$thisdrop = $previtem
 					if (nearest == nearnext) 
 						$thisdrop = $nextitem
-					if (nearest == nearplace) 
-						if (ui.placeholder.attr('data-previndex')
-						  < ui.placeholder.attr('data-thisindex'))
+					if (nearest == nearplace) {
+						if (prevplace == thisplace) {
+							$('#editcell').hide()
+							return false
+						}
+						if (prevplace < thisplace) {
 							$thisdrop = $previtem
-						else
+						} else {
 							$thisdrop = $nextitem
+						}
+					}
 				}
 			}
 
@@ -100,7 +114,7 @@ function sortable()
 					if (receiver == "tbl") {
 //						requestAnimationFrame(refillall())
 						refillall()
-						if (($("#titlecontainer").css('display') == 'block') && 
+						if (($("#queuewrapper").css('display') == 'block') && 
 							($('#titlename').html() == staffname)) {
 
 //						requestAnimationFrame(refillstaffqueue())								
@@ -115,9 +129,46 @@ function sortable()
 				}
 			}
 			TIMER = setTimeout("updating()",10000);	//poke next 10 sec.
+			if (!$("#tblwrapper").is('.ui-resizable')) {
+				initResize("#tblwrapper")
+				$('.ui-resizable-e').css('height', $("#tbl").css("height"))
+			}
 			$('#editcell').hide()
-			//after sorting, sometimes editcell is placed at row 0 column 1
+			//after sorting, editcell was placed at row 0 column 1
 			//and display at placeholder position in entire width
 		}
 	})
+}
+
+function initResize(id)
+{
+	$(id).resizable(
+	{
+		autoHide: true,
+		handles: 'e',
+		resize: function(e, ui) 
+		{
+			var parent = ui.element.parent();
+			var remainSpace = parent.width() - ui.element.outerWidth()
+			var divTwo = ui.element.next()
+			var margin = divTwo.outerWidth() - divTwo.innerWidth()
+			var divTwoWidth = (remainSpace-margin)/parent.width()*100+"%";
+			divTwo.css("width", divTwoWidth);
+		},
+		stop: function(e, ui) 
+		{
+			var parent = ui.element.parent();
+			var remainSpace = parent.width() - ui.element.outerWidth()
+			var divTwo = ui.element.next()
+			var margin = divTwo.outerWidth() - divTwo.innerWidth()
+			ui.element.css(
+			{
+				width: ui.element.outerWidth()/parent.width()*100+"%",
+			});
+			ui.element.next().css(
+			{
+				width: (remainSpace-margin)/parent.width()*100+"%",
+			});
+		}
+	});
 }

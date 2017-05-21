@@ -170,7 +170,7 @@ function saveContent(pointed, column, content)	//use only "pointed" to save data
 
 	function updateQueuetbl()
 	{
-		if ($("#titlecontainer").css('display') == 'block') {	//staffqueue showing
+		if ($("#queuewrapper").css('display') == 'block') {	//staffqueue showing
 			var staffname = $('#titlename').html()
 			if ((column == "staffname")
 			&& (content == staffname)) {	//if input is this staffname
@@ -267,7 +267,7 @@ function saveHNinput(pointed, hn, content)
 			}
 
 			if (tableID == 'tbl') {
-				if (($("#titlecontainer").css('display') == 'block') && 
+				if (($("#queuewrapper").css('display') == 'block') && 
 					($('#titlename').html() == $rowcell.eq(STAFFNAME).html())) {
 					//input is on this staffname row
 					refillanother('queuetbl', cellindex, qn)

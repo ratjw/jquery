@@ -31,10 +31,10 @@
 <BODY>
 
 <div id="wrapper"><!-- data-role="page"-->
-
- <div id="tblcontainer" style="display:none"><!-- role="main" class="ui-content"-->
-  <table id="tbl"><!-- data-role="table" class="ui-responsive"-->
-   <tbody id="tblbody">
+ <div id="tblwrapper" style="display:none">
+  <div id="tblcontainer"><!-- role="main" class="ui-content"-->
+   <table id="tbl"><!-- data-role="table" class="ui-responsive"-->
+    <tbody id="tblbody">
 	 <tr>
      <th style="width:10%">Op/Service</th>
      <th style="width:6%">Staff</th>
@@ -46,19 +46,21 @@
      <th style="width:20%">Contact</th>
      <th style="display:none"></th>
 	 </tr>
-   </tbody>
-  </table>
+    </tbody>
+   </table>
+  </div>
  </div>
 
- <div id="titlecontainer" style="display:none">
+ <div id="queuewrapper" style="display:none">
   <div id="titlebar"><!-- data-role="header"-->
 	<span id="titlename"></span>
 	<span class="ui-icon ui-icon-closethick" onclick="closequeue()">
 	</span>
   </div> 
-  <div id="queuecontainer"><!-- role="main" class="ui-content"-->
-   <table id="queuetbl"><!-- data-role="table" class="ui-responsive"-->
-    <tbody>
+  <!--div id="queuetblwrapper"-->
+   <div id="queuecontainer"><!-- role="main" class="ui-content"-->
+    <table id="queuetbl"><!-- data-role="table" class="ui-responsive"-->
+     <tbody>
 	  <tr>
       <th style="width:10%">Op/Service</th>
       <th style="display:none"></th>
@@ -70,9 +72,10 @@
       <th style="width:20%">Contact</th>
       <th style="display:none"></th>
 	  </tr>
-    </tbody>
-   </table>
-  </div>
+     </tbody>
+    </table>
+   </div>
+  <!--/div-->
  </div>
 </div>
 

@@ -4,7 +4,7 @@ function loadtable(userid)
 
 	THISUSER = userid
 	$("#login").remove()
-	$("#tblcontainer").show()
+	$("#tblwrapper").show()
 	$("#dialogOplog").dialog()
 	$("#dialogOplog").dialog('close')
 	$("#dialogDeleted").dialog()
@@ -183,7 +183,7 @@ function updateTables()
 		refillService(SERVICE, fromDate, toDate)
 	}
 	refillall()
-	if ($("#titlecontainer").css('display') == 'block') {
+	if ($("#queuewrapper").css('display') == 'block') {
 		refillstaffqueue()
 	}
 }
