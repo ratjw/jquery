@@ -34,22 +34,8 @@ function sortable()
 			receiver = $item.closest('table').attr('id')
 				
 			if (!$itemcell.eq(QN).html()) {
-				$('#editcell').hide()
+				stopsorting()
 				return false
-			}
-
-			if (receiver == "queuetbl") {
-				if ($itemcell.eq(STAFFNAME).html() != $('#titlename').html()) {
-					$('#editcell').hide()
-					return false
-				}
-				if (sender == "tbl") {
-					$itemcell.eq(STAFFNAME).css("display", "none")
-				}
-			} else {	//receiver == "tbl"
-				if (sender == "queuetbl") {
-					$itemcell.eq(STAFFNAME).css("display", "block")
-				}
 			}
 
 			var $thisdrop
@@ -75,7 +61,7 @@ function sortable()
 						$thisdrop = $nextitem
 					if (nearest == nearplace) {
 						if (prevplace == thisplace) {
-							$('#editcell').hide()
+							stopsorting()
 							return false
 						}
 						if (prevplace < thisplace) {
@@ -102,6 +88,21 @@ function sortable()
 			$item[0].title = finalWaitnum
 			$itemcell.eq(STAFFNAME).css("height", $thisdrop.height())
 
+			if (receiver == "queuetbl") {
+				if ($itemcell.eq(STAFFNAME).html() != $('#titlename').html()) {
+					stopsorting()
+					return false
+				}
+				if (sender == "tbl") {
+					$itemcell.eq(STAFFNAME).css("display", "none")
+				}
+			} else {	//receiver == "tbl"
+				if (sender == "queuetbl") {
+					$itemcell.eq(STAFFNAME).css("display", "block")
+				}
+			}
+			stopsorting()
+
 			function callbacksortable(response)
 			{
 				if (!response || response.indexOf("DBfailed") != -1)
@@ -125,16 +126,20 @@ function sortable()
 					}
 				}
 			}
-			TIMER = setTimeout("updating()",10000);	//poke next 10 sec.
-			if (!$("#tblwrapper").is('.ui-resizable')) {
-				initResize("#tblwrapper")
-				$('.ui-resizable-e').css('height', $("#tbl").css("height"))
-			}
-			$('#editcell').hide()
-			//after sorting, editcell was placed at row 0 column 1
-			//and display at placeholder position in entire width
 		}
 	})
+
+	function stopsorting()
+	{
+		TIMER = setTimeout("updating()",10000);	//poke next 10 sec.
+		if (!$("#tblwrapper").is('.ui-resizable')) {
+			initResize("#tblwrapper")
+			$('.ui-resizable-e').css('height', $("#tbl").css("height"))
+		}
+		$('#editcell').hide()
+		//after sorting, editcell was placed at row 0 column 1
+		//and display at placeholder position in entire width
+	}
 }
 
 function initResize(id)
