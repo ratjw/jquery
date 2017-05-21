@@ -18,9 +18,7 @@
 	width: 100%;
 	overflow: scroll;
 	box-sizing: border-box;
-	border-top: solid 2px silver;
-	border-right: solid 2px silver;
-	border-left: solid 2px silver;
+	border: solid 2px silver;
 }
 
 #queuewrapper {
@@ -138,12 +136,7 @@ td.sat { background-color: #CCBBFF; }
 	border-bottom: solid 1px silver;
 	height: 20px;
 }
-/*
-#queuetbl td:first-child {
-	background-color: #DDFFFF;
-	color: 557799;
-}
-*/
+
 #servicetbl td:first-child {
 	text-align: center;
 }

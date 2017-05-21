@@ -93,7 +93,7 @@ function showService(SERVICE, fromDate, toDate)
 
 	$.each( STAFF, function() {
 		var staffname = this
-		$('#sdatatitle tr').clone()
+		$('#servicerowcell tr').clone()
 			.insertAfter($('#servicetbl tr:last'))
 				.children().eq(OPDATE)
 					.prop("colSpan", 8)
@@ -111,7 +111,7 @@ function showService(SERVICE, fromDate, toDate)
 			if (this.staffname == staffname) {
 				var color = countService(this, fromDate, toDate)
 				scase++
-				$('#sdatatitle tr').clone()
+				$('#servicerowcell tr').clone()
 					.insertAfter($('#servicetbl tr:last'))
 						.filldataService(this, scase, color)
 			}

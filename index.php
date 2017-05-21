@@ -79,7 +79,7 @@
  </div>
 </div>
 
-<table id="datatitle" style="display:none">	<!-- Used as cells template -->
+<table id="tblrowcell" style="display:none">	<!-- Used as cells template -->
   <TBODY>
    <TR>
     <td data-title="Op/Service"></td>
@@ -95,7 +95,7 @@
   </TBODY>
 </table>
 
-<table id="qdatatitle" style="display:none">	<!--template for "staffqueue"-->
+<table id="queuerowcell" style="display:none">	<!--template for "staffqueue"-->
   <TBODY>
     <TR>
      <td data-title="Op/Service"></td>
@@ -147,7 +147,7 @@
   <input type="text" id="datepicking" style="display:none">
 </div>
 
-<table id="sdatatitle" style="display:none">	<!--template for "servicetbl"-->
+<table id="servicerowcell" style="display:none">	<!--template for "servicetbl"-->
   <TBODY>
    <TR>
     <td data-title="case"></td>

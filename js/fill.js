@@ -178,8 +178,8 @@ function refillall()
 function makenextrow(date)	//create and decorate new row
 {
 	var tbody = document.getElementById("tblbody")
-	var datatitle = document.getElementById("datatitle")
-	var row = datatitle.rows[0].cloneNode(true)
+	var tblrowcell = document.getElementById("tblrowcell")
+	var row = tblrowcell.rows[0].cloneNode(true)
 	var rowi = tbody.appendChild(row)
 
 	rowi.cells[OPDATE].innerHTML = date.thDate()
@@ -190,9 +190,9 @@ function makenextrow(date)	//create and decorate new row
 
 function fillrowdate(rows, i, date)	//renew and decorate existing row
 {
-	var datatitle = document.getElementById("datatitle")
+	var tblrowcell = document.getElementById("tblrowcell")
 	if (rows[i].cells[OPDATE].nodeName != "TD") {
-		var row = datatitle.rows[0].cloneNode(true)
+		var row = tblrowcell.rows[0].cloneNode(true)
 		rows[i].parentNode.replaceChild(row, rows[i])
 	}
 	rows[i].cells[OPDATE].innerHTML = date.thDate()
@@ -238,7 +238,7 @@ function staffqueue(staffname)
 
 	$.each( BOOK, function() {	// each == this
 		if (( this.staffname == staffname ) && this.opdate >= todate) {
-			$('#qdatatitle tr').clone()
+			$('#queuerowcell tr').clone()
 				.appendTo($('#queuetbl'))
 					.filldataQueue(this)
 		}
@@ -257,7 +257,7 @@ function refillstaffqueue()
 		if ((this.opdate >= todate) && (this.staffname == staffname)) {
 			i++
 			if (i >= $('#queuetbl tr').length) {
-				$('#qdatatitle tr').clone()
+				$('#queuerowcell tr').clone()
 					.appendTo($('#queuetbl'))
 						.filldataQueue(this)
 			} else {
