@@ -30,17 +30,19 @@ require_once "book.php";
 		$qn = $case[$i]["qn"];
 		$ipd = getipd($hn);
 
-		if (empty($ipd[admission_date])) {
+		if (empty($ipd[effectivestartdate])) {
 			$admit = null;
 		} else {
-			$admit = $ipd[admission_date];
+			$DateTime = DateTime::createFromFormat('d/m/Y H:i:s', $ipd[effectivestartdate]);
+			$admit = $DateTime->format('Y-m-d');
 		}
-		if (empty($ipd[discharge_date])) {
+		if (empty($ipd[effectiveenddate])) {
 			$discharge = null;
 		} else {
-			$discharge = $ipd[discharge_date];
+			$DateTime = DateTime::createFromFormat('d/m/Y H:i:s', $ipd[effectiveenddate]);
+			$discharge = $DateTime->format('Y-m-d');
 		}
-
+//echo "admit ".$admit." discharge ".$discharge;exit;
 		$date1 = date_create($admit);
 		$date2 = date_create($opdate);
 		$diff = date_diff($date1, $date2);
@@ -73,7 +75,7 @@ function getipd($hn)
 {
 	$wsdl="http://appcenter/webservice/patientservice.wsdl";
 	$client = new SoapClient($wsdl);
-	$resultx = $client->Get_ipd_detail($hn);
+	$resultx = $client->GetEncounterDetailByMRNENCTYPE($hn, "IMP");
 	$resulty = simplexml_load_string($resultx);
 	while ($resulty->children())			//find last children
 		$resulty = $resulty->children();

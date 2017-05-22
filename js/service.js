@@ -205,9 +205,9 @@ function resetcountService()
 
 function getAdmitDischargeDate(SERVICE, fromDate, toDate)
 {
-	Ajax(GETIPDCRON, "from=" + fromDate + "&to=" + toDate, callbackgetipdcron)
+	Ajax(GETIPD, "from=" + fromDate + "&to=" + toDate, callbackgetipd)
 
-	function callbackgetipdcron(response)
+	function callbackgetipd(response)
 	{
 		if (!response) {
 			return
