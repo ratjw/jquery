@@ -110,11 +110,11 @@ td.sat { background-color: #CCBBF0; }
 	border-right: solid 1px slategray;
 	border-collapse: collapse;
 }
-/*
+
 #queuetbl {
-	border-bottom: solid 100px silver;
+	margin-bottom: 300px;
 }
-*/
+
 #queuetbl tr.odd {
     background-color: #EEEEFF;
 }
