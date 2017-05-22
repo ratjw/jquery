@@ -39,14 +39,14 @@ require_once "book.php";
 		}
 	}
 	else
-	{			//new row -> waitnum default = 1 in database
+	{			//new row has waitnum
 		if ($dob) {
-			$sql = "INSERT INTO book (opdate, staffname, hn, patient, dob, gender, editor) 
-					VALUES ('$opdate', '$staffname', '$hn', 
+			$sql = "INSERT INTO book (waitnum, opdate, staffname, hn, patient, dob, gender, editor) 
+					VALUES ($waitnum, '$opdate', '$staffname', '$hn', 
 					'$initial_name$first_name $last_name', '$dob', '$gender', '$username');";
 		} else {
-			$sql = "INSERT INTO book (opdate, staffname, hn, patient, gender, editor) 
-					VALUES ('$opdate', '$staffname', '$hn', 
+			$sql = "INSERT INTO book (waitnum, opdate, staffname, hn, patient, gender, editor) 
+					VALUES ($waitnum, '$opdate', '$staffname', '$hn', 
 					'$initial_name$first_name $last_name', '$gender', '$username');";
 		}
 	}

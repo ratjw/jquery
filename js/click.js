@@ -132,12 +132,17 @@ function saveContent(pointed, column, content)	//use only "pointed" to save data
 
 	content = URIcomponent(content)	//take care of white space, double qoute, 
 									//single qoute, and back slash
-	if (column == "staffname") {	//if data is staffname, calculate waitnum
+	if (!qn) {	//if new case, calculate waitnum
 		waitnum = calculateWaitnum($row, opdate)
 		$row[0].title = waitnum		//store waitnum in row title
-		var sql = sqlText(waitnum, opdate, column, content, qn)
+		var sql = "sqlReturnbook=INSERT INTO book ("
+			sql += "waitnum, opdate, "+ column +", editor) VALUES ("
+			sql += waitnum + ", '" + opdate +"', '"+ content +"', '"+ THISUSER +"');"
 	} else {
-		var sql = sqlTextNoWaitnum(opdate, column, content, qn)
+		var sql = "sqlReturnbook=UPDATE book SET "
+			sql += column +" = '"+ content
+			sql += "', editor='"+ THISUSER
+			sql += "' WHERE qn = "+ qn +";"
 	}
 
 	Ajax(MYSQLIPHP, sql, callbacksaveContent);
@@ -193,39 +198,6 @@ function saveContent(pointed, column, content)	//use only "pointed" to save data
 			refillall()		//New case input from queuetbl, update tbl all
 		}					//because there is one more row inserted
 	}
-
-	function sqlText(waitnum, opdate, column, content, qn)
-	{
-		var sql = ""
-		if (qn) {	//existing row, to update
-			sql = "sqlReturnbook=UPDATE book SET "
-			sql += "waitnum = "+ waitnum + ", "
-			sql += column +" = '"+ content
-			sql += "', editor='"+ THISUSER
-			sql += "' WHERE qn = "+ qn +";"
-		} else {	//new row, to insert
-			sql = "sqlReturnbook=INSERT INTO book ("
-			sql += "waitnum, opdate, "+ column +", editor) VALUES ("
-			sql += waitnum + ", '" + opdate +"', '"+ content +"', '"+ THISUSER +"');"
-		}
-		return sql
-	}
-
-	function sqlTextNoWaitnum(opdate, column, content, qn)
-	{
-		var sql = ""
-		if (qn) {	//existing row, to update
-			sql = "sqlReturnbook=UPDATE book SET "
-			sql += column +" = '"+ content
-			sql += "', editor='"+ THISUSER
-			sql += "' WHERE qn = "+ qn +";"
-		} else {	//new row, to insert
-			sql = "sqlReturnbook=INSERT INTO book ("
-			sql += "opdate, "+ column +", editor) VALUES ('"
-			sql += opdate +"', '"+ content +"', '"+ THISUSER +"');"
-		}
-		return sql
-	}
 }
 
 function saveHNinput(pointed, hn, content)
@@ -240,10 +212,20 @@ function saveHNinput(pointed, hn, content)
 
 	pointed.innerHTML = content
 
-	var sql = "hn=" + content
-	sql += "&opdate="+ opdate
-	sql += "&qn="+ qn
-	sql += "&username="+ THISUSER
+	if (!qn) {	//if new case, calculate waitnum
+		waitnum = calculateWaitnum($row, opdate)
+		$row[0].title = waitnum		//store waitnum in row title
+		var sql = "hn=" + content
+		sql += "&waitnum="+ waitnum
+		sql += "&opdate="+ opdate
+		sql += "&qn="+ qn
+		sql += "&username="+ THISUSER
+	} else {
+		var sql = "hn=" + content
+		sql += "&opdate="+ opdate
+		sql += "&qn="+ qn
+		sql += "&username="+ THISUSER
+	}
 
 	Ajax(GETNAMEHN, sql, callbackgetByHN)
 
