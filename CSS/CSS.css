@@ -63,19 +63,19 @@
 }
 tr.sunday { background-color: #FFDDEE; }
 tr.monday { background-color: #FFFFE0; }
-tr.tuesday { background-color: #FFE7F7; }
-tr.wednesday { background-color: #E7FFE7; }
-tr.thursday { background-color: #FFF0E0; }
-tr.friday { background-color: #E0F0FF; }
-tr.saturday { background-color: #E0D7FF; }
+tr.tuesday { background-color: #FFF9FD; }
+tr.wednesday { background-color: #EEFFEE; }
+tr.thursday { background-color: #FFF7EE; }
+tr.friday { background-color: #E7F7FF; }
+tr.saturday { background-color: #E0DDFF; }
 
-td.sun { background-color: #FF99BB; }
-td.mon { background-color: #FFFFBB; }
-td.tue { background-color: #FFCCEE; }
-td.wed { background-color: #CCFFCC; }
-td.thu { background-color: #FFDDBB; }
-td.fri { background-color: #BBDDFF; }
-td.sat { background-color: #CCBBFF; }
+td.sun { background-color: #F099BB; }
+td.mon { background-color: #F0F0BB; }
+td.tue { background-color: #F0CCEE; }
+td.wed { background-color: #CCF0CC; }
+td.thu { background-color: #F0DDBB; }
+td.fri { background-color: #BBDDF0; }
+td.sat { background-color: #CCBBF0; }
 
 #tbl td:first-child {
 	font-size: 12px;
@@ -115,7 +115,10 @@ td.sat { background-color: #CCBBFF; }
 	border-bottom: solid 100px silver;
 }
 */
-#queuetbl tr.odd, 
+#queuetbl tr.odd {
+    background-color: #EEEEFF;
+}
+
 #historytbl tr:nth-child(odd), 
 #servicetbl tr:nth-child(odd) {
     background-color: #E0FFE0;
