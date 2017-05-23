@@ -57,8 +57,7 @@
 	<span class="ui-icon ui-icon-closethick" onclick="closequeue()">
 	</span>
   </div> 
-  <!--div id="queuetblwrapper"-->
-   <div id="queuecontainer"><!-- role="main" class="ui-content"-->
+  <div id="queuecontainer"><!-- role="main" class="ui-content"-->
     <table id="queuetbl"><!-- data-role="table" class="ui-responsive"-->
      <tbody>
 	  <tr>
@@ -74,8 +73,7 @@
 	  </tr>
      </tbody>
     </table>
-   </div>
-  <!--/div-->
+  </div>
  </div>
 </div>
 

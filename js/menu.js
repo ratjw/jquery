@@ -176,16 +176,18 @@ function splitPane()
 	var width = screen.availWidth
 	var height = screen.availHeight
 
+	$("#queuewrapper").show()
 	if (width > height) {
 		$("#tblwrapper").css({"float":"left", "height":"100%", "width":"60%"})
 		$("#queuewrapper").css({"float":"right", "height":"100%", "width":"40%"})
+		initResize("#tblwrapper")
+		$('.ui-resizable-e').css('height', $("#tbl").css("height"))
 	} else {
 		$("#tblwrapper").css({"float":"left", "height":"60%", "width":"100%"})
 		$("#queuewrapper").css({"float":"left", "height":"40%", "width":"100%"})
+//		initResize("#tblwrapper")
+//		$('.ui-resizable-s').css('width', $("#tbl").css("width"))
 	}
-	$("#queuewrapper").show()
-	initResize("#tblwrapper")
-	$('.ui-resizable-e').css('height', $("#tbl").css("height"))
 
 	fakeScrollAnimate("#tblcontainer", "#tbl", tohead)
 }
@@ -256,11 +258,11 @@ function addnewrow(tableID, rowmain, qn)
 			.find("td").eq(OPDATE)
 				.siblings()
 					.html("")
-	
+
 	if (tableID == "queuetbl") {
 		//change pointing to STAFFNAME
 		var staffname = $('#titlename').html()
-		var pointing = $(rowmain).children().eq(STAFFNAME)[0]
+		var pointing = $(rowmain).next().children()[STAFFNAME]
 		saveContent(pointing, "staffname", staffname)
 	}
 }
