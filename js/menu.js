@@ -239,7 +239,7 @@ function noOpdate()
 	var scrolltop = $("#queuecontainer").scrollTop()
 	var toscroll = queue - container + scrolltop
 	$("#queuecontainer").animate({
-		scrollTop: toscroll + 50
+		scrollTop: toscroll + 300
 	}, 500);
 }
 
