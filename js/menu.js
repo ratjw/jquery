@@ -177,17 +177,17 @@ function splitPane()
 	var height = screen.availHeight
 
 	$("#queuewrapper").show()
-	if (width > height) {
-		$("#tblwrapper").css({"float":"left", "height":"100%", "width":"60%"})
-		$("#queuewrapper").css({"float":"right", "height":"100%", "width":"40%"})
+//	if (width > height) {
+		$("#tblwrapper").css({"float":"left", "height":"100%", "width":"50%"})
+		$("#queuewrapper").css({"float":"right", "height":"100%", "width":"50%"})
 		initResize("#tblwrapper")
 		$('.ui-resizable-e').css('height', $("#tbl").css("height"))
-	} else {
-		$("#tblwrapper").css({"float":"left", "height":"60%", "width":"100%"})
-		$("#queuewrapper").css({"float":"left", "height":"40%", "width":"100%"})
+//	} else {
+//		$("#tblwrapper").css({"float":"left", "height":"60%", "width":"100%"})
+//		$("#queuewrapper").css({"float":"left", "height":"40%", "width":"100%"})
 //		initResize("#tblwrapper")
 //		$('.ui-resizable-s').css('width', $("#tbl").css("width"))
-	}
+//	}
 
 	fakeScrollAnimate("#tblcontainer", "#tbl", tohead)
 }
