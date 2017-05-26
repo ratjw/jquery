@@ -161,7 +161,11 @@ function updating()	//updating.timer : local variable
 				$('#datepicker').hide()
 				$('#datepicker').datepicker("hide")
 			} else {
-				updating.timer++
+				if (updating.timer > 360) {
+					window.location = window.location.href		//logout after 1 hr
+				} else {
+					updating.timer++
+				}
 			}
 			if (response && response.indexOf("opdate") != -1)	//some changes in database
 			{
