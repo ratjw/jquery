@@ -167,7 +167,8 @@ function undelete(thiscase)
 
 	doUndelete = function() 
 	{
-		var qn = $(thiscase).siblings(":last").html()
+		var staffname = $(thiscase).children("td").eq(HSTAFFNAME).html()
+		var qn = $(thiscase).children("td").eq(HQN).html()
 
 		var sqlstring = "sqlReturnbook=UPDATE book SET "
 		sqlstring += "waitnum = 1"
@@ -188,6 +189,10 @@ function undelete(thiscase)
 			{
 				updateBOOK(response);
 				refillall()
+				if (($("#queuewrapper").css('display') == 'block') && 
+					($('#titlename').html() == staffname)) {
+					refillstaffqueue()
+				}
 			}
 		}
 	}

@@ -160,14 +160,14 @@ function updating()	//updating.timer : local variable
 				$('#stafflist').hide()	//editcell may be on staff
 				$('#datepicker').hide()
 				$('#datepicker').datepicker("hide")
-			} else {
-				if (updating.timer > 360) {
-					window.location = window.location.href		//logout after 1 hr
-				} else {
-					updating.timer++
-				}
 			}
-			if (response && response.indexOf("opdate") != -1)	//some changes in database
+			else if (updating.timer > 360) {
+				window.location = window.location.href		//logout after 1 hr
+			}
+			updating.timer++
+
+			//some changes in database from other users
+			if (response && response.indexOf("opdate") != -1)
 			{
 				updateBOOK(response)
 				updateTables()

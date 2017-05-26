@@ -181,7 +181,6 @@
   </li>
   <li id="item2"><div></div></li>
   <li id="item3"><div></div></li>
-  <li id="item4" style="color:#FF7777"><div></div></li>
   <li id="item5"><div></div></li>
   <li id="item6"><div></div></li>
   <li id="item7"><div></div></li>

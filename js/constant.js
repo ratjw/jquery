@@ -10,6 +10,7 @@ var TIMESTAMP	= "";
 var TIMER		= "";
 var LARGESTDATE	= "9999-12-31";
 
+//tbl, queuetbl
 var OPDATE		= 0;
 var STAFFNAME	= 1;
 var HN			= 2;
@@ -20,6 +21,7 @@ var TREATMENT	= 6;
 var CONTACT		= 7;
 var QN			= 8;
 
+//servicetbl
 var CASE		= 0;
 var PATIENT		= 1;
 var SDIAGNOSIS	= 2;
@@ -29,6 +31,18 @@ var FINAL		= 5;
 var ADMIT		= 6;
 var DISCHARGE	= 7;
 var SQN			= 8;
+
+//historytbl
+var HEDITDATETIME	= 0;
+var HOPDATE		= 1;
+var HSTAFFNAME	= 2;
+var HHN			= 3;
+var HPATIENT	= 4;
+var HDIAGNOSIS	= 5;
+var HTREATMENT	= 6;
+var HCONTACT	= 7;
+var HEDITOR		= 8;
+var HQN			= 9;
 
 var EDITABLE 	= [HN, DIAGNOSIS, TREATMENT, CONTACT];
 var SEDITABLE	= [SDIAGNOSIS, STREATMENT, ADMISSION, FINAL, ADMIT, DISCHARGE]
