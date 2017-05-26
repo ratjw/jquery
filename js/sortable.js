@@ -60,8 +60,8 @@ function sortable()
 					if (nearest == nearnext) 
 						$thisdrop = $nextitem
 					if (nearest == nearplace) {
-						if (prevplace == thisplace) {
-							stopsorting()
+						if ((prevplace == thisplace) && (sender == receiver)) {
+							stopsorting()	//same place as before sorting
 							return false
 						}
 						if (prevplace < thisplace) {
@@ -86,7 +86,6 @@ function sortable()
 			Ajax(MYSQLIPHP, sql, callbacksortable);
 
 			$item[0].title = finalWaitnum
-			$itemcell.eq(STAFFNAME).css("height", $thisdrop.height())
 
 			if (receiver == "queuetbl") {
 				if ($itemcell.eq(STAFFNAME).html() != $('#titlename').html()) {
@@ -99,6 +98,7 @@ function sortable()
 			} else {	//receiver == "tbl"
 				if (sender == "queuetbl") {
 					$itemcell.eq(STAFFNAME).css("display", "block")
+					$itemcell.eq(STAFFNAME).css("height", $itemcell.eq(OPDATE).css("height"))
 				}
 			}
 			stopsorting()
