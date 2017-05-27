@@ -3,7 +3,7 @@ function sortable()
 	var prevplace
 	var thisplace
 	var sender
-	var receiver
+
 	$("#tbl tbody, #queuetbl tbody").sortable({
 		items: "tr",
 		connectWith: "#tbl tbody, #queuetbl tbody",
@@ -31,7 +31,15 @@ function sortable()
 		stop: function(e, ui){
 			var $item = ui.item
 			var $itemcell = $item.children()
-			receiver = $item.closest('table').attr('id')
+			var receiver = $item.closest('table').attr('id')
+			var titlename = $('#titlename').html()
+
+			if (receiver == "queuetbl") {
+				if ($itemcell.eq(STAFFNAME).html() != titlename) {
+					stopsorting()
+					return false
+				}
+			}
 				
 			if (!$itemcell.eq(QN).html()) {
 				stopsorting()
@@ -84,23 +92,8 @@ function sortable()
 			sql += "' WHERE qn="+ thisqn +";"
 
 			Ajax(MYSQLIPHP, sql, callbacksortable);
-
+			
 			$item[0].title = finalWaitnum
-
-			if (receiver == "queuetbl") {
-				if ($itemcell.eq(STAFFNAME).html() != $('#titlename').html()) {
-					stopsorting()
-					return false
-				}
-				if (sender == "tbl") {
-					$itemcell.eq(STAFFNAME).css("display", "none")
-				}
-			} else {	//receiver == "tbl"
-				if (sender == "queuetbl") {
-					$itemcell.eq(STAFFNAME).css("display", "block")
-					$itemcell.eq(STAFFNAME).css("height", $itemcell.eq(OPDATE).css("height"))
-				}
-			}
 			stopsorting()
 
 			function callbacksortable(response)
@@ -116,7 +109,7 @@ function sortable()
 					if (receiver == "tbl") {
 						refillall()
 						if (($("#queuewrapper").css('display') == 'block') && 
-							($('#titlename').html() == staffname)) {
+							(titlename == staffname)) {
 
 						refillstaffqueue()
 						}
@@ -128,18 +121,18 @@ function sortable()
 			}
 		}
 	})
+}
 
-	function stopsorting()
-	{
-		TIMER = setTimeout("updating()",10000);	//poke next 10 sec.
-		if (!$("#tblwrapper").is('.ui-resizable')) {
-			initResize("#tblwrapper")
-			$('.ui-resizable-e').css('height', $("#tbl").css("height"))
-		}
-		$('#editcell').hide()
-		//after sorting, editcell was placed at row 0 column 1
-		//and display at placeholder position in entire width
+function stopsorting()
+{
+	TIMER = setTimeout("updating()",10000);	//poke next 10 sec.
+	if (!$("#tblwrapper").is('.ui-resizable')) {
+		initResize("#tblwrapper")
+		$('.ui-resizable-e').css('height', $("#tbl").css("height"))
 	}
+	$('#editcell').hide()
+	//after sorting, editcell was placed at row 0 column 1
+	//and display at placeholder position in entire width
 }
 
 function initResize(id)

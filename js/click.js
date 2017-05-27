@@ -178,7 +178,7 @@ function saveContent(pointed, column, content)	//use only "pointed" to save data
 		if ($("#queuewrapper").css('display') == 'block') {	//staffqueue showing
 			var staffname = $('#titlename').html()
 			if ((column == "staffname")
-			&& (content == staffname)) {	//if input is this staffname
+			&& (pointed.innerHTML == staffname)) {	//if input is this staffname
 				//New case or change staffname from tbl, update all queuetbl
 				//because there is one more row inserted
 				refillstaffqueue()

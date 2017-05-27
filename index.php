@@ -36,13 +36,13 @@
    <table id="tbl"><!-- data-role="table" class="ui-responsive"-->
     <tbody id="tblbody">
 	 <tr>
-     <th style="width:10%">Op/Service</th>
-     <th style="width:6%">Staff</th>
-     <th style="width:5%">HN</th>
+     <th style="width:10%">Service</th>
+     <th style="width:3%">Staff</th>
+     <th style="width:4%">HN</th>
      <th style="width:10%">ชื่อ นามสกุล</th>
-     <th style="width:4%">อายุ</th>
+     <th style="width:3%">อายุ</th>
      <th style="width:20%">Diagnosis</th>
-     <th style="width:25%">Treatment</th>
+     <th style="width:30%">Treatment</th>
      <th style="width:20%">Contact</th>
      <th style="display:none"></th>
 	 </tr>
@@ -61,11 +61,11 @@
     <table id="queuetbl"><!-- data-role="table" class="ui-responsive"-->
      <tbody>
 	  <tr>
-      <th style="width:10%">Op/Service</th>
-      <th style="display:none"></th>
-      <th style="width:6%">HN</th>
+      <th style="width:10%">Service</th>
+      <th style="width:3%">Staff</th>
+      <th style="width:4%">HN</th>
       <th style="width:10%">ชื่อ นามสกุล</th>
-      <th style="width:4%">อายุ</th>
+      <th style="width:3%">อายุ</th>
       <th style="width:20%">Diagnosis</th>
       <th style="width:30%">Treatment</th>
       <th style="width:20%">Contact</th>
@@ -80,7 +80,7 @@
 <table id="tblrowcell" style="display:none">	<!-- Used as cells template -->
   <TBODY>
    <TR>
-    <td data-title="Op/Service"></td>
+    <td data-title="Service"></td>
     <td data-title="Staff"></td>
     <td data-title="HN"></td>
     <td data-title="ชื่อ นามสกุล"></td>
@@ -96,8 +96,8 @@
 <table id="queuerowcell" style="display:none">	<!--template for "staffqueue"-->
   <TBODY>
     <TR>
-     <td data-title="Op/Service"></td>
-     <td style="display:none"></td>
+     <td data-title="Service"></td>
+     <td data-title="Staff"></td>
      <td data-title="HN"></td>
      <td data-title="ชื่อ นามสกุล"></td>
      <td data-title="อายุ"></td>
