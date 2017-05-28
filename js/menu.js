@@ -224,7 +224,7 @@ function noOpdate()
 	//must use jQuery in order to be recognized
 	$("#queuetbl tr:last").clone()
 							.appendTo($("#queuetbl tbody"))
-								.children().html("")
+								.children("td").html("")
 
 	//change pointing to STAFFNAME
 	var staffname = $('#titlename').html()
@@ -232,7 +232,7 @@ function noOpdate()
 	var $addedRow = $("#queuetbl tr:last")
 	saveContent(pointing, "staffname", staffname)
 	addColor($addedRow, LARGESTDATE)
-	$addedRow.children()[OPDATE].className = NAMEOFDAYABBR[(new Date(LARGESTDATE)).getDay()]
+	$addedRow.children("td")[OPDATE].className = NAMEOFDAYABBR[(new Date(LARGESTDATE)).getDay()]
 
 	var queue = $("#queuetbl").height()
 	var container = $("#queuecontainer").height()
@@ -262,7 +262,7 @@ function addnewrow(tableID, rowmain, qn)
 	if (tableID == "queuetbl") {
 		//change pointing to STAFFNAME
 		var staffname = $('#titlename').html()
-		var pointing = $(rowmain).next().children()[STAFFNAME]
+		var pointing = $(rowmain).next().children("td")[STAFFNAME]
 		saveContent(pointing, "staffname", staffname)
 	}
 }
@@ -288,8 +288,8 @@ function deleteCase(rowmain, opdate, qn)
 
 function deleteRow(rowmain, opdate)
 {
-	var prevDate = $(rowmain).prev().children().eq(OPDATE).html()
-	var nextDate = $(rowmain).next().children().eq(OPDATE).html()
+	var prevDate = $(rowmain).prev().children("td").eq(OPDATE).html()
+	var nextDate = $(rowmain).next().children("td").eq(OPDATE).html()
 
 	prevDate = getOpdate(prevDate)
 	nextDate = getOpdate(nextDate)
@@ -299,6 +299,6 @@ function deleteRow(rowmain, opdate)
 	|| $(rowmain).closest("tr").is(":last-child")) {
 		$(rowmain).remove()
 	} else {
-		$(rowmain).children().eq(OPDATE).siblings().html("")
+		$(rowmain).children("td").eq(OPDATE).siblings().html("")
 	}
 }

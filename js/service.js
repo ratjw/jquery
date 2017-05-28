@@ -95,7 +95,7 @@ function showService(SERVICE, fromDate, toDate)
 		var staffname = this
 		$('#servicerowcell tr').clone()
 			.insertAfter($('#servicetbl tr:last'))
-				.children().eq(OPDATE)
+				.children("td").eq(OPDATE)
 					.prop("colSpan", 8)
 						.css({
 							height: "40",
@@ -139,7 +139,7 @@ function refillService(SERVICE, fromDate, toDate)
 	$.each( STAFF, function() {
 		var staffname = this
 		i++
-		var $thisCase = $('#servicetbl tr').eq(i).children().eq(CASE)
+		var $thisCase = $('#servicetbl tr').eq(i).children("td").eq(CASE)
 		if ($thisCase.prop("colSpan") == 1) {
 			$thisCase.prop("colSpan", 8)
 				.css({
@@ -159,7 +159,7 @@ function refillService(SERVICE, fromDate, toDate)
 				var color = countService(this, fromDate, toDate)
 				i++
 				scase++
-				var $thisRow = $('#servicetbl tr').eq(i).children()
+				var $thisRow = $('#servicetbl tr').eq(i).children("td")
 				if ($thisRow.eq(CASE).prop("colSpan") > 1) {
 					$thisRow.eq(CASE).prop("colSpan", 1)
 						.nextUntil($thisRow.eq(SQN)).show()
@@ -231,7 +231,7 @@ function fillAdmitDischargeDate(SERVICE)
 		$.each( SERVICE, function() {
 			if (this.staffname == staffname) {
 				i++
-				var $thisRow = $('#servicetbl tr').eq(i).children()
+				var $thisRow = $('#servicetbl tr').eq(i).children("td")
 				$thisRow.eq(ADMIT).html(this.admit)
 				$thisRow.eq(DISCHARGE).html(this.discharge)
 			}
@@ -325,30 +325,7 @@ function saveEditPointDataService(pointed)
 			saveSContent(pointed, "final", content)
 			break
 		case ADMIT:
-			content = $('#datepicker').val()
-			if (content != pointed.innerHTML) {
-				if (!content) {
-					content = null
-					saveSContent(pointed, "admit", content)
-				}
-				if (ISODATE.test(content)) {
-					saveSContent(pointed, "admit", content)
-				}
-			}
-			$('#datepicker').hide()
-			break
 		case DISCHARGE:
-			content = $('#datepicker').val()
-			if (content != pointed.innerHTML) {
-				if (!content) {
-					content = null
-					saveSContent(pointed, "discharge", content)
-				}
-				if (ISODATE.test(content)) {
-					saveSContent(pointed, "discharge", content)
-				}
-			}
-			$('#datepicker').hide()
 			break
 	}
 }
@@ -357,8 +334,6 @@ function saveSContent(pointed, column, content)	//column name in MYSQL
 {
 	var rowmain = $(pointed).closest('tr')[0]
 	var qn = rowmain.cells[SQN].innerHTML
-	var fromDate = $('#monthpicker').data('fromDate')
-	var toDate = $('#monthpicker').data('toDate')
 	var oldContent = pointed.innerHTML
 
 	pointed.innerHTML = content? content : ''	//just for show instantly
@@ -367,14 +342,10 @@ function saveSContent(pointed, column, content)	//column name in MYSQL
 		content = URIcomponent(content)	//take care of white space, double qoute, 
 										//single qoute, and back slash
 	}
-	var sql = "sqlReturnData=UPDATE book SET "
-	if (content === null) {	//mysql date field accept null not ""
-		sql += column +" = null, editor='"+ THISUSER
-	} else {
-		sql += column +" = '"+ content + "', editor='"+ THISUSER
-	}
-	sql += "' WHERE qn = "+ qn +";"
-	sql += "SELECT * FROM book WHERE qn = "+ qn +";"
+	var sql = "sqlReturnbook=UPDATE book SET "
+		sql += column +" = '"+ content
+		sql += "', editor='"+ THISUSER
+		sql += "' WHERE qn = "+ qn +";"
 
 	Ajax(MYSQLIPHP, sql, callbacksaveSContent);
 
@@ -385,11 +356,13 @@ function saveSContent(pointed, column, content)	//column name in MYSQL
 			alert("saveSContent", response)
 			pointed.innerHTML = oldContent		//return to previous content
 		} else {
+			updateBOOK(response)
+
 			var fromDate = $('#monthpicker').data('fromDate')
 			var toDate = $('#monthpicker').data('toDate')
-			var thisrow = JSON.parse(response)
+			var bookq = BOOK[findBOOKrow(qn)]
 
-			rowmain.className = countService(thisrow[0], fromDate, toDate)
+			rowmain.className = countService(bookq, fromDate, toDate)
 
 			//Not refill because it may make next editTD return to old value when fast entry
 			//due to slow return from Ajax of previous input
@@ -405,7 +378,7 @@ function storePresentScell(pointing)
 	{
 		case CASE:
 		case PATIENT:
-			$('#datepicker').hide()
+//			$('#datepicker').hide()
 			$('#datepicker').datepicker( 'hide' )
 			clearEditcellData("hide")
 			var hn = pointing.innerHTML
@@ -416,45 +389,14 @@ function storePresentScell(pointing)
 		case STREATMENT:
 		case ADMISSION:
 		case FINAL:
-			$('#datepicker').hide()
+//			$('#datepicker').hide()
 			$('#datepicker').datepicker( 'hide' )
 			createEditcell(pointing)
 			saveEditcellData(pointing)
 			break
 		case ADMIT:
 		case DISCHARGE:
-			$('#editcell').hide()
-			saveEditcellData(pointing)
-			selectDate(pointing)
+			clearEditcellData("hide")
 			break
 	}
-}
-
-function selectDate(pointing)
-{
-	$('#datepicker').css({
-		height: $(pointing).height(),
-		width: $(pointing).width()
-	})
-	reposition("#datepicker", "center", "center", pointing)
-
-	$('#datepicker').datepicker( {
-		dateFormat: "yy-mm-dd",
-		minDate: "-1y",
-		maxDate: "+1y",
-		onClose: function () {
-			$('.ui-datepicker').css( {
-				fontSize: ''
-			})//.hide()
-//			$(pointing).html($('#datepicker').val())
-			savePreviouscellService() 
-		}
-	})
-	$('#datepicker').datepicker("setDate", $(pointing).html()
-												? new Date($(pointing).html()) 
-												: $('#monthpicking').val())
-	$('.ui-datepicker').css( {
-		fontSize: '12px'
-	})
-	$('#datepicker').datepicker( 'show' )
 }

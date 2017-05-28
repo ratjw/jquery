@@ -157,7 +157,7 @@ function saveContent(pointed, column, content)	//use only "pointed" to save data
 		}
 		else
 		{
-			updateBOOK(response);
+			updateBOOK(response)
 
 			//fill qn of new case input in that row, either tbl or queuetbl
 			if (!qn) {

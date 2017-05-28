@@ -164,6 +164,7 @@ function putAgeOpdate(dob, date)	//calc age regarding largest date
 
 function findDateArray(str)	//find date string
 {							//in diagnosis, treatment, admission status
+	if (!str) { return []}
 	var iso = str.match((ISODATEG))
 	var fullhyphen = str.match((HYPHENYYYYDATEG))
 	var halfhyphen = str.match((HYPHENYYDATEG))
@@ -318,7 +319,7 @@ function calculateWaitnum($row, opdate)	//opdate depend on adjacent row
 
 function addColor($this, thisopdate) 
 {
-	var prevdate = $this.prev().children().eq(OPDATE).html()
+	var prevdate = $this.prev().children("td").eq(OPDATE).html()
 	prevdate = prevdate? prevdate.numDate() : ""
 	if (((thisopdate != prevdate) && ($this.prev()[0].className.indexOf("odd") < 0))
 	|| ((thisopdate == prevdate) && ($this.prev()[0].className.indexOf("odd") >= 0))) {
@@ -335,7 +336,7 @@ function findPrevcell(event, editable, pointing)
 
 	if ((column = editable[($.inArray(column, editable) - 1)]))
 	{
-		$prevcell = $prevcell.parent().children().eq(column)
+		$prevcell = $prevcell.parent().children("td").eq(column)
 	}
 	else
 	{
@@ -343,7 +344,7 @@ function findPrevcell(event, editable, pointing)
 			if ($prevcell.parent().index() > 1)
 			{	//go to prev row last editable
 				$prevcell = $prevcell.parent().prev("tr")
-										.children().eq(editable[editable.length-1])
+										.children("td").eq(editable[editable.length-1])
 			}
 			else
 			{	//#tbl tr:1 td:1
@@ -365,13 +366,13 @@ function findNextcell(event, editable, pointing)
 
 	if ((column = editable[($.inArray(column, editable) + 1)]))
 	{
-		$nextcell = $nextcell.parent().children().eq(column)
+		$nextcell = $nextcell.parent().children("td").eq(column)
 	}
 	else
 	{
 		do {//go to next row first editable
 			$nextcell = $($nextcell).parent().next("tr")
-										.children().eq(editable[0])
+										.children("td").eq(editable[0])
 			if (!($nextcell.length)) {
 				event.preventDefault()
 				return false
@@ -390,7 +391,7 @@ function findNextRow(event, editable, pointing)
 
 	//go to next row first editable
 	do {
-		$nextcell = $nextcell.parent().next("tr").children().eq(editable[0])
+		$nextcell = $nextcell.parent().next("tr").children("td").eq(editable[0])
 		if (!($nextcell.length)) {
 			event.preventDefault()
 			return false	

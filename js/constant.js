@@ -45,7 +45,7 @@ var HEDITOR		= 8;
 var HQN			= 9;
 
 var EDITABLE 	= [HN, DIAGNOSIS, TREATMENT, CONTACT];
-var SEDITABLE	= [SDIAGNOSIS, STREATMENT, ADMISSION, FINAL, ADMIT, DISCHARGE]
+var SEDITABLE	= [SDIAGNOSIS, STREATMENT, ADMISSION, FINAL]
 
 var NAMEOFDAYTHAI	= ["อาทิตย์", "จันทร์", "อังคาร", "พุธ", "พฤหัส", "ศุกร์", "เสาร์"];
 var DAYOFTHAINAME	= {"อาทิตย์":0, "จันทร์":1, "อังคาร":2, "พุธ":3, "พฤหัส":4, "ศุกร์":5, "เสาร์":6};

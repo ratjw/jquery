@@ -30,7 +30,7 @@ function sortable()
 		},
 		stop: function(e, ui){
 			var $item = ui.item
-			var $itemcell = $item.children()
+			var $itemcell = $item.children("td")
 			var receiver = $item.closest('table').attr('id')
 			var titlename = $('#titlename').html()
 
