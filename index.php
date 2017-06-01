@@ -187,6 +187,7 @@
   <li id="item7"><div></div></li>
   <li id="item8"><div></div></li>
   <li id="item9"><div></div></li>
+  <li id="item10"><div></div></li>
 </ul>
 
 <ul id="stafflist" style="display:none"></ul>
@@ -444,6 +445,23 @@
   <span style="width:300px;"></span>
   <span style="width:70px;"> Edited by </span>
   <span style="position:absolute" id="editedby"></span>
+</div>
+
+<div id="dialogReadme">
+  <div>หน้าจอหลัก ประกอบด้วย</div>
+  <ol>
+	<li>คอลัมน์ Service
+	<dl>คือ วันผ่านัด (ไม่ใช่วันนัดมา admit)</dl>
+	<dl>หรือ วันที่รับ consult จากหน่วยอื่น</dl>
+	</li>
+	<li>คอลัมน์ Staff คือ วันผ่านัด ไม่ใช่วันนัดมา admit</li>
+	<li>คอลัมน์ HN</li>
+	<li>คอลัมน์ ชื่อ นามสกุล</li>
+	<li>คอลัมน์ อายุ</li>
+	<li>คอลัมน์ Diagnosis</li>
+	<li>คอลัมน์ Treatment</li>
+	<li>คอลัมน์ Contact</li>
+  </ul>
 </div>
 
 <DIV id="login">

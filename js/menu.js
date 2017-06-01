@@ -97,6 +97,9 @@ function fillSetTable(pointing)
 				case "item9":
 					serviceReview()
 					break
+				case "item10":
+					readme()
+					break
 			}
 
 			clearEditcellData("hide")

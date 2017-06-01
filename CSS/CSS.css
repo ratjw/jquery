@@ -269,7 +269,6 @@ td.sat { background-color: #CCBBF0; }
 
 #dialogEquip {
 	display: none;
-	line-height:150%;
 	font-size: 14px;
 	color: black;
 	background-color: white;
@@ -281,6 +280,18 @@ td.sat { background-color: #CCBBF0; }
 	padding: 0;
 	margin: 0;
 	border: 0;
+}
+
+#dialogReadme {
+	display: none;
+	line-height:150%;
+	font-size: 14px;
+	color: black;
+	background-color: white;
+}
+
+#dialogReadme span {
+	display:inline-block;
 }
 
 input[type=radio] + label {

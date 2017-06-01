@@ -221,9 +221,25 @@ function PACS(hn)
 	}
 } 
 
+function readme()
+{
+	$('#dialogReadme').show()
+	$('#dialogReadme').dialog({
+		title: "โปรแกรมฟังเตียง",
+		closeOnEscape: true,
+		modal: true,
+		width: window.innerWidth * 5 / 10,
+		height: window.innerHeight * 5 / 10
+	}).fadeIn();
+}
+
 function alert(title, message)
 {
-	$("#dialogAlert").css("height", 0)
+	$("#dialogAlert").css({
+		"height" : 0,
+		"width" : 0,
+		"textAlign" : "center"
+	})
 	$('#dialogAlert').html(message)
 	$('#dialogAlert').dialog({
 		title: title,
@@ -232,9 +248,4 @@ function alert(title, message)
 		width: window.innerWidth * 5 / 10,
 		height: window.innerHeight * 5 / 10
 	}).fadeIn();
-}
-
-function closeAlert()
-{
-	$("#alert").hide();
 }

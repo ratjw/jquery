@@ -103,12 +103,21 @@ function loading(response)
 {
 	if (response && response.indexOf("[") != -1)
 	{
+		localStorage.setItem('BOOK', response)
 		updateBOOK(response)
 		fillupstart();
 		fillStafflist()
+	} else {
+		response = localStorage.getItem('BOOK')
+		if (response) {
+			alert("Server Error", "<br><br> Response from server has no data <br><br> Using localStorage Backup");
+			updateBOOK(response)
+			fillupstart();
+			fillStafflist()
+		} else {
+			alert("Server Error", "<br><br> Response from server has no data <br><br> No localStorage Backup");
+		}
 	}
-	else
-		alert("loading BOOK no response");
 }
 
 function updateBOOK(response)
