@@ -505,21 +505,21 @@
 
   <h3>List of Deleted Cases</h3>
   <ul style="margin-top:0px;">
-	<li>คลิกช่องวันเวลาของเคสที่ต้องการเปลี่ยนกลับคืน</li>
+	<li>ต้องการกลับคืน คลิกช่อง <b>Date Time</b> ของเคสนั้น</li>
   </ul>
 
   <h3>Equipment</h3>
   <ul style="margin-top:0px;">
 	<li>แบบฟอร์มที่เคยใส่ข้อมูลแล้ว ต้องคลิก <b>แก้ไข</b></li>
-	<li>ต้องการยกเลิกปุ่มกลมเลือกการจัดท่า คลิก Position</li>
-	<li>ต้องการยกเลิกปุ่มกลมเลือกชนิด shunt คลิก Shunt</li>
+	<li>ยกเลิกเลือกการจัดท่า คลิก <b>Position</b></li>
+	<li>ยกเลิกเลือกชนิด shunt คลิก <b>Shunt</b></li>
   </ul>
 
   <h3>Service Review</h3>
   <ul style="margin-top:0px;">
-	<li>คลิกลูกศร ซ้าย ขวา เพื่อเปลี่ยนเดือน</li>
-	<li>คลิกแถบชื่อเดือน เพื่อดู Service Review ของเดือนนั้น</li>
-	<li>คลิกช่อง <b>HN Name</b> ดู PACS ของผู้ป่วยรายนี้</li>
+	<li>ต้องการเปลี่ยนเดือน คลิกลูกศร ซ้าย ขวา</li>
+	<li>เข้าดู Service Review คลิกแถบชื่อเดือน</li>
+	<li>ดู PACS คลิกช่อง <b>HN Name</b></li>
 	<li>ช่อง <b>Diagnosis</b> มีผลต่อจำนวน Re-admission, และ Re-operation</li>
 		<dt>: เคสไหนเป็น Re-admission ให้ใส่วันที่ admit ครั้งก่อนๆ ตรงช่องนี้ </dt>
 		<dt>: เคสไหนเป็น Re-operation ให้ใส่วันที่ผ่าตัดครั้งก่อนๆ ตรงช่องนี้ </dt>
