@@ -43,7 +43,7 @@ String.prototype.toISOdate = function ()
 		var date = this.split("/")
 	}
 	else {
-		return this
+		return ""
 	}
 
 	var yyyy = new Date().getFullYear()

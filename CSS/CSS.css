@@ -294,6 +294,12 @@ td.sat { background-color: #CCBBF0; }
 	display:inline-block;
 }
 
+#dialogReadme h3 {
+	padding: 0px;
+	margin: 0px;
+	background-color: yellow;
+}
+
 input[type=radio] + label {
 	color: #999999;
 	background-color: white;

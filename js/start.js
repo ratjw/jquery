@@ -101,8 +101,7 @@ function loadtable(userid)
 
 function loading(response)
 {
-	if (response && response.indexOf("[") != -1)
-	{
+	if (response && response.indexOf("[") != -1) {
 		localStorage.setItem('BOOK', response)
 		updateBOOK(response)
 		fillupstart();

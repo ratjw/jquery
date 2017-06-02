@@ -229,7 +229,8 @@ function readme()
 		closeOnEscape: true,
 		modal: true,
 		width: window.innerWidth * 5 / 10,
-		height: window.innerHeight * 5 / 10
+		minWidth: 400,
+		height: window.innerHeight * 9 / 10
 	}).fadeIn();
 }
 

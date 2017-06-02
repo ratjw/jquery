@@ -133,8 +133,8 @@
      <th style="width:13%">HN Name</th>
      <th style="width:15%">Diagnosis</th>
      <th style="width:15%">Treatment</th>
-     <th style="width:30%">Admission status</th>
-     <th style="width:15%">Final status</th>
+     <th style="width:30%">Admission Status</th>
+     <th style="width:15%">Final Status</th>
      <th style="width:5%">Admit</th>
      <th style="width:5%">D/C</th>
      <th style="display:none"></th>
@@ -152,8 +152,8 @@
     <td data-title="HN Name"></td>
     <td data-title="Diagnosis"></td>
     <td data-title="Treatment"></td>
-    <td data-title="Admission status"></td>
-    <td data-title="Final status"></td>
+    <td data-title="Admission Status"></td>
+    <td data-title="Final Status"></td>
     <td data-title="Admit"></td>
     <td data-title="D/C"></td>
     <td style="display:none"></td>
@@ -448,19 +448,126 @@
 </div>
 
 <div id="dialogReadme">
-  <div>หน้าจอหลัก ประกอบด้วย</div>
-  <ol>
-	<li>คอลัมน์ Service
-	<dl>คือ วันผ่านัด (ไม่ใช่วันนัดมา admit)</dl>
-	<dl>หรือ วันที่รับ consult จากหน่วยอื่น</dl>
-	</li>
-	<li>คอลัมน์ Staff คือ วันผ่านัด ไม่ใช่วันนัดมา admit</li>
-	<li>คอลัมน์ HN</li>
-	<li>คอลัมน์ ชื่อ นามสกุล</li>
-	<li>คอลัมน์ อายุ</li>
-	<li>คอลัมน์ Diagnosis</li>
-	<li>คอลัมน์ Treatment</li>
-	<li>คอลัมน์ Contact</li>
+  <p><span class="ui-icon ui-icon-info"></span>
+      ใช้ Browser : Chrome, Firefox, หรือ Edge (ie 10+)</p>
+  <p><span class="ui-icon ui-icon-info"></span>
+  Login ID, Password ของโรงพยาบาล</p>
+  <p><span class="ui-icon ui-icon-info"></span>
+       การเปลี่ยนวันผ่าตัด (Service) ใช้ Drag & Drop กดเมาส์ค้างไว้ตรงส่วนหนึ่งส่วนใดของข้อมูลผู้ป่วย 
+	แล้วลากไปวางตรงวันที่ที่ต้องการ สามารถลากข้ามตารางได้</p>
+  <p><span class="ui-icon ui-icon-info"></span>
+       คลิกช่อง (cell) ที่ต้องการใส่ข้อมูล บันทึกโดยการคลิกที่อื่น หรือกด Tab หรือ Shift+Tab หรือ Enter</p>
+  <p style="margin-bottom:0px;"><span class="ui-icon ui-icon-info"></span>
+  Enter ขึ้นบรรทัดใหม่บนตาราง</p>
+  <ul style="margin-top:0px;">
+    <li>Shift+Enter ขึ้นบรรทัดใหม่ภายในช่องนั้น</li>
+  </ul>
+
+  <h3>หน้าจอหลัก</h3>
+  <ul style="margin-top:0px;">
+	<li>คอลัมน์ <b>Service</b> : วันผ่านัด (ไม่ใช่วันนัดมา admit)</li>
+	<dd>: หรือ วันที่รับ consult จากหน่วยอื่น</dd>
+	<dd>: คลิกจะปรากฏ Popup Menu</dd>
+	<li>คอลัมน์ <b>Staff</b> : คลิกเลือกชื่ออาจารย์เจ้าของไข้</li>
+	<li>คอลัมน์ <b>HN</b> : เลข 7 หลักเท่านั้น</li>
+	<li>คอลัมน์ <b>ชื่อ นามสกุล</b> : ปรากฏเองตาม HN</li>
+	<li>คอลัมน์ <b>อายุ</b> : ปรากฏเองตาม HN</li>
+	<li>คอลัมน์ <b>Diagnosis</b> : รวมทั้ง underlying disease</li>
+	<li>คอลัมน์ <b>Treatment</b> : เครื่องมือผ่าตัด ให้ใส่ที่ Equipment</li>
+	<li>คอลัมน์ <b>Contact</b> : หมายเลขโทรศัพท์ ภูมิลำเนา</li>
+  </ul>
+
+  <h3>Menu</h3>
+  <p style="margin:0px;">จากการคลิกตรงวันที่ ทั้งตารางรวม และตารางเดี่ยว</p>
+  <ul style="margin-top:0px;">
+	<li><b>คิวของอาจารย์</b> : มี submenu เลือกชื่ออาจารย์</li>
+	  <dt>เมื่อเลือกอาจารย์แล้ว จะแบ่งหน้าจอเป็น 2 ส่วน</dt>
+		<dd>: ครึ่งซ้าย เป็นตารางรวม</dd>
+		<dd>: ครึ่งขวา เป็นตารางของอาจารย์ท่านเดียว</dd>
+	<li><b>เพิ่ม case ต่อท้าย ไม่ระบุวันที่</b> : มีเฉพาะที่ตารางเดี่ยว</li>
+		<dd>: ดูวันที่ลงคิวครั้งแรกของผู้ป่วยรายนี้ได้ที่ <b>การแก้ไขของ (ชื่อผู้ป่วย)</b></dd>
+	<li><b>เพิ่ม case วันที่ ...</b> : เพิ่มเคสในวันเดียวกัน</li>
+		<dd>: ทั้งเคสผ่าตัด และเคส consult</dd>
+	<li><b>Delete (ชื่อผู้ป่วย)</b></li>
+		<dd>: เฉพาะผู้ป่วยรายที่คลิกนี้</dd>
+	<li><b>List of Deleted Cases</b> : สามารถ <b>undelete</b> กลับคืนได้</li>
+		<dd>: ผู้ป่วยทั้งหมดที่ถูกลบออก</dd>
+	<li><b>การแก้ไขของ (ชื่อผู้ป่วย)</b> : ดูการเปลี่ยนข้อมูลย้อนหลัง</li>
+		<dd>: ของผู้ป่วยรายที่คลิกนี้</dd>
+	<li><b>PACS</b> : เฉพาะเครื่องที่ดู PACS ได้เท่านั้น</li>
+		<dd>: ของผู้ป่วยรายที่คลิกนี้</dd>
+	<li><b>Equipment</b> : สำหรับพยาบาลห้องผ่าตัด</li>
+		<dd>: ของผู้ป่วยรายที่คลิกนี้</dd>
+	<li><b>Service Review</b> : ทั้งเคสผ่าตัด และเคส consult</li>
+		<dd>: ต้องลงเคสที่ตารางรวมก่อน</dd>
+	<li><b>Readme</b></li>
+  </ul>
+
+  <h3>List of Deleted Cases</h3>
+  <ul style="margin-top:0px;">
+	<li>คลิกช่องวันเวลา เพื่อเปลี่ยนกลับคืน</li>
+  </ul>
+
+  <h3>Equipment</h3>
+  <ul style="margin-top:0px;">
+	<li>แบบฟอร์มที่เคยใส่ข้อมูลแล้ว ต้องคลิก <b>แก้ไข</b></li>
+	<li>ต้องการยกเลิกปุ่มกลม คลิก Position, หรือ Shunt</li>
+  </ul>
+
+  <h3>Service Review</h3>
+  <ul style="margin-top:0px;">
+	<li>คลิกลูกศร ซ้าย ขวา เพื่อเปลี่ยนเดือน</li>
+	<li>คลิกแถบชื่อเดือน</li>
+	<li>คลิกช่อง <b>HN Name</b> ดู PACS ของผู้ป่วยรายนี้</li>
+	<li>ช่อง <b>Diagnosis</b> มีผลต่อจำนวน Re-admission, และ Re-operation</li>
+		<dt>: ถ้าจำนวนตรง Re-admission น้อยไป ให้ใส่วันที่ admit ครั้งก่อนๆตรงช่องนี้ </dt>
+		<dt>: ถ้าจำนวนตรง Re-operation น้อยไป ให้ใส่วันที่ผ่าตัดครั้งก่อนๆตรงช่องนี้ </dt>
+	<li>ช่อง <b>Treatment</b> มีผลต่อจำนวน Operation, และ Re-operation</li>
+		<dt>: ถ้าจำนวนตรง Operation น้อยไป ให้ใส่คำว่า op(eration) ตรงเคสที่ไม่มีคำเกี่ยวกับการผ่าตัด</dt>
+		<dt>: ถ้าจำนวนตรง Re-operation น้อยไป ให้ใส่คำว่า re-op(eration) ตรงเคสที่มีการผ่าตัดซ้ำ</dt>
+	<li>ช่อง <b>Admission Status</b> มีผลต่อจำนวน Re-admission</li>
+		<dt>: ถ้าจำนวนตรง Re-admission น้อยไป ให้ใส่คำว่า re-ad(mission) ตรงเคสที่ admit ซ้ำ</dt>
+	<li>ช่อง <b>Final Status</b> มีผลต่อจำนวน Infection, Morbidity, และ Dead</li>
+		<dt>: ถ้าจำนวนตรง Infection น้อยไป ให้ใส่คำว่า Infect(ion) หรือ SSI ตรงเคสนี้</dt>
+		<dt>: ถ้าจำนวนตรง Morbidity น้อยไป ให้ใส่คำว่า Morbid ตรงเคสนี้</dt>
+		<dt>: ถ้าจำนวนตรง Dead น้อยไป ให้ใส่คำว่า Dead ตรงเคสนี้</dt>
+	<li>ช่อง <b>Admit</b> ของโรงพยาบาล</li>
+	<li>ช่อง <b>D/C</b> ของโรงพยาบาล</li>
+  </ul>
+
+  <p><span class="ui-icon ui-icon-info"></span>
+       เคสที่มีการ admit ซ้ำ ให้ใส่วันที่ admit ครั้งก่อนๆตรงช่อง 
+  <b>Diagnosis</b> และใส่วันที่ admit ครั้งนี้ตรงช่อง <b>Admission Status</b></p>
+  <p><span class="ui-icon ui-icon-info"></span>
+       เคสที่มีการผ่าตัดซ้ำ ให้ใส่วันที่ผ่าตัดครั้งก่อนๆตรงช่อง 
+  <b>Diagnosis</b> และใส่วันที่ผ่าตัดครั้งนี้ตรงช่อง <b>Treatment</b></p>
+  <p style="margin-bottom:0px;"><span class="ui-icon ui-icon-info"></span>
+  Format วันที่ :</p>
+  <ul style="margin-top:0px;">
+    <span class="ui-icon ui-icon-check"
+	style="float:none;margin:0px"></span>
+	yyyy-mm-dd, yyyy-m-d<br>
+    <span class="ui-icon ui-icon-closethick"
+	style="float:none;margin:0px"></span>
+	yyyy/mm/dd, yyyy/m/d<br>
+    <span class="ui-icon ui-icon-check"
+	style="float:none;margin:0px"></span>
+	dd-mm-yyyy, d-m-yyyy<br>
+    <span class="ui-icon ui-icon-check"
+	style="float:none;margin:0px"></span>
+	dd/mm/yyyy, d/m/yyyy<br>
+    <span class="ui-icon ui-icon-check"
+	style="float:none;margin:0px"></span>
+	dd-mm-yy, d-m-yy (yy เป็น พ.ศ. เท่านั้น)<br>
+    <span class="ui-icon ui-icon-check"
+	style="float:none;margin:0px"></span>
+	dd/mm/yy, d/m/yy (yy เป็น พ.ศ. เท่านั้น)<br>
+    <span class="ui-icon ui-icon-closethick"
+	style="float:none;margin:0px"></span>
+	yy-mm-dd, y-m-d<br>
+    <span class="ui-icon ui-icon-closethick"
+	style="float:none;margin:0px"></span>
+	yy/mm/dd, y/m/d<br>
   </ul>
 </div>
 
