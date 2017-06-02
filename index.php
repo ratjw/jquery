@@ -505,69 +505,76 @@
 
   <h3>List of Deleted Cases</h3>
   <ul style="margin-top:0px;">
-	<li>คลิกช่องวันเวลา เพื่อเปลี่ยนกลับคืน</li>
+	<li>คลิกช่องวันเวลาของเคสที่ต้องการเปลี่ยนกลับคืน</li>
   </ul>
 
   <h3>Equipment</h3>
   <ul style="margin-top:0px;">
 	<li>แบบฟอร์มที่เคยใส่ข้อมูลแล้ว ต้องคลิก <b>แก้ไข</b></li>
-	<li>ต้องการยกเลิกปุ่มกลม คลิก Position, หรือ Shunt</li>
+	<li>ต้องการยกเลิกปุ่มกลมเลือกการจัดท่า คลิก Position</li>
+	<li>ต้องการยกเลิกปุ่มกลมเลือกชนิด shunt คลิก Shunt</li>
   </ul>
 
   <h3>Service Review</h3>
   <ul style="margin-top:0px;">
 	<li>คลิกลูกศร ซ้าย ขวา เพื่อเปลี่ยนเดือน</li>
-	<li>คลิกแถบชื่อเดือน</li>
+	<li>คลิกแถบชื่อเดือน เพื่อดู Service Review ของเดือนนั้น</li>
 	<li>คลิกช่อง <b>HN Name</b> ดู PACS ของผู้ป่วยรายนี้</li>
 	<li>ช่อง <b>Diagnosis</b> มีผลต่อจำนวน Re-admission, และ Re-operation</li>
-		<dt>: ถ้าจำนวนตรง Re-admission น้อยไป ให้ใส่วันที่ admit ครั้งก่อนๆตรงช่องนี้ </dt>
-		<dt>: ถ้าจำนวนตรง Re-operation น้อยไป ให้ใส่วันที่ผ่าตัดครั้งก่อนๆตรงช่องนี้ </dt>
+		<dt>: เคสไหนเป็น Re-admission ให้ใส่วันที่ admit ครั้งก่อนๆ ตรงช่องนี้ </dt>
+		<dt>: เคสไหนเป็น Re-operation ให้ใส่วันที่ผ่าตัดครั้งก่อนๆ ตรงช่องนี้ </dt>
 	<li>ช่อง <b>Treatment</b> มีผลต่อจำนวน Operation, และ Re-operation</li>
-		<dt>: ถ้าจำนวนตรง Operation น้อยไป ให้ใส่คำว่า op(eration) ตรงเคสที่ไม่มีคำเกี่ยวกับการผ่าตัด</dt>
-		<dt>: ถ้าจำนวนตรง Re-operation น้อยไป ให้ใส่คำว่า re-op(eration) ตรงเคสที่มีการผ่าตัดซ้ำ</dt>
+		<dt>: เคสที่ไม่มีคำเกี่ยวกับการผ่าตัดในช่อง <b>Treatment</b> ให้ใส่คำว่า op(eration) ตรงช่องนี้</dt>
+		<dt>: เคสที่มีการผ่าตัดซ้ำ แต่ไม่มีวันที่ผ่าตัดครั้งก่อน ให้ใส่คำว่า re-op(eration) ตรงช่องนี้</dt>
 	<li>ช่อง <b>Admission Status</b> มีผลต่อจำนวน Re-admission</li>
-		<dt>: ถ้าจำนวนตรง Re-admission น้อยไป ให้ใส่คำว่า re-ad(mission) ตรงเคสที่ admit ซ้ำ</dt>
+		<dt>: เคสที่ admit ซ้ำ แต่ไม่มีวันที่ admit ครั้งก่อน ให้ใส่คำว่า re-ad(mission) ตรงช่องนี้</dt>
 	<li>ช่อง <b>Final Status</b> มีผลต่อจำนวน Infection, Morbidity, และ Dead</li>
-		<dt>: ถ้าจำนวนตรง Infection น้อยไป ให้ใส่คำว่า Infect(ion) หรือ SSI ตรงเคสนี้</dt>
-		<dt>: ถ้าจำนวนตรง Morbidity น้อยไป ให้ใส่คำว่า Morbid ตรงเคสนี้</dt>
-		<dt>: ถ้าจำนวนตรง Dead น้อยไป ให้ใส่คำว่า Dead ตรงเคสนี้</dt>
+		<dt>: เคสที่มี Infection ให้ใส่คำว่า Infect(ion) หรือ SSI ตรงช่องนี้</dt>
+		<dt>: เคสที่มี Morbidity ให้ใส่คำว่า Morbid ตรงช่องนี้</dt>
+		<dt>: เคส Dead ให้ใส่คำว่า Dead ตรงช่องนี้</dt>
 	<li>ช่อง <b>Admit</b> ของโรงพยาบาล</li>
 	<li>ช่อง <b>D/C</b> ของโรงพยาบาล</li>
   </ul>
 
-  <p><span class="ui-icon ui-icon-info"></span>
-       เคสที่มีการ admit ซ้ำ ให้ใส่วันที่ admit ครั้งก่อนๆตรงช่อง 
-  <b>Diagnosis</b> และใส่วันที่ admit ครั้งนี้ตรงช่อง <b>Admission Status</b></p>
-  <p><span class="ui-icon ui-icon-info"></span>
-       เคสที่มีการผ่าตัดซ้ำ ให้ใส่วันที่ผ่าตัดครั้งก่อนๆตรงช่อง 
-  <b>Diagnosis</b> และใส่วันที่ผ่าตัดครั้งนี้ตรงช่อง <b>Treatment</b></p>
-  <p style="margin-bottom:0px;"><span class="ui-icon ui-icon-info"></span>
-  Format วันที่ :</p>
+  <p>
+    <span class="ui-icon ui-icon-info"></span>
+             เคสที่มีการ admit ซ้ำ ให้ใส่วันที่ admit ครั้งก่อนๆตรงช่อง <b>Diagnosis</b>
+             และใส่วันที่ admit ครั้งนี้ตรงช่อง <b>Admission Status</b>
+  </p>
+  <p>
+    <span class="ui-icon ui-icon-info"></span>
+             เคสที่มีการผ่าตัดซ้ำ ให้ใส่วันที่ผ่าตัดครั้งก่อนๆตรงช่อง <b>Diagnosis</b> 
+             และใส่วันที่ผ่าตัดครั้งนี้ตรงช่อง <b>Treatment</b>
+  </p>
+  <p style="margin-bottom:0px;">
+    <span class="ui-icon ui-icon-info"></span>
+    Format วันที่ : ใช้เฉพาะตัวเลข คั่นด้วย - หรือ / เท่านั้น
+  </p>
   <ul style="margin-top:0px;">
     <span class="ui-icon ui-icon-check"
 	style="float:none;margin:0px"></span>
-	yyyy-mm-dd, yyyy-m-d<br>
+	<span style="width:250px">yyyy-mm-dd, yyyy-m-d</span> เช่น 2017-05-01, 2560-5-1<br>
     <span class="ui-icon ui-icon-closethick"
 	style="float:none;margin:0px"></span>
-	yyyy/mm/dd, yyyy/m/d<br>
+	<span style="width:250px">yyyy/mm/dd, yyyy/m/d</span> เช่น 2017/05/01, 2560/5/1<br>
     <span class="ui-icon ui-icon-check"
 	style="float:none;margin:0px"></span>
-	dd-mm-yyyy, d-m-yyyy<br>
+	<span style="width:250px">dd-mm-yyyy, d-m-yyyy</span> เช่น 01-05-2017, 1-5-2560<br>
     <span class="ui-icon ui-icon-check"
 	style="float:none;margin:0px"></span>
-	dd/mm/yyyy, d/m/yyyy<br>
+	<span style="width:250px">dd/mm/yyyy, d/m/yyyy</span> เช่น 01/05/2017, 1/5/2560<br>
     <span class="ui-icon ui-icon-check"
 	style="float:none;margin:0px"></span>
-	dd-mm-yy, d-m-yy (yy เป็น พ.ศ. เท่านั้น)<br>
+	<span style="width:250px">dd-mm-yy, d-m-yy (yy เป็น พ.ศ. เท่านั้น)</span> เช่น 01-05-60, 1-5-60<br>
     <span class="ui-icon ui-icon-check"
 	style="float:none;margin:0px"></span>
-	dd/mm/yy, d/m/yy (yy เป็น พ.ศ. เท่านั้น)<br>
+	<span style="width:250px">dd/mm/yy, d/m/yy (yy เป็น พ.ศ. เท่านั้น)</span> เช่น 01/05/60, 1/5/60<br>
     <span class="ui-icon ui-icon-closethick"
 	style="float:none;margin:0px"></span>
-	yy-mm-dd, y-m-d<br>
+	<span style="width:250px">yy-mm-dd, yy-m-d</span> เช่น 17-05-01, 60-5-1<br>
     <span class="ui-icon ui-icon-closethick"
 	style="float:none;margin:0px"></span>
-	yy/mm/dd, y/m/d<br>
+	<span style="width:250px">yy/mm/dd, yy/m/d</span> เช่น 17/05/01, 60/5/1<br>
   </ul>
 </div>
 
