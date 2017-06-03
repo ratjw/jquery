@@ -1,5 +1,5 @@
  
-Date.prototype.mysqlDate = function () 
+Date.prototype.ISOdate = function () 
 {	//Javascript Date Object to MySQL date (2014-05-11)
     var yyyy = this.getFullYear();
     var mm = this.getMonth()+1;
@@ -9,64 +9,27 @@ Date.prototype.mysqlDate = function ()
     return yyyy + "-" + mm + "-" + dd;
 } 
 
-String.prototype.hyphenDateparse = function () 
-{
-	if ((ISODATE.test(this))				//yyyy-mm-dd
-		|| (HYPHENYYYYDATE.test(this))		//dd-mm-yyyy
-		|| (HYPHENYYDATE.test(this))) {	//dd-mm-yy
-		return true
-	} else {
-		return false
-	}
-}
-
-String.prototype.slashDateparse = function () 
-{
-	if ((SLASHYYYYDATE.test(this)) ||		//dd/mm/yyyy
-		(SLASHYYDATE.test(this))) {		//dd/mm/yy
-		return true
-	} else {
-		return false
-	}
-}
-
 String.prototype.toISOdate = function () 
-{	//change dd-mm-yy, dd-mm-yyyy to yyyy-mm-dd
-	//change dd/mm/yy, dd/mm/yyyy to yyyy-mm-dd
+{	//change dd/mm/yy\(Buddhist) to yyyy-mm-dd (Christ)
 	if (!this) {
-		return this
-	}
-	if (this.hyphenDateparse()) {
-		var date = this.split("-")
-	}
-	else if (this.slashDateparse()) {
-		var date = this.split("/")
-	}
-	else {
 		return ""
 	}
-
-	var yyyy = new Date().getFullYear()
-	if (date[0].length == 4) {	//assume yyyy-mm-dd, yyyy/mm/dd
-		if (Number(date[0]) > yyyy + 300) {	//assume Buddhist year
-			date[0] = date[0] - 543
-		}
-
-		return (date.join("-"))
-
-	} else {	//assume dd-mm-yy, dd-mm-yyyy, dd/mm/yy, dd/mm/yyyy
-		if (date[2].length == 2) {	//assume Buddhist year
-			date[2] = "25" + date[2]
-			date[2] = date[2] - 543
-		}
-		else if (date[2].length == 4) {
-			if (Number(date[2]) > yyyy + 300) {	//assume Buddhist year
-				date[2] = date[2] - 543
+	if (ISODATE.test(this)) {
+		return this	//already ISO date
+	} else {
+		if (THAIDATE.test(this)) {
+			var date = this.split("/")
+		} else {
+			if (SHORTDATE.test(this)) {
+				var date = this.split("/")
+				date[2] = "25" + date[2]
+			} else {
+				return ""	//invalid date
 			}
 		}
-
-		return (date[2] + "-" + date[1] + "-" + date[0])
 	}
+	date[2] = date[2] - 543
+	return (date[2] + "-" + date[1] + "-" + date[0])
 } 
 
 String.prototype.thDate = function () 
@@ -92,7 +55,7 @@ String.prototype.nextdays = function (days)
 {	//MySQL date to be added or substract by days
 	var morrow = new Date(this);
 	morrow.setDate(morrow.getDate()+days);
-	return morrow.mysqlDate();
+	return morrow.ISOdate();
 }
 
 String.prototype.getAge = function (toDate)
@@ -166,21 +129,13 @@ function findDateArray(str)	//find date string
 {							//in diagnosis, treatment, admission status
 	if (!str) { return []}
 	var iso = str.match((ISODATEG))
-	var fullhyphen = str.match((HYPHENYYYYDATEG))
-	var halfhyphen = str.match((HYPHENYYDATEG))
-	var fullslash = str.match((SLASHYYYYDATEG))
-	var halfslash = str.match((SLASHYYDATEG))
+	var fullslash = str.match((THAIDATEG))
+	var halfslash = str.match((SHORTDATEG))
 
 	var dateArray = []
 
 	if (iso) {
 		dateArray = dateArray.concat( iso )
-	}
-	if (fullhyphen) {
-		dateArray = dateArray.concat( fullhyphen )
-	}
-	if (halfhyphen) {
-		dateArray = dateArray.concat( halfhyphen )
 	}
 	if (fullslash) {
 		dateArray = dateArray.concat( fullslash )
@@ -201,7 +156,7 @@ function getSunday(date)	//get Sunday in the same week
 {
 	var today = date? new Date(date) : new Date();
 	today.setDate(today.getDate() - today.getDay());
-	return today.mysqlDate();
+	return today.ISOdate();
 }
 
 function Ajax(url, params, callback)

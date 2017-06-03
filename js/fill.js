@@ -5,13 +5,13 @@ function fillupstart()
 		BOOK.push({"opdate" : getSunday()})
 
 	var start = new Date()
-	start = new Date(start.getFullYear(), start.getMonth()-3).mysqlDate()
+	start = new Date(start.getFullYear(), start.getMonth()-3).ISOdate()
 	start = getSunday(start)
 
 	fillall(start)
 
 	//scroll to today
-	var today = new Date().mysqlDate().thDate()
+	var today = new Date().ISOdate().thDate()
 	var thishead = $("tr:contains(" + today + ")").eq(0).prevAll(":has(th)").first()
 	$('#tblcontainer').animate({
 		scrollTop: thishead.offset().top
@@ -70,7 +70,7 @@ function fillall(start)
 	var nextyear = new Date().getFullYear() + 1
 	var month = new Date().getMonth()
 	var todate = new Date().getDate()
-	var until = (new Date(nextyear, month, todate)).mysqlDate()
+	var until = (new Date(nextyear, month, todate)).ISOdate()
 
 	date = date.nextdays(1)
 	while (date < until)
@@ -228,7 +228,7 @@ function filldata(bookq, rowi)		//bookq = BOOK[q]
 
 function staffqueue(staffname)
 {
-	var todate = new Date().mysqlDate()
+	var todate = new Date().ISOdate()
 	var scrolled = $("#queuecontainer").scrollTop()
 
 	$('#titlename').html(staffname)
@@ -249,7 +249,7 @@ function staffqueue(staffname)
 
 function refillstaffqueue()
 {
-	var todate = new Date().mysqlDate()
+	var todate = new Date().ISOdate()
 	var i = 0
 	var staffname = $('#titlename').html()
 

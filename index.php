@@ -550,32 +550,18 @@
     <span class="ui-icon ui-icon-info"></span>
     Format วันที่ : ใช้เฉพาะตัวเลข คั่นด้วย - หรือ / เท่านั้น
   </p>
-  <ul style="margin-top:0px;">
-    <span class="ui-icon ui-icon-check"
-	style="float:none;margin:0px"></span>
-	<span style="width:250px">yyyy-mm-dd, yyyy-m-d</span> เช่น 2017-05-01, 2560-5-1<br>
-    <span class="ui-icon ui-icon-closethick"
-	style="float:none;margin:0px"></span>
-	<span style="width:250px">yyyy/mm/dd, yyyy/m/d</span> เช่น 2017/05/01, 2560/5/1<br>
-    <span class="ui-icon ui-icon-check"
-	style="float:none;margin:0px"></span>
-	<span style="width:250px">dd-mm-yyyy, d-m-yyyy</span> เช่น 01-05-2017, 1-5-2560<br>
-    <span class="ui-icon ui-icon-check"
-	style="float:none;margin:0px"></span>
-	<span style="width:250px">dd/mm/yyyy, d/m/yyyy</span> เช่น 01/05/2017, 1/5/2560<br>
-    <span class="ui-icon ui-icon-check"
-	style="float:none;margin:0px"></span>
-	<span style="width:250px">dd-mm-yy, d-m-yy (yy เป็น พ.ศ. เท่านั้น)</span> เช่น 01-05-60, 1-5-60<br>
-    <span class="ui-icon ui-icon-check"
-	style="float:none;margin:0px"></span>
-	<span style="width:250px">dd/mm/yy, d/m/yy (yy เป็น พ.ศ. เท่านั้น)</span> เช่น 01/05/60, 1/5/60<br>
-    <span class="ui-icon ui-icon-closethick"
-	style="float:none;margin:0px"></span>
-	<span style="width:250px">yy-mm-dd, yy-m-d</span> เช่น 17-05-01, 60-5-1<br>
-    <span class="ui-icon ui-icon-closethick"
-	style="float:none;margin:0px"></span>
-	<span style="width:250px">yy/mm/dd, yy/m/d</span> เช่น 17/05/01, 60/5/1<br>
-  </ul>
+	<span class="ui-icon ui-icon-check" style="float:none;margin:0px"></span>
+	<span style="width:120px">yyyy-mm-dd (ค.ศ.)</span> เช่น 2017-05-01, 2017-5-1<br>
+	<span class="ui-icon ui-icon-check" style="float:none;margin:0px"></span>
+	<span style="width:120px">d/m/yyyy (พ.ศ.)</span> เช่น 01/05/2560, 1/5/2560<br>
+	<span class="ui-icon ui-icon-check" style="float:none;margin:0px"></span>
+	<span style="width:120px">d/m/yy (พ.ศ.)</span> เช่น 1/5/60, 31/5/60, 3/11/60<br>
+	<span class="ui-icon ui-icon-closethick" style="float:none;margin:0px"></span>
+	2560-05-01, 2017/05/01<br>
+	<span class="ui-icon ui-icon-closethick" style="float:none;margin:0px"></span>
+	01-05-2560, 01/05/2017<br>
+	<span class="ui-icon ui-icon-closethick" style="float:none;margin:0px"></span>
+	1-5-60, 1/5/17<br>
 </div>
 
 <DIV id="login">
