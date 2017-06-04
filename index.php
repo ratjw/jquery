@@ -548,20 +548,24 @@
   </p>
   <p style="margin-bottom:0px;">
     <span class="ui-icon ui-icon-info"></span>
-    Format วันที่ : ใช้เฉพาะตัวเลข คั่นด้วย - หรือ / เท่านั้น
+    Date Format : ใช้เฉพาะตัวเลข ได้ 2 แบบ
   </p>
+  <ul style="margin:0px;">
+	<li>แบบสากล ปีค.ศ.4 หลัก-เดือน-วัน</li>
+	<li>แบบไทย วัน/เดือน/ปีพ.ศ.</li>
+  </ul>
 	<span class="ui-icon ui-icon-check" style="float:none;margin:0px"></span>
 	<span style="width:120px">yyyy-mm-dd (ค.ศ.)</span> เช่น 2017-05-01, 2017-5-1<br>
 	<span class="ui-icon ui-icon-check" style="float:none;margin:0px"></span>
 	<span style="width:120px">d/m/yyyy (พ.ศ.)</span> เช่น 01/05/2560, 1/5/2560<br>
 	<span class="ui-icon ui-icon-check" style="float:none;margin:0px"></span>
-	<span style="width:120px">d/m/yy (พ.ศ.)</span> เช่น 1/5/60, 31/5/60, 3/11/60<br>
+	<span style="width:120px">d/m/(25)yy (พ.ศ.)</span> เช่น 1/5/60, 31/5/60, 3/11/60<br>
+	<span class="ui-icon ui-icon-check" style="float:none;margin:0px"></span>
+	9/11/60 = 9 พฤศจิกายน 2560, 11/9/60 = 11 กันยายน 2560<br>
 	<span class="ui-icon ui-icon-closethick" style="float:none;margin:0px"></span>
-	2560-05-01, 2017/05/01<br>
+	2560-05-01 (พ.ศ.), 2017/05/01 (/)<br>
 	<span class="ui-icon ui-icon-closethick" style="float:none;margin:0px"></span>
-	01-05-2560, 01/05/2017<br>
-	<span class="ui-icon ui-icon-closethick" style="float:none;margin:0px"></span>
-	1-5-60, 1/5/17<br>
+	1-5-60 (-), 1/5/17 (ค.ศ.)<br><br>
 </div>
 
 <DIV id="login">
