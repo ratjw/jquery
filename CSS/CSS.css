@@ -317,3 +317,62 @@ input[type=checkbox] + label {
 input[type=checkbox]:checked + label {
 	color: #000000;
 }
+
+@media only screen and (max-width: 640px) {
+
+	/* Force table to not be like tables anymore */
+	#tbl table, #queuetbl table, 
+	#tbl thead, #queuetbl thead, 
+	#tbl tbody, #queuetbl tbody, 
+	#tbl th, #queuetbl th, 
+	#tbl td, #queuetbl td, 
+	#tbl tr, #queuetbl tr { 
+		display: block; 
+	}
+
+	/* Hide table headers (but not display: none;, for accessibility) */
+	#tbl tr th, #queuetbl tr th { 
+		position: absolute;
+		top: -9999px;
+		left: -9999px;
+	}
+ 
+	#tbl tr, #queuetbl tr { border: 1px solid #ccc; }
+
+	#tbl td, #queuetbl td { 
+		/* Behave  like a "row" */
+		border: none;
+		border-bottom: 1px solid #eee; 
+		position: relative;
+		padding-left: 40%; 
+		white-space: normal;
+		text-align:left;
+	}
+
+	#tbl td:before, #queuetbl td:before { 
+		/* Now like a table header */
+		position: absolute;
+		/* Top/left values mimic padding */
+		top: 6px;
+		left: 6px;
+		width: 35%; 
+		padding-right: 10px; 
+		white-space: nowrap;
+		text-align:left;
+		vertical-align: top;
+		font-weight: bold;
+	}
+
+	/*
+	Label the data
+	*/
+	#tbl td:before, #queuetbl td:before { content: attr(data-title); }
+
+	#tbl td.sun:before { content: "วันอาทิตย์ "; }
+	#tbl td.mon:before { content: "วันจันทร์ "; }
+	#tbl td.tue:before { content: "วันอังคาร "; }
+	#tbl td.wed:before { content: "วันพุธ "; }
+	#tbl td.thu:before { content: "วันพฤหัส "; }
+	#tbl td.fri:before { content: "วันศุกร์ "; }
+	#tbl td.sat:before { content: "วันเสาร์ "; }
+}

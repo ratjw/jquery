@@ -1,4 +1,16 @@
 
+function resetcountService()
+{
+	document.getElementById("Admit").innerHTML = 0
+	document.getElementById("Discharge").innerHTML = 0
+	document.getElementById("Operation").innerHTML = 0
+	document.getElementById("Morbidity").innerHTML = 0
+	document.getElementById("Readmission").innerHTML = 0
+	document.getElementById("Infection").innerHTML = 0
+	document.getElementById("Reoperation").innerHTML = 0
+	document.getElementById("Dead").innerHTML = 0
+}
+
 function countService(thiscase, fromDate, toDate)
 {
 	var color = ""
