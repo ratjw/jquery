@@ -550,15 +550,13 @@
     Date Format : ใช้เฉพาะตัวเลข ได้ 2 แบบ
   </p>
   <ul style="margin:0px;">
-	<li>แบบสากล ปีค.ศ.4 หลัก-เดือน-วัน</li>
-	<li>แบบไทย วัน/เดือน/ปีพ.ศ.</li>
+	<li><span style="width:70px">แบบสากล</span>ปีค.ศ.(4 หลัก)-เดือน-วัน</li>
+	<li><span style="width:70px">แบบไทย</span>วัน/เดือน/ปีพ.ศ.(2 หรือ 4 หลัก)</li>
   </ul>
 	<span class="ui-icon ui-icon-check" style="float:none;margin:0px"></span>
-	<span style="width:120px">yyyy-mm-dd (ค.ศ.)</span> เช่น 2017-05-01, 2017-5-1<br>
+	<span style="width:140px">yyyy-mm-dd</span> เช่น 2017-05-01, 2017-5-1 (ค.ศ. 4 หลักเท่านั้น)<br>
 	<span class="ui-icon ui-icon-check" style="float:none;margin:0px"></span>
-	<span style="width:120px">d/m/yyyy (พ.ศ.)</span> เช่น 01/05/2560, 1/5/2560<br>
-	<span class="ui-icon ui-icon-check" style="float:none;margin:0px"></span>
-	<span style="width:120px">d/m/(25)yy (พ.ศ.)</span> เช่น 1/5/60, 31/5/60, 3/11/60<br>
+	<span style="width:140px">d/m/yyyy, d/m/(25)yy</span> เช่น 01/05/2560, 1/5/2560, 31/5/60, 3/11/60<br>
 	<span class="ui-icon ui-icon-check" style="float:none;margin:0px"></span>
 	9/11/60 = 9 พฤศจิกายน 2560, 11/9/60 = 11 กันยายน 2560<br>
 	<span class="ui-icon ui-icon-closethick" style="float:none;margin:0px"></span>

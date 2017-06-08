@@ -62,8 +62,8 @@
 	background-position: center;
 }
 tr.sunday { background-color: #FFDDEE; }
-tr.monday { background-color: #FCFCF0; }
-tr.tuesday { background-color: #FFF9FD; }
+tr.monday { background-color: #FFFFE0; }
+tr.tuesday { background-color: #FFF0F9; }
 tr.wednesday { background-color: #EEFFEE; }
 tr.thursday { background-color: #FFF7EE; }
 tr.friday { background-color: #E7F7FF; }
