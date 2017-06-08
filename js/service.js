@@ -368,8 +368,10 @@ function storePresentScell(pointing)
 		case PATIENT:
 			clearEditcellData()
 			var hn = pointing.innerHTML
-			hn = hn.match(/\d{7}/)[0]
-			PACS(hn)
+			if (hn.match(/\d{7}/)) {
+				hn = hn.match(/\d{7}/)[0]
+				PACS(hn)
+			}
 			break
 		case SDIAGNOSIS:
 		case STREATMENT:
