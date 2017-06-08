@@ -15,7 +15,7 @@ function sortable()
 			clearTimeout(TIMER);
 			$('#menu').hide();
 			$('#stafflist').hide();
-			clearEditcellData("hide");
+			clearEditcellData();
 			ui.placeholder.innerHeight(ui.item.outerHeight())
 			prevplace = ui.placeholder.index()
 			thisplace = ui.placeholder.index()

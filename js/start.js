@@ -25,13 +25,13 @@ function loadtable(userid)
 		if ($('#menu').is(":visible")) {	//visible == take up space even can't be seen
 			if (!$(target).closest('#menu').length) {
 				$('#menu').hide();
-				clearEditcellData("hide")
+				clearEditcellData()
 			}
 		}
 		if ($('#stafflist').is(":visible")) {
 			if (!$(target).closest('#stafflist').length) {
 				$('#stafflist').hide();
-				clearEditcellData("hide")
+				clearEditcellData()
 			}
 		}
 		if ($('#delete').is(":visible")) {
@@ -50,7 +50,7 @@ function loadtable(userid)
 		}
 		
 		if (target.nodeName == "TH") {
-			clearEditcellData("hide")
+			clearEditcellData()
 			return	
 		}
 
@@ -163,7 +163,7 @@ function updating()	//updating.timer : local variable
 			if (updating.timer == 10) {
 				//delay 100 seconds and
 				//do this only once even if idle for a long time
-				clearEditcellData("hide")
+				clearEditcellData()
 				$('#menu').hide()		//editcell may be on first column
 				$('#stafflist').hide()	//editcell may be on staff
 				$('#datepicker').hide()

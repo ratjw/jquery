@@ -13,7 +13,7 @@ function keyin(event)
 	if (keycode == 27)	{
 		$('#menu').hide();
 		$('#stafflist').hide();
-		clearEditcellData("hide")
+		clearEditcellData()
 		window.focus()
 		event.preventDefault()
 		return false
@@ -39,7 +39,7 @@ function keyin(event)
 		if (thiscell) {
 			storePresentcell(thiscell)
 		} else {
-			clearEditcellData("hide")
+			clearEditcellData()
 			window.focus()
 		}
 		event.preventDefault()
@@ -59,7 +59,7 @@ function keyin(event)
 		if (thiscell) {
 			storePresentcell(thiscell)
 		} else {
-			clearEditcellData("hide")
+			clearEditcellData()
 			window.focus()
 		}
 		event.preventDefault()
@@ -263,8 +263,6 @@ function saveHNinput(pointed, hn, content)
 
 function storePresentcell(pointing)
 {
-	createEditcell(pointing)
-
 	switch(pointing.cellIndex)
 	{
 		case OPDATE:
@@ -277,25 +275,32 @@ function storePresentcell(pointing)
 			}
 			context = context + pointing.innerHTML
 			$("#editcell").html(context)
+			$("#editcell").css({
+				height: $(pointing).height() + "px",
+				width: $(pointing).width() + "px",
+				fontSize: $(pointing).css("fontSize")
+			})
+			$("#editcell").appendTo($(pointing).closest('div'))
+			reposition("#editcell", "center", "center", pointing)
 			fillSetTable(pointing)
 			break
 		case STAFFNAME:
-			saveEditcellData(pointing)
+			createEditcell(pointing)
 			stafflist(pointing)
 			break
 		case HN:
 			if (!pointing.innerHTML) {
-				saveEditcellData(pointing)
+				createEditcell(pointing)
 				break
 			}
 		case NAME:
 		case AGE:
-			clearEditcellData("hide")
+			clearEditcellData()
 			break
 		case DIAGNOSIS:
 		case TREATMENT:
 		case CONTACT:
-			saveEditcellData(pointing)
+			createEditcell(pointing)
 			break
 	}
 }
@@ -308,7 +313,8 @@ function createEditcell(pointing)
 		width: $(pointing).width() + "px",
 		fontSize: $(pointing).css("fontSize")
 	})
-
+	$editcell.data("pointing", pointing)
+	$editcell.html(pointing.innerHTML)
 	$editcell.appendTo($(pointing).closest('div'))
 	reposition("#editcell", "center", "center", pointing)
 	$editcell.focus()
@@ -328,19 +334,10 @@ function reposition(me, mypos, atpos, target)
 	}).show()
 }	//Don't know why have to repeat 2 times
 
-function saveEditcellData(pointing)
-{
-	var $editcell = $("#editcell")
-	$editcell.data("pointing", pointing)
-	$editcell.html(pointing.innerHTML)
-}	//the data is normal HTML, not jQuery
-
-function clearEditcellData(display)
+function clearEditcellData()
 {
 	var $editcell = $("#editcell")
 	$editcell.data("pointing", "")
 	$editcell.html("")
-	if (display == "hide") {
-		$editcell.hide()
-	}
+	$editcell.hide()
 }

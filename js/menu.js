@@ -102,7 +102,7 @@ function fillSetTable(pointing)
 					break
 			}
 
-			clearEditcellData("hide")
+			clearEditcellData()
 			$("#menu").hide()		//to disappear after selection
 			event.stopPropagation()
 		}
@@ -122,7 +122,7 @@ function stafflist(pointing)
 			var staffname = ui.item.text()
 			$(pointing).html(staffname)
 			saveContent(pointing, "staffname", staffname)
-			clearEditcellData("hide")
+			clearEditcellData()
 			$('#stafflist').hide()		//to disappear after selection
 			event.stopPropagation()
 			return false

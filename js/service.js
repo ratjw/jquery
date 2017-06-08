@@ -240,7 +240,7 @@ function Skeyin(event)
 	var thiscell
 
 	if (keycode == 27) {
-		clearEditcellData("hide")
+		clearEditcellData()
 		window.focus()
 		event.preventDefault()
 		return false
@@ -257,7 +257,7 @@ function Skeyin(event)
 		if (thiscell) {
 			storePresentScell(thiscell)
 		} else {
-			clearEditcellData("hide")
+			clearEditcellData()
 			window.focus()
 		}
 		event.preventDefault()
@@ -272,7 +272,7 @@ function Skeyin(event)
 		if (thiscell) {
 			storePresentScell(thiscell)
 		} else {
-			clearEditcellData("hide")
+			clearEditcellData()
 			window.focus()
 		}
 		event.preventDefault()
@@ -368,7 +368,7 @@ function storePresentScell(pointing)
 		case PATIENT:
 //			$('#datepicker').hide()
 			$('#datepicker').datepicker( 'hide' )
-			clearEditcellData("hide")
+			clearEditcellData()
 			var hn = pointing.innerHTML
 			hn = hn.match(/\d{7}/)[0]
 			PACS(hn)
@@ -380,11 +380,10 @@ function storePresentScell(pointing)
 //			$('#datepicker').hide()
 			$('#datepicker').datepicker( 'hide' )
 			createEditcell(pointing)
-			saveEditcellData(pointing)
 			break
 		case ADMIT:
 		case DISCHARGE:
-			clearEditcellData("hide")
+			clearEditcellData()
 			break
 	}
 }

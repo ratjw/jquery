@@ -8,7 +8,7 @@ function editHistory(rowmain, qn)
 		Ajax(MYSQLIPHP, sql, callbackeditHistory)
 	}
 
-	clearEditcellData("hide")
+	clearEditcellData()
 
 	function callbackeditHistory(response)
 	{
@@ -102,7 +102,7 @@ function deleteHistory()
 
 	Ajax(MYSQLIPHP, sql, callbackdeleteHistory)
 
-	clearEditcellData("hide")
+	clearEditcellData()
 
 	function callbackdeleteHistory(response)
 	{
@@ -209,7 +209,7 @@ function PACS(hn)
 
 	Ajax(CHECKPAC, sql, callbackCHECKPAC)
 
-	clearEditcellData("hide")
+	clearEditcellData()
 
 	function callbackCHECKPAC(response)
 	{
