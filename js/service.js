@@ -366,8 +366,6 @@ function storePresentScell(pointing)
 	{
 		case CASE:
 		case PATIENT:
-//			$('#datepicker').hide()
-			$('#datepicker').datepicker( 'hide' )
 			clearEditcellData()
 			var hn = pointing.innerHTML
 			hn = hn.match(/\d{7}/)[0]
@@ -377,8 +375,6 @@ function storePresentScell(pointing)
 		case STREATMENT:
 		case ADMISSION:
 		case FINAL:
-//			$('#datepicker').hide()
-			$('#datepicker').datepicker( 'hide' )
 			createEditcell(pointing)
 			break
 		case ADMIT:
