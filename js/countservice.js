@@ -87,15 +87,14 @@ function isReoperation(thiscase)
 		return true
 	}
 
-	var diag = findDateArray(thiscase.diagnosis)
 	var treat = findDateArray(thiscase.treatment)
-	treat.push(thiscase.opdate)
-	if (diag.length && treat.length) {
+	if (treat.length) {
 		var diagDate
 		var treatDate
-		for (var i = 0; i < diag.length; i++) {
-			for (var j = 0; j < treat.length; j++) {
-				diagDate = new Date(diag[i].toISOdate())
+		treat.push(thiscase.opdate)
+		for (var i = 0; i < treat.length; i++) {
+			diagDate = new Date(treat[i].toISOdate())
+			for (var j = i+1; j < treat.length; j++) {
 				treatDate = new Date(treat[j].toISOdate())
 				if (diagDate <= treatDate) {
 					if (dateDiff(diagDate, treatDate) <= 30) {
@@ -122,8 +121,8 @@ function isReadmission(thiscase)
 		var diagDate
 		var admitDate
 		for (var i = 0; i < diag.length; i++) {
+			diagDate = new Date(diag[i].toISOdate())
 			for (var j = 0; j < admit.length; j++) {
-				diagDate = new Date(diag[i].toISOdate())
 				admitDate = new Date(admit[j].toISOdate())
 				if (diagDate <= admitDate) {
 					if (dateDiff(diagDate, admitDate) <= 30) {

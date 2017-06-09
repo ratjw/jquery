@@ -35,7 +35,7 @@
    <table id="tbl"><!-- data-role="table" class="ui-responsive"-->
     <tbody id="tblbody">
 	 <tr>
-     <th style="width:10%">Service</th>
+     <th style="width:10%">Date</th>
      <th style="width:3%">Staff</th>
      <th style="width:4%">HN</th>
      <th style="width:10%">ชื่อ นามสกุล</th>
@@ -60,7 +60,7 @@
     <table id="queuetbl"><!-- data-role="table" class="ui-responsive"-->
      <tbody>
 	  <tr>
-      <th style="width:10%">Service</th>
+      <th style="width:10%">Date</th>
       <th style="width:3%">Staff</th>
       <th style="width:4%">HN</th>
       <th style="width:10%">ชื่อ นามสกุล</th>
@@ -79,7 +79,7 @@
 <table id="tblrowcell" style="display:none">	<!-- Used as cells template -->
   <TBODY>
    <TR>
-    <td data-title="Service"></td>
+    <td data-title="Date"></td>
     <td data-title="Staff"></td>
     <td data-title="HN"></td>
     <td data-title="ชื่อ นามสกุล"></td>
@@ -95,7 +95,7 @@
 <table id="queuerowcell" style="display:none">	<!--template for "staffqueue"-->
   <TBODY>
     <TR>
-     <td data-title="Service"></td>
+     <td data-title="Date"></td>
      <td data-title="Staff"></td>
      <td data-title="HN"></td>
      <td data-title="ชื่อ นามสกุล"></td>
@@ -452,21 +452,19 @@
   <p><span class="ui-icon ui-icon-info"></span>
   Login ID, Password ของโรงพยาบาล</p>
   <p><span class="ui-icon ui-icon-info"></span>
-       การเปลี่ยนวันผ่าตัด (Service) ใช้ Drag & Drop กดเมาส์ค้างไว้ตรงส่วนหนึ่งส่วนใดของข้อมูลผู้ป่วย 
-	แล้วลากไปวางตรงวันที่ที่ต้องการ สามารถลากข้ามตารางได้</p>
-  <p><span class="ui-icon ui-icon-info"></span>
-       คลิกช่อง (cell) ที่ต้องการใส่ข้อมูล บันทึกโดยการคลิกที่อื่น หรือกด Tab หรือ Shift+Tab หรือ Enter</p>
-  <p style="margin-bottom:0px;"><span class="ui-icon ui-icon-info"></span>
-  Enter ขึ้นบรรทัดใหม่บนตาราง</p>
+       การเปลี่ยนวันผ่าตัด (Date) ใช้ Drag & Drop สามารถลากข้ามตารางได้</p>
+  <p style="margin:0px;"><span class="ui-icon ui-icon-info"></span>
+       เลื่อนช่อง (cell) ใส่ข้อมูล โดยการคลิก หรือกด Tab หรือ Shift+Tab หรือ Enter</p>
   <ul style="margin-top:0px;">
+    <li>Enter ขึ้นบรรทัดใหม่บนตาราง</li>
     <li>Shift+Enter ขึ้นบรรทัดใหม่ภายในช่องนั้น</li>
   </ul>
 
   <h3>หน้าจอหลัก</h3>
   <ul style="margin-top:0px;">
-	<li>คอลัมน์ <b>Service</b> : วันผ่านัด (ไม่ใช่วันนัดมา admit)</li>
+	<li>คอลัมน์ <b>Date</b> : วันผ่าตัด (ไม่ใช่วันนัดมา admit)</li>
 	<dd>: หรือ วันที่รับ consult จากหน่วยอื่น</dd>
-	<dd>: คลิกจะปรากฏ Popup Menu</dd>
+	<dd>: คลิกช่องนี้ จะปรากฏ Popup Menu</dd>
 	<li>คอลัมน์ <b>Staff</b> : คลิกเลือกชื่ออาจารย์เจ้าของไข้</li>
 	<li>คอลัมน์ <b>HN</b> : เลข 7 หลักเท่านั้น</li>
 	<li>คอลัมน์ <b>ชื่อ นามสกุล</b> : ปรากฏเองตาม HN</li>
@@ -519,11 +517,11 @@
 	<li>ต้องการเปลี่ยนเดือน คลิกลูกศร ซ้าย ขวา</li>
 	<li>เข้าดู Service Review คลิกแถบชื่อเดือน</li>
 	<li>ดู PACS คลิกช่อง <b>HN Name</b></li>
-	<li>ช่อง <b>Diagnosis</b> มีผลต่อจำนวน Re-admission, และ Re-operation</li>
-		<dt>: เคสไหนเป็น Re-admission ให้ใส่วันที่ admit ครั้งก่อนๆ ตรงช่องนี้ </dt>
-		<dt>: เคสไหนเป็น Re-operation ให้ใส่วันที่ผ่าตัดครั้งก่อนๆ ตรงช่องนี้ </dt>
+	<li>ช่อง <b>Diagnosis</b> มีผลต่อจำนวน Re-admission</li>
+		<dt>: ใส่วันที่ admit ครั้งก่อนๆ ตรงช่องนี้ </dt>
 	<li>ช่อง <b>Treatment</b> มีผลต่อจำนวน Operation, และ Re-operation</li>
 		<dt>: เคสที่ไม่มีคำเกี่ยวกับการผ่าตัดในช่อง <b>Treatment</b> ให้ใส่คำว่า op(eration) ตรงช่องนี้</dt>
+		<dt>: ใส่วันที่ผ่าตัดครั้งก่อนๆ ตรงช่องนี้ </dt>
 		<dt>: เคสที่มีการผ่าตัดซ้ำ แต่ไม่มีวันที่ผ่าตัดครั้งก่อน ให้ใส่คำว่า re-op(eration) ตรงช่องนี้</dt>
 	<li>ช่อง <b>Admission Status</b> มีผลต่อจำนวน Re-admission</li>
 		<dt>: เคสที่ admit ซ้ำ แต่ไม่มีวันที่ admit ครั้งก่อน ให้ใส่คำว่า re-ad(mission) ตรงช่องนี้</dt>
@@ -534,17 +532,6 @@
 	<li>ช่อง <b>Admit</b> ของโรงพยาบาล</li>
 	<li>ช่อง <b>D/C</b> ของโรงพยาบาล</li>
   </ul>
-
-  <p>
-    <span class="ui-icon ui-icon-info"></span>
-             เคสที่มีการ admit ซ้ำ ให้ใส่วันที่ admit ครั้งก่อนๆตรงช่อง <b>Diagnosis</b>
-             และใส่วันที่ admit ครั้งนี้ตรงช่อง <b>Admission Status</b>
-  </p>
-  <p>
-    <span class="ui-icon ui-icon-info"></span>
-             เคสที่มีการผ่าตัดซ้ำ ให้ใส่วันที่ผ่าตัดครั้งก่อนๆตรงช่อง <b>Diagnosis</b> 
-             และใส่วันที่ผ่าตัดครั้งนี้ตรงช่อง <b>Treatment</b>
-  </p>
   <p style="margin-bottom:0px;">
     <span class="ui-icon ui-icon-info"></span>
     Date Format : ใช้เฉพาะตัวเลข ได้ 2 แบบ
