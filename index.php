@@ -521,14 +521,14 @@
 		<dt>: ใส่วันที่ admit ครั้งก่อนๆ ตรงช่องนี้ </dt>
 	<li>ช่อง <b>Treatment</b> มีผลต่อจำนวน Operation, และ Re-operation</li>
 		<dt>: เคสที่ไม่มีคำเกี่ยวกับการผ่าตัดในช่อง <b>Treatment</b> ให้ใส่คำว่า op(eration) ตรงช่องนี้</dt>
-		<dt>: ใส่วันที่ผ่าตัดครั้งก่อนๆ ตรงช่องนี้ </dt>
-		<dt>: เคสที่มีการผ่าตัดซ้ำ แต่ไม่มีวันที่ผ่าตัดครั้งก่อน ให้ใส่คำว่า re-op(eration) ตรงช่องนี้</dt>
+		<!--dt>: ใส่วันที่ผ่าตัดครั้งก่อนๆ ตรงช่องนี้ </dt-->
+		<dt>: เคสที่มีการผ่าตัดซ้ำ ใส่คำว่า re-op(eration) ตรงช่องนี้</dt>
 	<li>ช่อง <b>Admission Status</b> มีผลต่อจำนวน Re-admission</li>
-		<dt>: เคสที่ admit ซ้ำ แต่ไม่มีวันที่ admit ครั้งก่อน ให้ใส่คำว่า re-ad(mission) ตรงช่องนี้</dt>
+		<dt>: เคสที่ admit ซ้ำ ใส่คำว่า re-ad(mission) ตรงช่องนี้</dt>
 	<li>ช่อง <b>Final Status</b> มีผลต่อจำนวน Infection, Morbidity, และ Dead</li>
-		<dt>: เคสที่มี Infection ให้ใส่คำว่า Infect(ion) หรือ SSI ตรงช่องนี้</dt>
-		<dt>: เคสที่มี Morbidity ให้ใส่คำว่า Morbid ตรงช่องนี้</dt>
-		<dt>: เคส Dead ให้ใส่คำว่า Dead ตรงช่องนี้</dt>
+		<dt>: เคสที่มี Infection ใส่คำว่า Infect(ion) หรือ SSI ตรงช่องนี้</dt>
+		<dt>: เคสที่มี Morbidity ใส่คำว่า Morbid ตรงช่องนี้</dt>
+		<dt>: เคส Dead ใส่คำว่า Dead ตรงช่องนี้</dt>
 	<li>ช่อง <b>Admit</b> ของโรงพยาบาล</li>
 	<li>ช่อง <b>D/C</b> ของโรงพยาบาล</li>
   </ul>

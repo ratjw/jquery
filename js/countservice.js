@@ -86,7 +86,7 @@ function isReoperation(thiscase)
 	if (/\b[Rr]e-op/.test(thiscase.treatment)) {
 		return true
 	}
-
+/*
 	var treat = findDateArray(thiscase.treatment)
 	if (treat.length) {
 		var diagDate
@@ -103,7 +103,7 @@ function isReoperation(thiscase)
 				}
 			}
 		}
-	}
+	}*/
 }
 
 function isReadmission(thiscase)
