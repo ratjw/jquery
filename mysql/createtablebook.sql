@@ -20,5 +20,6 @@ CREATE TABLE `book` (
 	`qn` int(10) unsigned NOT NULL AUTO_INCREMENT,
 	`editor` varchar(10) NOT NULL DEFAULT '',
 	PRIMARY KEY (`qn`),
-	KEY `opdate` (`opdate`)
+	KEY `opdate` (`opdate`),
+	KEY `hn` (`hn`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
