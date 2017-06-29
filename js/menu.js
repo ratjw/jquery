@@ -14,47 +14,48 @@ function fillSetTable(pointing)
 
 	casename = casename.substring(0, casename.indexOf(' '))
 
+	$("#item1 div").html("เพิ่ม case วันที่ " + opdateth)
+	if (qn) {
+		$("#item1").removeClass(disabled)
+	} else {
+		$("#item1").addClass(disabled)
+	}
 	$("#item2 div").html("เพิ่ม case ต่อท้าย ไม่ระบุวันที่")
 	if (tableID == "queuetbl") {
 		$("#item2").removeClass(disabled)
 	} else {
 		$("#item2").addClass(disabled)
 	}
-	$("#item3 div").html("เพิ่ม case วันที่ " + opdateth)
+	$("#item3 div").html("เปลี่ยนวันที่ " + casename)
 	if (qn) {
 		$("#item3").removeClass(disabled)
 	} else {
 		$("#item3").addClass(disabled)
 	}
-	$("#item4 div").html("Delete " + casename)
-	if (!qn && !(checkblank(opdate, qn))) {
-		$("#item4").addClass(disabled)
-	} else {
+	$("#item4 div").html("การแก้ไขของ " + casename)
+	if (qn) {
 		$("#item4").removeClass(disabled)
+	} else {
+		$("#item4").addClass(disabled)
 	}
-	$("#item5 div").html("List of Deleted Cases")
-
-	$("#item6 div").html("การแก้ไขของ " + casename)
+	$("#item5 div").html("PACS " + casename)
+	if (hn) {
+		$("#item5").removeClass(disabled)
+	} else {
+		$("#item5").addClass(disabled)
+	}
+	$("#item6 div").html("Equipment " + casename)
 	if (qn) {
 		$("#item6").removeClass(disabled)
 	} else {
 		$("#item6").addClass(disabled)
 	}
-	$("#item7 div").html("PACS")
-	if (hn) {
-		$("#item7").removeClass(disabled)
-	} else {
+	$("#item7 div").html("Delete " + casename)
+	if (!qn && !(checkblank(opdate, qn))) {
 		$("#item7").addClass(disabled)
-	}
-	$("#item8 div").html("Equipment")
-	if (qn) {
-		$("#item8").removeClass(disabled)
 	} else {
-		$("#item8").addClass(disabled)
+		$("#item7").removeClass(disabled)
 	}
-	$("#item9 div").html("Service Review")
-
-	$("#item10 div").html("Readme")
 
 	$("#menu").menu({
 		select: function( event, ui ) {
@@ -64,40 +65,44 @@ function fillSetTable(pointing)
 			switch(item)
 			{
 				case "item1":
-					staffqueue(ui.item.text())
-					if ($("#queuewrapper").css("display") != "block")
-						splitPane()
+					addnewrow(tableID, rowmain, qn)
 					break
 				case "item2":
 					noOpdate()
 					break
 				case "item3":
-					addnewrow(tableID, rowmain, qn)
+					changeDate()
 					break
 				case "item4":
+					editHistory(rowmain, qn)
+					break
+				case "item5":
+					PACS(hn)
+					break
+				case "item6":
+					fillEquipTable(qn)
+					break
+				case "item7":
 					if (checkblank(opdate, qn))	{	//from add new row (check case in this opdate)
 						$(rowmain).remove()			//delete blank row
 						var caseNum = findBOOKrow("")
 						BOOK.splice(caseNum, 1)
-					} else
+					} else {
 						deleteCase(rowmain, opdate, qn, pointing)
+					}
 					break
-				case "item5":
-					deleteHistory()
-					break
-				case "item6":
-					editHistory(rowmain, qn)
-					break
-				case "item7":
-					PACS(hn)
-					break
-				case "item8":
-					fillEquipTable(qn)
+				case "item88":
+					staffqueue(ui.item.text())
+					if ($("#queuewrapper").css("display") != "block")
+						splitPane()
 					break
 				case "item9":
 					serviceReview()
 					break
 				case "item10":
+					deleteHistory()
+					break
+				case "item11":
 					readme()
 					break
 			}

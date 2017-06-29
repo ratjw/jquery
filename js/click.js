@@ -242,8 +242,12 @@ function saveHNinput(pointed, hn, content)
 
 			var NewRow = findNewBOOKrow(opdate)
 			var bookq = BOOK[NewRow]
+			$rowcell.eq(STAFFNAME).html(bookq.staffname)
 			$rowcell.eq(NAME).html(bookq.patient)
 			$rowcell.eq(AGE).html(putAgeOpdate(bookq.dob, bookq.opdate))
+			$rowcell.eq(DIAGNOSIS).html(bookq.diagnosis)
+			$rowcell.eq(TREATMENT).html(bookq.treatment)
+			$rowcell.eq(CONTACT).html(bookq.contact)
 			if (!qn) {	//New case input
 				$rowcell.eq(QN).html(BOOK[NewRow].qn)
 			}

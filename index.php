@@ -174,19 +174,17 @@
 <div id="dialogAlert"></div>
 
 <ul id="menu" style="display:none">
-  <li><div>คิวของอาจารย์</div>
-	<ul id="item0" style="width:120px">
-	</ul>
-  </li>
+  <li id="item1"><div></div></li>
   <li id="item2"><div></div></li>
   <li id="item3"><div></div></li>
-  <li id="item4" style="color:#FF0000"><div></div></li>
+  <li id="item4"><div></div></li>
   <li id="item5"><div></div></li>
   <li id="item6"><div></div></li>
-  <li id="item7"><div></div></li>
-  <li id="item8"><div></div></li>
-  <li id="item9"><div></div></li>
-  <li id="item10"><div></div></li>
+  <li id="item7" style="color:#FF0000"><div></div></li>
+  <li id="item8"><div>คิวของอาจารย์</div><ul id="item0" style="width:100px"></ul></li>
+  <li id="item9"><div>Service Review</div></li>
+  <li id="item10"><div>List of Deleted Cases</div></li>
+  <li id="item11"><div>Readme</div></li>
 </ul>
 
 <ul id="stafflist" style="display:none"></ul>
