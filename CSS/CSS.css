@@ -259,7 +259,9 @@ td.sat { background-color: #CCBBF0; }
 	line-height: 25px;
 }
 
-#datepicker, #datepicking {
+#datepicker, #datepicking,
+#datepickertbl, #datepickingtbl,
+#datepickerqueuetbl, #datepickingqueuetbl {
 	font-size: 12px;
 }
 

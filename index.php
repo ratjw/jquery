@@ -47,6 +47,8 @@
 	 </tr>
     </tbody>
    </table>
+   <input type="text" id="datepickertbl" style="display:none">
+   <input type="text" id="datepickingtbl" style="display:none">
   </div>
  </div>
 
@@ -72,6 +74,8 @@
 	  </tr>
      </tbody>
     </table>
+    <input type="text" id="datepickerqueuetbl" style="display:none">
+    <input type="text" id="datepickingqueuetbl" style="display:none">
   </div>
  </div>
 </div>
