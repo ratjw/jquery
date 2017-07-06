@@ -232,6 +232,15 @@ function findNewBOOKrow(opdate)	//find new row (max. qn)
 	return newq
 }
 
+function findOpdateBOOKrow(opdate)
+{
+	var q = 0
+	while ((q < BOOK.length) && (BOOK[q].opdate < opdate)) {
+		q++
+	}
+	return q	
+}
+
 function findVisibleHead(table)
 {
 	var tohead

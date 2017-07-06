@@ -1,4 +1,70 @@
 
+function fillEquipTableToday()
+{
+	var opdate = (new Date()).ISOdate()
+	var q = findOpdateBOOKrow(opdate)
+	var i = 1
+
+	while (q < BOOK.length || BOOK[q].opdate == opdate) {
+		fillEquipToday(q, i)
+		q++
+		i++
+	}
+}
+
+function fillEquipToday(q, i)
+{
+	var bookq = BOOK[q]
+	var bookqEquip = bookq.equipment
+
+	document.getElementById("opdate").innerHTML = putOpdate(bookq.opdate)
+	document.getElementById("staffname").innerHTML = bookq.staffname
+	document.getElementById("hn").innerHTML = bookq.hn
+	document.getElementById("patientname").innerHTML = bookq.patient
+	document.getElementById("age").innerHTML = putAgeOpdate(bookq.dob, bookq.opdate)
+	document.getElementById("diagnosis").innerHTML = bookq.diagnosis
+	document.getElementById("treatment").innerHTML = bookq.treatment
+
+	$('#dialogEquip input').prop('checked', false)
+	$('#dialogEquip input').val('')
+	$('#dialogEquip input[type=text]').prop('disabled', false)//make it easier to see
+
+	if ( bookqEquip ) {			// If any, fill checked & others
+		$.each(JSON.parse(bookqEquip), function(key, val) {
+			if (val == 'checked') {
+				$("#"+ key).prop("checked", true)	//radio and checkbox
+			} else {
+				$("#"+ key).val(val)	//Other1...8
+			}
+		});
+		showNonEditableEquip(qn, bookqEquip)
+		getEditedby(qn)
+ 	} else {
+		showEditableEquip(qn, bookqEquip)
+		document.getElementById("editedby").innerHTML = ""
+	}
+
+	var dialogEquip + "i" = document.createElement("div").html($('#dialogEquip').html())
+	var dialogEquip = dialogEquip + "i"
+	dialogEquip.getElementById("opdate").id = ""
+	dialogEquip.getElementById("staffname").id = ""
+	dialogEquip.getElementById("hn").id = ""
+	dialogEquip.getElementById("patientname").id = ""
+	dialogEquip.getElementById("age").innerHTML = id = ""
+	dialogEquip.getElementById("diagnosis").id = ""
+	dialogEquip.getElementById("treatment").id = ""
+	$(dialogEquip).dialog({
+		title: "เครื่องมือผ่าตัด",
+		closeOnEscape: true,
+		modal: true,
+		width: 800,
+		height: window.innerHeight,
+		open: function(event, ui) {
+			$("input").blur();	//disable default autofocus on text input
+		}
+	})
+}
+
 function fillEquipTable(qn)
 {
 	var q = findBOOKrow(qn)

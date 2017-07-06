@@ -611,7 +611,7 @@ function namesix()
 				$resultz = "S";
 			}
 
-			if ($resultz == "S" || $resultz == "R" || $userid == "005497")
+			if ($resultz == "S" || $resultz == "R" || $userid == "000000")
 			{
 				echo "<SCRIPT type='text/javascript'>loadtable('".$userid."')</SCRIPT>";
 			}

@@ -24,16 +24,11 @@ function fillall(start)
 	var tbody = document.getElementById("tblbody")
 	var rows = table.rows
 	var head = table.rows[0]
-	var date
+	var date = start
 	var madedate
 
-	date = start
-
 	//q for rows in BOOK
-	var q = 0
-	while ((q < BOOK.length) && (BOOK[q].opdate < start)) {
-		q++
-	}	
+	var q = findOpdateBOOKrow(date)
 
 	//i for rows in table (with head as the first row)
 	var i = 0

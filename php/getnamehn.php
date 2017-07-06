@@ -37,7 +37,7 @@ require_once "book.php";
 
 	extract($resultz);
 
-	$sql = "SELECT MAX(qn) FROM book WHERE hn = $hn;";
+	$sql = "SELECT MAX(qn) FROM book WHERE hn = $hn AND waitnum IS NOT NULL;";
 	$query = $mysqli->query ($sql);
 	if ($query) {
 		$oldqn = $query->fetch_row();		//Array

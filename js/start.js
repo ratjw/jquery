@@ -104,8 +104,12 @@ function loading(response)
 	if (response && response.indexOf("[") != -1) {
 		localStorage.setItem('BOOK', response)
 		updateBOOK(response)
-		fillupstart();
-		fillStafflist()
+		if (THISUSER == "123456") {
+			fillEquipTableToday()
+		} else {
+			fillupstart();
+			fillStafflist()
+		}
 	} else {
 		response = localStorage.getItem('BOOK')
 		if (response) {

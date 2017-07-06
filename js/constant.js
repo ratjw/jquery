@@ -80,18 +80,16 @@ var HOLIDAY = {
 	"2017-05-12" : "url('pic/Ploughing.jpg')",
 	"2017-07-08" : "url('pic/Asalha.jpg')",
 	"2017-07-09" : "url('pic/Vassa.jpg')",
-	"2017-07-10" : "url('pic/Asalhasub.jpg')",
-	"2017-07-11" : "url('pic/Vassasub.jpg')",	//หยุดชดเชยวันเข้าพรรษา,	
+	"2017-07-10" : "url('pic/Asalhasub.jpg')",	//หยุดชดเชยวันอาสาฬหบูชา
 	"2018-03-01" : "url('pic/Magha.jpg')",
 	"2018-05-09" : "url('pic/Ploughing.jpg')",
 	"2018-05-29" : "url('pic/Vesak.jpg')",
 	"2018-07-27" : "url('pic/Asalha.jpg')",
 	"2018-07-28" : "url('pic/Vassa.jpg')",
-	"2018-07-30" : "url('pic/Vassasub.jpg')",
 	"2019-02-19" : "url('pic/Magha.jpg')",		//วันมาฆบูชา
 	"2019-05-13" : "url('pic/Ploughing.jpg')",	//วันพืชมงคล
 	"2019-05-18" : "url('pic/Vesak.jpg')",		//วันวิสาขบูชา
-	"2019-05-20" : "url('pic/Vesaksub.jpg')",	//หยุดชดเชยวันวิสาขบูชา	
+	"2019-05-20" : "url('pic/Vesaksub.jpg')",	//หยุดชดเชยวันวิสาขบูชา
 	"2019-07-16" : "url('pic/Asalha.jpg')",		//วันอาสาฬหบูชา
 	"2019-07-17" : "url('pic/Vassa.jpg')"		//วันเข้าพรรษา
 	}
