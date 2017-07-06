@@ -71,7 +71,7 @@ function fillSetTable(pointing)
 					noOpdate()
 					break
 				case "item3":
-					changeDate()
+					changeDate(opdate, qn, pointing)
 					break
 				case "item4":
 					editHistory(rowmain, qn)
@@ -88,7 +88,7 @@ function fillSetTable(pointing)
 						var caseNum = findBOOKrow("")
 						BOOK.splice(caseNum, 1)
 					} else {
-						deleteCase(rowmain, opdate, qn, pointing)
+						deleteCase(rowmain, opdate, qn)
 					}
 					break
 				case "item88":
@@ -227,6 +227,30 @@ function fakeScrollAnimate(container, table, tohead)
 		$(container).scrollTop(tohead.offsetTop)
 }
 
+function addnewrow(tableID, rowmain, qn)
+{
+	var caseNum = findBOOKrow(qn)
+	var bookq = JSON.parse(JSON.stringify(BOOK[caseNum]))
+	$.each( bookq, function(key, val) {
+		bookq[key] = ""
+	})
+	bookq.opdate = BOOK[caseNum].opdate
+	BOOK.splice(caseNum + 1, 0, bookq)
+	
+	$(rowmain).clone()
+		.insertAfter($(rowmain))
+			.find("td").eq(OPDATE)
+				.siblings()
+					.html("")
+
+	if (tableID == "queuetbl") {
+		//change pointing to STAFFNAME
+		var staffname = $('#titlename').html()
+		var pointing = $(rowmain).next().children("td")[STAFFNAME]
+		saveContent(pointing, "staffname", staffname)
+	}
+}
+
 function noOpdate()
 {
 	//must use jQuery in order to be recognized
@@ -251,28 +275,48 @@ function noOpdate()
 	}, 500);
 }
 
-function addnewrow(tableID, rowmain, qn)
+function changeDate(opdate, qn, pointing)
 {
-	var caseNum = findBOOKrow(qn)
-	var bookq = JSON.parse(JSON.stringify(BOOK[caseNum]))
-	$.each( bookq, function(key, val) {
-		bookq[key] = ""
+	$('#datepickertbl').css({
+		height: $(pointing).height(),
+		width: $(pointing).width()
 	})
-	bookq.opdate = BOOK[caseNum].opdate
-	BOOK.splice(caseNum + 1, 0, bookq)
-	
-	$(rowmain).clone()
-		.insertAfter($(rowmain))
-			.find("td").eq(OPDATE)
-				.siblings()
-					.html("")
+	reposition("#datepickertbl", "center", "center", pointing)
 
-	if (tableID == "queuetbl") {
-		//change pointing to STAFFNAME
-		var staffname = $('#titlename').html()
-		var pointing = $(rowmain).next().children("td")[STAFFNAME]
-		saveContent(pointing, "staffname", staffname)
-	}
+	$('#datepickertbl').datepicker( {
+		dateFormat: "yy-mm-dd",
+		minDate: "-1y",
+		maxDate: "+1y",
+		onClose: function () {
+			$('.ui-datepicker').css("fontSize", '')
+//			saveEditPointData(pointing)
+			$('#datepickertbl').hide()
+			opdate = $('#datepickertbl').val()
+			var sql = "sqlReturnbook=UPDATE book SET opdate='" + opdate + "', "
+			sql += "editor = '" + THISUSER + "' WHERE qn="+ qn + ";"
+
+			Ajax(MYSQLIPHP, sql, callbackchangeDate)
+
+			function callbackchangeDate(response)
+			{
+				if (!response || response.indexOf("DBfailed") != -1) {
+					alert ("changeDate", response)
+				} else {
+					updateBOOK(response);
+					refillall()
+					if (($("#queuewrapper").css('display') == 'block') && 
+						($('#titlename').html() == $rowcell.eq(STAFFNAME).html())) {
+						//changeDate of this staffname's case
+						refillstaffqueue()
+					}
+				}
+			}
+		}
+	})
+	$('#datepickertbl').datepicker("setDate", new Date(opdate))
+	$('#datepickertbl').datepicker( 'show' )
+	$('.ui-datepicker').css("fontSize", "12px")
+	reposition(".ui-datepicker", "left top", "left bottom", pointing)
 }
 
 function deleteCase(rowmain, opdate, qn)
