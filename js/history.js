@@ -122,7 +122,7 @@ function makeDeleteHistory(response)
 	var HTML_String = '<table id = "historytbl">';
 	HTML_String += '<tr>';
 	HTML_String += '<th style="width:10%">Date Time</th>';
-	HTML_String += '<th style="width:5%">Op.Date</th>';
+	HTML_String += '<th style="width:5%">Date</th>';
 	HTML_String += '<th style="width:5%">Staff</th>';
 	HTML_String += '<th style="width:5%">HN</th>';
 	HTML_String += '<th style="width:10%">Patient Name</th>';
@@ -167,8 +167,9 @@ function undelete(thiscase)
 
 	doUndelete = function() 
 	{
-		var staffname = $(thiscase).children("td").eq(HSTAFFNAME).html()
-		var qn = $(thiscase).children("td").eq(HQN).html()
+		var $thiscase = $(thiscase).parent().children("td")
+		var staffname = $thiscase.eq(HSTAFFNAME).html()
+		var qn = $thiscase.eq(HQN).html()
 
 		var sqlstring = "sqlReturnbook=UPDATE book SET "
 		sqlstring += "waitnum = 1"
@@ -220,6 +221,118 @@ function PACS(hn)
 		}
 	}
 } 
+
+function find()
+{
+	var hn = ""
+	var patient = ""
+	var diagnosis = ""
+	var treatment = ""
+	var contact = ""
+
+	$("#dialogFind").css("height", 0)
+	$('#dialogFind').html($('#find').show())
+	$('#dialogFind').dialog({
+		title: "Find",
+		closeOnEscape: true,
+		modal: true,
+		width: window.innerWidth * 5 / 10,
+		height: window.innerHeight * 5 / 10,
+		buttons: {
+			'OK': function () {
+				hn = $('input[name="hn"]').val()
+				patient = $('input[name="patient"]').val()
+				diagnosis = $('input[name="diagnosis"]').val()
+				treatment = $('input[name="treatment"]').val()
+				contact = $('input[name="contact"]').val()
+				$("body").append($('#find').hide())
+				sqlFind(hn, patient, diagnosis, treatment, contact)
+				$(this).dialog('close')
+			}
+		}
+	})
+}
+
+function sqlFind(hn, patient, diagnosis, treatment, contact)
+{
+	var sql = "sqlReturnData=SELECT * FROM book WHERE "
+		if (hn) {
+			sql += "hn = '" + hn + "' "
+		}
+		if (patient) {
+			sql += " AND patient like '%" + patient + "%' "
+		}
+		if (diagnosis) {
+			sql += " AND diagnosis like '%" + diagnosis + "%' "
+		}
+		if (treatment) {
+			sql += " AND treatment like '%" + treatment + "%' "
+		}
+		if (contact) {
+			sql += " AND contact like '%" + contact + "%' "
+		}
+		sql += "ORDER BY opdate;"
+
+	Ajax(MYSQLIPHP, sql, callbackfind)
+
+	clearEditcellData()
+
+	function callbackfind(response)
+	{
+		if (!response || response.indexOf("DBfailed") != -1)
+			alert("Find", response)
+		else
+			makeFind(response, hn)
+	}
+}
+
+function makeFind(response, hn)
+{
+	var history = JSON.parse(response);
+
+	$('#historytbl').attr('id', '')
+
+	var HTML_String = '<table id = "historytbl">';
+	HTML_String += '<tr>';
+	HTML_String += '<th style="width:5%">Date</th>';
+	HTML_String += '<th style="width:5%">Staff</th>';
+	HTML_String += '<th style="width:5%">HN</th>';
+	HTML_String += '<th style="width:10%">Patient Name</th>';
+	HTML_String += '<th style="width:20%">Diagnosis</th>';
+	HTML_String += '<th style="width:20%">Treatment</th>';
+	HTML_String += '<th style="width:20%">Contact</th>';
+	HTML_String += '<th style="width:5%">Editor</th>';
+	HTML_String += '</tr>';
+	for (var j = 0; j < history.length; j++) 
+	{
+		if (!history[j].waitnum) {
+			HTML_String += '<tr style="background-color:#FFCCCC">';
+		} else {
+			HTML_String += '<tr>';
+		}
+		HTML_String += '<td>' + history[j].opdate +'</td>';
+		HTML_String += '<td>' + history[j].staffname +'</td>';
+		HTML_String += '<td>' + history[j].hn +'</td>';
+		HTML_String += '<td>' + history[j].patient +'</td>';
+		HTML_String += '<td>' + history[j].diagnosis +'</td>';
+		HTML_String += '<td>' + history[j].treatment +'</td>';
+		HTML_String += '<td>' + history[j].contact +'</td>';
+		HTML_String += '<td>' + history[j].editor +'</td>';
+		HTML_String += '</tr>';
+	}
+	HTML_String += '</table>';
+
+	$("#dialogFind").css("height", 0)
+	$('#dialogFind').html(HTML_String)
+	$('#dialogFind').dialog({
+		title: "HN " + hn,
+		closeOnEscape: true,
+		modal: true,
+		width: window.innerWidth * 9 / 10,
+		height: window.innerHeight * 8 / 10,
+		buttons: []
+	})
+}
 
 function readme()
 {

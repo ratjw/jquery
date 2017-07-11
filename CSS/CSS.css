@@ -269,21 +269,22 @@ td.sat { background-color: #CCBBF0; }
 	display: none;
 }
 
-#dialogEquip {
+.dialogEquip {
 	display: none;
 	font-size: 14px;
 	color: black;
 	background-color: white;
 }
 
-#dialogEquip div,
-#dialogEquip span {
+.dialogEquip div,
+.dialogEquip span {
 	display:inline-block;
 	padding: 0;
 	margin: 0;
 	border: 0;
 }
 
+#find,
 #dialogReadme {
 	display: none;
 	line-height:150%;
@@ -292,7 +293,7 @@ td.sat { background-color: #CCBBF0; }
 	background-color: white;
 }
 
-#dialogReadme span {
+.dialogBox span {
 	display:inline-block;
 }
 

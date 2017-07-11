@@ -1,14 +1,23 @@
 
 function fillEquipTableToday()
 {
-	var opdate = (new Date()).ISOdate()
+	var opdate = "2017-07-17"//(new Date()).ISOdate()
 	var q = findOpdateBOOKrow(opdate)
-	var i = 1
+	var i = 0
 
-	while (q < BOOK.length || BOOK[q].opdate == opdate) {
-		fillEquipToday(q, i)
+	if (q >= BOOK.length) {
+		alert("เครื่องมือผ่าตัด", "No case")
+	}
+	while ((q < BOOK.length) && (BOOK[q].opdate == opdate)) {
 		q++
 		i++
+	}
+
+	i--		//to make first case on top
+	while (i >= 0) {
+		fillEquipToday(q, i)
+		q--
+		i--
 	}
 }
 
@@ -16,6 +25,7 @@ function fillEquipToday(q, i)
 {
 	var bookq = BOOK[q]
 	var bookqEquip = bookq.equipment
+	var qn = bookq.qn
 
 	document.getElementById("opdate").innerHTML = putOpdate(bookq.opdate)
 	document.getElementById("staffname").innerHTML = bookq.staffname
@@ -37,32 +47,51 @@ function fillEquipToday(q, i)
 				$("#"+ key).val(val)	//Other1...8
 			}
 		});
-		showNonEditableEquip(qn, bookqEquip)
-		getEditedby(qn)
+		$('#dialogEquip input[type=radio]').prop("disabled", true)
+		$('#dialogEquip input[type=text]').click(function() {
+			$(this).prop('disabled', true)
+		})
+		$('#dialogEquip input').click(function() {
+			return false
+		})
+//		getEditedby(qn)
  	} else {
-		showEditableEquip(qn, bookqEquip)
+		$('#dialogEquip input').prop('disabled', false)
+		$('#dialogEquip input').off("click")
 		document.getElementById("editedby").innerHTML = ""
 	}
 
-	var dialogEquip + "i" = document.createElement("div").html($('#dialogEquip').html())
-	var dialogEquip = dialogEquip + "i"
-	dialogEquip.getElementById("opdate").id = ""
-	dialogEquip.getElementById("staffname").id = ""
-	dialogEquip.getElementById("hn").id = ""
-	dialogEquip.getElementById("patientname").id = ""
-	dialogEquip.getElementById("age").innerHTML = id = ""
-	dialogEquip.getElementById("diagnosis").id = ""
-	dialogEquip.getElementById("treatment").id = ""
-	$(dialogEquip).dialog({
+	var posx = 100*i
+	var posy = 30*i
+	var height = window.innerHeight
+	if (height > 700) {
+		height = 700
+	}
+	if (height + posy > window.innerHeight) {
+		height = window.innerHeight - posy
+	}
+	$('#dialogEquip').dialog({
 		title: "เครื่องมือผ่าตัด",
 		closeOnEscape: true,
-		modal: true,
-		width: 800,
-		height: window.innerHeight,
+		width: 700,
+		height: height,
+		position: { my: "left top",
+					at: "left+" + posx + " top+" + posy,
+					of: window },
 		open: function(event, ui) {
 			$("input").blur();	//disable default autofocus on text input
 		}
 	})
+
+	var temp1 = document.getElementById("dialogEquip")
+	var temp2 = document.createElement("div")
+	temp2.innerHTML = temp1.innerHTML
+	$('#dialogEquip').find("span").prop("id", "")
+	$('#dialogEquip').find("input").prop("id", "")
+	temp1.id = ""
+	temp2.id = "dialogEquip"
+	temp2.className = "dialogEquip"
+	$("body").append($(temp2))
 }
 
 function fillEquipTable(qn)

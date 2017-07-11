@@ -9,6 +9,8 @@ function loadtable(userid)
 	$("#dialogOplog").dialog('close')
 	$("#dialogDeleted").dialog()
 	$("#dialogDeleted").dialog('close')
+	$("#dialogFind").dialog()
+	$("#dialogFind").dialog('close')
 	$("#dialogEquip").dialog()
 	$("#dialogEquip").dialog('close')
 	$("#dialogService").dialog()
@@ -104,7 +106,7 @@ function loading(response)
 	if (response && response.indexOf("[") != -1) {
 		localStorage.setItem('BOOK', response)
 		updateBOOK(response)
-		if (THISUSER == "123456") {
+		if (THISUSER == "000000") {
 			fillEquipTableToday()
 		} else {
 			fillupstart();

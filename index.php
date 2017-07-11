@@ -175,6 +175,8 @@
   </div>
 </div>
 
+<div id="dialogFind"></div>
+
 <div id="dialogAlert"></div>
 
 <ul id="menu" style="display:none">
@@ -188,14 +190,15 @@
   <li id="item8"><div>คิวของอาจารย์</div><ul id="item0" style="width:100px"></ul></li>
   <li id="item9"><div>Service Review</div></li>
   <li id="item10"><div>List of Deleted Cases</div></li>
-  <li id="item11"><div>Readme</div></li>
+  <li id="item11"><div>Find</div></li>
+  <li id="item12"><div>Readme</div></li>
 </ul>
 
 <ul id="stafflist" style="display:none"></ul>
 
 <div id="editcell" contenteditable="true"></div>
 
-<div id="dialogEquip">
+<div id="dialogEquip" class="dialogEquip">
   <span style="width:250px;"></span>วันที่ 
   <span style="width:120px; font-size: 14px; font-weight: bold;" id="opdate"></span>
   <span style="width:20px;"></span>Surgeon <span id="staffname"></span>
@@ -212,12 +215,21 @@
   <span style="width:540px;" id="treatment"></span>
   <br>
   <br>
-  <div id="clearPosition" style="width:105px;">Position</div>
+  <span style="width:110px;"></span>
+  <span style="width:500px;">
+	<input type="checkbox" id="selfpay">
+	<label for="selfpay"><i>**ผู้ป่วยและญาติสามารถ<b><u>จ่ายส่วนเกินได้ </u></b>(เบิกไม่ได้)</i>**
+	 <input type="text" size="7" id="copay"> บาท
+	</label>
+  </span>
+  <br>
+  <br>
+  <div id="clearPosition" style="width:110px;">Position</div>
   <span style="width:240px;">
 	<input type="radio" name="pose" id="leftSupine">
 	<label for="leftSupine">หงาย ซ้ายขึ้น หันหน้าไปทางขวา</label>
   </span>
-  <span style="width:240px;">
+  <span style="width:235px;">
 	<input type="radio" name="pose" id="rightSupine">
 	<label for="rightSupine">หงาย ขวาขึ้น หันหน้าไปทางซ้าย</label>
   </span>
@@ -226,8 +238,8 @@
 	<label for="Supine">หงาย</label>
   </span>
   <br>
-  <span style="width:105px;"></span>
-  <span style="width:155px;">
+  <span style="width:110px;"></span>
+  <span style="width:150px;">
 	<input type="radio" name="pose" id="rightParkbench">
 	<label for="rightParkbench">Parkbench ขวาลง</label>
   </span>
@@ -244,8 +256,8 @@
 	<label for="prone">คว่ำ</label>
   </span>
   <br>
-  <span style="width:105px;"></span>
-  <span style="width:155px;">
+  <span style="width:110px;"></span>
+  <span style="width:150px;">
 	<input type="radio" name="pose" id="leftParkbench">
 	<label for="leftParkbench">Parkbench ซ้ายลง</label>
   </span>
@@ -257,14 +269,7 @@
 	<input type="radio" name="pose" id="leftProne">
 	<label for="leftProne">3/4 ซ้ายลง</label>
   </span>
-  <span> <input type="text" size="15" id="position"></span>
-  <br>
-  <br>
-  <span style="width:110px;"></span>
-  <span style="width:400px;">
-	<input type="checkbox" id="selfpay">
-	<label for="selfpay"><i>**ผู้ป่วยและญาติสามารถ<b><u>จ่ายส่วนเกินได้ </u></b>(เบิกไม่ได้)</i>**</label>
-  </span>
+  <input type="text" size="15" id="position">
   <br>
   <div style="width:110px;">Imaging</div>
   <span style="width:70px;">
@@ -372,7 +377,7 @@
 	<input type="checkbox" id="Duplex">
 	<label for="Duplex">Duplex</label>
   </span>
-  <span> <input type="text" size="15" id="U/S"></span>
+  <span> <input type="text" size="15" id="US"></span>
   <br>
   <div id="clearShunt" style="width:110px;">Shunt</div>
   <span style="width:106px;">Pudenz</span>
@@ -448,7 +453,7 @@
   <span style="position:absolute" id="editedby"></span>
 </div>
 
-<div id="dialogReadme">
+<div id="dialogReadme" class="dialogBox">
   <p><span class="ui-icon ui-icon-info"></span>
       ใช้ Browser : Chrome, Firefox, หรือ Edge (ie 10+)</p>
   <p><span class="ui-icon ui-icon-info"></span>
@@ -554,7 +559,7 @@
 	1-5-60 (-), 1/5/17 (ค.ศ.)<br><br>
 </div>
 
-<DIV id="login">
+<div id="login">
 	<br>
 	<h3>Queue book for Neurosurgery</h3>
 
@@ -577,7 +582,28 @@
 		<input type="submit" value="Submit">
 		<br><br>
 	</form>
-</DIV>
+</div>
+
+<div id="find" class="dialogBox">
+	<span style="width:90px;">HN:</span>
+	<input type="text" name="hn" maxlength="7" size="7">
+	<br>
+	<br>
+	<span style="width:90px;">Name:</span>
+	<input type="text" name="patient">
+	<br>
+	<br>
+	<span style="width:90px;">Diagnosis:</span>
+	<input itype="text" name="diagnosis">
+	<br>
+	<br>
+	<span style="width:90px;">Treatment:</span>
+	<input type="text" name="treatment">
+	<br>
+	<br>
+	<span style="width:90px;">Contact:</span>
+	<input type="text" name="contact">
+</div>
 
 <script type="text/javascript">
 

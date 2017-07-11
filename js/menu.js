@@ -103,6 +103,9 @@ function fillSetTable(pointing)
 					deleteHistory()
 					break
 				case "item11":
+					find()
+					break
+				case "item12":
 					readme()
 					break
 			}
