@@ -177,6 +177,8 @@
 
 <div id="dialogFind"></div>
 
+<div id="dialogScrub"></div>
+
 <div id="dialogAlert"></div>
 
 <ul id="menu" style="display:none">

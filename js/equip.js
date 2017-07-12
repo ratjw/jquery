@@ -1,45 +1,30 @@
 function fillEquipForScrub()
 {
-	$('<div></div>').dialog({
+	$('#dialogScrub').dialog({
 		title: "เครื่องมือผ่าตัด",
-		closeOnEscape: true,
-//		width: window.innerWidth * 5 / 10,
-//		height: window.innerHeight * 5 / 10,
+		create: function(ev, ui) {
+			$(this).parent().find('button:contains("วันนี้")').css({
+				'float':'left'
+			})
+			$(this).parent().find('.ui-dialog-buttonset').css({
+				'width':'75%',
+				'text-align':'right'
+			})
+		},
 		buttons: {
 			'วันนี้': function () {
+				fillEquipToday()
 				$(this).dialog('close')
 			},
 			'พรุ่งนี้': function () {
+				fillEquipTomorrow()
 				$(this).dialog('close')
 			}
 		}
 	})
 }
 
-function fillEquipTableTomorrow()
-{
-	var opdate = ((new Date()).setDate(new Date().getDate() + 1)).ISOdate()
-	var q = findOpdateBOOKrow(opdate)
-	var i = 0
-
-	if (q >= BOOK.length) {
-		alert("เครื่องมือผ่าตัด", "No case")
-	}
-	while ((q < BOOK.length) && (BOOK[q].opdate == opdate)) {
-		q++
-		i++
-	}		//go to last case of the day
-
-	i--		//to make first case on top
-	q--
-	while (i >= 0) {
-		fillEquipToday(q, i)
-		q--
-		i--
-	}
-}
-
-function fillEquipTableToday()
+function fillEquipToday()
 {
 	var opdate = (new Date()).ISOdate()
 	var q = findOpdateBOOKrow(opdate)
@@ -56,13 +41,38 @@ function fillEquipTableToday()
 	i--		//to make first case on top
 	q--
 	while (i >= 0) {
-		fillEquipToday(q, i)
+		fillEquipThisDate(q, i)
 		q--
 		i--
 	}
 }
 
-function fillEquipToday(q, i)
+function fillEquipTomorrow()
+{
+	var opdate = new Date()
+	opdate = opdate.setDate(new Date().getDate() + 1)
+	opdate = (new Date(opdate)).ISOdate()
+	var q = findOpdateBOOKrow(opdate)
+	var i = 0
+
+	if (q >= BOOK.length) {
+		alert("เครื่องมือผ่าตัด", "No case")
+	}
+	while ((q < BOOK.length) && (BOOK[q].opdate == opdate)) {
+		q++
+		i++
+	}		//go to last case of the day
+
+	i--		//to make first case on top
+	q--
+	while (i >= 0) {
+		fillEquipThisDate(q, i)
+		q--
+		i--
+	}
+}
+
+function fillEquipThisDate(q, i)
 {
 	var bookq = BOOK[q]
 	var bookqEquip = bookq.equipment
