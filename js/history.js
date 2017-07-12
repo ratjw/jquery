@@ -260,18 +260,34 @@ function sqlFind(hn, patient, diagnosis, treatment, contact)
 			sql += "hn = '" + hn + "' "
 		}
 		if (patient) {
-			sql += " AND patient like '%" + patient + "%' "
+			if (hn) {
+				sql += " AND patient like '%" + patient + "%' "
+			} else {
+				sql += "patient like '%" + patient + "%' "
+			}
 		}
 		if (diagnosis) {
-			sql += " AND diagnosis like '%" + diagnosis + "%' "
+			if (hn || patient) {
+				sql += " AND diagnosis like '%" + diagnosis + "%' "
+			} else {
+				sql += "diagnosis like '%" + diagnosis + "%' "
+			}
 		}
 		if (treatment) {
-			sql += " AND treatment like '%" + treatment + "%' "
+			if (hn || patient || diagnosis) {
+				sql += " AND treatment like '%" + treatment + "%' "
+			} else {
+				sql += "treatment like '%" + treatment + "%' "
+			}
 		}
 		if (contact) {
-			sql += " AND contact like '%" + contact + "%' "
+			if (hn || patient || diagnosis || treatment) {
+				sql += " AND contact like '%" + contact + "%' "
+			} else {
+				sql += "contact like '%" + contact + "%' "
+			}
 		}
-		sql += "ORDER BY opdate;"
+		sql += "ORDER BY opdate DESC;"
 
 	Ajax(MYSQLIPHP, sql, callbackfind)
 
@@ -279,10 +295,11 @@ function sqlFind(hn, patient, diagnosis, treatment, contact)
 
 	function callbackfind(response)
 	{
-		if (!response || response.indexOf("DBfailed") != -1)
+		if (!response || response.indexOf("DBfailed") != -1) {
 			alert("Find", response)
-		else
+		} else {
 			makeFind(response, hn)
+		}	
 	}
 }
 

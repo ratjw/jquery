@@ -136,19 +136,23 @@ function isReadmission(thiscase)
 
 function isInfection(thiscase)
 {
+	if (/[Ii]mprove/.test(thiscase.final)) {
+		return false
+	}
 	if (/SSI/i.test(thiscase.final)) {
 		return true
 	}
 	if (/Infect/.test(thiscase.final)) {
 		return true
 	}
-	if (/[Ii]mproved/.test(thiscase.final)) {
-		return false
-	}
 }
 
 function isMorbidity(thiscase)
 {
+	if (/[Ii]mprove/.test(thiscase.final)) {
+		return false
+	}
+
 	var Morbid = false
 	$.each( neuroMorbid, function(i, each) {
 		if (each.test(thiscase.final)) {
@@ -157,21 +161,17 @@ function isMorbidity(thiscase)
 		}
 	})
 	return Morbid
-
-	if (/[Ii]mproved/.test(thiscase.final)) {
-		return false
-	}
 }
 
 function isDead(thiscase)
 {
+	if (/[Ii]mprove/.test(thiscase.final)) {
+		return false
+	}
 	if (thiscase.final.indexOf("Dead") >= 0) {
 		return true
 	}
 	if (thiscase.final.indexOf("passed away") >= 0) {
 		return true
-	}
-	if (/[Ii]mproved/.test(thiscase.final)) {
-		return false
 	}
 }

@@ -1,7 +1,24 @@
-
-function fillEquipTableToday()
+function fillEquipForScrub()
 {
-	var opdate = "2017-07-17"//(new Date()).ISOdate()
+	$('<div></div>').dialog({
+		title: "เครื่องมือผ่าตัด",
+		closeOnEscape: true,
+//		width: window.innerWidth * 5 / 10,
+//		height: window.innerHeight * 5 / 10,
+		buttons: {
+			'วันนี้': function () {
+				$(this).dialog('close')
+			},
+			'พรุ่งนี้': function () {
+				$(this).dialog('close')
+			}
+		}
+	})
+}
+
+function fillEquipTableTomorrow()
+{
+	var opdate = ((new Date()).setDate(new Date().getDate() + 1)).ISOdate()
 	var q = findOpdateBOOKrow(opdate)
 	var i = 0
 
@@ -11,9 +28,33 @@ function fillEquipTableToday()
 	while ((q < BOOK.length) && (BOOK[q].opdate == opdate)) {
 		q++
 		i++
-	}
+	}		//go to last case of the day
 
 	i--		//to make first case on top
+	q--
+	while (i >= 0) {
+		fillEquipToday(q, i)
+		q--
+		i--
+	}
+}
+
+function fillEquipTableToday()
+{
+	var opdate = (new Date()).ISOdate()
+	var q = findOpdateBOOKrow(opdate)
+	var i = 0
+
+	if (q >= BOOK.length) {
+		alert("เครื่องมือผ่าตัด", "No case")
+	}
+	while ((q < BOOK.length) && (BOOK[q].opdate == opdate)) {
+		q++
+		i++
+	}		//go to last case of the day
+
+	i--		//to make first case on top
+	q--
 	while (i >= 0) {
 		fillEquipToday(q, i)
 		q--

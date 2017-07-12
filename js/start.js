@@ -107,7 +107,7 @@ function loading(response)
 		localStorage.setItem('BOOK', response)
 		updateBOOK(response)
 		if (THISUSER == "000000") {
-			fillEquipTableToday()
+			fillEquipForScrub()
 		} else {
 			fillupstart();
 			fillStafflist()
