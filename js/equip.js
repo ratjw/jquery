@@ -13,66 +13,47 @@ function fillEquipForScrub()
 		},
 		buttons: {
 			'วันนี้': function () {
-				fillEquipToday()
+				var opdate = (new Date()).ISOdate()
+				fillEquipTodate(opdate)
 				$(this).dialog('close')
 			},
 			'พรุ่งนี้': function () {
-				fillEquipTomorrow()
+				var opdate = new Date()
+				opdate = opdate.setDate(new Date().getDate() + 1)
+				opdate = (new Date(opdate)).ISOdate()
+				fillEquipTodate(opdate)
 				$(this).dialog('close')
 			}
 		}
 	})
 }
 
-function fillEquipToday()
+function fillEquipTodate(opdate)
 {
-	var opdate = (new Date()).ISOdate()
-	var q = findOpdateBOOKrow(opdate)
 	var i = 0
+	var q = findOpdateBOOKrow(opdate)
 
-	if (q >= BOOK.length) {
+	if (BOOK[q].opdate != opdate) {
 		alert("เครื่องมือผ่าตัด", "No case")
-	}
-	while ((q < BOOK.length) && (BOOK[q].opdate == opdate)) {
-		q++
-		i++
-	}		//go to last case of the day
+		BOOK[null].opdate	// TypeError: BOOK[null] is undefined
+		//go back to fillEquipForScrub() with error on console
+	} else {
+		while ((q < BOOK.length) && (BOOK[q].opdate == opdate)) {
+			i++
+			q++
+		}		//go to last case of the day
 
-	i--		//to make first case on top
-	q--
-	while (i >= 0) {
-		fillEquipThisDate(q, i)
+		i--		//to make first case on top
 		q--
-		i--
+		while (i >= 0) {
+			fillEquipThisDate(i, q)
+			i--
+			q--
+		}
 	}
 }
 
-function fillEquipTomorrow()
-{
-	var opdate = new Date()
-	opdate = opdate.setDate(new Date().getDate() + 1)
-	opdate = (new Date(opdate)).ISOdate()
-	var q = findOpdateBOOKrow(opdate)
-	var i = 0
-
-	if (q >= BOOK.length) {
-		alert("เครื่องมือผ่าตัด", "No case")
-	}
-	while ((q < BOOK.length) && (BOOK[q].opdate == opdate)) {
-		q++
-		i++
-	}		//go to last case of the day
-
-	i--		//to make first case on top
-	q--
-	while (i >= 0) {
-		fillEquipThisDate(q, i)
-		q--
-		i--
-	}
-}
-
-function fillEquipThisDate(q, i)
+function fillEquipThisDate(i, q)
 {
 	var bookq = BOOK[q]
 	var bookqEquip = bookq.equipment
@@ -129,8 +110,13 @@ function fillEquipThisDate(q, i)
 		position: { my: "left top",
 					at: "left+" + posx + " top+" + posy,
 					of: window },
-		open: function(event, ui) {
+		open: function (event, ui) {
 			$("input").blur();	//disable default autofocus on text input
+		},
+		close: function (event, ui) {
+			if (!$(".ui-dialog").is(":visible")) {
+				window.location = window.location.href
+			}
 		}
 	})
 
