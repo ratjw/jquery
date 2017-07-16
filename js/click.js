@@ -94,7 +94,6 @@ function saveEditPointData(pointed)
 			saveHNinput(pointed, "hn", content)
 			break
 		case NAME:
-		case AGE:
 			break
 		case DIAGNOSIS:
 			content = getEditcellHtml()
@@ -122,10 +121,10 @@ function saveContent(pointed, column, content)	//use only "pointed" to save data
 {
 	var tableID = $(pointed).closest("table").attr("id")
 	var $row = $(pointed).closest('tr')
-	var $rowcell = $row.children("td")
+	var $cells = $row.children("td")
 	var cellindex = pointed.cellIndex
-	var opdate = getOpdate($rowcell.eq(OPDATE).html())
-	var qn = $rowcell.eq(QN).html()
+	var opdate = getOpdate($cells.eq(OPDATE).html())
+	var qn = $cells.eq(QN).html()
 	var oldContent = pointed.innerHTML
 
 	pointed.innerHTML = content	//just for show instantly
@@ -133,7 +132,7 @@ function saveContent(pointed, column, content)	//use only "pointed" to save data
 	content = URIcomponent(content)	//take care of white space, double qoute, 
 									//single qoute, and back slash
 	if (!qn) {	//if new case, calculate waitnum
-		waitnum = calculateWaitnum($row, opdate)
+		waitnum = calculateWaitnum(tableID, $row, opdate)
 		$row[0].title = waitnum		//store waitnum in row title
 		var sql = "sqlReturnbook=INSERT INTO book ("
 			sql += "waitnum, opdate, "+ column +", editor) VALUES ("
@@ -161,14 +160,20 @@ function saveContent(pointed, column, content)	//use only "pointed" to save data
 
 			//fill qn of new case input in that row, either tbl or queuetbl
 			if (!qn) {
-				var NewRow = findNewBOOKrow(opdate)
-				$rowcell.eq(QN).html(BOOK[NewRow].qn)
+				var book = BOOK
+				if ((tableID == "queuetbl") && ($('#titlename').html() == "Consults")) {
+					book = CONSULT
+				}
+				var NewRow = findNewBOOKrow(book, opdate)
+				$cells.eq(QN).html(book[NewRow].qn)
 			}
 
 			if (tableID == 'tbl') {	//is editing on tbl
 				updateQueuetbl()
 			} else {				//is editing on queuetbl
-				updateTbl()
+				if ($('#titlename').html() != "Consults") {
+					updateTbl()
+				}
 			}
 		}
 	}
@@ -183,7 +188,7 @@ function saveContent(pointed, column, content)	//use only "pointed" to save data
 				//because there is one more row inserted
 				refillstaffqueue()
 			} else {	//input is not staffname, but on this staffname row
-				if (staffname == $rowcell.eq(STAFFNAME).html()) {
+				if (staffname == $cells.eq(STAFFNAME).html()) {
 					refillanother('queuetbl', cellindex, qn)
 				}
 			}
@@ -195,8 +200,8 @@ function saveContent(pointed, column, content)	//use only "pointed" to save data
 		if (qn) {	//is editing on existing row, just fill corresponding row
 			refillanother('tbl', cellindex, qn)
 		} else {
-			refillall()		//New case input from queuetbl, update tbl all
-		}					//because there is one more row inserted
+			refillall(BOOK)		//New case input from queuetbl, update tbl all
+		}						//because there is one more row inserted
 	}
 }
 
@@ -204,16 +209,16 @@ function saveHNinput(pointed, hn, content)
 {
 	var tableID = $(pointed).closest("table").attr("id")
 	var $row = $(pointed).closest('tr')
-	var $rowcell = $row.children("td")
+	var $cells = $row.children("td")
 	var cellindex = pointed.cellIndex
-	var opdate = getOpdate($rowcell.eq(OPDATE).html())
-	var qn = $rowcell.eq(QN).html()
+	var opdate = getOpdate($cells.eq(OPDATE).html())
+	var qn = $cells.eq(QN).html()
 	var oldContent = pointed.innerHTML
 
 	pointed.innerHTML = content
 
 	if (!qn) {	//if new case, calculate waitnum
-		waitnum = calculateWaitnum($row, opdate)
+		waitnum = calculateWaitnum(tableID, $row, opdate)
 		$row[0].title = waitnum		//store waitnum in row title
 		var sql = "hn=" + content
 		sql += "&waitnum="+ waitnum
@@ -235,31 +240,37 @@ function saveHNinput(pointed, hn, content)
 		{
 			alert("saveHNinput", response)
 			pointed.innerHTML = oldContent		//return to previous content
-		}
-		else 
-		{
+		} else {
 			updateBOOK(response)
 
-			var NewRow = findNewBOOKrow(opdate)
-			var bookq = BOOK[NewRow]
-			$rowcell.eq(STAFFNAME).html(bookq.staffname)
-			$rowcell.eq(NAME).html(bookq.patient)
-			$rowcell.eq(AGE).html(putAgeOpdate(bookq.dob, bookq.opdate))
-			$rowcell.eq(DIAGNOSIS).html(bookq.diagnosis)
-			$rowcell.eq(TREATMENT).html(bookq.treatment)
-			$rowcell.eq(CONTACT).html(bookq.contact)
+			var book = BOOK
+			if ((tableID == "queuetbl") && ($('#titlename').html() == "Consults")) {
+				book = CONSULT
+			}
+			var NewRow = findNewBOOKrow(book, opdate)
+			$cells.eq(QN).html(book[NewRow].qn)
+
+			var bookq = book[NewRow]
+			$cells.eq(STAFFNAME).html(bookq.staffname)
+			$cells.eq(NAME).html(bookq.patient 
+				+ "<br>อายุ " + putAgeOpdate(bookq.dob, bookq.opdate))
+			$cells.eq(DIAGNOSIS).html(bookq.diagnosis)
+			$cells.eq(TREATMENT).html(bookq.treatment)
+			$cells.eq(CONTACT).html(bookq.contact)
 			if (!qn) {	//New case input
-				$rowcell.eq(QN).html(BOOK[NewRow].qn)
+				$cells.eq(QN).html(book[NewRow].qn)
 			}
 
 			if (tableID == 'tbl') {
 				if (($("#queuewrapper").css('display') == 'block') && 
-					($('#titlename').html() == $rowcell.eq(STAFFNAME).html())) {
+					($('#titlename').html() == $cells.eq(STAFFNAME).html())) {
 					//input is on this staffname row
 					refillanother('queuetbl', cellindex, qn)
 				}
 			} else {	//no need to refillall because new case row was already in tbl
-				refillanother('tbl', cellindex, qn)
+				if ($('#titlename').html() != "Consults") {
+					refillanother('tbl', cellindex, qn)
+				}
 			}
 		}
 	}
@@ -298,7 +309,6 @@ function storePresentcell(pointing)
 				break
 			}
 		case NAME:
-		case AGE:
 			clearEditcellData()
 			break
 		case DIAGNOSIS:

@@ -4,10 +4,10 @@ var MYSQLIPHP		= "php/mysqli.php";
 var CHECKPAC		= "php/checkpac.php";
 
 var BOOK		= [];
-
-var THISUSER	= "";
+var CONSULT		= [];
 var TIMESTAMP	= "";
 var TIMER		= "";
+var THISUSER	= "";
 var LARGESTDATE	= "9999-12-31";
 
 //tbl, queuetbl
@@ -15,11 +15,10 @@ var OPDATE		= 0;
 var STAFFNAME	= 1;
 var HN			= 2;
 var NAME		= 3;
-var AGE			= 4;
-var DIAGNOSIS	= 5;
-var TREATMENT	= 6;
-var CONTACT		= 7;
-var QN			= 8;
+var DIAGNOSIS	= 4;
+var TREATMENT	= 5;
+var CONTACT		= 6;
+var QN			= 7;
 
 //servicetbl
 var CASE		= 0;

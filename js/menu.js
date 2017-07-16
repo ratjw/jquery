@@ -10,52 +10,39 @@ function fillSetTable(pointing)
 	var casename = tcell[NAME].innerHTML
 	var hn = tcell[HN].innerHTML
 	var qn = tcell[QN].innerHTML
-	var disabled = "ui-state-disabled"
+	var book = BOOK
+	if ((tableID == "queuetbl") && ($('#titlename').html() == "Consults")) {
+		book = CONSULT
+	}
 
 	casename = casename.substring(0, casename.indexOf(' '))
 
 	$("#item1 div").html("เพิ่ม case วันที่ " + opdateth)
-	if (qn) {
-		$("#item1").removeClass(disabled)
-	} else {
-		$("#item1").addClass(disabled)
-	}
+	disable(qn, "#item1")
+
 	$("#item2 div").html("เพิ่ม case ต่อท้าย ไม่ระบุวันที่")
-	if (tableID == "queuetbl") {
-		$("#item2").removeClass(disabled)
-	} else {
-		$("#item2").addClass(disabled)
-	}
+	var item2 = (tableID == "queuetbl")? true : false
+	disable(item2, "#item2")
+
 	$("#item3 div").html("เปลี่ยนวันที่ " + casename)
-	if (qn) {
-		$("#item3").removeClass(disabled)
-	} else {
-		$("#item3").addClass(disabled)
-	}
-	$("#item4 div").html("การแก้ไขของ " + casename)
-	if (qn) {
-		$("#item4").removeClass(disabled)
-	} else {
-		$("#item4").addClass(disabled)
-	}
-	$("#item5 div").html("PACS " + casename)
-	if (hn) {
-		$("#item5").removeClass(disabled)
-	} else {
-		$("#item5").addClass(disabled)
-	}
-	$("#item6 div").html("Equipment " + casename)
-	if (qn) {
-		$("#item6").removeClass(disabled)
-	} else {
-		$("#item6").addClass(disabled)
-	}
-	$("#item7 div").html("Delete " + casename)
-	if (!qn && !(checkblank(opdate, qn))) {
-		$("#item7").addClass(disabled)
-	} else {
-		$("#item7").removeClass(disabled)
-	}
+	disable(qn, "#item3")
+
+	$("#item4 div").html("ห้องผ่าตัด เวลา " + casename)
+	disable(qn, "#item4")
+
+	$("#item5 div").html("Equipment " + casename)
+	disable(qn, "#item5")
+
+	$("#item6 div").html("การแก้ไขของ " + casename)
+	disable(qn, "#item6")
+
+	$("#item7 div").html("PACS " + casename)
+	disable(hn, "#item7")
+
+	$("#item8 div").html("Delete " + casename)
+	var unuse = (checkblank(book, opdate, qn))? true : false
+	var item8 = (qn || unuse)? true : false
+	disable(item8, "#item8")
 
 	$("#menu").menu({
 		select: function( event, ui ) {
@@ -74,38 +61,41 @@ function fillSetTable(pointing)
 					changeDate(opdate, qn, pointing)
 					break
 				case "item4":
-					editHistory(rowmain, qn)
+					fillRoomTime(rowmain, qn)
 					break
 				case "item5":
-					PACS(hn)
+					fillEquipTable(book, qn)
 					break
 				case "item6":
-					fillEquipTable(qn)
+					editHistory(rowmain, qn)
 					break
 				case "item7":
-					if (checkblank(opdate, qn))	{	//from add new row (check case in this opdate)
+					PACS(hn)
+					break
+				case "item8":
+					if (unuse) {	//from add new row (check case in this opdate)
 						$(rowmain).remove()			//delete blank row
-						var caseNum = findBOOKrow("")
-						BOOK.splice(caseNum, 1)
+						var caseNum = findBOOKrow(book, "")
+						book.splice(caseNum, 1)
 					} else {
 						deleteCase(rowmain, opdate, qn)
 					}
 					break
-				case "item88":
+				case "item99":
 					staffqueue(ui.item.text())
 					if ($("#queuewrapper").css("display") != "block")
 						splitPane()
 					break
-				case "item9":
+				case "item10":
 					serviceReview()
 					break
-				case "item10":
+				case "item11":
 					deleteHistory()
 					break
-				case "item11":
+				case "item12":
 					find()
 					break
-				case "item12":
+				case "item13":
 					readme()
 					break
 			}
@@ -123,6 +113,17 @@ function fillSetTable(pointing)
 	menustyle("#menu", pointing, width)
 }
 
+
+function disable(item, id)
+{
+	var disabled = "ui-state-disabled"
+	if (item) {
+		$(id).removeClass(disabled)
+	} else {
+		$(id).addClass(disabled)
+	}
+}
+
 function stafflist(pointing)
 {
 	$("#stafflist").menu({
@@ -133,7 +134,6 @@ function stafflist(pointing)
 			clearEditcellData()
 			$('#stafflist').hide()		//to disappear after selection
 			event.stopPropagation()
-			return false
 		}
 	});
 
@@ -142,6 +142,7 @@ function stafflist(pointing)
 	$("#stafflist").appendTo($(pointing).closest('div'))
 	reposition("#stafflist", "left top", "left bottom", pointing)
 	menustyle("#stafflist", pointing, width)
+	reposition("#stafflist", "left top", "left bottom", pointing)
 }
 
 function menustyle(me, target, width)
@@ -158,7 +159,7 @@ function menustyle(me, target, width)
 	})
 }
 
-function checkblank(opdate, qn)
+function checkblank(book, opdate, qn)
 {	//Is this a blank row?
 	//If blank, is there a case(s) in this date? 
 	var q = 0
@@ -167,14 +168,14 @@ function checkblank(opdate, qn)
 		return false	//No, this is not a blank row
 	}
 	//the following is a blank row
-	while (opdate > BOOK[q].opdate)	//find this opdate in BOOK
+	while (opdate > book[q].opdate)	//find this opdate in book
 	{
 		q++
-		if (q >= BOOK.length) {			//not found
-			return false	//beyond BOOK, do not delete blank row
+		if (q >= book.length) {			//not found
+			return false	//beyond book, do not delete blank row
 		}
 	}
-	if (opdate == BOOK[q].opdate) {	//found
+	if (opdate == book[q].opdate) {	//found
 		return true	//there is a case(s) in this opdate, can delete blank row
 	} else {
 		return false	//No case in this opdate, do not delete blank row
@@ -232,13 +233,17 @@ function fakeScrollAnimate(container, table, tohead)
 
 function addnewrow(tableID, rowmain, qn)
 {
-	var caseNum = findBOOKrow(qn)
-	var bookq = JSON.parse(JSON.stringify(BOOK[caseNum]))
+	var book = BOOK
+	if ((tableID == "queuetbl") && ($('#titlename').html() == "Consults")) {
+		book = CONSULT
+	}
+	var caseNum = findBOOKrow(book, qn)
+	var bookq = JSON.parse(JSON.stringify(book[caseNum]))
 	$.each( bookq, function(key, val) {
 		bookq[key] = ""
 	})
-	bookq.opdate = BOOK[caseNum].opdate
-	BOOK.splice(caseNum + 1, 0, bookq)
+	bookq.opdate = book[caseNum].opdate
+	book.splice(caseNum + 1, 0, bookq)
 	
 	$(rowmain).clone()
 		.insertAfter($(rowmain))
@@ -306,12 +311,14 @@ function changeDate(opdate, qn, pointing)
 					alert ("changeDate", response)
 				} else {
 					updateBOOK(response);
-					refillall()
+					refillall(BOOK)
+					var $cells = $(pointing).closest('tr').children("td")
 					if (($("#queuewrapper").css('display') == 'block') && 
-						($('#titlename').html() == $rowcell.eq(STAFFNAME).html())) {
+						($('#titlename').html() == $cells.eq(STAFFNAME).html())) {
 						//changeDate of this staffname's case
 						refillstaffqueue()
 					}
+					alert("To do", "scrolltochangeDateCase")
 				}
 			}
 		}
@@ -320,6 +327,26 @@ function changeDate(opdate, qn, pointing)
 	$('#datepickertbl').datepicker( 'show' )
 	$('.ui-datepicker').css("fontSize", "12px")
 	reposition(".ui-datepicker", "left top", "left bottom", pointing)
+}
+
+function fillRoomTime(rowmain, qn)
+{
+	$("#roomtime").dialog()
+
+	var sql = "sqlReturnbook=UPDATE book SET waitnum=NULL, "
+	sql += "editor = '" + THISUSER + "' WHERE qn="+ qn + ";"
+
+//	Ajax(MYSQLIPHP, sql, callbackdeleterow)
+
+	function callbackdeleterow(response)
+	{
+		if (!response || response.indexOf("DBfailed") != -1) {
+			alert ("deleteCase", response)
+		} else {
+			updateBOOK(response);
+			deleteRow(rowmain, opdate)
+		}
+	}
 }
 
 function deleteCase(rowmain, opdate, qn)

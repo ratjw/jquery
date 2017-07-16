@@ -60,10 +60,16 @@ String.prototype.nextdays = function (days)
 
 String.prototype.getAge = function (toDate)
 {	//Calculate age at (toDate) (iso format) from birth date
-	if (!toDate || this <= '1900-01-01')
+	if (!toDate || this <= '1900-01-01') {
 		return this
+	}
+
 	var birth = new Date(this);
-	var today = new Date(toDate);
+	if (toDate === LARGESTDATE) {
+		var today = new Date()
+	} else {
+		var today = new Date(toDate);
+	}
 
 	if (today.getTime() - birth.getTime() < 0)
 		return "wrong date"
@@ -106,19 +112,19 @@ function getOpdate(date)	//change date from table to iso date
 	}
 }
 
-function putOpdate(date)	//change date in BOOK to show on table
+function putOpdate(date)	//change date in book to show on table
 {
 	if (!date) { return date }
-	if ((date === LARGESTDATE)) {
+	if (date === LARGESTDATE) {
 		return ""
 	} else {
 		return date.thDate()
 	}
 }
 
-function putAgeOpdate(dob, date)	//calc age regarding largest date
+function putAgeOpdate(dob, date)	//calc age with LARGESTDATE as today
 {
-	if (!date || !dob || (date === LARGESTDATE)) {
+	if (!date || !dob) {
 		return ""
 	} else {
 		return dob.getAge(date)
@@ -196,35 +202,35 @@ function findTablerow(table, qn)
 	}
 }
 
-function findBOOKrow(qn)
+function findBOOKrow(book, qn)
 {  
 	var q = 0
-	while ((q < BOOK.length) && (BOOK[q].qn != qn)) {
+	while ((q < book.length) && (book[q].qn != qn)) {
 		q++
 	}
-	if (q < BOOK.length) {
+	if (q < book.length) {
 		return q
 	} else {
 		return null
 	}
 }
 
-function findNewBOOKrow(opdate)	//find new row (max. qn)
+function findNewBOOKrow(book, opdate)	//find new row (max. qn)
 {
 	var q = 0
-	while (BOOK[q].opdate != opdate)
+	while (book[q].opdate != opdate)
 	{
 		q++
-		if (q >= BOOK.length)
+		if (q >= book.length)
 			return ""
 	}
 
-	var qn = Number(BOOK[q].qn)
+	var qn = Number(book[q].qn)
 	var newq = q
 	q++
-	while (q < BOOK.length && BOOK[q].opdate == opdate) {
-		if (Number(BOOK[q].qn) > qn) {
-			qn = Number(BOOK[q].qn)
+	while (q < book.length && book[q].opdate == opdate) {
+		if (Number(book[q].qn) > qn) {
+			qn = Number(book[q].qn)
 			newq = q
 		}
 		q++
@@ -232,10 +238,10 @@ function findNewBOOKrow(opdate)	//find new row (max. qn)
 	return newq
 }
 
-function findOpdateBOOKrow(opdate)
+function findOpdateBOOKrow(book, opdate)
 {
 	var q = 0
-	while ((q < BOOK.length) && (BOOK[q].opdate < opdate)) {
+	while ((q < book.length) && (book[q].opdate < opdate)) {
 		q++
 	}
 	return q	
@@ -252,7 +258,7 @@ function findVisibleHead(table)
 	return tohead
 }
 
-function calculateWaitnum($row, opdate)	//opdate depend on adjacent row
+function calculateWaitnum(tableID, $row, opdate)	//opdate depend on adjacent row
 {	//queue within each day is sorted by waitnum only, not staffname
 	var prevWaitNum = $row.prev()[0]
 	var nextWaitNum = $row.next()[0]
@@ -266,19 +272,23 @@ function calculateWaitnum($row, opdate)	//opdate depend on adjacent row
 	var $nextRowCell = $row.next().children("td")
 	var prevOpdate = getOpdate($prevRowCell.eq(OPDATE).html())
 	var nextOpdate = getOpdate($nextRowCell.eq(OPDATE).html())
+	var defaultWaitnum = 1
+	if ((tableID == "queuetbl") && ($('#titlename').html() == "Consults")) {
+		defaultWaitnum = -1
+	}
 
 	if (prevOpdate != opdate && opdate != nextOpdate) {
-		return 1
+		return defaultWaitnum
 	}
 	else if (prevOpdate == opdate && opdate != nextOpdate) {
-		return prevWaitNum + 1
+		return prevWaitNum + defaultWaitnum
 	}
 	else if (prevOpdate != opdate && opdate == nextOpdate) {
-		return nextWaitNum? (nextWaitNum / 2) : 1
+		return nextWaitNum? (nextWaitNum / 2) : defaultWaitnum
 	}
 	else if (prevOpdate == opdate && opdate == nextOpdate) {
-		return nextWaitNum? ((prevWaitNum + nextWaitNum) / 2) : (prevWaitNum + 1)
-	}
+		return nextWaitNum? ((prevWaitNum + nextWaitNum) / 2) : (prevWaitNum + defaultWaitnum)
+	}	//in case of new blank row nextWaitNum is undefined
 }
 
 function addColor($this, thisopdate) 

@@ -77,18 +77,18 @@ td.thu { background-color: #F0DDBB; }
 td.fri { background-color: #BBDDF0; }
 td.sat { background-color: #CCBBF0; }
 
-#tbl td:first-child {
+#tbl td:first-child,
+#queuetbl td:first-child {
 	font-size: 12px;
-/*	background-color: #DDFFFF; */
 }
 
-#tbl td.sun:before { content: "อาทิตย์ "; }
-#tbl td.mon:before { content: "จันทร์ "; }
-#tbl td.tue:before { content: "อังคาร "; }
-#tbl td.wed:before { content: "พุธ "; }
-#tbl td.thu:before { content: "พฤหัส "; }
-#tbl td.fri:before { content: "ศุกร์ "; }
-#tbl td.sat:before { content: "เสาร์ "; }
+td.sun:before { content: "อาทิตย์ "; }
+td.mon:before { content: "จันทร์ "; }
+td.tue:before { content: "อังคาร "; }
+td.wed:before { content: "พุธ "; }
+td.thu:before { content: "พฤหัส "; }
+td.fri:before { content: "ศุกร์ "; }
+td.sat:before { content: "เสาร์ "; }
 
 #titlebar {
 	height: 40px;
@@ -112,7 +112,7 @@ td.sat { background-color: #CCBBF0; }
 }
 
 #queuetbl {
-	margin-bottom: 300px;
+	margin-bottom: 100px;
 }
 
 #queuetbl tr.odd {

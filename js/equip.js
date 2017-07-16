@@ -3,7 +3,7 @@ function fillEquipForScrub()
 	$('#dialogScrub').dialog({
 		title: "เครื่องมือผ่าตัด",
 		create: function(ev, ui) {
-			$(this).parent().find('button:contains("วันนี้")').css({
+			$(this).parent().find('button:contains("Today")').css({
 				'float':'left'
 			})
 			$(this).parent().find('.ui-dialog-buttonset').css({
@@ -12,17 +12,25 @@ function fillEquipForScrub()
 			})
 		},
 		buttons: {
-			'วันนี้': function () {
+			'Today': function () {
 				var opdate = (new Date()).ISOdate()
 				fillEquipTodate(opdate)
 				$(this).dialog('close')
 			},
-			'พรุ่งนี้': function () {
-				var opdate = new Date()
-				opdate = opdate.setDate(new Date().getDate() + 1)
-				opdate = (new Date(opdate)).ISOdate()
+			'Next Day': function () {
+				var opdate = ((new Date()).ISOdate()).nextdays(1)
+				while (holiday(opdate)
+					|| ((new Date(opdate)).getDay() == 0)
+					|| ((new Date(opdate)).getDay() == 6)) {
+						opdate = opdate.nextdays(1)
+				}
 				fillEquipTodate(opdate)
 				$(this).dialog('close')
+			}
+		},
+		close: function (event, ui) {
+			if (!$(".ui-dialog").is(":visible")) {
+				window.location = window.location.href
 			}
 		}
 	})
@@ -30,15 +38,16 @@ function fillEquipForScrub()
 
 function fillEquipTodate(opdate)
 {
+	var book = BOOK		//not include CONSULT
 	var i = 0
-	var q = findOpdateBOOKrow(opdate)
+	var q = findOpdateBOOKrow(book, opdate)		//not include CONSULT
 
-	if (BOOK[q].opdate != opdate) {
+	if (book[q].opdate != opdate) {
 		alert("เครื่องมือผ่าตัด", "No case")
-		BOOK[null].opdate	// TypeError: BOOK[null] is undefined
+		book[null].opdate	// TypeError: book[null] is undefined
 		//go back to fillEquipForScrub() with error on console
 	} else {
-		while ((q < BOOK.length) && (BOOK[q].opdate == opdate)) {
+		while ((q < book.length) && (book[q].opdate == opdate)) {
 			i++
 			q++
 		}		//go to last case of the day
@@ -46,19 +55,20 @@ function fillEquipTodate(opdate)
 		i--		//to make first case on top
 		q--
 		while (i >= 0) {
-			fillEquipThisDate(i, q)
+			fillEquipThisDate(book, i, q)
 			i--
 			q--
 		}
 	}
 }
 
-function fillEquipThisDate(i, q)
+function fillEquipThisDate(book, i, q)
 {
-	var bookq = BOOK[q]
+	var bookq = book[q]		//not include CONSULT
 	var bookqEquip = bookq.equipment
 	var qn = bookq.qn
 
+	document.getElementById("opday").innerHTML = NAMEOFDAYTHAI[(new Date(bookq.opdate)).getDay()]
 	document.getElementById("opdate").innerHTML = putOpdate(bookq.opdate)
 	document.getElementById("staffname").innerHTML = bookq.staffname
 	document.getElementById("hn").innerHTML = bookq.hn
@@ -76,7 +86,7 @@ function fillEquipThisDate(i, q)
 			if (val == 'checked') {
 				$("#"+ key).prop("checked", true)	//radio and checkbox
 			} else {
-				$("#"+ key).val(val)	//Other1...8
+				$("#"+ key).val(val)	//fill <input> text
 			}
 		});
 		$('#dialogEquip input[type=radio]').prop("disabled", true)
@@ -86,7 +96,7 @@ function fillEquipThisDate(i, q)
 		$('#dialogEquip input').click(function() {
 			return false
 		})
-//		getEditedby(qn)
+//To do		getEditedby(qn)
  	} else {
 		$('#dialogEquip input').prop('disabled', false)
 		$('#dialogEquip input').off("click")
@@ -131,12 +141,15 @@ function fillEquipThisDate(i, q)
 	$("body").append($(temp2))
 }
 
-function fillEquipTable(qn)
+function fillEquipTable(book, qn)
 {
-	var q = findBOOKrow(qn)
-	var bookq = BOOK[q]
+	var q = findBOOKrow(book, qn)
+	var bookq = book[q]
 	var bookqEquip = bookq.equipment
 
+	document.getElementById("oproom").innerHTML = bookq.oproom
+	document.getElementById("optime").innerHTML = bookq.optime
+	document.getElementById("opday").innerHTML = NAMEOFDAYTHAI[(new Date(bookq.opdate)).getDay()]
 	document.getElementById("opdate").innerHTML = putOpdate(bookq.opdate)
 	document.getElementById("staffname").innerHTML = bookq.staffname
 	document.getElementById("hn").innerHTML = bookq.hn
@@ -163,7 +176,7 @@ function fillEquipTable(qn)
 			if (val == 'checked') {
 				$("#"+ key).prop("checked", true)	//radio and checkbox
 			} else {
-				$("#"+ key).val(val)	//Other1...8
+				$("#"+ key).val(val)	//fill <input> text
 			}
 		});
 		showNonEditableEquip(qn, bookqEquip)

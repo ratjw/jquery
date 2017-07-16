@@ -8,12 +8,8 @@
 <link href="css/jquery-ui.css" rel="stylesheet">
 <link href="css/CSS.css" rel="stylesheet">
 <LINK href="css/print.css" rel="stylesheet">
-<!--link href="css/jquery.mobile-1.4.5.css" rel="stylesheet"-->
-
-<!--script src="js/jquery.mobile-1.4.5.js"></script-->
-<!--script src="js/jquery-1.12.4.min.js"></script-->
-<script src="js/jquery-3.1.1.js"></script>
-<script src="js/jquery-ui.js"></script>
+<script src="js/jquery-3.2.1.min.js"></script>
+<script src="js/jquery-ui.min.js"></script>
 <script src="js/click.js"></script>
 <script src="js/constant.js"></script>
 <script src="js/countservice.js"></script>
@@ -25,21 +21,19 @@
 <script src="js/service.js"></script>
 <script src="js/sortable.js"></script>
 <script src="js/start.js"></script>
-<!--script src="js/touch.js"></script-->
 </HEAD>
 <BODY>
 
-<div id="wrapper"><!-- data-role="page"-->
+<div id="wrapper">
  <div id="tblwrapper" style="display:none">
-  <div id="tblcontainer"><!-- role="main" class="ui-content"-->
-   <table id="tbl"><!-- data-role="table" class="ui-responsive"-->
-    <tbody id="tblbody">
+  <div id="tblcontainer">
+   <table id="tbl">
+    <tbody>
 	 <tr>
      <th style="width:10%">Date</th>
      <th style="width:3%">Staff</th>
      <th style="width:4%">HN</th>
-     <th style="width:10%">ชื่อ นามสกุล</th>
-     <th style="width:3%">อายุ</th>
+     <th style="width:13%">ชื่อ อายุ</th>
      <th style="width:20%">Diagnosis</th>
      <th style="width:30%">Treatment</th>
      <th style="width:20%">Contact</th>
@@ -53,20 +47,19 @@
  </div>
 
  <div id="queuewrapper" style="display:none">
-  <div id="titlebar"><!-- data-role="header"-->
+  <div id="titlebar">
 	<span id="titlename"></span>
 	<span class="ui-icon ui-icon-closethick" onclick="closequeue()">
 	</span>
   </div> 
-  <div id="queuecontainer"><!-- role="main" class="ui-content"-->
-    <table id="queuetbl"><!-- data-role="table" class="ui-responsive"-->
+  <div id="queuecontainer">
+    <table id="queuetbl">
      <tbody>
 	  <tr>
       <th style="width:10%">Date</th>
       <th style="width:3%">Staff</th>
       <th style="width:4%">HN</th>
-      <th style="width:10%">ชื่อ นามสกุล</th>
-      <th style="width:3%">อายุ</th>
+      <th style="width:13%">ชื่อ อายุ</th>
       <th style="width:20%">Diagnosis</th>
       <th style="width:30%">Treatment</th>
       <th style="width:20%">Contact</th>
@@ -80,36 +73,19 @@
  </div>
 </div>
 
-<table id="tblrowcell" style="display:none">	<!-- Used as cells template -->
-  <TBODY>
-   <TR>
+<table id="tblcells" style="display:none">	<!-- Used as cells template -->
+  <tbody>
+   <tr>
     <td data-title="Date"></td>
     <td data-title="Staff"></td>
     <td data-title="HN"></td>
-    <td data-title="ชื่อ นามสกุล"></td>
-    <td data-title="อายุ"></td>
+    <td data-title="ชื่อ อายุ"></td>
     <td data-title="Diagnosis"></td>
     <td data-title="Treatment"></td>
     <td data-title="Contact"></td>
     <td style="display:none"></td>
-   </TR>
-  </TBODY>
-</table>
-
-<table id="queuerowcell" style="display:none">	<!--template for "staffqueue"-->
-  <TBODY>
-    <TR>
-     <td data-title="Date"></td>
-     <td data-title="Staff"></td>
-     <td data-title="HN"></td>
-     <td data-title="ชื่อ นามสกุล"></td>
-     <td data-title="อายุ"></td>
-     <td data-title="Diagnosis"></td>
-     <td data-title="Treatment"></td>
-     <td data-title="Contact"></td>
-     <td style="display:none"></td>
-	</TR>
-  </TBODY>
+   </tr>
+  </tbody>
 </table>
 
 <div id="dialogService" style="display:none">
@@ -129,9 +105,9 @@
   </div>
   <input type="text" id="monthpicker" style="margin-left:5px">
   <input type="text" id="monthpicking" style="visibility:hidden">
-  <table id="servicetbl"><!-- data-role="table" class="ui-responsive"-->
-   <TBODY>
-    <TR>
+  <table id="servicetbl">
+   <tbody>
+    <tr>
      <th style="width:2%">case</th>
      <th style="width:13%">HN Name</th>
      <th style="width:15%">Diagnosis</th>
@@ -141,16 +117,16 @@
      <th style="width:5%">Admit</th>
      <th style="width:5%">D/C</th>
      <th style="display:none"></th>
-    </TR>
-   </TBODY>
+    </tr>
+   </tbody>
   </table>
   <input type="text" id="datepicker" style="display:none">
   <input type="text" id="datepicking" style="display:none">
 </div>
 
-<table id="servicerowcell" style="display:none">	<!--template for "servicetbl"-->
-  <TBODY>
-   <TR>
+<table id="servicecells" style="display:none">	<!--template for "servicetbl"-->
+  <tbody>
+   <tr>
     <td data-title="case"></td>
     <td data-title="HN Name"></td>
     <td data-title="Diagnosis"></td>
@@ -160,8 +136,8 @@
     <td data-title="Admit"></td>
     <td data-title="D/C"></td>
     <td style="display:none"></td>
-   </TR>
-  </TBODY>
+   </tr>
+  </tbody>
 </table>
 
 <div id="dialogOplog"></div>
@@ -188,22 +164,41 @@
   <li id="item4"><div></div></li>
   <li id="item5"><div></div></li>
   <li id="item6"><div></div></li>
-  <li id="item7" style="color:#FF0000"><div></div></li>
-  <li id="item8"><div>คิวของอาจารย์</div><ul id="item0" style="width:100px"></ul></li>
-  <li id="item9"><div>Service Review</div></li>
-  <li id="item10"><div>List of Deleted Cases</div></li>
-  <li id="item11"><div>Find</div></li>
-  <li id="item12"><div>Readme</div></li>
+  <li id="item7"><div></div></li>
+  <li id="item8" style="color:#FF0000"><div></div></li>
+  <li id="item9"><div>คิวของอาจารย์</div><ul id="item0" style="width:100px"></ul></li>
+  <li id="item10"><div>Service Review</div></li>
+  <li id="item11"><div>List of Deleted Cases</div></li>
+  <li id="item12"><div>Find</div></li>
+  <li id="item13"><div>Readme</div></li>
 </ul>
 
 <ul id="stafflist" style="display:none"></ul>
 
+<div id="roomtime" style="display:none">
+  <span style="width:110px; font-size: 16px; font-weight: bold;">
+	ห้อง <input id="orroom">
+  </span>
+  <span style="width:110px; font-size: 16px; font-weight: bold;">
+	เวลา <input id="ortime">
+  </span>
+</div>
+
 <div id="editcell" contenteditable="true"></div>
 
 <div id="dialogEquip" class="dialogEquip">
-  <span style="width:250px;"></span>วันที่ 
-  <span style="width:120px; font-size: 14px; font-weight: bold;" id="opdate"></span>
-  <span style="width:20px;"></span>Surgeon <span id="staffname"></span>
+  <span style="width:110px; font-size: 16px; font-weight: bold;">
+	ห้อง <span id="oproom"></span>
+  </span>
+  <span style="width:110px; font-size: 16px; font-weight: bold;">
+	เวลา <span id="optime"></span>
+  </span>
+  <span style="width:250px;">วัน<span id="opday"></span>ที่
+	<span style="font-size: 16px; font-weight: bold;" id="opdate"></span>
+  </span>
+  <span style="width:150px;">
+	Surgeon <span style="font-size: 16px; font-weight: bold;" id="staffname"></span>
+  </span>
   <br>
   <br>
   <span style="width:110px;">ชื่อ-นามสกุล </span><span id="patientname"></span>

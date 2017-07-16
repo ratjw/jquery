@@ -104,7 +104,7 @@ function loadtable(userid)
 function loading(response)
 {
 	if (response && response.indexOf("[") != -1) {
-		localStorage.setItem('BOOK', response)
+		localStorage.setItem('ALLBOOK', response)
 		updateBOOK(response)
 		if (THISUSER == "000000") {
 			fillEquipForScrub()
@@ -113,7 +113,7 @@ function loading(response)
 			fillStafflist()
 		}
 	} else {
-		response = localStorage.getItem('BOOK')
+		response = localStorage.getItem('ALLBOOK')
 		if (response) {
 			alert("Server Error", "<br><br> Response from server has no data <br><br> Using localStorage Backup");
 			updateBOOK(response)
@@ -130,8 +130,8 @@ function updateBOOK(response)
 	var temp = JSON.parse(response)
 
 	BOOK = temp.BOOK? temp.BOOK : []
+	CONSULT = temp.CONSULT? temp.CONSULT : []
 	TIMESTAMP = temp.QTIME? temp.QTIME : ""	//datetime of last change in server
-	QWAIT = temp.QWAIT? temp.QWAIT : []
 }
 
 function fillStafflist()
@@ -141,8 +141,9 @@ function fillStafflist()
 	for (var each = 0; each < STAFF.length; each++)
 	{
 		stafflist += '<li><div>' + STAFF[each] + '</div></li>'
-		staffmenu += '<li id="item88"><div>' + STAFF[each] + '</div></li>'
+		staffmenu += '<li id="item99"><div>' + STAFF[each] + '</div></li>'
 	}
+	staffmenu += '<li id="item99"><div>Consults</div></li>'
 	document.getElementById("stafflist").innerHTML = stafflist
 	document.getElementById("item0").innerHTML = staffmenu
 }
@@ -197,10 +198,10 @@ function updateTables()
 	if ($("#dialogService").dialog('isOpen')) {
 		var fromDate = $('#monthpicker').data('fromDate')
 		var toDate = $('#monthpicker').data('toDate')
-		var SERVICE = getfromBOOK(fromDate, toDate)
+		var SERVICE = getfromBOOKCONSULT(fromDate, toDate)
 		refillService(SERVICE, fromDate, toDate)
 	}
-	refillall()
+	refillall(BOOK)
 	if ($("#queuewrapper").css('display') == 'block') {
 		refillstaffqueue()
 	}

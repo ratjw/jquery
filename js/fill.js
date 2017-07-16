@@ -8,7 +8,14 @@ function fillupstart()
 	start = new Date(start.getFullYear(), start.getMonth()-3).ISOdate()
 	start = getSunday(start)
 
-	fillall(start)
+	//fill until 1 year from now
+	var nextyear = new Date().getFullYear() + 1
+	var month = new Date().getMonth()
+	var todate = new Date().getDate()
+	var until = (new Date(nextyear, month, todate)).ISOdate()
+
+	var table = document.getElementById("tbl")
+	fillall(BOOK, table, start, until)
 
 	//scroll to today
 	var today = new Date().ISOdate().thDate()
@@ -18,31 +25,30 @@ function fillupstart()
 	}, 300);
 }
 
-function fillall(start)
+function fillall(book, table, start, until)
 {
-	var table = document.getElementById("tbl")
-	var tbody = document.getElementById("tblbody")
+	var tbody = table.getElementsByTagName("tbody")[0]
 	var rows = table.rows
 	var head = table.rows[0]
 	var date = start
 	var madedate
 
-	//q for rows in BOOK
-	var q = findOpdateBOOKrow(date)
+	//q for rows in book
+	var q = findOpdateBOOKrow(book, date)
 
 	//i for rows in table (with head as the first row)
 	var i = 0
-	for (q; q < BOOK.length; q++)
+	for (q; q < book.length; q++)
 	{	
-		if (BOOK[q].opdate == LARGESTDATE) {
+		if (book[q].opdate == LARGESTDATE) {
 			break
 		}
-		while (date < BOOK[q].opdate)
+		while (date < book[q].opdate)
 		{	//step over each day that is not in QBOOK
 			if (date != madedate)
 			{
-				//make a blank row for each day which is not in BOOK
-				makenextrow(date)	//insertRow
+				//make a blank row for each day which is not in book
+				makenextrow(table, date)	//insertRow
 				i++
 				
 				madedate = date
@@ -56,28 +62,23 @@ function fillall(start)
  				i++
 			}
 		}
-		makenextrow(date)	//insertRow
+		makenextrow(table, date)	//insertRow
 		i++
-		filldata(BOOK[q], rows[i])
+		filldata(book[q], rows[i])
 		madedate = date
 	}
-	//fill until 1 year from now
-	var nextyear = new Date().getFullYear() + 1
-	var month = new Date().getMonth()
-	var todate = new Date().getDate()
-	var until = (new Date(nextyear, month, todate)).ISOdate()
 
 	date = date.nextdays(1)
-	while (date < until)
+	while (date <= until)
 	{
 		//make a blank row
-		makenextrow(date)	//insertRow
+		makenextrow(table, date)	//insertRow
 		i++
 		
 		date = date.nextdays(1)
 		//make table head row before every Sunday
 		if ((((new Date(date)).getDay())%7 == 0) &&
-			(date < until))
+			(date <= until))
 		{
 			var clone = head.cloneNode(true)
 			tbody.appendChild(clone)
@@ -86,10 +87,10 @@ function fillall(start)
 	}
 }
 
-function refillall()
+function refillall(book)
 {
 	var table = document.getElementById("tbl")
-	var tbody = document.getElementById("tblbody")
+	var tbody = table.getElementsByTagName("tbody")[0]
 	var rows = table.rows
 	var head = table.rows[0]
 	var date
@@ -97,11 +98,11 @@ function refillall()
 	var start = $('#tbl tr:has("td"):first td').eq(OPDATE).html().numDate()
 	var tlength = $('#tbl > tbody > tr').length
 
-	date = start	//find this row in BOOK
+	date = start	//find this row in book
 
-	//q for rows in BOOK
+	//q for rows in book
 	var q = 0
-	while ((q < BOOK.length) && (BOOK[q].opdate < start)) {
+	while ((q < book.length) && (book[q].opdate < start)) {
 		q++
 	}	
 
@@ -109,16 +110,16 @@ function refillall()
 	var i = 1
 	while (i < tlength)		//make blank rows till the end of existing table
 	{
-		if (BOOK[q].opdate == LARGESTDATE) {
+		if (book[q].opdate == LARGESTDATE) {
 			break
 		}
-		if (q < BOOK.length) {
-			while (date < BOOK[q].opdate)
-			{	//step over each day that is not in QBOOK
+		if (q < book.length) {
+			while (date < book[q].opdate)
+			{	//step over each day that is not in book
 				if (date != madedate)
 				{
 					fillrowdate(rows, i, date)	//existing row
-					fillblank(rows[i])	//clear a row for the day not in BOOK
+					fillblank(rows[i])	//clear a row for the day not in book
 					i++
 					if (i >= tlength)
 						return
@@ -140,7 +141,7 @@ function refillall()
 				}
 			}
 			fillrowdate(rows, i, date)	//existing row
-			filldata(BOOK[q], rows[i])	//fill a row for the day in BOOK
+			filldata(book[q], rows[i])	//fill a row for the day in book
 			madedate = date
 			i++
 			q++
@@ -170,11 +171,11 @@ function refillall()
 	}
 }
 
-function makenextrow(date)	//create and decorate new row
+function makenextrow(table, date)	//create and decorate new row
 {
-	var tbody = document.getElementById("tblbody")
-	var tblrowcell = document.getElementById("tblrowcell")
-	var row = tblrowcell.rows[0].cloneNode(true)
+	var tbody = table.getElementsByTagName("tbody")[0]
+	var tblcells = document.getElementById("tblcells")
+	var row = tblcells.rows[0].cloneNode(true)
 	var rowi = tbody.appendChild(row)
 
 	rowi.cells[OPDATE].innerHTML = date.thDate()
@@ -185,9 +186,9 @@ function makenextrow(date)	//create and decorate new row
 
 function fillrowdate(rows, i, date)	//renew and decorate existing row
 {
-	var tblrowcell = document.getElementById("tblrowcell")
+	var tblcells = document.getElementById("tblcells")
 	if (rows[i].cells[OPDATE].nodeName != "TD") {
-		var row = tblrowcell.rows[0].cloneNode(true)
+		var row = tblcells.rows[0].cloneNode(true)
 		rows[i].parentNode.replaceChild(row, rows[i])
 	}
 	rows[i].cells[OPDATE].innerHTML = date.thDate()
@@ -201,19 +202,18 @@ function fillblank(rowi)
 	rowi.cells[STAFFNAME].innerHTML = ""
 	rowi.cells[HN].innerHTML = ""
 	rowi.cells[NAME].innerHTML = ""
-	rowi.cells[AGE].innerHTML = ""
 	rowi.cells[DIAGNOSIS].innerHTML = ""
 	rowi.cells[TREATMENT].innerHTML = ""
 	rowi.cells[CONTACT].innerHTML = ""
 	rowi.cells[QN].innerHTML = ""
 }
 
-function filldata(bookq, rowi)		//bookq = BOOK[q]
+function filldata(bookq, rowi)		//bookq = book[q]
 {
 	rowi.cells[STAFFNAME].innerHTML = bookq.staffname
 	rowi.cells[HN].innerHTML = bookq.hn
 	rowi.cells[NAME].innerHTML = bookq.patient
-	rowi.cells[AGE].innerHTML = bookq.dob? bookq.dob.getAge(bookq.opdate) : ""
+		+ (bookq.dob? "<br>อายุ " + bookq.dob.getAge(bookq.opdate) : "")
 	rowi.cells[DIAGNOSIS].innerHTML = bookq.diagnosis
 	rowi.cells[TREATMENT].innerHTML = bookq.treatment
 	rowi.cells[CONTACT].innerHTML = bookq.contact
@@ -231,13 +231,23 @@ function staffqueue(staffname)
 	//delete previous queuetbl lest it accumulates
 	$('#queuetbl tr').slice(1).remove()
 
-	$.each( BOOK, function() {	// each == this
-		if (( this.staffname == staffname ) && this.opdate >= todate) {
-			$('#queuerowcell tr').clone()
-				.appendTo($('#queuetbl'))
-					.filldataQueue(this)
-		}
-	});
+	if (staffname == "Consults") {
+		if (CONSULT.length == 0)
+			CONSULT.push({"opdate" : getSunday()})
+
+		var table = document.getElementById("queuetbl")
+		var start = (new Date((new Date()).getFullYear(), (new Date()).getMonth() - 1, 1)).ISOdate()
+
+		fillall(CONSULT, table, start, todate)
+	} else {
+		$.each( BOOK, function() {	// each == this
+			if (( this.staffname == staffname ) && this.opdate >= todate) {
+				$('#tblcells tr').clone()
+					.appendTo($('#queuetbl'))
+						.filldataQueue(this)
+			}
+		});
+	}
 
 	$("#queuecontainer").scrollTop(scrolled)
 }
@@ -245,40 +255,54 @@ function staffqueue(staffname)
 function refillstaffqueue()
 {
 	var todate = new Date().ISOdate()
-	var i = 0
 	var staffname = $('#titlename').html()
 
-	$.each( BOOK, function(q, each) {	// each == this
-		if ((this.opdate >= todate) && (this.staffname == staffname)) {
-			i++
-			if (i >= $('#queuetbl tr').length) {
-				$('#queuerowcell tr').clone()
-					.appendTo($('#queuetbl'))
-						.filldataQueue(this)
-			} else {
-				$('#queuetbl tr').eq(i)
-					.filldataQueue(this)
-			}
-		}
-	})
+	if (staffname == "Consults") {
+		$('#queuetbl tr').slice(1).remove()
+		if (CONSULT.length == 0)
+			CONSULT.push({"opdate" : getSunday()})
 
-	if (i < ($('#queuetbl tr').length - 1))
-		$('#queuetbl tr').slice(i+1).remove()
+		var table = document.getElementById("queuetbl")
+		var start = (new Date((new Date()).getFullYear(), (new Date()).getMonth() - 1, 1)).ISOdate()
+
+		fillall(CONSULT, table, start, todate)
+	} else {
+		var i = 0
+		$.each( BOOK, function(q, each) {	// each == this
+			if ((this.opdate >= todate) && (this.staffname == staffname)) {
+				i++
+				if (i >= $('#queuetbl tr').length) {
+					$('#tblcells tr').clone()
+						.appendTo($('#queuetbl'))
+							.filldataQueue(this)
+				} else {
+					$('#queuetbl tr').eq(i)
+						.filldataQueue(this)
+				}
+			}
+		})
+		if (i < ($('#queuetbl tr').length - 1))
+			$('#queuetbl tr').slice(i+1).remove()
+	}
 }
 
 jQuery.fn.extend({
 	filldataQueue : function(bookq) {
-		var rowcell = this[0].cells
-		rowcell[OPDATE].className = NAMEOFDAYABBR[(new Date(bookq.opdate)).getDay()]
-		rowcell[OPDATE].innerHTML = putOpdate(bookq.opdate)
-		rowcell[STAFFNAME].innerHTML = bookq.staffname
-		rowcell[HN].innerHTML = bookq.hn
-		rowcell[NAME].innerHTML = bookq.patient
-		rowcell[AGE].innerHTML = putAgeOpdate(bookq.dob, bookq.opdate)
-		rowcell[DIAGNOSIS].innerHTML = bookq.diagnosis
-		rowcell[TREATMENT].innerHTML = bookq.treatment
-		rowcell[CONTACT].innerHTML = bookq.contact
-		rowcell[QN].innerHTML = bookq.qn
+		var cells = this[0].cells
+		if  (bookq.opdate == LARGESTDATE) {
+			cells[OPDATE].className = ""
+		} else {
+			cells[OPDATE].className = NAMEOFDAYABBR[(new Date(bookq.opdate)).getDay()]
+		}
+		cells[OPDATE].innerHTML = putOpdate(bookq.opdate)
+		cells[STAFFNAME].innerHTML = bookq.staffname
+		cells[HN].innerHTML = bookq.hn
+		cells[NAME].innerHTML = bookq.patient
+			+ "<br>อายุ " + putAgeOpdate(bookq.dob, bookq.opdate)
+		cells[DIAGNOSIS].innerHTML = bookq.diagnosis
+		cells[TREATMENT].innerHTML = bookq.treatment
+		cells[CONTACT].innerHTML = bookq.contact
+		cells[QN].innerHTML = bookq.qn
 		this[0].title = bookq.waitnum
 		addColor(this, bookq.opdate)
 		//tr[0] has className "ui-sortable-handle", so first case has no className 
@@ -287,37 +311,36 @@ jQuery.fn.extend({
 
 function refillanother(tableID, cellindex, qn)
 {
+	var book = BOOK		//not include CONSULT
 	var table = document.getElementById(tableID)
 
 	var i = findTablerow(table, qn)
 	if ( !i ) { return }
 
-	var q = findBOOKrow(qn)
+	var q = findBOOKrow(book, qn)
 	if ( !q ) { return }
 
-	var rowcell = table.rows[i].cells
-	var bookq = BOOK[q]
+	var cells = table.rows[i].cells
+	var bookq = book[q]
 
 	switch(cellindex)
 	{
 		case STAFFNAME:
-			rowcell[STAFFNAME].innerHTML = bookq.staffname
+			cells[STAFFNAME].innerHTML = bookq.staffname
 			break
 		case HN:
-			rowcell[HN].innerHTML = bookq.hn
-			rowcell[NAME].innerHTML = bookq.patient
-			rowcell[AGE].innerHTML = (bookq.opdate != LARGESTDATE)
-				? (bookq.dob? bookq.dob.getAge(bookq.opdate) : "")
-				: ""
+			cells[HN].innerHTML = bookq.hn
+			cells[NAME].innerHTML = bookq.patient
+				+ "<br>อายุ " + (bookq.dob? bookq.dob.getAge(bookq.opdate) : "")
 			break
 		case DIAGNOSIS:
-			rowcell[DIAGNOSIS].innerHTML = bookq.diagnosis
+			cells[DIAGNOSIS].innerHTML = bookq.diagnosis
 			break
 		case TREATMENT:
-			rowcell[TREATMENT].innerHTML = bookq.treatment
+			cells[TREATMENT].innerHTML = bookq.treatment
 			break
 		case CONTACT:
-			rowcell[CONTACT].innerHTML = bookq.contact
+			cells[CONTACT].innerHTML = bookq.contact
 			break
 	}
 }

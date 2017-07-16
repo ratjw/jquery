@@ -63,24 +63,31 @@ function entireMonth(fromDate)
 		toDate: toDate
 	})
 
-	var SERVICE = getfromBOOK(fromDate, toDate)
+	var SERVICE = getfromBOOKCONSULT(fromDate, toDate)
 	showService(SERVICE, fromDate, toDate)
 }
 
-function getfromBOOK(fromDate, toDate)
+function getfromBOOKCONSULT(fromDate, toDate)
 {
 	var SERV = []
-	var i = 0
-	for (var q = 0; q < BOOK.length; q++) {
-		if ((BOOK[q].opdate >= fromDate) && (BOOK[q].opdate <= toDate)) {
-			SERV[i] = BOOK[q]
+	SERV = getfromRAM(BOOK, fromDate, toDate, SERV)
+	SERV = getfromRAM(CONSULT, fromDate, toDate, SERV)
+	return SERV
+}
+
+function getfromRAM(book, fromDate, toDate, serv)
+{
+	var i = serv.length
+	for (var q = 0; q < book.length; q++) {
+		if ((book[q].opdate >= fromDate) && (book[q].opdate <= toDate)) {
+			serv[i] = book[q]
 			i++
 		}
-		if (BOOK[q].opdate > toDate) {
+		if (book[q].opdate > toDate) {
 			break
 		}
 	}
-	return SERV
+	return serv
 }
 
 function showService(SERVICE, fromDate, toDate)
@@ -93,7 +100,7 @@ function showService(SERVICE, fromDate, toDate)
 
 	$.each( STAFF, function() {
 		var staffname = this
-		$('#servicerowcell tr').clone()
+		$('#servicecells tr').clone()
 			.insertAfter($('#servicetbl tr:last'))
 				.children("td").eq(OPDATE)
 					.prop("colSpan", 8)
@@ -110,8 +117,12 @@ function showService(SERVICE, fromDate, toDate)
 		$.each( SERVICE, function() {
 			if (this.staffname == staffname) {
 				var color = countService(this, fromDate, toDate)
+				if (color) {
+					var counter = document.getElementById(color)
+					counter.innerHTML = Number(counter.innerHTML) + 1	
+				}
 				scase++
-				$('#servicerowcell tr').clone()
+				$('#servicecells tr').clone()
 					.insertAfter($('#servicetbl tr:last'))
 						.filldataService(this, scase, color)
 			}
@@ -121,7 +132,6 @@ function showService(SERVICE, fromDate, toDate)
 	$('#monthpicker').hide()
 	$('#monthpicker').datepicker( "hide" )
 	$('#servicehead').show()
-//	$('.ui-datepicker').off("click")
 	$('#dialogService').dialog({
 		title: 'Service Neurosurgery เดือน : ' + $('#monthpicker').val(),
 		close: function() {
@@ -157,6 +167,12 @@ function refillService(SERVICE, fromDate, toDate)
 		$.each( SERVICE, function() {
 			if (this.staffname == staffname) {
 				var color = countService(this, fromDate, toDate)
+				if (color) {
+					var counter = document.getElementById(color)
+					counter.innerHTML = Number(counter.innerHTML) + 1	
+				}
+				var counter = document.getElementById(color)
+				counter.innerHTML = Number(counter.innerHTML) + 1
 				i++
 				scase++
 				var $thisRow = $('#servicetbl tr').eq(i).children("td")
@@ -176,18 +192,18 @@ function refillService(SERVICE, fromDate, toDate)
 jQuery.fn.extend({
 	filldataService : function(bookq, scase, color) {
 		this[0].className = color
-		var rowcell = this[0].cells
-		rowcell[CASE].innerHTML = scase
-		rowcell[PATIENT].innerHTML = bookq.hn
+		var cells = this[0].cells
+		cells[CASE].innerHTML = scase
+		cells[PATIENT].innerHTML = bookq.hn
 			+ " " + bookq.patient
 			+ " " + (bookq.dob? bookq.dob.getAge(bookq.opdate) : "")
-		rowcell[SDIAGNOSIS].innerHTML = bookq.diagnosis
-		rowcell[STREATMENT].innerHTML = bookq.treatment
-		rowcell[ADMISSION].innerHTML = bookq.admission
-		rowcell[FINAL].innerHTML = bookq.final
-		rowcell[ADMIT].innerHTML = (bookq.admit? bookq.admit : "")
-		rowcell[DISCHARGE].innerHTML = (bookq.discharge? bookq.discharge : "")
-		rowcell[SQN].innerHTML = bookq.qn
+		cells[SDIAGNOSIS].innerHTML = bookq.diagnosis
+		cells[STREATMENT].innerHTML = bookq.treatment
+		cells[ADMISSION].innerHTML = bookq.admission
+		cells[FINAL].innerHTML = bookq.final
+		cells[ADMIT].innerHTML = (bookq.admit? bookq.admit : "")
+		cells[DISCHARGE].innerHTML = (bookq.discharge? bookq.discharge : "")
+		cells[SQN].innerHTML = bookq.qn
 	}
 })
 
@@ -204,7 +220,7 @@ function getAdmitDischargeDate(SERVICE, fromDate, toDate)
 			alert("getAdmitDischargeDate", response)
 		} else {
 			updateBOOK(response)
-			var SERVICE = getfromBOOK(fromDate, toDate)
+			var SERVICE = getfromBOOKCONSULT(fromDate, toDate)
 			fillAdmitDischargeDate(SERVICE)
 		}
 	}
@@ -348,9 +364,32 @@ function saveSContent(pointed, column, content)	//column name in MYSQL
 
 			var fromDate = $('#monthpicker').data('fromDate')
 			var toDate = $('#monthpicker').data('toDate')
-			var bookq = BOOK[findBOOKrow(qn)]
+			var color = rowmain.className
+			var book = getfromBOOKCONSULT(fromDate, toDate)
+			var row = findBOOKrow(book, qn)		//for countService of this case
+			var newcolor = countService(book[row], fromDate, toDate)
+			var counter
+			var newcounter
+			if (color) {
+				if (newcolor) {
+					if (color != newcolor) {
+						counter = document.getElementById(color)
+						counter.innerHTML = Number(counter.innerHTML) - 1
+						newcounter = document.getElementById(newcolor)
+						newcounter.innerHTML = Number(newcounter.innerHTML) + 1
+					}
+				} else {
+					counter = document.getElementById(color)
+					counter.innerHTML = Number(counter.innerHTML) - 1
+				}
+			} else {
+				if (newcolor) {
+					newcounter = document.getElementById(newcolor)
+					newcounter.innerHTML = Number(newcounter.innerHTML) + 1
+				}
+			}
 
-			rowmain.className = countService(bookq, fromDate, toDate)
+			rowmain.className = newcolor
 
 			//Not refill because it may make next editTD return to old value when fast entry
 			//due to slow return from Ajax of previous input

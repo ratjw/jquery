@@ -4,6 +4,8 @@ DROP TABLE IF EXISTS book;
 CREATE TABLE `book` (
 	`waitnum` double DEFAULT 1,
 	`opdate` date,
+	`oproom` varchar(10) NOT NULL DEFAULT '',
+	`optime` varchar(10) NOT NULL DEFAULT '',
 	`staffname` varchar(255) NOT NULL DEFAULT '',
 	`hn` varchar(10) NOT NULL DEFAULT '',
 	`patient` varchar(255) NOT NULL DEFAULT '',

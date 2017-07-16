@@ -189,7 +189,7 @@ function undelete(thiscase)
 			else
 			{
 				updateBOOK(response);
-				refillall()
+				refillall(BOOK)
 				if (($("#queuewrapper").css('display') == 'block') && 
 					($('#titlename').html() == staffname)) {
 					refillstaffqueue()
@@ -307,6 +307,20 @@ function makeFind(response, hn)
 {
 	var history = JSON.parse(response);
 
+	if (history.length == 1) {
+		scrolltoFoundCase()
+	} else {
+		makeDialogFind(history, hn )
+	}
+}
+
+function scrolltoFoundCase(history, hn)
+{
+	alert("To do", "scrolltoFoundCase")
+}
+
+function makeDialogFind(history, hn)
+{
 	$('#historytbl').attr('id', '')
 
 	var HTML_String = '<table id = "historytbl">';

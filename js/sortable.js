@@ -32,10 +32,11 @@ function sortable()
 			var $item = ui.item
 			var $itemcell = $item.children("td")
 			var receiver = $item.closest('table').attr('id')
+			var staffname = $itemcell.eq(STAFFNAME).html()
 			var titlename = $('#titlename').html()
 
-			if (receiver == "queuetbl") {
-				if ($itemcell.eq(STAFFNAME).html() != titlename) {
+			if ((sender == "tbl") && (receiver == "queuetbl")) {
+				if ((titlename != "Consults") && (staffname != titlename)) {
 					stopsorting()
 					return false
 				}
@@ -82,9 +83,8 @@ function sortable()
 			}
 
 			var thisopdate = getOpdate($thisdrop.children("td").eq(OPDATE).html())
-			var staffname = $itemcell.eq(STAFFNAME).html()
-			var finalWaitnum = calculateWaitnum($item, thisopdate)
 			var thisqn = $itemcell.eq(QN).html()
+			var finalWaitnum = calculateWaitnum(receiver, $item, thisopdate)			
 
 			var sql = "sqlReturnbook=UPDATE book SET Waitnum = "+ finalWaitnum
 			sql += ", opdate='" + thisopdate
@@ -107,15 +107,15 @@ function sortable()
 				{
 					updateBOOK(response)
 					if (receiver == "tbl") {
-						refillall()
-						if (($("#queuewrapper").css('display') == 'block') && 
-							(titlename == staffname)) {
+						refillall(BOOK)
+						if (($("#queuewrapper").css('display') == 'block')
+							&& ((titlename == staffname)) || (titlename == "Consults")) {
 
-						refillstaffqueue()
+							refillstaffqueue()
 						}
 					} else {	//receiver == "queuetbl"
 						refillstaffqueue()
-						refillall()
+						refillall(BOOK)
 					}
 				}
 			}
