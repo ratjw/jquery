@@ -176,28 +176,30 @@
 <ul id="stafflist" style="display:none"></ul>
 
 <div id="roomtime" style="display:none">
-  <span style="width:110px; font-size: 16px; font-weight: bold;">
-	ห้อง <input id="orroom">
-  </span>
-  <span style="width:110px; font-size: 16px; font-weight: bold;">
-	เวลา <input id="ortime">
-  </span>
+  <p>
+	<label for="orroom">ห้อง:</label>
+	<input id="orroom" name="value" size="1">
+  </p>
+  <p>
+	<label for="optime">เวลา:</label>
+	<input id="ortime" name="value" size="1">
+  </p>
 </div>
 
 <div id="editcell" contenteditable="true"></div>
 
 <div id="dialogEquip" class="dialogEquip">
-  <span style="width:110px; font-size: 16px; font-weight: bold;">
-	ห้อง <span id="oproom"></span>
+  <span style="width:100px;">
+	ห้อง <span id="oproom" style="font-size: 16px; font-weight: bold;"></span>
   </span>
-  <span style="width:110px; font-size: 16px; font-weight: bold;">
-	เวลา <span id="optime"></span>
+  <span style="width:200px;">
+	เวลา <span id="optime" style="font-size: 16px; font-weight: bold;"></span>
   </span>
-  <span style="width:250px;">วัน<span id="opday"></span>ที่
-	<span style="font-size: 16px; font-weight: bold;" id="opdate"></span>
+  <span style="width:200px;">วัน<span id="opday"></span>ที่
+	<span id="opdate" style="font-size: 16px; font-weight: bold;"></span>
   </span>
   <span style="width:150px;">
-	Surgeon <span style="font-size: 16px; font-weight: bold;" id="staffname"></span>
+	Surgeon <span id="staffname" style="font-size: 16px; font-weight: bold;"></span>
   </span>
   <br>
   <br>

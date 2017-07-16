@@ -61,7 +61,7 @@ function fillSetTable(pointing)
 					changeDate(opdate, qn, pointing)
 					break
 				case "item4":
-					fillRoomTime(rowmain, qn)
+					fillRoomTime(book, tableID, casename, qn)
 					break
 				case "item5":
 					fillEquipTable(book, qn)
@@ -238,7 +238,7 @@ function addnewrow(tableID, rowmain, qn)
 		book = CONSULT
 	}
 	var caseNum = findBOOKrow(book, qn)
-	var bookq = JSON.parse(JSON.stringify(book[caseNum]))
+	var bookq = JSON.parse(JSON.stringify(book[caseNum]))	//???
 	$.each( bookq, function(key, val) {
 		bookq[key] = ""
 	})
@@ -329,24 +329,73 @@ function changeDate(opdate, qn, pointing)
 	reposition(".ui-datepicker", "left top", "left bottom", pointing)
 }
 
-function fillRoomTime(rowmain, qn)
+function fillRoomTime(book, tableID, casename, qn)
 {
-	$("#roomtime").dialog()
+	var caseNum = findBOOKrow(book, qn)
+	var oproom = book[caseNum].oproom
+	var optime = book[caseNum].optime
+	document.getElementById("orroom").value = oproom
+	document.getElementById("ortime").value = optime
+	$("#roomtime").show()
+	$("#roomtime").dialog({
+		title: casename,
+		closeOnEscape: true,
+		modal: true,
+		buttons: {
+			'OK': function () {
+				oproom = document.getElementById("orroom").value
+				optime = document.getElementById("ortime").value
+				var sql = "sqlReturnbook=UPDATE book SET "
+				sql += "oproom = '" + oproom + "', "
+				sql += "optime = '" + optime + "', "
+				sql += "editor = '" + THISUSER + "' WHERE qn="+ qn + ";"
 
-	var sql = "sqlReturnbook=UPDATE book SET waitnum=NULL, "
-	sql += "editor = '" + THISUSER + "' WHERE qn="+ qn + ";"
+				Ajax(MYSQLIPHP, sql, callbackfillRoomTime)
 
-//	Ajax(MYSQLIPHP, sql, callbackdeleterow)
+				$(this).dialog('close')
 
-	function callbackdeleterow(response)
-	{
-		if (!response || response.indexOf("DBfailed") != -1) {
-			alert ("deleteCase", response)
-		} else {
-			updateBOOK(response);
-			deleteRow(rowmain, opdate)
+				function callbackfillRoomTime(response)
+				{
+					if (!response || response.indexOf("DBfailed") != -1) {
+						alert ("fillRoomTime", response)
+					} else {
+						updateBOOK(response);
+						if ($("#queuewrapper").css('display') == 'block') {
+							refillstaffqueue()
+						}
+						refillall(BOOK)
+					}
+				}
+			}
 		}
-	}
+	})
+
+	$( "#orroom" ).spinner({
+		min: 1,
+		max: 11,
+		step: 1
+	});
+
+	var time
+	$( "#ortime" ).spinner({
+		min: 00,
+		max: 24,
+		step: 1,
+		create: function( event, ui ) {
+			$( "#ortime" ).val(optime)
+		},
+		spin: function( event, ui ) {
+			time = ui.value
+			if (String(time).length == 1) {
+				time = "0" + time + ".00"
+			} else {
+				time = time + ".00"
+			}
+		},
+		stop: function( event, ui ) {
+			$( "#ortime" ).val(time)
+		}
+	})
 }
 
 function deleteCase(rowmain, opdate, qn)
