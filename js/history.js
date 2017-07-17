@@ -307,31 +307,53 @@ function makeFind(response, hn)
 {
 	var history = JSON.parse(response);
 
-	if (history.length == 1) {
-		scrolltoThisCase(history[0].qn)
-	} else {
-		makeDialogFind(history, hn )
-	}
+	scrolltoThisCase(history[0].qn)
+	makeDialogFind(history, hn )
 }
 
 function scrolltoThisCase(qn)
 {
-	var table = document.getElementById("tbl")
-	var i = findTablerow(table, qn)
-	var from = document.getElementById("tblcontainer").scrollTop
-	var offset = table.rows[i].offsetTop
+	var tabletbl = document.getElementById("tbl")
+	var i = findTablerow(tabletbl, qn)
+	var j
+	var from
+	var offset
+	var tohead
 
-	table.rows[i].style.backgroundColor = "Green"
-	if ((offset > from) && (offset < from + window.innerHeight)) {
+	if ($("#queuewrapper").css('display') == 'block') {
+		var tablequeue = document.getElementById("queuetbl")
+		j = findTablerow(tablequeue, qn)
+	}
+	if (!i && !j) {
+		alert("Find", "This case is outside of the table")
 		return
 	}
-	do {
-		i--
-	}
-	while ((offset - table.rows[i].offsetTop) < window.innerHeight / 2)
+	if (i) {
+		tabletbl.rows[i].style.backgroundColor = "Yellow"
+		from = document.getElementById("tblcontainer").scrollTop
+		offset = tabletbl.rows[i].offsetTop
+		if ((offset < from) || (offset > (from + window.innerHeight))) {
+			do {
+				i--
+			} while ((offset - tabletbl.rows[i].offsetTop) < window.innerHeight / 2)
 
-	var tohead = table.rows[i]
-	fakeScrollAnimate("#tblcontainer", "#tbl", from, tohead)
+			tohead = tabletbl.rows[i]
+			fakeScrollAnimate("#tblcontainer", "#tbl", from, tohead)
+		}
+	}
+	if (j) {
+		tablequeue.rows[j].style.backgroundColor = "Yellow"
+		from = document.getElementById("queuecontainer").scrollTop
+		offset = tablequeue.rows[j].offsetTop
+		if ((offset < from) || (offset > (from + window.innerHeight))) {
+			do {
+				j--
+			} while ((offset - tablequeue.rows[j].offsetTop) < window.innerHeight / 2)
+
+			tohead = tablequeue.rows[j]
+			fakeScrollAnimate("#queuecontainer", "#queuetbl", from, tohead)
+		}
+	}
 }
 
 function makeDialogFind(history, hn)
