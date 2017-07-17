@@ -308,15 +308,30 @@ function makeFind(response, hn)
 	var history = JSON.parse(response);
 
 	if (history.length == 1) {
-		scrolltoFoundCase()
+		scrolltoThisCase(history[0].qn)
 	} else {
 		makeDialogFind(history, hn )
 	}
 }
 
-function scrolltoFoundCase(history, hn)
+function scrolltoThisCase(qn)
 {
-	alert("To do", "scrolltoFoundCase")
+	var table = document.getElementById("tbl")
+	var i = findTablerow(table, qn)
+	var from = document.getElementById("tblcontainer").scrollTop
+	var offset = table.rows[i].offsetTop
+
+	table.rows[i].style.backgroundColor = "Green"
+	if ((offset > from) && (offset < from + window.innerHeight)) {
+		return
+	}
+	do {
+		i--
+	}
+	while ((offset - table.rows[i].offsetTop) < window.innerHeight / 2)
+
+	var tohead = table.rows[i]
+	fakeScrollAnimate("#tblcontainer", "#tbl", from, tohead)
 }
 
 function makeDialogFind(history, hn)

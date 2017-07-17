@@ -70,12 +70,20 @@ function entireMonth(fromDate)
 function getfromBOOKCONSULT(fromDate, toDate)
 {
 	var SERV = []
-	SERV = getfromRAM(BOOK, fromDate, toDate, SERV)
-	SERV = getfromRAM(CONSULT, fromDate, toDate, SERV)
-	return SERV
+	SERV = addfromRAM(BOOK, fromDate, toDate, SERV)
+	SERV = addfromRAM(CONSULT, fromDate, toDate, SERV)
+	return SERV.sort(function (a, b) {
+		if (a.opdate < b.opdate) {
+			return -1;
+		}
+		if (a.opdate > b.opdate) {
+			return 1;
+		}
+		return 0;
+	})
 }
 
-function getfromRAM(book, fromDate, toDate, serv)
+function addfromRAM(book, fromDate, toDate, serv)
 {
 	var i = serv.length
 	for (var q = 0; q < book.length; q++) {

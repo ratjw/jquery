@@ -9,6 +9,7 @@
 <link href="css/CSS.css" rel="stylesheet">
 <LINK href="css/print.css" rel="stylesheet">
 <script src="js/jquery-3.2.1.min.js"></script>
+<script src="js/jquery.mousewheel.min.js"></script>
 <script src="js/jquery-ui.min.js"></script>
 <script src="js/click.js"></script>
 <script src="js/constant.js"></script>
@@ -33,7 +34,7 @@
      <th style="width:10%">Date</th>
      <th style="width:3%">Staff</th>
      <th style="width:4%">HN</th>
-     <th style="width:13%">ชื่อ อายุ</th>
+     <th style="width:13%">ชื่อ-อายุ</th>
      <th style="width:20%">Diagnosis</th>
      <th style="width:30%">Treatment</th>
      <th style="width:20%">Contact</th>
@@ -59,7 +60,7 @@
       <th style="width:10%">Date</th>
       <th style="width:3%">Staff</th>
       <th style="width:4%">HN</th>
-      <th style="width:13%">ชื่อ อายุ</th>
+      <th style="width:13%">ชื่อ-อายุ</th>
       <th style="width:20%">Diagnosis</th>
       <th style="width:30%">Treatment</th>
       <th style="width:20%">Contact</th>
@@ -158,17 +159,17 @@
 <div id="dialogAlert"></div>
 
 <ul id="menu" style="display:none">
-  <li id="item1"><div></div></li>
-  <li id="item2"><div></div></li>
-  <li id="item3"><div></div></li>
-  <li id="item4"><div></div></li>
-  <li id="item5"><div></div></li>
-  <li id="item6"><div></div></li>
-  <li id="item7"><div></div></li>
-  <li id="item8" style="color:#FF0000"><div></div></li>
+  <li id="item1"><div>เพิ่ม case</div></li>
+  <li id="item2"><div>เพิ่ม case ไม่ระบุวัน</div></li>
+  <li id="item3"><div>เปลี่ยนวันที่</div></li>
+  <li id="item4"><div>ห้องผ่าตัด เวลา</div></li>
+  <li id="item5"><div>Equipment</div></li>
+  <li id="item6"><div>ประวัติการแก้ไข</div></li>
+  <li id="item7"><div>PACS</div></li>
+  <li id="item8" style="border:3px solid gray"><div>Delete</div></li>
   <li id="item9"><div>คิวของอาจารย์</div><ul id="item0" style="width:100px"></ul></li>
   <li id="item10"><div>Service Review</div></li>
-  <li id="item11"><div>List of Deleted Cases</div></li>
+  <li id="item11"><div>Deleted Cases</div></li>
   <li id="item12"><div>Find</div></li>
   <li id="item13"><div>Readme</div></li>
 </ul>
@@ -178,11 +179,11 @@
 <div id="roomtime" style="display:none">
   <p>
 	<label for="orroom">ห้อง:</label>
-	<input id="orroom" name="value" size="1">
+	<input id="orroom" size="2">
   </p>
   <p>
 	<label for="optime">เวลา:</label>
-	<input id="ortime" name="value" size="1">
+	<input id="ortime" size="2">
   </p>
 </div>
 

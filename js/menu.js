@@ -7,7 +7,6 @@ function fillSetTable(pointing)
 	var opdateth = tcell[OPDATE].innerHTML
 	var opdate = getOpdate(opdateth)		//Thai to ISO date
 	var staffname = tcell[STAFFNAME].innerHTML
-	var casename = tcell[NAME].innerHTML
 	var hn = tcell[HN].innerHTML
 	var qn = tcell[QN].innerHTML
 	var book = BOOK
@@ -15,31 +14,21 @@ function fillSetTable(pointing)
 		book = CONSULT
 	}
 
-	casename = casename.substring(0, casename.indexOf(' '))
-
-	$("#item1 div").html("เพิ่ม case วันที่ " + opdateth)
 	disable(qn, "#item1")
 
-	$("#item2 div").html("เพิ่ม case ต่อท้าย ไม่ระบุวันที่")
 	var item2 = (tableID == "queuetbl")? true : false
 	disable(item2, "#item2")
 
-	$("#item3 div").html("เปลี่ยนวันที่ " + casename)
 	disable(qn, "#item3")
 
-	$("#item4 div").html("ห้องผ่าตัด เวลา " + casename)
 	disable(qn, "#item4")
 
-	$("#item5 div").html("Equipment " + casename)
 	disable(qn, "#item5")
 
-	$("#item6 div").html("การแก้ไขของ " + casename)
 	disable(qn, "#item6")
 
-	$("#item7 div").html("PACS " + casename)
 	disable(hn, "#item7")
 
-	$("#item8 div").html("Delete " + casename)
 	var unuse = (checkblank(book, opdate, qn))? true : false
 	var item8 = (qn || unuse)? true : false
 	disable(item8, "#item8")
@@ -61,7 +50,7 @@ function fillSetTable(pointing)
 					changeDate(opdate, qn, pointing)
 					break
 				case "item4":
-					fillRoomTime(book, tableID, casename, qn)
+					fillRoomTime(book, tableID, opdateth, qn)
 					break
 				case "item5":
 					fillEquipTable(book, qn)
@@ -182,55 +171,6 @@ function checkblank(book, opdate, qn)
 	}
 }
 
-function splitPane()
-{
-	var tohead = findVisibleHead('#tbl')
-	var width = screen.availWidth
-	var height = screen.availHeight
-
-	$("#queuewrapper").show()
-//	if (width > height) {
-		$("#tblwrapper").css({"float":"left", "height":"100%", "width":"50%"})
-		$("#queuewrapper").css({"float":"right", "height":"100%", "width":"50%"})
-		initResize("#tblwrapper")
-		$('.ui-resizable-e').css('height', $("#tbl").css("height"))
-//	} else {
-//		$("#tblwrapper").css({"float":"left", "height":"60%", "width":"100%"})
-//		$("#queuewrapper").css({"float":"left", "height":"40%", "width":"100%"})
-//		initResize("#tblwrapper")
-//		$('.ui-resizable-s').css('width', $("#tbl").css("width"))
-//	}
-
-	fakeScrollAnimate("#tblcontainer", "#tbl", tohead)
-}
-
-function closequeue()
-{
-	var tohead = findVisibleHead('#tbl')
-	
-	$("#queuewrapper").hide()
-	$("#tblwrapper").css({
-		"height": "100%", "width": "100%"
-	})
-
-	fakeScrollAnimate("#tblcontainer", "#tbl", tohead)
-}
-
-function fakeScrollAnimate(container, table, tohead)
-{
-	if (tohead.offsetTop < 300)
-		return
-	if (tohead.offsetTop + $(container).height() < $(table).height())
-	{
-		$(container).scrollTop(tohead.offsetTop - 300)
-		$(container).animate({
-			scrollTop: $(container).scrollTop() + 300
-		}, 500);
-	}
-	else
-		$(container).scrollTop(tohead.offsetTop)
-}
-
 function addnewrow(tableID, rowmain, qn)
 {
 	var book = BOOK
@@ -297,8 +237,10 @@ function changeDate(opdate, qn, pointing)
 		maxDate: "+1y",
 		onClose: function () {
 			$('.ui-datepicker').css("fontSize", '')
-//			saveEditPointData(pointing)
 			$('#datepickertbl').hide()
+			if (opdate == $('#datepickertbl').val()) {
+				return
+			}
 			opdate = $('#datepickertbl').val()
 			var sql = "sqlReturnbook=UPDATE book SET opdate='" + opdate + "', "
 			sql += "editor = '" + THISUSER + "' WHERE qn="+ qn + ";"
@@ -318,7 +260,7 @@ function changeDate(opdate, qn, pointing)
 						//changeDate of this staffname's case
 						refillstaffqueue()
 					}
-					alert("To do", "scrolltochangeDateCase")
+					scrolltoThisCase(qn)
 				}
 			}
 		}
@@ -329,16 +271,16 @@ function changeDate(opdate, qn, pointing)
 	reposition(".ui-datepicker", "left top", "left bottom", pointing)
 }
 
-function fillRoomTime(book, tableID, casename, qn)
+function fillRoomTime(book, tableID, opdateth, qn)
 {
 	var caseNum = findBOOKrow(book, qn)
 	var oproom = book[caseNum].oproom
 	var optime = book[caseNum].optime
-	document.getElementById("orroom").value = oproom
-	document.getElementById("ortime").value = optime
+	document.getElementById("orroom").value = oproom? oproom : "4"
+	document.getElementById("ortime").value = optime? optime : "09.00"
 	$("#roomtime").show()
 	$("#roomtime").dialog({
-		title: casename,
+		title: opdateth,
 		closeOnEscape: true,
 		modal: true,
 		buttons: {
@@ -380,17 +322,20 @@ function fillRoomTime(book, tableID, casename, qn)
 	$( "#ortime" ).spinner({
 		min: 00,
 		max: 24,
-		step: 1,
-		create: function( event, ui ) {
-			$( "#ortime" ).val(optime)
-		},
+		step: 0.5,
 		spin: function( event, ui ) {
-			time = ui.value
-			if (String(time).length == 1) {
-				time = "0" + time + ".00"
+			var val = []
+			if (ui.value % 1 == 0) {
+				val[0] = String(ui.value)
+				val[1] = "00"
 			} else {
-				time = time + ".00"
+				val[0] = String(ui.value - 0.5)
+				val[1] = "30"
 			}
+			if (val[0].length == 1) {
+				val[0] = "0" + val[0]
+			}
+			time = val.join(".")
 		},
 		stop: function( event, ui ) {
 			$( "#ortime" ).val(time)
@@ -432,4 +377,49 @@ function deleteRow(rowmain, opdate)
 	} else {
 		$(rowmain).children("td").eq(OPDATE).siblings().html("")
 	}
+}
+
+function splitPane()
+{
+	var from = document.getElementById("tblcontainer").scrollTop
+	var tohead = findVisibleHead('#tbl')
+	var width = screen.availWidth
+	var height = screen.availHeight
+
+	$("#queuewrapper").show()
+	$("#tblwrapper").css({"float":"left", "height":"100%", "width":"50%"})
+	$("#queuewrapper").css({"float":"right", "height":"100%", "width":"50%"})
+	initResize("#tblwrapper")
+	$('.ui-resizable-e').css('height', $("#tbl").css("height"))
+
+	fakeScrollAnimate("#tblcontainer", "#tbl", from, tohead)
+}
+
+function closequeue()
+{
+	var from = document.getElementById("tblcontainer").scrollTop
+	var tohead = findVisibleHead('#tbl')
+	
+	$("#queuewrapper").hide()
+	$("#tblwrapper").css({
+		"height": "100%", "width": "100%"
+	})
+
+	fakeScrollAnimate("#tblcontainer", "#tbl", from, tohead)
+}
+
+function fakeScrollAnimate(container, table, from, tohead)
+{
+	var pixel = 300
+	if ((from > tohead.offsetTop) || (tohead.offsetTop < 300)) {
+		pixel = -300
+	}
+	if ((tohead.offsetTop + $(container).height()) < $(table).height()) {
+		$(container).scrollTop(tohead.offsetTop - pixel)
+		$(container).animate({
+			scrollTop: $(container).scrollTop() + pixel
+		}, 500);
+	} else {
+		$(container).scrollTop(tohead.offsetTop)
+	}	//table end
 }
