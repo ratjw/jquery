@@ -163,7 +163,7 @@ function makeDeleteHistory(response)
 
 function undelete(thiscase) 
 {
-	reposition("#undelete", "left center", "left center", thiscase)
+	reposition($("#undelete"), "left center", "left center", thiscase)
 
 	doUndelete = function() 
 	{
@@ -313,45 +313,33 @@ function makeFind(response, hn)
 
 function scrolltoThisCase(qn)
 {
-	var tabletbl = document.getElementById("tbl")
-	var i = findTablerow(tabletbl, qn)
-	var j
-	var from
-	var offset
-	var tohead
+	showFind("tblcontainer", "tbl", qn)
 
 	if ($("#queuewrapper").css('display') == 'block') {
-		var tablequeue = document.getElementById("queuetbl")
-		j = findTablerow(tablequeue, qn)
+		showFind("queuecontainer", "queuetbl", qn)
 	}
-	if (!i && !j) {
-		alert("Find", "This case is outside of the table")
-		return
-	}
+}
+
+function showFind(containerID, tableID, qn)
+{
+	var table = document.getElementById(tableID)
+	var i = findTablerow(tableID, qn)
 	if (i) {
-		tabletbl.rows[i].style.backgroundColor = "Yellow"
-		from = document.getElementById("tblcontainer").scrollTop
-		offset = tabletbl.rows[i].offsetTop
-		if ((offset < from) || (offset > (from + window.innerHeight))) {
+		var rows = table.rows
+		rows[i].style.border = "5px groove"
+		var scrolledTop = document.getElementById(containerID).scrollTop
+		var offset = rows[i].offsetTop
+		var winheight = window.innerHeight
+		if (containerID == "queuecontainer") {
+			winheight = winheight - 100
+		}
+
+		if ((offset < scrolledTop) || (offset > (scrolledTop + winheight))) {
 			do {
 				i--
-			} while ((offset - tabletbl.rows[i].offsetTop) < window.innerHeight / 2)
+			} while (i && ((offset - rows[i].offsetTop) < winheight / 2))
 
-			tohead = tabletbl.rows[i]
-			fakeScrollAnimate("#tblcontainer", "#tbl", from, tohead)
-		}
-	}
-	if (j) {
-		tablequeue.rows[j].style.backgroundColor = "Yellow"
-		from = document.getElementById("queuecontainer").scrollTop
-		offset = tablequeue.rows[j].offsetTop
-		if ((offset < from) || (offset > (from + window.innerHeight))) {
-			do {
-				j--
-			} while ((offset - tablequeue.rows[j].offsetTop) < window.innerHeight / 2)
-
-			tohead = tablequeue.rows[j]
-			fakeScrollAnimate("#queuecontainer", "#queuetbl", from, tohead)
+			fakeScrollAnimate(containerID, tableID, scrolledTop, rows[i])
 		}
 	}
 }

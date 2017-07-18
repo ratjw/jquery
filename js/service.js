@@ -1,9 +1,10 @@
 
 function serviceReview()
 {
-	$('#monthpicker').show()
+	var $monthpicker = $('#monthpicker')
+	$monthpicker.show()
 	$('#servicehead').hide()
-	$('#monthpicker').datepicker( {
+	$monthpicker.datepicker( {
 		altField: $( "#monthpicking" ),
 		altFormat: "yy-mm-dd",
 		autoSize: true,
@@ -27,8 +28,9 @@ function serviceReview()
 		width: window.innerWidth * 95 / 100,
 		height: window.innerHeight * 95 / 100
 	})
-	$('.ui-datepicker').click(function() {
-		if (!$('#monthpicker').is(":focus")) {	//click on month name
+	var $uidatepicker = $('.ui-datepicker')
+	$uidatepicker.click(function() {
+		if (!$monthpicker.is(":focus")) {	//click on month name
 			entireMonth($('#monthpicking').val())
 		} else {
 			$('.ui-datepicker-calendar').css('display', 'none')
@@ -36,26 +38,25 @@ function serviceReview()
 			//display the month without date
 		}
 	})
-	$('#monthpicker').click(function() { //setDate follows input box
-		$('#monthpicker').datepicker(
+	$monthpicker.click(function() { //setDate follows input box
+		$monthpicker.datepicker(
 			"setDate", $('#monthpicking').val()
 						? new Date($('#monthpicking').val())
 						: new Date()
 		)
-//		$('.ui-datepicker').show()
 		$('.ui-datepicker-calendar').css('display', 'none')
 	})
-	$( "#monthpicker" ).datepicker('setDate', new Date($('#monthpicking').val()))
+	$monthpicker.datepicker('setDate', new Date($('#monthpicking').val()))
 	$('.ui-datepicker-calendar').css('display', 'none')
 	$('#servicetbl').hide()
 	resetcountService()
-	reposition('.ui-datepicker', 'left center', 'left center', $('#monthpicker'))
+	reposition($uidatepicker, 'left center', 'left center', $monthpicker)
 }
 
 function entireMonth(fromDate)
 {
-	var from = new Date(fromDate)
-	var toDate = new Date(from.getFullYear(), from.getMonth()+1, 0)
+	var fromdate = new Date(fromDate)
+	var toDate = new Date(fromdate.getFullYear(), fromdate.getMonth()+1, 0)
 	toDate = $.datepicker.formatDate('yy-mm-dd', toDate);	//end of this month
 	$('#dialogService input[type=button]').hide()
 	$('#monthpicker').data({
@@ -137,11 +138,12 @@ function showService(SERVICE, fromDate, toDate)
 		});
 	})
 
-	$('#monthpicker').hide()
-	$('#monthpicker').datepicker( "hide" )
+	var $monthpicker = $('#monthpicker')
+	$monthpicker.hide()
+	$monthpicker.datepicker( "hide" )
 	$('#servicehead').show()
 	$('#dialogService').dialog({
-		title: 'Service Neurosurgery เดือน : ' + $('#monthpicker').val(),
+		title: 'Service Neurosurgery เดือน : ' + $monthpicker.val(),
 		close: function() {
 			$('#datepicker').hide()
 		}

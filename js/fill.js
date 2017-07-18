@@ -312,15 +312,13 @@ jQuery.fn.extend({
 function refillanother(tableID, cellindex, qn)
 {
 	var book = BOOK		//not include CONSULT
-	var table = document.getElementById(tableID)
-
-	var i = findTablerow(table, qn)
+	var i = findTablerow(tableID, qn)
 	if ( !i ) { return }
 
 	var q = findBOOKrow(book, qn)
 	if ( !q ) { return }
 
-	var cells = table.rows[i].cells
+	var cells = document.getElementById(tableID).rows[i].cells
 	var bookq = book[q]
 
 	switch(cellindex)

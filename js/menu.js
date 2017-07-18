@@ -33,7 +33,8 @@ function fillSetTable(pointing)
 	var item8 = (qn || unuse)? true : false
 	disable(item8, "#item8")
 
-	$("#menu").menu({
+	var $menu = $("#menu")
+	$menu.menu({
 		select: function( event, ui ) {
 
 			var item = $(ui.item).attr("id")
@@ -47,7 +48,7 @@ function fillSetTable(pointing)
 					noOpdate()
 					break
 				case "item3":
-					changeDate(opdate, qn, pointing)
+					changeDate(tableID, opdate, staffname, qn, pointing)
 					break
 				case "item4":
 					fillRoomTime(book, tableID, opdateth, qn)
@@ -90,16 +91,16 @@ function fillSetTable(pointing)
 			}
 
 			clearEditcellData()
-			$("#menu").hide()		//to disappear after selection
+			$menu.hide()		//to disappear after selection
 			event.stopPropagation()
 		}
 	});
 
-	var width = $("#menu").outerWidth()
+	var width = $menu.outerWidth()
 
-	$("#menu").appendTo($(pointing).closest('div'))
-	reposition("#menu", "left top", "left bottom", pointing)
-	menustyle("#menu", pointing, width)
+	$menu.appendTo($(pointing).closest('div'))
+	reposition($menu, "left top", "left bottom", pointing)
+	menustyle($menu, pointing, width)
 }
 
 
@@ -115,34 +116,35 @@ function disable(item, id)
 
 function stafflist(pointing)
 {
-	$("#stafflist").menu({
+	var $stafflist = $("#stafflist")
+	$stafflist.menu({
 		select: function( event, ui ) {
 			var staffname = ui.item.text()
 			$(pointing).html(staffname)
 			saveContent(pointing, "staffname", staffname)
 			clearEditcellData()
-			$('#stafflist').hide()		//to disappear after selection
+			$stafflist.hide()		//to disappear after selection
 			event.stopPropagation()
 		}
 	});
 
-	var width = $("#stafflist").outerWidth()
+	var width = $stafflist.outerWidth()
 
-	$("#stafflist").appendTo($(pointing).closest('div'))
-	reposition("#stafflist", "left top", "left bottom", pointing)
-	menustyle("#stafflist", pointing, width)
-	reposition("#stafflist", "left top", "left bottom", pointing)
+	$stafflist.appendTo($(pointing).closest('div'))
+	reposition($stafflist, "left top", "left bottom", pointing)
+	menustyle($stafflist, pointing, width)
+	reposition($stafflist, "left top", "left bottom", pointing)
 }
 
-function menustyle(me, target, width)
+function menustyle($me, target, width)
 {
-	if ($(me).position().top > $(target).position().top) {
+	if ($me.position().top > $(target).position().top) {
 		var shadow = '10px 20px 30px slategray'
 	} else {
 		var shadow = '10px -20px 30px slategray'
 	}
 
-	$(me).css({
+	$me.css({
 		width: width,
 		boxShadow: shadow
 	})
@@ -214,34 +216,39 @@ function noOpdate()
 	addColor($addedRow, LARGESTDATE)
 	$addedRow.children("td")[OPDATE].className = NAMEOFDAYABBR[(new Date(LARGESTDATE)).getDay()]
 
+	var $queuecontainer = $("#queuecontainer")
 	var queue = $("#queuetbl").height()
-	var container = $("#queuecontainer").height()
-	var scrolltop = $("#queuecontainer").scrollTop()
+	var container = $queuecontainer.height()
+	var scrolltop = $queuecontainer.scrollTop()
 	var toscroll = queue - container + scrolltop
-	$("#queuecontainer").animate({
+	$queuecontainer.animate({
 		scrollTop: toscroll + 300
 	}, 500);
 }
 
-function changeDate(opdate, qn, pointing)
+function changeDate(tableID, opdate, staffname, qn, pointing)
 {
-	$('#datepickertbl').css({
+	var $datepicker = $('#datepickertbl')
+	if (tableID == "queuetbl") {
+		$datepicker = $('#datepickerqueuetbl')
+	}
+	$datepicker.css({
 		height: $(pointing).height(),
 		width: $(pointing).width()
 	})
-	reposition("#datepickertbl", "center", "center", pointing)
+	reposition($datepicker, "center", "center", pointing)
 
-	$('#datepickertbl').datepicker( {
+	$datepicker.datepicker( {
 		dateFormat: "yy-mm-dd",
 		minDate: "-1y",
 		maxDate: "+1y",
 		onClose: function () {
 			$('.ui-datepicker').css("fontSize", '')
-			$('#datepickertbl').hide()
-			if (opdate == $('#datepickertbl').val()) {
+			$datepicker.hide()
+			if (opdate == $datepicker.val()) {
 				return
 			}
-			opdate = $('#datepickertbl').val()
+			opdate = $datepicker.val()
 			var sql = "sqlReturnbook=UPDATE book SET opdate='" + opdate + "', "
 			sql += "editor = '" + THISUSER + "' WHERE qn="+ qn + ";"
 
@@ -254,9 +261,8 @@ function changeDate(opdate, qn, pointing)
 				} else {
 					updateBOOK(response);
 					refillall(BOOK)
-					var $cells = $(pointing).closest('tr').children("td")
 					if (($("#queuewrapper").css('display') == 'block') && 
-						($('#titlename').html() == $cells.eq(STAFFNAME).html())) {
+						($('#titlename').html() == staffname)) {
 						//changeDate of this staffname's case
 						refillstaffqueue()
 					}
@@ -265,10 +271,11 @@ function changeDate(opdate, qn, pointing)
 			}
 		}
 	})
-	$('#datepickertbl').datepicker("setDate", new Date(opdate))
-	$('#datepickertbl').datepicker( 'show' )
-	$('.ui-datepicker').css("fontSize", "12px")
-	reposition(".ui-datepicker", "left top", "left bottom", pointing)
+	$datepicker.datepicker("setDate", new Date(opdate))
+	$datepicker.datepicker( 'show' )
+	var $uidatepicker = $('.ui-datepicker')
+	$uidatepicker.css("fontSize", "12px")
+	reposition($uidatepicker, "left top", "left bottom", pointing)
 }
 
 function fillRoomTime(book, tableID, opdateth, qn)
@@ -381,7 +388,7 @@ function deleteRow(rowmain, opdate)
 
 function splitPane()
 {
-	var from = document.getElementById("tblcontainer").scrollTop
+	var scrolledTop = document.getElementById("tblcontainer").scrollTop
 	var tohead = findVisibleHead('#tbl')
 	var width = screen.availWidth
 	var height = screen.availHeight
@@ -392,12 +399,12 @@ function splitPane()
 	initResize("#tblwrapper")
 	$('.ui-resizable-e').css('height', $("#tbl").css("height"))
 
-	fakeScrollAnimate("#tblcontainer", "#tbl", from, tohead)
+	fakeScrollAnimate("tblcontainer", "tbl", scrolledTop, tohead)
 }
 
 function closequeue()
 {
-	var from = document.getElementById("tblcontainer").scrollTop
+	var scrolledTop = document.getElementById("tblcontainer").scrollTop
 	var tohead = findVisibleHead('#tbl')
 	
 	$("#queuewrapper").hide()
@@ -405,21 +412,23 @@ function closequeue()
 		"height": "100%", "width": "100%"
 	})
 
-	fakeScrollAnimate("#tblcontainer", "#tbl", from, tohead)
+	fakeScrollAnimate("tblcontainer", "tbl", scrolledTop, tohead)
 }
 
-function fakeScrollAnimate(container, table, from, tohead)
+function fakeScrollAnimate(containerID, tableID, scrolledTop, tohead)
 {
+	var $container = $('#' + containerID)
+	var $table = $('#' + tableID)
 	var pixel = 300
-	if ((from > tohead.offsetTop) || (tohead.offsetTop < 300)) {
+	if ((scrolledTop > tohead.offsetTop) || (tohead.offsetTop < 300)) {
 		pixel = -300
 	}
-	if ((tohead.offsetTop + $(container).height()) < $(table).height()) {
-		$(container).scrollTop(tohead.offsetTop - pixel)
-		$(container).animate({
-			scrollTop: $(container).scrollTop() + pixel
+	if ((tohead.offsetTop + $container.height()) < $table.height()) {
+		$container.scrollTop(tohead.offsetTop - pixel)
+		$container.animate({
+			scrollTop: $container.scrollTop() + pixel
 		}, 500);
 	} else {
-		$(container).scrollTop(tohead.offsetTop)
+		$container.scrollTop(tohead.offsetTop)
 	}	//table end
 }

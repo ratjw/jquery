@@ -289,14 +289,15 @@ function storePresentcell(pointing)
 				context = context.replace(/\"/g, "")
 			}
 			context = context + pointing.innerHTML
-			$("#editcell").html(context)
-			$("#editcell").css({
+			var $editcell = $("#editcell")
+			$editcell.html(context)
+			$editcell.css({
 				height: $(pointing).height() + "px",
 				width: $(pointing).width() + "px",
 				fontSize: $(pointing).css("fontSize")
 			})
-			$("#editcell").appendTo($(pointing).closest('div'))
-			reposition("#editcell", "center", "center", pointing)
+			$editcell.appendTo($(pointing).closest('div'))
+			reposition($editcell, "center", "center", pointing)
 			fillSetTable(pointing)
 			break
 		case STAFFNAME:
@@ -330,18 +331,18 @@ function createEditcell(pointing)
 	$editcell.data("pointing", pointing)
 	$editcell.html(pointing.innerHTML)
 	$editcell.appendTo($(pointing).closest('div'))
-	reposition("#editcell", "center", "center", pointing)
+	reposition($editcell, "center", "center", pointing)
 	$editcell.focus()
 }
 
-function reposition(me, mypos, atpos, target)
+function reposition($me, mypos, atpos, target)
 {
-	$(me).position({
+	$me.position({
 		my: mypos,
 		at: atpos,
 		of: target
 	}).show()
-	$(me).position({
+	$me.position({
 		my: mypos,
 		at: atpos,
 		of: target

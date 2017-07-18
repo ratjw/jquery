@@ -152,9 +152,9 @@ function findDateArray(str)	//find date string
 	return dateArray
 }
 
-function dateDiff(from, to)	//assume mm/dd/yy(yy) or yyyy-mm-dd
+function dateDiff(fromDate, toDate)	//assume mm/dd/yy(yy) or yyyy-mm-dd
 {
-	var timeDiff = new Date(to) - new Date(from)
+	var timeDiff = new Date(toDate) - new Date(fromDate)
 	return Math.ceil(timeDiff / (1000 * 60 * 60 * 24))
 }
 
@@ -189,13 +189,14 @@ function URIcomponent(qoute)
 	return qoute
 }
 
-function findTablerow(table, qn)
+function findTablerow(tableID, qn)
 {
+	var rows = document.getElementById(tableID).rows
 	var i = 1
-	while ((i < table.rows.length) && (table.rows[i].cells[QN].innerHTML != qn)) {
+	while ((i < rows.length) && (rows[i].cells[QN].innerHTML != qn)) {
 		i++
 	}
-	if (i < table.rows.length) {
+	if (i < rows.length) {
 		return i
 	} else {
 		return null
