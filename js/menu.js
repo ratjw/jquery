@@ -25,13 +25,11 @@ function fillSetTable(pointing)
 
 	disable(qn, "#item5")
 
-	disable(qn, "#item6")
-
-	disable(hn, "#item7")
+	disable(hn, "#item6")
 
 	var unuse = (checkblank(book, opdate, qn))? true : false
-	var item8 = (qn || unuse)? true : false
-	disable(item8, "#item8")
+	var item7 = (qn || unuse)? true : false
+	disable(item7, "#item7")
 
 	var $menu = $("#menu")
 	$menu.menu({
@@ -51,18 +49,15 @@ function fillSetTable(pointing)
 					changeDate(tableID, opdate, staffname, qn, pointing)
 					break
 				case "item4":
-					fillRoomTime(book, tableID, opdateth, qn)
-					break
-				case "item5":
 					fillEquipTable(book, qn)
 					break
-				case "item6":
+				case "item5":
 					editHistory(rowmain, qn)
 					break
-				case "item7":
+				case "item6":
 					PACS(hn)
 					break
-				case "item8":
+				case "item7":
 					if (unuse) {	//from add new row (check case in this opdate)
 						$(rowmain).remove()			//delete blank row
 						var caseNum = findBOOKrow(book, "")
@@ -71,21 +66,21 @@ function fillSetTable(pointing)
 						deleteCase(rowmain, opdate, qn)
 					}
 					break
-				case "item99":
+				case "item88":
 					staffqueue(ui.item.text())
 					if ($("#queuewrapper").css("display") != "block")
 						splitPane()
 					break
-				case "item10":
+				case "item9":
 					serviceReview()
 					break
-				case "item11":
+				case "item10":
 					deleteHistory()
 					break
-				case "item12":
+				case "item11":
 					find()
 					break
-				case "item13":
+				case "item12":
 					readme()
 					break
 			}
@@ -120,8 +115,8 @@ function stafflist(pointing)
 	$stafflist.menu({
 		select: function( event, ui ) {
 			var staffname = ui.item.text()
-			$(pointing).html(staffname)
 			saveContent(pointing, "staffname", staffname)
+			$(pointing).html(staffname)
 			clearEditcellData()
 			$stafflist.hide()		//to disappear after selection
 			event.stopPropagation()
@@ -147,6 +142,100 @@ function menustyle($me, target, width)
 	$me.css({
 		width: width,
 		boxShadow: shadow
+	})
+}
+
+function fillRoomTime(book, opdateth, qn)
+{
+	var caseNum = findBOOKrow(book, qn)
+	var oproom = book[caseNum].oproom
+	var optime = book[caseNum].optime
+	$("#orroom").val(oproom? oproom : "(4)")
+	$("#ortime").val(optime? optime : "(09.00)")
+	$("#roomtime").show()
+	$("#roomtime").dialog({
+		title: opdateth,
+		closeOnEscape: true,
+		modal: true,
+		buttons: {
+			'OK': function () {
+				oproom = $("#orroom").val()
+				optime = $("#ortime").val()
+				if (!Number(oproom) || !Number(optime)) {
+					return		//default value with "(...)"
+				}
+				var sql = "sqlReturnbook=UPDATE book SET "
+				sql += "oproom = '" + oproom + "', "
+				sql += "optime = '" + optime + "', "
+				sql += "editor = '" + THISUSER + "' WHERE qn="+ qn + ";"
+
+				Ajax(MYSQLIPHP, sql, callbackfillRoomTime)
+
+				$(this).dialog('close')
+
+				function callbackfillRoomTime(response)
+				{
+					if (!response || response.indexOf("DBfailed") != -1) {
+						alert ("fillRoomTime", response)
+					} else {
+						updateBOOK(response);
+						if ($("#queuewrapper").css('display') == 'block') {
+							refillstaffqueue()
+						}
+						refillall(BOOK)
+					}
+				}
+			}
+		}
+	})
+
+	var orroom = ""
+	$( "#orroom" ).spinner({
+		min: 1,
+		max: 11,
+		step: 1,
+		spin: function( event, ui ) {
+			if ($('#orroom').val() == "(4)") {
+				orroom = "4"
+			}
+		},
+		stop: function( event, ui ) {
+			if (orroom) {
+				$( "#orroom" ).val(orroom)
+				orroom = ""	
+			}
+		}
+	});
+
+	var ortime
+	$( "#ortime" ).spinner({
+		min: 00,
+		max: 24,
+		step: 0.5,
+		create: function( event, ui ) {
+			$("#ortime").val(optime? optime : "(09.00)")
+		},
+		spin: function( event, ui ) {
+			if ($('#ortime').val() == "(09.00)") {
+				ortime = "09.00"
+			} else {
+				var val = []
+				if (ui.value % 1 == 0) {
+					val[0] = String(ui.value)
+					val[1] = "00"
+				} else {
+					val[0] = String(ui.value - 0.5)
+					val[1] = "30"
+				}
+				if (val[0].length == 1) {
+					val[0] = "0" + val[0]
+				}
+				ortime = val.join(".")
+			}
+		},
+		stop: function( event, ui ) {
+			$( "#ortime" ).val(ortime)
+		}
 	})
 }
 
@@ -276,78 +365,6 @@ function changeDate(tableID, opdate, staffname, qn, pointing)
 	var $uidatepicker = $('.ui-datepicker')
 	$uidatepicker.css("fontSize", "12px")
 	reposition($uidatepicker, "left top", "left bottom", pointing)
-}
-
-function fillRoomTime(book, tableID, opdateth, qn)
-{
-	var caseNum = findBOOKrow(book, qn)
-	var oproom = book[caseNum].oproom
-	var optime = book[caseNum].optime
-	document.getElementById("orroom").value = oproom? oproom : "4"
-	document.getElementById("ortime").value = optime? optime : "09.00"
-	$("#roomtime").show()
-	$("#roomtime").dialog({
-		title: opdateth,
-		closeOnEscape: true,
-		modal: true,
-		buttons: {
-			'OK': function () {
-				oproom = document.getElementById("orroom").value
-				optime = document.getElementById("ortime").value
-				var sql = "sqlReturnbook=UPDATE book SET "
-				sql += "oproom = '" + oproom + "', "
-				sql += "optime = '" + optime + "', "
-				sql += "editor = '" + THISUSER + "' WHERE qn="+ qn + ";"
-
-				Ajax(MYSQLIPHP, sql, callbackfillRoomTime)
-
-				$(this).dialog('close')
-
-				function callbackfillRoomTime(response)
-				{
-					if (!response || response.indexOf("DBfailed") != -1) {
-						alert ("fillRoomTime", response)
-					} else {
-						updateBOOK(response);
-						if ($("#queuewrapper").css('display') == 'block') {
-							refillstaffqueue()
-						}
-						refillall(BOOK)
-					}
-				}
-			}
-		}
-	})
-
-	$( "#orroom" ).spinner({
-		min: 1,
-		max: 11,
-		step: 1
-	});
-
-	var time
-	$( "#ortime" ).spinner({
-		min: 00,
-		max: 24,
-		step: 0.5,
-		spin: function( event, ui ) {
-			var val = []
-			if (ui.value % 1 == 0) {
-				val[0] = String(ui.value)
-				val[1] = "00"
-			} else {
-				val[0] = String(ui.value - 0.5)
-				val[1] = "30"
-			}
-			if (val[0].length == 1) {
-				val[0] = "0" + val[0]
-			}
-			time = val.join(".")
-		},
-		stop: function( event, ui ) {
-			$( "#ortime" ).val(time)
-		}
-	})
 }
 
 function deleteCase(rowmain, opdate, qn)

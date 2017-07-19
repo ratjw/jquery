@@ -32,9 +32,10 @@
     <tbody>
 	 <tr>
      <th style="width:10%">Date</th>
+     <th style="width:3%">Room Time</th>
      <th style="width:3%">Staff</th>
      <th style="width:4%">HN</th>
-     <th style="width:13%">ชื่อ-อายุ</th>
+     <th style="width:10%">PatientName<br>Age</th>
      <th style="width:20%">Diagnosis</th>
      <th style="width:30%">Treatment</th>
      <th style="width:20%">Contact</th>
@@ -58,9 +59,10 @@
      <tbody>
 	  <tr>
       <th style="width:10%">Date</th>
+      <th style="width:3%">Room Time</th>
       <th style="width:3%">Staff</th>
       <th style="width:4%">HN</th>
-      <th style="width:13%">ชื่อ-อายุ</th>
+      <th style="width:10%">PatientName<br>Age</th>
       <th style="width:20%">Diagnosis</th>
       <th style="width:30%">Treatment</th>
       <th style="width:20%">Contact</th>
@@ -78,9 +80,10 @@
   <tbody>
    <tr>
     <td data-title="Date"></td>
+    <td data-title="Room Time"></td>
     <td data-title="Staff"></td>
     <td data-title="HN"></td>
-    <td data-title="ชื่อ อายุ"></td>
+    <td data-title="PatientName Age"></td>
     <td data-title="Diagnosis"></td>
     <td data-title="Treatment"></td>
     <td data-title="Contact"></td>
@@ -162,16 +165,15 @@
   <li id="item1"><div>เพิ่ม case</div></li>
   <li id="item2"><div>เพิ่ม case ไม่ระบุวัน</div></li>
   <li id="item3"><div>เปลี่ยนวันที่</div></li>
-  <li id="item4"><div>ห้องผ่าตัด เวลา</div></li>
-  <li id="item5"><div>Equipment</div></li>
-  <li id="item6"><div>ประวัติการแก้ไข</div></li>
-  <li id="item7"><div>PACS</div></li>
-  <li id="item8" style="border:3px solid gray"><div>Delete</div></li>
-  <li id="item9"><div>คิวของอาจารย์</div><ul id="item0" style="width:100px"></ul></li>
-  <li id="item10"><div>Service Review</div></li>
-  <li id="item11"><div>Deleted Cases</div></li>
-  <li id="item12"><div>Find</div></li>
-  <li id="item13"><div>Readme</div></li>
+  <li id="item4"><div>Equipment</div></li>
+  <li id="item5"><div>ประวัติการแก้ไข</div></li>
+  <li id="item6"><div>PACS</div></li>
+  <li id="item7" style="border:3px solid gray"><div>Delete</div></li>
+  <li id="item8"><div>คิวของอาจารย์</div><ul id="item0" style="width:100px"></ul></li>
+  <li id="item9"><div>Service Review</div></li>
+  <li id="item10"><div>Deleted Cases</div></li>
+  <li id="item11"><div>Find</div></li>
+  <li id="item12"><div>Readme</div></li>
 </ul>
 
 <ul id="stafflist" style="display:none"></ul>
@@ -179,11 +181,11 @@
 <div id="roomtime" style="display:none">
   <p>
 	<label for="orroom">ห้อง:</label>
-	<input id="orroom" size="2">
+	<input id="orroom" style="text-align:center" size="1">
   </p>
   <p>
 	<label for="optime">เวลา:</label>
-	<input id="ortime" size="2">
+	<input id="ortime" style="text-align:center" size="3">
   </p>
 </div>
 

@@ -27,22 +27,19 @@ function makehistory(rowmain, response)
 
 	var HTML_String = '<table id = "historytbl">';
 	HTML_String += '<tr>';
-	HTML_String += '<th style="width:5%">Date Time</th>';
+	HTML_String += '<th style="width:3%">Date Time</th>';
+	HTML_String += '<th style="width:2%">Room Time</th>';
+	HTML_String += '<th style="width:3%">Staff</th>';
 	HTML_String += '<th style="width:15%">Diagnosis</th>';
 	HTML_String += '<th style="width:15%">Treatment</th>';
 	HTML_String += '<th style="width:15%">Admission</th>';
 	HTML_String += '<th style="width:15%">Final Status</th>';
 	HTML_String += '<th style="width:15%">Equipment</th>';
-	HTML_String += '<th style="width:15%">Notice</th>';
-	HTML_String += '<th style="width:5%">Editor</th>';
+	HTML_String += '<th style="width:15%">Contact</th>';
+	HTML_String += '<th style="width:2%">Editor</th>';
 	HTML_String += '</tr>';
 	for (var j = 0; j < history.length; j++) 
 	{
-/*		if ((history[j].action == 'insert' || history[j].action == 'update') && 
-			!history[j].diagnosis && 
-			!history[j].treatment && 
-			!history[j].contact)
-			continue*/
 		if (history[j].action == 'delete') {
 			HTML_String += '<tr style="background-color:#FFCCCC">';
 		}
@@ -52,6 +49,8 @@ function makehistory(rowmain, response)
 			HTML_String += '<tr>';
 		}
 		HTML_String += '<td>' + history[j].editdatetime +'</td>';
+		HTML_String += '<td>' + history[j].oproom +' '+ history[j].optime +'</td>';
+		HTML_String += '<td>' + history[j].staffname +'</td>';
 		HTML_String += '<td>' + history[j].diagnosis +'</td>';
 		HTML_String += '<td>' + history[j].treatment +'</td>';
 		HTML_String += '<td>' + history[j].admission +'</td>';
@@ -97,7 +96,7 @@ function deleteHistory()
 	var sql = "sqlReturnData=SELECT editdatetime, b.opdate, b.staffname, "
 		sql += "b.hn, b.patient, b.diagnosis, b.treatment, b.contact, b.editor, b.qn "
 		sql += "FROM book b INNER JOIN bookhistory bh ON b.qn = bh.qn "
-		sql += "WHERE b.waitnum IS NULL AND bh.waitnum IS NULL "
+		sql += "WHERE b.waitnum IS NULL AND bh.action = 'delete' "
 		sql += "ORDER BY editdatetime DESC;"
 
 	Ajax(MYSQLIPHP, sql, callbackdeleteHistory)
@@ -171,10 +170,8 @@ function undelete(thiscase)
 		var staffname = $thiscase.eq(HSTAFFNAME).html()
 		var qn = $thiscase.eq(HQN).html()
 
-		var sqlstring = "sqlReturnbook=UPDATE book SET "
-		sqlstring += "waitnum = 1"
-		sqlstring += ", editor = '"+ THISUSER
-		sqlstring += "' WHERE qn = " + qn + ";"
+		var sqlstring = "functionName=findwaitnum&qn="+ qn
+		sqlstring += "&editor="+ THISUSER
 
 		Ajax(MYSQLIPHP, sqlstring, callbackUndelete);
 
@@ -191,7 +188,7 @@ function undelete(thiscase)
 				updateBOOK(response);
 				refillall(BOOK)
 				if (($("#queuewrapper").css('display') == 'block') && 
-					($('#titlename').html() == staffname)) {
+					(($('#titlename').html() == staffname) || ($('#titlename').html() == "Consults"))) {
 					refillstaffqueue()
 				}
 			}
@@ -326,7 +323,7 @@ function showFind(containerID, tableID, qn)
 	var i = findTablerow(tableID, qn)
 	if (i) {
 		var rows = table.rows
-		rows[i].style.border = "5px groove"
+		rows[i].style.border = "10px groove"
 		var scrolledTop = document.getElementById(containerID).scrollTop
 		var offset = rows[i].offsetTop
 		var winheight = window.innerHeight

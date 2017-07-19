@@ -141,9 +141,9 @@ function fillStafflist()
 	for (var each = 0; each < STAFF.length; each++)
 	{
 		stafflist += '<li><div>' + STAFF[each] + '</div></li>'
-		staffmenu += '<li id="item99"><div>' + STAFF[each] + '</div></li>'
+		staffmenu += '<li id="item88"><div>' + STAFF[each] + '</div></li>'
 	}
-	staffmenu += '<li id="item99"><div>Consults</div></li>'
+	staffmenu += '<li id="item88"><div>Consults</div></li>'
 	document.getElementById("stafflist").innerHTML = stafflist
 	document.getElementById("item0").innerHTML = staffmenu
 }

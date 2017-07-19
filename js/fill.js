@@ -187,6 +187,7 @@ function makenextrow(table, date)	//create and decorate new row
 function fillrowdate(rows, i, date)	//renew and decorate existing row
 {
 	var tblcells = document.getElementById("tblcells")
+
 	if (rows[i].cells[OPDATE].nodeName != "TD") {
 		var row = tblcells.rows[0].cloneNode(true)
 		rows[i].parentNode.replaceChild(row, rows[i])
@@ -199,26 +200,31 @@ function fillrowdate(rows, i, date)	//renew and decorate existing row
 
 function fillblank(rowi)
 {
-	rowi.cells[STAFFNAME].innerHTML = ""
-	rowi.cells[HN].innerHTML = ""
-	rowi.cells[NAME].innerHTML = ""
-	rowi.cells[DIAGNOSIS].innerHTML = ""
-	rowi.cells[TREATMENT].innerHTML = ""
-	rowi.cells[CONTACT].innerHTML = ""
-	rowi.cells[QN].innerHTML = ""
+	var cells = rowi.cells
+	cells[ROOMTIME].innerHTML = ""
+	cells[STAFFNAME].innerHTML = ""
+	cells[HN].innerHTML = ""
+	cells[NAME].innerHTML = ""
+	cells[DIAGNOSIS].innerHTML = ""
+	cells[TREATMENT].innerHTML = ""
+	cells[CONTACT].innerHTML = ""
+	cells[QN].innerHTML = ""
 }
 
 function filldata(bookq, rowi)		//bookq = book[q]
 {
-	rowi.cells[STAFFNAME].innerHTML = bookq.staffname
-	rowi.cells[HN].innerHTML = bookq.hn
-	rowi.cells[NAME].innerHTML = bookq.patient
-		+ (bookq.dob? "<br>อายุ " + bookq.dob.getAge(bookq.opdate) : "")
-	rowi.cells[DIAGNOSIS].innerHTML = bookq.diagnosis
-	rowi.cells[TREATMENT].innerHTML = bookq.treatment
-	rowi.cells[CONTACT].innerHTML = bookq.contact
-	rowi.cells[QN].innerHTML = bookq.qn
-	rowi.title = bookq.waitnum
+	var cells = rowi.cells
+	cells[ROOMTIME].innerHTML = (bookq.oproom? "ห้อง " + bookq.oproom : "")
+		+ (bookq.optime? "<br>" + bookq.optime : "")
+	cells[STAFFNAME].innerHTML = bookq.staffname
+	cells[HN].innerHTML = bookq.hn
+	cells[NAME].innerHTML = bookq.patient
+		+ (bookq.dob? ("<br>อายุ " + bookq.dob.getAge(bookq.opdate)) : "")
+	cells[DIAGNOSIS].innerHTML = bookq.diagnosis
+	cells[TREATMENT].innerHTML = bookq.treatment
+	cells[CONTACT].innerHTML = bookq.contact
+	cells[QN].innerHTML = bookq.qn
+	title = bookq.waitnum
 }
 
 function staffqueue(staffname)
@@ -295,10 +301,12 @@ jQuery.fn.extend({
 			cells[OPDATE].className = NAMEOFDAYABBR[(new Date(bookq.opdate)).getDay()]
 		}
 		cells[OPDATE].innerHTML = putOpdate(bookq.opdate)
+		cells[ROOMTIME].innerHTML = (bookq.oproom? "ห้อง " + bookq.oproom : "")
+			+ (bookq.optime? "<br>" + bookq.optime : "")
 		cells[STAFFNAME].innerHTML = bookq.staffname
 		cells[HN].innerHTML = bookq.hn
 		cells[NAME].innerHTML = bookq.patient
-			+ "<br>อายุ " + putAgeOpdate(bookq.dob, bookq.opdate)
+			+ (bookq.dob? ("<br>อายุ " + putAgeOpdate(bookq.dob, bookq.opdate)) : "")
 		cells[DIAGNOSIS].innerHTML = bookq.diagnosis
 		cells[TREATMENT].innerHTML = bookq.treatment
 		cells[CONTACT].innerHTML = bookq.contact
@@ -323,6 +331,9 @@ function refillanother(tableID, cellindex, qn)
 
 	switch(cellindex)
 	{
+		case ROOMTIME:
+			cells[ROOMTIME].innerHTML = bookq.oproom + "<br>" + bookq.optime
+			break
 		case STAFFNAME:
 			cells[STAFFNAME].innerHTML = bookq.staffname
 			break

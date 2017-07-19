@@ -57,10 +57,11 @@
 	font-size: 14px;
 	border-left: solid 1px silver;
 	border-bottom: solid 1px silver;
-	height: 25px;
+	height: 20px;
 	background-repeat: no-repeat;
 	background-position: center;
 }
+
 tr.sunday { background-color: #FFDDEE; }
 tr.monday { background-color: #FFFFE0; }
 tr.tuesday { background-color: #FFF0F9; }

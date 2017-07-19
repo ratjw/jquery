@@ -82,7 +82,13 @@ function saveEditPointData(pointed)
 	{
 		case OPDATE:
 			break
+		case ROOMTIME:
+			alert("content", "getEditcellHtml")
+			content = getEditcellHtml()
+			saveContent(pointed, "staffname", content)
+			break
 		case STAFFNAME:
+			alert("content", "getEditcellHtml")
 			content = getEditcellHtml()
 			saveContent(pointed, "staffname", content)
 			break
@@ -170,7 +176,7 @@ function saveContent(pointed, column, content)	//use only "pointed" to save data
 
 			if (tableID == 'tbl') {	//is editing on tbl
 				updateQueuetbl()
-			} else {				//is editing on queuetbl
+			} else {				//consults are not apparent on tbl
 				if ($('#titlename').html() != "Consults") {
 					updateTbl()
 				}
@@ -183,9 +189,10 @@ function saveContent(pointed, column, content)	//use only "pointed" to save data
 		if ($("#queuewrapper").css('display') == 'block') {	//staffqueue showing
 			var staffname = $('#titlename').html()
 			if ((column == "staffname")
-			&& (pointed.innerHTML == staffname)) {	//if input is this staffname
+			&& ((oldContent == staffname)
+			|| (pointed.innerHTML == staffname))) {	//if input is this staffname
 				//New case or change staffname from tbl, update all queuetbl
-				//because there is one more row inserted
+				//because there maybe one more row inserted
 				refillstaffqueue()
 			} else {	//input is not staffname, but on this staffname row
 				if (staffname == $cells.eq(STAFFNAME).html()) {
@@ -251,6 +258,7 @@ function saveHNinput(pointed, hn, content)
 			$cells.eq(QN).html(book[NewRow].qn)
 
 			var bookq = book[NewRow]
+			$cells.eq(ROOMTIME).html(bookq.oproom + "<br>" + optime)
 			$cells.eq(STAFFNAME).html(bookq.staffname)
 			$cells.eq(NAME).html(bookq.patient 
 				+ "<br>อายุ " + putAgeOpdate(bookq.dob, bookq.opdate))
@@ -299,6 +307,17 @@ function storePresentcell(pointing)
 			$editcell.appendTo($(pointing).closest('div'))
 			reposition($editcell, "center", "center", pointing)
 			fillSetTable(pointing)
+			break
+		case ROOMTIME:
+			var cells = $(pointing).closest('tr').children('td')
+			var opdateth = cells.eq(OPDATE).html()
+			var qn = cells.eq(QN).html()
+			var book = BOOK
+			var tableID = $(pointing).closest('table').attr('id')
+			if ((tableID == "queuetbl") && ($('#titlename').html() == "Consults")) {
+				book = CONSULT
+			}
+			fillRoomTime(book, opdateth, qn)
 			break
 		case STAFFNAME:
 			createEditcell(pointing)
