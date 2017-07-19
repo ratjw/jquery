@@ -12,13 +12,14 @@ var LARGESTDATE	= "9999-12-31";
 
 //tbl, queuetbl
 var OPDATE		= 0;
-var STAFFNAME	= 1;
-var HN			= 2;
-var NAME		= 3;
-var DIAGNOSIS	= 4;
-var TREATMENT	= 5;
-var CONTACT		= 6;
-var QN			= 7;
+var ROOMTIME	= 1;
+var STAFFNAME	= 2;
+var HN			= 3;
+var NAME		= 4;
+var DIAGNOSIS	= 5;
+var TREATMENT	= 6;
+var CONTACT		= 7;
+var QN			= 8;
 
 //servicetbl
 var CASE		= 0;
@@ -34,14 +35,14 @@ var SQN			= 8;
 //historytbl
 var HEDITDATETIME	= 0;
 var HOPDATE		= 1;
-var HSTAFFNAME	= 2;
+var HSTAFFNAME	= 2;	//used in undelete
 var HHN			= 3;
 var HPATIENT	= 4;
 var HDIAGNOSIS	= 5;
 var HTREATMENT	= 6;
 var HCONTACT	= 7;
 var HEDITOR		= 8;
-var HQN			= 9;
+var HQN			= 9;	//used in undelete
 
 var EDITABLE 	= [HN, DIAGNOSIS, TREATMENT, CONTACT];
 var SEDITABLE	= [SDIAGNOSIS, STREATMENT, ADMISSION, FINAL]
