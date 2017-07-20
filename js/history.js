@@ -323,7 +323,8 @@ function showFind(containerID, tableID, qn)
 	var i = findTablerow(tableID, qn)
 	if (i) {
 		var rows = table.rows
-		rows[i].style.border = "10px groove"
+		clearBorder(rows)
+		rows[i].style.border = "7px groove skyblue"
 		var scrolledTop = document.getElementById(containerID).scrollTop
 		var offset = rows[i].offsetTop
 		var winheight = window.innerHeight
@@ -385,6 +386,15 @@ function makeDialogFind(history, hn)
 		height: window.innerHeight * 8 / 10,
 		buttons: []
 	})
+}
+
+function clearBorder(rows)
+{
+	for (var i = 0; i < rows.length; i++) {
+		if (rows[i].style.border) {
+			rows[i].style.border = ""
+		}
+	}
 }
 
 function readme()

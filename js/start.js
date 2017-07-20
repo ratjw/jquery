@@ -80,10 +80,12 @@ function loadtable(userid)
 		if ($('#dialogEquip').is(':visible')) {
 			return
 		}
+		var keycode = event.which || window.event.keyCode
+		var pointing = $("#editcell").data("pointing")
 		if ($('#dialogService').is(':visible')) {
-			Skeyin(event)
+			Skeyin(event, keycode, pointing)
 		} else {
-			keyin(event)
+			keyin(event, keycode, pointing)
 		}
 	})
 	$(document).contextmenu( function (event) {

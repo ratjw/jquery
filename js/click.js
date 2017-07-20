@@ -4,10 +4,8 @@ function clicktable(clickedCell)
 	storePresentcell(clickedCell)
 }
 
-function keyin(event)
+function keyin(event, keycode, pointing)
 {
-	var keycode = event.which || window.event.keyCode
-	var pointing = $("#editcell").data("pointing")
 	var thiscell
 
 	if (keycode == 27)	{

@@ -259,10 +259,8 @@ function clickservice(clickedCell)
 	storePresentScell(clickedCell)
 }
 
-function Skeyin(event)
+function Skeyin(event, keycode, pointing)
 {
-	var keycode = event.which || window.event.keyCode
-	var pointing = $("#editcell").data("pointing")
 	var thiscell
 
 	if (keycode == 27) {
