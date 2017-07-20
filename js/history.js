@@ -98,7 +98,7 @@ function deleteHistory()
 		sql += "FROM book b INNER JOIN bookhistory bh ON b.qn = bh.qn "
 		sql += "WHERE b.waitnum IS NULL AND bh.action = 'delete' "
 		sql += "ORDER BY editdatetime DESC;"
-
+//To do eliminate repeated cases
 	Ajax(MYSQLIPHP, sql, callbackdeleteHistory)
 
 	clearEditcellData()

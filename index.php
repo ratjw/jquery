@@ -180,11 +180,11 @@
 
 <div id="roomtime" style="display:none">
   <p>
-	<label for="orroom">ห้อง:</label>
+	<label for="orroom">XSU</label>
 	<input id="orroom" style="text-align:center" size="1">
   </p>
   <p>
-	<label for="optime">เวลา:</label>
+	<label for="optime">เวลา</label>
 	<input id="ortime" style="text-align:center" size="3">
   </p>
 </div>

@@ -63,7 +63,7 @@ function fillSetTable(pointing)
 						var caseNum = findBOOKrow(book, "")
 						book.splice(caseNum, 1)
 					} else {
-						deleteCase(rowmain, opdate, qn)
+						deleteCase(rowmain, opdate, staffname, qn)
 					}
 					break
 				case "item88":
@@ -161,9 +161,10 @@ function fillRoomTime(book, opdateth, qn)
 			'OK': function () {
 				oproom = $("#orroom").val()
 				optime = $("#ortime").val()
-				if (!Number(oproom) || !Number(optime)) {
+				if (!Number($("#orroom").val()) || !Number(optime)) {
 					return		//default value with "(...)"
 				}
+				oproom = $("#roomtime label[for='orroom']").html() + oproom
 				var sql = "sqlReturnbook=UPDATE book SET "
 				sql += "oproom = '" + oproom + "', "
 				sql += "optime = '" + optime + "', "
@@ -367,7 +368,7 @@ function changeDate(tableID, opdate, staffname, qn, pointing)
 	reposition($uidatepicker, "left top", "left bottom", pointing)
 }
 
-function deleteCase(rowmain, opdate, qn)
+function deleteCase(rowmain, opdate, staffname, qn)
 {
 	//not actually delete the case but set waitnum=NULL
 	var sql = "sqlReturnbook=UPDATE book SET waitnum=NULL, "
@@ -382,6 +383,10 @@ function deleteCase(rowmain, opdate, qn)
 		} else {
 			updateBOOK(response);
 			deleteRow(rowmain, opdate)
+			if (($("#queuewrapper").css('display') == 'block') && 
+				($('#titlename').html() == staffname)) {
+				refillstaffqueue()
+			}
 		}
 	}
 }

@@ -84,7 +84,7 @@ function findwaitnum($mysqli)
 	$waitnum = $result->fetch_row();
 	$waitnum = $waitnum[0];
 
-	$sql = "UPDATE book SET waitnum=$waitnum, editor=$editor WHERE qn=$qn";
+	$sql = "UPDATE book SET waitnum=$waitnum, editor='$editor' WHERE qn=$qn";
 
 	$result = $mysqli->query ($sql);
 	if ($result) {

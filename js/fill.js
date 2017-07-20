@@ -214,7 +214,7 @@ function fillblank(rowi)
 function filldata(bookq, rowi)		//bookq = book[q]
 {
 	var cells = rowi.cells
-	cells[ROOMTIME].innerHTML = (bookq.oproom? "ห้อง " + bookq.oproom : "")
+	cells[ROOMTIME].innerHTML = (bookq.oproom? bookq.oproom : "")
 		+ (bookq.optime? "<br>" + bookq.optime : "")
 	cells[STAFFNAME].innerHTML = bookq.staffname
 	cells[HN].innerHTML = bookq.hn
@@ -301,7 +301,7 @@ jQuery.fn.extend({
 			cells[OPDATE].className = NAMEOFDAYABBR[(new Date(bookq.opdate)).getDay()]
 		}
 		cells[OPDATE].innerHTML = putOpdate(bookq.opdate)
-		cells[ROOMTIME].innerHTML = (bookq.oproom? "ห้อง " + bookq.oproom : "")
+		cells[ROOMTIME].innerHTML = (bookq.oproom? bookq.oproom : "")
 			+ (bookq.optime? "<br>" + bookq.optime : "")
 		cells[STAFFNAME].innerHTML = bookq.staffname
 		cells[HN].innerHTML = bookq.hn
