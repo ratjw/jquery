@@ -75,7 +75,7 @@ function fillSetTable(pointing)
 					serviceReview()
 					break
 				case "item10":
-					deleteHistory()
+					deletedCases()
 					break
 				case "item11":
 					find()

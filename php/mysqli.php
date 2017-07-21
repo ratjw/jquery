@@ -87,10 +87,37 @@ function findwaitnum($mysqli)
 	$sql = "UPDATE book SET waitnum=$waitnum, editor='$editor' WHERE qn=$qn";
 
 	$result = $mysqli->query ($sql);
-	if ($result) {
-		return book($mysqli);
-	} else {
+	if (!$result) {
+		return $mysqli->error;
+	}
+	
+	return book($mysqli);
+
+}
+
+function deletedCases($mysqli)
+{
+	$sql = "SELECT a.editdatetime, a.opdate, a.staffname, a.hn, a.patient, 
+				a.diagnosis, a.treatment, a.contact, a.editor, a.qn 
+			FROM (SELECT editdatetime, revision, b.* 
+					FROM book b INNER JOIN bookhistory bh ON b.qn = bh.qn 
+					WHERE b.waitnum IS NULL AND bh.action = 'delete') a 
+				INNER JOIN (SELECT MAX(revision) mr, qn 
+					FROM (SELECT editdatetime, revision, b.qn 
+						FROM book b INNER JOIN bookhistory bh ON b.qn = bh.qn 
+						WHERE b.waitnum IS NULL AND bh.action = 'delete') aa 
+						GROUP BY qn) d 
+				ON a.qn = d.qn 
+				WHERE a.revision = d.mr 
+			ORDER BY a.editdatetime DESC;";
+	$result = $mysqli->query ($sql);
+	if (!$result) {
 		return $mysqli->error;
 	}
 
+	while ($rowi = $result->fetch_assoc()) {
+		$case[] = $rowi;
+	}
+
+	return $case;
 }

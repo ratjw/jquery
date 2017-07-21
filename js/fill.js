@@ -43,7 +43,7 @@ function fillall(book, table, start, until)
 		if (book[q].opdate == LARGESTDATE) {
 			break
 		}
-		while (date < book[q].opdate)
+		while ((date < book[q].opdate) && (date <= until))
 		{	//step over each day that is not in QBOOK
 			if (date != madedate)
 			{

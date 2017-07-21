@@ -24,45 +24,53 @@ function loadtable(userid)
 		updating.timer = 0
 		event.stopPropagation()
 		var target = event.target
-		if ($('#menu').is(":visible")) {	//visible == take up space even can't be seen
-			if (!$(target).closest('#menu').length) {
-				$('#menu').hide();
-				clearEditcellData()
-			}
-		}
-		if ($('#stafflist').is(":visible")) {
-			if (!$(target).closest('#stafflist').length) {
-				$('#stafflist').hide();
-				clearEditcellData()
-			}
-		}
-		if ($('#delete').is(":visible")) {
-			if(!$(target).closest('#delete').length) {
-				$('#delete').hide();
-			}
-		}
-		if ($('#undelete').is(":visible")) {
-			if ($(target).index()) {
-				$('#undelete').hide()
+		if (THISUSER == "000000") {
+			if (target.nodeName != "TD") {
 				return false
 			}
-		}
-		if (target.id == "editcell") {
-			return
-		}
-		
-		if (target.nodeName == "TH") {
-			clearEditcellData()
-			return	
-		}
+			var qn = $(target).closest('tr').children('td').eq(QN).html()
+			fillEquipTable(BOOK, qn)
+		} else {
+			if ($('#menu').is(":visible")) {	//visible == take up space even can't be seen
+				if (!$(target).closest('#menu').length) {
+					$('#menu').hide();
+					clearEditcellData()
+				}
+			}
+			if ($('#stafflist').is(":visible")) {
+				if (!$(target).closest('#stafflist').length) {
+					$('#stafflist').hide();
+					clearEditcellData()
+				}
+			}
+			if ($('#delete').is(":visible")) {
+				if(!$(target).closest('#delete').length) {
+					$('#delete').hide();
+				}
+			}
+			if ($('#undelete').is(":visible")) {
+				if ($(target).index()) {
+					$('#undelete').hide()
+					return false
+				}
+			}
+			if (target.id == "editcell") {
+				return
+			}
+			
+			if (target.nodeName == "TH") {
+				clearEditcellData()
+				return	
+			}
 
-		if ($(target).closest('table').attr('id') == 'tbl' ||
-			$(target).closest('table').attr('id') == 'queuetbl') {
+			if ($(target).closest('table').attr('id') == 'tbl' ||
+				$(target).closest('table').attr('id') == 'queuetbl') {
 
-			clicktable(target)
-		}
-		else if ($(target).closest('table').attr('id') == 'servicetbl') {
-			clickservice(target)
+				clicktable(target)
+			}
+			else if ($(target).closest('table').attr('id') == 'servicetbl') {
+				clickservice(target)
+			}
 		}
 	})
 	$('#menu li > div').click(function(e){	//click on parent of submenu
@@ -109,7 +117,7 @@ function loading(response)
 		localStorage.setItem('ALLBOOK', response)
 		updateBOOK(response)
 		if (THISUSER == "000000") {
-			fillEquipForScrub()
+			fillForScrub()
 		} else {
 			fillupstart();
 			fillStafflist()

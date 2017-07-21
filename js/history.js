@@ -21,7 +21,7 @@ function editHistory(rowmain, qn)
 
 function makehistory(rowmain, response)
 {
-	var history = JSON.parse(response)
+	var tracing	= JSON.parse(response)
 
 	$('#historytbl').attr('id', '')
 
@@ -38,26 +38,26 @@ function makehistory(rowmain, response)
 	HTML_String += '<th style="width:15%">Contact</th>';
 	HTML_String += '<th style="width:2%">Editor</th>';
 	HTML_String += '</tr>';
-	for (var j = 0; j < history.length; j++) 
+	for (var j = 0; j < tracing.length; j++) 
 	{
-		if (history[j].action == 'delete') {
+		if (tracing[j].action == 'delete') {
 			HTML_String += '<tr style="background-color:#FFCCCC">';
 		}
-		else if (history[j].action == 'undelete') {
+		else if (tracing[j].action == 'undelete') {
 			HTML_String += '<tr style="background-color:#CCFFCC">';
 		} else {
 			HTML_String += '<tr>';
 		}
-		HTML_String += '<td>' + history[j].editdatetime +'</td>';
-		HTML_String += '<td>' + history[j].oproom +' '+ history[j].optime +'</td>';
-		HTML_String += '<td>' + history[j].staffname +'</td>';
-		HTML_String += '<td>' + history[j].diagnosis +'</td>';
-		HTML_String += '<td>' + history[j].treatment +'</td>';
-		HTML_String += '<td>' + history[j].admission +'</td>';
-		HTML_String += '<td>' + history[j].final +'</td>';
-		HTML_String += '<td>' + showEquip(history[j].equipment) +'</td>';
-		HTML_String += '<td>' + history[j].contact +'</td>';
-		HTML_String += '<td>' + history[j].editor +'</td>';
+		HTML_String += '<td>' + tracing[j].editdatetime +'</td>';
+		HTML_String += '<td>' + tracing[j].oproom +' '+ tracing[j].optime +'</td>';
+		HTML_String += '<td>' + tracing[j].staffname +'</td>';
+		HTML_String += '<td>' + tracing[j].diagnosis +'</td>';
+		HTML_String += '<td>' + tracing[j].treatment +'</td>';
+		HTML_String += '<td>' + tracing[j].admission +'</td>';
+		HTML_String += '<td>' + tracing[j].final +'</td>';
+		HTML_String += '<td>' + showEquip(tracing[j].equipment) +'</td>';
+		HTML_String += '<td>' + tracing[j].contact +'</td>';
+		HTML_String += '<td>' + tracing[j].editor +'</td>';
 		HTML_String += '</tr>';
 	}
 	HTML_String += '</table>';
@@ -91,30 +91,24 @@ function showEquip(equipString)
 	return equip
 }
 
-function deleteHistory()
+function deletedCases()
 {
-	var sql = "sqlReturnData=SELECT editdatetime, b.opdate, b.staffname, "
-		sql += "b.hn, b.patient, b.diagnosis, b.treatment, b.contact, b.editor, b.qn "
-		sql += "FROM book b INNER JOIN bookhistory bh ON b.qn = bh.qn "
-		sql += "WHERE b.waitnum IS NULL AND bh.action = 'delete' "
-		sql += "ORDER BY editdatetime DESC;"
-//To do eliminate repeated cases
-	Ajax(MYSQLIPHP, sql, callbackdeleteHistory)
+	Ajax(MYSQLIPHP, "functionName=deletedCases", callbackdeletedCases)
 
 	clearEditcellData()
 
-	function callbackdeleteHistory(response)
+	function callbackdeletedCases(response)
 	{
 		if (!response || response.indexOf("DBfailed") != -1)
-			alert("deleteHistory", response)
+			alert("deletedCases", response)
 		else
-			makeDeleteHistory(response)
+			makedeletedCases(response)
 	}
 }
 
-function makeDeleteHistory(response)
+function makedeletedCases(response)
 {
-	var history = JSON.parse(response);
+	var deleted = JSON.parse(response);
 
 	$('#historytbl').attr('id', '')
 
@@ -131,19 +125,19 @@ function makeDeleteHistory(response)
 	HTML_String += '<th style="width:5%">Editor</th>';
 	HTML_String += '<th style="display:none"></th>';
 	HTML_String += '</tr>';
-	for (var j = 0; j < history.length; j++) 
+	for (var j = 0; j < deleted.length; j++) 
 	{
 		HTML_String += '<tr>';
-		HTML_String += '<td onclick="undelete(this)">' + history[j].editdatetime +'</td>';
-		HTML_String += '<td>' + history[j].opdate +'</td>';
-		HTML_String += '<td>' + history[j].staffname +'</td>';
-		HTML_String += '<td>' + history[j].hn +'</td>';
-		HTML_String += '<td>' + history[j].patient +'</td>';
-		HTML_String += '<td>' + history[j].diagnosis +'</td>';
-		HTML_String += '<td>' + history[j].treatment +'</td>';
-		HTML_String += '<td>' + history[j].contact +'</td>';
-		HTML_String += '<td>' + history[j].editor +'</td>';
-		HTML_String += '<td style="display:none">' + history[j].qn +'</td>';
+		HTML_String += '<td onclick="undelete(this)">' + deleted[j].editdatetime +'</td>';
+		HTML_String += '<td>' + deleted[j].opdate +'</td>';
+		HTML_String += '<td>' + deleted[j].staffname +'</td>';
+		HTML_String += '<td>' + deleted[j].hn +'</td>';
+		HTML_String += '<td>' + deleted[j].patient +'</td>';
+		HTML_String += '<td>' + deleted[j].diagnosis +'</td>';
+		HTML_String += '<td>' + deleted[j].treatment +'</td>';
+		HTML_String += '<td>' + deleted[j].contact +'</td>';
+		HTML_String += '<td>' + deleted[j].editor +'</td>';
+		HTML_String += '<td style="display:none">' + deleted[j].qn +'</td>';
 		HTML_String += '</tr>';
 	}
 	HTML_String += '</table>';
@@ -302,10 +296,12 @@ function sqlFind(hn, patient, diagnosis, treatment, contact)
 
 function makeFind(response, hn)
 {
-	var history = JSON.parse(response);
+	var found = JSON.parse(response);
 
-	scrolltoThisCase(history[0].qn)
-	makeDialogFind(history, hn )
+	scrolltoThisCase(found[0].qn)
+	if (found.length > 1) {
+		makeDialogFind(found, hn )
+	}
 }
 
 function scrolltoThisCase(qn)
@@ -342,7 +338,7 @@ function showFind(containerID, tableID, qn)
 	}
 }
 
-function makeDialogFind(history, hn)
+function makeDialogFind(found, hn)
 {
 	$('#historytbl').attr('id', '')
 
@@ -357,21 +353,21 @@ function makeDialogFind(history, hn)
 	HTML_String += '<th style="width:20%">Contact</th>';
 	HTML_String += '<th style="width:5%">Editor</th>';
 	HTML_String += '</tr>';
-	for (var j = 0; j < history.length; j++) 
+	for (var j = 0; j < found.length; j++) 
 	{
-		if (!history[j].waitnum) {
+		if (!found[j].waitnum) {
 			HTML_String += '<tr style="background-color:#FFCCCC">';
 		} else {
 			HTML_String += '<tr>';
 		}
-		HTML_String += '<td>' + history[j].opdate +'</td>';
-		HTML_String += '<td>' + history[j].staffname +'</td>';
-		HTML_String += '<td>' + history[j].hn +'</td>';
-		HTML_String += '<td>' + history[j].patient +'</td>';
-		HTML_String += '<td>' + history[j].diagnosis +'</td>';
-		HTML_String += '<td>' + history[j].treatment +'</td>';
-		HTML_String += '<td>' + history[j].contact +'</td>';
-		HTML_String += '<td>' + history[j].editor +'</td>';
+		HTML_String += '<td>' + found[j].opdate +'</td>';
+		HTML_String += '<td>' + found[j].staffname +'</td>';
+		HTML_String += '<td>' + found[j].hn +'</td>';
+		HTML_String += '<td>' + found[j].patient +'</td>';
+		HTML_String += '<td>' + found[j].diagnosis +'</td>';
+		HTML_String += '<td>' + found[j].treatment +'</td>';
+		HTML_String += '<td>' + found[j].contact +'</td>';
+		HTML_String += '<td>' + found[j].editor +'</td>';
 		HTML_String += '</tr>';
 	}
 	HTML_String += '</table>';

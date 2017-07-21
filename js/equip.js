@@ -96,15 +96,15 @@ function fillEquipThisDate(book, i, q)
 		$('#dialogEquip input').click(function() {
 			return false
 		})
-//To do		getEditedby(qn)
+		getEditedby(qn, i)
  	} else {
 		$('#dialogEquip input').prop('disabled', false)
 		$('#dialogEquip input').off("click")
-		document.getElementById("editedby").innerHTML = ""
+		$('#dialogEquip span[title="editedby"]').html("")
 	}
 
-	var posx = 100*i
-	var posy = 30*i
+	var posx = 20*i
+	var posy = 20*i
 	var height = window.innerHeight
 	if (height > 700) {
 		height = 700
@@ -135,10 +135,20 @@ function fillEquipThisDate(book, i, q)
 	temp2.innerHTML = temp1.innerHTML
 	$('#dialogEquip').find("span").prop("id", "")
 	$('#dialogEquip').find("input").prop("id", "")
+	temp2.id = temp1.id
 	temp1.id = ""
-	temp2.id = "dialogEquip"
-	temp2.className = "dialogEquip"
+	temp2.className = temp1.className
 	$("body").append($(temp2))
+	$('#dialogEquip span[title="editedby"]').attr("title", "editedby" + i)
+}
+
+function fillForScrub(book, qn)
+{
+	var start = new Date().ISOdate()
+	var until = start.nextdays(7)
+
+	var table = document.getElementById("tbl")
+	fillall(BOOK, table, start, until)
 }
 
 function fillEquipTable(book, qn)
@@ -180,10 +190,10 @@ function fillEquipTable(book, qn)
 			}
 		});
 		showNonEditableEquip(qn, bookqEquip)
-		getEditedby(qn)
+		getEditedby(qn, "")
  	} else {
 		showEditableEquip(qn, bookqEquip)
-		document.getElementById("editedby").innerHTML = ""
+		$('#dialogEquip span[title="editedby"]').html("")
 	}
 	var height = window.innerHeight
 	if (height > 800) {
@@ -251,7 +261,7 @@ function showEditableEquip(qn, bookqEquip)
 	$('#dialogEquip input').off("click")
 }
 
-function getEditedby(qn)
+function getEditedby(qn, i)
 {
 	var sql = "sqlReturnData=SELECT editor, editdatetime FROM bookhistory "
 	sql += "WHERE qn="+ qn + " AND equipment <> '';"
@@ -267,7 +277,7 @@ function getEditedby(qn)
 				$.each(JSON.parse(response), function(key, val) {
 					Editedby += (val.editor + " : " + val.editdatetime + "<br>")
 				});
-				document.getElementById("editedby").innerHTML = Editedby
+				$('span[title="editedby' + i + '"]').html(Editedby)
 			}
 		}
 }
