@@ -452,7 +452,7 @@
   <br>
   <span style="width:300px;"></span>
   <span style="width:70px;"> Edited by </span>
-  <span style="position:absolute" id="editedby" title="editedby"></span>
+  <span style="position:absolute" id="editedby"></span>
 </div>
 
 <div id="dialogReadme" class="dialogBox">

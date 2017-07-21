@@ -25,6 +25,15 @@ function fillupstart()
 	}, 300);
 }
 
+function fillForScrub()
+{
+	var start = new Date().ISOdate()
+	var until = start.nextdays(7)
+
+	var table = document.getElementById("tbl")
+	fillall(BOOK, table, start, until)
+}
+
 function fillall(book, table, start, until)
 {
 	var tbody = table.getElementsByTagName("tbody")[0]

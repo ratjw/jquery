@@ -1,156 +1,3 @@
-function fillEquipForScrub()
-{
-	$('#dialogScrub').dialog({
-		title: "เครื่องมือผ่าตัด",
-		create: function(ev, ui) {
-			$(this).parent().find('button:contains("Today")').css({
-				'float':'left'
-			})
-			$(this).parent().find('.ui-dialog-buttonset').css({
-				'width':'75%',
-				'text-align':'right'
-			})
-		},
-		buttons: {
-			'Today': function () {
-				var opdate = (new Date()).ISOdate()
-				fillEquipTodate(opdate)
-				$(this).dialog('close')
-			},
-			'Next Day': function () {
-				var opdate = ((new Date()).ISOdate()).nextdays(1)
-				while (holiday(opdate)
-					|| ((new Date(opdate)).getDay() == 0)
-					|| ((new Date(opdate)).getDay() == 6)) {
-						opdate = opdate.nextdays(1)
-				}
-				fillEquipTodate(opdate)
-				$(this).dialog('close')
-			}
-		},
-		close: function (event, ui) {
-			if (!$(".ui-dialog").is(":visible")) {
-				window.location = window.location.href
-			}
-		}
-	})
-}
-
-function fillEquipTodate(opdate)
-{
-	var book = BOOK		//not include CONSULT
-	var i = 0
-	var q = findOpdateBOOKrow(book, opdate)		//not include CONSULT
-
-	if (book[q].opdate != opdate) {
-		alert("เครื่องมือผ่าตัด", "No case")
-		book[null].opdate	// TypeError: book[null] is undefined
-		//go back to fillEquipForScrub() with error on console
-	} else {
-		while ((q < book.length) && (book[q].opdate == opdate)) {
-			i++
-			q++
-		}		//go to last case of the day
-
-		i--		//to make first case on top
-		q--
-		while (i >= 0) {
-			fillEquipThisDate(book, i, q)
-			i--
-			q--
-		}
-	}
-}
-
-function fillEquipThisDate(book, i, q)
-{
-	var bookq = book[q]		//not include CONSULT
-	var bookqEquip = bookq.equipment
-	var qn = bookq.qn
-
-	document.getElementById("opday").innerHTML = NAMEOFDAYTHAI[(new Date(bookq.opdate)).getDay()]
-	document.getElementById("opdate").innerHTML = putOpdate(bookq.opdate)
-	document.getElementById("staffname").innerHTML = bookq.staffname
-	document.getElementById("hn").innerHTML = bookq.hn
-	document.getElementById("patientname").innerHTML = bookq.patient
-	document.getElementById("age").innerHTML = putAgeOpdate(bookq.dob, bookq.opdate)
-	document.getElementById("diagnosis").innerHTML = bookq.diagnosis
-	document.getElementById("treatment").innerHTML = bookq.treatment
-
-	$('#dialogEquip input').prop('checked', false)
-	$('#dialogEquip input').val('')
-	$('#dialogEquip input[type=text]').prop('disabled', false)//make it easier to see
-
-	if ( bookqEquip ) {			// If any, fill checked & others
-		$.each(JSON.parse(bookqEquip), function(key, val) {
-			if (val == 'checked') {
-				$("#"+ key).prop("checked", true)	//radio and checkbox
-			} else {
-				$("#"+ key).val(val)	//fill <input> text
-			}
-		});
-		$('#dialogEquip input[type=radio]').prop("disabled", true)
-		$('#dialogEquip input[type=text]').click(function() {
-			$(this).prop('disabled', true)
-		})
-		$('#dialogEquip input').click(function() {
-			return false
-		})
-		getEditedby(qn, i)
- 	} else {
-		$('#dialogEquip input').prop('disabled', false)
-		$('#dialogEquip input').off("click")
-		$('#dialogEquip span[title="editedby"]').html("")
-	}
-
-	var posx = 20*i
-	var posy = 20*i
-	var height = window.innerHeight
-	if (height > 700) {
-		height = 700
-	}
-	if (height + posy > window.innerHeight) {
-		height = window.innerHeight - posy
-	}
-	$('#dialogEquip').dialog({
-		title: "เครื่องมือผ่าตัด",
-		closeOnEscape: true,
-		width: 700,
-		height: height,
-		position: { my: "left top",
-					at: "left+" + posx + " top+" + posy,
-					of: window },
-		open: function (event, ui) {
-			$("input").blur();	//disable default autofocus on text input
-		},
-		close: function (event, ui) {
-			if (!$(".ui-dialog").is(":visible")) {
-				window.location = window.location.href
-			}
-		}
-	})
-
-	var temp1 = document.getElementById("dialogEquip")
-	var temp2 = document.createElement("div")
-	temp2.innerHTML = temp1.innerHTML
-	$('#dialogEquip').find("span").prop("id", "")
-	$('#dialogEquip').find("input").prop("id", "")
-	temp2.id = temp1.id
-	temp1.id = ""
-	temp2.className = temp1.className
-	$("body").append($(temp2))
-	$('#dialogEquip span[title="editedby"]').attr("title", "editedby" + i)
-}
-
-function fillForScrub(book, qn)
-{
-	var start = new Date().ISOdate()
-	var until = start.nextdays(7)
-
-	var table = document.getElementById("tbl")
-	fillall(BOOK, table, start, until)
-}
-
 function fillEquipTable(book, qn)
 {
 	var q = findBOOKrow(book, qn)
@@ -190,10 +37,10 @@ function fillEquipTable(book, qn)
 			}
 		});
 		showNonEditableEquip(qn, bookqEquip)
-		getEditedby(qn, "")
+		getEditedby(qn)
  	} else {
 		showEditableEquip(qn, bookqEquip)
-		$('#dialogEquip span[title="editedby"]').html("")
+		$('#editedby').html("")
 	}
 	var height = window.innerHeight
 	if (height > 800) {
@@ -277,7 +124,7 @@ function getEditedby(qn, i)
 				$.each(JSON.parse(response), function(key, val) {
 					Editedby += (val.editor + " : " + val.editdatetime + "<br>")
 				});
-				$('span[title="editedby' + i + '"]').html(Editedby)
+				$('#editedby').html(Editedby)
 			}
 		}
 }

@@ -25,11 +25,37 @@ function loadtable(userid)
 		event.stopPropagation()
 		var target = event.target
 		if (THISUSER == "000000") {
-			if (target.nodeName != "TD") {
+			$(document).off('keydown', function (event) {})
+			var qn = $(target).closest('tr').children('td').eq(QN).html()
+			if ((target.nodeName != "TD") || (!qn)) {
+				event.preventDefault()
+				event.stopPropagation()
 				return false
 			}
-			var qn = $(target).closest('tr').children('td').eq(QN).html()
 			fillEquipTable(BOOK, qn)
+			$('#clearPosition').off('click')
+			$('#clearShunt').off('click')
+			$('#dialogEquip').dialog("option", "buttons", [
+				{
+					text: "แก้ไข",
+					click: function () {
+						return
+					}
+				},
+				{
+					text: "Print",
+					click: function () {
+						return
+					}
+				}
+			]);
+			$('#dialogEquip input[type=radio]').prop("disabled", true)
+			$('#dialogEquip input[type=text]').click(function() {
+				$(this).prop('disabled', true)
+			})
+			$('#dialogEquip input').click(function() {
+				return false
+			})
 		} else {
 			if ($('#menu').is(":visible")) {	//visible == take up space even can't be seen
 				if (!$(target).closest('#menu').length) {
@@ -73,13 +99,18 @@ function loadtable(userid)
 			}
 		}
 	})
-	$('#menu li > div').click(function(e){	//click on parent of submenu
+	$('#menu li > div').click(function(event){		//click on parent of submenu
 		if ($(this).siblings('ul').length > 0){
-			e.preventDefault()
-			e.stopPropagation()
+			event.preventDefault()
+			event.stopPropagation()
 		}
 	});
 	$(document).keydown( function (event) {
+//		if (THISUSER == "000000") {
+//			event.preventDefault()
+//			event.stopPropagation()
+//			return false
+//		}
 		countReset();
 		updating.timer = 0
 		if ($('#monthpicker').is(':focus')) {
