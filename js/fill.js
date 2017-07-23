@@ -5,8 +5,8 @@ function fillupstart()
 		BOOK.push({"opdate" : getSunday()})
 
 	var start = new Date()
-	start = new Date(start.getFullYear(), start.getMonth()-3).ISOdate()
-	start = getSunday(start)
+	start = new Date(start.getFullYear(), start.getMonth()-1).ISOdate()
+	start = getSunday(start)					//2 months back
 
 	//fill until 1 year from now
 	var nextyear = new Date().getFullYear() + 1
@@ -49,7 +49,7 @@ function fillall(book, table, start, until)
 	var i = 0
 	for (q; q < book.length; q++)
 	{	
-		if (book[q].opdate == LARGESTDATE) {
+		if ((book[q].opdate == LARGESTDATE) || (date >= until)) {
 			break
 		}
 		while ((date < book[q].opdate) && (date <= until))
@@ -101,11 +101,11 @@ function refillall(book)
 	var table = document.getElementById("tbl")
 	var tbody = table.getElementsByTagName("tbody")[0]
 	var rows = table.rows
-	var head = table.rows[0]
+	var tlength = rows.length
+	var head = rows[0]
 	var date
 	var madedate
 	var start = $('#tbl tr:has("td"):first td').eq(OPDATE).html().numDate()
-	var tlength = $('#tbl > tbody > tr').length
 
 	date = start	//find this row in book
 
@@ -153,6 +153,8 @@ function refillall(book)
 			filldata(book[q], rows[i])	//fill a row for the day in book
 			madedate = date
 			i++
+			if (i >= tlength)
+				return
 			q++
 		}
 		else
@@ -176,6 +178,8 @@ function refillall(book)
 			fillrowdate(rows, i, date)	//existing row
 			fillblank(rows[i])
 			i++
+			if (i >= tlength)
+				return
 		}
 	}
 }
@@ -223,6 +227,7 @@ function fillblank(rowi)
 function filldata(bookq, rowi)		//bookq = book[q]
 {
 	var cells = rowi.cells
+	rowi.title = bookq.waitnum
 	cells[ROOMTIME].innerHTML = (bookq.oproom? bookq.oproom : "")
 		+ (bookq.optime? "<br>" + bookq.optime : "")
 	cells[STAFFNAME].innerHTML = bookq.staffname
@@ -233,7 +238,6 @@ function filldata(bookq, rowi)		//bookq = book[q]
 	cells[TREATMENT].innerHTML = bookq.treatment
 	cells[CONTACT].innerHTML = bookq.contact
 	cells[QN].innerHTML = bookq.qn
-	title = bookq.waitnum
 }
 
 function staffqueue(staffname)
@@ -321,7 +325,7 @@ jQuery.fn.extend({
 		cells[CONTACT].innerHTML = bookq.contact
 		cells[QN].innerHTML = bookq.qn
 		this[0].title = bookq.waitnum
-		addColor(this, bookq.opdate)
+		addColor(this, bookq.opdate)	//alternate day color
 		//tr[0] has className "ui-sortable-handle", so first case has no className 
 	}
 })
@@ -341,7 +345,8 @@ function refillanother(tableID, cellindex, qn)
 	switch(cellindex)
 	{
 		case ROOMTIME:
-			cells[ROOMTIME].innerHTML = bookq.oproom + "<br>" + bookq.optime
+			cells[ROOMTIME].innerHTML = (bookq.oproom? bookq.oproom : "")
+				+ (bookq.optime? "<br>" + bookq.optime : "")
 			break
 		case STAFFNAME:
 			cells[STAFFNAME].innerHTML = bookq.staffname

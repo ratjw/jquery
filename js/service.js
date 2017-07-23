@@ -344,8 +344,8 @@ function saveEditPointDataService(pointed)
 
 function saveSContent(pointed, column, content)	//column name in MYSQL
 {
-	var rowmain = $(pointed).closest('tr')[0]
-	var qn = rowmain.cells[SQN].innerHTML
+	var rowi = $(pointed).closest('tr')[0]
+	var qn = rowi.cells[SQN].innerHTML
 	var oldContent = pointed.innerHTML
 
 	pointed.innerHTML = content? content : ''	//just for show instantly
@@ -372,7 +372,7 @@ function saveSContent(pointed, column, content)	//column name in MYSQL
 
 			var fromDate = $('#monthpicker').data('fromDate')
 			var toDate = $('#monthpicker').data('toDate')
-			var color = rowmain.className
+			var color = rowi.className
 			var book = getfromBOOKCONSULT(fromDate, toDate)
 			var row = findBOOKrow(book, qn)		//for countService of this case
 			var newcolor = countService(book[row], fromDate, toDate)
@@ -397,7 +397,7 @@ function saveSContent(pointed, column, content)	//column name in MYSQL
 				}
 			}
 
-			rowmain.className = newcolor
+			rowi.className = newcolor
 
 			//Not refill because it may make next editTD return to old value when fast entry
 			//due to slow return from Ajax of previous input

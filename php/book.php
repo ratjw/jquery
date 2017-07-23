@@ -22,8 +22,8 @@ function book($mysqli)
 
 	$sql = "SELECT * FROM book 
 		WHERE opdate >= curdate()-interval 1 year AND waitnum > 0
-		ORDER BY opdate, IF ('oproom' <> '', oproom, ''), 
-		IF ('optime' <> '', optime, ''), waitnum;";
+		ORDER BY opdate, CASE WHEN oproom THEN oproom ELSE waitnum END, 
+		CASE WHEN optime THEN optime ELSE waitnum END, waitnum;";
 
 	if (!$result = $mysqli->query ($sql)) {
 		return $mysqli->error;
@@ -34,8 +34,8 @@ function book($mysqli)
 
 	$sql = "SELECT * FROM book 
 		WHERE opdate >= curdate()-interval 2 month AND waitnum < 0
-		ORDER BY opdate, IF ('oproom' <> '', oproom, ''), 
-		IF ('optime' <> '', optime, ''), waitnum DESC;";
+		ORDER BY opdate, CASE WHEN oproom THEN oproom ELSE waitnum END, 
+		CASE WHEN optime THEN optime ELSE waitnum END, waitnum;";
 
 	if (!$result = $mysqli->query ($sql)) {
 		return $mysqli->error;

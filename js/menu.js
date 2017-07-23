@@ -2,8 +2,8 @@
 function fillSetTable(pointing)
 {
 	var tableID = $(pointing).closest('table').attr('id')
-	var rowmain = $(pointing).closest('tr')[0]
-	var tcell = rowmain.cells
+	var rowi = $(pointing).closest('tr')[0]
+	var tcell = rowi.cells
 	var opdateth = tcell[OPDATE].innerHTML
 	var opdate = getOpdate(opdateth)		//Thai to ISO date
 	var staffname = tcell[STAFFNAME].innerHTML
@@ -40,7 +40,7 @@ function fillSetTable(pointing)
 			switch(item)
 			{
 				case "item1":
-					addnewrow(tableID, rowmain, qn)
+					addnewrow(tableID, rowi, qn)
 					break
 				case "item2":
 					noOpdate()
@@ -49,21 +49,21 @@ function fillSetTable(pointing)
 					changeDate(tableID, opdate, staffname, qn, pointing)
 					break
 				case "item4":
-					fillEquipTable(book, qn)
+					fillEquipTable(book, rowi, qn)
 					break
 				case "item5":
-					editHistory(rowmain, qn)
+					editHistory(rowi, qn)
 					break
 				case "item6":
 					PACS(hn)
 					break
 				case "item7":
 					if (unuse) {	//from add new row (check case in this opdate)
-						$(rowmain).remove()			//delete blank row
+						$(rowi).remove()			//delete blank row
 						var caseNum = findBOOKrow(book, "")
 						book.splice(caseNum, 1)
 					} else {
-						deleteCase(rowmain, opdate, staffname, qn)
+						deleteCase(rowi, opdate, staffname, qn)
 					}
 					break
 				case "item88":
@@ -150,21 +150,28 @@ function fillRoomTime(book, opdateth, qn)
 	var caseNum = findBOOKrow(book, qn)
 	var oproom = book[caseNum].oproom
 	var optime = book[caseNum].optime
-	$("#orroom").val(oproom? oproom : "(4)")
-	$("#ortime").val(optime? optime : "(09.00)")
-	$("#roomtime").show()
-	$("#roomtime").dialog({
+	var $orroom = $("#orroom")
+	var $ortime = $("#ortime")
+	var $roomtime = $("#roomtime")
+	var $label = $roomtime.find("label[for='orroom']")
+
+	$label.html(oproom? oproom.match(/\D+/)[0] : $label.html())
+	$orroom.val(oproom? oproom.match(/\d+/)[0] : "(4)")
+	$ortime.val(optime? optime : "(09.00)")
+
+	$roomtime.show()
+	$roomtime.dialog({
 		title: opdateth,
 		closeOnEscape: true,
 		modal: true,
 		buttons: {
 			'OK': function () {
-				oproom = $("#orroom").val()
-				optime = $("#ortime").val()
-				if (!Number($("#orroom").val()) || !Number(optime)) {
+				oproom = $orroom.val()
+				optime = $ortime.val()
+				if (!Number($orroom.val()) || !Number(optime)) {
 					return		//default value with "(...)"
 				}
-				oproom = $("#roomtime label[for='orroom']").html() + oproom
+				oproom = $label.html() + oproom
 				var sql = "sqlReturnbook=UPDATE book SET "
 				sql += "oproom = '" + oproom + "', "
 				sql += "optime = '" + optime + "', "
@@ -191,33 +198,33 @@ function fillRoomTime(book, opdateth, qn)
 	})
 
 	var orroom = ""
-	$( "#orroom" ).spinner({
+	$orroom.spinner({
 		min: 1,
 		max: 11,
 		step: 1,
 		spin: function( event, ui ) {
-			if ($('#orroom').val() == "(4)") {
+			if ($orroom.val() == "(4)") {
 				orroom = "4"
 			}
 		},
 		stop: function( event, ui ) {
 			if (orroom) {
-				$( "#orroom" ).val(orroom)
+				$orroom.val(orroom)
 				orroom = ""	
 			}
 		}
 	});
 
 	var ortime
-	$( "#ortime" ).spinner({
+	$ortime.spinner({
 		min: 00,
 		max: 24,
 		step: 0.5,
 		create: function( event, ui ) {
-			$("#ortime").val(optime? optime : "(09.00)")
+			$ortime.val(optime? optime : "(09.00)")
 		},
 		spin: function( event, ui ) {
-			if ($('#ortime').val() == "(09.00)") {
+			if ($ortime.val() == "(09.00)") {
 				ortime = "09.00"
 			} else {
 				var val = []
@@ -235,7 +242,7 @@ function fillRoomTime(book, opdateth, qn)
 			}
 		},
 		stop: function( event, ui ) {
-			$( "#ortime" ).val(ortime)
+			$ortime.val(ortime)
 		}
 	})
 }
@@ -263,30 +270,32 @@ function checkblank(book, opdate, qn)
 	}
 }
 
-function addnewrow(tableID, rowmain, qn)
+function addnewrow(tableID, rowi, qn)
 {
 	var book = BOOK
 	if ((tableID == "queuetbl") && ($('#titlename').html() == "Consults")) {
 		book = CONSULT
 	}
 	var caseNum = findBOOKrow(book, qn)
-	var bookq = JSON.parse(JSON.stringify(book[caseNum]))	//???
-	$.each( bookq, function(key, val) {
+	var bookq = JSON.parse(JSON.stringify(book[caseNum]))	//deep clone
+	$.each( bookq, function(key, val) {		//book[caseNum] is not changed
 		bookq[key] = ""
 	})
 	bookq.opdate = book[caseNum].opdate
+	bookq.oproom = book[caseNum].oproom
+	bookq.optime = book[caseNum].optime
 	book.splice(caseNum + 1, 0, bookq)
 	
-	$(rowmain).clone()
-		.insertAfter($(rowmain))
-			.find("td").eq(OPDATE)
-				.siblings()
+	$(rowi).clone()
+		.insertAfter($(rowi))
+			.find("td").eq(ROOMTIME)
+				.nextAll()
 					.html("")
 
 	if (tableID == "queuetbl") {
 		//change pointing to STAFFNAME
 		var staffname = $('#titlename').html()
-		var pointing = $(rowmain).next().children("td")[STAFFNAME]
+		var pointing = $(rowi).next().children("td")[STAFFNAME]
 		saveContent(pointing, "staffname", staffname)
 	}
 }
@@ -304,7 +313,7 @@ function noOpdate()
 	var $addedRow = $("#queuetbl tr:last")
 	saveContent(pointing, "staffname", staffname)
 	addColor($addedRow, LARGESTDATE)
-	$addedRow.children("td")[OPDATE].className = NAMEOFDAYABBR[(new Date(LARGESTDATE)).getDay()]
+//	$addedRow.children("td")[OPDATE].className = NAMEOFDAYABBR[(new Date(LARGESTDATE)).getDay()]
 
 	var $queuecontainer = $("#queuecontainer")
 	var queue = $("#queuetbl").height()
@@ -368,7 +377,7 @@ function changeDate(tableID, opdate, staffname, qn, pointing)
 	reposition($uidatepicker, "left top", "left bottom", pointing)
 }
 
-function deleteCase(rowmain, opdate, staffname, qn)
+function deleteCase(rowi, opdate, staffname, qn)
 {
 	//not actually delete the case but set waitnum=NULL
 	var sql = "sqlReturnbook=UPDATE book SET waitnum=NULL, "
@@ -382,7 +391,7 @@ function deleteCase(rowmain, opdate, staffname, qn)
 			alert ("deleteCase", response)
 		} else {
 			updateBOOK(response);
-			deleteRow(rowmain, opdate)
+			deleteRow(rowi, opdate)
 			if (($("#queuewrapper").css('display') == 'block') && 
 				($('#titlename').html() == staffname)) {
 				refillstaffqueue()
@@ -391,20 +400,20 @@ function deleteCase(rowmain, opdate, staffname, qn)
 	}
 }
 
-function deleteRow(rowmain, opdate)
+function deleteRow(rowi, opdate)
 {
-	var prevDate = $(rowmain).prev().children("td").eq(OPDATE).html()
-	var nextDate = $(rowmain).next().children("td").eq(OPDATE).html()
+	var prevDate = $(rowi).prev().children("td").eq(OPDATE).html()
+	var nextDate = $(rowi).next().children("td").eq(OPDATE).html()
 
 	prevDate = getOpdate(prevDate)
 	nextDate = getOpdate(nextDate)
 
 	if ((prevDate == opdate)
 	|| (nextDate == opdate)
-	|| $(rowmain).closest("tr").is(":last-child")) {
-		$(rowmain).remove()
+	|| $(rowi).closest("tr").is(":last-child")) {
+		$(rowi).remove()
 	} else {
-		$(rowmain).children("td").eq(OPDATE).siblings().html("")
+		$(rowi).children("td").eq(OPDATE).siblings().html("")
 	}
 }
 

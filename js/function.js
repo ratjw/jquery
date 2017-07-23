@@ -259,7 +259,7 @@ function findVisibleHead(table)
 	return tohead
 }
 
-function calculateWaitnum(tableID, $row, opdate)	//opdate depend on adjacent row
+function calculateWaitnum(tableID, $row, thisOpdate)	//thisOpdate depend on adjacent row
 {	//queue within each day is sorted by waitnum only, not staffname
 	var prevWaitNum = $row.prev()[0]
 	var nextWaitNum = $row.next()[0]
@@ -278,26 +278,26 @@ function calculateWaitnum(tableID, $row, opdate)	//opdate depend on adjacent row
 		defaultWaitnum = -1
 	}
 
-	if (prevOpdate != opdate && opdate != nextOpdate) {
+	if (prevOpdate != thisOpdate && thisOpdate != nextOpdate) {
 		return defaultWaitnum
 	}
-	else if (prevOpdate == opdate && opdate != nextOpdate) {
+	else if (prevOpdate == thisOpdate && thisOpdate != nextOpdate) {
 		return prevWaitNum + defaultWaitnum
 	}
-	else if (prevOpdate != opdate && opdate == nextOpdate) {
+	else if (prevOpdate != thisOpdate && thisOpdate == nextOpdate) {
 		return nextWaitNum? (nextWaitNum / 2) : defaultWaitnum
 	}
-	else if (prevOpdate == opdate && opdate == nextOpdate) {
+	else if (prevOpdate == thisOpdate && thisOpdate == nextOpdate) {
 		return nextWaitNum? ((prevWaitNum + nextWaitNum) / 2) : (prevWaitNum + defaultWaitnum)
 	}	//in case of new blank row nextWaitNum is undefined
 }
 
-function addColor($this, thisopdate) 
+function addColor($this, thisOpdate) 
 {
 	var prevdate = $this.prev().children("td").eq(OPDATE).html()
 	prevdate = prevdate? prevdate.numDate() : ""
-	if (((thisopdate != prevdate) && ($this.prev()[0].className.indexOf("odd") < 0))
-	|| ((thisopdate == prevdate) && ($this.prev()[0].className.indexOf("odd") >= 0))) {
+	if (((thisOpdate != prevdate) && ($this.prev()[0].className.indexOf("odd") < 0))
+	|| ((thisOpdate == prevdate) && ($this.prev()[0].className.indexOf("odd") >= 0))) {
 		$this.addClass("odd")
 	} else {
 		$this.removeClass()	//clear colored row that is moved to non-color opdate

@@ -129,6 +129,10 @@ function saveContent(pointed, column, content)	//use only "pointed" to save data
 	var cellindex = pointed.cellIndex
 	var opdate = getOpdate($cells.eq(OPDATE).html())
 	var qn = $cells.eq(QN).html()
+	var roomtime = $cells.eq(ROOMTIME).html()
+	roomtime = roomtime? roomtime.split("<br>") : ""
+	var oproom = roomtime[0]? roomtime[0].match(/\d+/)[0] : ""
+	var optime = roomtime[1]? roomtime[1] : ""
 	var oldContent = pointed.innerHTML
 
 	pointed.innerHTML = content	//just for show instantly
@@ -139,8 +143,9 @@ function saveContent(pointed, column, content)	//use only "pointed" to save data
 		waitnum = calculateWaitnum(tableID, $row, opdate)
 		$row[0].title = waitnum		//store waitnum in row title
 		var sql = "sqlReturnbook=INSERT INTO book ("
-			sql += "waitnum, opdate, "+ column +", editor) VALUES ("
-			sql += waitnum + ", '" + opdate +"', '"+ content +"', '"+ THISUSER +"');"
+			sql += "waitnum, opdate, oproom, optime, "+ column +", editor) VALUES ("
+			sql += waitnum + ", '" + opdate +"', '" + oproom +"', '" + optime
+			sql += "', '"+ content +"', '"+ THISUSER +"');"
 	} else {
 		var sql = "sqlReturnbook=UPDATE book SET "
 			sql += column +" = '"+ content
@@ -218,6 +223,10 @@ function saveHNinput(pointed, hn, content)
 	var cellindex = pointed.cellIndex
 	var opdate = getOpdate($cells.eq(OPDATE).html())
 	var qn = $cells.eq(QN).html()
+	var roomtime = $cells.eq(ROOMTIME).html()
+	roomtime = roomtime? roomtime.split("<br>") : ""
+	var oproom = roomtime[0]? roomtime[0].match(/\d+/)[0] : ""
+	var optime = roomtime[1]? roomtime[1] : ""
 	var oldContent = pointed.innerHTML
 
 	pointed.innerHTML = content
@@ -228,6 +237,8 @@ function saveHNinput(pointed, hn, content)
 		var sql = "hn=" + content
 		sql += "&waitnum="+ waitnum
 		sql += "&opdate="+ opdate
+		sql += "&oproom="+ oproom
+		sql += "&optime="+ optime
 		sql += "&qn="+ qn
 		sql += "&username="+ THISUSER
 	} else {
@@ -256,7 +267,8 @@ function saveHNinput(pointed, hn, content)
 			$cells.eq(QN).html(book[NewRow].qn)
 
 			var bookq = book[NewRow]
-			$cells.eq(ROOMTIME).html(bookq.oproom + "<br>" + optime)
+			$cells.eq(ROOMTIME).html((bookq.oproom? bookq.oproom : "")
+				+ (bookq.optime? "<br>" + bookq.optime : ""))
 			$cells.eq(STAFFNAME).html(bookq.staffname)
 			$cells.eq(NAME).html(bookq.patient 
 				+ "<br>อายุ " + putAgeOpdate(bookq.dob, bookq.opdate))
@@ -278,6 +290,8 @@ function saveHNinput(pointed, hn, content)
 					refillanother('tbl', cellindex, qn)
 				}
 			}
+
+			createEditcell($('#editcell').data("pointing"))
 		}
 	}
 }

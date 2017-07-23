@@ -171,7 +171,7 @@
   <li id="item7" style="border:3px solid gray"><div>Delete</div></li>
   <li id="item8"><div>คิวของอาจารย์</div><ul id="item0" style="width:100px"></ul></li>
   <li id="item9"><div>Service Review</div></li>
-  <li id="item10"><div>Deleted Cases</div></li>
+  <li id="item10"><div>All Deleted Cases</div></li>
   <li id="item11"><div>Find</div></li>
   <li id="item12"><div>Readme</div></li>
 </ul>
@@ -181,7 +181,7 @@
 <div id="roomtime" style="display:none">
   <p>
 	<label for="orroom">XSU</label>
-	<input id="orroom" style="text-align:center" size="1">
+	<input id="orroom" style="text-align:center" size="3">
   </p>
   <p>
 	<label for="optime">เวลา</label>
@@ -460,24 +460,30 @@
       ใช้ Browser : Chrome, Firefox, หรือ Edge (ie 10+)</p>
   <p><span class="ui-icon ui-icon-info"></span>
   Login ID, Password ของโรงพยาบาล</p>
-  <p><span class="ui-icon ui-icon-info"></span>
-       การเปลี่ยนวันผ่าตัด (Date) ใช้ Drag & Drop สามารถลากข้ามตารางได้</p>
+  <p style="margin-bottom:0px;">
+    <span class="ui-icon ui-icon-info"></span>
+             การเปลี่ยนวันผ่าตัด (Date)
+    <ol style="margin-top:0px;">
+	  <li>ใช้ Drag & Drop สามารถลากข้ามตารางได้</li>
+	  <li>ใช้ Menu เปลี่ยนวันที่</li>
+	</ol>
+  </p>
   <p style="margin:0px;"><span class="ui-icon ui-icon-info"></span>
-       เลื่อนช่อง (cell) ใส่ข้อมูล โดยการคลิก หรือกด Tab หรือ Shift+Tab หรือ Enter</p>
+       ช่องใส่ข้อมูล (cell) เลื่อนโดยการคลิกช่องอื่น หรือกด Tab (ช่องต่อไป) หรือ Shift+Tab (ช่องย้อนหลัง) หรือ Enter</p>
   <ul style="margin-top:0px;">
     <li>Enter ขึ้นบรรทัดใหม่บนตาราง</li>
     <li>Shift+Enter ขึ้นบรรทัดใหม่ภายในช่องนั้น</li>
   </ul>
 
-  <h3>หน้าจอหลัก</h3>
+  <h3>ตาราง</h3>
   <ul style="margin-top:0px;">
 	<li>คอลัมน์ <b>Date</b> : วันผ่าตัด (ไม่ใช่วันนัดมา admit)</li>
 	<dd>: หรือ วันที่รับ consult จากหน่วยอื่น</dd>
 	<dd>: คลิกช่องนี้ จะปรากฏ Popup Menu</dd>
+	<li>คอลัมน์ <b>Room Time</b> : คลิกใส่ห้องผ่าตัดและเวลา</li>
 	<li>คอลัมน์ <b>Staff</b> : คลิกเลือกชื่ออาจารย์เจ้าของไข้</li>
 	<li>คอลัมน์ <b>HN</b> : เลข 7 หลักเท่านั้น</li>
-	<li>คอลัมน์ <b>ชื่อ นามสกุล</b> : ปรากฏเองตาม HN</li>
-	<li>คอลัมน์ <b>อายุ</b> : ปรากฏเองตาม HN</li>
+	<li>คอลัมน์ <b>PatientName Age</b> : ปรากฏเองตาม HN</li>
 	<li>คอลัมน์ <b>Diagnosis</b> : รวมทั้ง underlying disease</li>
 	<li>คอลัมน์ <b>Treatment</b> : เครื่องมือผ่าตัด ให้ใส่ที่ Equipment</li>
 	<li>คอลัมน์ <b>Contact</b> : หมายเลขโทรศัพท์ ภูมิลำเนา</li>
@@ -486,32 +492,37 @@
   <h3>Menu</h3>
   <p style="margin:0px;">จากการคลิกตรงวันที่ ทั้งตารางรวม และตารางเดี่ยว</p>
   <ul style="margin-top:0px;">
+	<li><b>เพิ่ม case</b> : เพิ่มเคสในวันเดียวกัน</li>
+		<dd>: ทั้งเคสผ่าตัด และเคส consult</dd>
+	<li><b>เพิ่ม case ไม่ระบุวัน</b> : มีเฉพาะที่ตารางเดี่ยว</li>
+		<dd>: ดูวันที่ลงคิวครั้งแรกของผู้ป่วยรายนี้ได้ที่ <b>ประวัติการแก้ไข</b></dd>
+	<li><b>เปลี่ยนวันที่</b> : เลือกตามปฏิทิน</li>
+		<dd>: ของผู้ป่วยรายที่คลิกนี้</dd>
+	<li><b>Equipment</b> : สำหรับพยาบาล ใช้ Login ID:000000</li>
+		<dd>: ของผู้ป่วยรายที่คลิกนี้</dd>
+	<li><b>ประวัติการแก้ไข</b> : ดูการเปลี่ยนข้อมูลย้อนหลัง</li>
+		<dd>: ของผู้ป่วยรายที่คลิกนี้</dd>
+	<li><b>PACS</b> : เฉพาะเครื่องที่ดู PACS ได้เท่านั้น</li>
+		<dd>: ของผู้ป่วยรายที่คลิกนี้</dd>
+	<li><b>Delete</b>: Undelete ได้ที่ประวัติการแก้ไข</li>
+		<dd>: เฉพาะผู้ป่วยรายที่คลิกนี้</dd>
 	<li><b>คิวของอาจารย์</b> : มี submenu เลือกชื่ออาจารย์</li>
 	  <dt>เมื่อเลือกอาจารย์แล้ว จะแบ่งหน้าจอเป็น 2 ส่วน</dt>
 		<dd>: ครึ่งซ้าย เป็นตารางรวม</dd>
 		<dd>: ครึ่งขวา เป็นตารางของอาจารย์ท่านเดียว</dd>
-	<li><b>เพิ่ม case ต่อท้าย ไม่ระบุวันที่</b> : มีเฉพาะที่ตารางเดี่ยว</li>
-		<dd>: ดูวันที่ลงคิวครั้งแรกของผู้ป่วยรายนี้ได้ที่ <b>การแก้ไขของ (ชื่อผู้ป่วย)</b></dd>
-	<li><b>เพิ่ม case วันที่ ...</b> : เพิ่มเคสในวันเดียวกัน</li>
-		<dd>: ทั้งเคสผ่าตัด และเคส consult</dd>
-	<li><b>Delete (ชื่อผู้ป่วย)</b></li>
-		<dd>: เฉพาะผู้ป่วยรายที่คลิกนี้</dd>
-	<li><b>List of Deleted Cases</b> : สามารถ <b>undelete</b> กลับคืนได้</li>
-		<dd>: ผู้ป่วยทั้งหมดที่ถูกลบออก</dd>
-	<li><b>การแก้ไขของ (ชื่อผู้ป่วย)</b> : ดูการเปลี่ยนข้อมูลย้อนหลัง</li>
-		<dd>: ของผู้ป่วยรายที่คลิกนี้</dd>
-	<li><b>PACS</b> : เฉพาะเครื่องที่ดู PACS ได้เท่านั้น</li>
-		<dd>: ของผู้ป่วยรายที่คลิกนี้</dd>
-	<li><b>Equipment</b> : สำหรับพยาบาลห้องผ่าตัด</li>
-		<dd>: ของผู้ป่วยรายที่คลิกนี้</dd>
+		<dd>: resizable เลื่อนที่เส้นแบ่งกลาง</dd>
 	<li><b>Service Review</b> : ทั้งเคสผ่าตัด และเคส consult</li>
 		<dd>: ต้องลงเคสที่ตารางรวมก่อน</dd>
+	<li><b>All Deleted Cases</b> : เรียงจากวันล่าสุด ย้อนลงไป</li>
+		<dd>: ผู้ป่วยทั้งหมดที่ถูกลบออก</dd>
+	<li><b>Find</b> : หาผู้ป่วย ด้วย HN หรือบางคำ </li>
+		<dd>: ผู้ป่วยทั้งหมด</dd>
 	<li><b>Readme</b></li>
   </ul>
 
-  <h3>List of Deleted Cases</h3>
+  <h3>All Deleted Cases</h3>
   <ul style="margin-top:0px;">
-	<li>ต้องการกลับคืน คลิกช่อง <b>Date Time</b> ของเคสนั้น</li>
+	<li>ต้องการ Undelete คลิกช่อง <b>Date Time</b> ของเคสนั้น</li>
   </ul>
 
   <h3>Equipment</h3>
@@ -523,7 +534,7 @@
 
   <h3>Service Review</h3>
   <ul style="margin-top:0px;">
-	<li>ต้องการเปลี่ยนเดือน คลิกลูกศร ซ้าย ขวา</li>
+	<li>ต้องการเปลี่ยนเดือน คลิกหัวลูกศร ซ้าย ขวา</li>
 	<li>เข้าดู Service Review คลิกแถบชื่อเดือน</li>
 	<li>ดู PACS คลิกช่อง <b>HN Name</b></li>
 	<li>ช่อง <b>Diagnosis</b> มีผลต่อจำนวน Re-admission</li>
@@ -538,8 +549,8 @@
 		<dt>: เคสที่มี Infection ใส่คำว่า Infect(ion) หรือ SSI ตรงช่องนี้</dt>
 		<dt>: เคสที่มี Morbidity ใส่คำว่า Morbid ตรงช่องนี้</dt>
 		<dt>: เคส Dead ใส่คำว่า Dead ตรงช่องนี้</dt>
-	<li>ช่อง <b>Admit</b> ของโรงพยาบาล</li>
-	<li>ช่อง <b>D/C</b> ของโรงพยาบาล</li>
+	<li>ช่อง <b>Admit</b> ข้อมูลของโรงพยาบาล</li>
+	<li>ช่อง <b>D/C</b> ข้อมูลของโรงพยาบาล</li>
   </ul>
   <p style="margin-bottom:0px;">
     <span class="ui-icon ui-icon-info"></span>

@@ -82,12 +82,18 @@ function sortable()
 				}
 			}
 
-			var thisopdate = getOpdate($thisdrop.children("td").eq(OPDATE).html())
+			var thisOpdate = getOpdate($thisdrop.children("td").eq(OPDATE).html())
 			var thisqn = $itemcell.eq(QN).html()
-			var finalWaitnum = calculateWaitnum(receiver, $item, thisopdate)			
+			var conflict = checkConflictRoomTime(receiver, $item, thisOpdate)
+			if (conflict) {
+				alert("Cancel Sorting", conflict)
+				stopsorting()
+				return false
+			}
+			var finalWaitnum = calculateWaitnum(receiver, $item, thisOpdate)			
 
 			var sql = "sqlReturnbook=UPDATE book SET Waitnum = "+ finalWaitnum
-			sql += ", opdate='" + thisopdate
+			sql += ", opdate='" + thisOpdate
 			sql += "', editor='"+ THISUSER
 			sql += "' WHERE qn="+ thisqn +";"
 
@@ -133,6 +139,69 @@ function stopsorting()
 	$('#editcell').hide()
 	//after sorting, editcell was placed at row 0 column 1
 	//and display at placeholder position in entire width
+}
+
+function checkConflictRoomTime(receiver, $row, thisOpdate)
+{
+	var $thisRowCell = $row.children("td")
+	var $prevRowCell = $row.prev().children("td")
+	var $nextRowCell = $row.next().children("td")
+	var prevOpdate = getOpdate($prevRowCell.eq(OPDATE).html())
+	var nextOpdate = getOpdate($nextRowCell.eq(OPDATE).html())
+	var thisroomtime = $thisRowCell.eq(ROOMTIME).html()
+	thisroomtime = thisroomtime? thisroomtime.split("<br>") : ""
+	var prevroomtime = $prevRowCell.eq(ROOMTIME).html()
+	prevroomtime = prevroomtime? prevroomtime.split("<br>") : ""
+	var nextroomtime = $nextRowCell.eq(ROOMTIME).html()
+	nextroomtime = nextroomtime? nextroomtime.split("<br>") : ""
+	var thisroom = thisroomtime[0]? thisroomtime[0].match(/\d+/)[0] : ""
+	var thistime = thisroomtime[1]
+	var prevroom = prevroomtime[0]? prevroomtime[0].match(/\d+/)[0] : ""
+	var prevtime = prevroomtime[1]
+	var nextroom = nextroomtime[0]? nextroomtime[0].match(/\d+/)[0] : ""
+	var nexttime = nextroomtime[1]
+
+	if (!thisroom) {
+		return
+	}
+	if (prevOpdate == thisOpdate && thisOpdate != nextOpdate) {
+		if (prevroom > thisroom) {
+			return "Room conflict with previous case"
+		} else {
+			if ((prevroom == thisroom) && (prevtime >= thistime)) {
+				return "Time conflict with previous case"
+			}
+		}
+	}
+	else if (prevOpdate != thisOpdate && thisOpdate == nextOpdate) {
+		if (nextroom) {
+			if (thisroom > nextroom) {
+				return "Room conflict with next case"
+			} else {
+				if ((thisroom == nextroom) && (thistime >= nexttime)) {
+					return "Time conflict with next case"
+				}
+			}	
+		}
+	}
+	else if (prevOpdate == thisOpdate && thisOpdate == nextOpdate) {
+		if (prevroom) {
+			if (prevroom > thisroom) {
+				return "Room conflict with previous case"
+			}
+			if (prevtime >= thistime) {
+				return "Time conflict with previous case"
+			}
+		}
+		else if (nextroom) {
+			if (thisroom > nextroom) {
+				return "Room conflict with next case"
+			}
+			if (thistime >= nexttime) {
+				return "Time conflict with next case"
+			}
+		}
+	}
 }
 
 function initResize(id)

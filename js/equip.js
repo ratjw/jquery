@@ -1,4 +1,4 @@
-function fillEquipTable(book, qn)
+function fillEquipTable(book, rowi, qn)
 {
 	var q = findBOOKrow(book, qn)
 	var bookq = book[q]
@@ -15,6 +15,7 @@ function fillEquipTable(book, qn)
 	document.getElementById("diagnosis").innerHTML = bookq.diagnosis
 	document.getElementById("treatment").innerHTML = bookq.treatment
 
+	rowi.style.border = BORDERGROOVE
 	$('#dialogEquip').show()
 	$('#dialogEquip input').prop('checked', false)
 	$('#dialogEquip input').val('')
@@ -54,8 +55,12 @@ function fillEquipTable(book, qn)
 		height: height,
 		open: function(event, ui) {
 			$("input").blur();	//disable default autofocus on text input
+		},
+		close: function(event, ui) {
+			rowi.style.border = ""
 		}
 	})
+	
 }
 
 function showNonEditableEquip(qn, bookqEquip)
@@ -106,6 +111,33 @@ function showEditableEquip(qn, bookqEquip)
 	]);
 	$('#dialogEquip input').prop('disabled', false)
 	$('#dialogEquip input').off("click")
+}
+
+function showNonEditableEquipForScrub()
+{
+			$('#clearPosition').off('click')
+			$('#clearShunt').off('click')
+			$('#dialogEquip').dialog("option", "buttons", [
+				{
+					text: "แก้ไข",
+					click: function () {
+						return
+					}
+				},
+				{
+					text: "Print",
+					click: function () {
+						return
+					}
+				}
+			]);
+			$('#dialogEquip input[type=radio]').prop("disabled", true)
+			$('#dialogEquip input[type=text]').click(function() {
+				$(this).prop('disabled', true)
+			})
+			$('#dialogEquip input').click(function() {
+				return false
+			})
 }
 
 function getEditedby(qn, i)

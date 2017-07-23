@@ -19,84 +19,70 @@ function loadtable(userid)
 	$("#dialogAlert").dialog('close')
 	clearEditcellData()
 
-	$(document).click( function (event) {
-		countReset();
-		updating.timer = 0
-		event.stopPropagation()
-		var target = event.target
-		if (THISUSER == "000000") {
-			$(document).off('keydown', function (event) {})
-			var qn = $(target).closest('tr').children('td').eq(QN).html()
+	if (THISUSER == "000000") {
+		$(document).click( function (event) {
+			event.stopPropagation()
+			var target = event.target
+			var rowi = $(target).closest('tr')
+			var qn = rowi.children('td').eq(QN).html()
 			if ((target.nodeName != "TD") || (!qn)) {
 				event.preventDefault()
 				event.stopPropagation()
 				return false
 			}
-			fillEquipTable(BOOK, qn)
-			$('#clearPosition').off('click')
-			$('#clearShunt').off('click')
-			$('#dialogEquip').dialog("option", "buttons", [
-				{
-					text: "แก้ไข",
-					click: function () {
-						return
-					}
-				},
-				{
-					text: "Print",
-					click: function () {
-						return
-					}
-				}
-			]);
-			$('#dialogEquip input[type=radio]').prop("disabled", true)
-			$('#dialogEquip input[type=text]').click(function() {
-				$(this).prop('disabled', true)
-			})
-			$('#dialogEquip input').click(function() {
-				return false
-			})
-		} else {
-			if ($('#menu').is(":visible")) {	//visible == take up space even can't be seen
-				if (!$(target).closest('#menu').length) {
-					$('#menu').hide();
-					clearEditcellData()
-				}
-			}
-			if ($('#stafflist').is(":visible")) {
-				if (!$(target).closest('#stafflist').length) {
-					$('#stafflist').hide();
-					clearEditcellData()
-				}
-			}
-			if ($('#delete').is(":visible")) {
-				if(!$(target).closest('#delete').length) {
-					$('#delete').hide();
-				}
-			}
-			if ($('#undelete').is(":visible")) {
-				if ($(target).index()) {
-					$('#undelete').hide()
-					return false
-				}
-			}
-			if (target.id == "editcell") {
-				return
-			}
-			
-			if (target.nodeName == "TH") {
+			fillEquipTable(BOOK, rowi[0], qn)
+			showNonEditableEquipForScrub()
+		})
+		$(document).keydown(function(e) {
+			e.preventDefault();
+		})
+		return
+	}
+
+	$(document).click( function (event) {
+		countReset();
+		updating.timer = 0
+		event.stopPropagation()
+		var target = event.target
+		if ($('#menu').is(":visible")) {	//visible == take up space even can't be seen
+			if (!$(target).closest('#menu').length) {
+				$('#menu').hide();
 				clearEditcellData()
-				return	
 			}
+		}
+		if ($('#stafflist').is(":visible")) {
+			if (!$(target).closest('#stafflist').length) {
+				$('#stafflist').hide();
+				clearEditcellData()
+			}
+		}
+		if ($('#delete').is(":visible")) {
+			if(!$(target).closest('#delete').length) {
+				$('#delete').hide();
+			}
+		}
+		if ($('#undelete').is(":visible")) {
+			if ($(target).index()) {
+				$('#undelete').hide()
+				return false
+			}
+		}
+		if (target.id == "editcell") {
+			return
+		}
+		
+		if (target.nodeName == "TH") {
+			clearEditcellData()
+			return	
+		}
 
-			if ($(target).closest('table').attr('id') == 'tbl' ||
-				$(target).closest('table').attr('id') == 'queuetbl') {
+		if ($(target).closest('table').attr('id') == 'tbl' ||
+			$(target).closest('table').attr('id') == 'queuetbl') {
 
-				clicktable(target)
-			}
-			else if ($(target).closest('table').attr('id') == 'servicetbl') {
-				clickservice(target)
-			}
+			clicktable(target)
+		}
+		else if ($(target).closest('table').attr('id') == 'servicetbl') {
+			clickservice(target)
 		}
 	})
 	$('#menu li > div').click(function(event){		//click on parent of submenu
@@ -106,11 +92,6 @@ function loadtable(userid)
 		}
 	});
 	$(document).keydown( function (event) {
-//		if (THISUSER == "000000") {
-//			event.preventDefault()
-//			event.stopPropagation()
-//			return false
-//		}
 		countReset();
 		updating.timer = 0
 		if ($('#monthpicker').is(':focus')) {

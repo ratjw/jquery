@@ -1,6 +1,6 @@
-function editHistory(rowmain, qn)
+function editHistory(rowi, qn)
 {
-	if (rowmain.cells[QN].innerHTML)
+	if (rowi.cells[QN].innerHTML)
 	{
 		var sql = "sqlReturnData=SELECT * FROM bookhistory "
 		sql += "WHERE qn="+ qn +" ORDER BY editdatetime DESC;"
@@ -15,11 +15,11 @@ function editHistory(rowmain, qn)
 		if (!response || response.indexOf("DBfailed") != -1)
 			alert("editHistory", response)
 		else
-			makehistory(rowmain, response)
+			makehistory(rowi, response)
 	}
 }
 
-function makehistory(rowmain, response)
+function makehistory(rowi, response)
 {
 	var tracing	= JSON.parse(response)
 
@@ -65,7 +65,7 @@ function makehistory(rowmain, response)
 	$("#dialogOplog").css("height", 0)
 	$('#dialogOplog').html(HTML_String)
 	$('#dialogOplog').dialog({
-		title: rowmain.cells[HN].innerHTML +' '+ rowmain.cells[NAME].innerHTML,
+		title: rowi.cells[HN].innerHTML +' '+ rowi.cells[NAME].innerHTML,
 		closeOnEscape: true,
 		modal: true,
 		width: window.innerWidth * 9 / 10,
@@ -236,6 +236,9 @@ function find()
 				diagnosis = $('input[name="diagnosis"]').val()
 				treatment = $('input[name="treatment"]').val()
 				contact = $('input[name="contact"]').val()
+				if (!hn && !patient && !diagnosis && !treatment && !contact) {
+					return
+				}
 				$("body").append($('#find').hide())
 				sqlFind(hn, patient, diagnosis, treatment, contact)
 				$(this).dialog('close')
@@ -298,29 +301,30 @@ function makeFind(response, hn)
 {
 	var found = JSON.parse(response);
 
-	scrolltoThisCase(found[0].qn)
-	if (found.length > 1) {
+	var show = scrolltoThisCase(found[0].qn)
+	if (!show || (found.length > 1)) {
 		makeDialogFind(found, hn )
 	}
 }
 
 function scrolltoThisCase(qn)
 {
-	showFind("tblcontainer", "tbl", qn)
+	var showtbl = showFind("tblcontainer", "tbl", qn)
 
 	if ($("#queuewrapper").css('display') == 'block') {
-		showFind("queuecontainer", "queuetbl", qn)
+		var showqueuetbl = showFind("queuecontainer", "queuetbl", qn)
 	}
+	return showtbl || showqueuetbl
 }
 
 function showFind(containerID, tableID, qn)
 {
 	var table = document.getElementById(tableID)
+	var rows = table.rows
+	clearBorder(rows)
 	var i = findTablerow(tableID, qn)
 	if (i) {
-		var rows = table.rows
-		clearBorder(rows)
-		rows[i].style.border = "7px groove skyblue"
+		rows[i].style.border = BORDERGROOVE
 		var scrolledTop = document.getElementById(containerID).scrollTop
 		var offset = rows[i].offsetTop
 		var winheight = window.innerHeight
@@ -335,6 +339,7 @@ function showFind(containerID, tableID, qn)
 
 			fakeScrollAnimate(containerID, tableID, scrolledTop, rows[i])
 		}
+		return true
 	}
 }
 

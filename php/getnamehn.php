@@ -3,18 +3,23 @@ include "connect.php";
 require_once "book.php";
 
 	$hn = "";
+	$initial_name = "นาย";
+	$first_name = "สมชาย";
+	$last_name = "นามสกล";
+	$dob = "1991-01-01";
+	$gender = "M";
 	$staffname = "";
 	$qn = "";
 	$username = "";
-	$oldqn = "";
-	$oldpatient = "";
+	$oproom = "";
+	$optime = "";
 	$staffname = "";
 	$diagnosis = "";
 	$treatment = "";
 	$contact = "";
 
 	extract($_GET);
-
+/*
 	$wsdl="http://appcenter/webservice/patientservice.wsdl";
 	$client = new SoapClient($wsdl);
 	$resultx = $client->Get_demographic_short($hn);
@@ -36,7 +41,7 @@ require_once "book.php";
 		$resultz["gender"] = "";
 
 	extract($resultz);
-
+*/
 	$sql = "SELECT MAX(qn) FROM book WHERE hn = $hn AND waitnum IS NOT NULL;";
 	$query = $mysqli->query ($sql);
 	if ($query) {
@@ -70,10 +75,12 @@ require_once "book.php";
 				WHERE qn = $qn;";
 	}
 	else
-	{			//new row, insert waitnum, opdate
+	{			//new row, insert waitnum, opdate, oproom, optime
 		$sql = "INSERT INTO book (
 					waitnum, 
 					opdate, 
+					oproom, 
+					optime, 
 					staffname, 
 					hn, 
 					patient, 
@@ -86,6 +93,8 @@ require_once "book.php";
 				VALUES (
 					$waitnum, 
 					'$opdate', 
+					'$oproom', 
+					'$optime', 
 					'$staffname', 
 					'$hn', 
 					'$initial_name$first_name $last_name', 
