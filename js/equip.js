@@ -15,7 +15,7 @@ function fillEquipTable(book, rowi, qn)
 	document.getElementById("diagnosis").innerHTML = bookq.diagnosis
 	document.getElementById("treatment").innerHTML = bookq.treatment
 
-	rowi.style.border = BORDERGROOVE
+	$(rowi).addClass("bordergroove")
 	$('#dialogEquip').show()
 	$('#dialogEquip input').prop('checked', false)
 	$('#dialogEquip input').val('')
@@ -57,7 +57,7 @@ function fillEquipTable(book, rowi, qn)
 			$("input").blur();	//disable default autofocus on text input
 		},
 		close: function(event, ui) {
-			rowi.style.border = ""
+			$(rowi).removeClass("bordergroove")
 		}
 	})
 	

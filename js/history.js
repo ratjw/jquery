@@ -319,12 +319,11 @@ function scrolltoThisCase(qn)
 
 function showFind(containerID, tableID, qn)
 {
-	var table = document.getElementById(tableID)
-	var rows = table.rows
-	clearBorder(rows)
+	$("#" + tableID + " tr.bordergroove").removeClass("bordergroove")
 	var i = findTablerow(tableID, qn)
 	if (i) {
-		rows[i].style.border = BORDERGROOVE
+		var rows = document.getElementById(tableID).rows
+		rows[i].className = "bordergroove"
 		var scrolledTop = document.getElementById(containerID).scrollTop
 		var offset = rows[i].offsetTop
 		var winheight = window.innerHeight
@@ -387,15 +386,6 @@ function makeDialogFind(found, hn)
 		height: window.innerHeight * 8 / 10,
 		buttons: []
 	})
-}
-
-function clearBorder(rows)
-{
-	for (var i = 0; i < rows.length; i++) {
-		if (rows[i].style.border) {
-			rows[i].style.border = ""
-		}
-	}
 }
 
 function readme()

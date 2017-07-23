@@ -28,7 +28,7 @@ function fillupstart()
 function fillForScrub()
 {
 	var start = new Date().ISOdate()
-	var until = start.nextdays(7)
+	var until = start.nextdays(6)
 
 	var table = document.getElementById("tbl")
 	fillall(BOOK, table, start, until)

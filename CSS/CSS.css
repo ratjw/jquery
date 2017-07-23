@@ -294,6 +294,10 @@ td.sat:before { content: "เสาร์ "; }
 	background-color: white;
 }
 
+.bordergroove {
+	border: 7px groove skyblue;
+}
+
 .dialogBox span {
 	display:inline-block;
 }

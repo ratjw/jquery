@@ -44,8 +44,6 @@ var HCONTACT	= 7;
 var HEDITOR		= 8;
 var HQN			= 9;	//used in undelete
 
-var BORDERGROOVE = "7px groove skyblue"
-
 var EDITABLE 	= [HN, DIAGNOSIS, TREATMENT, CONTACT];
 var SEDITABLE	= [SDIAGNOSIS, STREATMENT, ADMISSION, FINAL]
 
