@@ -115,29 +115,17 @@ function showEditableEquip(qn, bookqEquip)
 
 function showNonEditableEquipForScrub()
 {
-			$('#clearPosition').off('click')
-			$('#clearShunt').off('click')
-			$('#dialogEquip').dialog("option", "buttons", [
-				{
-					text: "แก้ไข",
-					click: function () {
-						return
-					}
-				},
-				{
-					text: "Print",
-					click: function () {
-						return
-					}
-				}
-			]);
-			$('#dialogEquip input[type=radio]').prop("disabled", true)
-			$('#dialogEquip input[type=text]').click(function() {
-				$(this).prop('disabled', true)
-			})
-			$('#dialogEquip input').click(function() {
-				return false
-			})
+	$('#clearPosition').off('click')
+	$('#clearShunt').off('click')
+	$('#dialogEquip').dialog("option", "buttons", {})
+	$('#dialogEquip').dialog({height: 650})
+	$('#dialogEquip input[type=radio]').prop("disabled", true)
+	$('#dialogEquip input[type=text]').click(function() {
+		$(this).prop('disabled', true)
+	})
+	$('#dialogEquip input').click(function() {
+		return false
+	})
 }
 
 function getEditedby(qn, i)

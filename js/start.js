@@ -44,7 +44,7 @@ function loadtable(userid)
 		updating.timer = 0
 		event.stopPropagation()
 		var target = event.target
-		if ($('#menu').is(":visible")) {	//visible == take up space even can't be seen
+		if ($('#menu').is(":visible")) {//not visible == take up space even can't be seen
 			if (!$(target).closest('#menu').length) {
 				$('#menu').hide();
 				clearEditcellData()

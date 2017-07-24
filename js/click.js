@@ -79,16 +79,8 @@ function saveEditPointData(pointed)
 	switch(pointed.cellIndex)
 	{
 		case OPDATE:
-			break
 		case ROOMTIME:
-			alert("content", "getEditcellHtml")
-			content = getEditcellHtml()
-			saveContent(pointed, "staffname", content)
-			break
 		case STAFFNAME:
-			alert("content", "getEditcellHtml")
-			content = getEditcellHtml()
-			saveContent(pointed, "staffname", content)
 			break
 		case HN:
 			content = getEditcellHtml()
@@ -131,7 +123,7 @@ function saveContent(pointed, column, content)	//use only "pointed" to save data
 	var qn = $cells.eq(QN).html()
 	var roomtime = $cells.eq(ROOMTIME).html()
 	roomtime = roomtime? roomtime.split("<br>") : ""
-	var oproom = roomtime[0]? roomtime[0].match(/\d+/)[0] : ""
+	var oproom = roomtime[0]? roomtime[0] : ""
 	var optime = roomtime[1]? roomtime[1] : ""
 	var oldContent = pointed.innerHTML
 
@@ -225,7 +217,7 @@ function saveHNinput(pointed, hn, content)
 	var qn = $cells.eq(QN).html()
 	var roomtime = $cells.eq(ROOMTIME).html()
 	roomtime = roomtime? roomtime.split("<br>") : ""
-	var oproom = roomtime[0]? roomtime[0].match(/\d+/)[0] : ""
+	var oproom = roomtime[0]? roomtime[0] : ""
 	var optime = roomtime[1]? roomtime[1] : ""
 	var oldContent = pointed.innerHTML
 

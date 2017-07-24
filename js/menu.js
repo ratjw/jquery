@@ -155,7 +155,7 @@ function fillRoomTime(book, opdateth, qn)
 	var $roomtime = $("#roomtime")
 	var $label = $roomtime.find("label[for='orroom']")
 
-	$label.html(oproom? oproom.match(/\D+/)[0] : $label.html())
+	$label.html((oproom && oproom.match(/\D+/))? oproom.match(/\D+/)[0] : $label.html())
 	$orroom.val(oproom? oproom.match(/\d+/)[0] : "(4)")
 	$ortime.val(optime? optime : "(09.00)")
 
