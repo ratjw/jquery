@@ -271,7 +271,7 @@
 	<input type="radio" name="pose" id="leftProne">
 	<label for="leftProne">3/4 ซ้ายลง</label>
   </span>
-  <input type="text" size="15" id="position">
+  <span> <input type="text" size="15" id="position"></span>
   <br>
   <div style="width:110px;">Imaging</div>
   <span style="width:70px;">
@@ -463,11 +463,11 @@
   <p style="margin-bottom:0px;">
     <span class="ui-icon ui-icon-info"></span>
              การเปลี่ยนวันผ่าตัด (Date)
-    <ol style="margin-top:0px;">
-	  <li>ใช้ Drag & Drop สามารถลากข้ามตารางได้</li>
-	  <li>ใช้ Menu เปลี่ยนวันที่</li>
-	</ol>
   </p>
+  <ol style="margin-top:0px;">
+	<li>ใช้ Drag & Drop สามารถลากข้ามตารางได้</li>
+	<li>ใช้ Menu เปลี่ยนวันที่</li>
+  </ol>
   <p style="margin:0px;"><span class="ui-icon ui-icon-info"></span>
        ช่องใส่ข้อมูล (cell) เลื่อนโดยการคลิกช่องอื่น หรือกด Tab (ช่องต่อไป) หรือ Shift+Tab (ช่องย้อนหลัง) หรือ Enter</p>
   <ul style="margin-top:0px;">

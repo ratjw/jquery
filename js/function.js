@@ -239,7 +239,7 @@ function findNewBOOKrow(book, opdate)	//find new row (max. qn)
 	return newq
 }
 
-function findOpdateBOOKrow(book, opdate)
+function findStartRowInBOOK(book, opdate)
 {
 	var q = 0
 	while ((q < book.length) && (book[q].opdate < opdate)) {

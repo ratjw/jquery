@@ -29,25 +29,25 @@
 		border: 0px; 
 	}
 
-input[type=radio] + label {
-	color: #FFFFFF;
-	background-color: white;
-}
- 
-input[type=radio]:checked + label {
-	color: #000000;
-	border: 2px; 
-}
+	input[type=radio] + label {
+		color: #FFFFFF;
+		background-color: white;
+	}
 
-input[type=checkbox] + label {
-	color: #FFFFFF;
-	background-color: white;
-}
- 
-input[type=checkbox]:checked + label {
-	color: #000000;
-	border: 2px black; 
-}
+	input[type=radio]:checked + label {
+		color: #000000;
+		border: 2px; 
+	}
+
+	input[type=checkbox] + label {
+		color: #FFFFFF;
+		background-color: white;
+	}
+
+	input[type=checkbox]:checked + label {
+		color: #000000;
+		border: 2px black; 
+	}
 
 	div, span { 
 		display:inline-block; 

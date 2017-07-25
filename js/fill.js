@@ -27,10 +27,10 @@ function fillupstart()
 
 function fillForScrub()
 {
+	var table = document.getElementById("tbl")
 	var start = new Date().ISOdate()
 	var until = start.nextdays(6)
 
-	var table = document.getElementById("tbl")
 	fillall(BOOK, table, start, until)
 }
 
@@ -41,19 +41,18 @@ function fillall(book, table, start, until)
 	var head = table.rows[0]
 	var date = start
 	var madedate
+	var q = findStartRowInBOOK(book, start)
+	var k = findStartRowInBOOK(book, LARGESTDATE)
 
-	//q for rows in book
-	var q = findOpdateBOOKrow(book, date)
+	book = book.slice(0, k)
 
 	//i for rows in table (with head as the first row)
 	var i = 0
 	for (q; q < book.length; q++)
 	{	
-		if ((book[q].opdate == LARGESTDATE) || (date >= until)) {
-			break
-		}
-		while ((date < book[q].opdate) && (date <= until))
-		{	//step over each day that is not in QBOOK
+		//step over each day that is not in QBOOK
+		while (date < book[q].opdate)
+		{
 			if (date != madedate)
 			{
 				//make a blank row for each day which is not in book
@@ -63,6 +62,10 @@ function fillall(book, table, start, until)
 				madedate = date
 			}
 			date = date.nextdays(1)
+			if (date > until) {
+				return
+			}
+
 			//make table head row before every Sunday
 			if ((new Date(date).getDay())%7 == 0)
 			{
@@ -71,28 +74,23 @@ function fillall(book, table, start, until)
  				i++
 			}
 		}
-		makenextrow(table, date)	//insertRow
+		makenextrow(table, date)
 		i++
 		filldata(book[q], rows[i])
 		madedate = date
 	}
 
-	date = date.nextdays(1)
 	while (date <= until)
 	{
-		//make a blank row
-		makenextrow(table, date)	//insertRow
-		i++
-		
-		date = date.nextdays(1)
 		//make table head row before every Sunday
-		if ((((new Date(date)).getDay())%7 == 0) &&
-			(date <= until))
+		if (((new Date(date)).getDay())%7 == 0)
 		{
 			var clone = head.cloneNode(true)
 			tbody.appendChild(clone)
-			i++
 		}
+		//make a blank row
+		makenextrow(table, date)	//insertRow
+		date = date.nextdays(1)
 	}
 }
 
@@ -103,28 +101,22 @@ function refillall(book)
 	var rows = table.rows
 	var tlength = rows.length
 	var head = rows[0]
-	var date
-	var madedate
 	var start = $('#tbl tr:has("td"):first td').eq(OPDATE).html().numDate()
+	var date = start
+	var madedate
+	var q = findStartRowInBOOK(book, start)
+	var k = findStartRowInBOOK(book, LARGESTDATE)
 
-	date = start	//find this row in book
-
-	//q for rows in book
-	var q = 0
-	while ((q < book.length) && (book[q].opdate < start)) {
-		q++
-	}	
+	book = book.slice(0, k)
 
 	//i for rows in table (with head as the first row)
 	var i = 1
 	while (i < tlength)		//make blank rows till the end of existing table
 	{
-		if (book[q].opdate == LARGESTDATE) {
-			break
-		}
 		if (q < book.length) {
+			//step over each day that is not in book
 			while (date < book[q].opdate)
-			{	//step over each day that is not in book
+			{
 				if (date != madedate)
 				{
 					fillrowdate(rows, i, date)	//existing row

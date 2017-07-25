@@ -247,7 +247,7 @@ function printpaper(qn)	//*** have to set equip padding to top:70px; bottom:70px
 				temp.className = "pale"
 			}
 		}
-
+		window.focus();
 		window.print();
 		document.body.innerHTML = original;
 		document.getElementById('dialogEquip').scrollIntoView(true);
