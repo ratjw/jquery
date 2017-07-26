@@ -404,8 +404,7 @@ function readme()
 function alert(title, message)
 {
 	$("#dialogAlert").css({
-		"height" : 0,
-		"width" : 0,
+		"fontSize":" 16px",
 		"textAlign" : "center"
 	})
 	$('#dialogAlert').html(message)
@@ -413,7 +412,7 @@ function alert(title, message)
 		title: title,
 		closeOnEscape: true,
 		modal: true,
-		width: window.innerWidth * 5 / 10,
-		height: window.innerHeight * 5 / 10
+		width: window.innerWidth * 3 / 10,
+		height: window.innerHeight * 3 / 10
 	}).fadeIn();
 }

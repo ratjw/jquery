@@ -516,7 +516,8 @@
 	<li><b>All Deleted Cases</b> : เรียงจากวันล่าสุด ย้อนลงไป</li>
 		<dd>: ผู้ป่วยทั้งหมดที่ถูกลบออก</dd>
 	<li><b>Find</b> : หาผู้ป่วย ด้วย HN หรือบางคำ </li>
-		<dd>: ผู้ป่วยทั้งหมด</dd>
+		<dd>: ผู้ป่วยทั้งหมด รวมทั้งที่ไม่ปรากฏในตาราง</dd>
+		<dd>: Ctrl-F เป็น feature ของ browser หาคำที่ปรากฏในตาราง</dd>
 	<li><b>Readme</b></li>
   </ul>
 
@@ -567,9 +568,9 @@
 	<span class="ui-icon ui-icon-check" style="float:none;margin:0px"></span>
 	9/11/60 = 9 พฤศจิกายน 2560, 11/9/60 = 11 กันยายน 2560<br>
 	<span class="ui-icon ui-icon-closethick" style="float:none;margin:0px"></span>
-	2560-05-01 (พ.ศ.), 2017/05/01 (/)<br>
+	2560-05-01 (พ.ศ. ต้องเป็น ค.ศ.), 2017/05/01 (/ ต้องเป็น -)<br>
 	<span class="ui-icon ui-icon-closethick" style="float:none;margin:0px"></span>
-	1-5-60 (-), 1/5/17 (ค.ศ.)<br><br>
+	1-5-60 (- ต้องเป็น /), 1/5/17 (ค.ศ. ต้องเป็น พ.ศ.)<br><br>
 </div>
 
 <div id="login">

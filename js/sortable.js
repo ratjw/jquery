@@ -84,8 +84,8 @@ function sortable()
 
 			var thisOpdate = getOpdate($thisdrop.children("td").eq(OPDATE).html())
 			var thisqn = $itemcell.eq(QN).html()
-			var conflict = checkConflictRoomTime(receiver, $item, thisOpdate)
-			if (conflict) {
+			var roomtime = checkRoomTime(receiver, $item, thisOpdate)
+			if (roomtime.conflict) {
 				alert("Cancel Sorting", conflict)
 				stopsorting()
 				return false
@@ -94,6 +94,10 @@ function sortable()
 
 			var sql = "sqlReturnbook=UPDATE book SET Waitnum = "+ finalWaitnum
 			sql += ", opdate='" + thisOpdate
+			if (roomtime.room) {
+				sql += "', oproom='" + roomtime.room
+				sql += "', optime='" + roomtime.time
+			}
 			sql += "', editor='"+ THISUSER
 			sql += "' WHERE qn="+ thisqn +";"
 
@@ -141,7 +145,7 @@ function stopsorting()
 	//and display at placeholder position in entire width
 }
 
-function checkConflictRoomTime(receiver, $row, thisOpdate)
+function checkRoomTime(receiver, $row, thisOpdate)
 {
 	var $thisRowCell = $row.children("td")
 	var $prevRowCell = $row.prev().children("td")
@@ -160,48 +164,48 @@ function checkConflictRoomTime(receiver, $row, thisOpdate)
 	var prevtime = prevroomtime[1]
 	var nextroom = nextroomtime[0]? nextroomtime[0].match(/\d+/)[0] : ""
 	var nexttime = nextroomtime[1]
+	var roomtime = {
+		"conflict": "",
+		"room": "",
+		"time": ""
+	}
 
-	if (!thisroom) {
-		return
-	}
-	if (prevOpdate == thisOpdate && thisOpdate != nextOpdate) {
-		if (prevroom > thisroom) {
-			return "Room conflict with previous case"
-		} else {
-			if ((prevroom == thisroom) && (prevtime >= thistime)) {
-				return "Time conflict with previous case"
-			}
-		}
-	}
-	else if (prevOpdate != thisOpdate && thisOpdate == nextOpdate) {
-		if (nextroom) {
-			if (thisroom > nextroom) {
-				return "Room conflict with next case"
-			} else {
-				if ((thisroom == nextroom) && (thistime >= nexttime)) {
-					return "Time conflict with next case"
+	if (thisroom) {
+		if (prevOpdate == thisOpdate) {
+			if (prevroom) {
+				if (prevroom > thisroom) {
+					roomtime.conflict = "<br><br>Room conflict with previous case"
 				}
-			}	
+				if ((prevroom == thisroom) && (prevtime > thistime)) {
+					roomtime.conflict = "<br><br>Time conflict with previous case"
+				}
+			}
+		}
+		if (thisOpdate == nextOpdate) {
+			if (nextroom) {
+				if (thisroom > nextroom) {
+					roomtime.conflict = "<br><br>Room conflict with next case"
+				}
+				if ((thisroom == nextroom) && (thistime > nexttime)) {
+					roomtime.conflict = "<br><br>Time conflict with next case"
+				}
+			}
+		}
+	} else {
+		if (prevOpdate == thisOpdate) {
+			if (prevroom) {
+				roomtime.room = prevroomtime[0]
+				roomtime.time = prevtime
+			}
+		}
+		else if (thisOpdate == nextOpdate) {
+			if (nextroom) {
+				roomtime.room = nextroomtime[0]
+				roomtime.time = nexttime
+			}
 		}
 	}
-	else if (prevOpdate == thisOpdate && thisOpdate == nextOpdate) {
-		if (prevroom) {
-			if (prevroom > thisroom) {
-				return "Room conflict with previous case"
-			}
-			if (prevtime >= thistime) {
-				return "Time conflict with previous case"
-			}
-		}
-		else if (nextroom) {
-			if (thisroom > nextroom) {
-				return "Room conflict with next case"
-			}
-			if (thistime >= nexttime) {
-				return "Time conflict with next case"
-			}
-		}
-	}
+	return roomtime
 }
 
 function initResize(id)
