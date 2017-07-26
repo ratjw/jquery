@@ -86,7 +86,7 @@ function sortable()
 			var thisqn = $itemcell.eq(QN).html()
 			var roomtime = checkRoomTime(receiver, $item, thisOpdate)
 			if (roomtime.conflict) {
-				alert("Cancel Sorting", conflict)
+				alert("Cancel Sorting", roomtime.conflict)
 				stopsorting()
 				return false
 			}
