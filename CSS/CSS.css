@@ -355,19 +355,20 @@ input[type=checkbox]:checked + label {
 		padding-left: 40%; 
 		white-space: normal;
 		text-align:left;
+		empty-cells:show;
 	}
 
 	#tbl td:before, #queuetbl td:before { 
 		/* Now like a table header */
 		position: absolute;
 		/* Top/left values mimic padding */
-		top: 6px;
+/*		top: 6px;*/
 		left: 6px;
 		width: 35%; 
-		padding-right: 10px; 
+/*		padding-right: 10px; */
 		white-space: nowrap;
 		text-align:left;
-		vertical-align: top;
+/*		vertical-align: center;*/
 		font-weight: bold;
 	}
 
