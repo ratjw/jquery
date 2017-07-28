@@ -80,8 +80,10 @@ function fillall(book, table, start, until)
 		madedate = date
 	}
 
-	while (date <= until)
+	while (date < until)
 	{
+		date = date.nextdays(1)
+
 		//make table head row before every Sunday
 		if (((new Date(date)).getDay())%7 == 0)
 		{
@@ -90,7 +92,6 @@ function fillall(book, table, start, until)
 		}
 		//make a blank row
 		makenextrow(table, date)	//insertRow
-		date = date.nextdays(1)
 	}
 }
 
