@@ -22,8 +22,8 @@ var CONTACT		= 7;
 var QN			= 8;
 
 //servicetbl
-var CASE		= 0;
-var PATIENT		= 1;
+var CASENUM		= 0;
+var CASENAME	= 1;
 var SDIAGNOSIS	= 2;
 var STREATMENT	= 3;
 var ADMISSION	= 4;
@@ -61,7 +61,7 @@ var NUMMONTH	= {"มค.":"01","กพ.":"02","มีค.":"03","เมย.":"04
 					"กค.":"07","สค.":"08","กย.":"09","ตค.":"10","พย.":"11","ธค.":"12"};
 
 var TRIMHTML	= /^(\s*<[^>]*>)*\s*|\s*(<[^>]*>\s*)*$/g
-var HTMLNOTBR	=/(<((?!br)[^>]+)>)/ig
+var HTMLNOTBR	= /(<((?!br)[^>]+)>)/ig
 
 var ISODATE			= /\b\d{4}\-(0?[1-9]|1[012])\-([012]?[1-9]|10|20|3[01])\b/
 var THAIDATE	= /\b([012]?[1-9]|10|20|3[01])\/(0?[1-9]|1[012])\/\d{4}\b/

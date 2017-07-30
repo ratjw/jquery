@@ -159,7 +159,7 @@ function refillService(SERVICE, fromDate, toDate)
 	$.each( STAFF, function() {
 		var staffname = this
 		i++
-		var $thisCase = $('#servicetbl tr').eq(i).children("td").eq(CASE)
+		var $thisCase = $('#servicetbl tr').eq(i).children("td").eq(CASENUM)
 		if ($thisCase.prop("colSpan") == 1) {
 			$thisCase.prop("colSpan", 8)
 				.css({
@@ -186,8 +186,8 @@ function refillService(SERVICE, fromDate, toDate)
 				i++
 				scase++
 				var $thisRow = $('#servicetbl tr').eq(i).children("td")
-				if ($thisRow.eq(CASE).prop("colSpan") > 1) {
-					$thisRow.eq(CASE).prop("colSpan", 1)
+				if ($thisRow.eq(CASENUM).prop("colSpan") > 1) {
+					$thisRow.eq(CASENUM).prop("colSpan", 1)
 						.nextUntil($thisRow.eq(SQN)).show()
 				}
 				$('#servicetbl tr').eq(i)
@@ -203,8 +203,8 @@ jQuery.fn.extend({
 	filldataService : function(bookq, scase, color) {
 		this[0].className = color
 		var cells = this[0].cells
-		cells[CASE].innerHTML = scase
-		cells[PATIENT].innerHTML = bookq.hn
+		cells[CASENUM].innerHTML = scase
+		cells[CASENAME].innerHTML = bookq.hn
 			+ " " + bookq.patient
 			+ " " + (bookq.dob? bookq.dob.getAge(bookq.opdate) : "")
 		cells[SDIAGNOSIS].innerHTML = bookq.diagnosis
@@ -317,8 +317,8 @@ function saveEditPointDataService(pointed)
 	var content = ""
 	switch(pointed.cellIndex)
 	{
-		case CASE:
-		case PATIENT:
+		case CASENUM:
+		case CASENAME:
 			break
 		case SDIAGNOSIS:
 			content = getEditcellHtml()
@@ -411,8 +411,8 @@ function storePresentScell(pointing)
 
 	switch(cindex)
 	{
-		case CASE:
-		case PATIENT:
+		case CASENUM:
+		case CASENAME:
 			clearEditcellData()
 			var hn = pointing.innerHTML
 			if (hn.match(/\d{7}/)) {
