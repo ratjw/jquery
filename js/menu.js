@@ -164,6 +164,9 @@ function fillRoomTime(book, opdateth, qn)
 		title: opdateth,
 		closeOnEscape: true,
 		modal: true,
+		close: function( event, ui ) {
+			clearEditcellData()
+		},
 		buttons: {
 			'OK': function () {
 				oproom = $orroom.val()

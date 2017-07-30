@@ -293,23 +293,7 @@ function storePresentcell(pointing)
 	switch(pointing.cellIndex)
 	{
 		case OPDATE:
-			clearEditcellData()
-			var context = ""
-			//to show Thai name of day in editcell div
-			if ($(pointing).closest('table').attr('id') == 'tbl') {
-				context = window.getComputedStyle(pointing,':before').content
-				context = context.replace(/\"/g, "")
-			}
-			context = context + pointing.innerHTML
-			var $editcell = $("#editcell")
-			$editcell.html(context)
-			$editcell.css({
-				height: $(pointing).height() + "px",
-				width: $(pointing).width() + "px",
-				fontSize: $(pointing).css("fontSize")
-			})
-			$editcell.appendTo($(pointing).closest('div'))
-			reposition($editcell, "center", "center", pointing)
+			createEditcellOpdate(pointing)
 			fillSetTable(pointing)
 			break
 		case ROOMTIME:
@@ -321,6 +305,7 @@ function storePresentcell(pointing)
 			if ((tableID == "queuetbl") && ($('#titlename').html() == "Consults")) {
 				book = CONSULT
 			}
+			createEditcellRoomtime(pointing)
 			fillRoomTime(book, opdateth, qn)
 			break
 		case STAFFNAME:
@@ -343,19 +328,45 @@ function storePresentcell(pointing)
 	}
 }
 
+function createEditcellOpdate(pointing)
+{
+	var context = ""
+	//to show Thai name of day in editcell div
+	context = window.getComputedStyle(pointing,':before').content
+	context = context.replace(/\"/g, "")
+	context = context + pointing.innerHTML
+	var $editcell = $("#editcell")
+	$editcell.data("pointing", "")
+	$editcell.html(context)
+	showEditcell($editcell, $(pointing))
+}
+
+function createEditcellRoomtime(pointing)
+{
+	var $editcell = $("#editcell")
+	$editcell.data("pointing", "")
+	$editcell.html(pointing.innerHTML)
+	showEditcell($editcell, $(pointing))
+}
+
 function createEditcell(pointing)
 {
 	var $editcell = $("#editcell")
-	$editcell.css({
-		height: $(pointing).height() + "px",
-		width: $(pointing).width() + "px",
-		fontSize: $(pointing).css("fontSize")
-	})
 	$editcell.data("pointing", pointing)
 	$editcell.html(pointing.innerHTML)
-	$editcell.appendTo($(pointing).closest('div'))
-	reposition($editcell, "center", "center", pointing)
+	showEditcell($editcell, $(pointing))
 	$editcell.focus()
+}
+
+function showEditcell($editcell, $pointing)
+{
+	$editcell.css({
+		height: $pointing.height() + "px",
+		width: $pointing.width() + "px",
+		fontSize: $pointing.css("fontSize")
+	})
+	$editcell.appendTo($pointing.closest('div'))
+	reposition($editcell, "center", "center", $pointing)
 }
 
 function reposition($me, mypos, atpos, target)
