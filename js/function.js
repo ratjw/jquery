@@ -319,7 +319,7 @@ function findPrevcell(event, editable, pointing)
 			if ($prevcell.parent().index() > 1)
 			{	//go to prev row last editable
 				$prevcell = $prevcell.parent().prev("tr")
-										.children("td").eq(editable[editable.length-1])
+										.children().eq(editable[editable.length-1])
 			}
 			else
 			{	//#tbl tr:1 td:1
@@ -347,7 +347,7 @@ function findNextcell(event, editable, pointing)
 	{
 		do {//go to next row first editable
 			$nextcell = $($nextcell).parent().next("tr")
-										.children("td").eq(editable[0])
+										.children().eq(editable[0])
 			if (!($nextcell.length)) {
 				event.preventDefault()
 				return false
@@ -366,7 +366,7 @@ function findNextRow(event, editable, pointing)
 
 	//go to next row first editable
 	do {
-		$nextcell = $nextcell.parent().next("tr").children("td").eq(editable[0])
+		$nextcell = $nextcell.parent().next("tr").children().eq(editable[0])
 		if (!($nextcell.length)) {
 			event.preventDefault()
 			return false	
