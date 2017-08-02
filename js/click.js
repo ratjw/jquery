@@ -149,7 +149,7 @@ function saveContent(pointed, column, content)	//use only "pointed" to save data
 
 	function callbacksaveContent(response)
 	{
- 		if (!response || response.indexOf("DBfailed") != -1)
+ 		if (!response || response.indexOf("BOOK") == -1)
 		{
 			alert("saveContent", response)
 			pointed.innerHTML = oldContent
@@ -244,7 +244,7 @@ function saveHNinput(pointed, hn, content)
 
 	function callbackgetByHN(response)
 	{
-		if ((!response) || (response.indexOf("patient") == -1) || (response.indexOf("{") == -1)) 
+		if (!response || response.indexOf("BOOK") == -1)
 		{
 			alert("saveHNinput", response)
 			pointed.innerHTML = oldContent		//return to previous content

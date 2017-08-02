@@ -363,7 +363,7 @@ function saveSContent(pointed, column, content)	//column name in MYSQL
 
 	function callbacksaveSContent(response)
 	{
-		if (!response || response.indexOf("DBfailed") != -1)
+		if (!response || response.indexOf("BOOK") == -1)
 		{
 			alert("saveSContent", response)
 			pointed.innerHTML = oldContent		//return to previous content
