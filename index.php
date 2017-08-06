@@ -178,17 +178,6 @@
 
 <ul id="stafflist" style="display:none"></ul>
 
-<div id="roomtime" style="display:none">
-  <p>
-	<label for="orroom">XSU</label>
-	<input id="orroom" style="text-align:center" size="3">
-  </p>
-  <p>
-	<label for="optime">เวลา</label>
-	<input id="ortime" style="text-align:center" size="3">
-  </p>
-</div>
-
 <div id="editcell" contenteditable="true"></div>
 
 <div id="dialogEquip" class="dialogEquip">
@@ -550,6 +539,7 @@
 		<dt>: เคสที่มี Infection ใส่คำว่า Infect(ion) หรือ SSI ตรงช่องนี้</dt>
 		<dt>: เคสที่มี Morbidity ใส่คำว่า Morbid ตรงช่องนี้</dt>
 		<dt>: เคส Dead ใส่คำว่า Dead ตรงช่องนี้</dt>
+		<dt>: ถ้าปรากฏแถบสีที่ไม่ต้องการ ใส่คำว่า IMPROVED ตรงช่องนี้</dt>
 	<li>ช่อง <b>Admit</b> ข้อมูลของโรงพยาบาล</li>
 	<li>ช่อง <b>D/C</b> ข้อมูลของโรงพยาบาล</li>
   </ul>

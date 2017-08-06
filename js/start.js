@@ -108,6 +108,22 @@ function loadtable(userid)
 			keyin(event, keycode, pointing)
 		}
 	})
+	$(document).keyup( function (event) {
+		var $editcell = $("#editcell")
+		var pointing = $editcell.data("pointing")
+		if (pointing.cellIndex < 2) {
+			return		//not render in opdate & roomtime cells
+		}
+		var keycode = event.which || window.event.keyCode
+		if (keycode < 32)	{
+			return		//not render after non-char was pressed
+		}
+		pointing.innerHTML = $editcell.html()
+		$editcell.css({
+			height: $(pointing).height() + "px",
+		})
+		reposition($editcell, "center", "center", pointing)
+	})
 	$(document).contextmenu( function (event) {
 		return false
 	})
@@ -136,13 +152,14 @@ function loading(response)
 		}
 	} else {
 		response = localStorage.getItem('ALLBOOK')
+		var error = "<br><br> Response from server has no data <br><br> Using localStorage Backup"
 		if (response) {
-			alert("Server Error", "<br><br> Response from server has no data <br><br> Using localStorage Backup");
+			alert("Server Error", error);
 			updateBOOK(response)
 			fillupstart();
 			fillStafflist()
 		} else {
-			alert("Server Error", "<br><br> Response from server has no data <br><br> No localStorage Backup");
+			alert("Server Error", error);
 		}
 	}
 }
@@ -172,8 +189,10 @@ function fillStafflist()
 
 function updating()	//updating.timer : local variable
 {
+	var oldcontent = $("#editcell").data("oldcontent")
+	var newcontent = getEditcellHtml()
 	var editPoint = $("#editcell").data("pointing")
-	if (editPoint && (editPoint.innerHTML != getEditcellHtml())) {
+	if (editPoint && (oldcontent != newcontent)) {
 
 		//making some change
 		if ($(editPoint).closest("table").attr("id") == "servicetbl") {

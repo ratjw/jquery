@@ -105,7 +105,7 @@ function isReadmission(thiscase)
 
 function isInfection(thiscase)
 {
-	if (/[Ii]mprove/.test(thiscase.final)) {
+	if (/IMPROVE/.test(thiscase.final)) {
 		return false
 	}
 	if (/SSI/i.test(thiscase.final)) {
@@ -118,7 +118,7 @@ function isInfection(thiscase)
 
 function isMorbidity(thiscase)
 {
-	if (/[Ii]mprove/.test(thiscase.final)) {
+	if (/IMPROVE/.test(thiscase.final)) {
 		return false
 	}
 
@@ -134,7 +134,7 @@ function isMorbidity(thiscase)
 
 function isDead(thiscase)
 {
-	if (/[Ii]mprove/.test(thiscase.final)) {
+	if (/IMPROVE/.test(thiscase.final)) {
 		return false
 	}
 	if (thiscase.final.indexOf("Dead") >= 0) {

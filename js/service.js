@@ -306,8 +306,10 @@ function Skeyin(event, keycode, pointing)
 
 function savePreviouscellService()
 {
+	var oldcontent = $("#editcell").data("oldcontent")
+	var newcontent = getEditcellHtml()
 	var editPoint = $("#editcell").data("pointing")
-	if (editPoint && (editPoint.innerHTML != getEditcellHtml())) {
+	if (editPoint && (oldcontent != newcontent)) {
 		saveEditPointDataService(editPoint)
 	}
 }
@@ -322,19 +324,19 @@ function saveEditPointDataService(pointed)
 			break
 		case SDIAGNOSIS:
 			content = getEditcellHtml()
-			saveSContent(pointed, "diagnosis", content)
+			saveScontent(pointed, "diagnosis", content)
 			break
 		case STREATMENT:
 			content = getEditcellHtml()
-			saveSContent(pointed, "treatment", content)
+			saveScontent(pointed, "treatment", content)
 			break
 		case ADMISSION:
 			content = getEditcellHtml()
-			saveSContent(pointed, "admission", content)
+			saveScontent(pointed, "admission", content)
 			break
 		case FINAL:
 			content = getEditcellHtml()
-			saveSContent(pointed, "final", content)
+			saveScontent(pointed, "final", content)
 			break
 		case ADMIT:
 		case DISCHARGE:
@@ -342,11 +344,11 @@ function saveEditPointDataService(pointed)
 	}
 }
 
-function saveSContent(pointed, column, content)	//column name in MYSQL
+function saveScontent(pointed, column, content)	//column name in MYSQL
 {
 	var rowi = $(pointed).closest('tr')[0]
 	var qn = rowi.cells[SQN].innerHTML
-	var oldContent = pointed.innerHTML
+	var oldcontent = $("#editcell").data("oldcontent")
 
 	pointed.innerHTML = content? content : ''	//just for show instantly
 
@@ -359,14 +361,14 @@ function saveSContent(pointed, column, content)	//column name in MYSQL
 		sql += "', editor='"+ THISUSER
 		sql += "' WHERE qn = "+ qn +";"
 
-	Ajax(MYSQLIPHP, sql, callbacksaveSContent);
+	Ajax(MYSQLIPHP, sql, callbacksaveScontent);
 
-	function callbacksaveSContent(response)
+	function callbacksaveScontent(response)
 	{
 		if (!response || response.indexOf("BOOK") == -1)
 		{
-			alert("saveSContent", response)
-			pointed.innerHTML = oldContent		//return to previous content
+			alert("saveScontent", response)
+			pointed.innerHTML = oldcontent		//return to previous content
 		} else {
 			updateBOOK(response)
 

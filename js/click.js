@@ -67,8 +67,10 @@ function keyin(event, keycode, pointing)
 
 function savePreviouscell() 
 {
+	var oldcontent = $("#editcell").data("oldcontent")
+	var newcontent = getEditcellHtml()
 	var editPoint = $("#editcell").data("pointing")
-	if (editPoint && (editPoint.innerHTML != getEditcellHtml())) {
+	if (editPoint && (oldcontent != newcontent)) {
 		saveEditPointData(editPoint)
 	}
 }
@@ -79,15 +81,18 @@ function saveEditPointData(pointed)
 	switch(pointed.cellIndex)
 	{
 		case OPDATE:
+			break
 		case ROOMTIME:
+			content = getEditcellHtml()		//all HTMLs were stripped off
+			saveRoomTime(pointed, content)
+			break
 		case STAFFNAME:
 			break
 		case HN:
 			content = getEditcellHtml()
-			if (content.length != 7) {
-				return
+			if (content.length == 7) {
+				saveHN(pointed, "hn", content)
 			}
-			saveHNinput(pointed, "hn", content)
 			break
 		case NAME:
 			break
@@ -113,6 +118,57 @@ function getEditcellHtml()
 			.replace(HTMLNOTBR, '')
 }
 
+function saveRoomTime(pointed, content)
+{
+	var oldcontent = $("#editcell").data("oldcontent")
+	var waitnum = 1
+	var tableID = $(pointed).closest("table").attr("id")
+	if ((tableID == "queuetbl") && ($('#titlename').html() == "Consults")) {
+		waitnum = -1
+	}
+	var $cells = $(pointed).closest('tr').children("td")
+	var opdate = getOpdate($cells.eq(OPDATE).html())
+	var qn = $cells.eq(QN).html()
+	var oproom = $("#orroom").val()
+	var optime = $("#ortime").val()
+	if (!Number(oproom) || !Number(optime)) {
+		return		//default value with "(...)"
+	}
+	var newcontent = content + oproom + "<br>" + optime
+	if (oldcontent == newcontent) {
+		return
+	}
+	oproom = content + oproom
+	var sql
+	if (qn) {
+		sql = "sqlReturnbook=UPDATE book SET "
+		sql += "oproom = '" + oproom + "', "
+		sql += "optime = '" + optime + "', "
+		sql += "editor = '" + THISUSER + "' WHERE qn="+ qn + ";"	
+	} else {
+		sql = "sqlReturnbook=INSERT INTO book ("
+		sql += "waitnum, opdate, oproom, optime, editor) VALUES ("
+		sql += waitnum + ", '" + opdate +"', '" + oproom +"', '" + optime
+		sql += "', '"+ THISUSER +"');"
+	}
+
+	Ajax(MYSQLIPHP, sql, callbacksaveRoomTime)
+
+	function callbacksaveRoomTime(response)
+	{
+		if (!response || response.indexOf("DBfailed") != -1) {
+			alert ("fillRoomTime", response)
+		} else {
+			updateBOOK(response);
+			if ($("#queuewrapper").css('display') == 'block') {
+				refillstaffqueue()
+			}
+			refillall(BOOK)
+			clearEditcellData()
+		}
+	}
+}
+
 function saveContent(pointed, column, content)	//use only "pointed" to save data
 {
 	var tableID = $(pointed).closest("table").attr("id")
@@ -125,24 +181,25 @@ function saveContent(pointed, column, content)	//use only "pointed" to save data
 	roomtime = roomtime? roomtime.split("<br>") : ""
 	var oproom = roomtime[0]? roomtime[0] : ""
 	var optime = roomtime[1]? roomtime[1] : ""
-	var oldContent = pointed.innerHTML
+	var oldcontent = $("#editcell").data("oldcontent")
+	var sql
 
 	pointed.innerHTML = content	//just for show instantly
 
 	content = URIcomponent(content)	//take care of white space, double qoute, 
 									//single qoute, and back slash
-	if (!qn) {	//if new case, calculate waitnum
+	if (qn) {
+		sql = "sqlReturnbook=UPDATE book SET "
+		sql += column +" = '"+ content
+		sql += "', editor='"+ THISUSER
+		sql += "' WHERE qn = "+ qn +";"
+	} else {	//if new case, calculate waitnum
 		waitnum = calculateWaitnum(tableID, $row, opdate)
 		$row[0].title = waitnum		//store waitnum in row title
-		var sql = "sqlReturnbook=INSERT INTO book ("
-			sql += "waitnum, opdate, oproom, optime, "+ column +", editor) VALUES ("
-			sql += waitnum + ", '" + opdate +"', '" + oproom +"', '" + optime
-			sql += "', '"+ content +"', '"+ THISUSER +"');"
-	} else {
-		var sql = "sqlReturnbook=UPDATE book SET "
-			sql += column +" = '"+ content
-			sql += "', editor='"+ THISUSER
-			sql += "' WHERE qn = "+ qn +";"
+		sql = "sqlReturnbook=INSERT INTO book ("
+		sql += "waitnum, opdate, oproom, optime, "+ column +", editor) VALUES ("
+		sql += waitnum + ", '" + opdate +"', '" + oproom +"', '" + optime
+		sql += "', '"+ content +"', '"+ THISUSER +"');"
 	}
 
 	Ajax(MYSQLIPHP, sql, callbacksaveContent);
@@ -152,7 +209,7 @@ function saveContent(pointed, column, content)	//use only "pointed" to save data
  		if (!response || response.indexOf("BOOK") == -1)
 		{
 			alert("saveContent", response)
-			pointed.innerHTML = oldContent
+			pointed.innerHTML = oldcontent
 			//return to previous content
 		}
 		else
@@ -184,7 +241,7 @@ function saveContent(pointed, column, content)	//use only "pointed" to save data
 		if ($("#queuewrapper").css('display') == 'block') {	//staffqueue showing
 			var staffname = $('#titlename').html()
 			if ((column == "staffname")
-			&& ((oldContent == staffname)
+			&& ((oldcontent == staffname)
 			|| (pointed.innerHTML == staffname))) {	//if input is this staffname
 				//New case or change staffname from tbl, update all queuetbl
 				//because there maybe one more row inserted
@@ -207,7 +264,7 @@ function saveContent(pointed, column, content)	//use only "pointed" to save data
 	}
 }
 
-function saveHNinput(pointed, hn, content)
+function saveHN(pointed, hn, content)
 {
 	var tableID = $(pointed).closest("table").attr("id")
 	var $row = $(pointed).closest('tr')
@@ -219,7 +276,7 @@ function saveHNinput(pointed, hn, content)
 	roomtime = roomtime? roomtime.split("<br>") : ""
 	var oproom = roomtime[0]? roomtime[0] : ""
 	var optime = roomtime[1]? roomtime[1] : ""
-	var oldContent = pointed.innerHTML
+	var oldcontent = $("#editcell").data("oldcontent")
 
 	pointed.innerHTML = content
 
@@ -246,8 +303,8 @@ function saveHNinput(pointed, hn, content)
 	{
 		if (!response || response.indexOf("BOOK") == -1)
 		{
-			alert("saveHNinput", response)
-			pointed.innerHTML = oldContent		//return to previous content
+			alert("saveHN", response)
+			pointed.innerHTML = oldcontent		//return to previous content
 		} else {
 			updateBOOK(response)
 
@@ -297,16 +354,8 @@ function storePresentcell(pointing)
 			fillSetTable(pointing)
 			break
 		case ROOMTIME:
-			var cells = $(pointing).closest('tr').children('td')
-			var opdateth = cells.eq(OPDATE).html()
-			var qn = cells.eq(QN).html()
-			var book = BOOK
-			var tableID = $(pointing).closest('table').attr('id')
-			if ((tableID == "queuetbl") && ($('#titlename').html() == "Consults")) {
-				book = CONSULT
-			}
+			fillRoomTime(pointing)
 			createEditcellRoomtime(pointing)
-			fillRoomTime(book, opdateth, qn)
 			break
 		case STAFFNAME:
 			createEditcell(pointing)
@@ -343,16 +392,23 @@ function createEditcellOpdate(pointing)
 
 function createEditcellRoomtime(pointing)
 {
+	var $pointing = $(pointing)
 	var $editcell = $("#editcell")
-	$editcell.data("pointing", "")
-	$editcell.html(pointing.innerHTML)
-	showEditcell($editcell, $(pointing))
+	$editcell.data("pointing", pointing)
+	$editcell.data("oldcontent", pointing.innerHTML)
+	$editcell.css({
+		width: $pointing.width() + "px",
+		fontSize: $pointing.css("fontSize")
+	})
+	$editcell.appendTo($pointing.closest('div'))
+	reposition($editcell, "center", "center", $pointing)
 }
 
 function createEditcell(pointing)
 {
 	var $editcell = $("#editcell")
 	$editcell.data("pointing", pointing)
+	$editcell.data("oldcontent", pointing.innerHTML)
 	$editcell.html(pointing.innerHTML)
 	showEditcell($editcell, $(pointing))
 	$editcell.focus()

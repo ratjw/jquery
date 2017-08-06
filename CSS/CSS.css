@@ -53,7 +53,7 @@
 }
 
 #tbl td {
-	empty-cells:show;
+	empty-cells: show;
 	font-size: 14px;
 	border-left: solid 1px silver;
 	border-bottom: solid 1px silver;
@@ -137,7 +137,7 @@ td.sat:before { content: "เสาร์ "; }
 }
 
 #queuetbl td, #historytbl td, #servicetbl td {
-	empty-cells:show;
+	empty-cells: show;
 	font-size: 14px;
 	border-left: solid 1px silver;
 	border-bottom: solid 1px silver;
@@ -154,7 +154,7 @@ td.sat:before { content: "เสาร์ "; }
 }
 
 #servicehead span.item {
-	display:inline-block; 
+	display: inline-block; 
 	border: solid 1px white;
 	width: 170px;
 	padding: 2px 10px;
@@ -218,17 +218,17 @@ td.sat:before { content: "เสาร์ "; }
 }
 
 #login {
-	width:300px; 
-	margin-left:auto; 
-	margin-right:auto; 
-	text-align:center; 
-	background-color:papayawhip; 
-	border:2px solid slategray;
+	width: 300px; 
+	margin-left: auto; 
+	margin-right: auto; 
+	text-align: center; 
+	background-color: papayawhip; 
+	border: 2px solid slategray;
 	box-shadow: 20px 30px 40px slategray;
 }
 
 #editcell { 
-	display:none;
+	display: none;
 	position: relative;
 	text-align: left; 
 	overflow: hidden;
@@ -243,7 +243,7 @@ td.sat:before { content: "เสาร์ "; }
 }
 
 #undelete { 
-	display:none;
+	display: none;
 	position: relative;
 	width: 125px;
 }
@@ -288,7 +288,7 @@ td.sat:before { content: "เสาร์ "; }
 #find,
 #dialogReadme {
 	display: none;
-	line-height:150%;
+	line-height: 150%;
 	font-size: 14px;
 	color: black;
 	background-color: white;
@@ -306,6 +306,13 @@ td.sat:before { content: "เสาร์ "; }
 	padding: 0px;
 	margin: 0px;
 	background-color: yellow;
+}
+
+#orroom,
+#ortime {
+	height: 20px;
+	padding: 0px;
+	margin: 0px;
 }
 
 input[type=radio] + label {
@@ -354,8 +361,8 @@ input[type=checkbox]:checked + label {
 		position: relative;
 		padding-left: 40%; 
 		white-space: normal;
-		text-align:left;
-		empty-cells:show;
+		text-align: left;
+		empty-cells: show;
 	}
 
 	#tbl td:before, #queuetbl td:before { 
@@ -367,7 +374,7 @@ input[type=checkbox]:checked + label {
 		width: 35%; 
 /*		padding-right: 10px; */
 		white-space: nowrap;
-		text-align:left;
+		text-align: left;
 /*		vertical-align: center;*/
 		font-weight: bold;
 	}

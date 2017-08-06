@@ -404,15 +404,15 @@ function readme()
 function alert(title, message)
 {
 	$("#dialogAlert").css({
-		"fontSize":" 16px",
+		"width": "0px",
+		"height": "0px",
+		"fontSize":" 14px",
 		"textAlign" : "center"
 	})
 	$('#dialogAlert').html(message)
 	$('#dialogAlert').dialog({
 		title: title,
 		closeOnEscape: true,
-		modal: true,
-		width: window.innerWidth * 3 / 10,
-		height: window.innerHeight * 3 / 10
+		modal: true
 	}).fadeIn();
 }

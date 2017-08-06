@@ -145,65 +145,30 @@ function menustyle($me, target, width)
 	})
 }
 
-function fillRoomTime(book, opdateth, qn)
+function fillRoomTime(pointing)
 {
-	var caseNum = findBOOKrow(book, qn)
-	var oproom = book[caseNum].oproom
-	var optime = book[caseNum].optime
+	var roomtime = pointing.innerHTML
+	roomtime = roomtime? roomtime.split("<br>") : ""
+	var oproom = roomtime[0]? roomtime[0] : ""
+	var optime = roomtime[1]? roomtime[1] : ""
+	var theatre = (oproom && oproom.match(/\D+/))? oproom.match(/\D+/)[0] : OPROOM
+	var $editcell = $("#editcell")
+	$editcell.css("height", "")
+	$editcell.html(theatre)
+	$editcell.append('<input id="orroom"><br><input id="ortime">')
 	var $orroom = $("#orroom")
 	var $ortime = $("#ortime")
-	var $roomtime = $("#roomtime")
-	var $label = $roomtime.find("label[for='orroom']")
-
-	$label.html((oproom && oproom.match(/\D+/))? oproom.match(/\D+/)[0] : $label.html())
 	$orroom.val(oproom? oproom.match(/\d+/)[0] : "(4)")
 	$ortime.val(optime? optime : "(09.00)")
 
-	$roomtime.show()
-	$roomtime.dialog({
-		title: opdateth,
-		closeOnEscape: true,
-		modal: true,
-		close: function( event, ui ) {
-			clearEditcellData()
-		},
-		buttons: {
-			'OK': function () {
-				oproom = $orroom.val()
-				optime = $ortime.val()
-				if (!Number($orroom.val()) || !Number(optime)) {
-					return		//default value with "(...)"
-				}
-				oproom = $label.html() + oproom
-				var sql = "sqlReturnbook=UPDATE book SET "
-				sql += "oproom = '" + oproom + "', "
-				sql += "optime = '" + optime + "', "
-				sql += "editor = '" + THISUSER + "' WHERE qn="+ qn + ";"
-
-				Ajax(MYSQLIPHP, sql, callbackfillRoomTime)
-
-				$(this).dialog('close')
-
-				function callbackfillRoomTime(response)
-				{
-					if (!response || response.indexOf("DBfailed") != -1) {
-						alert ("fillRoomTime", response)
-					} else {
-						updateBOOK(response);
-						if ($("#queuewrapper").css('display') == 'block') {
-							refillstaffqueue()
-						}
-						refillall(BOOK)
-					}
-				}
-			}
-		}
-	})
-
 	var orroom = ""
+	if (theatre == OPROOM) {
+		var min = 1
+		var max = 11
+	}
 	$orroom.spinner({
-		min: 1,
-		max: 11,
+		min: min,
+		max: max,
 		step: 1,
 		spin: function( event, ui ) {
 			if ($orroom.val() == "(4)") {
@@ -245,7 +210,10 @@ function fillRoomTime(book, opdateth, qn)
 			}
 		},
 		stop: function( event, ui ) {
-			$ortime.val(ortime)
+			if (ortime) {
+				$ortime.val(ortime)
+				ortime = ""	
+			}
 		}
 	})
 }
