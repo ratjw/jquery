@@ -151,28 +151,23 @@ function fillRoomTime(pointing)
 	roomtime = roomtime? roomtime.split("<br>") : ""
 	var oproom = roomtime[0]? roomtime[0] : ""
 	var optime = roomtime[1]? roomtime[1] : ""
-	var theatre = (oproom && oproom.match(/\D+/))? oproom.match(/\D+/)[0] : OPROOM
+	var theatre = (oproom && oproom.match(/\D+/))? oproom.match(/\D+/)[0] : ORSURG
 	var $editcell = $("#editcell")
 	$editcell.css("height", "")
 	$editcell.html(theatre)
 	$editcell.append('<input id="orroom"><br><input id="ortime">')
 	var $orroom = $("#orroom")
 	var $ortime = $("#ortime")
-	$orroom.val(oproom? oproom.match(/\d+/)[0] : "(4)")
-	$ortime.val(optime? optime : "(09.00)")
+	$orroom.val(oproom? oproom.match(/\d+/)[0] : "(" + ORNEURO + ")")
 
 	var orroom = ""
-	if (theatre == OPROOM) {
-		var min = 1
-		var max = 11
-	}
 	$orroom.spinner({
-		min: min,
-		max: max,
+		min: 1,
+		max: 20,
 		step: 1,
 		spin: function( event, ui ) {
-			if ($orroom.val() == "(4)") {
-				orroom = "4"
+			if ($orroom.val() == "(" + ORNEURO + ")") {
+				orroom = ORNEURO
 			}
 		},
 		stop: function( event, ui ) {
@@ -189,11 +184,11 @@ function fillRoomTime(pointing)
 		max: 24,
 		step: 0.5,
 		create: function( event, ui ) {
-			$ortime.val(optime? optime : "(09.00)")
+			$ortime.val(optime? optime : "(" + ORTIME + ")")
 		},
 		spin: function( event, ui ) {
-			if ($ortime.val() == "(09.00)") {
-				ortime = "09.00"
+			if ($ortime.val() == "(" + ORTIME + ")") {
+				ortime = ORTIME
 			} else {
 				var val = []
 				if (ui.value % 1 == 0) {
