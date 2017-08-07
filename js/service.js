@@ -101,8 +101,6 @@ function addfromRAM(book, fromDate, toDate, serv)
 
 function showService(SERVICE, fromDate, toDate)
 {
-	resetcountService()
-
 	//delete previous servicetbl lest it accumulates
 	$('#servicetbl tr').slice(1).remove()
 	$('#servicetbl').show()
@@ -126,10 +124,6 @@ function showService(SERVICE, fromDate, toDate)
 		$.each( SERVICE, function() {
 			if (this.staffname == staffname) {
 				var color = countService(this, fromDate, toDate)
-				if (color) {
-					var counter = document.getElementById(color)
-					counter.innerHTML = Number(counter.innerHTML) + 1	
-				}
 				scase++
 				$('#servicecells tr').clone()
 					.insertAfter($('#servicetbl tr:last'))
@@ -149,12 +143,11 @@ function showService(SERVICE, fromDate, toDate)
 		}
 	})
 	getAdmitDischargeDate(SERVICE, fromDate, toDate)
+	countAllServices()
 }
 
 function refillService(SERVICE, fromDate, toDate)
 {
-	resetcountService()
-
 	var i = 0
 	$.each( STAFF, function() {
 		var staffname = this
@@ -177,12 +170,6 @@ function refillService(SERVICE, fromDate, toDate)
 		$.each( SERVICE, function() {
 			if (this.staffname == staffname) {
 				var color = countService(this, fromDate, toDate)
-				if (color) {
-					var counter = document.getElementById(color)
-					counter.innerHTML = Number(counter.innerHTML) + 1	
-				}
-				var counter = document.getElementById(color)
-				counter.innerHTML = Number(counter.innerHTML) + 1
 				i++
 				scase++
 				var $thisRow = $('#servicetbl tr').eq(i).children("td")
@@ -195,8 +182,10 @@ function refillService(SERVICE, fromDate, toDate)
 			}
 		});
 	})
-	if (i < ($('#servicetbl tr').length - 1))
+	if (i < ($('#servicetbl tr').length - 1)) {
 		$('#servicetbl tr').slice(i+1).remove()
+	}
+	countAllServices()
 }
 
 jQuery.fn.extend({
@@ -246,10 +235,48 @@ function fillAdmitDischargeDate(SERVICE)
 			if (this.staffname == staffname) {
 				i++
 				var $thisRow = $('#servicetbl tr').eq(i).children("td")
+				if (this.admit && !$thisRow.eq(ADMIT).html()) {
+					document.getElementById("Admit").innerHTML++
+				}
 				$thisRow.eq(ADMIT).html(this.admit)
+				if (this.discharge && !$thisRow.eq(DISCHARGE).html()) {
+					document.getElementById("Discharge").innerHTML++
+				}
 				$thisRow.eq(DISCHARGE).html(this.discharge)
 			}
 		});
+	})
+}
+
+function countAllServices()
+{
+	resetcountService()
+
+	$.each( $('#servicetbl tr'), function() {
+		if (/Admit/.test(this.className)) {
+			document.getElementById("Admit").innerHTML++
+		}
+		if (/Discharge/.test(this.className)) {
+			document.getElementById("Discharge").innerHTML++
+		}
+		if (/Operation/.test(this.className)) {
+			document.getElementById("Operation").innerHTML++
+		}
+		if (/Readmission/.test(this.className)) {
+			document.getElementById("Readmission").innerHTML++
+		}
+		if (/Reoperation/.test(this.className)) {
+			document.getElementById("Reoperation").innerHTML++
+		}
+		if (/Infection/.test(this.className)) {
+			document.getElementById("Infection").innerHTML++
+		}
+		if (/Morbidity/.test(this.className)) {
+			document.getElementById("Morbidity").innerHTML++
+		}
+		if (/Dead/.test(this.className)) {
+			document.getElementById("Dead").innerHTML++
+		}
 	})
 }
 

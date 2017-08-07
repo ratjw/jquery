@@ -16,42 +16,46 @@ function countService(thiscase, fromDate, toDate)
 	var color = ""
 
 	if (isAdmit(thiscase, fromDate, toDate)) {
-		color = "Admit"
+		color += " Admit"
 	}
 	if (isDischarge(thiscase, fromDate, toDate)) {
-		color = "Discharge"
+		color += " Discharge"
 	}
 	if (isOperation(thiscase)) {
-		color = "Operation"
+		color += " Operation"
 	}
 	if (isReadmission(thiscase)) {
-		color = "Readmission"
+		color += " Readmission"
 	}
 	if (isReoperation(thiscase)) {
-		color = "Reoperation"
+		color += " Reoperation"
 	}
 	if (isInfection(thiscase)) {
-		color = "Infection"
+		color += " Infection"
 	}
 	if (isMorbidity(thiscase)) {
-		color = "Morbidity"
+		color += " Morbidity"
 	}
 	if (isDead(thiscase)) {
-		color = "Dead"
+		color += " Dead"
 	}
 	return color
 }
 
 function isAdmit(thiscase, fromDate, toDate)
 {
-	if ((thiscase.admit >= fromDate) && (thiscase.admit <= toDate)) {
+	if ((thiscase.admit >= fromDate)
+	&& (thiscase.admit <= toDate)
+	&& (thiscase.waitnum > 0)) {
 		return true
 	}
 }
 
 function isDischarge(thiscase, fromDate, toDate)
 {
-	if ((thiscase.discharge >= fromDate) && (thiscase.discharge <= toDate)) {
+	if ((thiscase.discharge >= fromDate)
+	&& (thiscase.discharge <= toDate)
+	&& (thiscase.waitnum > 0)) {
 		return true
 	}
 }
@@ -66,13 +70,6 @@ function isOperation(thiscase)
 		}
 	})
 	return Operation
-}
-
-function isReoperation(thiscase)
-{
-	if (/\b[Rr]e-op/.test(thiscase.treatment)) {
-		return true
-	}
 }
 
 function isReadmission(thiscase)
@@ -100,6 +97,13 @@ function isReadmission(thiscase)
 				}
 			}
 		}
+	}
+}
+
+function isReoperation(thiscase)
+{
+	if (/\b[Rr]e-op/.test(thiscase.treatment)) {
+		return true
 	}
 }
 

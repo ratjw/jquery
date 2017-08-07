@@ -99,11 +99,11 @@ var HOLIDAY = {
 
 var neuroSxOp = [
 	/ACDF/, /ALIF/, /[Aa]nast/, /[Aa]pproa/, /[Aa]spirat/, /advance/,
-	/[Bb]iop/, /[Bb]lock/, /[Bb]urr/, /[Bb]x/, /[Cc]lip/, 
+	/[Bb]iop/, /[Bb]lock/, /[Bb]urr/, /[Bb]x/, /[Bb]ypass/, /[Cc]lip/, 
 	/[Dd]ecom/, /DBS/, /[Dd]rain/,
-	/[Ee]ctomy/, /[Ee]ndo/, /ETS/, /ETV/, /EVD/, /[Ee]xcis/,
+	/[Ee]ctomy/, /[Ee]ndo/, /ESI/, /ETS/, /ETV/, /EVD/, /[Ee]xcis/,
 	/[Ff]ix/, /[Ff]usion/, /[Ii]nsert/, /[Ll]esion/, /[Ll]ysis/, 
-	/MIDLIF/, /OLIF/, /[Oo]cclu/, /[Oo]p/, /ostom/, /otom/,
+	/MIDLIF/, /MVD/, /OLIF/, /[Oo]cclu/, /[Oo]p/, /ostom/, /otom/,
 	/plast/, /PLF/, /PLIF/,
 	/[Rr]emov/, /[Rr]epa/, /[Rr]evis/, /[Rr]obot/,
 	/scope/, /[Ss]crew/, /[Ss]hunt/, /[Ss]tim/, /SNRB/, /TSP/,
