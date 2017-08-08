@@ -253,6 +253,8 @@ function countAllServices()
 	resetcountService()
 
 	$.each( $('#servicetbl tr'), function() {
+		var counter = this.className.split(" ")
+		$.each(counter, function() {
 			if (this.length) {
 				document.getElementById(this).innerHTML++
 			}
