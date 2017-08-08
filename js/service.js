@@ -253,30 +253,10 @@ function countAllServices()
 	resetcountService()
 
 	$.each( $('#servicetbl tr'), function() {
-		if (/Admit/.test(this.className)) {
-			document.getElementById("Admit").innerHTML++
-		}
-		if (/Discharge/.test(this.className)) {
-			document.getElementById("Discharge").innerHTML++
-		}
-		if (/Operation/.test(this.className)) {
-			document.getElementById("Operation").innerHTML++
-		}
-		if (/Readmission/.test(this.className)) {
-			document.getElementById("Readmission").innerHTML++
-		}
-		if (/Reoperation/.test(this.className)) {
-			document.getElementById("Reoperation").innerHTML++
-		}
-		if (/Infection/.test(this.className)) {
-			document.getElementById("Infection").innerHTML++
-		}
-		if (/Morbidity/.test(this.className)) {
-			document.getElementById("Morbidity").innerHTML++
-		}
-		if (/Dead/.test(this.className)) {
-			document.getElementById("Dead").innerHTML++
-		}
+			if (this.length) {
+				document.getElementById(this).innerHTML++
+			}
+		})
 	})
 }
 
@@ -291,7 +271,7 @@ function Skeyin(event, keycode, pointing)
 	var thiscell
 
 	if (keycode == 27) {
-		clearEditcellData()
+		clearEditcell()
 		window.focus()
 		event.preventDefault()
 		return false
@@ -308,7 +288,7 @@ function Skeyin(event, keycode, pointing)
 		if (thiscell) {
 			storePresentScell(thiscell)
 		} else {
-			clearEditcellData()
+			clearEditcell()
 			window.focus()
 		}
 		event.preventDefault()
@@ -323,7 +303,7 @@ function Skeyin(event, keycode, pointing)
 		if (thiscell) {
 			storePresentScell(thiscell)
 		} else {
-			clearEditcellData()
+			clearEditcell()
 			window.focus()
 		}
 		event.preventDefault()
@@ -442,7 +422,7 @@ function storePresentScell(pointing)
 	{
 		case CASENUM:
 		case CASENAME:
-			clearEditcellData()
+			clearEditcell()
 			var hn = pointing.innerHTML
 			if (hn.match(/\d{7}/)) {
 				hn = hn.match(/\d{7}/)[0]
@@ -457,7 +437,7 @@ function storePresentScell(pointing)
 			break
 		case ADMIT:
 		case DISCHARGE:
-			clearEditcellData()
+			clearEditcell()
 			break
 	}
 }

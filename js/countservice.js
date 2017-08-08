@@ -16,28 +16,28 @@ function countService(thiscase, fromDate, toDate)
 	var color = ""
 
 	if (isAdmit(thiscase, fromDate, toDate)) {
-		color += " Admit"
+		color += "Admit"
 	}
 	if (isDischarge(thiscase, fromDate, toDate)) {
-		color += " Discharge"
+		color += color? " Discharge" : "Discharge"
 	}
 	if (isOperation(thiscase)) {
-		color += " Operation"
+		color += color? " Operation" : "Operation"
 	}
 	if (isReadmission(thiscase)) {
-		color += " Readmission"
+		color += color? " Readmission" : "Readmission"
 	}
 	if (isReoperation(thiscase)) {
-		color += " Reoperation"
+		color += color? " Reoperation" : "Reoperation"
 	}
 	if (isInfection(thiscase)) {
-		color += " Infection"
+		color += color? " Infection" : "Infection"
 	}
 	if (isMorbidity(thiscase)) {
-		color += " Morbidity"
+		color += color? " Morbidity" : "Morbidity"
 	}
 	if (isDead(thiscase)) {
-		color += " Dead"
+		color += color? " Dead" : "Dead"
 	}
 	return color
 }
@@ -109,9 +109,6 @@ function isReoperation(thiscase)
 
 function isInfection(thiscase)
 {
-	if (/IMPROVE/.test(thiscase.final)) {
-		return false
-	}
 	if (/SSI/i.test(thiscase.final)) {
 		return true
 	}
@@ -138,9 +135,6 @@ function isMorbidity(thiscase)
 
 function isDead(thiscase)
 {
-	if (/IMPROVE/.test(thiscase.final)) {
-		return false
-	}
 	if (thiscase.final.indexOf("Dead") >= 0) {
 		return true
 	}

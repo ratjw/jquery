@@ -49,15 +49,14 @@
 	border-left: solid 1px silver;
 	border-top: solid 1px silver;
 	border-bottom: solid 1px silver;
-/*	height: 30px;*/
 }
 
 #tbl td {
 	empty-cells: show;
 	font-size: 14px;
+	padding-left: 3px;
 	border-left: solid 1px silver;
 	border-bottom: solid 1px silver;
-/*	height: 20px;*/
 	background-repeat: no-repeat;
 	background-position: center;
 }
@@ -139,6 +138,7 @@ td.sat:before { content: "เสาร์ "; }
 #queuetbl td, #historytbl td, #servicetbl td {
 	empty-cells: show;
 	font-size: 14px;
+	padding-left: 3px;
 	border-left: solid 1px silver;
 	border-bottom: solid 1px silver;
 /*	height: 20px;*/
@@ -232,6 +232,7 @@ td.sat:before { content: "เสาร์ "; }
 	position: relative;
 	text-align: left; 
 	overflow: hidden;
+	padding-left: 3px;
 	border: solid 1px #0099FF;
 	background-color: white; 
 	box-shadow: 5px 5px 10px slategray;
@@ -311,7 +312,8 @@ td.sat:before { content: "เสาร์ "; }
 #orroom,
 #ortime {
 	height: 20px;
-	padding: 0px;
+	width: 70px;
+	padding: 0px 0px 0px 3px;
 	margin: 0px;
 }
 

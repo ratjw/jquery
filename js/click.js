@@ -11,7 +11,7 @@ function keyin(event, keycode, pointing)
 	if (keycode == 27)	{
 		$('#menu').hide();
 		$('#stafflist').hide();
-		clearEditcellData()
+		clearEditcell()
 		window.focus()
 		event.preventDefault()
 		return false
@@ -37,7 +37,7 @@ function keyin(event, keycode, pointing)
 		if (thiscell) {
 			storePresentcell(thiscell)
 		} else {
-			clearEditcellData()
+			clearEditcell()
 			window.focus()
 		}
 		event.preventDefault()
@@ -57,7 +57,7 @@ function keyin(event, keycode, pointing)
 		if (thiscell) {
 			storePresentcell(thiscell)
 		} else {
-			clearEditcellData()
+			clearEditcell()
 			window.focus()
 		}
 		event.preventDefault()
@@ -164,7 +164,7 @@ function saveRoomTime(pointed, content)
 				refillstaffqueue()
 			}
 			refillall(BOOK)
-			clearEditcellData()
+			clearEditcell()
 		}
 	}
 }
@@ -367,7 +367,7 @@ function storePresentcell(pointing)
 				break
 			}
 		case NAME:
-			clearEditcellData()
+			clearEditcell()
 			break
 		case DIAGNOSIS:
 		case TREATMENT:
@@ -397,11 +397,11 @@ function createEditcellRoomtime(pointing)
 	$editcell.data("pointing", pointing)
 	$editcell.data("oldcontent", pointing.innerHTML)
 	$editcell.css({
-		width: $pointing.width() + "px",
+		width: 77 + "px",
 		fontSize: $pointing.css("fontSize")
 	})
 	$editcell.appendTo($pointing.closest('div'))
-	reposition($editcell, "center", "center", $pointing)
+	reposition($editcell, "left center", "left center", $pointing)
 }
 
 function createEditcell(pointing)
@@ -439,7 +439,7 @@ function reposition($me, mypos, atpos, target)
 	}).show()
 }	//Don't know why have to repeat 2 times
 
-function clearEditcellData()
+function clearEditcell()
 {
 	var $editcell = $("#editcell")
 	$editcell.data("pointing", "")

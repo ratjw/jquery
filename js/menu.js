@@ -85,7 +85,7 @@ function fillSetTable(pointing)
 					break
 			}
 
-			clearEditcellData()
+			clearEditcell()
 			$menu.hide()		//to disappear after selection
 			event.stopPropagation()
 		}
@@ -117,7 +117,7 @@ function stafflist(pointing)
 			var staffname = ui.item.text()
 			saveContent(pointing, "staffname", staffname)
 			$(pointing).html(staffname)
-			clearEditcellData()
+			clearEditcell()
 			$stafflist.hide()		//to disappear after selection
 			event.stopPropagation()
 		}
@@ -164,7 +164,7 @@ function fillRoomTime(pointing)
 	$orroom.spinner({
 		min: 1,
 		max: 20,
-		step: 1,
+		step: -1,
 		spin: function( event, ui ) {
 			if ($orroom.val() == "(" + ORNEURO + ")") {
 				orroom = ORNEURO
@@ -182,7 +182,7 @@ function fillRoomTime(pointing)
 	$ortime.spinner({
 		min: 00,
 		max: 24,
-		step: 0.5,
+		step: -0.5,
 		create: function( event, ui ) {
 			$ortime.val(optime? optime : "(" + ORTIME + ")")
 		},

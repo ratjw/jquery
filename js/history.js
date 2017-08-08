@@ -8,7 +8,7 @@ function editHistory(rowi, qn)
 		Ajax(MYSQLIPHP, sql, callbackeditHistory)
 	}
 
-	clearEditcellData()
+	clearEditcell()
 
 	function callbackeditHistory(response)
 	{
@@ -95,7 +95,7 @@ function deletedCases()
 {
 	Ajax(MYSQLIPHP, "functionName=deletedCases", callbackdeletedCases)
 
-	clearEditcellData()
+	clearEditcell()
 
 	function callbackdeletedCases(response)
 	{
@@ -201,7 +201,7 @@ function PACS(hn)
 
 	Ajax(CHECKPAC, sql, callbackCHECKPAC)
 
-	clearEditcellData()
+	clearEditcell()
 
 	function callbackCHECKPAC(response)
 	{
@@ -285,7 +285,7 @@ function sqlFind(hn, patient, diagnosis, treatment, contact)
 
 	Ajax(MYSQLIPHP, sql, callbackfind)
 
-	clearEditcellData()
+	clearEditcell()
 
 	function callbackfind(response)
 	{

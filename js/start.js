@@ -17,7 +17,7 @@ function loadtable(userid)
 	$("#dialogService").dialog('close')	//prevent updateTables() call 'isOpen' before initialization
 	$("#dialogAlert").dialog()
 	$("#dialogAlert").dialog('close')
-	clearEditcellData()
+	clearEditcell()
 
 	if (THISUSER == "000000") {
 		$(document).click( function (event) {
@@ -47,13 +47,13 @@ function loadtable(userid)
 		if ($('#menu').is(":visible")) {//not visible == take up space even can't be seen
 			if (!$(target).closest('#menu').length) {
 				$('#menu').hide();
-				clearEditcellData()
+				clearEditcell()
 			}
 		}
 		if ($('#stafflist').is(":visible")) {
 			if (!$(target).closest('#stafflist').length) {
 				$('#stafflist').hide();
-				clearEditcellData()
+				clearEditcell()
 			}
 		}
 		if ($('#delete').is(":visible")) {
@@ -72,7 +72,7 @@ function loadtable(userid)
 		}
 		
 		if (target.nodeName == "TH") {
-			clearEditcellData()
+			clearEditcell()
 			return	
 		}
 
@@ -211,7 +211,7 @@ function updating()	//updating.timer : local variable
 			if (updating.timer == 10) {
 				//delay 100 seconds and
 				//do this only once even if idle for a long time
-				clearEditcellData()
+				clearEditcell()
 				$('#menu').hide()		//editcell may be on first column
 				$('#stafflist').hide()	//editcell may be on staff
 				$('#datepicker').hide()
