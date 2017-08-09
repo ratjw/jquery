@@ -1,6 +1,6 @@
 function loadtable(userid)
 {
-	Ajax(MYSQLIPHP, "nosqlReturnbook", loading);
+	Ajax(MYSQLIPHP, "nosqlReturnbook=''", loading);
 
 	THISUSER = userid
 	$("#login").remove()
@@ -139,7 +139,7 @@ function loadtable(userid)
 
 function loading(response)
 {
-	if (response && response.indexOf("[") != -1) {
+	if (response && response.indexOf("BOOK") != -1) {
 		localStorage.setItem('ALLBOOK', response)
 		updateBOOK(response)
 		if (THISUSER == "000000") {
@@ -150,14 +150,14 @@ function loading(response)
 		}
 	} else {
 		response = localStorage.getItem('ALLBOOK')
-		var error = "<br><br> Response from server has no data <br><br> Using localStorage Backup"
+		var error = "<br><br>Response from server has no data"
 		if (response) {
-			alert("Server Error", error);
+			alert("Server Error", error + "<br><br>Use localStorage instead");
 			updateBOOK(response)
 			fillupstart();
 			fillStafflist()
 		} else {
-			alert("Server Error", error);
+			alert("Server Error", error + "<br><br>No localStorage backup");
 		}
 	}
 }

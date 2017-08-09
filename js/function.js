@@ -167,15 +167,15 @@ function getSunday(date)	//get Sunday in the same week
 
 function Ajax(url, params, callback)
 {
-	var xmlHttp = new XMLHttpRequest();
-	xmlHttp.open("POST", url, true);
-	xmlHttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-	xmlHttp.onreadystatechange = function() 
+	var http = new XMLHttpRequest();
+	http.open("POST", url, true);
+	http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	http.onreadystatechange = function() 
 	{
-		if(xmlHttp.readyState == 4)
-			callback(xmlHttp.responseText);
+		if(http.readyState == 4)
+			callback(http.responseText);
 	}
-	xmlHttp.send(params);
+	http.send(params);
 }
 
 function URIcomponent(qoute)
