@@ -175,6 +175,7 @@ function Ajax(url, params, callback)
 		if(xmlHttp.readyState == 4)
 			callback(xmlHttp.responseText);
 	}
+	xmlHttp.send(params);
 }
 
 function URIcomponent(qoute)
