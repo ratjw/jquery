@@ -1,5 +1,5 @@
 <?php
-	$url = $_GET["PAC"];
+	$url = $_POST["PAC"];
 
 	$ch = curl_init();                                  // set up curl
 	curl_setopt( $ch, CURLOPT_URL, $url );              // the url to request

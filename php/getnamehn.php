@@ -18,7 +18,7 @@ require_once "book.php";
 	$treatment = "";
 	$contact = "";
 
-	extract($_GET);
+	extract($_POST);
 
 	$wsdl="http://appcenter/webservice/patientservice.wsdl";
 	$client = new SoapClient($wsdl);

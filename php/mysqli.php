@@ -2,25 +2,25 @@
 include "connect.php";
 require_once "book.php";
 
-	if (isset($_GET['nosqlReturnbook']))
+	if (isset($_POST['nosqlReturnbook']))
 	{
 		echo json_encode(book($mysqli));
 	}
-	else if (isset($_GET['sqlReturnbook']))
+	else if (isset($_POST['sqlReturnbook']))
 	{
-		$return = sqlexecute($mysqli, $_GET['sqlReturnbook']);
+		$return = sqlexecute($mysqli, $_POST['sqlReturnbook']);
 		if (strpos($return, "DBfailed") !== false)
 			echo $return;
 		else
 			echo json_encode(book($mysqli));
 	}
-	else if (isset($_GET['sqlReturnData']))	//from view-history
+	else if (isset($_POST['sqlReturnData']))	//from view-history
 	{
-		echo sqlexecute($mysqli, $_GET['sqlReturnData']);
+		echo sqlexecute($mysqli, $_POST['sqlReturnData']);
 	}
-	else if (isset($_GET['functionName']))
+	else if (isset($_POST['functionName']))
 	{
-		echo json_encode($_GET['functionName']($mysqli));
+		echo json_encode($_POST['functionName']($mysqli));
 	}
 
 function sqlexecute($mysqli, $sql)
@@ -55,7 +55,7 @@ function sqlexecute($mysqli, $sql)
 
 function checkupdate($mysqli)
 {
-	$time = $_GET['time'];
+	$time = $_POST['time'];
 	$result = $mysqli->query ("SELECT MAX(editdatetime) from bookhistory;");
 	if ($result) {
 		$stamp = $result->fetch_row();
@@ -71,8 +71,8 @@ function checkupdate($mysqli)
 
 function findwaitnum($mysqli)
 {
-	$qn = $_GET['qn'];
-	$editor = $_GET['editor'];
+	$qn = $_POST['qn'];
+	$editor = $_POST['editor'];
 
 	$sql = "SELECT waitnum from bookhistory 
 			where qn=$qn AND action='delete' 

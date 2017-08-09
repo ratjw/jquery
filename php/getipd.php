@@ -2,8 +2,8 @@
 include "connect.php";
 require_once "book.php";
 
-	$from = $_GET["from"];
-	$to = $_GET["to"];
+	$from = $_POST["from"];
+	$to = $_POST["to"];
 
 	$result = $mysqli->query ("SELECT opdate, hn, admit, discharge, qn from book
 		WHERE opdate BETWEEN '$from' AND '$to';");

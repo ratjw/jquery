@@ -70,12 +70,10 @@ function loadtable(userid)
 		if (target.id == "editcell") {
 			return
 		}
-		
 		if (target.nodeName == "TH") {
 			clearEditcell()
 			return	
 		}
-
 		if ($(target).closest('table').attr('id') == 'tbl' ||
 			$(target).closest('table').attr('id') == 'queuetbl') {
 
