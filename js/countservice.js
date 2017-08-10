@@ -77,27 +77,6 @@ function isReadmission(thiscase)
 	if (/\b[Rr]e-ad/.test(thiscase.admission)) {
 		return true
 	}
-
-	var diag = findDateArray(thiscase.diagnosis)
-	var admit = findDateArray(thiscase.admission)
-	if (thiscase.admit) {
-		admit.push(thiscase.admit)
-	}
-	if (diag.length && admit.length) {
-		var diagDate
-		var admitDate
-		for (var i = 0; i < diag.length; i++) {
-			diagDate = new Date(diag[i].toISOdate())
-			for (var j = 0; j < admit.length; j++) {
-				admitDate = new Date(admit[j].toISOdate())
-				if (diagDate <= admitDate) {
-					if (dateDiff(diagDate, admitDate) <= 30) {
-						return true
-					}
-				}
-			}
-		}
-	}
 }
 
 function isReoperation(thiscase)
@@ -119,26 +98,17 @@ function isInfection(thiscase)
 
 function isMorbidity(thiscase)
 {
-	if (/IMPROVE/.test(thiscase.final)) {
-		return false
+	if (/Morbid/.test(thiscase.final)) {
+		return true
 	}
-
-	var Morbid = false
-	$.each( neuroMorbid, function(i, each) {
-		if (each.test(thiscase.final)) {
-			Morbid = true
-			return false
-		}
-	})
-	return Morbid
 }
 
 function isDead(thiscase)
 {
-	if (thiscase.final.indexOf("Dead") >= 0) {
+	if (/Dead/.test(thiscase.final)) {
 		return true
 	}
-	if (thiscase.final.indexOf("passed away") >= 0) {
+	if (/passed away/.test(thiscase.final)) {
 		return true
 	}
 }

@@ -6,7 +6,7 @@ function fillupstart()
 
 	var start = new Date()
 	start = new Date(start.getFullYear(), start.getMonth()-1).ISOdate()
-	start = getSunday(start)					//2 months back
+	start = getSunday(start)				//1st of last month
 
 	//fill until 1 year from now
 	var nextyear = new Date().getFullYear() + 1

@@ -109,10 +109,3 @@ var neuroSxOp = [
 	/scope/, /[Ss]crew/, /[Ss]hunt/, /[Ss]tim/, /SNRB/, /TSP/,
 	/TLIF/, /[Tt]rans/, /[Uu]ntether/
 	]
-
-var neuroMorbid = [
-	/[Bb]rain death/, /[Bb]rain swelling/, /[Dd]elirium/, /[Dd]onor/, 
-	/[Ll]eak/, /[Mm]orbid/, /[Ss]pastic/, /[Ss]eizure/, /DI/, 
-	/[Pp]ost-op.*palsy/, /[Pp]ost-op.*paresis/, /[Pp]ost-op.*weakness/, 
-	/[Pp]ost-op.*plegia/, /[Pp]ost-op.*gr [0123]/
-	]

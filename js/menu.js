@@ -305,7 +305,7 @@ function changeDate(tableID, opdate, staffname, qn, pointing)
 
 	$datepicker.datepicker( {
 		dateFormat: "yy-mm-dd",
-		minDate: "-1y",
+		minDate: "-1m",
 		maxDate: "+1y",
 		onClose: function () {
 			$('.ui-datepicker').css("fontSize", '')

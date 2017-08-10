@@ -149,8 +149,8 @@ td.sat:before { content: "เสาร์ "; }
 }
 
 #servicehead {
-	width: 800px;
-	margin: 0 auto;
+	width: auto;
+	text-align: center;
 }
 
 #servicehead span.item {
@@ -271,15 +271,15 @@ td.sat:before { content: "เสาร์ "; }
 	display: none;
 }
 
-.dialogEquip {
+#dialogEquip {
 	display: none;
 	font-size: 14px;
 	color: black;
 	background-color: white;
 }
 
-.dialogEquip div,
-.dialogEquip span {
+#dialogEquip div,
+#dialogEquip span {
 	display: inline-block;
 	padding: 0;
 	margin: 0;
@@ -338,25 +338,25 @@ input[type=checkbox]:checked + label {
 @media only screen and (max-width: 640px) {
 
 	/* Force table to not be like tables anymore */
-	#tbl table, #queuetbl table, 
-	#tbl thead, #queuetbl thead, 
-	#tbl tbody, #queuetbl tbody, 
-	#tbl th, #queuetbl th, 
-	#tbl td, #queuetbl td, 
-	#tbl tr, #queuetbl tr { 
+	#tbl table, #queuetbl table, #servicetbl table, 
+	#tbl thead, #queuetbl thead, #servicetbl thead, 
+	#tbl tbody, #queuetbl tbody, #servicetbl tbody, 
+	#tbl tr, #queuetbl tr, #servicetbl tr, 
+	#tbl th, #queuetbl th, #servicetbl th, 
+	#tbl td, #queuetbl td, #servicetbl td { 
 		display: block; 
 	}
 
 	/* Hide table headers (but not display: none;, for accessibility) */
-	#tbl tr th, #queuetbl tr th { 
+	#tbl tr th, #queuetbl tr th, #servicetbl tr th { 
 		position: absolute;
 		top: -9999px;
 		left: -9999px;
 	}
  
-	#tbl tr, #queuetbl tr { border: 1px solid #ccc; }
+	#tbl tr, #queuetbl tr, #servicetbl tr { border: 1px solid #ccc; }
 
-	#tbl td, #queuetbl td { 
+	#tbl td, #queuetbl td, #servicetbl td { 
 		/* Behave  like a "row" */
 		border: none;
 		border-bottom: 1px solid #eee; 
@@ -367,7 +367,7 @@ input[type=checkbox]:checked + label {
 		empty-cells: show;
 	}
 
-	#tbl td:before, #queuetbl td:before { 
+	#tbl td:before, #queuetbl td:before, #servicetbl td:before { 
 		/* Now like a table header */
 		position: absolute;
 		/* Top/left values mimic padding */
@@ -384,7 +384,7 @@ input[type=checkbox]:checked + label {
 	/*
 	Label the data
 	*/
-	#tbl td:before, #queuetbl td:before { content: attr(data-title); }
+	#tbl td:before, #queuetbl, #servicetbl td:before { content: attr(data-title); }
 
 	#tbl td.sun:before { content: "วันอาทิตย์ "; }
 	#tbl td.mon:before { content: "วันจันทร์ "; }

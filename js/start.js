@@ -17,6 +17,12 @@ function loadtable(userid)
 	$("#dialogService").dialog('close')	//prevent updateTables() call 'isOpen' before initialization
 	$("#dialogAlert").dialog()
 	$("#dialogAlert").dialog('close')
+	$(window).resize(function() {
+		$("#dialogService").dialog({
+			width: window.innerWidth * 95 / 100,
+			height: window.innerHeight * 95 / 100
+		})
+	})
 	clearEditcell()
 
 	if (THISUSER == "000000") {

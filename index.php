@@ -180,7 +180,7 @@
 
 <div id="editcell" contenteditable="true"></div>
 
-<div id="dialogEquip" class="dialogEquip">
+<div id="dialogEquip">
   <span style="width:100px;">
 	ห้อง <span id="oproom" style="font-size: 16px; font-weight: bold;"></span>
   </span>
@@ -528,39 +528,20 @@
 	<li>เข้าดู Service Review คลิกแถบชื่อเดือน</li>
 	<li>ดู PACS คลิกช่อง <b>HN Name</b></li>
 	<li>ช่อง <b>Diagnosis</b> มีผลต่อจำนวน Re-admission</li>
-		<dt>: ใส่วันที่ admit ครั้งก่อนๆ ตรงช่องนี้ </dt>
+		<dt>: เคสที่ admit ซ้ำ ใส่คำว่า re-ad(mission) ตรงช่องนี้</dt>
 	<li>ช่อง <b>Treatment</b> มีผลต่อจำนวน Operation, และ Re-operation</li>
 		<dt>: เคสที่ไม่มีคำเกี่ยวกับการผ่าตัดในช่อง <b>Treatment</b> ให้ใส่คำว่า op(eration) ตรงช่องนี้</dt>
-		<!--dt>: ใส่วันที่ผ่าตัดครั้งก่อนๆ ตรงช่องนี้ </dt-->
 		<dt>: เคสที่มีการผ่าตัดซ้ำ ใส่คำว่า re-op(eration) ตรงช่องนี้</dt>
 	<li>ช่อง <b>Admission Status</b> มีผลต่อจำนวน Re-admission</li>
 		<dt>: เคสที่ admit ซ้ำ ใส่คำว่า re-ad(mission) ตรงช่องนี้</dt>
 	<li>ช่อง <b>Final Status</b> มีผลต่อจำนวน Infection, Morbidity, และ Dead</li>
 		<dt>: เคสที่มี Infection ใส่คำว่า Infect(ion) หรือ SSI ตรงช่องนี้</dt>
 		<dt>: เคสที่มี Morbidity ใส่คำว่า Morbid ตรงช่องนี้</dt>
-		<dt>: เคส Dead ใส่คำว่า Dead ตรงช่องนี้</dt>
+		<dt>: เคส Dead ใส่คำว่า Dead หรือ  passed away ตรงช่องนี้</dt>
 		<dt>: ถ้าปรากฏแถบสีที่ไม่ต้องการ ใส่คำว่า IMPROVED ตรงช่องนี้</dt>
 	<li>ช่อง <b>Admit</b> ข้อมูลของโรงพยาบาล</li>
 	<li>ช่อง <b>D/C</b> ข้อมูลของโรงพยาบาล</li>
   </ul>
-  <p style="margin-bottom:0px;">
-    <span class="ui-icon ui-icon-info"></span>
-    Date Format : ใช้เฉพาะตัวเลข ได้ 2 แบบ
-  </p>
-  <ul style="margin:0px;">
-	<li><span style="width:70px">แบบสากล</span>ปีค.ศ.(4 หลัก)-เดือน-วัน</li>
-	<li><span style="width:70px">แบบไทย</span>วัน/เดือน/ปีพ.ศ.(2 หรือ 4 หลัก)</li>
-  </ul>
-	<span class="ui-icon ui-icon-check" style="float:none;margin:0px"></span>
-	<span style="width:140px">yyyy-mm-dd</span> เช่น 2017-05-01, 2017-5-1 (ค.ศ. 4 หลักเท่านั้น)<br>
-	<span class="ui-icon ui-icon-check" style="float:none;margin:0px"></span>
-	<span style="width:140px">d/m/yyyy, d/m/(25)yy</span> เช่น 01/05/2560, 1/5/2560, 31/5/60, 3/11/60<br>
-	<span class="ui-icon ui-icon-check" style="float:none;margin:0px"></span>
-	9/11/60 = 9 พฤศจิกายน 2560, 11/9/60 = 11 กันยายน 2560<br>
-	<span class="ui-icon ui-icon-closethick" style="float:none;margin:0px"></span>
-	2560-05-01 (พ.ศ. ต้องเป็น ค.ศ.), 2017/05/01 (/ ต้องเป็น -)<br>
-	<span class="ui-icon ui-icon-closethick" style="float:none;margin:0px"></span>
-	1-5-60 (- ต้องเป็น /), 1/5/17 (ค.ศ. ต้องเป็น พ.ศ.)<br><br>
 </div>
 
 <div id="login">
