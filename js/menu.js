@@ -190,18 +190,7 @@ function fillRoomTime(pointing)
 			if ($ortime.val() == "(" + ORTIME + ")") {
 				ortime = ORTIME
 			} else {
-				var val = []
-				if (ui.value % 1 == 0) {
-					val[0] = String(ui.value)
-					val[1] = "00"
-				} else {
-					val[0] = String(ui.value - 0.5)
-					val[1] = "30"
-				}
-				if (val[0].length == 1) {
-					val[0] = "0" + val[0]
-				}
-				ortime = val.join(".")
+				ortime = decimalToTime(ui.value)
 			}
 		},
 		stop: function( event, ui ) {
@@ -307,14 +296,29 @@ function changeDate(tableID, opdate, staffname, qn, pointing)
 		dateFormat: "yy-mm-dd",
 		minDate: "-1m",
 		maxDate: "+1y",
-		onClose: function () {
-			$('.ui-datepicker').css("fontSize", '')
-			$datepicker.hide()
-			if (opdate == $datepicker.val()) {
+		showButtonPanel: true,
+		closeText : "No Date",
+		beforeShow: function(input, obj) {
+			$(input).after($(input).datepicker('widget'));
+		},
+		onClose: function (date, obj) {
+			function isDonePressed() {
+				var classes = 'ui-datepicker-close ui-state-default ui-priority-primary ui-corner-all ui-state-hover'
+				return ($('#ui-datepicker-div').html().indexOf(classes) > -1);    
+			}
+			if (isDonePressed()) {
+				if (staffname) {
+					date = LARGESTDATE
+				}
+			}
+			if ($(".pasteDate").length) {
 				return
 			}
-			opdate = $datepicker.val()
-			var sql = "sqlReturnbook=UPDATE book SET opdate='" + opdate + "', "
+			clearDatepickerMouseover($datepicker)
+			if (opdate == date) {
+				return false
+			}
+			var sql = "sqlReturnbook=UPDATE book SET opdate='" + date + "', "
 			sql += "editor = '" + THISUSER + "' WHERE qn="+ qn + ";"
 
 			Ajax(MYSQLIPHP, sql, callbackchangeDate)
@@ -336,11 +340,69 @@ function changeDate(tableID, opdate, staffname, qn, pointing)
 			}
 		}
 	})
+//	$('button.ui-datepicker-current').click(function() {
+//		console.log("here")
+//	})
+//	$(".ui-datepicker-unselectable").click(function() { //select LARGESTDATE
+//		console.log("here")
+//	})
 	$datepicker.datepicker("setDate", new Date(opdate))
 	$datepicker.datepicker( 'show' )
 	var $uidatepicker = $('.ui-datepicker')
 	$uidatepicker.css("fontSize", "12px")
 	reposition($uidatepicker, "left top", "left bottom", pointing)
+
+	$(pointing).closest('tr').addClass("changeDate")
+	$("#tbl tr:not(:has(th))").on({
+		"mouseover": function() { $(this).addClass("pasteDate"); },
+		"click": function(event) {
+			event.stopPropagation()
+			clearDatepickerMouseover($datepicker)
+			var thisDate = $(this).children("td").eq(OPDATE).html()
+			thisDate = getOpdate(thisDate)
+			if (opdate == thisDate) {
+				return false
+			}
+			var RoomTime = calculateRoomTime($(pointing).closest('tr'), $(this))
+
+			var sql = "sqlReturnbook=UPDATE book SET opdate='" + thisDate + "', "
+			if (RoomTime) {
+				sql += "oproom = '" + RoomTime[0] + "', "
+				sql += "optime = '" + RoomTime[1] + "', "
+			}
+			sql += "editor = '" + THISUSER + "' WHERE qn="+ qn + ";"
+
+			Ajax(MYSQLIPHP, sql, callbackchangeDate)
+
+			function callbackchangeDate(response)
+			{
+				if (!response || response.indexOf("DBfailed") != -1) {
+					alert ("changeDate", response)
+				} else {
+					updateBOOK(response);
+					refillall(BOOK)
+					if (($("#queuewrapper").css('display') == 'block') && 
+						($('#titlename').html() == staffname)) {
+						//changeDate of this staffname's case
+						refillstaffqueue()
+					}
+					scrolltoThisCase(qn)
+				}
+			}
+		}
+	});
+	$("#tbl tr:not(:has(th))").on("mouseout", function() { $(this).removeClass("pasteDate"); }); 
+}
+
+function clearDatepickerMouseover($datepicker)
+{
+	$('.ui-datepicker').css("fontSize", '')
+	$datepicker.datepicker("destroy").hide()
+	$("#tbl tr:not(:has(th))").off("mouseover");
+	$("#tbl tr:not(:has(th))").off("click"); 
+	$("#tbl tr:not(:has(th))").off("mouseout"); 
+	$(".pasteDate").removeClass("pasteDate")
+	$(".changeDate").removeClass("changeDate")
 }
 
 function deleteCase(rowi, opdate, staffname, qn)

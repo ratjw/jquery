@@ -124,8 +124,6 @@
     </tr>
    </tbody>
   </table>
-  <input type="text" id="datepicker" style="display:none">
-  <input type="text" id="datepicking" style="display:none">
 </div>
 
 <table id="servicecells" style="display:none">	<!--template for "servicetbl"-->

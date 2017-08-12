@@ -260,18 +260,18 @@ function findVisibleHead(table)
 	return tohead
 }
 
-function calculateWaitnum(tableID, $row, thisOpdate)	//thisOpdate depend on adjacent row
+function calculateWaitnum(tableID, $thisrow, thisOpdate)	//thisOpdate was set caller
 {	//queue within each day is sorted by waitnum only, not staffname
-	var prevWaitNum = $row.prev()[0]
-	var nextWaitNum = $row.next()[0]
+	var prevWaitNum = $thisrow.prev()[0]
+	var nextWaitNum = $thisrow.next()[0]
 	if (prevWaitNum) {
 		prevWaitNum = Number(prevWaitNum.title)
 	}
 	if (nextWaitNum) {
 		nextWaitNum = Number(nextWaitNum.title)
 	}
-	var $prevRowCell = $row.prev().children("td")
-	var $nextRowCell = $row.next().children("td")
+	var $prevRowCell = $thisrow.prev().children("td")
+	var $nextRowCell = $thisrow.next().children("td")
 	var prevOpdate = getOpdate($prevRowCell.eq(OPDATE).html())
 	var nextOpdate = getOpdate($nextRowCell.eq(OPDATE).html())
 	var defaultWaitnum = 1
@@ -291,6 +291,39 @@ function calculateWaitnum(tableID, $row, thisOpdate)	//thisOpdate depend on adja
 	else if (prevOpdate == thisOpdate && thisOpdate == nextOpdate) {
 		return nextWaitNum? ((prevWaitNum + nextWaitNum) / 2) : (prevWaitNum + defaultWaitnum)
 	}	//in case of new blank row nextWaitNum is undefined
+}
+
+function calculateRoomTime($moverow, $thisrow)
+{
+	var moveRoom = $moverow.children("td").eq(ROOMTIME).html()
+	moveRoom = moveRoom? moveRoom.split("<br>") : ""
+	var moveroom = moveRoom[0]? moveRoom[0] : ""
+
+	var thisRoom = $thisrow.children("td").eq(ROOMTIME).html()
+	thisRoom = thisRoom? thisRoom.split("<br>") : ""
+	var thisroom = thisRoom[0]? thisRoom[0] : ""
+
+	if ((thisroom) && (!moveroom)) {
+		return thisRoom
+	}
+	return false
+}
+
+function decimalToTime(dec)
+{
+	var time = []
+	var integer = Math.floor(dec)
+	var decimal = dec - integer
+	time[0] = (("" + integer).length == 1)? "0" + integer : "" + integer
+	time[1] = decimal? String(decimal * 60) : "00"
+	return time.join(".")
+}
+
+function timeToDecimal(time)
+{
+	var integer = Math.floor(time);
+	time = (time - integer) * 100 / 60;
+	return integer + time; // OR: return new String(integer+sec);
 }
 
 function addColor($this, thisOpdate) 

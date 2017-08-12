@@ -32,6 +32,7 @@ function sortable()
 			var $item = ui.item
 			var $itemcell = $item.children("td")
 			var receiver = $item.closest('table').attr('id')
+			var oldOpdate = getOpdate($itemcell.eq(OPDATE).html())
 			var staffname = $itemcell.eq(STAFFNAME).html()
 			var titlename = $('#titlename').html()
 
@@ -84,7 +85,7 @@ function sortable()
 
 			var thisOpdate = getOpdate($thisdrop.children("td").eq(OPDATE).html())
 			var thisqn = $itemcell.eq(QN).html()
-			var roomtime = checkRoomTime(receiver, $item, thisOpdate)
+			var roomtime = checkRoomTime($item, thisOpdate, oldOpdate)
 			if (roomtime.conflict) {
 				alert("Cancel Sorting", roomtime.conflict)
 				stopsorting()
@@ -95,8 +96,8 @@ function sortable()
 			var sql = "sqlReturnbook=UPDATE book SET Waitnum = "+ finalWaitnum
 			sql += ", opdate='" + thisOpdate
 			if (roomtime.room) {
-				sql += "', oproom='" + roomtime.room
-				sql += "', optime='" + roomtime.time
+				sql += "', oproom='" + roomtime.roomtime[0]
+				sql += "', optime='" + roomtime.roomtime[1]
 			}
 			sql += "', editor='"+ THISUSER
 			sql += "' WHERE qn="+ thisqn +";"
@@ -145,11 +146,11 @@ function stopsorting()
 	//and display at placeholder position in entire width
 }
 
-function checkRoomTime(receiver, $row, thisOpdate)
+function checkRoomTime($thisrow, thisOpdate, oldOpdate)
 {
-	var $thisRowCell = $row.children("td")
-	var $prevRowCell = $row.prev().children("td")
-	var $nextRowCell = $row.next().children("td")
+	var $thisRowCell = $thisrow.children("td")
+	var $prevRowCell = $thisrow.prev().children("td")
+	var $nextRowCell = $thisrow.next().children("td")
 	var prevOpdate = getOpdate($prevRowCell.eq(OPDATE).html())
 	var nextOpdate = getOpdate($nextRowCell.eq(OPDATE).html())
 	var thisroomtime = $thisRowCell.eq(ROOMTIME).html()
@@ -158,50 +159,51 @@ function checkRoomTime(receiver, $row, thisOpdate)
 	prevroomtime = prevroomtime? prevroomtime.split("<br>") : ""
 	var nextroomtime = $nextRowCell.eq(ROOMTIME).html()
 	nextroomtime = nextroomtime? nextroomtime.split("<br>") : ""
-	var thisroom = thisroomtime[0]? thisroomtime[0].match(/\d+/)[0] : ""
-	var thistime = thisroomtime[1]
+	var moveroom = thisroomtime[0]? thisroomtime[0].match(/\d+/)[0] : ""
+	var movetime = thisroomtime[1]
 	var prevroom = prevroomtime[0]? prevroomtime[0].match(/\d+/)[0] : ""
 	var prevtime = prevroomtime[1]
 	var nextroom = nextroomtime[0]? nextroomtime[0].match(/\d+/)[0] : ""
 	var nexttime = nextroomtime[1]
 	var roomtime = {
 		"conflict": "",
-		"room": "",
-		"time": ""
+		"roomtime": ""
 	}
 
-	if (thisroom) {
-		if (prevOpdate == thisOpdate) {
+	if (moveroom) {
+		if (oldOpdate != thisOpdate) {	//move from another date
+			return roomtime		//do nothing, same as before move
+		}
+		//move in the same date
+		if (prevOpdate == thisOpdate) {	
 			if (prevroom) {
-				if (prevroom > thisroom) {
+				if (prevroom > moveroom) {
 					roomtime.conflict = "<br><br>Room conflict with previous case"
 				}
-				if ((prevroom == thisroom) && (prevtime > thistime)) {
+				if ((prevroom == moveroom) && (prevtime > movetime)) {
 					roomtime.conflict = "<br><br>Time conflict with previous case"
 				}
 			}
 		}
 		if (thisOpdate == nextOpdate) {
 			if (nextroom) {
-				if (thisroom > nextroom) {
+				if (moveroom > nextroom) {
 					roomtime.conflict = "<br><br>Room conflict with next case"
 				}
-				if ((thisroom == nextroom) && (thistime > nexttime)) {
+				if ((moveroom == nextroom) && (movetime > nexttime)) {
 					roomtime.conflict = "<br><br>Time conflict with next case"
 				}
 			}
 		}
-	} else {
+	} else {	//no old roomtime, use roomtime as the same opdate
 		if (prevOpdate == thisOpdate) {
 			if (prevroom) {
-				roomtime.room = prevroomtime[0]
-				roomtime.time = prevtime
+				roomtime.roomtime = prevroomtime
 			}
 		}
 		else if (thisOpdate == nextOpdate) {
 			if (nextroom) {
-				roomtime.room = nextroomtime[0]
-				roomtime.time = nexttime
+				roomtime.roomtime = nextroomtime
 			}
 		}
 	}

@@ -323,7 +323,7 @@ function showFind(containerID, tableID, qn)
 	var i = findTablerow(tableID, qn)
 	if (i) {
 		var rows = document.getElementById(tableID).rows
-		rows[i].className = "bordergroove"
+		$(rows[i]).addClass("bordergroove")
 		var scrolledTop = document.getElementById(containerID).scrollTop
 		var offset = rows[i].offsetTop
 		var winheight = window.innerHeight

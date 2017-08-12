@@ -48,6 +48,7 @@ function loadtable(userid)
 	$(document).click( function (event) {
 		countReset();
 		updating.timer = 0
+		$(".bordergroove").removeClass("bordergroove")
 		event.stopPropagation()
 		var target = event.target
 		if ($('#menu').is(":visible")) {//not visible == take up space even can't be seen
