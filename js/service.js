@@ -16,8 +16,11 @@ function serviceReview()
 		onChangeMonthYear: function (year, month, inst) {
 			$(this).datepicker('setDate', new Date(inst.selectedYear, inst.selectedMonth, 1))
 		},
-		beforeShow: function () {
+		beforeShow: function (input, obj) {
 			$('.ui-datepicker-calendar').css('display', 'none')
+		},
+		onClose: function (date, obj) {
+			$('.ui-datepicker').off("click")
 		}
 	}).datepicker("setDate", new Date(new Date().getFullYear(), new Date().getMonth(), 1))
 
@@ -26,10 +29,13 @@ function serviceReview()
 		closeOnEscape: true,
 		modal: true,
 		width: window.innerWidth * 95 / 100,
-		height: window.innerHeight * 95 / 100
+		height: window.innerHeight * 95 / 100,
+		close: function( event, ui ) {
+			$uidatepicker.off("click")
+		}
 	})
 	var $uidatepicker = $('.ui-datepicker')
-	$uidatepicker.click(function() {
+	$uidatepicker.on("click", function() {
 		if (!$monthpicker.is(":focus")) {	//click on month name
 			entireMonth($('#monthpicking').val())
 		} else {

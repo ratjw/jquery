@@ -299,7 +299,7 @@ function changeDate(tableID, opdate, staffname, qn, pointing)
 		showButtonPanel: true,
 		closeText : "No Date",
 		beforeShow: function(input, obj) {
-			$(input).after($(input).datepicker('widget'));
+			$datepicker.after($datepicker.datepicker('widget'));
 		},
 		onClose: function (date, obj) {
 			function isDonePressed() {
@@ -340,12 +340,6 @@ function changeDate(tableID, opdate, staffname, qn, pointing)
 			}
 		}
 	})
-//	$('button.ui-datepicker-current').click(function() {
-//		console.log("here")
-//	})
-//	$(".ui-datepicker-unselectable").click(function() { //select LARGESTDATE
-//		console.log("here")
-//	})
 	$datepicker.datepicker("setDate", new Date(opdate))
 	$datepicker.datepicker( 'show' )
 	var $uidatepicker = $('.ui-datepicker')
@@ -397,6 +391,7 @@ function changeDate(tableID, opdate, staffname, qn, pointing)
 function clearDatepickerMouseover($datepicker)
 {
 	$('.ui-datepicker').css("fontSize", '')
+	$("body").append($datepicker.datepicker('widget'));
 	$datepicker.datepicker("destroy").hide()
 	$("#tbl tr:not(:has(th))").off("mouseover");
 	$("#tbl tr:not(:has(th))").off("click"); 
