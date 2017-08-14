@@ -20,6 +20,7 @@ function fillEquipTable(book, rowi, qn)
 	$('#dialogEquip input').prop('checked', false)
 	$('#dialogEquip input').val('')
 	$('#dialogEquip input[type=text]').prop('disabled', false)//make it easier to see
+	$('#dialogEquip textarea').prop('disabled', false)//make it easier to see
 	$('#clearPosition').click(function() {	//uncheck radio button of all Positions
 		$('#dialogEquip input[name=pose]').prop('checked', false)
 	})
@@ -34,7 +35,7 @@ function fillEquipTable(book, rowi, qn)
 			if (val == 'checked') {
 				$("#"+ key).prop("checked", true)	//radio and checkbox
 			} else {
-				$("#"+ key).val(val)	//fill <input> text
+				$("#"+ key).val(val)	//fill <input> && <textarea>
 			}
 		});
 		showNonEditableEquip(qn, bookqEquip)
@@ -82,10 +83,13 @@ function showNonEditableEquip(qn, bookqEquip)
 		}
 	]);
 	$('#dialogEquip input[type=radio]').prop("disabled", true)
-	$('#dialogEquip input[type=text]').click(function() {
+	$('#dialogEquip input[type=text]').on("click", function() {
 		$(this).prop('disabled', true)
 	})
-	$('#dialogEquip input').click(function() {
+	$('#dialogEquip textarea').on("click", function() {
+		$(this).prop('disabled', true)
+	})
+	$('#dialogEquip input').on("click", function() {
 		return false
 	})
 }
@@ -111,21 +115,33 @@ function showEditableEquip(qn, bookqEquip)
 	]);
 	$('#dialogEquip input').prop('disabled', false)
 	$('#dialogEquip input').off("click")
+	$('#dialogEquip textarea').prop('disabled', false)
+	$('#dialogEquip textarea').off("click")
 }
 
-function showNonEditableEquipForScrub()
+function showNonEditableForScrub()
 {
-	$('#clearPosition').off('click')
-	$('#clearShunt').off('click')
+	var height = window.innerHeight
+	if (height > 800) {
+		height = 800
+	}
 	$('#dialogEquip').dialog("option", "buttons", {})
-	$('#dialogEquip').dialog({height: 650})
+	$('#dialogEquip').dialog("height", height)
 	$('#dialogEquip input[type=radio]').prop("disabled", true)
-	$('#dialogEquip input[type=text]').click(function() {
+	$('#dialogEquip input[type=text]').on("click", function() {
 		$(this).prop('disabled', true)
 	})
-	$('#dialogEquip input').click(function() {
+	$('#dialogEquip input').on("click", function() {
 		return false
 	})
+	$('#dialogEquip textarea').on("click", function() {
+		$(this).prop('disabled', true)
+	})
+	$('#dialogEquip textarea').on("click", function() {
+		return false
+	})
+	$('#clearPosition').off('click')
+	$('#clearShunt').off('click')
 }
 
 function getEditedby(qn, i)
@@ -160,7 +176,12 @@ function Checklistequip(qn, bookqEquip)
 			equipment[this.id] = this.value
 		}
 	})
-	equipment = JSON.stringify(equipment)
+	$("#dialogEquip textarea").each(function() {
+		if (this.value) {
+			equipment[this.id] = this.value
+		}
+	})
+	equipment = JSON.stringify(equipment, escapeJSON)
 	if (equipment == bookqEquip) {
 		return
 	}
@@ -196,20 +217,38 @@ function printpaper(qn)	//*** have to set equip padding to top:70px; bottom:70px
 		win.document.writeln(orgEquip.outerHTML);
 		win.document.getElementById('dialogEquip').id = "printEquip" 
 
-		var newEquip = orgEquip.getElementsByTagName("INPUT");
-		var winEquip = win.document.getElementById('printEquip').getElementsByTagName("INPUT");
-		for (var i = 0; i < newEquip.length; i++) 
+		var originEquip = orgEquip.getElementsByTagName("INPUT");
+		var printEquip = win.document.getElementById('printEquip').getElementsByTagName("INPUT");
+		for (var i = 0; i < originEquip.length; i++) 
 		{
-			if (newEquip[i].checked) {
-				winEquip[i].checked = newEquip[i].checked
+			if (originEquip[i].checked) {
+				printEquip[i].checked = originEquip[i].checked
 			}
-			else if (newEquip[i].value) {
-				winEquip[i].value = newEquip[i].value
+			else if (originEquip[i].value) {
+				printEquip[i].value = originEquip[i].value
 			}
 			else {	//pale color for no input items
-				temp = winEquip[i]
-				while (temp.nodeName != "SPAN")
+				temp = printEquip[i]
+				while (temp.nodeName != "SPAN") {
 					temp = temp.parentNode
+				}
+				temp.className = "pale"
+			}
+		}
+
+		var originEquip = orgEquip.getElementsByTagName("TEXTAREA");
+		var printEquip = dialogEquip.getElementsByTagName("TEXTAREA");
+
+		for (var i = 0; i < originEquip.length; i++) 
+		{
+			if (originEquip[i].value) {
+				printEquip[i].value = originEquip[i].value
+			}
+			else {	//pale color for no input items
+				temp = printEquip[i]
+				while (temp.nodeName != "SPAN") {
+					temp = temp.parentNode
+				}
 				temp.className = "pale"
 			}
 		}
@@ -218,35 +257,59 @@ function printpaper(qn)	//*** have to set equip padding to top:70px; bottom:70px
 		win.focus();
 		win.print();
 		win.close();
-	}
-	else {
+	} else {
 		var original = document.body.innerHTML;
 		var orgEquip = document.getElementById('dialogEquip');
-		orgEquip.style.height = orgEquip.offsetHeight + 200 + "px"
-		orgEquip.style.width = orgEquip.offsetWidth + 100 + "px"
-		orgEquip.style.paddingLeft = 0 + "px"
-		orgEquip.style.marginLeft = 0 + "px"
-		document.body.innerHTML = orgEquip.outerHTML;
+//		orgEquip.style.height = orgEquip.offsetHeight + 200 + "px"
+//		orgEquip.style.width = orgEquip.offsetWidth + 100 + "px"
+//		orgEquip.style.paddingLeft = 0 + "px"
+//		orgEquip.style.marginLeft = 0 + "px"
+
+		$("#dialogEquip").appendTo("body")
+		$("#dialogEquip").siblings().remove()
+//		$("table").remove()
+		clearTimeout(TIMER);
+		
+/*		document.body.innerHTML = orgEquip.outerHTML;
 		var dialogEquip = document.getElementById('dialogEquip');
 
-		var newEquip = orgEquip.getElementsByTagName("INPUT");
-		var winEquip = dialogEquip.getElementsByTagName("INPUT");
+		var originEquip = orgEquip.getElementsByTagName("INPUT");
+		var printEquip = dialogEquip.getElementsByTagName("INPUT");
 
-		for (var i = 0; i < newEquip.length; i++) 
+		for (var i = 0; i < originEquip.length; i++) 
 		{
-			if (newEquip[i].checked) {
-				winEquip[i].checked = newEquip[i].checked
+			if (originEquip[i].checked) {
+				printEquip[i].checked = originEquip[i].checked
 			}
-			else if (newEquip[i].value) {
-				winEquip[i].value = newEquip[i].value
+			else if (originEquip[i].value) {
+				printEquip[i].value = originEquip[i].value
 			}
 			else {	//pale color for no input items
-				temp = winEquip[i]
-				while (temp.nodeName != "SPAN")
+				temp = printEquip[i]
+				while (temp.nodeName != "SPAN") {
 					temp = temp.parentNode
+				}
 				temp.className = "pale"
 			}
 		}
+
+		var originEquip = orgEquip.getElementsByTagName("TEXTAREA");
+		var printEquip = dialogEquip.getElementsByTagName("TEXTAREA");
+
+		for (var i = 0; i < originEquip.length; i++) 
+		{
+			if (originEquip[i].value) {
+				printEquip[i].value = originEquip[i].value
+			}
+			else {	//pale color for no input items
+				temp = printEquip[i]
+				while (temp.nodeName != "SPAN") {
+					temp = temp.parentNode
+				}
+				temp.className = "pale"
+			}
+		}
+*/
 		window.focus();
 		window.print();
 		document.body.innerHTML = original;

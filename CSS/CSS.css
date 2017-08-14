@@ -240,7 +240,7 @@ td.sat:before { content: "เสาร์ "; }
 
 #editcell { 
 	display: none;
-	position: relative;
+/*	position: relative;*/
 	text-align: left; 
 	overflow: hidden;
 	padding-left: 3px;
@@ -250,13 +250,13 @@ td.sat:before { content: "เสาร์ "; }
 }
 
 #menu, #stafflist {
-	position: relative;
+/*	position: relative;*/
 	font-size: 12px;
 }
 
 #undelete { 
 	display: none;
-	position: relative;
+/*	position: relative;*/
 	width: 125px;
 }
 
@@ -298,6 +298,11 @@ button.ui-datepicker-current {
 	padding: 0;
 	margin: 0;
 	border: 0;
+}
+
+#Notice {
+	width: 500px;
+	height: 65px;
 }
 
 #find,
@@ -403,4 +408,59 @@ input[type=checkbox]:checked + label {
 	#tbl td.thu:before { content: "วันพฤหัส "; }
 	#tbl td.fri:before { content: "วันศุกร์ "; }
 	#tbl td.sat:before { content: "วันเสาร์ "; }
+}
+
+@media print { 
+	BODY {
+		padding: 0px;
+		margin-top: 50px;
+		overflow: visible;
+		padding-left: 0px;
+		margin-left: 0px;
+	}
+
+	#dialogEquip {
+		line-height:170%;
+		font-size: 14px;
+		font-family: sans-serif;
+		background-color: white;
+		border: 0px;
+		margin-top: 25px;
+		padding-left: 0px;
+		margin-left: 0px;
+	}
+/*
+	.pale {
+		color: #D3D3D3;
+		font-weight: 300;
+	}
+*/
+	input, input[type=checkbox] { 
+		font-size: 14px; 
+		border: 0px; 
+	}
+
+	input[type=radio] + label {
+		color: #FFFFFF;
+		background-color: white;
+	}
+
+	input[type=radio]:checked + label {
+		color: #000000;
+		border: 2px; 
+	}
+
+	input[type=checkbox] + label {
+		color: #FFFFFF;
+		background-color: white;
+	}
+
+	input[type=checkbox]:checked + label {
+		color: #000000;
+		border: 2px black; 
+	}
+
+	div, span { 
+		display:inline-block; 
+	} 
 }

@@ -92,9 +92,10 @@ function fillSetTable(pointing)
 	});
 
 	var width = $menu.outerWidth()
+	var $container = $(pointing).closest('div')
 
-	$menu.appendTo($(pointing).closest('div'))
-	reposition($menu, "left top", "left bottom", pointing, $(pointing).closest('div'))
+	$menu.appendTo($container)
+	reposition($menu, "left top", "left bottom", pointing, $container)
 	menustyle($menu, pointing, width)
 }
 
@@ -128,7 +129,6 @@ function stafflist(pointing)
 	$stafflist.appendTo($(pointing).closest('div'))
 	reposition($stafflist, "left top", "left bottom", pointing)
 	menustyle($stafflist, pointing, width)
-	reposition($stafflist, "left top", "left bottom", pointing)
 }
 
 function menustyle($me, target, width)
@@ -300,6 +300,7 @@ function changeDate(tableID, opdate, staffname, qn, pointing)
 	})
 	reposition($datepicker, "center", "center", pointing)	//position the input
 
+	var $widget = $datepicker.datepicker( 'widget' )
 	$datepicker.datepicker( {
 		dateFormat: "yy-mm-dd",
 		minDate: "-1m",
@@ -307,7 +308,7 @@ function changeDate(tableID, opdate, staffname, qn, pointing)
 		showButtonPanel: true,
 		closeText : "No Date",
 		beforeShow: function(input, obj) {
-			$datepicker.after($datepicker.datepicker('widget'));
+			$datepicker.after($widget);
 		},
 		onClose: function (date, obj) {
 			function isDonePressed() {
@@ -347,7 +348,6 @@ function changeDate(tableID, opdate, staffname, qn, pointing)
 	})
 	$datepicker.datepicker("setDate", new Date(opdate))
 	$datepicker.datepicker( 'show' )
-	var $widget = $datepicker.datepicker( 'widget' )//$('.ui-datepicker')
 	$widget.css("fontSize", "10px")
 	reposition($widget, "left top", "left bottom", pointing)	//position the calendar
 

@@ -2,35 +2,6 @@ function loadtable(userid)
 {
 	Ajax(MYSQLIPHP, "nosqlReturnbook=''", loading);
 
-	THISUSER = userid
-	if (THISUSER == "000000") {
-		$(document).click( function (event) {
-			event.stopPropagation()
-			var target = event.target
-			var rowi = $(target).closest('tr')
-			var qn = rowi.children('td').eq(QN).html()
-			if ((target.nodeName != "TD") || (!qn)) {
-				event.preventDefault()
-				event.stopPropagation()
-				return false
-			}
-			fillEquipTable(BOOK, rowi[0], qn)
-			showNonEditableEquipForScrub()
-		})
-		$(document).keydown(function(e) {
-			e.preventDefault();
-		})
-		return
-	}
-
-	$("html, body").css( {
-		height: "100%",		//to make table scrollable while dragging
-		overflow: "hidden",
-		margin: "0px"
-	})
-	sortable()
-	//call sortable before render, if after, it renders very slowly
-
 	$("#login").remove()
 	$("#tblwrapper").show()
 	$("#dialogOplog").dialog()
@@ -45,9 +16,29 @@ function loadtable(userid)
 	$("#dialogService").dialog('close')	//prevent updateTables() call 'isOpen' before initialization
 	$("#dialogAlert").dialog()
 	$("#dialogAlert").dialog('close')
-	clearEditcell()
 
-	$(document).click( function (event) {
+	THISUSER = userid
+	if (THISUSER == "000000") {
+		$(document).on("click", function (event) {
+			event.stopPropagation()
+			var target = event.target
+			var rowi = $(target).closest('tr')
+			var qn = rowi.children('td').eq(QN).html()
+			if ((target.nodeName != "TD") || (!qn)) {
+				event.preventDefault()
+				event.stopPropagation()
+				return false
+			}
+			fillEquipTable(BOOK, rowi[0], qn)
+			showNonEditableForScrub()
+		})
+		$(document).keydown(function(e) {
+			e.preventDefault();
+		})
+		return
+	}
+
+	$(document).on("click", function (event) {
 		countReset();
 		updating.timer = 0
 		$(".bordergroove").removeClass("bordergroove")
@@ -92,20 +83,14 @@ function loadtable(userid)
 			clickservice(target)
 		}
 	})
-	$('#menu li > div').click(function(event){		//click on parent of submenu
-		if ($(this).siblings('ul').length > 0){
+
+	$('#menu li > div').on("click", function(event){
+		if ($(this).siblings('ul').length > 0){	//click on parent of submenu
 			event.preventDefault()
 			event.stopPropagation()
 		}
 	});
-	$(window).resize(function() {
-		if ($("#dialogService").dialog('isOpen')) {
-			$("#dialogService").dialog({
-				width: window.innerWidth * 95 / 100,
-				height: window.innerHeight * 95 / 100
-			})
-		}
-	})
+
 	$(document).keydown( function (event) {
 		countReset();
 		updating.timer = 0
@@ -123,7 +108,14 @@ function loadtable(userid)
 			keyin(event, keycode, pointing)
 		}
 	})
-	$(document).keyup( function (event) {
+
+	$(document).keyup( function (event) {	//for resizing the editing cell
+		if ($('#monthpicker').is(':focus')) {
+			return
+		}
+		if ($('#dialogEquip').is(':visible')) {
+			return
+		}
 		var $editcell = $("#editcell")
 		var pointing = $editcell.data("pointing")
 		if (pointing.cellIndex < 2) {
@@ -139,9 +131,28 @@ function loadtable(userid)
 		})
 		reposition($editcell, "center", "center", pointing)
 	})
+
+	$(window).resize(function() {	//for resizing dialogs
+		if ($("#dialogService").dialog('isOpen')) {
+			$("#dialogService").dialog({
+				width: window.innerWidth * 95 / 100,
+				height: window.innerHeight * 95 / 100
+			})
+		}
+	})
+
 	$(document).contextmenu( function (event) {
 		return false
 	})
+
+	$("html, body").css( {
+		height: "100%",		//to make table scrollable while dragging
+		overflow: "hidden",
+		margin: "0px"
+	})
+
+	sortable()
+	//call sortable before render, if after, it renders very slowly
 
 	TIMER = setTimeout("updating()",10000);	//poke server every 10 sec.
 	updating.timer = 0

@@ -27,9 +27,10 @@ function makehistory(rowi, response)
 
 	var HTML_String = '<table id = "historytbl">';
 	HTML_String += '<tr>';
-	HTML_String += '<th style="width:3%">Date Time</th>';
+	HTML_String += '<th style="width:2%">When</th>';
+	HTML_String += '<th style="width:2%">Date</th>';
 	HTML_String += '<th style="width:2%">Room Time</th>';
-	HTML_String += '<th style="width:3%">Staff</th>';
+	HTML_String += '<th style="width:2%">Staff</th>';
 	HTML_String += '<th style="width:15%">Diagnosis</th>';
 	HTML_String += '<th style="width:15%">Treatment</th>';
 	HTML_String += '<th style="width:15%">Admission</th>';
@@ -49,6 +50,7 @@ function makehistory(rowi, response)
 			HTML_String += '<tr>';
 		}
 		HTML_String += '<td>' + tracing[j].editdatetime +'</td>';
+		HTML_String += '<td>' + (tracing[j].opdate? tracing[j].opdate : "") +'</td>';
 		HTML_String += '<td>' + tracing[j].oproom +' '+ tracing[j].optime +'</td>';
 		HTML_String += '<td>' + tracing[j].staffname +'</td>';
 		HTML_String += '<td>' + tracing[j].diagnosis +'</td>';
@@ -114,7 +116,7 @@ function makedeletedCases(response)
 
 	var HTML_String = '<table id = "historytbl">';
 	HTML_String += '<tr>';
-	HTML_String += '<th style="width:10%">Date Time</th>';
+	HTML_String += '<th style="width:10%">When</th>';
 	HTML_String += '<th style="width:5%">Date</th>';
 	HTML_String += '<th style="width:5%">Staff</th>';
 	HTML_String += '<th style="width:5%">HN</th>';

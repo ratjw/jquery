@@ -437,9 +437,15 @@
   <span> <input type="text" size="21" id="Monitor"></span>
   <br>
   <br>
+  <div style="width:110px;float:left">Notice</div>
+  <span> <textarea placeholder="รายละเอียด" id="Notice"></textarea></span>
+  <br>
+  <br>
   <span style="width:300px;"></span>
   <span style="width:70px;"> Edited by </span>
   <span style="position:absolute" id="editedby"></span>
+  <br>
+  <br>
 </div>
 
 <div id="dialogReadme" class="dialogBox">
