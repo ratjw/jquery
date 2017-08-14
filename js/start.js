@@ -3,28 +3,6 @@ function loadtable(userid)
 	Ajax(MYSQLIPHP, "nosqlReturnbook=''", loading);
 
 	THISUSER = userid
-	$("#login").remove()
-	$("#tblwrapper").show()
-	$("#dialogOplog").dialog()
-	$("#dialogOplog").dialog('close')
-	$("#dialogDeleted").dialog()
-	$("#dialogDeleted").dialog('close')
-	$("#dialogFind").dialog()
-	$("#dialogFind").dialog('close')
-	$("#dialogEquip").dialog()
-	$("#dialogEquip").dialog('close')
-	$("#dialogService").dialog()
-	$("#dialogService").dialog('close')	//prevent updateTables() call 'isOpen' before initialization
-	$("#dialogAlert").dialog()
-	$("#dialogAlert").dialog('close')
-	$(window).resize(function() {
-		$("#dialogService").dialog({
-			width: window.innerWidth * 95 / 100,
-			height: window.innerHeight * 95 / 100
-		})
-	})
-	clearEditcell()
-
 	if (THISUSER == "000000") {
 		$(document).click( function (event) {
 			event.stopPropagation()
@@ -44,6 +22,30 @@ function loadtable(userid)
 		})
 		return
 	}
+
+	$("html, body").css( {
+		height: "100%",		//to make table scrollable while dragging
+		overflow: "hidden",
+		margin: "0px"
+	})
+	sortable()
+	//call sortable before render, if after, it renders very slowly
+
+	$("#login").remove()
+	$("#tblwrapper").show()
+	$("#dialogOplog").dialog()
+	$("#dialogOplog").dialog('close')
+	$("#dialogDeleted").dialog()
+	$("#dialogDeleted").dialog('close')
+	$("#dialogFind").dialog()
+	$("#dialogFind").dialog('close')
+	$("#dialogEquip").dialog()
+	$("#dialogEquip").dialog('close')
+	$("#dialogService").dialog()
+	$("#dialogService").dialog('close')	//prevent updateTables() call 'isOpen' before initialization
+	$("#dialogAlert").dialog()
+	$("#dialogAlert").dialog('close')
+	clearEditcell()
 
 	$(document).click( function (event) {
 		countReset();
@@ -96,6 +98,14 @@ function loadtable(userid)
 			event.stopPropagation()
 		}
 	});
+	$(window).resize(function() {
+		if ($("#dialogService").dialog('isOpen')) {
+			$("#dialogService").dialog({
+				width: window.innerWidth * 95 / 100,
+				height: window.innerHeight * 95 / 100
+			})
+		}
+	})
 	$(document).keydown( function (event) {
 		countReset();
 		updating.timer = 0
@@ -133,13 +143,6 @@ function loadtable(userid)
 		return false
 	})
 
-	$("html, body").css( {
-		height: "100%",		//to make table scrollable while dragging
-		overflow: "hidden",
-		margin: "0px"
-	})
-	sortable()
-	//call sortable before render, if after, it renders very slowly
 	TIMER = setTimeout("updating()",10000);	//poke server every 10 sec.
 	updating.timer = 0
 }

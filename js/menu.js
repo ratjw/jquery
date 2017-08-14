@@ -94,7 +94,7 @@ function fillSetTable(pointing)
 	var width = $menu.outerWidth()
 
 	$menu.appendTo($(pointing).closest('div'))
-	reposition($menu, "left top", "left bottom", pointing)
+	reposition($menu, "left top", "left bottom", pointing, $(pointing).closest('div'))
 	menustyle($menu, pointing, width)
 }
 
@@ -282,15 +282,23 @@ function noOpdate()
 
 function changeDate(tableID, opdate, staffname, qn, pointing)
 {
+	var $trNOth = $("#tbl tr:not(:has(th)), #queuetbl tr:not(:has(th))")
 	var $datepicker = $('#datepickertbl')
-	if (tableID == "queuetbl") {
-		$datepicker = $('#datepickerqueuetbl')
+	var $container
+	if (tableID == "tbl") {
+		$datepicker = $('#datepickertbl')
+		$container = $('#tblcontainer')
 	}
+	else if (tableID == "queuetbl") {
+		$datepicker = $('#datepickerqueuetbl')
+		$container = $('#queuecontainer')
+	}
+	$container.css("position", "relative")
 	$datepicker.css({
 		height: $(pointing).height(),
 		width: $(pointing).width()
 	})
-	reposition($datepicker, "center", "center", pointing)
+	reposition($datepicker, "center", "center", pointing)	//position the input
 
 	$datepicker.datepicker( {
 		dateFormat: "yy-mm-dd",
@@ -311,11 +319,8 @@ function changeDate(tableID, opdate, staffname, qn, pointing)
 					date = LARGESTDATE
 				}
 			}
-			if ($(".pasteDate").length) {
-				return
-			}
-			clearDatepickerMouseover($datepicker)
-			if (opdate == date) {
+			clearDatepickerMouseover($container, $trNOth, $datepicker)
+			if ($(".pasteDate").length || opdate == date) {
 				return false
 			}
 			var sql = "sqlReturnbook=UPDATE book SET opdate='" + date + "', "
@@ -342,16 +347,16 @@ function changeDate(tableID, opdate, staffname, qn, pointing)
 	})
 	$datepicker.datepicker("setDate", new Date(opdate))
 	$datepicker.datepicker( 'show' )
-	var $uidatepicker = $('.ui-datepicker')
-	$uidatepicker.css("fontSize", "12px")
-	reposition($uidatepicker, "left top", "left bottom", pointing)
+	var $widget = $datepicker.datepicker( 'widget' )//$('.ui-datepicker')
+	$widget.css("fontSize", "10px")
+	reposition($widget, "left top", "left bottom", pointing)	//position the calendar
 
 	$(pointing).closest('tr').addClass("changeDate")
-	$("#tbl tr:not(:has(th))").on({
+	$trNOth.on({
 		"mouseover": function() { $(this).addClass("pasteDate"); },
 		"click": function(event) {
 			event.stopPropagation()
-			clearDatepickerMouseover($datepicker)
+			clearDatepickerMouseover($container, $trNOth, $datepicker)
 			var thisDate = $(this).children("td").eq(OPDATE).html()
 			thisDate = getOpdate(thisDate)
 			if (opdate == thisDate) {
@@ -385,17 +390,18 @@ function changeDate(tableID, opdate, staffname, qn, pointing)
 			}
 		}
 	});
-	$("#tbl tr:not(:has(th))").on("mouseout", function() { $(this).removeClass("pasteDate"); }); 
+	$trNOth.on("mouseout", function() { $(this).removeClass("pasteDate"); }); 
 }
 
-function clearDatepickerMouseover($datepicker)
+function clearDatepickerMouseover($container, $trNOth, $datepicker)
 {
-	$('.ui-datepicker').css("fontSize", '')
-	$("body").append($datepicker.datepicker('widget'));
+	$container.css("position", "")
+	$("body").append($datepicker.datepicker("widget"));
+	$datepicker.datepicker('widget').css("fontSize", "")
 	$datepicker.datepicker("destroy").hide()
-	$("#tbl tr:not(:has(th))").off("mouseover");
-	$("#tbl tr:not(:has(th))").off("click"); 
-	$("#tbl tr:not(:has(th))").off("mouseout"); 
+	$trNOth.off("mouseover");
+	$trNOth.off("click");
+	$trNOth.off("mouseout");
 	$(".pasteDate").removeClass("pasteDate")
 	$(".changeDate").removeClass("changeDate")
 }
@@ -450,10 +456,43 @@ function splitPane()
 	$("#queuewrapper").show()
 	$("#tblwrapper").css({"float":"left", "height":"100%", "width":"50%"})
 	$("#queuewrapper").css({"float":"right", "height":"100%", "width":"50%"})
-	initResize("#tblwrapper")
+	initResize($("#tblwrapper"))
 	$('.ui-resizable-e').css('height', $("#tbl").css("height"))
 
 	fakeScrollAnimate("tblcontainer", "tbl", scrolledTop, tohead)
+}
+
+function initResize($wrapper)
+{
+	$wrapper.resizable(
+	{
+		autoHide: true,
+		handles: 'e',
+		resize: function(e, ui) 
+		{
+			var parent = ui.element.parent();
+			var remainSpace = parent.width() - ui.element.outerWidth()
+			var divTwo = ui.element.next()
+			var margin = divTwo.outerWidth() - divTwo.innerWidth()
+			var divTwoWidth = (remainSpace-margin)/parent.width()*100+"%";
+			divTwo.css("width", divTwoWidth);
+		},
+		stop: function(e, ui) 
+		{
+			var parent = ui.element.parent();
+			var remainSpace = parent.width() - ui.element.outerWidth()
+			var divTwo = ui.element.next()
+			var margin = divTwo.outerWidth() - divTwo.innerWidth()
+			ui.element.css(
+			{
+				width: ui.element.outerWidth()/parent.width()*100+"%",
+			});
+			ui.element.next().css(
+			{
+				width: (remainSpace-margin)/parent.width()*100+"%",
+			});
+		}
+	});
 }
 
 function closequeue()

@@ -166,7 +166,7 @@
   <li id="item4"><div>Equipment</div></li>
   <li id="item5"><div>ประวัติการแก้ไข</div></li>
   <li id="item6"><div>PACS</div></li>
-  <li id="item7" style="border:3px solid gray"><div>Delete</div></li>
+  <li id="item7" style="color:gray"><div>Delete</div></li>
   <li id="item8"><div>คิวของอาจารย์</div><ul id="item0" style="width:100px"></ul></li>
   <li id="item9"><div>Service Review</div></li>
   <li id="item10"><div>All Deleted Cases</div></li>

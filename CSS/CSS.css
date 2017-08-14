@@ -7,14 +7,12 @@
 }
 
 #tblwrapper {
+	float: left;
 	height: 100%;
 	font-size: 0;
-	overflow: hidden;
 }
 
 #tblcontainer {
-	position: relative;
-	float: left;
 	height: 100%;
 	width: 100%;
 	overflow: scroll;
@@ -27,7 +25,6 @@
 }
 
 #queuecontainer {
-	position: relative;
 	height: 92%;
 	overflow: scroll;
 	box-sizing: border-box;
@@ -254,7 +251,7 @@ td.sat:before { content: "เสาร์ "; }
 
 #menu, #stafflist {
 	position: relative;
-	font-size: 14px;
+	font-size: 12px;
 }
 
 #undelete { 

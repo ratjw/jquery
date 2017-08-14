@@ -20,9 +20,11 @@ function sortable()
 			prevplace = ui.placeholder.index()
 			thisplace = ui.placeholder.index()
 			sender = ui.item.closest('table').attr('id')
-			if ($("#tblwrapper").is('.ui-resizable')) {
-				$("#tblwrapper").resizable("destroy")
-			}
+//			if ($("#queuewrapper").is(":visible")) {
+//				if (!$("#tblwrapper").resizable("instance")) {
+//					$("#tblwrapper").resizable("disable")
+//				}
+//			} 
 		},
 		change: function(e, ui){
 			prevplace = thisplace
@@ -137,10 +139,11 @@ function sortable()
 function stopsorting()
 {
 	TIMER = setTimeout("updating()",10000);	//poke next 10 sec.
-	if (!$("#tblwrapper").is('.ui-resizable')) {
-		initResize("#tblwrapper")
-		$('.ui-resizable-e').css('height', $("#tbl").css("height"))
-	}
+//	if ($("#queuewrapper").is(":visible")) {
+//		if ($("#tblwrapper").resizable("option", "disabled")) {
+//			$("#tblwrapper").resizable("enable")
+//		}
+//	} 
 	$('#editcell').hide()
 	//after sorting, editcell was placed at row 0 column 1
 	//and display at placeholder position in entire width
@@ -208,37 +211,4 @@ function checkRoomTime($thisrow, thisOpdate, oldOpdate)
 		}
 	}
 	return roomtime
-}
-
-function initResize(id)
-{
-	$(id).resizable(
-	{
-		autoHide: true,
-		handles: 'e',
-		resize: function(e, ui) 
-		{
-			var parent = ui.element.parent();
-			var remainSpace = parent.width() - ui.element.outerWidth()
-			var divTwo = ui.element.next()
-			var margin = divTwo.outerWidth() - divTwo.innerWidth()
-			var divTwoWidth = (remainSpace-margin)/parent.width()*100+"%";
-			divTwo.css("width", divTwoWidth);
-		},
-		stop: function(e, ui) 
-		{
-			var parent = ui.element.parent();
-			var remainSpace = parent.width() - ui.element.outerWidth()
-			var divTwo = ui.element.next()
-			var margin = divTwo.outerWidth() - divTwo.innerWidth()
-			ui.element.css(
-			{
-				width: ui.element.outerWidth()/parent.width()*100+"%",
-			});
-			ui.element.next().css(
-			{
-				width: (remainSpace-margin)/parent.width()*100+"%",
-			});
-		}
-	});
 }

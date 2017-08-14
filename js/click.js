@@ -425,17 +425,19 @@ function showEditcell($editcell, $pointing)
 	reposition($editcell, "center", "center", $pointing)
 }
 
-function reposition($me, mypos, atpos, target)
+function reposition($me, mypos, atpos, target, within)
 {
 	$me.position({
 		my: mypos,
 		at: atpos,
-		of: target
+		of: target,
+		within: within
 	}).show()
 	$me.position({
 		my: mypos,
 		at: atpos,
-		of: target
+		of: target,
+		within: within
 	}).show()
 }	//Don't know why have to repeat 2 times
 
