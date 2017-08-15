@@ -13,7 +13,6 @@
 <script src="js/jquery-ui.min.js"></script>
 <script src="js/click.js"></script>
 <script src="js/constant.js"></script>
-<script src="js/countservice.js"></script>
 <script src="js/equip.js"></script>
 <script src="js/fill.js"></script>
 <script src="js/function.js"></script>
@@ -462,7 +461,14 @@
 	<li>ใช้ Menu เปลี่ยนวันที่</li>
   </ol>
   <p style="margin:0px;"><span class="ui-icon ui-icon-info"></span>
-       ช่องใส่ข้อมูล (cell) เลื่อนโดยการคลิกช่องอื่น หรือกด Tab (ช่องต่อไป) หรือ Shift+Tab (ช่องย้อนหลัง) หรือ Enter</p>
+       ข้อมูลที่ใส่ตามช่อง (cell) ถูกบันทึกอัตโนมัติ เมื่อ<br><span style="width:20px;"></span>
+   1. เลื่อนไปตำแหน่งอื่น<br><span style="width:20px;"></span>
+   2. อยู่นิ่งๆ 10 วินาที่<br><span style="width:15px;"></span>
+การเลื่อนไปตำแหน่งอื่น<br><span style="width:20px;"></span>
+1. คลิกช่องอื่น<br><span style="width:20px;"></span>
+2. กด Tab (ช่องต่อไป) <br><span style="width:20px;"></span>
+3. กด Shift+Tab (ช่องย้อนหลัง)<br><span style="width:20px;"></span>
+4. กด Enter</p>
   <ul style="margin-top:0px;">
     <li>Enter ขึ้นบรรทัดใหม่บนตาราง</li>
     <li>Shift+Enter ขึ้นบรรทัดใหม่ภายในช่องนั้น</li>
@@ -471,9 +477,9 @@
   <h3>ตาราง</h3>
   <ul style="margin-top:0px;">
 	<li>คอลัมน์ <b>Date</b> : วันผ่าตัด (ไม่ใช่วันนัดมา admit)</li>
-	<dd>: หรือ วันที่รับ consult จากหน่วยอื่น</dd>
-	<dd>: คลิกช่องนี้ จะปรากฏ Popup Menu</dd>
-	<li>คอลัมน์ <b>Room Time</b> : คลิกใส่ห้องผ่าตัดและเวลา</li>
+	<dt>: หรือ วันที่รับ consult จากหน่วยอื่น</dt>
+	<dt>: คลิกช่องนี้ จะปรากฏ Popup Menu</dt>
+	<li>คอลัมน์ <b>Room Time</b> : คลิกเลือกห้องผ่าตัดและเวลา โดยใช้ล้อหมุนของเมาส์</li>
 	<li>คอลัมน์ <b>Staff</b> : คลิกเลือกชื่ออาจารย์เจ้าของไข้</li>
 	<li>คอลัมน์ <b>HN</b> : เลข 7 หลักเท่านั้น</li>
 	<li>คอลัมน์ <b>PatientName Age</b> : ปรากฏเองตาม HN</li>
@@ -485,32 +491,29 @@
   <h3>Menu</h3>
   <p style="margin:0px;">จากการคลิกตรงวันที่ ทั้งตารางรวม และตารางเดี่ยว</p>
   <ul style="margin-top:0px;">
-	<li><b>เพิ่ม case</b> : เพิ่มเคสในวันเดียวกัน</li>
-		<dd>: ทั้งเคสผ่าตัด และเคส consult</dd>
-	<li><b>เพิ่ม case ไม่ระบุวัน</b> : มีเฉพาะที่ตารางเดี่ยว</li>
-		<dd>: ดูวันที่ลงคิวครั้งแรกของผู้ป่วยรายนี้ได้ที่ <b>ประวัติการแก้ไข</b></dd>
-	<li><b>เปลี่ยนวันที่</b> : เลือกตามปฏิทิน</li>
-		<dd>: ของผู้ป่วยรายที่คลิกนี้</dd>
+	<li><b>เพิ่ม case</b> : เพิ่มเคสต่อจากเคสนี้</li>
+	<li><b>เพิ่ม case ไม่ระบุวัน</b></li>
+		<dt>: ดูวันที่ลงคิวครั้งแรกของผู้ป่วยรายนี้ได้ที่ <b>ประวัติการแก้ไข</b></dt>
+	<li><b>เปลี่ยนวันที่</b></li>
+		<dt>: เลือกตามปฏิทิน</dt>
+		<dd>: ต้องการไม่มีวันที่ คลิก No Date ตรงขวาล่างของปฏิทิน</dd>
+		<dt>: เลือกโดยเลื่อนเมาส์ไปตามตาราง</dt>
 	<li><b>Equipment</b> : สำหรับพยาบาล ใช้ Login ID:000000</li>
-		<dd>: ของผู้ป่วยรายที่คลิกนี้</dd>
-	<li><b>ประวัติการแก้ไข</b> : ดูการเปลี่ยนข้อมูลย้อนหลัง</li>
-		<dd>: ของผู้ป่วยรายที่คลิกนี้</dd>
+	<li><b>ประวัติการแก้ไข</b> : ดูย้อนหลังการเปลี่ยนข้อมูล</li>
 	<li><b>PACS</b> : เฉพาะเครื่องที่ดู PACS ได้เท่านั้น</li>
-		<dd>: ของผู้ป่วยรายที่คลิกนี้</dd>
 	<li><b>Delete</b>: Undelete ได้ที่ประวัติการแก้ไข</li>
-		<dd>: เฉพาะผู้ป่วยรายที่คลิกนี้</dd>
 	<li><b>คิวของอาจารย์</b> : มี submenu เลือกชื่ออาจารย์</li>
 	  <dt>เมื่อเลือกอาจารย์แล้ว จะแบ่งหน้าจอเป็น 2 ส่วน</dt>
-		<dd>: ครึ่งซ้าย เป็นตารางรวม</dd>
-		<dd>: ครึ่งขวา เป็นตารางของอาจารย์ท่านเดียว</dd>
-		<dd>: resizable เลื่อนที่เส้นแบ่งกลาง</dd>
+		<dt>: ครึ่งซ้าย เป็นตารางรวม</dt>
+		<dt>: ครึ่งขวา เป็นตารางของอาจารย์ท่านเดียว</dt>
+		<dt>: resizable เลื่อนที่เส้นแบ่งกลาง</dt>
 	<li><b>Service Review</b> : ทั้งเคสผ่าตัด และเคส consult</li>
-		<dd>: ต้องลงเคสที่ตารางรวมก่อน</dd>
+		<dt>: ต้องลงเคสที่ตารางรวมก่อน</dt>
 	<li><b>All Deleted Cases</b> : เรียงจากวันล่าสุด ย้อนลงไป</li>
-		<dd>: ผู้ป่วยทั้งหมดที่ถูกลบออก</dd>
+		<dt>: ผู้ป่วยทั้งหมดที่ถูกลบออก</dt>
 	<li><b>Find</b> : หาผู้ป่วย ด้วย HN หรือบางคำ </li>
-		<dd>: ผู้ป่วยทั้งหมด รวมทั้งที่ไม่ปรากฏในตาราง</dd>
-		<dd>: Ctrl-F เป็น feature ของ browser หาคำที่ปรากฏในตาราง</dd>
+		<dt>: ผู้ป่วยทั้งหมด รวมทั้งที่ไม่ปรากฏในตาราง</dt>
+		<dt>: Ctrl-F เป็น feature ของ browser หาคำที่ปรากฏในตาราง</dt>
 	<li><b>Readme</b></li>
   </ul>
 
@@ -524,25 +527,26 @@
 	<li>แบบฟอร์มที่เคยใส่ข้อมูลแล้ว ต้องคลิก <b>แก้ไข</b></li>
 	<li>ยกเลิกเลือกการจัดท่า คลิก <b>Position</b></li>
 	<li>ยกเลิกเลือกชนิด shunt คลิก <b>Shunt</b></li>
+	<li>ช่องใส่ข้อความท้ายแต่ละอุปกรณ์ เป็นบรรทัดเดียว ยาวๆได้ แต่จะซ่อนอยู่ ต้องเลื่อนดู</li>
+	<li>ช่องใส่ข้อความสุดท้าย ได้หลายบรรทัดไม่จำกัด แต่ถ้าเกิน 3 บรรทัด ต้องเลื่อนดู</li>
   </ul>
 
   <h3>Service Review</h3>
   <ul style="margin-top:0px;">
 	<li>ต้องการเปลี่ยนเดือน คลิกหัวลูกศร ซ้าย ขวา</li>
 	<li>เข้าดู Service Review คลิกแถบชื่อเดือน</li>
-	<li>ดู PACS คลิกช่อง <b>HN Name</b></li>
-	<li>ช่อง <b>Diagnosis</b> มีผลต่อจำนวน Re-admission</li>
-		<dt>: เคสที่ admit ซ้ำ ใส่คำว่า re-ad(mission) ตรงช่องนี้</dt>
+	<li>ช่อง <b>Case</b> ลำดับเคสของอาจารย์แต่ละท่าน</li>
+	<li>ช่อง <b>HN Name</b> คลิกดู PACS ได้เฉพาะเบราเซอร์ IE</li>
+	<li>ช่อง <b>Diagnosis</b></li>
 	<li>ช่อง <b>Treatment</b> มีผลต่อจำนวน Operation, และ Re-operation</li>
-		<dt>: เคสที่ไม่มีคำเกี่ยวกับการผ่าตัดในช่อง <b>Treatment</b> ให้ใส่คำว่า op(eration) ตรงช่องนี้</dt>
-		<dt>: เคสที่มีการผ่าตัดซ้ำ ใส่คำว่า re-op(eration) ตรงช่องนี้</dt>
+		<dt>: ถ้านับจำนวน Operation ขาดไป ให้ใส่คำว่า op(eration)</dt>
+		<dt>: เคสที่มีการผ่าตัดซ้ำ ใส่คำว่า re-op(eration)</dt>
 	<li>ช่อง <b>Admission Status</b> มีผลต่อจำนวน Re-admission</li>
-		<dt>: เคสที่ admit ซ้ำ ใส่คำว่า re-ad(mission) ตรงช่องนี้</dt>
+		<dt>: เคสที่ admit ซ้ำ ใส่คำว่า re-ad(mission)</dt>
 	<li>ช่อง <b>Final Status</b> มีผลต่อจำนวน Infection, Morbidity, และ Dead</li>
-		<dt>: เคสที่มี Infection ใส่คำว่า Infect(ion) หรือ SSI ตรงช่องนี้</dt>
-		<dt>: เคสที่มี Morbidity ใส่คำว่า Morbid ตรงช่องนี้</dt>
-		<dt>: เคส Dead ใส่คำว่า Dead หรือ  passed away ตรงช่องนี้</dt>
-		<dt>: ถ้าปรากฏแถบสีที่ไม่ต้องการ ใส่คำว่า IMPROVED ตรงช่องนี้</dt>
+		<dt>: เคสที่มี Infection ใส่คำว่า Infect(ion) หรือ SSI</dt>
+		<dt>: เคสที่มี Morbidity ใส่คำว่า Morbid</dt>
+		<dt>: เคส Dead ใส่คำว่า Dead หรือ  passed away</dt>
 	<li>ช่อง <b>Admit</b> ข้อมูลของโรงพยาบาล</li>
 	<li>ช่อง <b>D/C</b> ข้อมูลของโรงพยาบาล</li>
   </ul>

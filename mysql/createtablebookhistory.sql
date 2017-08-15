@@ -8,8 +8,9 @@ ALTER TABLE bookhistory
 	DROP PRIMARY KEY, 
 	DROP KEY opdate, 
 	DROP KEY hn, 
-	ENGINE = MyISAM,
+	ENGINE = INNODB,
 	ADD action VARCHAR(8) DEFAULT 'update' FIRST, 
 	ADD revision INT(6) NOT NULL AUTO_INCREMENT AFTER action,
 	ADD editdatetime DATETIME NOT NULL AFTER revision,
-	ADD PRIMARY KEY (qn, revision);
+	ADD PRIMARY KEY (qn, revision),
+	ADD KEY (revision);

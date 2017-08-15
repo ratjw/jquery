@@ -260,17 +260,16 @@ function printpaper(qn)	//*** have to set equip padding to top:70px; bottom:70px
 	} else {
 		var original = document.body.innerHTML;
 		var orgEquip = document.getElementById('dialogEquip');
-//		orgEquip.style.height = orgEquip.offsetHeight + 200 + "px"
-//		orgEquip.style.width = orgEquip.offsetWidth + 100 + "px"
-//		orgEquip.style.paddingLeft = 0 + "px"
-//		orgEquip.style.marginLeft = 0 + "px"
-
+		orgEquip.style.height = orgEquip.offsetHeight + 200 + "px"
+		orgEquip.style.width = orgEquip.offsetWidth + 100 + "px"
+		orgEquip.style.paddingLeft = 0 + "px"
+		orgEquip.style.marginLeft = 0 + "px"
+/*
 		$("#dialogEquip").appendTo("body")
 		$("#dialogEquip").siblings().remove()
-//		$("table").remove()
 		clearTimeout(TIMER);
-		
-/*		document.body.innerHTML = orgEquip.outerHTML;
+*/		
+		document.body.innerHTML = orgEquip.outerHTML;
 		var dialogEquip = document.getElementById('dialogEquip');
 
 		var originEquip = orgEquip.getElementsByTagName("INPUT");
@@ -309,7 +308,7 @@ function printpaper(qn)	//*** have to set equip padding to top:70px; bottom:70px
 				temp.className = "pale"
 			}
 		}
-*/
+
 		window.focus();
 		window.print();
 		document.body.innerHTML = original;

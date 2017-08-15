@@ -11,12 +11,12 @@ CREATE TABLE `book` (
 	`patient` varchar(255) NOT NULL DEFAULT '',
 	`dob` date DEFAULT NULL,
 	`gender` varchar(1) NOT NULL DEFAULT '',
-	`diagnosis` varchar(3000) NOT NULL DEFAULT '',
-	`treatment` varchar(3000) NOT NULL DEFAULT '',
+	`diagnosis` varchar(1000) NOT NULL DEFAULT '',
+	`treatment` varchar(1000) NOT NULL DEFAULT '',
 	`admission` varchar(5000) NOT NULL DEFAULT '', 
 	`final` varchar(5000) NOT NULL DEFAULT '', 
 	`equipment` varchar(2000) NOT NULL DEFAULT '',
-	`contact` varchar(3000) NOT NULL DEFAULT '',
+	`contact` varchar(1000) NOT NULL DEFAULT '',
 	`admit` date, 
 	`discharge` date, 
 	`qn` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -24,4 +24,4 @@ CREATE TABLE `book` (
 	PRIMARY KEY (`qn`),
 	KEY `opdate` (`opdate`),
 	KEY `hn` (`hn`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=INNODB DEFAULT CHARSET=utf8;
