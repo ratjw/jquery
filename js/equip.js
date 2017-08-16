@@ -19,6 +19,7 @@ function fillEquipTable(book, rowi, qn)
 	$('#dialogEquip').show()
 	$('#dialogEquip input').prop('checked', false)
 	$('#dialogEquip input').val('')
+	$('#dialogEquip textarea').val('')
 	$('#dialogEquip input[type=text]').prop('disabled', false)//make it easier to see
 	$('#dialogEquip textarea').prop('disabled', false)//make it easier to see
 	$('#clearPosition').click(function() {	//uncheck radio button of all Positions
@@ -39,7 +40,24 @@ function fillEquipTable(book, rowi, qn)
 			}
 		});
 		showNonEditableEquip(qn, bookqEquip)
-		getEditedby(qn)
+
+		var sql = "sqlReturnData=SELECT editor, editdatetime FROM bookhistory "
+		sql += "WHERE qn="+ qn + " AND equipment <> '';"
+
+		Ajax(MYSQLIPHP, sql, callbackgetEditedby)
+
+		function callbackgetEditedby(response)
+		{
+			if (!response || response.indexOf("DBfailed") != -1) {
+				alert("getEditedby", response)
+			} else {
+				var Editedby = ""
+				$.each(JSON.parse(response), function(key, val) {
+					Editedby += (val.editor + " : " + val.editdatetime + "<br>")
+				});
+				$('#editedby').html(Editedby)
+			}
+		}
  	} else {
 		showEditableEquip(qn, bookqEquip)
 		$('#editedby').html("")
@@ -144,27 +162,6 @@ function showNonEditableForScrub()
 	$('#clearShunt').off('click')
 }
 
-function getEditedby(qn, i)
-{
-	var sql = "sqlReturnData=SELECT editor, editdatetime FROM bookhistory "
-	sql += "WHERE qn="+ qn + " AND equipment <> '';"
-
-	Ajax(MYSQLIPHP, sql, callbackgetEditedby)
-
-	function callbackgetEditedby(response)
-		{
-			if (!response || response.indexOf("DBfailed") != -1) {
-				alert("getEditedby", response)
-			} else {
-				var Editedby = ""
-				$.each(JSON.parse(response), function(key, val) {
-					Editedby += (val.editor + " : " + val.editdatetime + "<br>")
-				});
-				$('#editedby').html(Editedby)
-			}
-		}
-}
-
 function Checklistequip(qn, bookqEquip) 
 {
 	var equipment = {}
@@ -181,10 +178,13 @@ function Checklistequip(qn, bookqEquip)
 			equipment[this.id] = this.value
 		}
 	})
-	equipment = JSON.stringify(equipment, escapeJSON)
+	equipment = JSON.stringify(equipment)
 	if (equipment == bookqEquip) {
 		return
 	}
+	equipment = equipment.replace(/\\/g,"\\\\").replace(/'/g,"\\'")
+	//escape the \ (escape) and ' (single quote) for sql string, not for JSON
+
 	var sql = "UPDATE book SET ";
 	sql += "equipment='"+ equipment +"' ,";
 	sql += "editor='"+ THISUSER +"' ";
@@ -197,9 +197,18 @@ function Checklistequip(qn, bookqEquip)
 		if (!response || response.indexOf("QTIME") == -1)
 		{
 			alert("Checklistequip", response)
-		}
-		else	//there is some change
-		{
+			$('#dialogEquip input').val('')
+			$('#dialogEquip textarea').val('')
+			if ( bookqEquip ) {			// If any, fill checked & others
+				$.each(JSON.parse(bookqEquip), function(key, val) {
+					if (val == 'checked') {
+						$("#"+ key).prop("checked", true)	//radio and checkbox
+					} else {
+						$("#"+ key).val(val)	//fill <input> && <textarea>
+					}
+				});
+			}
+		} else {	//there is some changes
 			updateBOOK(response)
 		}
 	}

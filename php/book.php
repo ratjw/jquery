@@ -1,12 +1,12 @@
 <?php
-//	$mysqli = new mysqli("localhost", "root", "zaq12wsx", "neurosurgery");
+//	$mysqli = new mysqli("localhost", "root", "Zaq1@wsx", "neurosurgery");
 //	if ($mysqli->connect_errno)
 //		exit("Connect failed: %s\n". $mysqli->connect_error);
 //	echo json_encode(book($mysqli));
 
-	//waitnum = 0		//new case consult
-	//waitnum = 1		//new case surgery
-	//waitnum > 0		//next cases
+	//waitnum < 0		//new case consult
+	//waitnum = 0		//no
+	//waitnum > 0		//booking cases
 	//waitnum = null	//deleted cases 
 
 function book($mysqli)
