@@ -461,13 +461,12 @@
 	<li>ใช้ Menu เปลี่ยนวันที่</li>
   </ol>
   <p style="margin:0px;"><span class="ui-icon ui-icon-info"></span>
-       ข้อมูลที่ใส่ตามช่อง (cell) ถูกบันทึกอัตโนมัติ เมื่อ<br><span style="width:20px;"></span>
-   1. เลื่อนไปตำแหน่งอื่น<br><span style="width:20px;"></span>
-   2. อยู่นิ่งๆ 10 วินาที่<br><span style="width:15px;"></span>
-การเลื่อนไปตำแหน่งอื่น<br><span style="width:20px;"></span>
-1. คลิกช่องอื่น<br><span style="width:20px;"></span>
-2. กด Tab (ช่องต่อไป) <br><span style="width:20px;"></span>
-3. กด Shift+Tab (ช่องย้อนหลัง)<br><span style="width:20px;"></span>
+       บันทึกข้อมูลที่ใส่ตามช่อง (cell)  โดย<br><span style="width:20px;"></span>
+   1. อยู่นิ่งๆ 10 วินาที่<br><span style="width:20px;"></span>
+   2. เลื่อนไปตำแหน่งอื่น<br><span style="width:30px;"></span>
+1. คลิกช่องอื่น<br><span style="width:30px;"></span>
+2. กด Tab (ช่องต่อไป) <br><span style="width:30px;"></span>
+3. กด Shift+Tab (ช่องย้อนหลัง)<br><span style="width:30px;"></span>
 4. กด Enter</p>
   <ul style="margin-top:0px;">
     <li>Enter ขึ้นบรรทัดใหม่บนตาราง</li>
