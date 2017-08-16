@@ -144,7 +144,7 @@ function showNonEditableForScrub()
 		height = 800
 	}
 	$('#dialogEquip').dialog("option", "buttons", {})
-	$('#dialogEquip').dialog("height", height)
+	$('#dialogEquip').dialog({height: height})
 	$('#dialogEquip input[type=radio]').prop("disabled", true)
 	$('#dialogEquip input[type=text]').on("click", function() {
 		$(this).prop('disabled', true)
