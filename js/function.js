@@ -276,7 +276,7 @@ function calculateWaitnum(tableID, $thisrow, thisOpdate)	//thisOpdate was set ca
 	var nextOpdate = getOpdate($nextRowCell.eq(OPDATE).html())
 	var defaultWaitnum = 1
 	if ((tableID == "queuetbl") && ($('#titlename').html() == "Consults")) {
-		defaultWaitnum = -1
+		defaultWaitnum = -1		//Consults cases have negative waitnum
 	}
 
 	if (prevOpdate != thisOpdate && thisOpdate != nextOpdate) {

@@ -185,7 +185,7 @@ function undelete(thiscase)
 				refillall(BOOK)
 				if (($("#queuewrapper").css('display') == 'block') && 
 					(($('#titlename').html() == staffname) || ($('#titlename').html() == "Consults"))) {
-					refillstaffqueue()
+					refillstaffqueue()	//undelete this staff's case or a Consults case
 				}
 			}
 		}

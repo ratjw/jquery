@@ -124,7 +124,7 @@ function saveRoomTime(pointed, content)
 	var waitnum = 1
 	var tableID = $(pointed).closest("table").attr("id")
 	if ((tableID == "queuetbl") && ($('#titlename').html() == "Consults")) {
-		waitnum = -1
+		waitnum = -1		//negative waitnum in Consults cases
 	}
 	var $cells = $(pointed).closest('tr').children("td")
 	var opdate = getOpdate($cells.eq(OPDATE).html())
@@ -220,7 +220,7 @@ function saveContent(pointed, column, content)	//use only "pointed" to save data
 			if (!qn) {
 				var book = BOOK
 				if ((tableID == "queuetbl") && ($('#titlename').html() == "Consults")) {
-					book = CONSULT
+					book = CONSULT		//do anything in Consults cases
 				}
 				var NewRow = findNewBOOKrow(book, opdate)
 				$cells.eq(QN).html(book[NewRow].qn)
@@ -310,7 +310,7 @@ function saveHN(pointed, hn, content)
 
 			var book = BOOK
 			if ((tableID == "queuetbl") && ($('#titlename').html() == "Consults")) {
-				book = CONSULT
+				book = CONSULT		//do anything in Consults cases
 			}
 			var NewRow = findNewBOOKrow(book, opdate)
 			$cells.eq(QN).html(book[NewRow].qn)
@@ -335,7 +335,7 @@ function saveHN(pointed, hn, content)
 					refillanother('queuetbl', cellindex, qn)
 				}
 			} else {	//no need to refillall because new case row was already in tbl
-				if ($('#titlename').html() != "Consults") {
+				if ($('#titlename').html() != "Consults") {//Consults cases are not shown in tbl
 					refillanother('tbl', cellindex, qn)
 				}
 			}

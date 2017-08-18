@@ -11,7 +11,7 @@ function fillSetTable(pointing)
 	var qn = tcell[QN].innerHTML
 	var book = BOOK
 	if ((tableID == "queuetbl") && ($('#titlename').html() == "Consults")) {
-		book = CONSULT
+		book = CONSULT		//do anything in Consults cases
 	}
 
 	disable(qn, "#item1")
@@ -229,7 +229,7 @@ function addnewrow(tableID, rowi, qn)
 {
 	var book = BOOK
 	if ((tableID == "queuetbl") && ($('#titlename').html() == "Consults")) {
-		book = CONSULT
+		book = CONSULT		//do anything in Consults cases
 	}
 	var caseNum = findBOOKrow(book, qn)
 	var bookq = JSON.parse(JSON.stringify(book[caseNum]))	//deep clone

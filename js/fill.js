@@ -243,7 +243,7 @@ function staffqueue(staffname)
 	//delete previous queuetbl lest it accumulates
 	$('#queuetbl tr').slice(1).remove()
 
-	if (staffname == "Consults") {
+	if (staffname == "Consults") {		//Consults cases are not in BOOK
 		if (CONSULT.length == 0)
 			CONSULT.push({"opdate" : getSunday()})
 
@@ -270,6 +270,7 @@ function refillstaffqueue()
 	var staffname = $('#titlename').html()
 
 	if (staffname == "Consults") {
+		//render as fillall
 		$('#queuetbl tr').slice(1).remove()
 		if (CONSULT.length == 0)
 			CONSULT.push({"opdate" : getSunday()})
@@ -279,6 +280,7 @@ function refillstaffqueue()
 
 		fillall(CONSULT, table, start, todate)
 	} else {
+		//render as staffqueue
 		var i = 0
 		$.each( BOOK, function(q, each) {	// each == this
 			if ((this.opdate >= todate) && (this.staffname == staffname)) {

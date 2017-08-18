@@ -40,7 +40,7 @@ function sortable()
 
 			if ((sender == "tbl") && (receiver == "queuetbl")) {
 				if ((titlename != "Consults") && (staffname != titlename)) {
-					stopsorting()
+					stopsorting()	//allow drag to Consults, but not to wrong staffname
 					return false
 				}
 			}
@@ -122,8 +122,8 @@ function sortable()
 					if (receiver == "tbl") {
 						refillall(BOOK)
 						if (($("#queuewrapper").css('display') == 'block')
-							&& ((titlename == staffname)) || (titlename == "Consults")) {
-
+							&& (titlename == staffname)) {
+								//dragging inside tbl of this staff's case
 							refillstaffqueue()
 						}
 					} else {	//receiver == "queuetbl"
