@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<HTML>
+<HEAD>
+<script type="text/javascript" src="jquery.min.js"></script>
+<script type="text/javascript" src="jquery.form.js"></script>
+<link type="text/css" rel="stylesheet" href="style.css" />
+</HEAD>
+<BODY>
+<script type="text/javascript">
+$(document).ready(function(){
+	$('#images').on('change',function(){
+		$('#upload_form').ajaxForm({
+			//display the uploaded images
+			target:'#images_preview',
+			beforeSubmit:function(e){
+				$('.uploading').show();
+			},
+			success:function(e){
+				$('.uploading').hide();
+			},
+			error:function(e){
+			}
+		}).submit();
+	});
+});
+</script>
+
+<div class="container">
+  <h2>Upload Multiple Images using jQuery, Ajax and PHP</h2>
+  <br>
+  <br>
+  <form method="post" name="upload_form" id="upload_form" enctype="multipart/form-data" action="upload.php">
+	<label>Choose Multiple Images to Upload</label>
+	<br>
+	<br>
+	<input type="file" name="upload_images[]" id="images" multiple >
+	<div class="uploading hidden">
+	  <label> </label>
+	  <img src="uploading.gif" alt="Uploading......"/>
+	</div>
+  </form>
+  <div id="uploaded_images_preview"></div>
+</div>
+
+<div id="images_preview"></div>
+
+<!--
+<input type="file" accept="image/*;capture=camera">
+<input type="file" accept="video/*;capture=camcorder">
+<input type="file" accept="audio/*;capture=microphone">
+-->
+
+</BODY>
+</HTML>
