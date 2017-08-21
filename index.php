@@ -448,15 +448,15 @@
 </div>
 
 <div id="dialogReadme" class="dialogBox">
-  <p><span class="ui-icon ui-icon-info"></span>
+  <p style="margin-bottom:0px;"><span class="ui-icon ui-icon-info"></span>
       ใช้ Browser : Chrome, Firefox, หรือ Edge (ie 10+)</p>
-  <p><span class="ui-icon ui-icon-info"></span>
+  <p style="margin:0px;"><span class="ui-icon ui-icon-info"></span>
   Login ID, Password ของโรงพยาบาล</p>
-  <p style="margin-bottom:0px;">
+  <p style="margin:0px;">
     <span class="ui-icon ui-icon-info"></span>
              การเปลี่ยนวันผ่าตัด (Date)
   </p>
-  <ol style="margin-top:0px;">
+  <ol style="margin:0px;">
 	<li>ใช้ Drag & Drop สามารถลากข้ามตารางได้</li>
 	<li>ใช้ Menu เปลี่ยนวันที่</li>
   </ol>
@@ -468,10 +468,12 @@
 2. กด Tab (ช่องต่อไป) <br><span style="width:30px;"></span>
 3. กด Shift+Tab (ช่องย้อนหลัง)<br><span style="width:30px;"></span>
 4. กด Enter</p>
-  <ul style="margin-top:0px;">
+  <ul style="margin:0px;">
     <li>Enter ขึ้นบรรทัดใหม่บนตาราง</li>
     <li>Shift+Enter ขึ้นบรรทัดใหม่ภายในช่องนั้น</li>
   </ul>
+  <p style="margin-top:0px;"><span class="ui-icon ui-icon-info"></span>
+       ยกเลิก กด Esc
 
   <h3>ตาราง</h3>
   <ul style="margin-top:0px;">
