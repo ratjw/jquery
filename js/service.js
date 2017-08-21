@@ -11,7 +11,6 @@ function serviceReview()
 		dateFormat: "MM yy",
 		minDate: new Date(2017, 0, 1),
 		maxDate: "+1y",
-		yearRange: "2017:+1",
 		monthNames: [ "มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", 
 					  "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม" ],
 		onChangeMonthYear: function (year, month, inst) {
