@@ -172,15 +172,20 @@ td.sat:before { content: "เสาร์ "; }
 }
 
 #servicehead span.Readmission,
-#servicetbl tr.Readmission { background-color: #AACCCC; }
+#servicetbl tr.Readmission,
+#servicetbl td.Readmission { background-color: #AACCCC; }
 #servicehead span.Reoperation,
-#servicetbl tr.Reoperation { background-color: #CCCCAA; }
+#servicetbl tr.Reoperation,
+#servicetbl td.Reoperation { background-color: #CCCCAA; }
 #servicehead span.Infection,
-#servicetbl tr.Infection { background-color: #CCAAAA; }
+#servicetbl tr.Infection,
+#servicetbl td.Infection { background-color: #CCAAAA; }
 #servicehead span.Morbidity,
-#servicetbl tr.Morbidity { background-color: #AAAACC; }
+#servicetbl tr.Morbidity,
+#servicetbl td.Morbidity { background-color: #AAAACC; }
 #servicehead span.Dead,
-#servicetbl tr.Dead { background-color: #AAAAAA; }
+#servicetbl tr.Dead,
+#servicetbl td.Dead { background-color: #AAAAAA; }
 
 .ui-sortable-helper {
 	display: table;

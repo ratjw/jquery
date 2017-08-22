@@ -145,6 +145,22 @@ function loadtable(userid)
 		return false
 	})
 
+	$("#btnExport").on("click", function(e) {
+		e.preventDefault();
+
+		//getting data from our table
+		var data_type = 'data:application/vnd.ms-excel';
+		var table_div = document.getElementById('dialogService');
+		var table_html = table_div.outerHTML
+
+		var title = $('#dialogService').dialog( "option", "title" )
+		var a = document.createElement('a');
+		document.body.appendChild(a);  // You need to add this line in FF
+		a.href = data_type + ', ' + encodeURIComponent(table_html);
+		a.download = title + '.xls'
+		a.click();
+	})
+
 	$("html, body").css( {
 		height: "100%",		//to make table scrollable while dragging
 		overflow: "hidden",

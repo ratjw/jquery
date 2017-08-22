@@ -106,6 +106,7 @@
 	  <span class="item Dead">Dead : <span id="Dead"></span></span>
 	</div>
   </div>
+  <button id="btnExport">Export to xls</button>
   <input type="text" id="monthpicker" style="margin-left:5px">
   <input type="text" id="monthpicking" style="visibility:hidden">
   <table id="servicetbl">

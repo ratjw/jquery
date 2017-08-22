@@ -1,6 +1,7 @@
 
 function serviceReview()
 {
+	$("#btnExport").hide()
 	var $monthpicker = $('#monthpicker')
 	$monthpicker.show()
 	$('#servicehead').hide()
@@ -25,7 +26,7 @@ function serviceReview()
 	}).datepicker("setDate", new Date(new Date().getFullYear(), new Date().getMonth(), 1))
 
 	$('#dialogService').dialog({
-		title: 'Service Neurosurgery เดือน : ',
+		title: 'Service Neurosurgery',
 		closeOnEscape: true,
 		modal: true,
 		width: window.innerWidth * 95 / 100,
@@ -72,6 +73,8 @@ function entireMonth(fromDate)
 
 	var SERVICE = getfromBOOKCONSULT(fromDate, toDate)
 	showService(SERVICE, fromDate, toDate)
+
+	$("#btnExport").show()
 }
 
 function getfromBOOKCONSULT(fromDate, toDate)
@@ -143,7 +146,7 @@ function showService(SERVICE, fromDate, toDate)
 	$monthpicker.datepicker( "hide" )
 	$('#servicehead').show()
 	$('#dialogService').dialog({
-		title: 'Service Neurosurgery เดือน : ' + $monthpicker.val(),
+		title: 'Service Neurosurgery เดือน ' + $monthpicker.val(),
 		close: function() {
 			$('#datepicker').hide()
 		}
@@ -196,8 +199,8 @@ function refillService(SERVICE, fromDate, toDate)
 
 jQuery.fn.extend({
 	filldataService : function(bookq, scase, color) {
-		this[0].className = color
 		var cells = this[0].cells
+		addColor(this, color)
 		cells[CASENUM].innerHTML = scase
 		cells[CASENAME].innerHTML = bookq.hn
 			+ " " + bookq.patient
@@ -211,6 +214,34 @@ jQuery.fn.extend({
 		cells[SQN].innerHTML = bookq.qn
 	}
 })
+
+function addColor($this, color)
+{
+	if (color) {
+		$this[0].className = color
+		var $cell = $this.children("td")
+		var $final = $cell.eq(FINAL)
+		if (/Readmission/.test(color)) {
+			$cell.eq(ADMISSION).addClass("Readmission")
+		}
+		if (/Reoperation/.test(color)) {
+			$cell.eq(STREATMENT).addClass("Reoperation")
+		}
+		if (/Infection/.test(color)) {
+			$final.addClass("Infection")
+		}
+		if (/Morbidity/.test(color)) {
+			if ($final.attr("class") != "Infection") {	//still show Infection
+				$final.addClass("Morbidity")
+			}
+		}
+		if (/Dead/.test(color)) {
+			if ($final.attr("class") != "Infection") {	//still show Infection
+				$final.addClass("Dead")
+			}
+		}
+	}
+}
 
 function getAdmitDischargeDate(SERVICE, fromDate, toDate)
 {
@@ -361,7 +392,8 @@ function saveEditPointDataService(pointed)
 
 function saveScontent(pointed, column, content)	//column name in MYSQL
 {
-	var rowi = $(pointed).closest('tr')[0]
+	var $rowi = $(pointed).closest('tr')
+	var rowi = $rowi[0]
 	var qn = rowi.cells[SQN].innerHTML
 	var oldcontent = $("#editcell").data("oldcontent")
 
@@ -393,28 +425,40 @@ function saveScontent(pointed, column, content)	//column name in MYSQL
 			var book = getfromBOOKCONSULT(fromDate, toDate)
 			var row = findBOOKrow(book, qn)		//for countService of this case
 			var newcolor = countService(book[row], fromDate, toDate)
+			var colorArray = color.split(" ")
+			var newcolorArray = newcolor.split(" ")
 			var counter
 			var newcounter
 			if (color) {
 				if (newcolor) {
 					if (color != newcolor) {
-						counter = document.getElementById(color)
-						counter.innerHTML = Number(counter.innerHTML) - 1
-						newcounter = document.getElementById(newcolor)
-						newcounter.innerHTML = Number(newcounter.innerHTML) + 1
+						$.each( colorArray, function(i, each) {
+							counter = document.getElementById(each)
+							counter.innerHTML = Number(counter.innerHTML) - 1
+						})
+						$.each( newcolorArray, function(i, each) {
+							newcounter = document.getElementById(each)
+							newcounter.innerHTML = Number(newcounter.innerHTML) + 1
+						})
 					}
 				} else {
-					counter = document.getElementById(color)
-					counter.innerHTML = Number(counter.innerHTML) - 1
+					$.each( colorArray, function(i, each) {
+						counter = document.getElementById(each)
+						counter.innerHTML = Number(counter.innerHTML) - 1
+					})
 				}
 			} else {
 				if (newcolor) {
-					newcounter = document.getElementById(newcolor)
-					newcounter.innerHTML = Number(newcounter.innerHTML) + 1
+					$.each( newcolorArray, function(i, each) {
+						newcounter = document.getElementById(each)
+						newcounter.innerHTML = Number(newcounter.innerHTML) + 1
+					})
 				}
 			}
 
 			rowi.className = newcolor
+			$(pointed).removeClass(color)
+			addColor($rowi, newcolor)
 
 			//Not refill because it may make next editTD return to old value when fast entry
 			//due to slow return from Ajax of previous input
