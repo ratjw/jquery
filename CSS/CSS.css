@@ -136,9 +136,9 @@ td.sat:before { content: "เสาร์ "; }
 }
 
 #queuetbl th, #historytbl th, #servicetbl th {
-	font-size: 14px;
+	font-size: 16px;
 	font-weight: bold;
-/*	height: 25px;*/
+	height: 40px;
 	background-color: #7799AA;
 	color: white;
 	border-left: solid 1px silver;
@@ -152,7 +152,6 @@ td.sat:before { content: "เสาร์ "; }
 	padding-left: 3px;
 	border-left: solid 1px silver;
 	border-bottom: solid 1px silver;
-/*	height: 20px;*/
 }
 
 #servicetbl td:first-child {
@@ -186,6 +185,14 @@ td.sat:before { content: "เสาร์ "; }
 #servicehead span.Dead,
 #servicetbl tr.Dead,
 #servicetbl td.Dead { background-color: #AAAAAA; }
+
+#servicetbl td.serviceStaff {
+	height: 40px;
+	font-weight: bold;
+	font-size: 16px;
+	text-align: left;
+	padding-left: 10px;
+}
 
 .ui-sortable-helper {
 	display: table;
@@ -329,6 +336,19 @@ button.ui-datepicker-current {
 	background-color: yellow;
 }
 
+#dialogUpload {
+	display: none;
+/*	position: fixed;
+	top: 50px;
+	width: 800px; 
+	height: 500px;
+	margin-left: auto; 
+	margin-right: auto; 
+	border: 2px solid slategray;
+	box-shadow: 20px 30px 40px slategray;*/
+	font-size: 14px;
+}
+
 #orroom,
 #ortime {
 	height: 20px;
@@ -353,6 +373,40 @@ input[type=checkbox] + label {
  
 input[type=checkbox]:checked + label {
 	color: black;
+}
+
+.uploading {
+    margin-top: 15px;
+}
+
+.hidden {
+    display: none;
+}
+
+.gallery { 
+	width:100%; 
+	float:left; 
+}
+
+.gallery ul{ 
+	margin:0;
+	padding:0; 
+	list-style-type:none;
+}
+
+.gallery ul li{ 
+	padding:7px; 
+	border:2px solid #ccc;
+	float:left;
+	margin:10px 7px;
+	background:none; 
+	width:auto; 
+	height:auto;
+}
+
+.images {
+	width:200px;
+	height:200px;
 }
 
 @media only screen and (max-width: 640px) {

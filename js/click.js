@@ -365,9 +365,19 @@ function storePresentcell(pointing)
 			if (!pointing.innerHTML) {
 				createEditcell(pointing)
 				break
+			} else {
+				PACS(pointing.innerHTML)
 			}
 		case NAME:
+			getHN = function () {
+				return hn
+			}
 			clearEditcell()
+			if (newWindow && !newWindow.closed) {
+				newWindow.close();
+			}
+			newWindow = window.open("jQuery-File-Upload", "_blank")    
+			var hn = $(pointing).closest('tr').children("td").eq(HN).html()
 			break
 		case DIAGNOSIS:
 		case TREATMENT:

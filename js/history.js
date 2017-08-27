@@ -199,7 +199,8 @@ function closeUndel()
 
 function PACS(hn) 
 { 
-	var sql = "PAC=http://synapse/explore.asp"
+	var pacs = 'http://synapse/explore.asp?path=/All Patients/InternalPatientUID='+hn
+	var sql = 'PAC=http://synapse/explore.asp'
 
 	Ajax(CHECKPAC, sql, callbackCHECKPAC)
 
@@ -210,10 +211,26 @@ function PACS(hn)
 		if (!response || response.indexOf("PAC") == -1) {
 			alert("PACS", response)
 		} else {
-			open('http://synapse/explore.asp?path=/All Patients/InternalPatientUID='+hn);
+			var ua = window.navigator.userAgent;
+			var msie = ua.indexOf("MSIE")
+			var edge = ua.indexOf("Edge")
+			var IE = !!navigator.userAgent.match(/Trident.*rv\:11\./)
+			var data_type = 'data:application/vnd.ms-internet explorer'
+
+			if (msie > 0 || edge > 0 || IE) { // If Internet Explorer
+				open(pacs);
+			} else {
+				var html = '<!DOCTYPE html><HTML><HEAD><script>opener(){open("' + pacs + '")}</script>'
+				html += '<body onload="opener()"></body></HEAD></HTML>'
+				var a = document.createElement('a');
+				document.body.appendChild(a);  // You need to add this line in FF
+				a.href = data_type + ', ' + encodeURIComponent(html);
+				a.download = "http://synapse/index.html"
+				a.click();		//tested with Chrome and FF
+			}
 		}
 	}
-} 
+}
 
 function find()
 {

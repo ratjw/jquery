@@ -178,7 +178,7 @@ function Ajax(url, params, callback)
 	http.send(params);
 }
 
-function URIcomponent(qoute)
+function URIcomponent(qoute)	//necessary when post in http, not when export to excel
 {
 	if (qoute) {
 		qoute = qoute.replace(/\s+$/,'')

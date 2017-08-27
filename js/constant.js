@@ -75,7 +75,7 @@ var ORSURG = "XSU";
 var ORNEURO = "4"
 var ORTIME = "09.00"
 var STAFF = ["อ.เอก", "อ.อัตถพร", "อ.สรยุทธ", "อ.วัฒนา", "อ.เกรียงศักดิ์", "อ.พีรพงศ์"];
-
+var newWindow = null;
 var HOLIDAY = {
 	"2017-02-11" : "url('pic/Magha.jpg')",
 	"2017-02-13" : "url('pic/Maghasub.jpg')",	//หยุดชดเชยวันมาฆบูชา

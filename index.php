@@ -7,7 +7,7 @@
 
 <link href="css/jquery-ui.css" rel="stylesheet">
 <link href="css/CSS.css" rel="stylesheet">
-<LINK href="css/print.css" rel="stylesheet">
+<link href="css/print.css" rel="stylesheet">
 <script src="js/jquery-3.2.1.min.js"></script>
 <script src="js/jquery.mousewheel.min.js"></script>
 <script src="js/jquery-ui.min.js"></script>
@@ -554,31 +554,6 @@
   </ul>
 </div>
 
-<div id="login">
-	<br>
-	<h3>Queue book for Neurosurgery</h3>
-
-	<form method="post" action="">
-
-		<?php $userid = $password = "";
-			$passworderr = "Beware of Th key"; ?>
-
-		Login ID: <input id="userid" type="text" maxlength="6" size="6" name="userid"
-					value="<?php echo $userid;?>" oninput="namesix()" 
-					onpropertychange="namesix()">
-		<br>
-		<br>
-		Password: <input id="password" type="password" name="password"
-					maxlength="16" size="8" value="<?php echo $password;?>">
-		<br>
-		<span id="err" style="color:blue;font-size:10px"><?php echo $passworderr;?></span>
-		<br>
-		<br>
-		<input type="submit" value="Submit">
-		<br><br>
-	</form>
-</div>
-
 <div id="find" class="dialogBox">
 	<span style="width:90px;">HN:</span>
 	<input type="text" name="hn" maxlength="7" size="7">
@@ -598,6 +573,34 @@
 	<br>
 	<span style="width:90px;">Contact:</span>
 	<input type="text" name="contact">
+</div>
+
+<iframe id="txtArea1" style="display:none"></iframe>
+
+<div id="images_preview"></div>
+
+<div id="login">
+	<br>
+	<h3>Queue book for Neurosurgery</h3>
+
+	<form method="post" action="">
+
+		<?php 
+			$userid = $password = "";
+		?>
+
+		Login ID: <input id="userid" type="text" maxlength="6" size="6" name="userid"
+					value="<?php echo $userid;?>" oninput="namesix()" 
+					onpropertychange="namesix()">
+		<br>
+		<br>
+		Password: <input id="password" type="password" name="password"
+					maxlength="16" size="8" value="<?php echo $password;?>">
+		<br>
+		<br>
+		<input type="submit" value="Submit">
+		<br><br>
+	</form>
 </div>
 
 <script type="text/javascript">
@@ -636,14 +639,6 @@ function namesix()
 			{
 				echo "<SCRIPT type='text/javascript'>loadtable('".$userid."')</SCRIPT>";
 			}
-			else
-			{ 
-				$passworderr = "Wrong password";
-			}
-		}
-		else
-		{ 
-			$passworderr = "Wrong ID";
 		}
 	}
 ?>

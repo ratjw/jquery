@@ -10,8 +10,8 @@ function serviceReview()
 		altFormat: "yy-mm-dd",
 		autoSize: true,
 		dateFormat: "MM yy",
-		minDate: new Date(2017, 0, 1),
-		maxDate: "+1y",
+//		minDate: new Date(2017, 0, 1),
+//		maxDate: "+1y",
 		monthNames: [ "มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", 
 					  "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม" ],
 		onChangeMonthYear: function (year, month, inst) {
@@ -120,15 +120,9 @@ function showService(SERVICE, fromDate, toDate)
 			.insertAfter($('#servicetbl tr:last'))
 				.children("td").eq(OPDATE)
 					.prop("colSpan", 8)
-						.css({
-							height: "40",
-							fontWeight: "bold",
-							fontSize: "14px",
-							textAlign: "left",
-							paddingLeft: "10px"
-						})
-						.html(staffname)
-							.siblings().hide()
+						.addClass("serviceStaff")
+							.html(staffname)
+								.siblings().hide()
 		var scase = 0
 		$.each( SERVICE, function() {
 			if (this.staffname == staffname) {
@@ -164,14 +158,8 @@ function refillService(SERVICE, fromDate, toDate)
 		var $thisCase = $('#servicetbl tr').eq(i).children("td").eq(CASENUM)
 		if ($thisCase.prop("colSpan") == 1) {
 			$thisCase.prop("colSpan", 8)
-				.css({
-					height: "40",
-					fontWeight: "bold",
-					fontSize: "14px",
-					textAlign: "left",
-					paddingLeft: "10px"
-				})
-				.siblings().hide()
+				.addClass("serviceStaff")
+					.siblings().hide()
 		}
 		$thisCase.html(staffname)
 
@@ -456,11 +444,11 @@ function saveScontent(pointed, column, content)	//column name in MYSQL
 				}
 			}
 
-			rowi.className = newcolor
-			$(pointed).removeClass(color)
-			addColor($rowi, newcolor)
+			rowi.className = newcolor		//tr.newclass
+			$(pointed).removeClass(color)	//prevent remained unused class
+			addColor($rowi, newcolor)		//td.newclass
 
-			//Not refill because it may make next editTD return to old value when fast entry
+			//Not refillService because it may make next editTD back to old value when fast entry
 			//due to slow return from Ajax of previous input
 		}
 	}
