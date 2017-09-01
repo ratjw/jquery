@@ -12,15 +12,17 @@
 
 error_reporting(E_ALL | E_STRICT);
 require('UploadHandler.php');
-$upload_handler = new UploadHandler();
-/*
-class CustomUploadHandler extends UploadHandler {
-    protected function trim_file_name($file_path, $name, $size, $type, $error, $index, $content_range) {
-            $name = 'First_' . microtime(true);
-            $name = str_replace('.', '', $name);
-            return $name;
-        }
+//$upload_handler = new UploadHandler();
+
+//On first call, main.js sends $_GET['hn'] for user_dirs (php/files/user_dirs)
+//On subsequent call, there is  no $_GET['hn']
+if (isset($_GET['hn'])) {
+	session_id($_GET['hn']);
+	session_start();
+	//If id is specified, it will replace the current session id. 
+	//session_id() needs to be called before session_start() for that purpose.
 }
 
-$upload_handler = new CustomUploadHandler();
-*/
+$upload_handler = new UploadHandler(array(
+    'user_dirs' => true
+));

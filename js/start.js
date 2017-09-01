@@ -353,14 +353,21 @@ function exportToExcel()
 			<tr></tr>\
 			<tr></tr>\
 		  </table>'
-	$.each( $("#servicetbl tr"), function() {
+
+	$("#servicetbl").clone(true).attr("id", "exceltbl").appendTo("body")
+	$.each( $("#exceltbl tr"), function() {
 		var multiclass = this.className.split(" ")
 		if (multiclass.length > 1) {
 			this.className = multiclass[multiclass.length-1]
-		}	//use only the last class because excel ignore multiple classes
+		}	//use only the last class because excel not accept multiple classes
 	})
-	var table = $("#servicetbl")[0].outerHTML
-	table = table.replace(/<br>/g, " ")
+	$.each( $("#exceltbl tr td, #exceltbl tr th"), function() {
+		if ($(this).css("display") == "none") {
+			$(this).remove()
+		}	//remove trailing hidden cells in excel
+	})
+	var table = $("#exceltbl")[0].outerHTML
+	table = table.replace(/<br>/g, " ")	//excel split <br> to another cell inside that cell 
 
 	var tableToExcel = '<!DOCTYPE html><HTML><HEAD><meta charset="utf-8"/>' + style + '</HEAD><BODY>'
 	tableToExcel += head + table

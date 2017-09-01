@@ -368,16 +368,18 @@ function storePresentcell(pointing)
 			} else {
 				PACS(pointing.innerHTML)
 			}
+			break
 		case NAME:
-			getHN = function () {
-				return hn
-			}
+			var hn = $(pointing).closest('tr').children("td").eq(HN).html()
+			var patient = pointing.innerHTML
+
 			clearEditcell()
 			if (newWindow && !newWindow.closed) {
 				newWindow.close();
 			}
 			newWindow = window.open("jQuery-File-Upload", "_blank")    
-			var hn = $(pointing).closest('tr').children("td").eq(HN).html()
+			newWindow.hnName = {"hn": hn, "patient": patient}
+			//hnName is a pre-defined variable in child window
 			break
 		case DIAGNOSIS:
 		case TREATMENT:
