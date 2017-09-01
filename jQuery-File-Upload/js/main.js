@@ -48,5 +48,4 @@ $(function () {
 		$(this).fileupload('option', 'done')
 			.call(this, $.Event('done'), {result: result});
 	});
-
 });
