@@ -20,13 +20,13 @@ function loadtable(userid)
 	$("#dialogUpload").dialog('close')
 
 	THISUSER = userid
-	if (THISUSER == "000000") {
+	if (THISUSER === "000000") {
 		$(document).on("click", function (event) {
 			event.stopPropagation()
 			var target = event.target
 			var rowi = $(target).closest('tr')
 			var qn = rowi.children('td').eq(QN).html()
-			if ((target.nodeName != "TD") || (!qn)) {
+			if ((target.nodeName !== "TD") || (!qn)) {
 				event.preventDefault()
 				event.stopPropagation()
 				return false
@@ -46,7 +46,7 @@ function loadtable(userid)
 		$(".bordergroove").removeClass("bordergroove")
 		event.stopPropagation()
 		var target = event.target
-		if ($('#menu').is(":visible")) {//not visible == take up space even can't be seen
+		if ($('#menu').is(":visible")) {//not visible : take up space even can't be seen
 			if (!$(target).closest('#menu').length) {
 				$('#menu').hide();
 				clearEditcell()
@@ -58,30 +58,25 @@ function loadtable(userid)
 				clearEditcell()
 			}
 		}
-		if ($('#delete').is(":visible")) {
-			if(!$(target).closest('#delete').length) {
-				$('#delete').hide();
-			}
-		}
 		if ($('#undelete').is(":visible")) {
 			if ($(target).index()) {
 				$('#undelete').hide()
 				return false
 			}
 		}
-		if (target.id == "editcell") {
+		if (target.id === "editcell") {
 			return
 		}
-		if (target.nodeName == "TH") {
+		if (target.nodeName === "TH") {
 			clearEditcell()
 			return	
 		}
-		if ($(target).closest('table').attr('id') == 'tbl' ||
-			$(target).closest('table').attr('id') == 'queuetbl') {
+		if ($(target).closest('table').attr('id') === 'tbl' ||
+			$(target).closest('table').attr('id') === 'queuetbl') {
 
 			clicktable(target)
 		}
-		else if ($(target).closest('table').attr('id') == 'servicetbl') {
+		else if ($(target).closest('table').attr('id') === 'servicetbl') {
 			clickservice(target)
 		}
 	})
@@ -167,10 +162,10 @@ function loadtable(userid)
 		
 function loading(response)
 {
-	if (response && response.indexOf("BOOK") != -1) {
+	if (response && response.indexOf("BOOK") !== -1) {
 		localStorage.setItem('ALLBOOK', response)
 		updateBOOK(response)
-		if (THISUSER == "000000") {
+		if (THISUSER === "000000") {
 			fillForScrub()
 		} else {
 			fillupstart();
@@ -206,11 +201,11 @@ function fillStafflist()
 	for (var each = 0; each < STAFF.length; each++)
 	{
 		stafflist += '<li><div>' + STAFF[each] + '</div></li>'
-		staffmenu += '<li id="item88"><div>' + STAFF[each] + '</div></li>'
+		staffmenu += '<li id="staffqueue"><div>' + STAFF[each] + '</div></li>'
 	}
-	staffmenu += '<li id="item88"><div>Consults</div></li>'
+	staffmenu += '<li id="staffqueue"><div>Consults</div></li>'
 	document.getElementById("stafflist").innerHTML = stafflist
-	document.getElementById("item0").innerHTML = staffmenu
+	document.getElementById("staffmenu").innerHTML = staffmenu
 }
 
 function updating()	//updating.timer : local variable
@@ -218,10 +213,10 @@ function updating()	//updating.timer : local variable
 	var oldcontent = $("#editcell").data("oldcontent")
 	var newcontent = getEditcellHtml()
 	var editPoint = $("#editcell").data("pointing")
-	if (editPoint && (oldcontent != newcontent)) {
+	if (editPoint && (oldcontent !== newcontent)) {
 
 		//making some change
-		if ($(editPoint).closest("table").attr("id") == "servicetbl") {
+		if ($(editPoint).closest("table").attr("id") === "servicetbl") {
 			saveEditPointDataService(editPoint)		//Service table
 		} else {
 			saveEditPointData(editPoint)		//Main and Staffqueue tables
@@ -234,7 +229,7 @@ function updating()	//updating.timer : local variable
 		function updatingback(response)
 		{
 			//not being editing on screen
-			if (updating.timer == 10) {
+			if (updating.timer === 10) {
 				//delay 100 seconds and
 				//do this only once even if idle for a long time
 				clearEditcell()
@@ -249,7 +244,7 @@ function updating()	//updating.timer : local variable
 			updating.timer++
 
 			//some changes in database from other users
-			if (response && response.indexOf("opdate") != -1)
+			if (response && response.indexOf("opdate") !== -1)
 			{
 				updateBOOK(response)
 				updateTables()
@@ -269,7 +264,7 @@ function updateTables()
 		refillService(SERVICE, fromDate, toDate)
 	}
 	refillall(BOOK)
-	if ($("#queuewrapper").css('display') == 'block') {
+	if ($("#queuewrapper").css('display') === 'block') {
 		refillstaffqueue()
 	}
 }
@@ -287,11 +282,11 @@ function exportToExcel()
 	var title = $('#dialogService').dialog( "option", "title" )
 	var style = '\
 		<style type="text/css">\
-			#servicetbl {\
+			#exceltbl {\
 				border-right: solid 1px slategray;\
 				border-collapse: collapse;\
 			}\
-			#servicetbl th {\
+			#exceltbl th {\
 				font-size: 16px;\
 				font-weight: bold;\
 				height: 40px;\
@@ -299,44 +294,46 @@ function exportToExcel()
 				color: white;\
 				border: solid 1px silver;\
 			}\
-			#servicetbl td {\
+			#exceltbl td {\
 				font-size: 14px;\
 				vertical-align: middle;\
 				padding-left: 3px;\
 				border-left: solid 1px silver;\
 				border-bottom: solid 1px silver;\
 			}\
-			#servicehead td {\
+			#excelhead td {\
 				height: 30px; \
 				vertical-align: middle;\
 				font-size: 22px;\
 				text-align: center;\
 			}\
-			#servicehead td.Readmission,\
-			#servicetbl tr.Readmission,\
-			#servicetbl td.Readmission { background-color: #AACCCC; }\
-			#servicehead td.Reoperation,\
-			#servicetbl tr.Reoperation,\
-			#servicetbl td.Reoperation { background-color: #CCCCAA; }\
-			#servicehead td.Infection,\
-			#servicetbl tr.Infection,\
-			#servicetbl td.Infection { background-color: #CCAAAA; }\
-			#servicehead td.Morbidity,\
-			#servicetbl tr.Morbidity,\
-			#servicetbl td.Morbidity { background-color: #AAAACC; }\
-			#servicehead td.Dead,\
-			#servicetbl tr.Dead,\
-			#servicetbl td.Dead { background-color: #AAAAAA; }\
+			#excelhead td.Readmission,\
+			#exceltbl tr.Readmission,\
+			#exceltbl td.Readmission { background-color: #AACCCC; }\
+			#excelhead td.Reoperation,\
+			#exceltbl tr.Reoperation,\
+			#exceltbl td.Reoperation { background-color: #CCCCAA; }\
+			#excelhead td.Infection,\
+			#exceltbl tr.Infection,\
+			#exceltbl td.Infection { background-color: #CCAAAA; }\
+			#excelhead td.Morbidity,\
+			#exceltbl tr.Morbidity,\
+			#exceltbl td.Morbidity { background-color: #AAAACC; }\
+			#excelhead td.Dead,\
+			#exceltbl tr.Dead,\
+			#exceltbl td.Dead { background-color: #AAAAAA; }\
 		</style>'
 	var head = '\
-		  <table id="servicehead">\
+		  <table id="excelhead">\
 			<tr>\
 			  <td></td>\
-			  <td colspan="3" style="font-weight:bold;font-size:24px">' + title + '</td>\
+			  <td></td>\
+			  <td colspan="4" style="font-weight:bold;font-size:24px">' + title + '</td>\
 			</tr>\
 			<tr></tr>\
 			<tr></tr>\
 			<tr>\
+			  <td></td>\
 			  <td></td>\
 			  <td>Admit : ' + $("#Admit").html() + '</td>\
 			  <td>Discharge : ' + $("#Discharge").html() + '</td>\
@@ -344,6 +341,7 @@ function exportToExcel()
 			  <td class="Morbidity">Morbidity : ' + $("#Morbidity").html() + '</td>\
 			</tr>\
 			<tr>\
+			  <td></td>\
 			  <td></td>\
 			  <td class="Readmission">Re-admission : ' + $("#Readmission").html() + '</td>\
 			  <td class="Infection">Infection SSI : ' + $("#Infection").html() + '</td>\
@@ -354,6 +352,9 @@ function exportToExcel()
 			<tr></tr>\
 		  </table>'
 
+	if ($("#exceltbl").length) {
+		$("#exceltbl").remove()
+	}
 	$("#servicetbl").clone(true).attr("id", "exceltbl").appendTo("body")
 	$.each( $("#exceltbl tr"), function() {
 		var multiclass = this.className.split(" ")
@@ -362,7 +363,7 @@ function exportToExcel()
 		}	//use only the last class because excel not accept multiple classes
 	})
 	$.each( $("#exceltbl tr td, #exceltbl tr th"), function() {
-		if ($(this).css("display") == "none") {
+		if ($(this).css("display") === "none") {
 			$(this).remove()
 		}	//remove trailing hidden cells in excel
 	})

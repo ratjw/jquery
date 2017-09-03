@@ -1,7 +1,7 @@
 
 function fillupstart()		
 {	//Display all cases in each day of 5 weeks
-	if (BOOK.length == 0)
+	if (BOOK.length === 0)
 		BOOK.push({"opdate" : getSunday()})
 
 	var start = new Date()
@@ -53,7 +53,7 @@ function fillall(book, table, start, until)
 		//step over each day that is not in QBOOK
 		while (date < book[q].opdate)
 		{
-			if (date != madedate)
+			if (date !== madedate)
 			{
 				//make a blank row for each day which is not in book
 				makenextrow(table, date)	//insertRow
@@ -67,7 +67,7 @@ function fillall(book, table, start, until)
 			}
 
 			//make table head row before every Sunday
-			if ((new Date(date).getDay())%7 == 0)
+			if ((new Date(date).getDay())%7 === 0)
 			{
 				var clone = head.cloneNode(true)
 				tbody.appendChild(clone)
@@ -85,7 +85,7 @@ function fillall(book, table, start, until)
 		date = date.nextdays(1)
 
 		//make table head row before every Sunday
-		if (((new Date(date)).getDay())%7 == 0)
+		if (((new Date(date)).getDay())%7 === 0)
 		{
 			var clone = head.cloneNode(true)
 			tbody.appendChild(clone)
@@ -95,8 +95,9 @@ function fillall(book, table, start, until)
 	}
 }
 
-function refillall(book)
+function refillall()
 {
+	var book = BOOK
 	var table = document.getElementById("tbl")
 	var tbody = table.getElementsByTagName("tbody")[0]
 	var rows = table.rows
@@ -118,7 +119,7 @@ function refillall(book)
 			//step over each day that is not in book
 			while (date < book[q].opdate)
 			{
-				if (date != madedate)
+				if (date !== madedate)
 				{
 					fillrowdate(rows, i, date)	//existing row
 					fillblank(rows[i])	//clear a row for the day not in book
@@ -130,9 +131,9 @@ function refillall(book)
 				}
 				date = date.nextdays(1)
 				//make table head row before every Sunday
-				if ((new Date(date).getDay())%7 == 0)
+				if ((new Date(date).getDay())%7 === 0)
 				{
-					if (rows[i].cells[OPDATE].nodeName != "TH") {
+					if (rows[i].cells[OPDATE].nodeName !== "TH") {
 						var rowh = head.cloneNode(true)
 						tbody.replaceChild(rowh, rows[i])
 					}
@@ -155,9 +156,9 @@ function refillall(book)
 			date = date.nextdays(1)
 
 			//make table head row before every Sunday
-			if (((new Date(date)).getDay())%7 == 0)
+			if (((new Date(date)).getDay())%7 === 0)
 			{
-				if (rows[i].cells[OPDATE].nodeName != "TH") {
+				if (rows[i].cells[OPDATE].nodeName !== "TH") {
 					var rowh = head.cloneNode(true)
 					tbody.replaceChild(rowh, rows[i])
 				}
@@ -194,7 +195,7 @@ function fillrowdate(rows, i, date)	//renew and decorate existing row
 {
 	var tblcells = document.getElementById("tblcells")
 
-	if (rows[i].cells[OPDATE].nodeName != "TD") {
+	if (rows[i].cells[OPDATE].nodeName !== "TD") {
 		var row = tblcells.rows[0].cloneNode(true)
 		rows[i].parentNode.replaceChild(row, rows[i])
 	}
@@ -210,7 +211,9 @@ function fillblank(rowi)
 	cells[ROOMTIME].innerHTML = ""
 	cells[STAFFNAME].innerHTML = ""
 	cells[HN].innerHTML = ""
+	cells[HN].className = ""
 	cells[NAME].innerHTML = ""
+	cells[NAME].className = ""
 	cells[DIAGNOSIS].innerHTML = ""
 	cells[TREATMENT].innerHTML = ""
 	cells[CONTACT].innerHTML = ""
@@ -225,8 +228,10 @@ function filldata(bookq, rowi)		//bookq = book[q]
 		+ (bookq.optime? "<br>" + bookq.optime : "")
 	cells[STAFFNAME].innerHTML = bookq.staffname
 	cells[HN].innerHTML = bookq.hn
+	cells[HN].className = "pacs"
 	cells[NAME].innerHTML = bookq.patient
 		+ (bookq.dob? ("<br>อายุ " + bookq.dob.getAge(bookq.opdate)) : "")
+	cells[NAME].className = "camera"
 	cells[DIAGNOSIS].innerHTML = bookq.diagnosis
 	cells[TREATMENT].innerHTML = bookq.treatment
 	cells[CONTACT].innerHTML = bookq.contact
@@ -243,8 +248,8 @@ function staffqueue(staffname)
 	//delete previous queuetbl lest it accumulates
 	$('#queuetbl tr').slice(1).remove()
 
-	if (staffname == "Consults") {		//Consults cases are not in BOOK
-		if (CONSULT.length == 0)
+	if (staffname === "Consults") {		//Consults cases are not in BOOK
+		if (CONSULT.length === 0)
 			CONSULT.push({"opdate" : getSunday()})
 
 		var table = document.getElementById("queuetbl")
@@ -252,8 +257,8 @@ function staffqueue(staffname)
 
 		fillall(CONSULT, table, start, todate)
 	} else {
-		$.each( BOOK, function() {	// each == this
-			if (( this.staffname == staffname ) && this.opdate >= todate) {
+		$.each( BOOK, function() {	// each === this
+			if (( this.staffname === staffname ) && this.opdate >= todate) {
 				$('#tblcells tr').clone()
 					.appendTo($('#queuetbl'))
 						.filldataQueue(this)
@@ -269,10 +274,10 @@ function refillstaffqueue()
 	var todate = new Date().ISOdate()
 	var staffname = $('#titlename').html()
 
-	if (staffname == "Consults") {
+	if (staffname === "Consults") {
 		//render as fillall
 		$('#queuetbl tr').slice(1).remove()
-		if (CONSULT.length == 0)
+		if (CONSULT.length === 0)
 			CONSULT.push({"opdate" : getSunday()})
 
 		var table = document.getElementById("queuetbl")
@@ -282,8 +287,8 @@ function refillstaffqueue()
 	} else {
 		//render as staffqueue
 		var i = 0
-		$.each( BOOK, function(q, each) {	// each == this
-			if ((this.opdate >= todate) && (this.staffname == staffname)) {
+		$.each( BOOK, function(q, each) {	// each === this
+			if ((this.opdate >= todate) && (this.staffname === staffname)) {
 				i++
 				if (i >= $('#queuetbl tr').length) {
 					$('#tblcells tr').clone()
@@ -303,7 +308,7 @@ function refillstaffqueue()
 jQuery.fn.extend({
 	filldataQueue : function(bookq) {
 		var cells = this[0].cells
-		if  (bookq.opdate == LARGESTDATE) {
+		if  (bookq.opdate === LARGESTDATE) {
 			cells[OPDATE].className = ""
 		} else {
 			cells[OPDATE].className = NAMEOFDAYABBR[(new Date(bookq.opdate)).getDay()]
@@ -313,8 +318,10 @@ jQuery.fn.extend({
 			+ (bookq.optime? "<br>" + bookq.optime : "")
 		cells[STAFFNAME].innerHTML = bookq.staffname
 		cells[HN].innerHTML = bookq.hn
+		cells[HN].className = "pacs"
 		cells[NAME].innerHTML = bookq.patient
 			+ (bookq.dob? ("<br>อายุ " + putAgeOpdate(bookq.dob, bookq.opdate)) : "")
+		cells[NAME].className = "camera"
 		cells[DIAGNOSIS].innerHTML = bookq.diagnosis
 		cells[TREATMENT].innerHTML = bookq.treatment
 		cells[CONTACT].innerHTML = bookq.contact

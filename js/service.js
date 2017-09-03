@@ -115,7 +115,7 @@ function showService(SERVICE, fromDate, toDate)
 	$('#servicetbl').show()
 
 	$.each( STAFF, function() {
-		var staffname = this
+		var staffname = String(this)
 		$('#servicecells tr').clone()
 			.insertAfter($('#servicetbl tr:last'))
 				.children("td").eq(OPDATE)
@@ -125,7 +125,7 @@ function showService(SERVICE, fromDate, toDate)
 								.siblings().hide()
 		var scase = 0
 		$.each( SERVICE, function() {
-			if (this.staffname == staffname) {
+			if (this.staffname === staffname) {
 				var color = countService(this, fromDate, toDate)
 				scase++
 				$('#servicecells tr').clone()
@@ -143,6 +143,7 @@ function showService(SERVICE, fromDate, toDate)
 		title: 'Service Neurosurgery เดือน ' + $monthpicker.val(),
 		close: function() {
 			$('#datepicker').hide()
+			clearEditcell()
 		}
 	})
 	getAdmitDischargeDate(SERVICE, fromDate, toDate)
@@ -153,10 +154,10 @@ function refillService(SERVICE, fromDate, toDate)
 {
 	var i = 0
 	$.each( STAFF, function() {
-		var staffname = this
+		var staffname = String(this)
 		i++
 		var $thisCase = $('#servicetbl tr').eq(i).children("td").eq(CASENUM)
-		if ($thisCase.prop("colSpan") == 1) {
+		if ($thisCase.prop("colSpan") === 1) {
 			$thisCase.prop("colSpan", 8)
 				.addClass("serviceStaff")
 					.siblings().hide()
@@ -165,7 +166,7 @@ function refillService(SERVICE, fromDate, toDate)
 
 		var scase = 0
 		$.each( SERVICE, function() {
-			if (this.staffname == staffname) {
+			if (this.staffname === staffname) {
 				var color = countService(this, fromDate, toDate)
 				i++
 				scase++
@@ -190,9 +191,11 @@ jQuery.fn.extend({
 		var cells = this[0].cells
 		addColor(this, color)
 		cells[CASENUM].innerHTML = scase
-		cells[CASENAME].innerHTML = bookq.hn
-			+ " " + bookq.patient
-			+ " " + (bookq.dob? bookq.dob.getAge(bookq.opdate) : "")
+		cells[SHN].innerHTML = bookq.hn
+		cells[SHN].className = "pacs"
+		cells[SNAME].innerHTML = bookq.patient
+			+ (bookq.dob? ("<br>อายุ " + putAgeOpdate(bookq.dob, bookq.opdate)) : "")
+		cells[SNAME].className = "camera"
 		cells[SDIAGNOSIS].innerHTML = bookq.diagnosis
 		cells[STREATMENT].innerHTML = bookq.treatment
 		cells[ADMISSION].innerHTML = bookq.admission
@@ -219,12 +222,12 @@ function addColor($this, color)
 			$final.addClass("Infection")
 		}
 		if (/Morbidity/.test(color)) {
-			if ($final.attr("class") != "Infection") {	//still show Infection
+			if ($final.attr("class") !== "Infection") {	//still show Infection
 				$final.addClass("Morbidity")
 			}
 		}
 		if (/Dead/.test(color)) {
-			if ($final.attr("class") != "Infection") {	//still show Infection
+			if ($final.attr("class") !== "Infection") {	//still show Infection
 				$final.addClass("Dead")
 			}
 		}
@@ -240,7 +243,7 @@ function getAdmitDischargeDate(SERVICE, fromDate, toDate)
 		if (!response) {
 			return
 		}
-		if (response.indexOf("{") == -1) {
+		if (response.indexOf("{") === -1) {
 			alert("getAdmitDischargeDate", response)
 		} else {
 			updateBOOK(response)
@@ -254,10 +257,10 @@ function fillAdmitDischargeDate(SERVICE)
 {
 	var i = 0
 	$.each( STAFF, function() {
-		var staffname = this
+		var staffname = String(this)
 		i++
 		$.each( SERVICE, function() {
-			if (this.staffname == staffname) {
+			if (this.staffname === staffname) {
 				i++
 				var $thisRow = $('#servicetbl tr').eq(i).children("td")
 				if (this.admit && !$thisRow.eq(ADMIT).html()) {
@@ -297,7 +300,7 @@ function Skeyin(event, keycode, pointing)
 {
 	var thiscell
 
-	if (keycode == 27) {
+	if (keycode === 27) {
 		clearEditcell()
 		window.focus()
 		event.preventDefault()
@@ -306,7 +309,7 @@ function Skeyin(event, keycode, pointing)
 	if (!pointing) {
 		return
 	}
-	if (keycode == 9) {
+	if (keycode === 9) {
 		savePreviouscellService()
 		if (event.shiftKey)
 			thiscell = findPrevcell(event, SEDITABLE, pointing)
@@ -321,7 +324,7 @@ function Skeyin(event, keycode, pointing)
 		event.preventDefault()
 		return false
 	}
-	if (keycode == 13) {
+	if (keycode === 13) {
 		if (event.shiftKey || event.ctrlKey) {
 			return
 		}
@@ -343,7 +346,7 @@ function savePreviouscellService()
 	var oldcontent = $("#editcell").data("oldcontent")
 	var newcontent = getEditcellHtml()
 	var editPoint = $("#editcell").data("pointing")
-	if (editPoint && (oldcontent != newcontent)) {
+	if (editPoint && (oldcontent !== newcontent)) {
 		saveEditPointDataService(editPoint)
 	}
 }
@@ -354,7 +357,8 @@ function saveEditPointDataService(pointed)
 	switch(pointed.cellIndex)
 	{
 		case CASENUM:
-		case CASENAME:
+		case SHN:
+		case SNAME:
 			break
 		case SDIAGNOSIS:
 			content = getEditcellHtml()
@@ -400,7 +404,7 @@ function saveScontent(pointed, column, content)	//column name in MYSQL
 
 	function callbacksaveScontent(response)
 	{
-		if (!response || response.indexOf("BOOK") == -1)
+		if (!response || response.indexOf("BOOK") === -1)
 		{
 			alert("saveScontent", response)
 			pointed.innerHTML = oldcontent		//return to previous content
@@ -419,7 +423,7 @@ function saveScontent(pointed, column, content)	//column name in MYSQL
 			var newcounter
 			if (color) {
 				if (newcolor) {
-					if (color != newcolor) {
+					if (color !== newcolor) {
 						$.each( colorArray, function(i, each) {
 							counter = document.getElementById(each)
 							counter.innerHTML = Number(counter.innerHTML) - 1
@@ -461,13 +465,17 @@ function storePresentScell(pointing)
 	switch(cindex)
 	{
 		case CASENUM:
-		case CASENAME:
+			break
+		case SHN:
 			clearEditcell()
-			var hn = pointing.innerHTML
-			if (hn.match(/\d{7}/)) {
-				hn = hn.match(/\d{7}/)[0]
-				PACS(hn)
-			}
+			PACS(pointing.innerHTML)
+			break
+		case SNAME:
+			var hn = $(pointing).closest('tr').children("td").eq(SHN).html()
+			var patient = pointing.innerHTML
+
+			clearEditcell()
+			createWindow(hn, patient)
 			break
 		case SDIAGNOSIS:
 		case STREATMENT:

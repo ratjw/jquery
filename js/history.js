@@ -12,7 +12,7 @@ function editHistory(rowi, qn)
 
 	function callbackeditHistory(response)
 	{
-		if (!response || response.indexOf("DBfailed") != -1)
+		if (!response || response.indexOf("DBfailed") !== -1)
 			alert("editHistory", response)
 		else
 			makehistory(rowi, response)
@@ -41,10 +41,10 @@ function makehistory(rowi, response)
 	HTML_String += '</tr>';
 	for (var j = 0; j < tracing.length; j++) 
 	{
-		if (tracing[j].action == 'delete') {
+		if (tracing[j].action === 'delete') {
 			HTML_String += '<tr style="background-color:#FFCCCC">';
 		}
-		else if (tracing[j].action == 'undelete') {
+		else if (tracing[j].action === 'undelete') {
 			HTML_String += '<tr style="background-color:#CCFFCC">';
 		} else {
 			HTML_String += '<tr>';
@@ -82,7 +82,7 @@ function showEquip(equipString)
 	if (equipString) {
 		var equipHistory = JSON.parse(equipString)
 		$.each(equipHistory, function(key, value) {
-			if (value == "checked") {
+			if (value === "checked") {
 				var itemname = $('#' + key).parent().prevAll('div').first().html()
 				equip += (itemname + ":" + key + ", ")
 			} else {
@@ -101,7 +101,7 @@ function deletedCases()
 
 	function callbackdeletedCases(response)
 	{
-		if (!response || response.indexOf("DBfailed") != -1)
+		if (!response || response.indexOf("DBfailed") !== -1)
 			alert("deletedCases", response)
 		else
 			makedeletedCases(response)
@@ -175,7 +175,7 @@ function undelete(thiscase)
 
 		function callbackUndelete(response)
 		{
-			if (!response || response.indexOf("DBfailed") != -1)
+			if (!response || response.indexOf("DBfailed") !== -1)
 			{
 				alert("undelete", response)
 			}
@@ -183,8 +183,8 @@ function undelete(thiscase)
 			{
 				updateBOOK(response);
 				refillall(BOOK)
-				if (($("#queuewrapper").css('display') == 'block') && 
-					(($('#titlename').html() == staffname) || ($('#titlename').html() == "Consults"))) {
+				if (($("#queuewrapper").css('display') === 'block') && 
+					(($('#titlename').html() === staffname) || ($('#titlename').html() === "Consults"))) {
 					refillstaffqueue()	//undelete this staff's case or a Consults case
 				}
 			}
@@ -204,11 +204,9 @@ function PACS(hn)
 
 	Ajax(CHECKPAC, sql, callbackCHECKPAC)
 
-	clearEditcell()
-
 	function callbackCHECKPAC(response)
 	{
-		if (!response || response.indexOf("PAC") == -1) {
+		if (!response || response.indexOf("PAC") === -1) {
 			alert("PACS", response)
 		} else {
 			var ua = window.navigator.userAgent;
@@ -308,7 +306,7 @@ function sqlFind(hn, patient, diagnosis, treatment, contact)
 
 	function callbackfind(response)
 	{
-		if (!response || response.indexOf("DBfailed") != -1) {
+		if (!response || response.indexOf("DBfailed") !== -1) {
 			alert("Find", response)
 		} else {
 			makeFind(response, hn)
@@ -330,7 +328,7 @@ function scrolltoThisCase(qn)
 {
 	var showtbl = showFind("tblcontainer", "tbl", qn)
 
-	if ($("#queuewrapper").css('display') == 'block') {
+	if ($("#queuewrapper").css('display') === 'block') {
 		var showqueuetbl = showFind("queuecontainer", "queuetbl", qn)
 	}
 	return showtbl || showqueuetbl
@@ -346,7 +344,7 @@ function showFind(containerID, tableID, qn)
 		var scrolledTop = document.getElementById(containerID).scrollTop
 		var offset = rows[i].offsetTop
 		var winheight = window.innerHeight
-		if (containerID == "queuecontainer") {
+		if (containerID === "queuecontainer") {
 			winheight = winheight - 100
 		}
 

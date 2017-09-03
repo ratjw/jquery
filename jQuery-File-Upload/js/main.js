@@ -36,6 +36,7 @@ $(function () {
 	$.ajax({
 		// Uncomment the following to send cross-domain cookies:
 		//xhrFields: {withCredentials: true},
+
 		//hn is a global variable from index.html
 		//sent to PHP along with url by GET method
 		//if standalone, no hn to be sent 

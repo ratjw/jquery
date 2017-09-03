@@ -7,7 +7,6 @@
 
 <link href="css/jquery-ui.css" rel="stylesheet">
 <link href="css/CSS.css" rel="stylesheet">
-<link href="css/print.css" rel="stylesheet">
 <script src="js/jquery-3.2.1.min.js"></script>
 <script src="js/jquery.mousewheel.min.js"></script>
 <script src="js/jquery-ui.min.js"></script>
@@ -113,7 +112,8 @@
    <tbody>
     <tr>
      <th style="width:2%">case</th>
-     <th style="width:13%">HN Name</th>
+     <th style="width:3%">HN</th>
+     <th style="width:10%">Name</th>
      <th style="width:15%">Diagnosis</th>
      <th style="width:15%">Treatment</th>
      <th style="width:30%">Admission Status</th>
@@ -130,7 +130,8 @@
   <tbody>
    <tr>
     <td data-title="case"></td>
-    <td data-title="HN Name"></td>
+    <td data-title="HN"></td>
+    <td data-title="Name"></td>
     <td data-title="Diagnosis"></td>
     <td data-title="Treatment"></td>
     <td data-title="Admission Status"></td>
@@ -160,18 +161,17 @@
 <div id="dialogAlert"></div>
 
 <ul id="menu" style="display:none">
-  <li id="item1"><div>เพิ่ม case</div></li>
-  <li id="item2"><div>เพิ่ม case ไม่ระบุวัน</div></li>
-  <li id="item3"><div>เปลี่ยนวันที่</div></li>
-  <li id="item4"><div>Equipment</div></li>
-  <li id="item5"><div>ประวัติการแก้ไข</div></li>
-  <li id="item6"><div>PACS</div></li>
-  <li id="item7" style="color:gray"><div>Delete</div></li>
-  <li id="item8"><div>คิวของอาจารย์</div><ul id="item0" style="width:100px"></ul></li>
-  <li id="item9"><div>Service Review</div></li>
-  <li id="item10"><div>All Deleted Cases</div></li>
-  <li id="item11"><div>Find</div></li>
-  <li id="item12"><div>Readme</div></li>
+  <li id="addrow"><div>เพิ่ม case</div></li>
+  <li id="addnodate"><div>เพิ่ม case ไม่ระบุวัน</div></li>
+  <li id="changedate"><div>เปลี่ยนวันที่</div></li>
+  <li id="equip"><div>Equipment</div></li>
+  <li id="history"><div>ประวัติการแก้ไข</div></li>
+  <li id="del" style="color:gray"><div>Delete</div></li>
+  <li><div>คิวของอาจารย์</div><ul id="staffmenu" style="width:100px"></ul></li>
+  <li id="service"><div>Service Review</div></li>
+  <li id="deleted"><div>All Deleted Cases</div></li>
+  <li id="search"><div>Find</div></li>
+  <li id="readme"><div>Readme</div></li>
 </ul>
 
 <ul id="stafflist" style="display:none"></ul>
@@ -616,7 +616,7 @@ function namesix()
 </script>
 
 <?php
-	if ($_SERVER["REQUEST_METHOD"] == "POST") {
+	if ($_SERVER["REQUEST_METHOD"] === "POST") {
 		$userid = $_POST["userid"];
 		$password = $_POST["password"];
 
@@ -635,7 +635,7 @@ function namesix()
 				$resultz = "S";
 			}
 
-			if ($resultz == "S" || $resultz == "R" || $userid == "000000")
+			if ($resultz === "S" || $resultz === "R" || $userid === "000000")
 			{
 				echo "<SCRIPT type='text/javascript'>loadtable('".$userid."')</SCRIPT>";
 			}

@@ -10,26 +10,24 @@ function fillSetTable(pointing)
 	var hn = tcell[HN].innerHTML
 	var qn = tcell[QN].innerHTML
 	var book = BOOK
-	if ((tableID == "queuetbl") && ($('#titlename').html() == "Consults")) {
+	if ((tableID === "queuetbl") && ($('#titlename').html() === "Consults")) {
 		book = CONSULT		//do anything in Consults cases
 	}
 
-	disable(qn, "#item1")
+	disable(qn, "#addrow")
 
-	var item2 = (tableID == "queuetbl")? true : false
-	disable(item2, "#item2")
+	var addnodate = (tableID === "queuetbl")? true : false
+	disable(addnodate, "#addnodate")
 
-	disable(qn, "#item3")
+	disable(qn, "#changedate")
 
-	disable(qn, "#item4")
+	disable(qn, "#equip")
 
-	disable(qn, "#item5")
-
-	disable(hn, "#item6")
+	disable(qn, "#history")
 
 	var unuse = (checkblank(book, opdate, qn))? true : false
-	var item7 = (qn || unuse)? true : false
-	disable(item7, "#item7")
+	var del = (qn || unuse)? true : false
+	disable(del, "#del")
 
 	var $menu = $("#menu")
 	$menu.menu({
@@ -39,48 +37,45 @@ function fillSetTable(pointing)
 
 			switch(item)
 			{
-				case "item1":
+				case "addrow":
 					addnewrow(tableID, rowi, qn)
 					break
-				case "item2":
+				case "addnodate":
 					noOpdate()
 					break
-				case "item3":
+				case "changedate":
 					changeDate(tableID, opdate, staffname, qn, pointing)
 					break
-				case "item4":
+				case "equip":
 					fillEquipTable(book, rowi, qn)
 					break
-				case "item5":
+				case "history":
 					editHistory(rowi, qn)
 					break
-				case "item6":
-					PACS(hn)
-					break
-				case "item7":
+				case "del":
 					if (unuse) {	//from add new row (check case in this opdate)
 						$(rowi).remove()			//delete blank row
 						var caseNum = findBOOKrow(book, "")
 						book.splice(caseNum, 1)
 					} else {
-						deleteCase(rowi, opdate, staffname, qn)
+						deleteCase(tableID, rowi, opdate, staffname, qn)
 					}
 					break
-				case "item88":
+				case "staffqueue":
 					staffqueue(ui.item.text())
-					if ($("#queuewrapper").css("display") != "block")
+					if ($("#queuewrapper").css("display") !== "block")
 						splitPane()
 					break
-				case "item9":
+				case "service":
 					serviceReview()
 					break
-				case "item10":
+				case "deleted":
 					deletedCases()
 					break
-				case "item11":
+				case "search":
 					find()
 					break
-				case "item12":
+				case "readme":
 					readme()
 					break
 			}
@@ -129,6 +124,8 @@ function stafflist(pointing)
 	$stafflist.appendTo($(pointing).closest('div'))
 	reposition($stafflist, "left top", "left bottom", pointing)
 	menustyle($stafflist, pointing, width)
+	reposition($stafflist, "left top", "left bottom", pointing)
+	//To make it show on first click
 }
 
 function menustyle($me, target, width)
@@ -166,7 +163,7 @@ function fillRoomTime(pointing)
 		max: 20,
 		step: -1,
 		spin: function( event, ui ) {
-			if ($orroom.val() == "(" + ORNEURO + ")") {
+			if ($orroom.val() === "(" + ORNEURO + ")") {
 				orroom = ORNEURO
 			}
 		},
@@ -187,7 +184,7 @@ function fillRoomTime(pointing)
 			$ortime.val(optime? optime : "(" + ORTIME + ")")
 		},
 		spin: function( event, ui ) {
-			if ($ortime.val() == "(" + ORTIME + ")") {
+			if ($ortime.val() === "(" + ORTIME + ")") {
 				ortime = ORTIME
 			} else {
 				ortime = decimalToTime(ui.value)
@@ -218,17 +215,18 @@ function checkblank(book, opdate, qn)
 			return false	//beyond book, do not delete blank row
 		}
 	}
-	if (opdate == book[q].opdate) {	//found
+	if (opdate === book[q].opdate) {	//found
 		return true	//there is a case(s) in this opdate, can delete blank row
 	} else {
 		return false	//No case in this opdate, do not delete blank row
 	}
 }
 
-function addnewrow(tableID, rowi, qn)
+function addnewrow(tableID, rowi)
 {
+/*
 	var book = BOOK
-	if ((tableID == "queuetbl") && ($('#titlename').html() == "Consults")) {
+	if ((tableID === "queuetbl") && ($('#titlename').html() === "Consults")) {
 		book = CONSULT		//do anything in Consults cases
 	}
 	var caseNum = findBOOKrow(book, qn)
@@ -240,19 +238,33 @@ function addnewrow(tableID, rowi, qn)
 	bookq.oproom = book[caseNum].oproom
 	bookq.optime = book[caseNum].optime
 	book.splice(caseNum + 1, 0, bookq)
-	
-	$(rowi).clone()
-		.insertAfter($(rowi))
-			.find("td").eq(ROOMTIME)
-				.nextAll()
-					.html("")
-
-	if (tableID == "queuetbl") {
+*/
+	if (tableID === "tbl") {
+		$(rowi).clone()
+			.insertAfter($(rowi))
+				.find("td").eq(HN).removeClass("pacs")
+				.parent().find("td").eq(NAME).removeClass("camera")
+				.parent().find("td").eq(ROOMTIME)
+					.nextAll()
+						.html("")
+	}
+	else if (tableID === "queuetbl") {
+		$(rowi).clone()
+			.insertAfter($(rowi))
+				.find("td").eq(HN).removeClass("pacs")
+				.parent().find("td").eq(NAME).removeClass("camera")
+				.parent().find("td").eq(STAFFNAME)
+					.nextAll()
+						.html("")
+	}
+/*
+	if (tableID === "queuetbl") {
 		//change pointing to STAFFNAME
 		var staffname = $('#titlename').html()
 		var pointing = $(rowi).next().children("td")[STAFFNAME]
 		saveContent(pointing, "staffname", staffname)
 	}
+*/
 }
 
 function noOpdate()
@@ -285,11 +297,11 @@ function changeDate(tableID, opdate, staffname, qn, pointing)
 	var $trNOth = $("#tbl tr:not(:has(th)), #queuetbl tr:not(:has(th))")
 	var $datepicker = $('#datepickertbl')
 	var $container
-	if (tableID == "tbl") {
+	if (tableID === "tbl") {
 		$datepicker = $('#datepickertbl')
 		$container = $('#tblcontainer')
 	}
-	else if (tableID == "queuetbl") {
+	else if (tableID === "queuetbl") {
 		$datepicker = $('#datepickerqueuetbl')
 		$container = $('#queuecontainer')
 	}
@@ -311,19 +323,23 @@ function changeDate(tableID, opdate, staffname, qn, pointing)
 			$datepicker.after($widget);
 		},
 		onClose: function (date, obj) {
-			function isDonePressed() {
+			//onClose can be triggered by click outside calendar
+			//and execute before $trNOth.on("click");
+			if ($(".pasteDate").length || opdate === date) {
+				return false
+			}//give way to $trNOth.on("click") function
+
+			function isDonePressed() {	//copy from stackoverflow
 				var classes = 'ui-datepicker-close ui-state-default ui-priority-primary ui-corner-all ui-state-hover'
 				return ($('#ui-datepicker-div').html().indexOf(classes) > -1);    
 			}
+			//use Done button as LARGESTDATE
 			if (isDonePressed()) {
 				if (staffname) {
 					date = LARGESTDATE
 				}
 			}
 			clearDatepickerMouseover($container, $trNOth, $datepicker)
-			if ($(".pasteDate").length || opdate == date) {
-				return false
-			}
 			var sql = "sqlReturnbook=UPDATE book SET opdate='" + date + "', "
 			sql += "editor = '" + THISUSER + "' WHERE qn="+ qn + ";"
 
@@ -331,13 +347,13 @@ function changeDate(tableID, opdate, staffname, qn, pointing)
 
 			function callbackchangeDate(response)
 			{
-				if (!response || response.indexOf("DBfailed") != -1) {
+				if (!response || response.indexOf("DBfailed") !== -1) {
 					alert ("changeDate", response)
 				} else {
 					updateBOOK(response);
 					refillall(BOOK)
-					if (($("#queuewrapper").css('display') == 'block') && 
-						($('#titlename').html() == staffname)) {
+					if (($("#queuewrapper").css('display') === 'block') && 
+						($('#titlename').html() === staffname)) {
 						//changeDate of this staffname's case
 						refillstaffqueue()
 					}
@@ -359,7 +375,7 @@ function changeDate(tableID, opdate, staffname, qn, pointing)
 			clearDatepickerMouseover($container, $trNOth, $datepicker)
 			var thisDate = $(this).children("td").eq(OPDATE).html()
 			thisDate = getOpdate(thisDate)
-			if (opdate == thisDate) {
+			if (opdate === thisDate) {
 				return false
 			}
 			var RoomTime = calculateRoomTime($(pointing).closest('tr'), $(this))
@@ -375,13 +391,13 @@ function changeDate(tableID, opdate, staffname, qn, pointing)
 
 			function callbackchangeDate(response)
 			{
-				if (!response || response.indexOf("DBfailed") != -1) {
+				if (!response || response.indexOf("DBfailed") !== -1) {
 					alert ("changeDate", response)
 				} else {
 					updateBOOK(response);
 					refillall(BOOK)
-					if (($("#queuewrapper").css('display') == 'block') && 
-						($('#titlename').html() == staffname)) {
+					if (($("#queuewrapper").css('display') === 'block') && 
+						($('#titlename').html() === staffname)) {
 						//changeDate of this staffname's case
 						refillstaffqueue()
 					}
@@ -406,7 +422,7 @@ function clearDatepickerMouseover($container, $trNOth, $datepicker)
 	$(".changeDate").removeClass("changeDate")
 }
 
-function deleteCase(rowi, opdate, staffname, qn)
+function deleteCase(tableID, rowi, opdate, staffname, qn)
 {
 	//not actually delete the case but set waitnum=NULL
 	var sql = "sqlReturnbook=UPDATE book SET waitnum=NULL, "
@@ -416,14 +432,19 @@ function deleteCase(rowi, opdate, staffname, qn)
 
 	function callbackdeleterow(response)
 	{
-		if (!response || response.indexOf("DBfailed") != -1) {
+		if (!response || response.indexOf("DBfailed") !== -1) {
 			alert ("deleteCase", response)
 		} else {
-			updateBOOK(response);
-			deleteRow(rowi, opdate)
-			if (($("#queuewrapper").css('display') == 'block') && 
-				($('#titlename').html() == staffname)) {
-				refillstaffqueue()
+			updateBOOK(response)
+			if (tableID === "tbl") {
+				deleteRow(rowi, opdate)
+				if (($("#queuewrapper").css('display') === 'block') && 
+					($('#titlename').html() === staffname)) {
+					refillstaffqueue()
+				}
+			} else {
+				$(rowi).remove()
+				refillall()
 			}
 		}
 	}
@@ -437,12 +458,14 @@ function deleteRow(rowi, opdate)
 	prevDate = getOpdate(prevDate)
 	nextDate = getOpdate(nextDate)
 
-	if ((prevDate == opdate)
-	|| (nextDate == opdate)
+	if ((prevDate === opdate)
+	|| (nextDate === opdate)
 	|| $(rowi).closest("tr").is(":last-child")) {
 		$(rowi).remove()
 	} else {
 		$(rowi).children("td").eq(OPDATE).siblings().html("")
+		$(rowi).children("td").eq(HN).removeClass("pacs")
+		$(rowi).children("td").eq(NAME).removeClass("camera")
 	}
 }
 

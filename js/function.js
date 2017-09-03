@@ -39,7 +39,7 @@ String.prototype.thDate = function ()
 	var yyyy = parseInt(this.substr(0, 4)) + 543;
 	var mm = this.substr(5, 2);
 	for (ThMonth in NUMMONTH)
-		if (NUMMONTH[ThMonth] == mm) 
+		if (NUMMONTH[ThMonth] === mm) 
 			break;
 	return (this.substr(8, 2) +' '+ ThMonth + yyyy);
 } 
@@ -60,6 +60,7 @@ String.prototype.nextdays = function (days)
 
 String.prototype.getAge = function (toDate)
 {	//Calculate age at (toDate) (iso format) from birth date
+	//with LARGESTDATE as today
 	if (!toDate || this <= '1900-01-01') {
 		return this
 	}
@@ -122,7 +123,7 @@ function putOpdate(date)	//change date in book to show on table
 	}
 }
 
-function putAgeOpdate(dob, date)	//calc age with LARGESTDATE as today
+function putAgeOpdate(dob, date)
 {
 	if (!date || !dob) {
 		return ""
@@ -172,7 +173,7 @@ function Ajax(url, params, callback)
 	http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 	http.onreadystatechange = function() 
 	{
-		if(http.readyState == 4)
+		if(http.readyState === 4)
 			callback(http.responseText);
 	}
 	http.send(params);
@@ -194,7 +195,7 @@ function findTablerow(tableID, qn)
 {
 	var rows = document.getElementById(tableID).rows
 	var i = 1
-	while ((i < rows.length) && (rows[i].cells[QN].innerHTML != qn)) {
+	while ((i < rows.length) && (rows[i].cells[QN].innerHTML !== qn)) {
 		i++
 	}
 	if (i < rows.length) {
@@ -207,7 +208,7 @@ function findTablerow(tableID, qn)
 function findBOOKrow(book, qn)
 {  
 	var q = 0
-	while ((q < book.length) && (book[q].qn != qn)) {
+	while ((q < book.length) && (book[q].qn !== qn)) {
 		q++
 	}
 	if (q < book.length) {
@@ -220,7 +221,7 @@ function findBOOKrow(book, qn)
 function findNewBOOKrow(book, opdate)	//find new row (max. qn)
 {
 	var q = 0
-	while (book[q].opdate != opdate)
+	while (book[q].opdate !== opdate)
 	{
 		q++
 		if (q >= book.length)
@@ -230,7 +231,7 @@ function findNewBOOKrow(book, opdate)	//find new row (max. qn)
 	var qn = Number(book[q].qn)
 	var newq = q
 	q++
-	while (q < book.length && book[q].opdate == opdate) {
+	while (q < book.length && book[q].opdate === opdate) {
 		if (Number(book[q].qn) > qn) {
 			qn = Number(book[q].qn)
 			newq = q
@@ -275,20 +276,20 @@ function calculateWaitnum(tableID, $thisrow, thisOpdate)	//thisOpdate was set ca
 	var prevOpdate = getOpdate($prevRowCell.eq(OPDATE).html())
 	var nextOpdate = getOpdate($nextRowCell.eq(OPDATE).html())
 	var defaultWaitnum = 1
-	if ((tableID == "queuetbl") && ($('#titlename').html() == "Consults")) {
+	if ((tableID === "queuetbl") && ($('#titlename').html() === "Consults")) {
 		defaultWaitnum = -1		//Consults cases have negative waitnum
 	}
 
-	if (prevOpdate != thisOpdate && thisOpdate != nextOpdate) {
+	if (prevOpdate !== thisOpdate && thisOpdate !== nextOpdate) {
 		return defaultWaitnum
 	}
-	else if (prevOpdate == thisOpdate && thisOpdate != nextOpdate) {
+	else if (prevOpdate === thisOpdate && thisOpdate !== nextOpdate) {
 		return prevWaitNum + defaultWaitnum
 	}
-	else if (prevOpdate != thisOpdate && thisOpdate == nextOpdate) {
+	else if (prevOpdate !== thisOpdate && thisOpdate === nextOpdate) {
 		return nextWaitNum? (nextWaitNum / 2) : defaultWaitnum
 	}
-	else if (prevOpdate == thisOpdate && thisOpdate == nextOpdate) {
+	else if (prevOpdate === thisOpdate && thisOpdate === nextOpdate) {
 		return nextWaitNum? ((prevWaitNum + nextWaitNum) / 2) : (prevWaitNum + defaultWaitnum)
 	}	//in case of new blank row nextWaitNum is undefined
 }
@@ -314,7 +315,7 @@ function decimalToTime(dec)
 	var time = []
 	var integer = Math.floor(dec)
 	var decimal = dec - integer
-	time[0] = (("" + integer).length == 1)? "0" + integer : "" + integer
+	time[0] = (("" + integer).length === 1)? "0" + integer : "" + integer
 	time[1] = decimal? String(decimal * 60) : "00"
 	return time.join(".")
 }
@@ -330,13 +331,27 @@ function addColor($this, thisOpdate)
 {
 	var prevdate = $this.prev().children("td").eq(OPDATE).html()
 	prevdate = prevdate? prevdate.numDate() : ""
-	if (((thisOpdate != prevdate) && ($this.prev()[0].className.indexOf("odd") < 0))
-	|| ((thisOpdate == prevdate) && ($this.prev()[0].className.indexOf("odd") >= 0))) {
+	if (((thisOpdate !== prevdate) && ($this.prev()[0].className.indexOf("odd") < 0))
+	|| ((thisOpdate === prevdate) && ($this.prev()[0].className.indexOf("odd") >= 0))) {
 		$this.addClass("odd")
 	} else {
 		$this.removeClass()	//clear colored row that is moved to non-color opdate
 	}
 }
+
+(function ()
+{	//to declare static variable 
+	var newWindow
+
+	createWindow = function (hn, patient) {
+		if (newWindow && !newWindow.closed) {
+			newWindow.close();
+		}
+		newWindow = window.open("jQuery-File-Upload", "_blank")    
+		newWindow.hnName = {"hn": hn, "patient": patient}
+		//hnName is a pre-defined variable in child window
+	}
+})()
 
 function findPrevcell(event, editable, pointing) 
 {
@@ -361,7 +376,7 @@ function findPrevcell(event, editable, pointing)
 				return false
 			}
 		}
-		while (($prevcell.get(0).nodeName == "TH")	//THEAD row
+		while (($prevcell.get(0).nodeName === "TH")	//THEAD row
 			|| (!$prevcell.is(':visible')))			//invisible due to colspan
 	}
 
@@ -388,7 +403,7 @@ function findNextcell(event, editable, pointing)
 			}
 		}
 		while ((!$nextcell.is(':visible'))	//invisible due to colspan
-			|| ($nextcell.get(0).nodeName == "TH"))	//TH row
+			|| ($nextcell.get(0).nodeName === "TH"))	//TH row
 	}
 
 	return $nextcell.get(0)
@@ -407,7 +422,7 @@ function findNextRow(event, editable, pointing)
 		}
 	}
 	while ((!$nextcell.is(':visible'))	//invisible due to colspan
-		|| ($nextcell.get(0).nodeName == "TH"))	//TH row
+		|| ($nextcell.get(0).nodeName === "TH"))	//TH row
 
 	return $nextcell.get(0)
 }
@@ -420,7 +435,7 @@ function holiday(date)
 
 	for (var key in HOLIDAY) 
 	{
-		if (key == date)
+		if (key === date)
 			return HOLIDAY[key]	//matched a holiday
 		if (key > date)
 			break		//not a listed holiday
@@ -435,11 +450,11 @@ function holiday(date)
 		holidayname = "url('pic/Newyear.jpg')"
 		break
 	case "01-02":
-		if ((dayofweek == 1) || (dayofweek == 2))
+		if ((dayofweek === 1) || (dayofweek === 2))
 			holidayname = "url('pic/Yearendsub.jpg')"
 		break
 	case "01-03":
-		if ((dayofweek == 1) || (dayofweek == 2))
+		if ((dayofweek === 1) || (dayofweek === 2))
 			holidayname = "url('pic/Newyearsub.jpg')"
 		break
 	case "04-06":
@@ -447,7 +462,7 @@ function holiday(date)
 		break
 	case "04-07":
 	case "04-08":
-		if (dayofweek == 1)
+		if (dayofweek === 1)
 			holidayname = "url('pic/Chakrisub.jpg')"
 		break
 	case "04-13":
@@ -465,7 +480,7 @@ function holiday(date)
 		break
 	case "07-29":
 	case "07-30":
-		if (dayofweek == 1)
+		if (dayofweek === 1)
 			holidayname = "url('pic/King10sub.jpg')"
 		break
 	case "08-12":
@@ -473,7 +488,7 @@ function holiday(date)
 		break
 	case "08-13":
 	case "08-14":
-		if (dayofweek == 1)
+		if (dayofweek === 1)
 			holidayname = "url('pic/Queensub.jpg')"
 		break
 	case "10-13":
@@ -481,7 +496,7 @@ function holiday(date)
 		break
 	case "10-14":
 	case "10-15":
-		if (dayofweek == 1)
+		if (dayofweek === 1)
 			holidayname = "url('pic/King09sub.jpg')"
 		break
 	case "10-23":
@@ -489,7 +504,7 @@ function holiday(date)
 		break
 	case "10-24":
 	case "10-25":
-		if (dayofweek == 1)
+		if (dayofweek === 1)
 			holidayname = "url('pic/Piyasub.jpg')"
 		break
 	case "12-05":
@@ -497,7 +512,7 @@ function holiday(date)
 		break
 	case "12-06":
 	case "12-07":
-		if (dayofweek == 1)
+		if (dayofweek === 1)
 			holidayname = "url('pic/Kingsub.jpg')"
 		break
 	case "12-10":
@@ -505,7 +520,7 @@ function holiday(date)
 		break
 	case "12-11":
 	case "12-12":
-		if (dayofweek == 1)
+		if (dayofweek === 1)
 			holidayname = "url('pic/Constitutionsub.jpg')"
 		break
 	}

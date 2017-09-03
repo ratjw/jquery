@@ -23,14 +23,15 @@ var QN			= 8;
 
 //servicetbl
 var CASENUM		= 0;
-var CASENAME	= 1;
-var SDIAGNOSIS	= 2;
-var STREATMENT	= 3;
-var ADMISSION	= 4;
-var FINAL		= 5;
-var ADMIT		= 6;
-var DISCHARGE	= 7;
-var SQN			= 8;
+var SHN			= 1;
+var SNAME		= 2;
+var SDIAGNOSIS	= 3;
+var STREATMENT	= 4;
+var ADMISSION	= 5;
+var FINAL		= 6;
+var ADMIT		= 7;
+var DISCHARGE	= 8;
+var SQN			= 9;
 
 //historytbl
 var HEDITDATETIME	= 0;
@@ -75,7 +76,7 @@ var ORSURG = "XSU";
 var ORNEURO = "4"
 var ORTIME = "09.00"
 var STAFF = ["อ.เอก", "อ.อัตถพร", "อ.สรยุทธ", "อ.วัฒนา", "อ.เกรียงศักดิ์", "อ.พีรพงศ์"];
-var newWindow = null;
+
 var HOLIDAY = {
 	"2017-02-11" : "url('pic/Magha.jpg')",
 	"2017-02-13" : "url('pic/Maghasub.jpg')",	//หยุดชดเชยวันมาฆบูชา

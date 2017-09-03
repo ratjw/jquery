@@ -13,7 +13,6 @@ require_once "book.php";
 	$username = "";
 	$oproom = "";
 	$optime = "";
-	$staffname = "";
 	$diagnosis = "";
 	$treatment = "";
 	$contact = "";
@@ -42,6 +41,7 @@ require_once "book.php";
 
 	extract($resultz);
 
+	//Find last entry of patient with this hn
 	$sql = "SELECT MAX(qn) FROM book WHERE hn = $hn AND waitnum IS NOT NULL;";
 	$query = $mysqli->query ($sql);
 	if ($query) {
@@ -52,12 +52,15 @@ require_once "book.php";
 			$query = $mysqli->query ($sql);
 			if ($query) {
 				$oldpatient = $query->fetch_assoc();
-				$staffname = $oldpatient["staffname"];
+				$oldstaffname = $oldpatient["staffname"];
 				$diagnosis = $oldpatient["diagnosis"];
 				$treatment = $oldpatient["treatment"];
 				$contact = $oldpatient["contact"];
 			}
 		}
+	}
+	if ($staffname === "") {
+		$staffname = $oldstaffname
 	}
 
 	if ($qn)	//existing row, ignore waitnum
@@ -75,7 +78,7 @@ require_once "book.php";
 				WHERE qn = $qn;";
 	}
 	else
-	{			//new row, insert waitnum, opdate, oproom, optime
+	{			//new row, insert waitnum, opdate, oproom, optime, staffname
 		$sql = "INSERT INTO book (
 					waitnum, 
 					opdate, 

@@ -101,6 +101,18 @@ td.thu:before { content: "พฤหัส "; }
 td.fri:before { content: "ศุกร์ "; }
 td.sat:before { content: "เสาร์ "; }
 
+td.pacs {
+	background-image: url("pic/pacs.jpg");
+	background-position: bottom center;
+	background-repeat: no-repeat;
+}
+
+td.camera {
+	background-image: url("pic/camera.png");
+	background-position: right bottom;
+	background-repeat: no-repeat;
+}
+
 #titlebar {
 	height: 40px;
 	background-color: #7799AA;

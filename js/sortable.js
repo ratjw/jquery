@@ -38,8 +38,8 @@ function sortable()
 			var staffname = $itemcell.eq(STAFFNAME).html()
 			var titlename = $('#titlename').html()
 
-			if ((sender == "tbl") && (receiver == "queuetbl")) {
-				if ((titlename != "Consults") && (staffname != titlename)) {
+			if ((sender === "tbl") && (receiver === "queuetbl")) {
+				if ((titlename !== "Consults") && (staffname !== titlename)) {
 					stopsorting()	//allow drag to Consults, but not to wrong staffname
 					return false
 				}
@@ -67,12 +67,12 @@ function sortable()
 					var nearplace = Math.abs(helperpos - thispos)
 					var nearnext = Math.abs(helperpos - nextpos)
 					var nearest = Math.min(nearprev, nearplace, nearnext)
-					if (nearest == nearprev) 
+					if (nearest === nearprev) 
 						$thisdrop = $previtem
-					if (nearest == nearnext) 
+					if (nearest === nearnext) 
 						$thisdrop = $nextitem
-					if (nearest == nearplace) {
-						if ((prevplace == thisplace) && (sender == receiver)) {
+					if (nearest === nearplace) {
+						if ((prevplace === thisplace) && (sender === receiver)) {
 							stopsorting()	//same place as before sorting
 							return false
 						}
@@ -111,7 +111,7 @@ function sortable()
 
 			function callbacksortable(response)
 			{
-				if (!response || response.indexOf("DBfailed") != -1)
+				if (!response || response.indexOf("DBfailed") !== -1)
 				{
 					alert ("Sortable", response)
 					$("#tbl tbody" ).sortable( "cancel" )
@@ -119,14 +119,14 @@ function sortable()
 				else
 				{
 					updateBOOK(response)
-					if (receiver == "tbl") {
+					if (receiver === "tbl") {
 						refillall(BOOK)
-						if (($("#queuewrapper").css('display') == 'block')
-							&& (titlename == staffname)) {
+						if (($("#queuewrapper").css('display') === 'block')
+							&& (titlename === staffname)) {
 								//dragging inside tbl of this staff's case
 							refillstaffqueue()
 						}
-					} else {	//receiver == "queuetbl"
+					} else {	//receiver === "queuetbl"
 						refillstaffqueue()
 						refillall(BOOK)
 					}
@@ -174,37 +174,37 @@ function checkRoomTime($thisrow, thisOpdate, oldOpdate)
 	}
 
 	if (moveroom) {
-		if (oldOpdate != thisOpdate) {	//move from another date
+		if (oldOpdate !== thisOpdate) {	//move from another date
 			return roomtime		//do nothing, same as before move
 		}
 		//move in the same date
-		if (prevOpdate == thisOpdate) {	
+		if (prevOpdate === thisOpdate) {	
 			if (prevroom) {
 				if (prevroom > moveroom) {
 					roomtime.conflict = "<br><br>Room conflict with previous case"
 				}
-				if ((prevroom == moveroom) && (prevtime > movetime)) {
+				if ((prevroom === moveroom) && (prevtime > movetime)) {
 					roomtime.conflict = "<br><br>Time conflict with previous case"
 				}
 			}
 		}
-		if (thisOpdate == nextOpdate) {
+		if (thisOpdate === nextOpdate) {
 			if (nextroom) {
 				if (moveroom > nextroom) {
 					roomtime.conflict = "<br><br>Room conflict with next case"
 				}
-				if ((moveroom == nextroom) && (movetime > nexttime)) {
+				if ((moveroom === nextroom) && (movetime > nexttime)) {
 					roomtime.conflict = "<br><br>Time conflict with next case"
 				}
 			}
 		}
 	} else {	//no old roomtime, use roomtime as the same opdate
-		if (prevOpdate == thisOpdate) {
+		if (prevOpdate === thisOpdate) {
 			if (prevroom) {
 				roomtime.roomtime = prevroomtime
 			}
 		}
-		else if (thisOpdate == nextOpdate) {
+		else if (thisOpdate === nextOpdate) {
 			if (nextroom) {
 				roomtime.roomtime = nextroomtime
 			}

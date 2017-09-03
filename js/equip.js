@@ -33,7 +33,7 @@ function fillEquipTable(book, rowi, qn)
 
 	if ( bookqEquip ) {			// If any, fill checked & others
 		$.each(JSON.parse(bookqEquip), function(key, val) {
-			if (val == 'checked') {
+			if (val === 'checked') {
 				$("#"+ key).prop("checked", true)	//radio and checkbox
 			} else {
 				$("#"+ key).val(val)	//fill <input> && <textarea>
@@ -48,7 +48,7 @@ function fillEquipTable(book, rowi, qn)
 
 		function callbackgetEditedby(response)
 		{
-			if (!response || response.indexOf("DBfailed") != -1) {
+			if (!response || response.indexOf("DBfailed") !== -1) {
 				alert("getEditedby", response)
 			} else {
 				var Editedby = ""
@@ -179,7 +179,7 @@ function Checklistequip(qn, bookqEquip)
 		}
 	})
 	equipment = JSON.stringify(equipment)
-	if (equipment == bookqEquip) {
+	if (equipment === bookqEquip) {
 		return
 	}
 	equipment = equipment.replace(/\\/g,"\\\\").replace(/'/g,"\\'")
@@ -194,14 +194,14 @@ function Checklistequip(qn, bookqEquip)
 
 	function callbackEq(response)
 	{
-		if (!response || response.indexOf("QTIME") == -1)
+		if (!response || response.indexOf("QTIME") === -1)
 		{
 			alert("Checklistequip", response)
 			$('#dialogEquip input').val('')
 			$('#dialogEquip textarea').val('')
 			if ( bookqEquip ) {			// If any, fill checked & others
 				$.each(JSON.parse(bookqEquip), function(key, val) {
-					if (val == 'checked') {
+					if (val === 'checked') {
 						$("#"+ key).prop("checked", true)	//radio and checkbox
 					} else {
 						$("#"+ key).val(val)	//fill <input> && <textarea>
@@ -238,7 +238,7 @@ function printpaper(qn)	//*** have to set equip padding to top:70px; bottom:70px
 			}
 			else {	//pale color for no input items
 				temp = printEquip[i]
-				while (temp.nodeName != "SPAN") {
+				while (temp.nodeName !== "SPAN") {
 					temp = temp.parentNode
 				}
 				temp.className = "pale"
@@ -255,7 +255,7 @@ function printpaper(qn)	//*** have to set equip padding to top:70px; bottom:70px
 			}
 			else {	//pale color for no input items
 				temp = printEquip[i]
-				while (temp.nodeName != "SPAN") {
+				while (temp.nodeName !== "SPAN") {
 					temp = temp.parentNode
 				}
 				temp.className = "pale"
@@ -294,7 +294,7 @@ function printpaper(qn)	//*** have to set equip padding to top:70px; bottom:70px
 			}
 			else {	//pale color for no input items
 				temp = printEquip[i]
-				while (temp.nodeName != "SPAN") {
+				while (temp.nodeName !== "SPAN") {
 					temp = temp.parentNode
 				}
 				temp.className = "pale"
@@ -311,7 +311,7 @@ function printpaper(qn)	//*** have to set equip padding to top:70px; bottom:70px
 			}
 			else {	//pale color for no input items
 				temp = printEquip[i]
-				while (temp.nodeName != "SPAN") {
+				while (temp.nodeName !== "SPAN") {
 					temp = temp.parentNode
 				}
 				temp.className = "pale"
