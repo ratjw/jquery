@@ -637,11 +637,12 @@ function namesix()
 			{
 				$resultz = "S";
 			}
-			//$resultz is an object, can't use ===, must be type converted
+			//resultz is an object, can't use ===, must be type converted
 			if ($resultz == "S" || $resultz == "R" || $userid == "000000")
 			{
 				echo "<SCRIPT type='text/javascript'>loadtable('".$userid."')</SCRIPT>";
 			}
+		}
 	}
 ?>
 

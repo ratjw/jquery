@@ -24,5 +24,6 @@ if (isset($_GET['hn'])) {
 }
 
 $upload_handler = new UploadHandler(array(
-    'user_dirs' => true
+    'delete_type' => 'POST',
+	'user_dirs' => true
 ));
