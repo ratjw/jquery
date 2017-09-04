@@ -60,7 +60,7 @@ require_once "book.php";
 		}
 	}
 	if ($staffname === "") {
-		$staffname = $oldstaffname
+		$staffname = $oldstaffname;
 	}
 
 	if ($qn)	//existing row, ignore waitnum

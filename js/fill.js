@@ -228,7 +228,9 @@ function filldata(bookq, rowi)		//bookq = book[q]
 		+ (bookq.optime? "<br>" + bookq.optime : "")
 	cells[STAFFNAME].innerHTML = bookq.staffname
 	cells[HN].innerHTML = bookq.hn
-	cells[HN].className = "pacs"
+	if (!( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) )) {
+		cells[HN].className = "pacs"
+	}
 	cells[NAME].innerHTML = bookq.patient
 		+ (bookq.dob? ("<br>อายุ " + bookq.dob.getAge(bookq.opdate)) : "")
 	cells[NAME].className = "camera"
@@ -318,7 +320,9 @@ jQuery.fn.extend({
 			+ (bookq.optime? "<br>" + bookq.optime : "")
 		cells[STAFFNAME].innerHTML = bookq.staffname
 		cells[HN].innerHTML = bookq.hn
-		cells[HN].className = "pacs"
+		if (!( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) )) {
+			cells[HN].className = "pacs"
+		}
 		cells[NAME].innerHTML = bookq.patient
 			+ (bookq.dob? ("<br>อายุ " + putAgeOpdate(bookq.dob, bookq.opdate)) : "")
 		cells[NAME].className = "camera"

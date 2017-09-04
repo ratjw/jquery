@@ -371,7 +371,9 @@ function saveHN(pointed, hn, content)
 			$cells.eq(ROOMTIME).html((bookq.oproom? bookq.oproom : "")
 				+ (bookq.optime? "<br>" + bookq.optime : ""))
 			$cells.eq(STAFFNAME).html(bookq.staffname)
-			$cells.eq(HN).addClass("pacs")
+			if (!( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) )) {
+				$cells.eq(HN).addClass("pacs")
+			}
 			$cells.eq(NAME).html(bookq.patient 
 				+ "<br>อายุ " + putAgeOpdate(bookq.dob, bookq.opdate))
 			$cells.eq(NAME).addClass("camera")
@@ -421,7 +423,9 @@ function storePresentcell(pointing)
 				break
 			} else {
 				clearEditcell()
-				PACS(pointing.innerHTML)
+				if (!( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) )) {
+					PACS(pointing.innerHTML)
+				}
 			}
 			break
 		case NAME:

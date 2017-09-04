@@ -642,6 +642,14 @@ function namesix()
 			{
 				echo "<SCRIPT type='text/javascript'>loadtable('".$userid."')</SCRIPT>";
 			}
+			else
+			{ 
+				$passworderr = "Wrong password";
+			}
+		}
+		else
+		{ 
+			$passworderr = "Wrong ID";
 		}
 	}
 ?>

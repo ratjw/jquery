@@ -192,7 +192,9 @@ jQuery.fn.extend({
 		addColor(this, color)
 		cells[CASENUM].innerHTML = scase
 		cells[SHN].innerHTML = bookq.hn
-		cells[SHN].className = "pacs"
+		if (!( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) )) {
+			cells[SHN].className = "pacs"
+		}
 		cells[SNAME].innerHTML = bookq.patient
 			+ (bookq.dob? ("<br>อายุ " + putAgeOpdate(bookq.dob, bookq.opdate)) : "")
 		cells[SNAME].className = "camera"
