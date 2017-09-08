@@ -323,12 +323,6 @@ function changeDate(tableID, opdate, staffname, qn, pointing)
 			$datepicker.after($widget);
 		},
 		onClose: function (date, obj) {
-			//onClose can be triggered by click outside calendar
-			//and execute before $trNOth.on("click");
-			if ($(".pasteDate").length || opdate === date) {
-				return false
-			}//give way to $trNOth.on("click") function
-
 			function isDonePressed() {	//copy from stackoverflow
 				var classes = 'ui-datepicker-close ui-state-default ui-priority-primary ui-corner-all ui-state-hover'
 				return ($('#ui-datepicker-div').html().indexOf(classes) > -1);    
@@ -339,6 +333,12 @@ function changeDate(tableID, opdate, staffname, qn, pointing)
 					date = LARGESTDATE
 				}
 			}
+			//onClose can be triggered by click outside calendar
+			//and execute before $trNOth.on("click");
+			if ($(".pasteDate").length || opdate === date) {
+				return false
+			}//give way to $trNOth.on("click") function
+
 			clearDatepickerMouseover($container, $trNOth, $datepicker)
 			var sql = "sqlReturnbook=UPDATE book SET opdate='" + date + "', "
 			sql += "editor = '" + getUser() + "' WHERE qn="+ qn + ";"
