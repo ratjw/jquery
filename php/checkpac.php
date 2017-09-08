@@ -1,17 +1,15 @@
 <?php
 	$url = $_POST["PAC"];
 
-	$ch = curl_init();                                  // set up curl
-	curl_setopt( $ch, CURLOPT_URL, $url );              // the url to request
+	$ch = curl_init();                                 // set up curl
+	curl_setopt( $ch, CURLOPT_URL, $url );            // the url to request
 
-	if ( false===( $response = curl_exec( $ch ) ) ){    // fetch remote contents
-		$error = curl_error( $ch );                  
-		// doesn't exist
+		$pacs = curl_error( $ch );                  	// doesn't exist
 	} else {
-		$error = "PAC";
+		$pacs = "PAC";									// this url exists
 	}
-	curl_close( $ch );                                  // close the resource
+	curl_close( $ch );                                 // close the resource
 
-	echo $error;
+	echo $pacs;
 
 ?>

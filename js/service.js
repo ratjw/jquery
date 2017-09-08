@@ -79,9 +79,11 @@ function entireMonth(fromDate)
 
 function getfromBOOKCONSULT(fromDate, toDate)
 {
+	var book = getBOOK()
+	var consult = getCONSULT()
 	var SERV = []
-	SERV = addfromRAM(BOOK, fromDate, toDate, SERV)
-	SERV = addfromRAM(CONSULT, fromDate, toDate, SERV)
+	SERV = addfromRAM(book, fromDate, toDate, SERV)
+	SERV = addfromRAM(consult, fromDate, toDate, SERV)
 	return SERV.sort(function (a, b) {
 		if (a.opdate < b.opdate) {
 			return -1;
@@ -192,7 +194,7 @@ jQuery.fn.extend({
 		addColor(this, color)
 		cells[CASENUM].innerHTML = scase
 		cells[SHN].innerHTML = bookq.hn
-		if (!( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) )) {
+		if (isPACS()) {
 			cells[SHN].className = "pacs"
 		}
 		cells[SNAME].innerHTML = bookq.patient
@@ -399,7 +401,7 @@ function saveScontent(pointed, column, content)	//column name in MYSQL
 	}
 	var sql = "sqlReturnbook=UPDATE book SET "
 		sql += column +" = '"+ content
-		sql += "', editor='"+ THISUSER
+		sql += "', editor='"+ getUser()
 		sql += "' WHERE qn = "+ qn +";"
 
 	Ajax(MYSQLIPHP, sql, callbacksaveScontent);
@@ -555,6 +557,19 @@ function isDischarge(thiscase, fromDate, toDate)
 
 function isOperation(thiscase)
 {
+
+	var neuroSxOp = [
+		/ACDF/, /ALIF/, /[Aa]nast/, /[Aa]pproa/, /[Aa]spirat/, /advance/,
+		/[Bb]iop/, /[Bb]lock/, /[Bb]urr/, /[Bb]x/, /[Bb]ypass/, /[Cc]lip/, 
+		/[Dd]ecom/, /DBS/, /[Dd]rain/,
+		/[Ee]ctomy/, /[Ee]ndo/, /ESI/, /ETS/, /ETV/, /EVD/, /[Ee]xcis/,
+		/[Ff]ix/, /[Ff]usion/, /[Ii]nsert/, /[Ll]esion/, /[Ll]ysis/, 
+		/MIDLIF/, /MVD/, /OLIF/, /[Oo]cclu/, /[Oo]p/, /ostom/, /otom/,
+		/plast/, /PLF/, /PLIF/,
+		/[Rr]emov/, /[Rr]epa/, /[Rr]evis/, /[Rr]obot/,
+		/scope/, /[Ss]crew/, /[Ss]hunt/, /[Ss]tim/, /SNRB/, /TSP/,
+		/TLIF/, /[Tt]rans/, /[Uu]ntether/
+		]
 	var Operation = false
 	$.each( neuroSxOp, function(i, each) {
 		if (each.test(thiscase.treatment)) {

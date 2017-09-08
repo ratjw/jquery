@@ -1,11 +1,111 @@
+
+;(function ()
+{	//Enclose global variable to be local variable
+	var book = []
+	var consult = []
+	var mobile = false
+	var ispacs = false
+	var user = ""
+	var timestamp = ""
+	var newWindow = null
+	var timer = {}
+	var updatingtimer = 0
+
+	setBOOK = function (updatebook) {
+		book = updatebook
+	}
+
+	setCONSULT = function (updateconsult) {
+		consult = updateconsult
+	}
+
+	setMobile = function (device) {
+		mobile = device
+	}
+
+	setPACS = function (pacs) {
+		ispacs = pacs
+	}
+
+	setUser = function (userid) {
+		user = userid
+	}
+
+	setTimeStamp = function (time) {
+		timestamp = time
+	}
+
+	setUpdatingTimer = function (updatetime) {
+		if (updatetime) {
+			updatingtimer++
+		} else {
+			updatingtimer = 0
+		}
+	}
+
+	getBOOK = function () {
+		return book
+	}
+
+	getCONSULT = function () {
+		return consult
+	}
+
+	isMobile = function () {
+		return mobile
+	}
+
+	isPACS = function () {
+		return ispacs
+	}
+
+	getUser = function () {
+		return user
+	}
+
+	getTimeStamp = function (time) {
+		return timestamp
+	}
+
+	getUpdatingTimer = function () {
+		return updatingtimer
+	}
+
+	createWindow = function (hn, patient) {
+		if (newWindow && !newWindow.closed) {
+			newWindow.close();
+		}
+		newWindow = window.open("jQuery-File-Upload", "_blank")    
+		newWindow.hnName = {"hn": hn, "patient": patient}
+		//hnName is a pre-defined variable in child window
+	}
+
+	clearTimer = function ()
+	{
+		clearTimeout(timer);
+	}
+
+	resetTimer = function ()
+	{
+		clearTimeout(timer);
+		timer = setTimeout("updating()",10000);	//poke server every 10 sec.
+	}
+})()
+
 function loadtable(userid)
 {
 	Ajax(MYSQLIPHP, "nosqlReturnbook=''", loading);
 
+	setUser(userid)
+	resetTimer()
+
 	$("#login").remove()
+	$("p").remove()
 	$("#tblwrapper").show()
-	$("#dialogOplog").dialog()
-	$("#dialogOplog").dialog('close')
+
+	//Prevent error message : call 'isOpen' before initialization
+	$("#dialogTraceBack").dialog()
+	$("#dialogTraceBack").dialog('close')
 	$("#dialogDeleted").dialog()
 	$("#dialogDeleted").dialog('close')
 	$("#dialogFind").dialog()
@@ -13,14 +113,11 @@ function loadtable(userid)
 	$("#dialogEquip").dialog()
 	$("#dialogEquip").dialog('close')
 	$("#dialogService").dialog()
-	$("#dialogService").dialog('close')	//prevent updateTables() call 'isOpen' before initialization
+	$("#dialogService").dialog('close')
 	$("#dialogAlert").dialog()
 	$("#dialogAlert").dialog('close')
-	$("#dialogUpload").dialog()
-	$("#dialogUpload").dialog('close')
 
-	THISUSER = userid
-	if (THISUSER === "000000") {
+	if (userid === "000000") {
 		$(document).on("click", function (event) {
 			event.stopPropagation()
 			var target = event.target
@@ -31,7 +128,7 @@ function loadtable(userid)
 				event.stopPropagation()
 				return false
 			}
-			fillEquipTable(BOOK, rowi[0], qn)
+			fillEquipTable(getBOOK(), rowi[0], qn)
 			showNonEditableForScrub()
 		})
 		$(document).keydown(function(e) {
@@ -40,13 +137,17 @@ function loadtable(userid)
 		return
 	}
 
+	$("#editcell").on("click", function (event) {
+		event.stopPropagation()
+	})
+
 	$(document).on("click", function (event) {
-		countReset();
-		updating.timer = 0
+		resetTimer();
+		setUpdatingTimer(0)
 		$(".bordergroove").removeClass("bordergroove")
 		event.stopPropagation()
 		var target = event.target
-		if ($('#menu').is(":visible")) {//not visible : take up space even can't be seen
+		if ($('#menu').is(":visible")) {
 			if (!$(target).closest('#menu').length) {
 				$('#menu').hide();
 				clearEditcell()
@@ -63,9 +164,6 @@ function loadtable(userid)
 				$('#undelete').hide()
 				return false
 			}
-		}
-		if (target.id === "editcell") {
-			return
 		}
 		if (target.nodeName === "TH") {
 			clearEditcell()
@@ -89,8 +187,8 @@ function loadtable(userid)
 	});
 
 	$(document).keydown( function (event) {
-		countReset();
-		updating.timer = 0
+		resetTimer();
+		setUpdatingTimer(0)
 		if ($('#monthpicker').is(':focus')) {
 			return
 		}
@@ -156,8 +254,35 @@ function loadtable(userid)
 	sortable()
 	//call sortable before render, if after, it renders very slowly
 
-	TIMER = setTimeout("updating()",10000);	//poke server every 10 sec.
-	updating.timer = 0
+	var mobile = false
+	if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+		mobile = true
+	}
+	setMobile(mobile)
+
+	var pacs
+	if (mobile) {
+		pacs = false
+	} else {
+
+		Ajax(CHECKPAC, "PAC=http://synapse/explore.asp", callbackCheckPACS)
+
+		function callbackCheckPACS(response)
+		{
+			if (!response || response.indexOf("PAC") == -1) {
+				pacs = false
+			} else {
+				pacs = true
+				$.each($('#tbl tr:has(td)'), function() {
+					var $this = $(this).children('td').eq(HN)
+					if ($this.html()) {
+						$this.addClass("pacs")
+					}
+				})
+			}
+			setPACS(pacs)
+		}
+	}
 }
 		
 function loading(response)
@@ -165,7 +290,7 @@ function loading(response)
 	if (response && response.indexOf("BOOK") !== -1) {
 		localStorage.setItem('ALLBOOK', response)
 		updateBOOK(response)
-		if (THISUSER === "000000") {
+		if (getUser() === "000000") {
 			fillForScrub()
 		} else {
 			fillupstart();
@@ -188,10 +313,12 @@ function loading(response)
 function updateBOOK(response)
 {
 	var temp = JSON.parse(response)
+	var book = temp.BOOK? temp.BOOK : []
+	var consult = temp.CONSULT? temp.CONSULT : []
 
-	BOOK = temp.BOOK? temp.BOOK : []
-	CONSULT = temp.CONSULT? temp.CONSULT : []
-	TIMESTAMP = temp.QTIME? temp.QTIME : ""	//datetime of last change in server
+	setBOOK(book)
+	setCONSULT(consult)
+	setTimeStamp(temp.QTIME)	//datetime of last change in server
 }
 
 function fillStafflist()
@@ -208,7 +335,7 @@ function fillStafflist()
 	document.getElementById("staffmenu").innerHTML = staffmenu
 }
 
-function updating()	//updating.timer : local variable
+function updating()
 {
 	var oldcontent = $("#editcell").data("oldcontent")
 	var newcontent = getEditcellHtml()
@@ -221,15 +348,16 @@ function updating()	//updating.timer : local variable
 		} else {
 			saveEditPointData(editPoint)		//Main and Staffqueue tables
 		}
-		updating.timer = 0
+		setUpdatingTimer(0)
 	} else {
 		//idling
-		Ajax(MYSQLIPHP, "functionName=checkupdate&time="+TIMESTAMP, updatingback);
+		Ajax(MYSQLIPHP, "functionName=checkupdate&time=" + getTimeStamp(), updatingback);
 
 		function updatingback(response)
 		{
 			//not being editing on screen
-			if (updating.timer === 10) {
+			var timer = getUpdatingTimer()
+			if (timer === 5) {
 				//delay 100 seconds and
 				//do this only once even if idle for a long time
 				clearEditcell()
@@ -238,10 +366,10 @@ function updating()	//updating.timer : local variable
 				$('#datepicker').hide()
 				$('#datepicker').datepicker("hide")
 			}
-			else if (updating.timer > 360) {
+			else if (timer > 59) {
 				window.location = window.location.href		//logout after 1 hr
 			}
-			updating.timer++
+			setUpdatingTimer(1)
 
 			//some changes in database from other users
 			if (response && response.indexOf("opdate") !== -1)
@@ -252,7 +380,7 @@ function updating()	//updating.timer : local variable
 		}
 	}
 
-	countReset()
+	resetTimer()
 }
 
 function updateTables()
@@ -263,16 +391,10 @@ function updateTables()
 		var SERVICE = getfromBOOKCONSULT(fromDate, toDate)
 		refillService(SERVICE, fromDate, toDate)
 	}
-	refillall(BOOK)
+	refillall()
 	if ($("#queuewrapper").css('display') === 'block') {
 		refillstaffqueue()
 	}
-}
-
-function countReset()
-{
-	clearTimeout(TIMER);
-	TIMER = setTimeout("updating()",10000);	//poke server every 10 sec.
 }
 
 function exportToExcel()

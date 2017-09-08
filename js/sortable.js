@@ -12,7 +12,7 @@ function sortable()
 		delay: 100,
 		revert: true,
 		start: function(e, ui){
-			clearTimeout(TIMER);
+			clearTimer();
 			$('#menu').hide();
 			$('#stafflist').hide();
 			clearEditcell();
@@ -101,7 +101,7 @@ function sortable()
 				sql += "', oproom='" + roomtime.roomtime[0]
 				sql += "', optime='" + roomtime.roomtime[1]
 			}
-			sql += "', editor='"+ THISUSER
+			sql += "', editor='"+ getUser()
 			sql += "' WHERE qn="+ thisqn +";"
 
 			Ajax(MYSQLIPHP, sql, callbacksortable);
@@ -120,7 +120,7 @@ function sortable()
 				{
 					updateBOOK(response)
 					if (receiver === "tbl") {
-						refillall(BOOK)
+						refillall()
 						if (($("#queuewrapper").css('display') === 'block')
 							&& (titlename === staffname)) {
 								//dragging inside tbl of this staff's case
@@ -128,7 +128,7 @@ function sortable()
 						}
 					} else {	//receiver === "queuetbl"
 						refillstaffqueue()
-						refillall(BOOK)
+						refillall()
 					}
 				}
 			}
@@ -138,12 +138,8 @@ function sortable()
 
 function stopsorting()
 {
-	TIMER = setTimeout("updating()",10000);	//poke next 10 sec.
-//	if ($("#queuewrapper").is(":visible")) {
-//		if ($("#tblwrapper").resizable("option", "disabled")) {
-//			$("#tblwrapper").resizable("enable")
-//		}
-//	} 
+	resetTimer()	//poke next 10 sec.
+	setUpdatingTimer(0)
 	$('#editcell').hide()
 	//after sorting, editcell was placed at row 0 column 1
 	//and display at placeholder position in entire width

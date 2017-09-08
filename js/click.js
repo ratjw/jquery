@@ -144,12 +144,12 @@ function saveRoomTime(pointed, content)
 		sql = "sqlReturnbook=UPDATE book SET "
 		sql += "oproom = '" + oproom + "', "
 		sql += "optime = '" + optime + "', "
-		sql += "editor = '" + THISUSER + "' WHERE qn="+ qn + ";"	
+		sql += "editor = '" + getUser() + "' WHERE qn="+ qn + ";"	
 	} else {
 		sql = "sqlReturnbook=INSERT INTO book ("
 		sql += "waitnum, opdate, oproom, optime, editor) VALUES ("
 		sql += waitnum + ", '" + opdate +"', '" + oproom +"', '" + optime
-		sql += "', '"+ THISUSER +"');"
+		sql += "', '"+ getUser() +"');"
 	}
 
 	Ajax(MYSQLIPHP, sql, callbacksaveRoomTime)
@@ -163,7 +163,7 @@ function saveRoomTime(pointed, content)
 			if ($("#queuewrapper").css('display') === 'block') {
 				refillstaffqueue()
 			}
-			refillall(BOOK)
+			refillall()
 			clearEditcell()
 		}
 	}
@@ -200,7 +200,7 @@ function saveContentQN(pointed, column, content, qn, oldcontent, tableID, staffn
 {
 	var sql = "sqlReturnbook=UPDATE book SET "
 	sql += column +" = '"+ content
-	sql += "', editor='"+ THISUSER
+	sql += "', editor='"+ getUser()
 	sql += "' WHERE qn = "+ qn +";"
 
 	Ajax(MYSQLIPHP, sql, callbacksaveContentQN);
@@ -257,12 +257,12 @@ function saveContentNoQN(pointed, column, content, oldcontent, opdate, oproom, o
 		var sql = "sqlReturnbook=INSERT INTO book ("
 		sql += "waitnum, opdate, oproom, optime, staffname, "+ column +", editor) VALUES ("
 		sql += waitnum + ", '" + opdate +"', '" + oproom +"', '" + optime + "', '"
-		sql += staffnamequeue + "', '"+ content +"', '"+ THISUSER +"');"
+		sql += staffnamequeue + "', '"+ content +"', '"+ getUser() +"');"
 	} else {
 		var sql = "sqlReturnbook=INSERT INTO book ("
 		sql += "waitnum, opdate, oproom, optime, "+ column +", editor) VALUES ("
 		sql += waitnum + ", '" + opdate +"', '" + oproom +"', '" + optime
-		sql += "', '"+ content +"', '"+ THISUSER +"');"
+		sql += "', '"+ content +"', '"+ getUser() +"');"
 	}
 
 	Ajax(MYSQLIPHP, sql, callbacksaveContentNoQN);
@@ -280,9 +280,9 @@ function saveContentNoQN(pointed, column, content, oldcontent, opdate, oproom, o
 			updateBOOK(response)
 
 			//find and fill qn of new case input in that row, either tbl or queuetbl
-			var book = BOOK
+			var book = getBOOK()
 			if ((tableID === "queuetbl") && ($('#titlename').html() === "Consults")) {
-				book = CONSULT		//do anything in Consults cases
+				book = getCONSULT()		//do anything in Consults cases
 			}
 			var NewRow = findNewBOOKrow(book, opdate)
 			$cells.eq(QN).html(book[NewRow].qn)
@@ -305,7 +305,7 @@ function saveContentNoQN(pointed, column, content, oldcontent, opdate, oproom, o
 				if ($('#titlename').html() !== "Consults") {
 					//Remote effect from editing on queuetbl to tbl
 					//Add new case to tbl, not just refillanother
-					refillall(BOOK)
+					refillall()
 				}
 			}
 		}
@@ -341,12 +341,12 @@ function saveHN(pointed, hn, content)
 			sql += "&staffname="+ staffname
 		}
 		sql += "&qn="+ qn
-		sql += "&username="+ THISUSER
+		sql += "&username="+ getUser()
 	} else {
 		var sql = "hn=" + content
 		sql += "&opdate="+ opdate
 		sql += "&qn="+ qn
-		sql += "&username="+ THISUSER
+		sql += "&username="+ getUser()
 	}
 
 	Ajax(GETNAMEHN, sql, callbackgetByHN)
@@ -360,9 +360,9 @@ function saveHN(pointed, hn, content)
 		} else {
 			updateBOOK(response)
 
-			var book = BOOK
+			var book = getBOOK()
 			if ((tableID === "queuetbl") && ($('#titlename').html() === "Consults")) {
-				book = CONSULT		//do anything in Consults cases
+				book = getCONSULT()		//do anything in Consults cases
 			}
 			var NewRow = findNewBOOKrow(book, opdate)
 			$cells.eq(QN).html(book[NewRow].qn)
@@ -371,7 +371,7 @@ function saveHN(pointed, hn, content)
 			$cells.eq(ROOMTIME).html((bookq.oproom? bookq.oproom : "")
 				+ (bookq.optime? "<br>" + bookq.optime : ""))
 			$cells.eq(STAFFNAME).html(bookq.staffname)
-			if (!( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) )) {
+			if (isPACS()) {
 				$cells.eq(HN).addClass("pacs")
 			}
 			$cells.eq(NAME).html(bookq.patient 
@@ -423,7 +423,7 @@ function storePresentcell(pointing)
 				break
 			} else {
 				clearEditcell()
-				if (!( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) )) {
+				if (isPACS()) {
 					PACS(pointing.innerHTML)
 				}
 			}

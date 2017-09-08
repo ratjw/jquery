@@ -254,12 +254,21 @@ td.camera {
 
 #login {
 	width: 300px; 
+	margin-top: 0px;
 	margin-left: auto; 
 	margin-right: auto; 
-	text-align: center; 
-	background-color: papayawhip; 
-	border: 2px solid slategray;
-	box-shadow: 20px 30px 40px slategray;
+	text-align: center;
+	color: white;
+	background: radial-gradient(at bottom left, #112244, #172949, #203F6F, #5077aa, #E0F0FF);
+	border-radius: 10px;
+	box-shadow: -20px 30px 40px slategray;
+}
+
+input[type=submit] {
+	background: linear-gradient(#FFCCDD, #AA3740, #552233);
+	border-radius: 5px;
+	color: white;
+	height: 30px;
 }
 
 #editcell { 
@@ -346,19 +355,6 @@ button.ui-datepicker-current {
 	padding: 0px;
 	margin: 0px;
 	background-color: yellow;
-}
-
-#dialogUpload {
-	display: none;
-/*	position: fixed;
-	top: 50px;
-	width: 800px; 
-	height: 500px;
-	margin-left: auto; 
-	margin-right: auto; 
-	border: 2px solid slategray;
-	box-shadow: 20px 30px 40px slategray;*/
-	font-size: 14px;
 }
 
 #orroom,

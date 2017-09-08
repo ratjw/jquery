@@ -187,7 +187,7 @@ function Checklistequip(qn, bookqEquip)
 
 	var sql = "UPDATE book SET ";
 	sql += "equipment='"+ equipment +"' ,";
-	sql += "editor='"+ THISUSER +"' ";
+	sql += "editor='"+ getUser() +"' ";
 	sql += "WHERE qn="+ qn +";"
 
 	Ajax(MYSQLIPHP, "sqlReturnbook="+ sql, callbackEq);
@@ -273,11 +273,6 @@ function printpaper(qn)	//*** have to set equip padding to top:70px; bottom:70px
 		orgEquip.style.width = orgEquip.offsetWidth + 100 + "px"
 		orgEquip.style.paddingLeft = 0 + "px"
 		orgEquip.style.marginLeft = 0 + "px"
-/*
-		$("#dialogEquip").appendTo("body")
-		$("#dialogEquip").siblings().remove()
-		clearTimeout(TIMER);
-*/		
 		document.body.innerHTML = orgEquip.outerHTML;
 		var dialogEquip = document.getElementById('dialogEquip');
 

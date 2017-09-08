@@ -9,9 +9,9 @@ function fillSetTable(pointing)
 	var staffname = tcell[STAFFNAME].innerHTML
 	var hn = tcell[HN].innerHTML
 	var qn = tcell[QN].innerHTML
-	var book = BOOK
+	var book = getBOOK()
 	if ((tableID === "queuetbl") && ($('#titlename').html() === "Consults")) {
-		book = CONSULT		//do anything in Consults cases
+		book = getCONSULT()		//do anything in Consults cases
 	}
 
 	disable(qn, "#addrow")
@@ -341,7 +341,7 @@ function changeDate(tableID, opdate, staffname, qn, pointing)
 			}
 			clearDatepickerMouseover($container, $trNOth, $datepicker)
 			var sql = "sqlReturnbook=UPDATE book SET opdate='" + date + "', "
-			sql += "editor = '" + THISUSER + "' WHERE qn="+ qn + ";"
+			sql += "editor = '" + getUser() + "' WHERE qn="+ qn + ";"
 
 			Ajax(MYSQLIPHP, sql, callbackchangeDate)
 
@@ -351,7 +351,7 @@ function changeDate(tableID, opdate, staffname, qn, pointing)
 					alert ("changeDate", response)
 				} else {
 					updateBOOK(response);
-					refillall(BOOK)
+					refillall()
 					if (($("#queuewrapper").css('display') === 'block') && 
 						($('#titlename').html() === staffname)) {
 						//changeDate of this staffname's case
@@ -385,7 +385,7 @@ function changeDate(tableID, opdate, staffname, qn, pointing)
 				sql += "oproom = '" + RoomTime[0] + "', "
 				sql += "optime = '" + RoomTime[1] + "', "
 			}
-			sql += "editor = '" + THISUSER + "' WHERE qn="+ qn + ";"
+			sql += "editor = '" + getUser() + "' WHERE qn="+ qn + ";"
 
 			Ajax(MYSQLIPHP, sql, callbackchangeDate)
 
@@ -395,7 +395,7 @@ function changeDate(tableID, opdate, staffname, qn, pointing)
 					alert ("changeDate", response)
 				} else {
 					updateBOOK(response);
-					refillall(BOOK)
+					refillall()
 					if (($("#queuewrapper").css('display') === 'block') && 
 						($('#titlename').html() === staffname)) {
 						//changeDate of this staffname's case
@@ -426,7 +426,7 @@ function deleteCase(tableID, rowi, opdate, staffname, qn)
 {
 	//not actually delete the case but set waitnum=NULL
 	var sql = "sqlReturnbook=UPDATE book SET waitnum=NULL, "
-	sql += "editor = '" + THISUSER + "' WHERE qn="+ qn + ";"
+	sql += "editor = '" + getUser() + "' WHERE qn="+ qn + ";"
 
 	Ajax(MYSQLIPHP, sql, callbackdeleterow)
 

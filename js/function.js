@@ -339,20 +339,6 @@ function addColor($this, thisOpdate)
 	}
 }
 
-(function ()
-{	//to declare static variable 
-	var newWindow
-
-	createWindow = function (hn, patient) {
-		if (newWindow && !newWindow.closed) {
-			newWindow.close();
-		}
-		newWindow = window.open("jQuery-File-Upload", "_blank")    
-		newWindow.hnName = {"hn": hn, "patient": patient}
-		//hnName is a pre-defined variable in child window
-	}
-})()
-
 function findPrevcell(event, editable, pointing) 
 {
 	var $prevcell = $(pointing)
@@ -429,6 +415,26 @@ function findNextRow(event, editable, pointing)
 
 function holiday(date)
 {
+	var HOLIDAY = {
+		"2017-02-11" : "url('pic/Magha.jpg')",
+		"2017-02-13" : "url('pic/Maghasub.jpg')",	//หยุดชดเชยวันมาฆบูชา
+		"2017-05-10" : "url('pic/Vesak.jpg')",
+		"2017-05-12" : "url('pic/Ploughing.jpg')",
+		"2017-07-08" : "url('pic/Asalha.jpg')",
+		"2017-07-09" : "url('pic/Vassa.jpg')",
+		"2017-07-10" : "url('pic/Asalhasub.jpg')",	//หยุดชดเชยวันอาสาฬหบูชา
+		"2018-03-01" : "url('pic/Magha.jpg')",
+		"2018-05-09" : "url('pic/Ploughing.jpg')",
+		"2018-05-29" : "url('pic/Vesak.jpg')",
+		"2018-07-27" : "url('pic/Asalha.jpg')",
+		"2018-07-28" : "url('pic/Vassa.jpg')",
+		"2019-02-19" : "url('pic/Magha.jpg')",		//วันมาฆบูชา
+		"2019-05-13" : "url('pic/Ploughing.jpg')",	//วันพืชมงคล
+		"2019-05-18" : "url('pic/Vesak.jpg')",		//วันวิสาขบูชา
+		"2019-05-20" : "url('pic/Vesaksub.jpg')",	//หยุดชดเชยวันวิสาขบูชา
+		"2019-07-16" : "url('pic/Asalha.jpg')",		//วันอาสาฬหบูชา
+		"2019-07-17" : "url('pic/Vassa.jpg')"		//วันเข้าพรรษา
+		}
 	var monthdate = date.substring(5)
 	var dayofweek = (new Date(date)).getDay()
 	var holidayname = ""
@@ -438,8 +444,7 @@ function holiday(date)
 		if (key === date)
 			return HOLIDAY[key]	//matched a holiday
 		if (key > date)
-			break		//not a listed holiday
-						//either a fixed or a compensation holiday
+			break		//Not a listed holiday. Neither a fixed nor a compensation holiday
 	}
 	switch (monthdate)
 	{

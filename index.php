@@ -2,12 +2,13 @@
 <HTML>
 <HEAD>
 <meta charset="utf-8"/>
+<title>Neurosurgery Service</title>
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<link href="css/jquery-ui.css" rel="stylesheet">
+<link href="css/jquery-ui.min.css" rel="stylesheet">
 <link href="css/CSS.css" rel="stylesheet">
-<script src="js/jquery-3.2.1.min.js"></script>
+<script src="js/jquery-1.12.4.min.js"></script>
 <script src="js/jquery.mousewheel.min.js"></script>
 <script src="js/jquery-ui.min.js"></script>
 <script src="js/click.js"></script>
@@ -143,7 +144,7 @@
   </tbody>
 </table>
 
-<div id="dialogOplog"></div>
+<div id="dialogTraceBack"></div>
 
 <div id="dialogDeleted">
   <table>
@@ -578,17 +579,21 @@
 	<input type="text" name="contact">
 </div>
 
+<!-- For IE that not support <a download>, used in Export to Excel -->
 <iframe id="txtArea1" style="display:none"></iframe>
 
 <div id="images_preview"></div>
 
+<p style="text-align:center;"><img width="170" height="150" src="pic/logoRama.jpg"></p>
+
 <div id="login">
 	<br>
-	<h3>Queue book for Neurosurgery</h3>
+	<h3>Neurosurgery Service</h3>
 
 	<form method="post" action="">
 
 		<?php 
+			session_start();
 			$userid = $password = "";
 		?>
 
@@ -601,7 +606,7 @@
 					maxlength="16" size="8" value="<?php echo $password;?>">
 		<br>
 		<br>
-		<input type="submit" value="Submit">
+		<input type="submit" value="Sign in">
 		<br><br>
 	</form>
 </div>
@@ -623,23 +628,18 @@ function namesix()
 		$userid = $_POST["userid"];
 		$password = $_POST["password"];
 
-		if (preg_match('/^\d{6}$/', $userid))	//six digits only
-		{
-			if (strpos($_SERVER["SERVER_NAME"], "surgery.rama") !== false)
-			{
+		if (preg_match('/^\d{6}$/', $userid)) {	//six digits only
+			if (strpos($_SERVER["SERVER_NAME"], "surgery.rama") !== false) {
 				$wsdl="http://appcenter/webservice/patientservice.wsdl";
 				$client = new SoapClient($wsdl);
 				$resultx = $client->Get_staff_detail($userid, $password);
 				$resulty = simplexml_load_string($resultx);
-				$resultz = $resulty->children()->children()->role;
-			}
-			else
-			{
+				$resultz = (string)$resulty->children()->children()->role;
+			} else {
 				$resultz = "S";
 			}
-			//resultz is an object, can't use ===, must be type converted
-			if ($resultz == "S" || $resultz == "R" || $userid == "000000")
-			{
+			//resultz is an object, can't use ===, must be type converted first
+			if ($resultz === "S" || $resultz === "R" || $userid === "000000") {
 				echo "<SCRIPT type='text/javascript'>loadtable('".$userid."')</SCRIPT>";
 			}
 		}

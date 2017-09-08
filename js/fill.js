@@ -1,8 +1,9 @@
 
 function fillupstart()		
 {	//Display all cases in each day of 5 weeks
-	if (BOOK.length === 0)
-		BOOK.push({"opdate" : getSunday()})
+	var book = getBOOK()
+	if (book.length === 0)
+		book.push({"opdate" : getSunday()})
 
 	var start = new Date()
 	start = new Date(start.getFullYear(), start.getMonth()-1).ISOdate()
@@ -15,7 +16,7 @@ function fillupstart()
 	var until = (new Date(nextyear, month, todate)).ISOdate()
 
 	var table = document.getElementById("tbl")
-	fillall(BOOK, table, start, until)
+	fillall(book, table, start, until)
 
 	//scroll to today
 	var today = new Date().ISOdate().thDate()
@@ -30,8 +31,9 @@ function fillForScrub()
 	var table = document.getElementById("tbl")
 	var start = new Date().ISOdate()
 	var until = start.nextdays(6)
+	var book = getBOOK()
 
-	fillall(BOOK, table, start, until)
+	fillall(book, table, start, until)
 }
 
 function fillall(book, table, start, until)
@@ -97,7 +99,7 @@ function fillall(book, table, start, until)
 
 function refillall()
 {
-	var book = BOOK
+	var book = getBOOK()
 	var table = document.getElementById("tbl")
 	var tbody = table.getElementsByTagName("tbody")[0]
 	var rows = table.rows
@@ -228,7 +230,7 @@ function filldata(bookq, rowi)		//bookq = book[q]
 		+ (bookq.optime? "<br>" + bookq.optime : "")
 	cells[STAFFNAME].innerHTML = bookq.staffname
 	cells[HN].innerHTML = bookq.hn
-	if (!( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) )) {
+	if (isPACS()) {
 		cells[HN].className = "pacs"
 	}
 	cells[NAME].innerHTML = bookq.patient
@@ -244,6 +246,8 @@ function staffqueue(staffname)
 {
 	var todate = new Date().ISOdate()
 	var scrolled = $("#queuecontainer").scrollTop()
+	var book = getBOOK()
+	var consult = getCONSULT()
 
 	$('#titlename').html(staffname)
 	
@@ -251,15 +255,15 @@ function staffqueue(staffname)
 	$('#queuetbl tr').slice(1).remove()
 
 	if (staffname === "Consults") {		//Consults cases are not in BOOK
-		if (CONSULT.length === 0)
-			CONSULT.push({"opdate" : getSunday()})
+		if (consult.length === 0)
+			consult.push({"opdate" : getSunday()})
 
 		var table = document.getElementById("queuetbl")
 		var start = (new Date((new Date()).getFullYear(), (new Date()).getMonth() - 1, 1)).ISOdate()
 
-		fillall(CONSULT, table, start, todate)
+		fillall(consult, table, start, todate)
 	} else {
-		$.each( BOOK, function() {	// each === this
+		$.each( book, function() {	// each === this
 			if (( this.staffname === staffname ) && this.opdate >= todate) {
 				$('#tblcells tr').clone()
 					.appendTo($('#queuetbl'))
@@ -275,21 +279,23 @@ function refillstaffqueue()
 {
 	var todate = new Date().ISOdate()
 	var staffname = $('#titlename').html()
+	var book = getBOOK()
+	var consult = getCONSULT()
 
 	if (staffname === "Consults") {
 		//render as fillall
 		$('#queuetbl tr').slice(1).remove()
-		if (CONSULT.length === 0)
-			CONSULT.push({"opdate" : getSunday()})
+		if (consult.length === 0)
+			consult.push({"opdate" : getSunday()})
 
 		var table = document.getElementById("queuetbl")
 		var start = (new Date((new Date()).getFullYear(), (new Date()).getMonth() - 1, 1)).ISOdate()
 
-		fillall(CONSULT, table, start, todate)
+		fillall(consult, table, start, todate)
 	} else {
 		//render as staffqueue
 		var i = 0
-		$.each( BOOK, function(q, each) {	// each === this
+		$.each( book, function(q, each) {	// each === this
 			if ((this.opdate >= todate) && (this.staffname === staffname)) {
 				i++
 				if (i >= $('#queuetbl tr').length) {
@@ -320,7 +326,7 @@ jQuery.fn.extend({
 			+ (bookq.optime? "<br>" + bookq.optime : "")
 		cells[STAFFNAME].innerHTML = bookq.staffname
 		cells[HN].innerHTML = bookq.hn
-		if (!( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) )) {
+		if (isPACS()) {
 			cells[HN].className = "pacs"
 		}
 		cells[NAME].innerHTML = bookq.patient
@@ -338,7 +344,7 @@ jQuery.fn.extend({
 
 function refillanother(tableID, cellindex, qn)
 {
-	var book = BOOK		//not include CONSULT
+	var book = getBOOK()
 	var i = findTablerow(tableID, qn)
 	if ( !i ) { return }
 

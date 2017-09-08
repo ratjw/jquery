@@ -1,112 +1,79 @@
-var GETNAMEHN		= "php/getnamehn.php";
-var GETIPD			= "php/getipd.php";
-var MYSQLIPHP		= "php/mysqli.php";
-var CHECKPAC		= "php/checkpac.php";
 
-var BOOK		= [];
-var CONSULT		= [];
-var TIMESTAMP	= "";
-var TIMER		= "";
-var THISUSER	= "";
-var LARGESTDATE	= "9999-12-31";
+const STAFF 		= [	"อ.เอก",
+						"อ.อัตถพร", 
+						"อ.สรยุทธ", 
+						"อ.วัฒนา", 
+						"อ.เกรียงศักดิ์", 
+						"อ.พีรพงศ์"
+					];
+
+const GETNAMEHN		= "php/getnamehn.php";
+const GETIPD		= "php/getipd.php";
+const MYSQLIPHP		= "php/mysqli.php";
+const CHECKPAC		= "php/checkpac.php";
 
 //tbl, queuetbl
-var OPDATE		= 0;
-var ROOMTIME	= 1;
-var STAFFNAME	= 2;
-var HN			= 3;
-var NAME		= 4;
-var DIAGNOSIS	= 5;
-var TREATMENT	= 6;
-var CONTACT		= 7;
-var QN			= 8;
+const OPDATE		= 0;
+const ROOMTIME		= 1;
+const STAFFNAME		= 2;
+const HN			= 3;
+const NAME			= 4;
+const DIAGNOSIS		= 5;
+const TREATMENT		= 6;
+const CONTACT		= 7;
+const QN			= 8;
 
 //servicetbl
-var CASENUM		= 0;
-var SHN			= 1;
-var SNAME		= 2;
-var SDIAGNOSIS	= 3;
-var STREATMENT	= 4;
-var ADMISSION	= 5;
-var FINAL		= 6;
-var ADMIT		= 7;
-var DISCHARGE	= 8;
-var SQN			= 9;
+const CASENUM		= 0;
+const SHN			= 1;
+const SNAME			= 2;
+const SDIAGNOSIS	= 3;
+const STREATMENT	= 4;
+const ADMISSION		= 5;
+const FINAL			= 6;
+const ADMIT			= 7;
+const DISCHARGE		= 8;
+const SQN			= 9;
 
 //historytbl
-var HEDITDATETIME	= 0;
-var HOPDATE		= 1;
-var HSTAFFNAME	= 2;	//used in undelete
-var HHN			= 3;
-var HPATIENT	= 4;
-var HDIAGNOSIS	= 5;
-var HTREATMENT	= 6;
-var HCONTACT	= 7;
-var HEDITOR		= 8;
-var HQN			= 9;	//used in undelete
+const HEDITDATETIME	= 0;
+const HOPDATE		= 1;
+const HSTAFFNAME	= 2;	//used in undelete
+const HHN			= 3;
+const HPATIENT		= 4;
+const HDIAGNOSIS	= 5;
+const HTREATMENT	= 6;
+const HCONTACT		= 7;
+const HEDITOR		= 8;
+const HQN			= 9;	//used in undelete
 
-var EDITABLE 	= [HN, DIAGNOSIS, TREATMENT, CONTACT];
-var SEDITABLE	= [SDIAGNOSIS, STREATMENT, ADMISSION, FINAL]
+const EDITABLE 		= [HN, DIAGNOSIS, TREATMENT, CONTACT];
+const SEDITABLE		= [SDIAGNOSIS, STREATMENT, ADMISSION, FINAL]
 
-var NAMEOFDAYTHAI	= ["อาทิตย์", "จันทร์", "อังคาร", "พุธ", "พฤหัส", "ศุกร์", "เสาร์"];
-var DAYOFTHAINAME	= {"อาทิตย์":0, "จันทร์":1, "อังคาร":2, "พุธ":3, "พฤหัส":4, "ศุกร์":5, "เสาร์":6};
+const NAMEOFDAYTHAI	= ["อาทิตย์", "จันทร์", "อังคาร", "พุธ", "พฤหัส", "ศุกร์", "เสาร์"];
+const DAYOFTHAINAME	= {"อาทิตย์":0, "จันทร์":1, "อังคาร":2, "พุธ":3, "พฤหัส":4, "ศุกร์":5, "เสาร์":6};
 
 //use for row color
-var NAMEOFDAYABBR	= ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
+const NAMEOFDAYABBR	= ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
 
 //use for 1st column color
-var NAMEOFDAYFULL	= ["sunday", "monday", "tuesday", "wednesday", 
-						"thursday", "friday", "saturday"];
+const NAMEOFDAYFULL	= ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
 
-var NUMMONTH	= {"มค.":"01","กพ.":"02","มีค.":"03","เมย.":"04","พค.":"05","มิย.":"06",
+const NUMMONTH		= {"มค.":"01","กพ.":"02","มีค.":"03","เมย.":"04","พค.":"05","มิย.":"06",
 					"กค.":"07","สค.":"08","กย.":"09","ตค.":"10","พย.":"11","ธค.":"12"};
 
-var TRIMHTML	= /^(\s*<[^>]*>)*\s*|\s*(<[^>]*>\s*)*$/g
-var HTMLNOTBR	= /(<((?!br)[^>]+)>)/ig
+const TRIMHTML		= /^(\s*<[^>]*>)*\s*|\s*(<[^>]*>\s*)*$/g
+const HTMLNOTBR		= /(<((?!br)[^>]+)>)/ig
 
-var ISODATE			= /\b\d{4}\-(0?[1-9]|1[012])\-([012]?[1-9]|10|20|3[01])\b/
-var THAIDATE	= /\b([012]?[1-9]|10|20|3[01])\/(0?[1-9]|1[012])\/\d{4}\b/
-var SHORTDATE		= /\b([012]?[1-9]|10|20|3[01])\/(0?[1-9]|1[012])\/\d{2}\b/
+const ISODATE		= /\b\d{4}\-(0?[1-9]|1[012])\-([012]?[1-9]|10|20|3[01])\b/
+const THAIDATE		= /\b([012]?[1-9]|10|20|3[01])\/(0?[1-9]|1[012])\/\d{4}\b/
+const SHORTDATE		= /\b([012]?[1-9]|10|20|3[01])\/(0?[1-9]|1[012])\/\d{2}\b/
 
-var ISODATEG		= /\b\d{4}\-(0?[1-9]|1[012])\-([012]?[1-9]|10|20|3[01])\b/g
-var THAIDATEG	= /\b([012]?[1-9]|10|20|3[01])\/(0?[1-9]|1[012])\/\d{4}\b/g
-var SHORTDATEG	= /\b([012]?[1-9]|10|20|3[01])\/(0?[1-9]|1[012])\/\d{2}\b/g
+const ISODATEG		= /\b\d{4}\-(0?[1-9]|1[012])\-([012]?[1-9]|10|20|3[01])\b/g
+const THAIDATEG		= /\b([012]?[1-9]|10|20|3[01])\/(0?[1-9]|1[012])\/\d{4}\b/g
+const SHORTDATEG	= /\b([012]?[1-9]|10|20|3[01])\/(0?[1-9]|1[012])\/\d{2}\b/g
 
-var ORSURG = "XSU";
-var ORNEURO = "4"
-var ORTIME = "09.00"
-var STAFF = ["อ.เอก", "อ.อัตถพร", "อ.สรยุทธ", "อ.วัฒนา", "อ.เกรียงศักดิ์", "อ.พีรพงศ์"];
-
-var HOLIDAY = {
-	"2017-02-11" : "url('pic/Magha.jpg')",
-	"2017-02-13" : "url('pic/Maghasub.jpg')",	//หยุดชดเชยวันมาฆบูชา
-	"2017-05-10" : "url('pic/Vesak.jpg')",
-	"2017-05-12" : "url('pic/Ploughing.jpg')",
-	"2017-07-08" : "url('pic/Asalha.jpg')",
-	"2017-07-09" : "url('pic/Vassa.jpg')",
-	"2017-07-10" : "url('pic/Asalhasub.jpg')",	//หยุดชดเชยวันอาสาฬหบูชา
-	"2018-03-01" : "url('pic/Magha.jpg')",
-	"2018-05-09" : "url('pic/Ploughing.jpg')",
-	"2018-05-29" : "url('pic/Vesak.jpg')",
-	"2018-07-27" : "url('pic/Asalha.jpg')",
-	"2018-07-28" : "url('pic/Vassa.jpg')",
-	"2019-02-19" : "url('pic/Magha.jpg')",		//วันมาฆบูชา
-	"2019-05-13" : "url('pic/Ploughing.jpg')",	//วันพืชมงคล
-	"2019-05-18" : "url('pic/Vesak.jpg')",		//วันวิสาขบูชา
-	"2019-05-20" : "url('pic/Vesaksub.jpg')",	//หยุดชดเชยวันวิสาขบูชา
-	"2019-07-16" : "url('pic/Asalha.jpg')",		//วันอาสาฬหบูชา
-	"2019-07-17" : "url('pic/Vassa.jpg')"		//วันเข้าพรรษา
-	}
-
-var neuroSxOp = [
-	/ACDF/, /ALIF/, /[Aa]nast/, /[Aa]pproa/, /[Aa]spirat/, /advance/,
-	/[Bb]iop/, /[Bb]lock/, /[Bb]urr/, /[Bb]x/, /[Bb]ypass/, /[Cc]lip/, 
-	/[Dd]ecom/, /DBS/, /[Dd]rain/,
-	/[Ee]ctomy/, /[Ee]ndo/, /ESI/, /ETS/, /ETV/, /EVD/, /[Ee]xcis/,
-	/[Ff]ix/, /[Ff]usion/, /[Ii]nsert/, /[Ll]esion/, /[Ll]ysis/, 
-	/MIDLIF/, /MVD/, /OLIF/, /[Oo]cclu/, /[Oo]p/, /ostom/, /otom/,
-	/plast/, /PLF/, /PLIF/,
-	/[Rr]emov/, /[Rr]epa/, /[Rr]evis/, /[Rr]obot/,
-	/scope/, /[Ss]crew/, /[Ss]hunt/, /[Ss]tim/, /SNRB/, /TSP/,
-	/TLIF/, /[Tt]rans/, /[Uu]ntether/
-	]
+const LARGESTDATE	= "9999-12-31";
+const ORSURG 		= "XSU";
+const ORNEURO 		= "4"
+const ORTIME 		= "09.00"

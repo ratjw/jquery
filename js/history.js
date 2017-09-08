@@ -64,9 +64,10 @@ function makehistory(rowi, response)
 	}
 	HTML_String += '</table>';
 
-	$("#dialogOplog").css("height", 0)
-	$('#dialogOplog').html(HTML_String)
-	$('#dialogOplog').dialog({
+	$dialogTraceBack = $("#dialogTraceBack")
+	$dialogTraceBack.css("height", 0)
+	$dialogTraceBack.html(HTML_String)
+	$dialogTraceBack.dialog({
 		title: rowi.cells[HN].innerHTML +' '+ rowi.cells[NAME].innerHTML,
 		closeOnEscape: true,
 		modal: true,
@@ -167,7 +168,7 @@ function undelete(thiscase)
 		var qn = $thiscase.eq(HQN).html()
 
 		var sqlstring = "functionName=findwaitnum&qn="+ qn
-		sqlstring += "&editor="+ THISUSER
+		sqlstring += "&editor="+ getUser()
 
 		Ajax(MYSQLIPHP, sqlstring, callbackUndelete);
 
@@ -182,7 +183,7 @@ function undelete(thiscase)
 			else
 			{
 				updateBOOK(response);
-				refillall(BOOK)
+				refillall()
 				if (($("#queuewrapper").css('display') === 'block') && 
 					(($('#titlename').html() === staffname) || ($('#titlename').html() === "Consults"))) {
 					refillstaffqueue()	//undelete this staff's case or a Consults case
