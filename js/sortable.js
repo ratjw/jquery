@@ -9,8 +9,8 @@ function sortable()
 		connectWith: "#tbl tbody, #queuetbl tbody",
 		forceHelperSize: true,
 		forcePlaceholderSize: true,
-		delay: 100,
 		revert: true,
+		delay: 100,
 		start: function(e, ui){
 			clearTimer();
 			$('#menu').hide();
@@ -20,11 +20,6 @@ function sortable()
 			prevplace = ui.placeholder.index()
 			thisplace = ui.placeholder.index()
 			sender = ui.item.closest('table').attr('id')
-//			if ($("#queuewrapper").is(":visible")) {
-//				if (!$("#tblwrapper").resizable("instance")) {
-//					$("#tblwrapper").resizable("disable")
-//				}
-//			} 
 		},
 		change: function(e, ui){
 			prevplace = thisplace
@@ -106,7 +101,6 @@ function sortable()
 
 			Ajax(MYSQLIPHP, sql, callbacksortable);
 			
-			$item[0].title = finalWaitnum
 			stopsorting()
 
 			function callbacksortable(response)
@@ -114,13 +108,13 @@ function sortable()
 				if (!response || response.indexOf("DBfailed") !== -1)
 				{
 					alert ("Sortable", response)
-					$("#tbl tbody" ).sortable( "cancel" )
 				}
 				else
 				{
 					updateBOOK(response)
 					if (receiver === "tbl") {
-						refillall()
+						refillOneDay(oldOpdate)
+						refillOneDay(thisOpdate)
 						if (($("#queuewrapper").css('display') === 'block')
 							&& (titlename === staffname)) {
 								//dragging inside tbl of this staff's case
@@ -128,7 +122,8 @@ function sortable()
 						}
 					} else {	//receiver === "queuetbl"
 						refillstaffqueue()
-						refillall()
+						refillOneDay(oldOpdate)
+						refillOneDay(thisOpdate)
 					}
 				}
 			}
@@ -138,11 +133,14 @@ function sortable()
 
 function stopsorting()
 {
-	resetTimer()	//poke next 10 sec.
-	setUpdatingTimer(0)
-	$('#editcell').hide()
+	//Return to original place so that refillOneDay(oldOpdate)
+	//will not render this row in wrong position
+	$("#tbl tbody, #queuetbl tbody").sortable( "cancel" )
+	resetTimer()			//Global timer
+	setIdleCounter(0)		//Idle timer
 	//after sorting, editcell was placed at row 0 column 1
 	//and display at placeholder position in entire width
+	$('#editcell').hide()
 }
 
 function checkRoomTime($thisrow, thisOpdate, oldOpdate)

@@ -10,8 +10,6 @@ function serviceReview()
 		altFormat: "yy-mm-dd",
 		autoSize: true,
 		dateFormat: "MM yy",
-//		minDate: new Date(2017, 0, 1),
-//		maxDate: "+1y",
 		monthNames: [ "มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", 
 					  "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม" ],
 		onChangeMonthYear: function (year, month, inst) {
@@ -240,7 +238,7 @@ function addColor($this, color)
 
 function getAdmitDischargeDate(SERVICE, fromDate, toDate)
 {
-	Ajax(GETIPD, "from=" + fromDate + "&to=" + toDate, callbackgetipd)
+	Ajax("php/getipd.php", "from=" + fromDate + "&to=" + toDate, callbackgetipd)
 
 	function callbackgetipd(response)
 	{
@@ -302,9 +300,11 @@ function clickservice(clickedCell)
 
 function Skeyin(event, keycode, pointing)
 {
+	const SEDITABLE	= [SDIAGNOSIS, STREATMENT, ADMISSION, FINAL]
 	var thiscell
 
 	if (keycode === 27) {
+		pointing.innerHTML = $("#editcell").data("oldcontent")
 		clearEditcell()
 		window.focus()
 		event.preventDefault()
@@ -419,8 +419,8 @@ function saveScontent(pointed, column, content)	//column name in MYSQL
 			var toDate = $('#monthpicker').data('toDate')
 			var color = rowi.className
 			var book = getfromBOOKCONSULT(fromDate, toDate)
-			var row = findBOOKrow(book, qn)		//for countService of this case
-			var newcolor = countService(book[row], fromDate, toDate)
+			var bookq = getBOOKrowByQN(book, qn)		//for countService of this case
+			var newcolor = countService(bookq, fromDate, toDate)
 			var colorArray = color.split(" ")
 			var newcolorArray = newcolor.split(" ")
 			var counter
@@ -472,7 +472,9 @@ function storePresentScell(pointing)
 			break
 		case SHN:
 			clearEditcell()
-			PACS(pointing.innerHTML)
+			if (isPACS()) {
+				PACS(pointing.innerHTML)
+			}
 			break
 		case SNAME:
 			var hn = $(pointing).closest('tr').children("td").eq(SHN).html()

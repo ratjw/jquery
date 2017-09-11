@@ -1,22 +1,22 @@
 
 ;(function ()
 {	//Enclose global variable to be local variable
-	var book = []
-	var consult = []
+	var BOOK = []
+	var CONSULT = []
 	var mobile = false
 	var ispacs = false
 	var user = ""
 	var timestamp = ""
 	var newWindow = null
 	var timer = {}
-	var updatingtimer = 0
+	var IdleCounter = 0
 
 	setBOOK = function (updatebook) {
-		book = updatebook
+		BOOK = updatebook
 	}
 
 	setCONSULT = function (updateconsult) {
-		consult = updateconsult
+		CONSULT = updateconsult
 	}
 
 	setMobile = function (device) {
@@ -35,20 +35,20 @@
 		timestamp = time
 	}
 
-	setUpdatingTimer = function (updatetime) {
-		if (updatetime) {
-			updatingtimer++
+	setIdleCounter = function (idle) {
+		if (idle) {
+			IdleCounter++
 		} else {
-			updatingtimer = 0
+			IdleCounter = 0
 		}
 	}
 
 	getBOOK = function () {
-		return book
+		return BOOK
 	}
 
 	getCONSULT = function () {
-		return consult
+		return CONSULT
 	}
 
 	isMobile = function () {
@@ -67,8 +67,8 @@
 		return timestamp
 	}
 
-	getUpdatingTimer = function () {
-		return updatingtimer
+	getIdleCounter = function () {
+		return IdleCounter
 	}
 
 	createWindow = function (hn, patient) {
@@ -100,7 +100,7 @@ function loadtable(userid)
 	resetTimer()
 
 	$("#login").remove()
-	$("p").remove()
+	$("p:contains('logoRama')").remove()
 	$("#tblwrapper").show()
 
 	//Prevent error message : call 'isOpen' before initialization
@@ -141,9 +141,9 @@ function loadtable(userid)
 		event.stopPropagation()
 	})
 
-	$(document).on("click", function (event) {
+	$("#tbl, #queuetbl").on("click", function (event) {
 		resetTimer();
-		setUpdatingTimer(0)
+		setIdleCounter(0)
 		$(".bordergroove").removeClass("bordergroove")
 		event.stopPropagation()
 		var target = event.target
@@ -169,14 +169,21 @@ function loadtable(userid)
 			clearEditcell()
 			return	
 		}
-		if ($(target).closest('table').attr('id') === 'tbl' ||
-			$(target).closest('table').attr('id') === 'queuetbl') {
 
-			clicktable(target)
+		clicktable(target)
+	})
+
+	$("#servicetbl").on("click", function (event) {
+		resetTimer();
+		setIdleCounter(0)
+		event.stopPropagation()
+		var target = event.target
+		if (target.nodeName === "TH") {
+			clearEditcell()
+			return	
 		}
-		else if ($(target).closest('table').attr('id') === 'servicetbl') {
-			clickservice(target)
-		}
+
+		clickservice(target)
 	})
 
 	$('#menu li > div').on("click", function(event){
@@ -186,15 +193,9 @@ function loadtable(userid)
 		}
 	});
 
-	$(document).keydown( function (event) {
+	$("#editcell").keydown( function (event) {
 		resetTimer();
-		setUpdatingTimer(0)
-		if ($('#monthpicker').is(':focus')) {
-			return
-		}
-		if ($('#dialogEquip').is(':visible')) {
-			return
-		}
+		setIdleCounter(0)
 		var keycode = event.which || window.event.keyCode
 		var pointing = $("#editcell").data("pointing")
 		if ($('#dialogService').is(':visible')) {
@@ -204,13 +205,7 @@ function loadtable(userid)
 		}
 	})
 
-	$(document).keyup( function (event) {	//for resizing the editing cell
-		if ($('#monthpicker').is(':focus')) {
-			return
-		}
-		if ($('#dialogEquip').is(':visible')) {
-			return
-		}
+	$("#editcell").keyup( function (event) {	//for resizing the editing cell
 		var $editcell = $("#editcell")
 		var pointing = $editcell.data("pointing")
 		if (pointing.cellIndex < 2) {
@@ -265,7 +260,7 @@ function loadtable(userid)
 		pacs = false
 	} else {
 
-		Ajax(CHECKPAC, "PAC=http://synapse/explore.asp", callbackCheckPACS)
+		Ajax("php/checkpac.php", "PAC=http://synapse/explore.asp", callbackCheckPACS)
 
 		function callbackCheckPACS(response)
 		{
@@ -348,7 +343,7 @@ function updating()
 		} else {
 			saveEditPointData(editPoint)		//Main and Staffqueue tables
 		}
-		setUpdatingTimer(0)
+		setIdleCounter(0)
 	} else {
 		//idling
 		Ajax(MYSQLIPHP, "functionName=checkupdate&time=" + getTimeStamp(), updatingback);
@@ -356,20 +351,20 @@ function updating()
 		function updatingback(response)
 		{
 			//not being editing on screen
-			var timer = getUpdatingTimer()
-			if (timer === 5) {
-				//delay 100 seconds and
-				//do this only once even if idle for a long time
+			var idle = getIdleCounter()
+			if (idle === 5) {
+				//idling 1 minute, clear editing setup
+				//do this only once, not every 1 minute
 				clearEditcell()
 				$('#menu').hide()		//editcell may be on first column
 				$('#stafflist').hide()	//editcell may be on staff
 				$('#datepicker').hide()
 				$('#datepicker').datepicker("hide")
 			}
-			else if (timer > 59) {
-				window.location = window.location.href		//logout after 1 hr
+			else if (idle > 59) {	//idling 10 minutes, logout
+				window.location = window.location.href
 			}
-			setUpdatingTimer(1)
+			setIdleCounter(1)
 
 			//some changes in database from other users
 			if (response && response.indexOf("opdate") !== -1)

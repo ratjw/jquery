@@ -1,5 +1,5 @@
 
-function fillSetTable(pointing)
+function mainMenu(pointing)
 {
 	var tableID = $(pointing).closest('table').attr('id')
 	var rowi = $(pointing).closest('tr')[0]
@@ -9,14 +9,19 @@ function fillSetTable(pointing)
 	var staffname = tcell[STAFFNAME].innerHTML
 	var hn = tcell[HN].innerHTML
 	var qn = tcell[QN].innerHTML
+	var consult = false
 	var book = getBOOK()
 	if ((tableID === "queuetbl") && ($('#titlename').html() === "Consults")) {
-		book = getCONSULT()		//do anything in Consults cases
+		book = getCONSULT()
+		consult = true
 	}
 
 	disable(qn, "#addrow")
 
-	var addnodate = (tableID === "queuetbl")? true : false
+	//No noOpdate() in consults cases
+	var addnodate = (tableID === "queuetbl")?
+						((consult)? false : true )
+							: false
 	disable(addnodate, "#addnodate")
 
 	disable(qn, "#changedate")
@@ -53,10 +58,8 @@ function fillSetTable(pointing)
 					editHistory(rowi, qn)
 					break
 				case "del":
-					if (unuse) {	//from add new row (check case in this opdate)
-						$(rowi).remove()			//delete blank row
-						var caseNum = findBOOKrow(book, "")
-						book.splice(caseNum, 1)
+					if (unuse) {		//from add new row
+						$(rowi).remove()
 					} else {
 						deleteCase(tableID, rowi, opdate, staffname, qn)
 					}
@@ -142,8 +145,11 @@ function menustyle($me, target, width)
 	})
 }
 
-function fillRoomTime(pointing)
+function getRoomTime(pointing)
 {
+	const ORSURG 		= "XSU";
+	const ORNEURO 		= "4"
+	const ORTIME 		= "09.00"
 	var roomtime = pointing.innerHTML
 	roomtime = roomtime? roomtime.split("<br>") : ""
 	var oproom = roomtime[0]? roomtime[0] : ""
@@ -229,7 +235,7 @@ function addnewrow(tableID, rowi)
 	if ((tableID === "queuetbl") && ($('#titlename').html() === "Consults")) {
 		book = CONSULT		//do anything in Consults cases
 	}
-	var caseNum = findBOOKrow(book, qn)
+	var caseNum = findBOOKrowByQN(book, qn)
 	var bookq = JSON.parse(JSON.stringify(book[caseNum]))	//deep clone
 	$.each( bookq, function(key, val) {		//book[caseNum] is not changed
 		bookq[key] = ""
@@ -280,7 +286,6 @@ function noOpdate()
 	var $addedRow = $("#queuetbl tr:last")
 	saveContent(pointing, "staffname", staffname)
 	addColor($addedRow, LARGESTDATE)
-//	$addedRow.children("td")[OPDATE].className = NAMEOFDAYABBR[(new Date(LARGESTDATE)).getDay()]
 
 	var $queuecontainer = $("#queuecontainer")
 	var queue = $("#queuetbl").height()
@@ -322,7 +327,7 @@ function changeDate(tableID, opdate, staffname, qn, pointing)
 		beforeShow: function(input, obj) {
 			$datepicker.after($widget);
 		},
-		onClose: function (date, obj) {
+		onClose: function (datepicker, obj) {
 			function isDonePressed() {	//copy from stackoverflow
 				var classes = 'ui-datepicker-close ui-state-default ui-priority-primary ui-corner-all ui-state-hover'
 				return ($('#ui-datepicker-div').html().indexOf(classes) > -1);    
@@ -330,28 +335,29 @@ function changeDate(tableID, opdate, staffname, qn, pointing)
 			//use Done button as LARGESTDATE
 			if (isDonePressed()) {
 				if (staffname) {
-					date = LARGESTDATE
+					datepicker = LARGESTDATE
 				}
 			}
 			//onClose can be triggered by click outside calendar
 			//and execute before $trNOth.on("click");
-			if ($(".pasteDate").length || opdate === date) {
+			if ($(".pasteDate").length || opdate === datepicker) {
 				return false
 			}//give way to $trNOth.on("click") function
 
 			clearDatepickerMouseover($container, $trNOth, $datepicker)
-			var sql = "sqlReturnbook=UPDATE book SET opdate='" + date + "', "
+			var sql = "sqlReturnbook=UPDATE book SET opdate='" + datepicker + "', "
 			sql += "editor = '" + getUser() + "' WHERE qn="+ qn + ";"
 
-			Ajax(MYSQLIPHP, sql, callbackchangeDate)
+			Ajax(MYSQLIPHP, sql, callbackchangeDatepicker)
 
-			function callbackchangeDate(response)
+			function callbackchangeDatepicker(response)
 			{
 				if (!response || response.indexOf("DBfailed") !== -1) {
 					alert ("changeDate", response)
 				} else {
 					updateBOOK(response);
-					refillall()
+					refillOneDay(opdate)
+					refillOneDay(datepicker)
 					if (($("#queuewrapper").css('display') === 'block') && 
 						($('#titlename').html() === staffname)) {
 						//changeDate of this staffname's case
@@ -378,6 +384,8 @@ function changeDate(tableID, opdate, staffname, qn, pointing)
 			if (opdate === thisDate) {
 				return false
 			}
+			//If moverow has roomtime, use that
+			//If not, use roomtime of the row that moved to
 			var RoomTime = calculateRoomTime($(pointing).closest('tr'), $(this))
 
 			var sql = "sqlReturnbook=UPDATE book SET opdate='" + thisDate + "', "
@@ -387,15 +395,16 @@ function changeDate(tableID, opdate, staffname, qn, pointing)
 			}
 			sql += "editor = '" + getUser() + "' WHERE qn="+ qn + ";"
 
-			Ajax(MYSQLIPHP, sql, callbackchangeDate)
+			Ajax(MYSQLIPHP, sql, callbackchangeDateClick)
 
-			function callbackchangeDate(response)
+			function callbackchangeDateClick(response)
 			{
 				if (!response || response.indexOf("DBfailed") !== -1) {
 					alert ("changeDate", response)
 				} else {
 					updateBOOK(response);
-					refillall()
+					refillOneDay(opdate)
+					refillOneDay(thisDate)
 					if (($("#queuewrapper").css('display') === 'block') && 
 						($('#titlename').html() === staffname)) {
 						//changeDate of this staffname's case
@@ -443,8 +452,12 @@ function deleteCase(tableID, rowi, opdate, staffname, qn)
 					refillstaffqueue()
 				}
 			} else {
-				$(rowi).remove()
-				refillall()
+				if ($('#titlename').html() === "Consults") {
+					deleteRow(rowi, opdate)
+				} else {
+					$(rowi).remove()
+				}
+				refillOneDay(opdate)
 			}
 		}
 	}
@@ -482,7 +495,7 @@ function splitPane()
 	initResize($("#tblwrapper"))
 	$('.ui-resizable-e').css('height', $("#tbl").css("height"))
 
-	fakeScrollAnimate("tblcontainer", "tbl", scrolledTop, tohead)
+	fakeScrollAnimate("tblcontainer", "tbl", scrolledTop, tohead.offsetTop)
 }
 
 function initResize($wrapper)
@@ -528,23 +541,23 @@ function closequeue()
 		"height": "100%", "width": "100%"
 	})
 
-	fakeScrollAnimate("tblcontainer", "tbl", scrolledTop, tohead)
+	fakeScrollAnimate("tblcontainer", "tbl", scrolledTop, tohead.offsetTop)
 }
 
-function fakeScrollAnimate(containerID, tableID, scrolledTop, tohead)
+function fakeScrollAnimate(containerID, tableID, scrolledTop, offsetTop)
 {
 	var $container = $('#' + containerID)
 	var $table = $('#' + tableID)
 	var pixel = 300
-	if ((scrolledTop > tohead.offsetTop) || (tohead.offsetTop < 300)) {
+	if ((scrolledTop > offsetTop) || (offsetTop < 300)) {
 		pixel = -300
 	}
-	if ((tohead.offsetTop + $container.height()) < $table.height()) {
-		$container.scrollTop(tohead.offsetTop - pixel)
+	if ((offsetTop + $container.height()) < $table.height()) {
+		$container.scrollTop(offsetTop - pixel)
 		$container.animate({
 			scrollTop: $container.scrollTop() + pixel
 		}, 500);
 	} else {
-		$container.scrollTop(tohead.offsetTop)
+		$container.scrollTop(offsetTop)
 	}	//table end
 }

@@ -475,7 +475,7 @@
     <li>Shift+Enter ขึ้นบรรทัดใหม่ภายในช่องนั้น</li>
   </ul>
   <p style="margin-top:0px;"><span class="ui-icon ui-icon-info"></span>
-       ยกเลิก กด Esc
+       ยกเลิก กด Esc</p>
 
   <h3>ตาราง</h3>
   <ul style="margin-top:0px;">

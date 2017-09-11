@@ -6,9 +6,11 @@ function clicktable(clickedCell)
 
 function keyin(event, keycode, pointing)
 {
+	const EDITABLE = [HN, DIAGNOSIS, TREATMENT, CONTACT];
 	var thiscell
 
 	if (keycode === 27)	{
+		pointing.innerHTML = $("#editcell").data("oldcontent")
 		$('#menu').hide();
 		$('#stafflist').hide();
 		clearEditcell()
@@ -113,6 +115,9 @@ function saveEditPointData(pointed)
  
 function getEditcellHtml()
 {
+	const TRIMHTML		= /^(\s*<[^>]*>)*\s*|\s*(<[^>]*>\s*)*$/g
+	const HTMLNOTBR		= /(<((?!br)[^>]+)>)/ig
+
 	return $("#editcell").html()
 			.replace(TRIMHTML, '')
 			.replace(HTMLNOTBR, '')
@@ -157,14 +162,18 @@ function saveRoomTime(pointed, content)
 	function callbacksaveRoomTime(response)
 	{
 		if (!response || response.indexOf("DBfailed") !== -1) {
-			alert ("fillRoomTime", response)
+			alert ("saveRoomTime", response)
 		} else {
 			updateBOOK(response);
 			if ($("#queuewrapper").css('display') === 'block') {
 				refillstaffqueue()
 			}
-			refillall()
+a = new Date().getTime()
+console.log(a)
+			refillOneDay(opdate)
 			clearEditcell()
+b = new Date().getTime()
+console.log(b - a)
 		}
 	}
 }
@@ -226,7 +235,7 @@ function saveContentQN(pointed, column, content, qn, oldcontent, tableID, staffn
 						refillstaffqueue()
 					} else {	//input is not staffname, but on this staffname row
 						if (staffnamequeue === staffnametbl) {
-							refillanother('queuetbl', cellindex, qn)
+							refillAnotherTableCell('queuetbl', cellindex, qn)
 						}
 					}
 				}
@@ -239,7 +248,7 @@ function saveContentQN(pointed, column, content, qn, oldcontent, tableID, staffn
 				if ($('#titlename').html() !== "Consults") {
 					//Remote effect from editing on queuetbl to tbl
 					//fill corresponding row
-					refillanother('tbl', cellindex, qn)
+					refillAnotherTableCell('tbl', cellindex, qn)
 				}
 			}
 		}
@@ -282,10 +291,12 @@ function saveContentNoQN(pointed, column, content, oldcontent, opdate, oproom, o
 			//find and fill qn of new case input in that row, either tbl or queuetbl
 			var book = getBOOK()
 			if ((tableID === "queuetbl") && ($('#titlename').html() === "Consults")) {
-				book = getCONSULT()		//do anything in Consults cases
+				book = getCONSULT()
 			}
-			var NewRow = findNewBOOKrow(book, opdate)
-			$cells.eq(QN).html(book[NewRow].qn)
+			var qn = Math.max.apply(Math, $.map(book, function(bookq, i){
+						return bookq.qn
+					}))
+			$cells.eq(QN).html(qn)
 
 			if (tableID === 'tbl') {
 				//Remote effect from editing on tbl to queuetbl
@@ -304,8 +315,8 @@ function saveContentNoQN(pointed, column, content, oldcontent, opdate, oproom, o
 				//consults are not apparent on tbl
 				if ($('#titlename').html() !== "Consults") {
 					//Remote effect from editing on queuetbl to tbl
-					//Add new case to tbl, not just refillanother
-					refillall()
+					//Add new case to tbl, not just refillAnotherTableCell
+					refillOneDay(opdate)
 				}
 			}
 		}
@@ -349,7 +360,7 @@ function saveHN(pointed, hn, content)
 		sql += "&username="+ getUser()
 	}
 
-	Ajax(GETNAMEHN, sql, callbackgetByHN)
+	Ajax("php/getnamehn.php", sql, callbackgetByHN)
 
 	function callbackgetByHN(response)
 	{
@@ -362,10 +373,12 @@ function saveHN(pointed, hn, content)
 
 			var book = getBOOK()
 			if ((tableID === "queuetbl") && ($('#titlename').html() === "Consults")) {
-				book = getCONSULT()		//do anything in Consults cases
+				book = getCONSULT()
 			}
-			var NewRow = findNewBOOKrow(book, opdate)
-			$cells.eq(QN).html(book[NewRow].qn)
+			var qn = Math.max.apply(Math, $.map(book, function(bookq, i){
+						return bookq.qn
+					}))
+			$cells.eq(QN).html(qn)
 
 			var bookq = book[NewRow]
 			$cells.eq(ROOMTIME).html((bookq.oproom? bookq.oproom : "")
@@ -388,11 +401,11 @@ function saveHN(pointed, hn, content)
 				if (($("#queuewrapper").css('display') === 'block') && 
 					($('#titlename').html() === $cells.eq(STAFFNAME).html())) {
 					//input is on this staffname row
-					refillanother('queuetbl', cellindex, qn)
+					refillAnotherTableCell('queuetbl', cellindex, qn)
 				}
-			} else {	//no need to refillall because new case row was already in tbl
+			} else {	//no need to refill tbl because new case row was already there
 				if ($('#titlename').html() !== "Consults") {//Consults cases are not shown in tbl
-					refillanother('tbl', cellindex, qn)
+					refillAnotherTableCell('tbl', cellindex, qn)
 				}
 			}
 
@@ -407,10 +420,10 @@ function storePresentcell(pointing)
 	{
 		case OPDATE:
 			createEditcellOpdate(pointing)
-			fillSetTable(pointing)
+			mainMenu(pointing)
 			break
 		case ROOMTIME:
-			fillRoomTime(pointing)
+			getRoomTime(pointing)
 			createEditcellRoomtime(pointing)
 			break
 		case STAFFNAME:

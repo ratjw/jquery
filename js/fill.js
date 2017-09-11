@@ -108,8 +108,8 @@ function refillall()
 	var start = $('#tbl tr:has("td"):first td').eq(OPDATE).html().numDate()
 	var date = start
 	var madedate
-	var q = findStartRowInBOOK(book, start)
-	var k = findStartRowInBOOK(book, LARGESTDATE)
+	var q = findStartRowInBOOK(book, start)			//Start row in BOOK
+	var k = findStartRowInBOOK(book, LARGESTDATE)	//Stop row in BOOK
 
 	book = book.slice(0, k)
 
@@ -180,6 +180,95 @@ function refillall()
 	}
 }
 
+function refillOneDay(opdate)
+{
+	var getOpdateRows = function (opdate) {
+		var opdateth = opdate.thDate()
+			return $('#tbl tr').filter(function() {
+					return $(this).find("td").eq(OPDATE).html() === opdateth;
+				}).closest("tr")
+		}
+	var book = getBOOK()
+	var opdateBOOKrows = book.filter(function(row) {
+			return (row.opdate === opdate);
+		})
+	var $opdateTblRows = getOpdateRows(opdate)
+	var bookRows = opdateBOOKrows.length
+	var tblRows = $opdateTblRows.length
+
+	if (!tblRows) {
+		return		//Out of tbl range
+	}
+	if (!bookRows) {
+		while ($opdateTblRows.length > 1) {
+			$opdateTblRows.eq(0).remove()
+			$opdateTblRows = getOpdateRows(opdate)
+		}
+		$opdateTblRows.children("td").eq(OPDATE).siblings().html("")
+	} else {
+		if (tblRows > bookRows) {
+			while ($opdateTblRows.length > bookRows) {
+				$opdateTblRows.eq(0).remove()
+				$opdateTblRows = getOpdateRows(opdate)
+			}
+		}
+		else if (tblRows < bookRows) {
+			while ($opdateTblRows.length < bookRows) {
+				$opdateTblRows.eq(0).clone().insertAfter($opdateTblRows.eq(0))
+				$opdateTblRows = getOpdateRows(opdate)
+			}
+		}
+		$.each(opdateBOOKrows, function(key, val) {
+			filldata(this, $opdateTblRows[key])
+		})
+	}
+}
+
+function refillAnotherTableCell(tableID, cellindex, qn)
+{
+	var rowi
+	$.each($("#" + tableID + " tr:has(td)"), function() {
+		rowi = this
+		return (this.cells[QN].innerHTML !== qn);
+	})
+	if (rowi.cells[QN].innerHTML !== qn) {
+		return
+	}
+
+	var book = getBOOK()	//Consults cases have no link to others
+	var bookq = getBOOKrowByQN(book, qn)
+	if (!bookq) {
+		return
+	}
+
+	var cells = rowi.cells
+
+	switch(cellindex)
+	{
+		case ROOMTIME:
+			cells[ROOMTIME].innerHTML = (bookq.oproom? bookq.oproom : "")
+				+ (bookq.optime? "<br>" + bookq.optime : "")
+			break
+		case STAFFNAME:
+			cells[STAFFNAME].innerHTML = bookq.staffname
+			break
+		case HN:
+			cells[HN].innerHTML = bookq.hn
+			cells[NAME].innerHTML = bookq.patient
+				+ "<br>อายุ " + (bookq.dob? bookq.dob.getAge(bookq.opdate) : "")
+			break
+		case DIAGNOSIS:
+			cells[DIAGNOSIS].innerHTML = bookq.diagnosis
+			break
+		case TREATMENT:
+			cells[TREATMENT].innerHTML = bookq.treatment
+			break
+		case CONTACT:
+			cells[CONTACT].innerHTML = bookq.contact
+			break
+	}
+}
+
 function makenextrow(table, date)	//create and decorate new row
 {
 	var tbody = table.getElementsByTagName("tbody")[0]
@@ -235,7 +324,7 @@ function filldata(bookq, rowi)		//bookq = book[q]
 	}
 	cells[NAME].innerHTML = bookq.patient
 		+ (bookq.dob? ("<br>อายุ " + bookq.dob.getAge(bookq.opdate)) : "")
-	cells[NAME].className = "camera"
+	cells[NAME].className = bookq.hn? "camera" : ""
 	cells[DIAGNOSIS].innerHTML = bookq.diagnosis
 	cells[TREATMENT].innerHTML = bookq.treatment
 	cells[CONTACT].innerHTML = bookq.contact
@@ -331,7 +420,7 @@ jQuery.fn.extend({
 		}
 		cells[NAME].innerHTML = bookq.patient
 			+ (bookq.dob? ("<br>อายุ " + putAgeOpdate(bookq.dob, bookq.opdate)) : "")
-		cells[NAME].className = "camera"
+		cells[NAME].className = bookq.hn? "camera" : ""
 		cells[DIAGNOSIS].innerHTML = bookq.diagnosis
 		cells[TREATMENT].innerHTML = bookq.treatment
 		cells[CONTACT].innerHTML = bookq.contact
@@ -341,41 +430,3 @@ jQuery.fn.extend({
 		//tr[0] has className "ui-sortable-handle", so first case has no className 
 	}
 })
-
-function refillanother(tableID, cellindex, qn)
-{
-	var book = getBOOK()
-	var i = findTablerow(tableID, qn)
-	if ( !i ) { return }
-
-	var q = findBOOKrow(book, qn)
-	if ( !q ) { return }
-
-	var cells = document.getElementById(tableID).rows[i].cells
-	var bookq = book[q]
-
-	switch(cellindex)
-	{
-		case ROOMTIME:
-			cells[ROOMTIME].innerHTML = (bookq.oproom? bookq.oproom : "")
-				+ (bookq.optime? "<br>" + bookq.optime : "")
-			break
-		case STAFFNAME:
-			cells[STAFFNAME].innerHTML = bookq.staffname
-			break
-		case HN:
-			cells[HN].innerHTML = bookq.hn
-			cells[NAME].innerHTML = bookq.patient
-				+ "<br>อายุ " + (bookq.dob? bookq.dob.getAge(bookq.opdate) : "")
-			break
-		case DIAGNOSIS:
-			cells[DIAGNOSIS].innerHTML = bookq.diagnosis
-			break
-		case TREATMENT:
-			cells[TREATMENT].innerHTML = bookq.treatment
-			break
-		case CONTACT:
-			cells[CONTACT].innerHTML = bookq.contact
-			break
-	}
-}

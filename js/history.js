@@ -159,13 +159,25 @@ function makedeletedCases(response)
 
 function undelete(thiscase) 
 {
+//	const EDITDATETIME	= 0;
+	const OPDATE		= 1;
+	const STAFFNAME		= 2;
+//	const HN			= 3;
+//	const PATIENT		= 4;
+//	const DIAGNOSIS		= 5;
+//	const TREATMENT		= 6;
+//	const CONTACT		= 7;
+//	const EDITOR		= 8;
+	const QN			= 9;
+
 	reposition($("#undelete"), "left center", "left center", thiscase)
 
 	doUndelete = function() 
 	{
 		var $thiscase = $(thiscase).parent().children("td")
-		var staffname = $thiscase.eq(HSTAFFNAME).html()
-		var qn = $thiscase.eq(HQN).html()
+		var opdate = $thiscase.eq(OPDATE).html()
+		var staffname = $thiscase.eq(STAFFNAME).html()
+		var qn = $thiscase.eq(QN).html()
 
 		var sqlstring = "functionName=findwaitnum&qn="+ qn
 		sqlstring += "&editor="+ getUser()
@@ -183,7 +195,7 @@ function undelete(thiscase)
 			else
 			{
 				updateBOOK(response);
-				refillall()
+				refillOneDay(opdate)
 				if (($("#queuewrapper").css('display') === 'block') && 
 					(($('#titlename').html() === staffname) || ($('#titlename').html() === "Consults"))) {
 					refillstaffqueue()	//undelete this staff's case or a Consults case
@@ -328,12 +340,15 @@ function scrolltoThisCase(qn)
 function showFind(containerID, tableID, qn)
 {
 	$("#" + tableID + " tr.bordergroove").removeClass("bordergroove")
-	var i = findTablerow(tableID, qn)
-	if (i) {
-		var rows = document.getElementById(tableID).rows
-		$(rows[i]).addClass("bordergroove")
+	var rowi
+	$.each($("#" + tableID + " tr:has(td)"), function() {
+		rowi = this
+		return (this.cells[QN].innerHTML !== qn);
+	})
+	if (rowi.cells[QN].innerHTML === qn) {
+		$(rowi).addClass("bordergroove")
 		var scrolledTop = document.getElementById(containerID).scrollTop
-		var offset = rows[i].offsetTop
+		var offset = rowi.offsetTop
 		var winheight = window.innerHeight
 		if (containerID === "queuecontainer") {
 			winheight = winheight - 100
@@ -341,10 +356,10 @@ function showFind(containerID, tableID, qn)
 
 		if ((offset < scrolledTop) || (offset > (scrolledTop + winheight))) {
 			do {
-				i--
-			} while (i && ((offset - rows[i].offsetTop) < winheight / 2))
+				rowi = rowi.previousSibling
+			} while ((offset - rowi.offsetTop) < winheight / 2)
 
-			fakeScrollAnimate(containerID, tableID, scrolledTop, rows[i])
+			fakeScrollAnimate(containerID, tableID, scrolledTop, rowi.offsetTop)
 		}
 		return true
 	}
@@ -400,7 +415,7 @@ function readme()
 {
 	$('#dialogReadme').show()
 	$('#dialogReadme').dialog({
-		title: "โปรแกรมฟังเตียง",
+		title: "ReadMe",
 		closeOnEscape: true,
 		modal: true,
 		width: window.innerWidth * 5 / 10,

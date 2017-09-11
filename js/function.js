@@ -9,29 +9,6 @@ Date.prototype.ISOdate = function ()
     return yyyy + "-" + mm + "-" + dd;
 } 
 
-String.prototype.toISOdate = function () 
-{	//change dd/mm/yy\(Buddhist) to yyyy-mm-dd (Christ)
-	if (!this) {
-		return ""
-	}
-	if (ISODATE.test(this)) {
-		return this	//already ISO date
-	} else {
-		if (THAIDATE.test(this)) {
-			var date = this.split("/")
-		} else {
-			if (SHORTDATE.test(this)) {
-				var date = this.split("/")
-				date[2] = "25" + date[2]
-			} else {
-				return ""	//invalid date
-			}
-		}
-	}
-	date[2] = date[2] - 543
-	return (date[2] + "-" + date[1] + "-" + date[0])
-} 
-
 String.prototype.thDate = function () 
 {	//MySQL date (2014-05-11) to Thai date (11 พค. 2557) 
 	if (this < '1900-01-01')
@@ -132,27 +109,6 @@ function putAgeOpdate(dob, date)
 	}
 }
 
-function findDateArray(str)	//find date string
-{							//in diagnosis, treatment, admission status
-	if (!str) { return []}
-	var iso = str.match((ISODATEG))
-	var fullslash = str.match((THAIDATEG))
-	var halfslash = str.match((SHORTDATEG))
-
-	var dateArray = []
-
-	if (iso) {
-		dateArray = dateArray.concat( iso )
-	}
-	if (fullslash) {
-		dateArray = dateArray.concat( fullslash )
-	}
-	if (halfslash) {
-		dateArray = dateArray.concat( halfslash )
-	}
-	return dateArray
-}
-
 function dateDiff(fromDate, toDate)	//assume mm/dd/yy(yy) or yyyy-mm-dd
 {
 	var timeDiff = new Date(toDate) - new Date(fromDate)
@@ -191,54 +147,17 @@ function URIcomponent(qoute)	//necessary when post in http, not when export to e
 	return qoute
 }
 
-function findTablerow(tableID, qn)
-{
-	var rows = document.getElementById(tableID).rows
-	var i = 1
-	while ((i < rows.length) && (rows[i].cells[QN].innerHTML !== qn)) {
-		i++
-	}
-	if (i < rows.length) {
-		return i
-	} else {
-		return null
-	}
-}
-
-function findBOOKrow(book, qn)
+function getBOOKrowByQN(book, qn)
 {  
-	var q = 0
-	while ((q < book.length) && (book[q].qn !== qn)) {
-		q++
-	}
-	if (q < book.length) {
-		return q
-	} else {
+	var bookq
+	$.each(book, function() {
+		bookq = this
+		return (this.qn !== qn);
+	})
+	if (bookq.qn !== qn) {
 		return null
 	}
-}
-
-function findNewBOOKrow(book, opdate)	//find new row (max. qn)
-{
-	var q = 0
-	while (book[q].opdate !== opdate)
-	{
-		q++
-		if (q >= book.length)
-			return ""
-	}
-
-	var qn = Number(book[q].qn)
-	var newq = q
-	q++
-	while (q < book.length && book[q].opdate === opdate) {
-		if (Number(book[q].qn) > qn) {
-			qn = Number(book[q].qn)
-			newq = q
-		}
-		q++
-	}
-	return newq
+	return bookq
 }
 
 function findStartRowInBOOK(book, opdate)
