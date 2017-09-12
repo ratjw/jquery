@@ -205,6 +205,23 @@ function getRoomTime(pointing)
 	})
 }
 
+function decimalToTime(dec)
+{
+	var time = []
+	var integer = Math.floor(dec)
+	var decimal = dec - integer
+	time[0] = (("" + integer).length === 1)? "0" + integer : "" + integer
+	time[1] = decimal? String(decimal * 60) : "00"
+	return time.join(".")
+}
+
+function timeToDecimal(time)
+{
+	var integer = Math.floor(time);
+	time = (time - integer) * 100 / 60;
+	return integer + time;
+}
+
 function checkblank(book, opdate, qn)
 {	//Is this a blank row?
 	//If blank, is there a case(s) in this date? 
@@ -230,21 +247,6 @@ function checkblank(book, opdate, qn)
 
 function addnewrow(tableID, rowi)
 {
-/*
-	var book = BOOK
-	if ((tableID === "queuetbl") && ($('#titlename').html() === "Consults")) {
-		book = CONSULT		//do anything in Consults cases
-	}
-	var caseNum = findBOOKrowByQN(book, qn)
-	var bookq = JSON.parse(JSON.stringify(book[caseNum]))	//deep clone
-	$.each( bookq, function(key, val) {		//book[caseNum] is not changed
-		bookq[key] = ""
-	})
-	bookq.opdate = book[caseNum].opdate
-	bookq.oproom = book[caseNum].oproom
-	bookq.optime = book[caseNum].optime
-	book.splice(caseNum + 1, 0, bookq)
-*/
 	if (tableID === "tbl") {
 		$(rowi).clone()
 			.insertAfter($(rowi))
@@ -263,14 +265,6 @@ function addnewrow(tableID, rowi)
 					.nextAll()
 						.html("")
 	}
-/*
-	if (tableID === "queuetbl") {
-		//change pointing to STAFFNAME
-		var staffname = $('#titlename').html()
-		var pointing = $(rowi).next().children("td")[STAFFNAME]
-		saveContent(pointing, "staffname", staffname)
-	}
-*/
 }
 
 function noOpdate()
@@ -320,7 +314,7 @@ function changeDate(tableID, opdate, staffname, qn, pointing)
 	var $widget = $datepicker.datepicker( 'widget' )
 	$datepicker.datepicker( {
 		dateFormat: "yy-mm-dd",
-		minDate: "-1m",
+		minDate: "-2m",
 		maxDate: "+1y",
 		showButtonPanel: true,
 		closeText : "No Date",
@@ -429,6 +423,22 @@ function clearDatepickerMouseover($container, $trNOth, $datepicker)
 	$trNOth.off("mouseout");
 	$(".pasteDate").removeClass("pasteDate")
 	$(".changeDate").removeClass("changeDate")
+}
+
+function calculateRoomTime($moverow, $thisrow)
+{
+	var moveRoom = $moverow.children("td").eq(ROOMTIME).html()
+	moveRoom = moveRoom? moveRoom.split("<br>") : ""
+	var moveroom = moveRoom[0]? moveRoom[0] : ""
+
+	var thisRoom = $thisrow.children("td").eq(ROOMTIME).html()
+	thisRoom = thisRoom? thisRoom.split("<br>") : ""
+	var thisroom = thisRoom[0]? thisRoom[0] : ""
+
+	if ((thisroom) && (!moveroom)) {
+		return thisRoom
+	}
+	return false
 }
 
 function deleteCase(tableID, rowi, opdate, staffname, qn)
@@ -560,4 +570,15 @@ function fakeScrollAnimate(containerID, tableID, scrolledTop, offsetTop)
 	} else {
 		$container.scrollTop(offsetTop)
 	}	//table end
+}
+
+function findVisibleHead(table)
+{
+	var tohead
+
+	$.each($(table + ' tr:has(th)'), function(i, tr) {
+		tohead = tr
+		return ($(tohead).offset().top < 0)
+	})
+	return tohead
 }

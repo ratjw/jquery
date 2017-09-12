@@ -144,6 +144,8 @@ function showService(SERVICE, fromDate, toDate)
 		close: function() {
 			$('#datepicker').hide()
 			clearEditcell()
+			refillstaffqueue()
+			refillall()
 		}
 	})
 	getAdmitDischargeDate(SERVICE, fromDate, toDate)

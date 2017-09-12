@@ -21,6 +21,10 @@ function sortable()
 			thisplace = ui.placeholder.index()
 			sender = ui.item.closest('table').attr('id')
 		},
+        over: function(e, ui) {
+            ui.item.data('sortableItem').scrollParent = ui.placeholder.closest("div");
+            ui.item.data('sortableItem').overflowOffset = ui.placeholder.closest("div").offset();
+        },
 		change: function(e, ui){
 			prevplace = thisplace
 			thisplace = ui.placeholder.index()
@@ -88,7 +92,12 @@ function sortable()
 				stopsorting()
 				return false
 			}
-			var finalWaitnum = calculateWaitnum(receiver, $item, thisOpdate)			
+			var finalWaitnum
+			if ($thisdrop.children("td").eq(QN).html() === "") {
+				finalWaitnum = 1
+			} else {
+				finalWaitnum = calculateWaitnum(receiver, $item, thisOpdate)	
+			}		
 
 			var sql = "sqlReturnbook=UPDATE book SET Waitnum = "+ finalWaitnum
 			sql += ", opdate='" + thisOpdate

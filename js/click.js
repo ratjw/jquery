@@ -168,12 +168,8 @@ function saveRoomTime(pointed, content)
 			if ($("#queuewrapper").css('display') === 'block') {
 				refillstaffqueue()
 			}
-a = new Date().getTime()
-console.log(a)
 			refillOneDay(opdate)
 			clearEditcell()
-b = new Date().getTime()
-console.log(b - a)
 		}
 	}
 }
@@ -442,11 +438,11 @@ function storePresentcell(pointing)
 			}
 			break
 		case NAME:
-			clearEditcell()
-			if (pointing.innerHTML) {
-				var hn = $(pointing).closest('tr').children("td").eq(HN).html()
-				var patient = pointing.innerHTML
+			var hn = $(pointing).closest('tr').children("td").eq(HN).html()
+			var patient = pointing.innerHTML
 
+			clearEditcell()
+			if (hn) {
 				createWindow(hn, patient)
 			}
 			break
