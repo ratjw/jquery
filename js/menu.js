@@ -346,9 +346,7 @@ function changeDate(tableID, opdate, staffname, qn, pointing)
 
 			function callbackchangeDatepicker(response)
 			{
-				if (!response || response.indexOf("DBfailed") !== -1) {
-					alert ("changeDate", response)
-				} else {
+				if (/patient/.test(response)) {
 					updateBOOK(response);
 					refillOneDay(opdate)
 					refillOneDay(datepicker)
@@ -358,6 +356,8 @@ function changeDate(tableID, opdate, staffname, qn, pointing)
 						refillstaffqueue()
 					}
 					scrolltoThisCase(qn)
+				} else {
+					alert ("changeDate", response)
 				}
 			}
 		}
@@ -393,9 +393,7 @@ function changeDate(tableID, opdate, staffname, qn, pointing)
 
 			function callbackchangeDateClick(response)
 			{
-				if (!response || response.indexOf("DBfailed") !== -1) {
-					alert ("changeDate", response)
-				} else {
+				if (/patient/.test(response)) {
 					updateBOOK(response);
 					refillOneDay(opdate)
 					refillOneDay(thisDate)
@@ -405,6 +403,8 @@ function changeDate(tableID, opdate, staffname, qn, pointing)
 						refillstaffqueue()
 					}
 					scrolltoThisCase(qn)
+				} else {
+					alert ("changeDate", response)
 				}
 			}
 		}
@@ -451,9 +451,7 @@ function deleteCase(tableID, rowi, opdate, staffname, qn)
 
 	function callbackdeleterow(response)
 	{
-		if (!response || response.indexOf("DBfailed") !== -1) {
-			alert ("deleteCase", response)
-		} else {
+		if (/patient/.test(response)) {
 			updateBOOK(response)
 			if (tableID === "tbl") {
 				deleteRow(rowi, opdate)
@@ -469,6 +467,8 @@ function deleteCase(tableID, rowi, opdate, staffname, qn)
 				}
 				refillOneDay(opdate)
 			}
+		} else {
+			alert ("deleteCase", response)
 		}
 	}
 }

@@ -49,8 +49,8 @@ function fillEquipTable(book, rowi, qn)
 
 		function callbackgetEditedby(response)
 		{
-			if (!response || response.indexOf("DBfailed") !== -1) {
-				alert("getEditedby", response)
+			if (/patient/.test(response)) {
+				makeFind(response, hn)
 			} else {
 				var Editedby = ""
 				$.each(JSON.parse(response), function(key, val) {

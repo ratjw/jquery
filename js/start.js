@@ -264,7 +264,7 @@ function loadtable(userid)
 
 		function callbackCheckPACS(response)
 		{
-			if (!response || response.indexOf("PAC") == -1) {
+			if (!response || response.indexOf("PAC") === -1) {
 				pacs = false
 			} else {
 				pacs = true
@@ -282,7 +282,7 @@ function loadtable(userid)
 		
 function loading(response)
 {
-	if (response && response.indexOf("BOOK") !== -1) {
+	if (/patient/.test(response)) {
 		localStorage.setItem('ALLBOOK', response)
 		updateBOOK(response)
 		if (getUser() === "000000") {

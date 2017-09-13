@@ -161,15 +161,15 @@ function saveRoomTime(pointed, content)
 
 	function callbacksaveRoomTime(response)
 	{
-		if (!response || response.indexOf("DBfailed") !== -1) {
-			alert ("saveRoomTime", response)
-		} else {
+		if (/patient/.test(response)) {
 			updateBOOK(response);
 			if ($("#queuewrapper").css('display') === 'block') {
 				refillstaffqueue()
 			}
 			refillOneDay(opdate)
 			clearEditcell()
+		} else {
+			alert ("saveRoomTime", response)
 		}
 	}
 }
@@ -212,14 +212,7 @@ function saveContentQN(pointed, column, content, qn, oldcontent, tableID, staffn
 
 	function callbacksaveContentQN(response)
 	{
- 		if (!response || response.indexOf("BOOK") === -1)
-		{
-			alert("saveContentQN", response)
-			pointed.innerHTML = oldcontent
-			//return to previous content
-		}
-		else
-		{
+ 		if (/patient/.test(response)) {
 			updateBOOK(response)
 			if (tableID === 'tbl') {
 				//Remote effect from editing on tbl to queuetbl
@@ -247,6 +240,10 @@ function saveContentQN(pointed, column, content, qn, oldcontent, tableID, staffn
 					refillAnotherTableCell('tbl', cellindex, qn)
 				}
 			}
+		} else {
+			alert("saveContentQN", response)
+			pointed.innerHTML = oldcontent
+			//return to previous content
 		}
 	}
 }
@@ -274,14 +271,7 @@ function saveContentNoQN(pointed, column, content, oldcontent, opdate, oproom, o
 
 	function callbacksaveContentNoQN(response)
 	{
- 		if (!response || response.indexOf("BOOK") === -1)
-		{
-			alert("saveContentNoQN", response)
-			pointed.innerHTML = oldcontent
-			//return to previous content
-		}
-		else
-		{
+		if (/patient/.test(response)) {
 			updateBOOK(response)
 
 			//find and fill qn of new case input in that row, either tbl or queuetbl
@@ -315,6 +305,10 @@ function saveContentNoQN(pointed, column, content, oldcontent, opdate, oproom, o
 					refillOneDay(opdate)
 				}
 			}
+		} else {
+			alert("saveContentNoQN", response)
+			pointed.innerHTML = oldcontent
+			//return to previous content
 		}
 	}
 }
@@ -360,11 +354,7 @@ function saveHN(pointed, hn, content)
 
 	function callbackgetByHN(response)
 	{
-		if (!response || response.indexOf("BOOK") === -1)
-		{
-			alert("saveHN", response)
-			pointed.innerHTML = oldcontent		//return to previous content
-		} else {
+		if (/patient/.test(response)) {
 			updateBOOK(response)
 
 			var book = getBOOK()
@@ -406,6 +396,9 @@ function saveHN(pointed, hn, content)
 			}
 
 			createEditcell($('#editcell').data("pointing"))
+		} else {
+			alert("saveHN", response)
+			pointed.innerHTML = oldcontent		//return to previous content
 		}
 	}
 }

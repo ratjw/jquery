@@ -410,11 +410,7 @@ function saveScontent(pointed, column, content)	//column name in MYSQL
 
 	function callbacksaveScontent(response)
 	{
-		if (!response || response.indexOf("BOOK") === -1)
-		{
-			alert("saveScontent", response)
-			pointed.innerHTML = oldcontent		//return to previous content
-		} else {
+		if (/patient/.test(response)) {
 			updateBOOK(response)
 
 			var fromDate = $('#monthpicker').data('fromDate')
@@ -460,6 +456,9 @@ function saveScontent(pointed, column, content)	//column name in MYSQL
 
 			//Not refillService because it may make next editTD back to old value when fast entry
 			//due to slow return from Ajax of previous input
+		} else {
+			alert("saveScontent", response)
+			pointed.innerHTML = oldcontent		//return to previous content
 		}
 	}
 }

@@ -12,10 +12,11 @@ function editHistory(rowi, qn)
 
 	function callbackeditHistory(response)
 	{
-		if (!response || response.indexOf("DBfailed") !== -1)
-			alert("editHistory", response)
-		else
+		if (/patient/.test(response)) {
 			makehistory(rowi, response)
+		} else {
+			alert("editHistory", response)
+		}
 	}
 }
 
@@ -102,10 +103,11 @@ function deletedCases()
 
 	function callbackdeletedCases(response)
 	{
-		if (!response || response.indexOf("DBfailed") !== -1)
-			alert("deletedCases", response)
-		else
+		if (/patient/.test(response)) {
 			makedeletedCases(response)
+		} else {
+			alert("deletedCases", response)
+		}
 	}
 }
 
@@ -188,18 +190,15 @@ function undelete(thiscase)
 
 		function callbackUndelete(response)
 		{
-			if (!response || response.indexOf("DBfailed") !== -1)
-			{
-				alert("undelete", response)
-			}
-			else
-			{
+			if (/patient/.test(response)) {
 				updateBOOK(response);
 				refillOneDay(opdate)
 				if (($("#queuewrapper").css('display') === 'block') && 
 					(($('#titlename').html() === staffname) || ($('#titlename').html() === "Consults"))) {
 					refillstaffqueue()	//undelete this staff's case or a Consults case
 				}
+			} else {
+				alert("undelete", response)
 			}
 		}
 	}
@@ -320,11 +319,11 @@ function sqlFind(hn, patient, diagnosis, treatment, contact)
 
 	function callbackfind(response)
 	{
-		if (!response || response.indexOf("DBfailed") !== -1) {
-			alert("Find", response)
-		} else {
+		if (/patient/.test(response)) {
 			makeFind(response, hn)
-		}	
+		} else {
+			alert("Find", response)
+		}
 	}
 }
 

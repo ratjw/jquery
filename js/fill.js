@@ -321,9 +321,9 @@ function filldata(bookq, rowi)		//bookq = book[q]
 		+ (bookq.optime? "<br>" + bookq.optime : "")
 	cells[STAFFNAME].innerHTML = bookq.staffname
 	cells[HN].innerHTML = bookq.hn
-//	if (isPACS()) {
+	if (isPACS()) {
 		cells[HN].className = "pacs"
-//	}
+	}
 	cells[NAME].innerHTML = bookq.patient
 		+ (bookq.dob? ("<br>อายุ " + bookq.dob.getAge(bookq.opdate)) : "")
 	cells[NAME].className = bookq.patient? "camera" : ""

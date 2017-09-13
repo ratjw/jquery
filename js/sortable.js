@@ -114,12 +114,7 @@ function sortable()
 
 			function callbacksortable(response)
 			{
-				if (!response || response.indexOf("DBfailed") !== -1)
-				{
-					alert ("Sortable", response)
-				}
-				else
-				{
+				if (/patient/.test(response)) {
 					updateBOOK(response)
 					if (receiver === "tbl") {
 						refillOneDay(oldOpdate)
@@ -134,6 +129,8 @@ function sortable()
 						refillOneDay(oldOpdate)
 						refillOneDay(thisOpdate)
 					}
+				} else {
+					alert ("Sortable", response)
 				}
 			}
 		}

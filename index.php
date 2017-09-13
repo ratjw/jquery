@@ -592,7 +592,6 @@
 	<form method="post" action="">
 
 		<?php 
-			session_start();
 			$userid = $password = "";
 		?>
 
