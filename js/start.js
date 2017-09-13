@@ -141,7 +141,7 @@ function loadtable(userid)
 		event.stopPropagation()
 	})
 
-	$("#tbl, #queuetbl").on("click", function (event) {
+	$("#wrapper").on("click", function (event) {
 		resetTimer();
 		setIdleCounter(0)
 		$(".bordergroove").removeClass("bordergroove")
@@ -165,7 +165,7 @@ function loadtable(userid)
 				return false
 			}
 		}
-		if (target.nodeName === "TH") {
+		if (target.nodeName !== "TD") {
 			clearEditcell()
 			return	
 		}
@@ -260,13 +260,11 @@ function loadtable(userid)
 		pacs = false
 	} else {
 
-		Ajax("php/checkpac.php", "PAC=http://synapse/explore.asp", callbackCheckPACS)
+		Ajax("php/checkpac.php", "PACS=http://synapse/explore.asp", callbackCheckPACS)
 
 		function callbackCheckPACS(response)
 		{
-			if (!response || response.indexOf("PAC") === -1) {
-				pacs = false
-			} else {
+			if (/PACS/.test(response)) {
 				pacs = true
 				$.each($('#tbl tr:has(td)'), function() {
 					var $this = $(this).children('td').eq(HN)
@@ -274,6 +272,8 @@ function loadtable(userid)
 						$this.addClass("pacs")
 					}
 				})
+			} else {
+				pacs = false
 			}
 			setPACS(pacs)
 		}
@@ -282,7 +282,7 @@ function loadtable(userid)
 		
 function loading(response)
 {
-	if (/patient/.test(response)) {
+	if (/BOOK/.test(response)) {
 		localStorage.setItem('ALLBOOK', response)
 		updateBOOK(response)
 		if (getUser() === "000000") {
@@ -367,8 +367,7 @@ function updating()
 			setIdleCounter(1)
 
 			//some changes in database from other users
-			if (response && response.indexOf("opdate") !== -1)
-			{
+			if (/BOOK/.test(response)) {
 				updateBOOK(response)
 				updateTables()
 			}

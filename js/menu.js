@@ -346,7 +346,7 @@ function changeDate(tableID, opdate, staffname, qn, pointing)
 
 			function callbackchangeDatepicker(response)
 			{
-				if (/patient/.test(response)) {
+				if (/BOOK/.test(response)) {
 					updateBOOK(response);
 					refillOneDay(opdate)
 					refillOneDay(datepicker)
@@ -393,7 +393,7 @@ function changeDate(tableID, opdate, staffname, qn, pointing)
 
 			function callbackchangeDateClick(response)
 			{
-				if (/patient/.test(response)) {
+				if (/BOOK/.test(response)) {
 					updateBOOK(response);
 					refillOneDay(opdate)
 					refillOneDay(thisDate)
@@ -451,7 +451,7 @@ function deleteCase(tableID, rowi, opdate, staffname, qn)
 
 	function callbackdeleterow(response)
 	{
-		if (/patient/.test(response)) {
+		if (/BOOK/.test(response)) {
 			updateBOOK(response)
 			if (tableID === "tbl") {
 				deleteRow(rowi, opdate)

@@ -244,16 +244,14 @@ function getAdmitDischargeDate(SERVICE, fromDate, toDate)
 
 	function callbackgetipd(response)
 	{
-		if (!response) {
-			return
-		}
-		if (response.indexOf("{") === -1) {
-			alert("getAdmitDischargeDate", response)
-		} else {
+		if (/BOOK/.test(response)) {
 			updateBOOK(response)
 			var SERVICE = getfromBOOKCONSULT(fromDate, toDate)
 			fillAdmitDischargeDate(SERVICE)
 		}
+//		else {
+//			alert("getAdmitDischargeDate", response)
+//		}
 	}
 }
 
@@ -410,7 +408,7 @@ function saveScontent(pointed, column, content)	//column name in MYSQL
 
 	function callbacksaveScontent(response)
 	{
-		if (/patient/.test(response)) {
+		if (/BOOK/.test(response)) {
 			updateBOOK(response)
 
 			var fromDate = $('#monthpicker').data('fromDate')

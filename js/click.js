@@ -161,7 +161,7 @@ function saveRoomTime(pointed, content)
 
 	function callbacksaveRoomTime(response)
 	{
-		if (/patient/.test(response)) {
+		if (/BOOK/.test(response)) {
 			updateBOOK(response);
 			if ($("#queuewrapper").css('display') === 'block') {
 				refillstaffqueue()
@@ -212,7 +212,7 @@ function saveContentQN(pointed, column, content, qn, oldcontent, tableID, staffn
 
 	function callbacksaveContentQN(response)
 	{
- 		if (/patient/.test(response)) {
+ 		if (/BOOK/.test(response)) {
 			updateBOOK(response)
 			if (tableID === 'tbl') {
 				//Remote effect from editing on tbl to queuetbl
@@ -271,7 +271,7 @@ function saveContentNoQN(pointed, column, content, oldcontent, opdate, oproom, o
 
 	function callbacksaveContentNoQN(response)
 	{
-		if (/patient/.test(response)) {
+		if (/BOOK/.test(response)) {
 			updateBOOK(response)
 
 			//find and fill qn of new case input in that row, either tbl or queuetbl
@@ -354,7 +354,7 @@ function saveHN(pointed, hn, content)
 
 	function callbackgetByHN(response)
 	{
-		if (/patient/.test(response)) {
+		if (/BOOK/.test(response)) {
 			updateBOOK(response)
 
 			var book = getBOOK()

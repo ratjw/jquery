@@ -114,7 +114,7 @@ function sortable()
 
 			function callbacksortable(response)
 			{
-				if (/patient/.test(response)) {
+				if (/BOOK/.test(response)) {
 					updateBOOK(response)
 					if (receiver === "tbl") {
 						refillOneDay(oldOpdate)

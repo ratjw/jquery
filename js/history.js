@@ -12,7 +12,7 @@ function editHistory(rowi, qn)
 
 	function callbackeditHistory(response)
 	{
-		if (/patient/.test(response)) {
+		if (/dob/.test(response)) {
 			makehistory(rowi, response)
 		} else {
 			alert("editHistory", response)
@@ -103,7 +103,7 @@ function deletedCases()
 
 	function callbackdeletedCases(response)
 	{
-		if (/patient/.test(response)) {
+		if (/dob/.test(response)) {
 			makedeletedCases(response)
 		} else {
 			alert("deletedCases", response)
@@ -190,7 +190,7 @@ function undelete(thiscase)
 
 		function callbackUndelete(response)
 		{
-			if (/patient/.test(response)) {
+			if (/BOOK/.test(response)) {
 				updateBOOK(response);
 				refillOneDay(opdate)
 				if (($("#queuewrapper").css('display') === 'block') && 
@@ -319,7 +319,7 @@ function sqlFind(hn, patient, diagnosis, treatment, contact)
 
 	function callbackfind(response)
 	{
-		if (/patient/.test(response)) {
+		if (/dob/.test(response)) {
 			makeFind(response, hn)
 		} else {
 			alert("Find", response)

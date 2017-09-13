@@ -49,7 +49,7 @@ function fillEquipTable(book, rowi, qn)
 
 		function callbackgetEditedby(response)
 		{
-			if (/patient/.test(response)) {
+			if (/{/.test(response)) {
 				makeFind(response, hn)
 			} else {
 				var Editedby = ""
@@ -186,18 +186,22 @@ function Checklistequip(qn, bookqEquip)
 	equipment = equipment.replace(/\\/g,"\\\\").replace(/'/g,"\\'")
 	//escape the \ (escape) and ' (single quote) for sql string, not for JSON
 
-	var sql = "UPDATE book SET ";
+	var sql = "sqlReturnbook=UPDATE book SET ";
 	sql += "equipment='"+ equipment +"' ,";
 	sql += "editor='"+ getUser() +"' ";
 	sql += "WHERE qn="+ qn +";"
 
-	Ajax(MYSQLIPHP, "sqlReturnbook="+ sql, callbackEq);
+	Ajax(MYSQLIPHP, sql, callbackEq);
 
 	function callbackEq(response)
 	{
-		if (!response || response.indexOf("QTIME") === -1)
+		if (/BOOK/.test(response)) {
 		{
+			updateBOOK(response)
+		} else {
+			//Error update server
 			alert("Checklistequip", response)
+			//Roll back
 			$('#dialogEquip input').val('')
 			$('#dialogEquip textarea').val('')
 			if ( bookqEquip ) {			// If any, fill checked & others
@@ -209,8 +213,6 @@ function Checklistequip(qn, bookqEquip)
 					}
 				});
 			}
-		} else {	//there is some changes
-			updateBOOK(response)
 		}
 	}
 }
