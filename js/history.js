@@ -242,36 +242,38 @@ function find()
 	var contact = ""
 
 	var $dialogFind = $("#dialogFind")
-	$dialogFind.css("height", 0)
-	$dialogFind.html($("#find").show())
-	$dialogFind.dialog({
+		$dialogFind.css("height", 0)
+		$dialogFind.html($("#find").show())
+	var dialogFind	= $dialogFind.dialog({
 		title: "Find",
 		closeOnEscape: true,
 		modal: true,
 		width: 350,
 		height: 350,
-		buttons: {
-			'OK': function () {
-				$(this).dialog('close')
+		buttons: [
+			{
+				text: "OK",
+				click: function() {
+					hn = $('input[name="hn"]').val()
+					patient = $('input[name="patient"]').val()
+					diagnosis = $('input[name="diagnosis"]').val()
+					treatment = $('input[name="treatment"]').val()
+					contact = $('input[name="contact"]').val()
+					if (!hn && !patient && !diagnosis && !treatment && !contact) {
+						return
+					}
+					$("body").append($('#find').hide())
+					sqlFind(hn, patient, diagnosis, treatment, contact)
+					$( this ).dialog( "close" );
+				}
 			}
-		},
-		close: function() {
-			hn = $('input[name="hn"]').val()
-			patient = $('input[name="patient"]').val()
-			diagnosis = $('input[name="diagnosis"]').val()
-			treatment = $('input[name="treatment"]').val()
-			contact = $('input[name="contact"]').val()
-			if (!hn && !patient && !diagnosis && !treatment && !contact) {
-				return
-			}
-			$("body").append($('#find').hide())
-			sqlFind(hn, patient, diagnosis, treatment, contact)
-		}
+		]
 	})
 	$dialogFind.on("keydown", function(event) {
 		var keycode = event.which || window.event.keyCode
 		if (keycode === 13) {
-			$(this).dialog('close')
+			var buttons = dialogFind.dialog('option', 'buttons')
+			buttons[0].click.apply(dialogFind)
 		}
 	})
 }
