@@ -100,7 +100,7 @@ function loadtable(userid)
 	resetTimer()
 
 	$("#login").remove()
-	$("p:contains('logoRama')").remove()
+	$("#logo").remove()
 	$("#tblwrapper").show()
 
 	//Prevent error message : call 'isOpen' before initialization

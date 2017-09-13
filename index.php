@@ -583,7 +583,7 @@
 
 <div id="images_preview"></div>
 
-<p style="text-align:center;"><img width="170" height="150" src="pic/logoRama.jpg"></p>
+<p id="logo" style="text-align:center;"><img width="170" height="150" src="pic/logoRama.jpg"></p>
 
 <div id="login">
 	<br>

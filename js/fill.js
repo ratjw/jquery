@@ -321,12 +321,12 @@ function filldata(bookq, rowi)		//bookq = book[q]
 		+ (bookq.optime? "<br>" + bookq.optime : "")
 	cells[STAFFNAME].innerHTML = bookq.staffname
 	cells[HN].innerHTML = bookq.hn
-	if (isPACS()) {
+//	if (isPACS()) {
 		cells[HN].className = "pacs"
-	}
+//	}
 	cells[NAME].innerHTML = bookq.patient
 		+ (bookq.dob? ("<br>อายุ " + bookq.dob.getAge(bookq.opdate)) : "")
-	cells[NAME].className = bookq.hn? "camera" : ""
+	cells[NAME].className = bookq.patient? "camera" : ""
 	cells[DIAGNOSIS].innerHTML = bookq.diagnosis
 	cells[TREATMENT].innerHTML = bookq.treatment
 	cells[CONTACT].innerHTML = bookq.contact
@@ -422,7 +422,7 @@ jQuery.fn.extend({
 		}
 		cells[NAME].innerHTML = bookq.patient
 			+ (bookq.dob? ("<br>อายุ " + putAgeOpdate(bookq.dob, bookq.opdate)) : "")
-		cells[NAME].className = bookq.hn? "camera" : ""
+		cells[NAME].className = bookq.patient? "camera" : ""
 		cells[DIAGNOSIS].innerHTML = bookq.diagnosis
 		cells[TREATMENT].innerHTML = bookq.treatment
 		cells[CONTACT].innerHTML = bookq.contact
