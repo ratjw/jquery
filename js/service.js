@@ -597,7 +597,7 @@ function isReoperation(thiscase)
 
 function isInfection(thiscase)
 {
-	if (/SSI/i.test(thiscase.final)) {
+	if (/SSI/.test(thiscase.final)) {
 		return true
 	}
 	if (/Infect/.test(thiscase.final)) {
@@ -617,7 +617,7 @@ function isDead(thiscase)
 	if (/Dead/.test(thiscase.final)) {
 		return true
 	}
-	if (/passed away/.test(thiscase.final)) {
+	if (/passed away/i.test(thiscase.final)) {
 		return true
 	}
 }

@@ -264,7 +264,9 @@ function loadtable(userid)
 
 		function callbackCheckPACS(response)
 		{
-			if (/PACS/.test(response)) {
+			if (/Unauthorized/.test(response)) {
+				pacs = false
+			} else {
 				pacs = true
 				$.each($('#tbl tr:has(td)'), function() {
 					var $this = $(this).children('td').eq(HN)
@@ -272,8 +274,6 @@ function loadtable(userid)
 						$this.addClass("pacs")
 					}
 				})
-			} else {
-				pacs = false
 			}
 			setPACS(pacs)
 		}

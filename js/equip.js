@@ -196,7 +196,6 @@ function Checklistequip(qn, bookqEquip)
 	function callbackEq(response)
 	{
 		if (/BOOK/.test(response)) {
-		{
 			updateBOOK(response)
 		} else {
 			//Error update server
