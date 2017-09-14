@@ -20,7 +20,7 @@ function fillupstart()
 
 	//scroll to today
 	var today = new Date().ISOdate().thDate()
-	var thishead = $("tr:contains(" + today + ")").eq(0).prevAll(":has(th)").first()
+	var thishead = $("tr:contains(" + today + ")").eq(0)//.prevAll(":has(th)").first()
 	$('#tblcontainer').animate({
 		scrollTop: thishead.offset().top
 	}, 300);
