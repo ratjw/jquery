@@ -436,7 +436,7 @@ function storePresentcell(pointing)
 
 			clearEditcell()
 			if (hn) {
-				createWindow(hn, patient)
+				FileUpload(hn, patient)
 			}
 			break
 		case DIAGNOSIS:

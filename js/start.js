@@ -7,7 +7,7 @@
 	var ispacs = false
 	var user = ""
 	var timestamp = ""
-	var newWindow = null
+	var uploadWindow = null
 	var timer = {}
 	var IdleCounter = 0
 
@@ -71,12 +71,12 @@
 		return IdleCounter
 	}
 
-	createWindow = function (hn, patient) {
-		if (newWindow && !newWindow.closed) {
-			newWindow.close();
+	FileUpload = function (hn, patient) {
+		if (uploadWindow && !uploadWindow.closed) {
+			uploadWindow.close();
 		}
-		newWindow = window.open("jQuery-File-Upload", "_blank")    
-		newWindow.hnName = {"hn": hn, "patient": patient}
+		uploadWindow = window.open("jQuery-File-Upload", "_blank")    
+		uploadWindow.hnName = {"hn": hn, "patient": patient}
 		//hnName is a pre-defined variable in child window
 	}
 
@@ -89,6 +89,35 @@
 	{
 		clearTimeout(timer);
 		timer = setTimeout("updating()",10000);	//poke server every 10 sec.
+	}
+
+	if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+		mobile = true
+	}
+	setMobile(mobile)
+
+	var pacs
+	if (mobile) {
+		pacs = false
+	} else {
+
+		Ajax("php/checkpac.php", "PACS=http://synapse/explore.asp", callbackCheckPACS)
+
+		function callbackCheckPACS(response)
+		{
+			if ((/Unauthorized/.test(response)) || (/Could not resolve host/.test(response))) {
+				pacs = false
+			} else {
+				pacs = true
+				$.each($('#tbl tr:has(td)'), function() {
+					var $this = $(this).children('td').eq(HN)
+					if ($this.html()) {
+						$this.addClass("pacs")
+					}
+				})
+			}
+			setPACS(pacs)
+		}
 	}
 })()
 
@@ -222,7 +251,7 @@ function loadtable(userid)
 		reposition($editcell, "center", "center", pointing)
 	})
 
-	$(window).resize(function() {	//for resizing dialogs
+	$(window).resize(function() {	//for resizing dialogs in landscape / portrait view
 		if ($("#dialogService").dialog('isOpen')) {
 			$("#dialogService").dialog({
 				width: window.innerWidth * 95 / 100,
@@ -248,36 +277,6 @@ function loadtable(userid)
 
 	sortable()
 	//call sortable before render, if after, it renders very slowly
-
-	var mobile = false
-	if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-		mobile = true
-	}
-	setMobile(mobile)
-
-	var pacs
-	if (mobile) {
-		pacs = false
-	} else {
-
-		Ajax("php/checkpac.php", "PACS=http://synapse/explore.asp", callbackCheckPACS)
-
-		function callbackCheckPACS(response)
-		{
-			if ((/Unauthorized/.test(response)) || (/Could not resolve host/.test(response))) {
-				pacs = false
-			} else {
-				pacs = true
-				$.each($('#tbl tr:has(td)'), function() {
-					var $this = $(this).children('td').eq(HN)
-					if ($this.html()) {
-						$this.addClass("pacs")
-					}
-				})
-			}
-			setPACS(pacs)
-		}
-	}
 }
 		
 function loading(response)
