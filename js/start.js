@@ -3,13 +3,13 @@
 {	//Enclose global variable to be local variable
 	var BOOK = []
 	var CONSULT = []
-	var mobile = false
-	var ispacs = false
 	var user = ""
 	var timestamp = ""
 	var uploadWindow = null
 	var timer = {}
 	var IdleCounter = 0
+	var mobile = false
+	var ispacs = true
 
 	setBOOK = function (updatebook) {
 		BOOK = updatebook
@@ -17,14 +17,6 @@
 
 	setCONSULT = function (updateconsult) {
 		CONSULT = updateconsult
-	}
-
-	setMobile = function (device) {
-		mobile = device
-	}
-
-	setPACS = function (pacs) {
-		ispacs = pacs
 	}
 
 	setUser = function (userid) {
@@ -73,7 +65,7 @@
 
 	FileUpload = function (hn, patient) {
 		if (uploadWindow && !uploadWindow.closed) {
-			uploadWindow.close();
+			newWindow.close();
 		}
 		uploadWindow = window.open("jQuery-File-Upload", "_blank")    
 		uploadWindow.hnName = {"hn": hn, "patient": patient}
@@ -94,12 +86,12 @@
 	if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
 		mobile = true
 	}
-	setMobile(mobile)
 
-	var pacs
 	if (mobile) {
-		pacs = false
-	} else {
+		ispacs = false
+	}
+/*
+	else {
 
 		Ajax("php/checkpac.php", "PACS=http://synapse/explore.asp", callbackCheckPACS)
 
@@ -108,7 +100,7 @@
 			if ((/Unauthorized/.test(response)) || (/Could not resolve host/.test(response))) {
 				pacs = false
 			} else {
-				pacs = true
+				ispacs = true
 				$.each($('#tbl tr:has(td)'), function() {
 					var $this = $(this).children('td').eq(HN)
 					if ($this.html()) {
@@ -116,9 +108,9 @@
 					}
 				})
 			}
-			setPACS(pacs)
 		}
 	}
+*/
 })()
 
 function loadtable(userid)
