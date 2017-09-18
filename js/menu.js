@@ -147,9 +147,9 @@ function menustyle($me, target, width)
 
 function getRoomTime(pointing)
 {
-	const ORSURG 		= "XSU";
-	const ORNEURO 		= "4"
-	const ORTIME 		= "09.00"
+	var ORSURG 		= "XSU";
+	var ORNEURO 		= "4"
+	var ORTIME 		= "09.00"
 	var roomtime = pointing.innerHTML
 	roomtime = roomtime? roomtime.split("<br>") : ""
 	var oproom = roomtime[0]? roomtime[0] : ""

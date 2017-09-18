@@ -103,7 +103,7 @@ function deletedCases()
 
 	function callbackdeletedCases(response)
 	{
-		if (/dob/.test(response)) {
+		if (/editdatetime/.test(response)) {
 			makedeletedCases(response)
 		} else {
 			alert("deletedCases", response)
@@ -161,16 +161,16 @@ function makedeletedCases(response)
 
 function undelete(thiscase) 
 {
-//	const EDITDATETIME	= 0;
-	const OPDATE		= 1;
-	const STAFFNAME		= 2;
-//	const HN			= 3;
-//	const PATIENT		= 4;
-//	const DIAGNOSIS		= 5;
-//	const TREATMENT		= 6;
-//	const CONTACT		= 7;
-//	const EDITOR		= 8;
-	const QN			= 9;
+//	var EDITDATETIME	= 0;
+	var OPDATE		= 1;
+	var STAFFNAME		= 2;
+//	var HN			= 3;
+//	var PATIENT		= 4;
+//	var DIAGNOSIS		= 5;
+//	var TREATMENT		= 6;
+//	var CONTACT		= 7;
+//	var EDITOR		= 8;
+	var QN			= 9;
 
 	reposition($("#undelete"), "left center", "left center", thiscase)
 

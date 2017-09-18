@@ -1,6 +1,6 @@
 function fillEquipTable(book, rowi, qn)
 {
-	const NAMEOFDAYTHAI	= ["อาทิตย์", "จันทร์", "อังคาร", "พุธ", "พฤหัส", "ศุกร์", "เสาร์"];
+	var NAMEOFDAYTHAI	= ["อาทิตย์", "จันทร์", "อังคาร", "พุธ", "พฤหัส", "ศุกร์", "เสาร์"];
 
 	var bookq = getBOOKrowByQN(book, qn)
 	var bookqEquip = bookq.equipment

@@ -90,7 +90,6 @@
 	if (mobile) {
 		ispacs = false
 	}
-/*
 	else {
 
 		Ajax("php/checkpac.php", "PACS=http://synapse/explore.asp", callbackCheckPACS)
@@ -110,7 +109,6 @@
 			}
 		}
 	}
-*/
 })()
 
 function loadtable(userid)

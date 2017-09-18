@@ -300,7 +300,7 @@ function clickservice(clickedCell)
 
 function Skeyin(event, keycode, pointing)
 {
-	const SEDITABLE	= [SDIAGNOSIS, STREATMENT, ADMISSION, FINAL]
+	var SEDITABLE	= [SDIAGNOSIS, STREATMENT, ADMISSION, FINAL]
 	var thiscell
 
 	if (keycode === 27) {

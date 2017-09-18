@@ -6,7 +6,7 @@ function clicktable(clickedCell)
 
 function keyin(event, keycode, pointing)
 {
-	const EDITABLE = [HN, DIAGNOSIS, TREATMENT, CONTACT];
+	var EDITABLE = [HN, DIAGNOSIS, TREATMENT, CONTACT];
 	var thiscell
 
 	if (keycode === 27)	{
@@ -115,8 +115,8 @@ function saveEditPointData(pointed)
  
 function getEditcellHtml()
 {
-	const TRIMHTML		= /^(\s*<[^>]*>)*\s*|\s*(<[^>]*>\s*)*$/g
-	const HTMLNOTBR		= /(<((?!br)[^>]+)>)/ig
+	var TRIMHTML		= /^(\s*<[^>]*>)*\s*|\s*(<[^>]*>\s*)*$/g
+	var HTMLNOTBR		= /(<((?!br)[^>]+)>)/ig
 
 	return $("#editcell").html()
 			.replace(TRIMHTML, '')
