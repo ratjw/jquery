@@ -264,7 +264,7 @@ function loadtable(userid)
 
 		function callbackCheckPACS(response)
 		{
-			if (/Unauthorized/.test(response)) {
+			if ((/Unauthorized/.test(response)) || (/Could not resolve host/.test(response))){
 				pacs = false
 			} else {
 				pacs = true

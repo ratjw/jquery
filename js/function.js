@@ -80,7 +80,7 @@ String.prototype.getAge = function (toDate)
 	return years? ageyears : months? agemonths : agedays;
 }
 
-function getOpdate(date)	//change date from table to iso date
+function getOpdate(date)	//change Thai date from table to ISO date
 {
 	if (date === undefined) { return date }
 	if (date === "") {
@@ -147,7 +147,7 @@ function getBOOKrowByQN(book, qn)
 	return bookq
 }
 
-function calculateWaitnum(tableID, $thisrow, thisOpdate)	//thisOpdate was set caller
+function calculateWaitnum(tableID, $thisrow, thisOpdate)	//thisOpdate was set by caller
 {	//queue within each day is sorted by waitnum only, not staffname
 	var prevWaitNum = $thisrow.prev()[0]
 	var nextWaitNum = $thisrow.next()[0]

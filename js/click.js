@@ -361,12 +361,16 @@ function saveHN(pointed, hn, content)
 			if ((tableID === "queuetbl") && ($('#titlename').html() === "Consults")) {
 				book = getCONSULT()
 			}
-			var qn = Math.max.apply(Math, $.map(book, function(bookq, i){
-						return bookq.qn
-					}))
+			var qn = Math.max.apply(Math, $.map(book, function(row, i){
+					return row.qn
+				}))
+			qn = String(qn)
 			$cells.eq(QN).html(qn)
-
-			var bookq = book[NewRow]
+			var bookq
+			$.each(book, function() {
+				bookq = this
+				return this.qn !== qn
+			})
 			$cells.eq(ROOMTIME).html((bookq.oproom? bookq.oproom : "")
 				+ (bookq.optime? "<br>" + bookq.optime : ""))
 			$cells.eq(STAFFNAME).html(bookq.staffname)
