@@ -205,6 +205,7 @@ function refillOneDay(opdate)
 			$opdateTblRows = getOpdateRows(opdate)
 		}
 		$opdateTblRows.children("td").eq(OPDATE).siblings().html("")
+		$opdateTblRows.children("td").eq(HN).removeClass("pacs")
 		$opdateTblRows.children("td").eq(NAME).removeClass("camera")
 		$opdateTblRows.attr("title", "")
 	} else {

@@ -90,14 +90,14 @@
 	if (mobile) {
 		ispacs = false
 	}
-	else {
+/*	else {
 
 		Ajax("php/checkpac.php", "PACS=http://synapse/explore.asp", callbackCheckPACS)
 
 		function callbackCheckPACS(response)
 		{
 			if ((/Unauthorized/.test(response)) || (/Could not resolve host/.test(response))) {
-				pacs = false
+				ispacs = false
 			} else {
 				ispacs = true
 				$.each($('#tbl tr:has(td)'), function() {
@@ -108,7 +108,7 @@
 				})
 			}
 		}
-	}
+	}*/
 })()
 
 function loadtable(userid)

@@ -633,10 +633,11 @@ function namesix()
 				$resultx = $client->Get_staff_detail($userid, $password);
 				$resulty = simplexml_load_string($resultx);
 				$resultz = (string)$resulty->children()->children()->role;
-			} else {
+			}
+			elseif (strpos($_SERVER["SERVER_NAME"], "localhost") !== false)  {
 				$resultz = "S";
 			}
-			//resultz is an object, can't use ===, must be type converted first
+
 			if ($resultz === "S" || $resultz === "R" || $userid === "000000") {
 				echo "<SCRIPT type='text/javascript'>loadtable('".$userid."')</SCRIPT>";
 			}
