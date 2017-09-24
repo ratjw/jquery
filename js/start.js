@@ -180,7 +180,7 @@ function updateBOOK(response)
 function resetTimer()
 {
 	clearTimeout(globalvar.timer); //globalvar.timer is just an id, not the clock
-	globalvar.timer = setTimeout( updating, 3000);	//poke server every 10 sec.
+	globalvar.timer = setTimeout( updating, 10000);	//poke server every 10 sec.
 }
 
 function updating()
