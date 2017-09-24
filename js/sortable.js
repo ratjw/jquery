@@ -10,7 +10,7 @@ function sortable()
 		forceHelperSize: true,
 		forcePlaceholderSize: true,
 		revert: true,
-		delay: 100,
+		delay: 300,
 		start: function(e, ui){
 			clearTimeout(globalvar.timer);
 			$('#menu').hide();

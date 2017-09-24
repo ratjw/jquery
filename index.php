@@ -144,7 +144,7 @@
   </tbody>
 </table>
 
-<div id="dialogTraceBack"></div>
+<div id="dialogDataHistory"></div>
 
 <div id="dialogDeleted">
   <table>

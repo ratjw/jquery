@@ -10,19 +10,22 @@ function initialize(userid)
 	$("#logo").remove()
 	$("#tblwrapper").show()
 
+	sortable()
+	//call sortable before render, otherwise, it renders very slowly
+
 	//Prevent error message : call 'isOpen' before initialization
-	$("#dialogTraceBack").dialog()
-	$("#dialogTraceBack").dialog('close')
-	$("#dialogDeleted").dialog()
-	$("#dialogDeleted").dialog('close')
-	$("#dialogFind").dialog()
-	$("#dialogFind").dialog('close')
-	$("#dialogEquip").dialog()
-	$("#dialogEquip").dialog('close')
-	$("#dialogService").dialog()
-	$("#dialogService").dialog('close')
 	$("#dialogAlert").dialog()
 	$("#dialogAlert").dialog('close')
+	$("#dialogDeleted").dialog()
+	$("#dialogDeleted").dialog('close')
+	$("#dialogEquip").dialog()
+	$("#dialogEquip").dialog('close')
+	$("#dialogFind").dialog()
+	$("#dialogFind").dialog('close')
+	$("#dialogService").dialog()
+	$("#dialogService").dialog('close')
+	$("#dialogDataHistory").dialog()
+	$("#dialogDataHistory").dialog('close')
 
 	if (userid === "000000") {
 		$("#wrapper").on("click", function (event) {
@@ -138,9 +141,6 @@ function initialize(userid)
 		overflow: "hidden",
 		margin: "0px"
 	})
-
-	sortable()
-	//call sortable before render, if after, it renders very slowly
 }
 		
 function loading(response)

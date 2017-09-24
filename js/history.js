@@ -65,10 +65,10 @@ function makehistory(rowi, response)
 	}
 	HTML_String += '</table>';
 
-	$dialogTraceBack = $("#dialogTraceBack")
-	$dialogTraceBack.css("height", 0)
-	$dialogTraceBack.html(HTML_String)
-	$dialogTraceBack.dialog({
+	$dialogDataHistory = $("#dialogDataHistory")
+	$dialogDataHistory.css("height", 0)
+	$dialogDataHistory.html(HTML_String)
+	$dialogDataHistory.dialog({
 		title: rowi.cells[HN].innerHTML +' '+ rowi.cells[NAME].innerHTML,
 		closeOnEscape: true,
 		modal: true,
