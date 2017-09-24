@@ -637,9 +637,12 @@ function namesix()
 			elseif (strpos($_SERVER["SERVER_NAME"], "localhost") !== false)  {
 				$resultz = "S";
 			}
+			elseif (strpos($_SERVER["SERVER_NAME"], "192.168") !== false)  {
+				$resultz = "S";
+			}
 
 			if ($resultz === "S" || $resultz === "R" || $userid === "000000") {
-				echo "<SCRIPT type='text/javascript'>loadtable('".$userid."')</SCRIPT>";
+				echo "<SCRIPT type='text/javascript'>initialize('".$userid."')</SCRIPT>";
 			}
 		}
 	}

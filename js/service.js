@@ -73,12 +73,23 @@ function entireMonth(fromDate)
 	showService(SERVICE, fromDate, toDate)
 
 	$("#btnExport").show()
+	$("#btnExport").on("click", function(e) {
+		e.preventDefault();
+		exportToExcel()
+	})
+
+	$(window).resize(function() {	//for resizing dialogs in landscape / portrait view
+		$("#dialogService").dialog({
+			width: window.innerWidth * 95 / 100,
+			height: window.innerHeight * 95 / 100
+		})
+	})
 }
 
 function getfromBOOKCONSULT(fromDate, toDate)
 {
-	var book = getBOOK()
-	var consult = getCONSULT()
+	var book = globalvar.BOOK
+	var consult = globalvar.CONSULT
 	var SERV = []
 	SERV = addfromRAM(book, fromDate, toDate, SERV)
 	SERV = addfromRAM(consult, fromDate, toDate, SERV)
@@ -158,7 +169,7 @@ function refillService(SERVICE, fromDate, toDate)
 	$.each( STAFF, function() {
 		var staffname = String(this)
 		i++
-		var $thisCase = $('#servicetbl tr').eq(i).children("td").eq(CASENUM)
+		var $thisCase = $('#servicetbl tr').eq(i).children("td").eq(STCASENUM)
 		if ($thisCase.prop("colSpan") === 1) {
 			$thisCase.prop("colSpan", 8)
 				.addClass("serviceStaff")
@@ -173,9 +184,9 @@ function refillService(SERVICE, fromDate, toDate)
 				i++
 				scase++
 				var $thisRow = $('#servicetbl tr').eq(i).children("td")
-				if ($thisRow.eq(CASENUM).prop("colSpan") > 1) {
-					$thisRow.eq(CASENUM).prop("colSpan", 1)
-						.nextUntil($thisRow.eq(SQN)).show()
+				if ($thisRow.eq(STCASENUM).prop("colSpan") > 1) {
+					$thisRow.eq(STCASENUM).prop("colSpan", 1)
+						.nextUntil($thisRow.eq(STQN)).show()
 				}
 				$('#servicetbl tr').eq(i)
 						.filldataService(this, scase, color)
@@ -192,21 +203,21 @@ jQuery.fn.extend({
 	filldataService : function(bookq, scase, color) {
 		var cells = this[0].cells
 		addColor(this, color)
-		cells[CASENUM].innerHTML = scase
-		cells[SHN].innerHTML = bookq.hn
-		if (isPACS()) {
-			cells[SHN].className = "pacs"
+		cells[STCASENUM].innerHTML = scase
+		cells[STHN].innerHTML = bookq.hn
+		if (bookq.hn && globalvar.isPACS) {
+			cells[STHN].className = "pacs"
 		}
-		cells[SNAME].innerHTML = bookq.patient
+		cells[STNAME].innerHTML = bookq.patient
 			+ (bookq.dob? ("<br>อายุ " + putAgeOpdate(bookq.dob, bookq.opdate)) : "")
-		cells[SNAME].className = "camera"
-		cells[SDIAGNOSIS].innerHTML = bookq.diagnosis
-		cells[STREATMENT].innerHTML = bookq.treatment
-		cells[ADMISSION].innerHTML = bookq.admission
-		cells[FINAL].innerHTML = bookq.final
-		cells[ADMIT].innerHTML = (bookq.admit? bookq.admit : "")
-		cells[DISCHARGE].innerHTML = (bookq.discharge? bookq.discharge : "")
-		cells[SQN].innerHTML = bookq.qn
+		cells[STNAME].className = "camera"
+		cells[STDIAGNOSIS].innerHTML = bookq.diagnosis
+		cells[STTREATMENT].innerHTML = bookq.treatment
+		cells[STADMISSION].innerHTML = bookq.admission
+		cells[STFINAL].innerHTML = bookq.final
+		cells[STADMIT].innerHTML = (bookq.admit? bookq.admit : "")
+		cells[STDISCHARGE].innerHTML = (bookq.discharge? bookq.discharge : "")
+		cells[STQN].innerHTML = bookq.qn
 	}
 })
 
@@ -215,12 +226,12 @@ function addColor($this, color)
 	if (color) {
 		$this[0].className = color
 		var $cell = $this.children("td")
-		var $final = $cell.eq(FINAL)
+		var $final = $cell.eq(STFINAL)
 		if (/Readmission/.test(color)) {
-			$cell.eq(ADMISSION).addClass("Readmission")
+			$cell.eq(STADMISSION).addClass("Readmission")
 		}
 		if (/Reoperation/.test(color)) {
-			$cell.eq(STREATMENT).addClass("Reoperation")
+			$cell.eq(STTREATMENT).addClass("Reoperation")
 		}
 		if (/Infection/.test(color)) {
 			$final.addClass("Infection")
@@ -240,7 +251,7 @@ function addColor($this, color)
 
 function getAdmitDischargeDate(SERVICE, fromDate, toDate)
 {
-	Ajax("php/getipd.php", "from=" + fromDate + "&to=" + toDate, callbackgetipd)
+	Ajax(GETIPD, "from=" + fromDate + "&to=" + toDate, callbackgetipd)
 
 	function callbackgetipd(response)
 	{
@@ -249,9 +260,9 @@ function getAdmitDischargeDate(SERVICE, fromDate, toDate)
 			var SERVICE = getfromBOOKCONSULT(fromDate, toDate)
 			fillAdmitDischargeDate(SERVICE)
 		}
-//		else {
-//			alert("getAdmitDischargeDate", response)
-//		}
+		else {
+			alert("getAdmitDischargeDate", response)
+		}
 	}
 }
 
@@ -265,14 +276,14 @@ function fillAdmitDischargeDate(SERVICE)
 			if (this.staffname === staffname) {
 				i++
 				var $thisRow = $('#servicetbl tr').eq(i).children("td")
-				if (this.admit && !$thisRow.eq(ADMIT).html()) {
+				if (this.admit && !$thisRow.eq(STADMIT).html()) {
 					document.getElementById("Admit").innerHTML++
 				}
-				$thisRow.eq(ADMIT).html(this.admit)
-				if (this.discharge && !$thisRow.eq(DISCHARGE).html()) {
+				$thisRow.eq(STADMIT).html(this.admit)
+				if (this.discharge && !$thisRow.eq(STDISCHARGE).html()) {
 					document.getElementById("Discharge").innerHTML++
 				}
-				$thisRow.eq(DISCHARGE).html(this.discharge)
+				$thisRow.eq(STDISCHARGE).html(this.discharge)
 			}
 		});
 	})
@@ -300,7 +311,7 @@ function clickservice(clickedCell)
 
 function Skeyin(event, keycode, pointing)
 {
-	var SEDITABLE	= [SDIAGNOSIS, STREATMENT, ADMISSION, FINAL]
+	var SEDITABLE	= [STDIAGNOSIS, STTREATMENT, STADMISSION, STFINAL]
 	var thiscell
 
 	if (keycode === 27) {
@@ -349,40 +360,36 @@ function savePreviouscellService()
 {
 	var oldcontent = $("#editcell").data("oldcontent")
 	var newcontent = getEditcellHtml()
-	var editPoint = $("#editcell").data("pointing")
-	if (editPoint && (oldcontent !== newcontent)) {
-		saveEditPointDataService(editPoint)
+	var pointed = $("#editcell").data("pointing")
+	if (!pointed || (oldcontent === newcontent)) {
+		return false
 	}
-}
-
-function saveEditPointDataService(pointed)
-{
 	var content = ""
 	switch(pointed.cellIndex)
 	{
-		case CASENUM:
-		case SHN:
-		case SNAME:
-			break
-		case SDIAGNOSIS:
+		case STCASENUM:
+		case STHN:
+		case STNAME:
+			return false
+		case STDIAGNOSIS:
 			content = getEditcellHtml()
 			saveScontent(pointed, "diagnosis", content)
-			break
-		case STREATMENT:
+			return true
+		case STTREATMENT:
 			content = getEditcellHtml()
 			saveScontent(pointed, "treatment", content)
-			break
-		case ADMISSION:
+			return true
+		case STADMISSION:
 			content = getEditcellHtml()
 			saveScontent(pointed, "admission", content)
-			break
-		case FINAL:
+			return true
+		case STFINAL:
 			content = getEditcellHtml()
 			saveScontent(pointed, "final", content)
-			break
-		case ADMIT:
-		case DISCHARGE:
-			break
+			return true
+		case STADMIT:
+		case STDISCHARGE:
+			return false
 	}
 }
 
@@ -390,7 +397,7 @@ function saveScontent(pointed, column, content)	//column name in MYSQL
 {
 	var $rowi = $(pointed).closest('tr')
 	var rowi = $rowi[0]
-	var qn = rowi.cells[SQN].innerHTML
+	var qn = rowi.cells[STQN].innerHTML
 	var oldcontent = $("#editcell").data("oldcontent")
 
 	pointed.innerHTML = content? content : ''	//just for show instantly
@@ -401,7 +408,7 @@ function saveScontent(pointed, column, content)	//column name in MYSQL
 	}
 	var sql = "sqlReturnbook=UPDATE book SET "
 		sql += column +" = '"+ content
-		sql += "', editor='"+ getUser()
+		sql += "', editor='"+ globalvar.user
 		sql += "' WHERE qn = "+ qn +";"
 
 	Ajax(MYSQLIPHP, sql, callbacksaveScontent);
@@ -467,29 +474,36 @@ function storePresentScell(pointing)
 
 	switch(cindex)
 	{
-		case CASENUM:
+		case STCASENUM:
 			break
-		case SHN:
+		case STHN:
 			clearEditcell()
-			if (isPACS()) {
+			if (globalvar.isPACS) {
 				PACS(pointing.innerHTML)
 			}
 			break
-		case SNAME:
-			var hn = $(pointing).closest('tr').children("td").eq(SHN).html()
+		case STNAME:
+			var hn = $(pointing).closest('tr').children("td").eq(STHN).html()
 			var patient = pointing.innerHTML
 
 			clearEditcell()
-			createWindow(hn, patient)
+			if (hn) {
+				if (globalvar.uploadWindow && !globalvar.uploadWindow.closed) {
+					globalvar.uploadWindow.close();
+				}
+				globalvar.uploadWindow = window.open("jQuery-File-Upload", "_blank")    
+				globalvar.uploadWindow.hnName = {"hn": hn, "patient": patient}
+				//hnName is a pre-defined variable in child window (jQuery-File-Upload)
+			}
 			break
-		case SDIAGNOSIS:
-		case STREATMENT:
-		case ADMISSION:
-		case FINAL:
+		case STDIAGNOSIS:
+		case STTREATMENT:
+		case STADMISSION:
+		case STFINAL:
 			createEditcell(pointing)
 			break
-		case ADMIT:
-		case DISCHARGE:
+		case STADMIT:
+		case STDISCHARGE:
 			clearEditcell()
 			break
 	}
@@ -619,5 +633,138 @@ function isDead(thiscase)
 	}
 	if (/passed away/i.test(thiscase.final)) {
 		return true
+	}
+}
+
+function exportToExcel()
+{
+	//getting data from our table
+	var data_type = 'data:application/vnd.ms-excel';	//Chrome, FF, not IE
+	var title = $('#dialogService').dialog( "option", "title" )
+	var style = '\
+		<style type="text/css">\
+			#exceltbl {\
+				border-right: solid 1px slategray;\
+				border-collapse: collapse;\
+			}\
+			#exceltbl th {\
+				font-size: 16px;\
+				font-weight: bold;\
+				height: 40px;\
+				background-color: #7799AA;\
+				color: white;\
+				border: solid 1px silver;\
+			}\
+			#exceltbl td {\
+				font-size: 14px;\
+				vertical-align: middle;\
+				padding-left: 3px;\
+				border-left: solid 1px silver;\
+				border-bottom: solid 1px silver;\
+			}\
+			#excelhead td {\
+				height: 30px; \
+				vertical-align: middle;\
+				font-size: 22px;\
+				text-align: center;\
+			}\
+			#excelhead td.Readmission,\
+			#exceltbl tr.Readmission,\
+			#exceltbl td.Readmission { background-color: #AACCCC; }\
+			#excelhead td.Reoperation,\
+			#exceltbl tr.Reoperation,\
+			#exceltbl td.Reoperation { background-color: #CCCCAA; }\
+			#excelhead td.Infection,\
+			#exceltbl tr.Infection,\
+			#exceltbl td.Infection { background-color: #CCAAAA; }\
+			#excelhead td.Morbidity,\
+			#exceltbl tr.Morbidity,\
+			#exceltbl td.Morbidity { background-color: #AAAACC; }\
+			#excelhead td.Dead,\
+			#exceltbl tr.Dead,\
+			#exceltbl td.Dead { background-color: #AAAAAA; }\
+		</style>'
+	var head = '\
+		  <table id="excelhead">\
+			<tr>\
+			  <td></td>\
+			  <td></td>\
+			  <td colspan="4" style="font-weight:bold;font-size:24px">' + title + '</td>\
+			</tr>\
+			<tr></tr>\
+			<tr></tr>\
+			<tr>\
+			  <td></td>\
+			  <td></td>\
+			  <td>Admit : ' + $("#Admit").html() + '</td>\
+			  <td>Discharge : ' + $("#Discharge").html() + '</td>\
+			  <td>Operation : ' + $("#Operation").html() + '</td>\
+			  <td class="Morbidity">Morbidity : ' + $("#Morbidity").html() + '</td>\
+			</tr>\
+			<tr>\
+			  <td></td>\
+			  <td></td>\
+			  <td class="Readmission">Re-admission : ' + $("#Readmission").html() + '</td>\
+			  <td class="Infection">Infection SSI : ' + $("#Infection").html() + '</td>\
+			  <td class="Reoperation">Re-operation : ' + $("#Reoperation").html() + '</td>\
+			  <td class="Dead">Dead : ' + $("#Dead").html() + '</td>\
+			</tr>\
+			<tr></tr>\
+			<tr></tr>\
+		  </table>'
+
+	if ($("#exceltbl").length) {
+		$("#exceltbl").remove()
+	}
+	$("#servicetbl").clone(true).attr("id", "exceltbl").appendTo("body")
+	$.each( $("#exceltbl tr"), function() {
+		var multiclass = this.className.split(" ")
+		if (multiclass.length > 1) {
+			this.className = multiclass[multiclass.length-1]
+		}	//use only the last class because excel not accept multiple classes
+	})
+	$.each( $("#exceltbl tr td, #exceltbl tr th"), function() {
+		if ($(this).css("display") === "none") {
+			$(this).remove()
+		}	//remove trailing hidden cells in excel
+	})
+	var table = $("#exceltbl")[0].outerHTML
+	table = table.replace(/<br>/g, " ")	//excel split <br> to another cell inside that cell 
+
+	var tableToExcel = '<!DOCTYPE html><HTML><HEAD><meta charset="utf-8"/>' + style + '</HEAD><BODY>'
+	tableToExcel += head + table
+	tableToExcel += '</BODY></HTML>'
+	var month = $("#monthpicking").val()
+	month = month.substring(0, month.lastIndexOf("-"))	//use yyyy-mm for filename
+	var filename = 'Service Neurosurgery ' + month + '.xls'
+
+	var ua = window.navigator.userAgent;
+	var msie = ua.indexOf("MSIE")
+	var edge = ua.indexOf("Edge"); 
+
+	if (msie > 0 || edge > 0 || !!navigator.userAgent.match(/Trident.*rv\:11\./)) // If Internet Explorer
+	{
+	  if (typeof Blob !== "undefined") {
+		//use blobs if we can
+		tableToExcel = [tableToExcel];
+		//convert to array
+		var blob1 = new Blob(tableToExcel, {
+		  type: "text/html"
+		});
+		window.navigator.msSaveBlob(blob1, filename);	//tested with Egde
+	  } else {
+		txtArea1.document.open("txt/html", "replace");
+		txtArea1.document.write(tableToExcel);
+		txtArea1.document.close();
+		txtArea1.focus();
+		sa = txtArea1.document.execCommand("SaveAs", true, filename);
+		return (sa);	//not tested
+	  }
+	} else {
+		var a = document.createElement('a');
+		document.body.appendChild(a);  // You need to add this line in FF
+		a.href = data_type + ', ' + encodeURIComponent(tableToExcel);
+		a.download = filename
+		a.click();		//tested with Chrome and FF
 	}
 }

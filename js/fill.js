@@ -1,7 +1,7 @@
 
 function fillupstart()		
 {	//Display all cases in each day of 5 weeks
-	var book = getBOOK()
+	var book = globalvar.BOOK
 	if (book.length === 0)
 		book.push({"opdate" : getSunday()})
 
@@ -31,7 +31,7 @@ function fillForScrub()
 	var table = document.getElementById("tbl")
 	var start = new Date().ISOdate()
 	var until = start.nextdays(6)
-	var book = getBOOK()
+	var book = globalvar.BOOK
 
 	fillall(book, table, start, until)
 }
@@ -99,7 +99,7 @@ function fillall(book, table, start, until)
 
 function refillall()
 {
-	var book = getBOOK()
+	var book = globalvar.BOOK
 	var table = document.getElementById("tbl")
 	var tbody = table.getElementsByTagName("tbody")[0]
 	var rows = table.rows
@@ -188,7 +188,7 @@ function refillOneDay(opdate)
 					return $(this).find("td").eq(OPDATE).html() === opdateth;
 				}).closest("tr")
 		}
-	var book = getBOOK()
+	var book = globalvar.BOOK
 	var opdateBOOKrows = book.filter(function(row) {
 			return (row.opdate === opdate);
 		})
@@ -238,7 +238,7 @@ function refillAnotherTableCell(tableID, cellindex, qn)
 		return
 	}
 
-	var book = getBOOK()	//Consults cases have no link to others
+	var book = globalvar.BOOK	//Consults cases have no link to others
 	var bookq = getBOOKrowByQN(book, qn)
 	if (!bookq) {
 		return
@@ -322,7 +322,7 @@ function filldata(bookq, rowi)		//bookq = book[q]
 		+ (bookq.optime? "<br>" + bookq.optime : "")
 	cells[STAFFNAME].innerHTML = bookq.staffname
 	cells[HN].innerHTML = bookq.hn
-	if (isPACS()) {
+	if (bookq.hn && globalvar.isPACS) {
 		cells[HN].className = "pacs"
 	}
 	cells[NAME].innerHTML = bookq.patient
@@ -338,8 +338,8 @@ function staffqueue(staffname)
 {
 	var todate = new Date().ISOdate()
 	var scrolled = $("#queuecontainer").scrollTop()
-	var book = getBOOK()
-	var consult = getCONSULT()
+	var book = globalvar.BOOK
+	var consult = globalvar.CONSULT
 
 	$('#titlename').html(staffname)
 	
@@ -371,8 +371,8 @@ function refillstaffqueue()
 {
 	var todate = new Date().ISOdate()
 	var staffname = $('#titlename').html()
-	var book = getBOOK()
-	var consult = getCONSULT()
+	var book = globalvar.BOOK
+	var consult = globalvar.CONSULT
 
 	if (staffname === "Consults") {
 		//Consults table is rendered same as fillall
@@ -418,9 +418,7 @@ jQuery.fn.extend({
 			+ (bookq.optime? "<br>" + bookq.optime : "")
 		cells[STAFFNAME].innerHTML = bookq.staffname
 		cells[HN].innerHTML = bookq.hn
-		if (isPACS()) {
-			cells[HN].className = "pacs"
-		}
+		cells[HN].className = (bookq.hn && globalvar.isPACS)? "pacs" : ""
 		cells[NAME].innerHTML = bookq.patient
 			+ (bookq.dob? ("<br>อายุ " + putAgeOpdate(bookq.dob, bookq.opdate)) : "")
 		cells[NAME].className = bookq.patient? "camera" : ""
@@ -433,6 +431,20 @@ jQuery.fn.extend({
 		//tr[0] has className "ui-sortable-handle", so first case has no className 
 	}
 })
+
+function fillStafflist()
+{
+	var stafflist = ''
+	var staffmenu = ''
+	for (var each = 0; each < STAFF.length; each++)
+	{
+		stafflist += '<li><div>' + STAFF[each] + '</div></li>'
+		staffmenu += '<li id="staffqueue"><div>' + STAFF[each] + '</div></li>'
+	}
+	staffmenu += '<li id="staffqueue"><div>Consults</div></li>'
+	document.getElementById("stafflist").innerHTML = stafflist
+	document.getElementById("staffmenu").innerHTML = staffmenu
+}
 
 function getSunday(date)	//get Sunday in the same week
 {

@@ -50,13 +50,13 @@ function fillEquipTable(book, rowi, qn)
 		function callbackgetEditedby(response)
 		{
 			if (/{/.test(response)) {
-				makeFind(response, hn)
-			} else {
 				var Editedby = ""
 				$.each(JSON.parse(response), function(key, val) {
 					Editedby += (val.editor + " : " + val.editdatetime + "<br>")
 				});
 				$('#editedby').html(Editedby)
+			} else {
+				alert("callbackgetEditedby", response)
 			}
 		}
  	} else {
@@ -188,7 +188,7 @@ function Checklistequip(qn, bookqEquip)
 
 	var sql = "sqlReturnbook=UPDATE book SET ";
 	sql += "equipment='"+ equipment +"' ,";
-	sql += "editor='"+ getUser() +"' ";
+	sql += "editor='"+ globalvar.user +"' ";
 	sql += "WHERE qn="+ qn +";"
 
 	Ajax(MYSQLIPHP, sql, callbackEq);

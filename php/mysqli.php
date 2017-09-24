@@ -2,54 +2,71 @@
 include "connect.php";
 require_once "book.php";
 
+	//start.js (initialize)
 	if (isset($_POST['nosqlReturnbook']))
 	{
 		echo json_encode(book($mysqli));
 	}
+	//click.js (saveRoomTime 2 ways, saveContentQN, saveContentNoQN 2 ways)
+	//equip.js (Checklistequip)
+	//menu.js (changeDate - $datepicker, changeDate - $trNOth, deleteCase)
+	//service.js (saveScontent)
+	//sortable.js (sortable)
 	else if (isset($_POST['sqlReturnbook']))
 	{
-		$return = sqlexecute($mysqli, $_POST['sqlReturnbook']);
+		$return = multiquery($mysqli, $_POST['sqlReturnbook']);
 		if (strpos($return, "DBfailed") !== false)
 			echo $return;
 		else
 			echo json_encode(book($mysqli));
 	}
-	else if (isset($_POST['sqlReturnData']))	//from view-history
+	//equip.js (fillEquipTable)
+	//history.js (editHistory, sqlFind)
+	else if (isset($_POST['sqlReturnData']))
 	{
-		echo sqlexecute($mysqli, $_POST['sqlReturnData']);
+		echo multiquery($mysqli, $_POST['sqlReturnData']);
 	}
+	//history.js (deletedCases, undelete)
+	//start.js (updating)
 	else if (isset($_POST['functionName']))
 	{
-		echo json_encode($_POST['functionName']($mysqli));
+		echo json_encode($_POST['functionName']($mysqli, $_POST['opdate']));
 	}
 
-function sqlexecute($mysqli, $sql)
+function multiquery($mysqli, $sql)
 {
 	$returndata = "";
 	if ($mysqli->multi_query(urldecode($sql))) {
+		//multiple queries
 		do {
 			if ($result = $mysqli->store_result())
 			{	//has no result, but no error (success query INSERT, UPDATE), skip this
 				$rowi = array();
 				$data = array();
-				while ($rowi = $result->fetch_assoc())
+				while ($rowi = $result->fetch_assoc()) {
 					$data[] = $rowi;
+				}
 				$returndata .= json_encode($data);
 			}
+			//if error, return error message
+			//if has no result, but no error (INSERT, UPDATE), fall through
 			else if ($mysqli->errno)
 			{
 				$returndata .= 'DBfailed multi query ' . $sql . " \n" . $mysqli->error;
 			}
-
+			//nom more query
 			if (!$mysqli->more_results()) {
 				break;
 			}
+		//next query
 		} while ($mysqli->next_result());
 	}
+	//handle failed first query
 	else if ($mysqli->errno)
 	{
 		$returndata .= 'DBfailed first query ' . $sql . " \n" . $mysqli->error;
 	}
+
 	return $returndata;
 }
 
@@ -69,23 +86,27 @@ function checkupdate($mysqli)
 	}
 }
 
-function findwaitnum($mysqli)
+function undelete($mysqli, $opdate)
 {
 	$qn = $_POST['qn'];
 	$editor = $_POST['editor'];
 
-	$sql = "SELECT waitnum from bookhistory 
-			where qn=$qn AND action='delete' 
-			ORDER BY revision DESC LIMIT 1;";
+	$sql = "SELECT waitnum FROM bookhistory WHERE qn=$qn ORDER BY revision DESC LIMIT 1;";
 	$result = $mysqli->query($sql);
 	if (!$result) {
 		return $mysqli->error;
 	}
-	$waitnum = $result->fetch_row();
-	$waitnum = $waitnum[0];
+	$owaitnum = current($result->fetch_row());	//array.toString();
+
+	$sql = "SELECT MAX(ABS(waitnum)) FROM book WHERE opdate='$opdate';";
+	$result = $mysqli->query($sql);
+	if (!$result) {
+		return $mysqli->error;
+	}
+	$waitnum = current($result->fetch_row());	//array.toString();
+	$waitnum = ($waitnum  + 1) * $owaitnum / abs($owaitnum);
 
 	$sql = "UPDATE book SET waitnum=$waitnum, editor='$editor' WHERE qn=$qn";
-
 	$result = $mysqli->query ($sql);
 	if (!$result) {
 		return $mysqli->error;

@@ -161,28 +161,29 @@ function makedeletedCases(response)
 
 function undelete(thiscase) 
 {
-//	var EDITDATETIME	= 0;
-	var OPDATE		= 1;
-	var STAFFNAME		= 2;
-//	var HN			= 3;
-//	var PATIENT		= 4;
-//	var DIAGNOSIS		= 5;
-//	var TREATMENT		= 6;
-//	var CONTACT		= 7;
-//	var EDITOR		= 8;
-	var QN			= 9;
+//	var UNDELEDITDATETIME	= 0;
+	var UNDELOPDATE			= 1;
+	var UNDELSTAFFNAME		= 2;
+//	var UNDELHN				= 3;
+//	var UNDELPATIENT		= 4;
+//	var UNDELDIAGNOSIS		= 5;
+//	var UNDELTREATMENT		= 6;
+//	var UNDELCONTACT		= 7;
+//	var UNDELEDITOR			= 8;
+	var UNDELQN				= 9;
 
 	reposition($("#undelete"), "left center", "left center", thiscase)
 
 	doUndelete = function() 
 	{
 		var $thiscase = $(thiscase).parent().children("td")
-		var opdate = $thiscase.eq(OPDATE).html()
-		var staffname = $thiscase.eq(STAFFNAME).html()
-		var qn = $thiscase.eq(QN).html()
+		var opdate = $thiscase.eq(UNDELOPDATE).html()
+		var staffname = $thiscase.eq(UNDELSTAFFNAME).html()
+		var qn = $thiscase.eq(UNDELQN).html()
 
-		var sqlstring = "functionName=findwaitnum&qn="+ qn
-		sqlstring += "&editor="+ getUser()
+		var sqlstring = "functionName=undelete&qn="+ qn
+		sqlstring += "&opdate="+ opdate
+		sqlstring += "&editor="+ globalvar.user
 
 		Ajax(MYSQLIPHP, sqlstring, callbackUndelete);
 
@@ -437,8 +438,6 @@ function readme()
 function alert(title, message)
 {
 	$("#dialogAlert").css({
-		"width": "0px",
-		"height": "0px",
 		"fontSize":" 14px",
 		"textAlign" : "center"
 	})
@@ -446,6 +445,8 @@ function alert(title, message)
 	$('#dialogAlert').dialog({
 		title: title,
 		closeOnEscape: true,
-		modal: true
+		modal: true,
+		minWidth: 400,
+		height: 230
 	}).fadeIn();
 }

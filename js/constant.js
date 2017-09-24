@@ -1,36 +1,38 @@
-
+//Actually these are const but older browsers do not support const
 var STAFF 		= [	"อ.เอก",
-						"อ.อัตถพร", 
-						"อ.สรยุทธ", 
-						"อ.วัฒนา", 
-						"อ.เกรียงศักดิ์", 
-						"อ.พีรพงศ์"
-					];
+					"อ.อัตถพร", 
+					"อ.สรยุทธ", 
+					"อ.วัฒนา", 
+					"อ.เกรียงศักดิ์", 
+					"อ.พีรพงศ์"
+				];
 
-var MYSQLIPHP		= "php/mysqli.php";
+var GETIPD		= "php/getipd.php";
+var GETNAMEHN	= "php/getnamehn.php";
+var MYSQLIPHP	= "php/mysqli.php";
 
 //tbl, queuetbl
 var OPDATE		= 0;
-var ROOMTIME		= 1;
-var STAFFNAME		= 2;
+var ROOMTIME	= 1;
+var STAFFNAME	= 2;
 var HN			= 3;
-var NAME			= 4;
-var DIAGNOSIS		= 5;
-var TREATMENT		= 6;
+var NAME		= 4;
+var DIAGNOSIS	= 5;
+var TREATMENT	= 6;
 var CONTACT		= 7;
 var QN			= 8;
 
 //servicetbl
-var CASENUM		= 0;
-var SHN			= 1;
-var SNAME			= 2;
-var SDIAGNOSIS	= 3;
-var STREATMENT	= 4;
-var ADMISSION		= 5;
-var FINAL			= 6;
-var ADMIT			= 7;
-var DISCHARGE		= 8;
-var SQN			= 9;
+var STCASENUM	= 0;
+var STHN		= 1;
+var STNAME		= 2;
+var STDIAGNOSIS	= 3;
+var STTREATMENT	= 4;
+var STADMISSION	= 5;
+var STFINAL		= 6;
+var STADMIT		= 7;
+var STDISCHARGE	= 8;
+var STQN		= 9;
 
 //use for row color
 var NAMEOFDAYABBR	= ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
@@ -41,4 +43,23 @@ var NAMEOFDAYFULL	= ["sunday", "monday", "tuesday", "wednesday", "thursday", "fr
 var NUMMONTH		= {"มค.":"01","กพ.":"02","มีค.":"03","เมย.":"04","พค.":"05","มิย.":"06",
 					"กค.":"07","สค.":"08","กย.":"09","ตค.":"10","พย.":"11","ธค.":"12"};
 
-var LARGESTDATE	= "9999-12-31";
+var LARGESTDATE		= "9999-12-31";
+
+//====================================================================================================
+
+var globalvar = {
+				BOOK: [],
+				CONSULT: [],
+				user: "",
+				timestamp: "",
+				uploadWindow: null,
+				timer: {},
+				idleCounter: 0,
+				mobile: false,
+				isPACS: true
+			}
+
+if (/Android|webOS|iPhone|iPad|BlackBerry|IEMobile/i.test(navigator.userAgent)) {
+	globalvar.mobile = true
+	globalvar.isPACS = false
+}

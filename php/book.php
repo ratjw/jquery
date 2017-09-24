@@ -23,6 +23,8 @@ function book($mysqli)
 	$sql = "SELECT * FROM book 
 		WHERE opdate >= curdate()-interval 2 month AND waitnum > 0
 		ORDER BY opdate, oproom='', oproom, optime, waitnum;";
+		//The oproom='' will be 1 for cases with no oproom.
+		//As the default sort order is ASC, non-zero items are now placed first.
 
 	if (!$result = $mysqli->query ($sql)) {
 		return $mysqli->error;
@@ -33,7 +35,9 @@ function book($mysqli)
 
 	$sql = "SELECT * FROM book 
 		WHERE opdate >= curdate()-interval 2 month AND waitnum < 0
-		ORDER BY opdate, oproom='', oproom, optime, waitnum;";
+		ORDER BY opdate, oproom='', oproom, optime, waitnum DESC;";
+		//Consults cases have negative waitnum.
+		//Greater waitnum (less negative) are placed first
 
 	if (!$result = $mysqli->query ($sql)) {
 		return $mysqli->error;

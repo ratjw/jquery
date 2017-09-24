@@ -12,7 +12,7 @@ function sortable()
 		revert: true,
 		delay: 100,
 		start: function(e, ui){
-			clearTimer();
+			clearTimeout(globalvar.timer);
 			$('#menu').hide();
 			$('#stafflist').hide();
 			clearEditcell();
@@ -105,7 +105,7 @@ function sortable()
 				sql += "', oproom='" + roomtime.roomtime[0]
 				sql += "', optime='" + roomtime.roomtime[1]
 			}
-			sql += "', editor='"+ getUser()
+			sql += "', editor='"+ globalvar.user
 			sql += "' WHERE qn="+ thisqn +";"
 
 			Ajax(MYSQLIPHP, sql, callbacksortable);
@@ -142,8 +142,8 @@ function stopsorting()
 	//Return to original place so that refillOneDay(oldOpdate)
 	//will not render this row in wrong position
 	$("#tbl tbody, #queuetbl tbody").sortable( "cancel" )
-	resetTimer()			//Global timer
-	setIdleCounter(0)		//Idle timer
+	resetTimer()					//Global timer
+	globalvar.idleCounter = 0		//Idle timer
 	//after sorting, editcell was placed at row 0 column 1
 	//and display at placeholder position in entire width
 	$('#editcell').hide()

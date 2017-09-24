@@ -10,9 +10,9 @@ function mainMenu(pointing)
 	var hn = tcell[HN].innerHTML
 	var qn = tcell[QN].innerHTML
 	var consult = false
-	var book = getBOOK()
+	var book = globalvar.BOOK
 	if ((tableID === "queuetbl") && ($('#titlename').html() === "Consults")) {
-		book = getCONSULT()
+		book = globalvar.CONSULT
 		consult = true
 	}
 
@@ -147,8 +147,8 @@ function menustyle($me, target, width)
 
 function getRoomTime(pointing)
 {
-	var ORSURG 		= "XSU";
-	var ORNEURO 		= "4"
+	var ORSURG 		= "XSU"
+	var ORNEURO 	= "4"
 	var ORTIME 		= "09.00"
 	var roomtime = pointing.innerHTML
 	roomtime = roomtime? roomtime.split("<br>") : ""
@@ -340,7 +340,7 @@ function changeDate(tableID, opdate, staffname, qn, pointing)
 
 			clearDatepickerMouseover($container, $trNOth, $datepicker)
 			var sql = "sqlReturnbook=UPDATE book SET opdate='" + datepicker + "', "
-			sql += "editor = '" + getUser() + "' WHERE qn="+ qn + ";"
+			sql += "editor = '" + globalvar.user + "' WHERE qn="+ qn + ";"
 
 			Ajax(MYSQLIPHP, sql, callbackchangeDatepicker)
 
@@ -387,7 +387,7 @@ function changeDate(tableID, opdate, staffname, qn, pointing)
 				sql += "oproom = '" + RoomTime[0] + "', "
 				sql += "optime = '" + RoomTime[1] + "', "
 			}
-			sql += "editor = '" + getUser() + "' WHERE qn="+ qn + ";"
+			sql += "editor = '" + globalvar.user + "' WHERE qn="+ qn + ";"
 
 			Ajax(MYSQLIPHP, sql, callbackchangeDateClick)
 
@@ -445,7 +445,7 @@ function deleteCase(tableID, rowi, opdate, staffname, qn)
 {
 	//not actually delete the case but set waitnum=NULL
 	var sql = "sqlReturnbook=UPDATE book SET waitnum=NULL, "
-	sql += "editor = '" + getUser() + "' WHERE qn="+ qn + ";"
+	sql += "editor = '" + globalvar.user + "' WHERE qn="+ qn + ";"
 
 	Ajax(MYSQLIPHP, sql, callbackdeleterow)
 
