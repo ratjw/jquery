@@ -260,9 +260,9 @@ function getAdmitDischargeDate(SERVICE, fromDate, toDate)
 			var SERVICE = getfromBOOKCONSULT(fromDate, toDate)
 			fillAdmitDischargeDate(SERVICE)
 		}
-		else {
-			alert("getAdmitDischargeDate", response)
-		}
+//		else {
+//			alert("getAdmitDischargeDate", response)
+//		}
 	}
 }
 

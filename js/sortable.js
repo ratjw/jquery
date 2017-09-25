@@ -92,13 +92,7 @@ function sortable()
 				stopsorting()
 				return false
 			}
-			var finalWaitnum
-			if ($thisdrop.children("td").eq(QN).html() === "") {
-				finalWaitnum = 1
-			} else {
-				finalWaitnum = calculateWaitnum(receiver, $item, thisOpdate)	
-			}		
-
+			var finalWaitnum = calculateWaitnum(receiver, $item, thisOpdate)	
 			var sql = "sqlReturnbook=UPDATE book SET Waitnum = "+ finalWaitnum
 			sql += ", opdate='" + thisOpdate
 			if (roomtime.room) {

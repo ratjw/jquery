@@ -640,6 +640,9 @@ function namesix()
 			elseif (strpos($_SERVER["SERVER_NAME"], "192.168") !== false)  {
 				$resultz = "S";
 			}
+			elseif (strpos($_SERVER["SERVER_NAME"], "10.6.166.92") !== false)  {
+				$resultz = "S";
+			}
 
 			if ($resultz === "S" || $resultz === "R" || $userid === "000000") {
 				echo "<SCRIPT type='text/javascript'>initialize('".$userid."')</SCRIPT>";
