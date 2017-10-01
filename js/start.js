@@ -83,19 +83,6 @@ function initialize(userid)
 		clicktable(target)
 	})
 
-	$("#servicetbl").on("click", function (event) {
-		resetTimer();
-		globalvar.idleCounter = 0
-		event.stopPropagation()
-		var target = event.target
-		if (target.nodeName === "TH") {
-			clearEditcell()
-			return	
-		}
-
-		clickservice(target)
-	})
-
 	$('#menu li > div').on("click", function(event){
 		if ($(this).siblings('ul').length > 0){	//click on parent of submenu
 			event.preventDefault()
@@ -171,16 +158,19 @@ function loading(response)
 function updateBOOK(response)
 {
 	var temp = JSON.parse(response)
-	globalvar.BOOK = temp.BOOK? temp.BOOK : []
-	globalvar.CONSULT = temp.CONSULT? temp.CONSULT : []
-	globalvar.timestamp = temp.QTIME
+	var book = temp.BOOK? temp.BOOK : []
+	var consult = temp.CONSULT? temp.CONSULT : []
+	var timestamp = temp.QTIME
+	globalvar.BOOK = book
+	globalvar.CONSULT = consult
+	globalvar.timestamp = timestamp
 	//datetime of last fetching from server: $mysqli->query ("SELECT now();")
 }
 
 function resetTimer()
 {
 	clearTimeout(globalvar.timer); //globalvar.timer is just an id, not the clock
-	globalvar.timer = setTimeout( updating, 10000);	//poke server every 10 sec.
+	globalvar.timer = setTimeout( updating, 10000)	//poke server every 10 sec.
 }
 
 function updating()
@@ -194,17 +184,15 @@ function updating()
 		function updatingback(response)
 		{
 			//not being editing on screen
-			var idle = globalvar.idleCounter
-			if (idle === 5) {
+			if (globalvar.idleCounter === 5) {
 				//idling 1 minute, clear editing setup
 				//do this only once, not every 1 minute
 				clearEditcell()
 				$('#menu').hide()		//editcell may be on first column
 				$('#stafflist').hide()	//editcell may be on staff
-				$('#datepicker').hide()
-				$('#datepicker').datepicker("hide")
+				clearMouseoverTR()
 			}
-			else if (idle > 59) {	//idling 10 minutes, logout
+			else if (globalvar.idleCounter > 59) {	//idling 10 minutes, logout
 				window.location = window.location.href
 			}
 			globalvar.idleCounter += 1
@@ -213,8 +201,8 @@ function updating()
 			if (/BOOK/.test(response)) {
 				updateBOOK(response)
 				if ($("#dialogService").dialog('isOpen')) {
-					var fromDate = $('#monthpicker').data('fromDate')
-					var toDate = $('#monthpicker').data('toDate')
+					var fromDate = $('#monthpicking').val()
+					var toDate = $('#monthpicker').val()
 					var SERVICE = getfromBOOKCONSULT(fromDate, toDate)
 					refillService(SERVICE, fromDate, toDate)
 				}

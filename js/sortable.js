@@ -11,6 +11,7 @@ function sortable()
 		forcePlaceholderSize: true,
 		revert: true,
 		delay: 300,
+		cancel: "tr:has('th')",
 		start: function(e, ui){
 			clearTimeout(globalvar.timer);
 			$('#menu').hide();
@@ -92,7 +93,13 @@ function sortable()
 				stopsorting()
 				return false
 			}
-			var finalWaitnum = calculateWaitnum(receiver, $item, thisOpdate)	
+			var finalWaitnum
+			if ($thisdrop.children("td").eq(QN).html() === "") {
+				finalWaitnum = 1
+			} else {
+				finalWaitnum = calculateWaitnum(receiver, $item, thisOpdate)	
+			}		
+
 			var sql = "sqlReturnbook=UPDATE book SET Waitnum = "+ finalWaitnum
 			sql += ", opdate='" + thisOpdate
 			if (roomtime.room) {

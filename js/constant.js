@@ -1,4 +1,4 @@
-//Actually these are const but older browsers do not support const
+//Actually these are constants but older browsers do not support const
 var STAFF 		= [	"อ.เอก",
 					"อ.อัตถพร", 
 					"อ.สรยุทธ", 
@@ -40,24 +40,23 @@ var NAMEOFDAYABBR	= ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
 //use for 1st column color
 var NAMEOFDAYFULL	= ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
 
-var NUMMONTH		= {"มค.":"01","กพ.":"02","มีค.":"03","เมย.":"04","พค.":"05","มิย.":"06",
-					"กค.":"07","สค.":"08","กย.":"09","ตค.":"10","พย.":"11","ธค.":"12"};
+var THAIMONTH		= ["มค.", "กพ.", "มีค.", "เมย.", "พค.", "มิย.", "กค.", "สค.", "กย.", "ตค.", "พย.", "ธค."];
 
 var LARGESTDATE		= "9999-12-31";
 
 //====================================================================================================
 
 var globalvar = {
-				BOOK: [],
-				CONSULT: [],
-				user: "",
-				timestamp: "",
-				uploadWindow: null,
-				timer: {},
-				idleCounter: 0,
-				mobile: false,
-				isPACS: true
-			}
+	"BOOK": [],
+	"CONSULT": [],
+	"user": "",
+	"timestamp": "",
+	"uploadWindow": null,
+	"timer": {},
+	"idleCounter": 0,
+	"mobile": false,
+	"isPACS": true
+}
 
 if (/Android|webOS|iPhone|iPad|BlackBerry|IEMobile/i.test(navigator.userAgent)) {
 	globalvar.mobile = true

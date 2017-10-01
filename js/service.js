@@ -1,12 +1,21 @@
 
 function serviceReview()
 {
-	$("#btnExport").hide()
-	var $monthpicker = $('#monthpicker')
-	$monthpicker.show()
+	resetcountService()
 	$('#servicehead').hide()
-	$monthpicker.datepicker( {
-		altField: $( "#monthpicking" ),
+	$('#servicetbl').hide()
+	$('#btnExport').hide()
+	$('#dialogService').dialog({
+		title: 'Service Neurosurgery',
+		closeOnEscape: true,
+		modal: true,
+		width: window.innerWidth * 95 / 100,
+		height: window.innerHeight * 95 / 100
+	})
+
+	$('#monthpicker').show()
+	$('#monthpicker').datepicker( {
+		altField: $('#monthpicking'),
 		altFormat: "yy-mm-dd",
 		autoSize: true,
 		dateFormat: "MM yy",
@@ -16,62 +25,26 @@ function serviceReview()
 			$(this).datepicker('setDate', new Date(inst.selectedYear, inst.selectedMonth, 1))
 		},
 		beforeShow: function (input, obj) {
-			$('.ui-datepicker-calendar').css('display', 'none')
-		},
-		onClose: function (date, obj) {
-			$('.ui-datepicker').off("click")
+			$('.ui-datepicker-calendar').hide()
 		}
 	}).datepicker("setDate", new Date(new Date().getFullYear(), new Date().getMonth(), 1))
 
-	$('#dialogService').dialog({
-		title: 'Service Neurosurgery',
-		closeOnEscape: true,
-		modal: true,
-		width: window.innerWidth * 95 / 100,
-		height: window.innerHeight * 95 / 100,
-		close: function( event, ui ) {
-			$uidatepicker.off("click")
-		}
+	$(document).on("click", '.ui-datepicker-title', function() {
+		entireMonth($('#monthpicking').val())
 	})
-	var $uidatepicker = $('.ui-datepicker')
-	$uidatepicker.on("click", function() {
-		if (!$monthpicker.is(":focus")) {	//click on month name
-			entireMonth($('#monthpicking').val())
-		} else {
-			$('.ui-datepicker-calendar').css('display', 'none')
-			//click on <prev next> month
-			//display the month without date
-		}
-	})
-	$monthpicker.click(function() { //setDate follows input box
-		$monthpicker.datepicker(
-			"setDate", $('#monthpicking').val()
-						? new Date($('#monthpicking').val())
-						: new Date()
-		)
-		$('.ui-datepicker-calendar').css('display', 'none')
-	})
-	$monthpicker.datepicker('setDate', new Date($('#monthpicking').val()))
-	$('.ui-datepicker-calendar').css('display', 'none')
-	$('#servicetbl').hide()
-	resetcountService()
-	reposition($uidatepicker, 'left center', 'left center', $monthpicker)
 }
 
 function entireMonth(fromDate)
 {
-	var fromdate = new Date(fromDate)
-	var toDate = new Date(fromdate.getFullYear(), fromdate.getMonth()+1, 0)
+	var date = new Date(fromDate)
+	var toDate = new Date(date.getFullYear(), date.getMonth()+1, 0)
 	toDate = $.datepicker.formatDate('yy-mm-dd', toDate);	//end of this month
-	$('#dialogService input[type=button]').hide()
-	$('#monthpicker').data({
-		fromDate: fromDate,
-		toDate: toDate
-	})
+	$('#monthpicker').val(toDate)
 
 	var SERVICE = getfromBOOKCONSULT(fromDate, toDate)
 	showService(SERVICE, fromDate, toDate)
 
+	$(document).off("click")
 	$("#btnExport").show()
 	$("#btnExport").on("click", function(e) {
 		e.preventDefault();
@@ -124,6 +97,18 @@ function showService(SERVICE, fromDate, toDate)
 	//delete previous servicetbl lest it accumulates
 	$('#servicetbl tr').slice(1).remove()
 	$('#servicetbl').show()
+	$("#servicetbl").on("click", function (event) {
+		resetTimer();
+		globalvar.idleCounter = 0
+		event.stopPropagation()
+		var target = event.target
+		if (target.nodeName === "TH") {
+			clearEditcell()
+			return	
+		} else {
+			clickservice(target, fromDate, toDate)
+		}
+	})
 
 	$.each( STAFF, function() {
 		var staffname = String(this)
@@ -148,12 +133,11 @@ function showService(SERVICE, fromDate, toDate)
 
 	var $monthpicker = $('#monthpicker')
 	$monthpicker.hide()
-	$monthpicker.datepicker( "hide" )
+//	$monthpicker.datepicker( "hide" )
 	$('#servicehead').show()
 	$('#dialogService').dialog({
 		title: 'Service Neurosurgery เดือน ' + $monthpicker.val(),
 		close: function() {
-			$('#datepicker').hide()
 			clearEditcell()
 			refillstaffqueue()
 			refillall()
@@ -418,8 +402,8 @@ function saveScontent(pointed, column, content)	//column name in MYSQL
 		if (/BOOK/.test(response)) {
 			updateBOOK(response)
 
-			var fromDate = $('#monthpicker').data('fromDate')
-			var toDate = $('#monthpicker').data('toDate')
+			var fromDate = $('#monthpicking').val()
+			var toDate = $('#monthpicker').val()
 			var color = rowi.className
 			var book = getfromBOOKCONSULT(fromDate, toDate)
 			var bookq = getBOOKrowByQN(book, qn)		//for countService of this case
@@ -491,7 +475,7 @@ function storePresentScell(pointing)
 				if (globalvar.uploadWindow && !globalvar.uploadWindow.closed) {
 					globalvar.uploadWindow.close();
 				}
-				globalvar.uploadWindow = window.open("jQuery-File-Upload", "_blank")    
+				globalvar.uploadWindow = window.open("jQuery-File-Upload", "_blank")
 				globalvar.uploadWindow.hnName = {"hn": hn, "patient": patient}
 				//hnName is a pre-defined variable in child window (jQuery-File-Upload)
 			}

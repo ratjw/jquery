@@ -18,11 +18,7 @@ function mainMenu(pointing)
 
 	disable(qn, "#addrow")
 
-	//No noOpdate() in consults cases
-	var addnodate = (tableID === "queuetbl")?
-						((consult)? false : true )
-							: false
-	disable(addnodate, "#addnodate")
+	disable((qn && staffname && (opdate !== LARGESTDATE)), "#postpone")
 
 	disable(qn, "#changedate")
 
@@ -45,8 +41,8 @@ function mainMenu(pointing)
 				case "addrow":
 					addnewrow(tableID, rowi, qn)
 					break
-				case "addnodate":
-					noOpdate()
+				case "postpone":
+					postpone(rowi, opdate, staffname, qn)
 					break
 				case "changedate":
 					changeDate(tableID, opdate, staffname, qn, pointing)
@@ -267,121 +263,54 @@ function addnewrow(tableID, rowi)
 	}
 }
 
-function noOpdate()
+function postpone(rowi, opdate, staffname, qn)
 {
-	//must use jQuery in order to be recognized
-	$("#queuetbl tr:last").clone()
-							.appendTo($("#queuetbl tbody"))
-								.children("td").html("")
+	var sql = "sqlReturnbook=UPDATE book SET opdate='" + LARGESTDATE
+	sql += "', editor='" + globalvar.user
+	sql += "' WHERE qn="+ qn + ";"
 
-	//change pointing to STAFFNAME
-	var staffname = $('#titlename').html()
-	var pointing = $("#queuetbl tr:last td")[STAFFNAME]
-	var $addedRow = $("#queuetbl tr:last")
-	saveContent(pointing, "staffname", staffname)
-	addColor($addedRow, LARGESTDATE)
+	Ajax(MYSQLIPHP, sql, callbackpostpone)
 
-	var $queuecontainer = $("#queuecontainer")
-	var queue = $("#queuetbl").height()
-	var container = $queuecontainer.height()
-	var scrolltop = $queuecontainer.scrollTop()
-	var toscroll = queue - container + scrolltop
-	$queuecontainer.animate({
-		scrollTop: toscroll + 300
-	}, 500);
+	function callbackpostpone(response)
+	{
+		if (/BOOK/.test(response)) {
+			updateBOOK(response)
+			deleteRow(rowi, opdate)
+			if (($("#queuewrapper").css('display') === 'block') && 
+				($('#titlename').html() === staffname)) {
+				//changeDate of this staffname's case
+				refillstaffqueue()
+			}
+			scrolltoThisCase(qn)
+		} else {
+			alert ("postpone", response)
+		}
+	}
 }
 
 function changeDate(tableID, opdate, staffname, qn, pointing)
 {
-	var $trNOth = $("#tbl tr:not(:has(th)), #queuetbl tr:not(:has(th))")
-	var $datepicker = $('#datepickertbl')
-	var $container
-	if (tableID === "tbl") {
-		$datepicker = $('#datepickertbl')
-		$container = $('#tblcontainer')
-	}
-	else if (tableID === "queuetbl") {
-		$datepicker = $('#datepickerqueuetbl')
-		$container = $('#queuecontainer')
-	}
-	$container.css("position", "relative")
-	$datepicker.css({
-		height: $(pointing).height(),
-		width: $(pointing).width()
-	})
-	reposition($datepicker, "center", "center", pointing)	//position the input
+	var $mouseoverTR = $("#tbl tr, #queuetbl tr")
+	var $pointing = $(pointing)
 
-	var $widget = $datepicker.datepicker( 'widget' )
-	$datepicker.datepicker( {
-		dateFormat: "yy-mm-dd",
-		minDate: "-2m",
-		maxDate: "+1y",
-		showButtonPanel: true,
-		closeText : "No Date",
-		beforeShow: function(input, obj) {
-			$datepicker.after($widget);
-		},
-		onClose: function (datepicker, obj) {
-			function isDonePressed() {	//copy from stackoverflow
-				var classes = 'ui-datepicker-close ui-state-default ui-priority-primary ui-corner-all ui-state-hover'
-				return ($('#ui-datepicker-div').html().indexOf(classes) > -1);    
-			}
-			//use Done button as LARGESTDATE
-			if (isDonePressed()) {
-				if (staffname) {
-					datepicker = LARGESTDATE
-				}
-			}
-			//onClose can be triggered by click outside calendar
-			//and execute before $trNOth.on("click");
-			if ($(".pasteDate").length || opdate === datepicker) {
-				return false
-			}//give way to $trNOth.on("click") function
-
-			clearDatepickerMouseover($container, $trNOth, $datepicker)
-			var sql = "sqlReturnbook=UPDATE book SET opdate='" + datepicker + "', "
-			sql += "editor = '" + globalvar.user + "' WHERE qn="+ qn + ";"
-
-			Ajax(MYSQLIPHP, sql, callbackchangeDatepicker)
-
-			function callbackchangeDatepicker(response)
-			{
-				if (/BOOK/.test(response)) {
-					updateBOOK(response);
-					refillOneDay(opdate)
-					refillOneDay(datepicker)
-					if (($("#queuewrapper").css('display') === 'block') && 
-						($('#titlename').html() === staffname)) {
-						//changeDate of this staffname's case
-						refillstaffqueue()
-					}
-					scrolltoThisCase(qn)
-				} else {
-					alert ("changeDate", response)
-				}
-			}
-		}
-	})
-	$datepicker.datepicker("setDate", new Date(opdate))
-	$datepicker.datepicker( 'show' )
-	$widget.css("fontSize", "10px")
-	reposition($widget, "left top", "left bottom", pointing)	//position the calendar
-
-	$(pointing).closest('tr').addClass("changeDate")
-	$trNOth.on({
-		"mouseover": function() { $(this).addClass("pasteDate"); },
+	$pointing.closest('tr').addClass("changeDate")
+	$mouseoverTR.on({
+		"mouseover": function() { $(this).addClass("pasteDate") },
+		"mouseout": function() { $(this).removeClass("pasteDate") },
 		"click": function(event) {
 			event.stopPropagation()
-			clearDatepickerMouseover($container, $trNOth, $datepicker)
+			clearMouseoverTR()
+
 			var thisDate = $(this).children("td").eq(OPDATE).html()
 			thisDate = getOpdate(thisDate)
-			if (opdate === thisDate) {
+			//!thisDate = click on th
+			if (!thisDate || (opdate === thisDate)) {
 				return false
 			}
+
 			//If moverow has roomtime, use that
 			//If not, use roomtime of the row that moved to
-			var RoomTime = calculateRoomTime($(pointing).closest('tr'), $(this))
-
+			var RoomTime = calculateRoomTime($pointing.closest('tr'), $(this))
 			var sql = "sqlReturnbook=UPDATE book SET opdate='" + thisDate + "', "
 			if (RoomTime) {
 				sql += "oproom = '" + RoomTime[0] + "', "
@@ -409,20 +338,23 @@ function changeDate(tableID, opdate, staffname, qn, pointing)
 			}
 		}
 	});
-	$trNOth.on("mouseout", function() { $(this).removeClass("pasteDate"); }); 
+	$(document).on("keydown", function(event) {
+		var keycode = event.which || window.event.keyCode
+		if (keycode === 27)	{
+			clearMouseoverTR()
+		}
+	})
 }
 
-function clearDatepickerMouseover($container, $trNOth, $datepicker)
+function clearMouseoverTR()
 {
-	$container.css("position", "")
-	$("body").append($datepicker.datepicker("widget"));
-	$datepicker.datepicker('widget').css("fontSize", "")
-	$datepicker.datepicker("destroy").hide()
-	$trNOth.off("mouseover");
-	$trNOth.off("click");
-	$trNOth.off("mouseout");
+	var $mouseoverTR = $("#tbl tr, #queuetbl tr")
+	$mouseoverTR.off("mouseover");
+	$mouseoverTR.off("click");
+	$mouseoverTR.off("mouseout");
 	$(".pasteDate").removeClass("pasteDate")
 	$(".changeDate").removeClass("changeDate")
+	$(document).off("keydown")
 }
 
 function calculateRoomTime($moverow, $thisrow)

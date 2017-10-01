@@ -318,11 +318,6 @@ button.ui-datepicker-current {
 	display: none;
 }
 
-#datepickertbl, #datepickingtbl,
-#datepickerqueuetbl, #datepickingqueuetbl {
-	font-size: 12px;
-}
-
 #monthpicker .ui-datepicker-calendar {
 	display: none;
 }

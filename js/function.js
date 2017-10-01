@@ -11,21 +11,26 @@ Date.prototype.ISOdate = function ()
 
 String.prototype.thDate = function () 
 {	//MySQL date (2014-05-11) to Thai date (11 พค. 2557) 
-	if (this < '1900-01-01')
-		return this
-	var yyyy = parseInt(this.substr(0, 4)) + 543;
-	var mm = this.substr(5, 2);
-	for (ThMonth in NUMMONTH)
-		if (NUMMONTH[ThMonth] === mm) 
-			break;
-	return (this.substr(8, 2) +' '+ ThMonth + yyyy);
+	var date = this.split("-")
+	if ((date.length === 1) || (date[0] < "1900")) {
+		return false
+	}
+	var yyyy = Number(date[0]) + 543;
+	var mm = THAIMONTH[Number(date[1]) - 1];
+	return (date[2] +' '+ mm + yyyy);
 } 
 
 String.prototype.numDate = function () 
 {	//Thai date (11 พค. 2557) to MySQL date (2014-05-11)
-    var mm = this.substring(this.indexOf(" ")+1, this.length-4);
-    var yyyy = parseInt(this.substr(this.length-4)) - 543;
-    return yyyy +"-"+ NUMMONTH[mm] +"-"+ this.substr(0, 2);
+	var date = this.split(" ")
+	if ((date.length === 1) || parseInt(date[1])) {
+		return false
+	}
+	var thmonth = date[1].substring(0, 3);
+	var mm = THAIMONTH.indexOf(thmonth) + 1
+	mm = (mm < 10? '0' : '') + mm
+    var yyyy = Number(date[1].substr(date[1].length-4)) - 543;
+    return yyyy +"-"+ mm +"-"+ date[0];
 } 
 
 String.prototype.nextdays = function (days)
@@ -119,9 +124,9 @@ function Ajax(url, params, callback)
 		if (http.readyState === 4 && http.status === 200) {
 			callback(http.responseText);
 		}
-//		if (/404|500|503|504/.test(http.status)) {
-//			callback(http.statusText);
-//		}
+		if (/404|500|503|504/.test(http.status)) {
+			callback(http.statusText);
+		}
 	}
 	http.send(params);
 }

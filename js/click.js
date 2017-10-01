@@ -443,7 +443,7 @@ function storePresentcell(pointing)
 				if (globalvar.uploadWindow && !globalvar.uploadWindow.closed) {
 					globalvar.uploadWindow.close();
 				}
-				globalvar.uploadWindow = window.open("jQuery-File-Upload", "_blank")    
+				globalvar.uploadWindow = window.open("jQuery-File-Upload", "_blank")
 				globalvar.uploadWindow.hnName = {"hn": hn, "patient": patient}
 				//hnName is a pre-defined variable in child window (jQuery-File-Upload)
 			}

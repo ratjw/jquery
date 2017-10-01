@@ -50,7 +50,8 @@ function fillall(book, table, start, until)
 
 	//i for rows in table (with head as the first row)
 	var i = 0
-	for (q; q < book.length; q++)
+	var booklength = book.length
+	for (q; q < booklength; q++)
 	{	
 		//step over each day that is not in QBOOK
 		while (date < book[q].opdate)
@@ -115,9 +116,10 @@ function refillall()
 
 	//i for rows in table (with head as the first row)
 	var i = 1
+	var booklength = book.length
 	while (i < tlength)		//make blank rows till the end of existing table
 	{
-		if (q < book.length) {
+		if (q < booklength) {
 			//step over each day that is not in book
 			while (date < book[q].opdate)
 			{
@@ -459,7 +461,7 @@ function findStartRowInBOOK(book, opdate)
 	while ((q < book.length) && (book[q].opdate < opdate)) {
 		q++
 	}
-	return q	
+	return (q < book.length)? q : -1
 }
 
 function holiday(date)
