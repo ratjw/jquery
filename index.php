@@ -42,8 +42,6 @@
 	 </tr>
     </tbody>
    </table>
-   <input type="text" id="datepickertbl" style="display:none">
-   <input type="text" id="datepickingtbl" style="display:none">
   </div>
  </div>
 
@@ -69,8 +67,6 @@
 	  </tr>
      </tbody>
     </table>
-    <input type="text" id="datepickerqueuetbl" style="display:none">
-    <input type="text" id="datepickingqueuetbl" style="display:none">
   </div>
  </div>
 </div>
@@ -107,8 +103,8 @@
 	</div>
   </div>
   <button id="btnExport">Export to xls</button>
-  <input type="text" id="monthpicker" style="margin-left:5px">
-  <input type="text" id="monthpicking" style="visibility:hidden">
+  <div id="monthpicker" style="margin-left:5px"></div>
+  <div id="monthpicking" style="display:none"></div>
   <table id="servicetbl">
    <tbody>
     <tr>
@@ -163,7 +159,7 @@
 
 <ul id="menu" style="display:none">
   <li id="addrow"><div>เพิ่ม case</div></li>
-  <li id="addnodate"><div>เพิ่ม case ไม่ระบุวัน</div></li>
+  <li id="postpone"><div>เลื่อนไป ไม่มีกำหนด</div></li>
   <li id="changedate"><div>เปลี่ยนวันที่</div></li>
   <li id="equip"><div>Equipment</div></li>
   <li id="history"><div>ประวัติการแก้ไข</div></li>
@@ -638,9 +634,6 @@ function namesix()
 				$resultz = "S";
 			}
 			elseif (strpos($_SERVER["SERVER_NAME"], "192.168") !== false)  {
-				$resultz = "S";
-			}
-			elseif (strpos($_SERVER["SERVER_NAME"], "10.6.166.92") !== false)  {
 				$resultz = "S";
 			}
 

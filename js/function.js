@@ -1,13 +1,3 @@
- 
-Date.prototype.ISOdate = function () 
-{	//Javascript Date Object to MySQL date (2014-05-11)
-    var yyyy = this.getFullYear();
-    var mm = this.getMonth()+1;
-	mm = (mm < 10)? "0"+mm : ""+mm;
-    var dd = this.getDate();
-	dd = (dd < 10)? "0"+dd : ""+dd;
-    return yyyy + "-" + mm + "-" + dd;
-} 
 
 String.prototype.thDate = function () 
 {	//MySQL date (2014-05-11) to Thai date (11 พค. 2557) 
@@ -24,7 +14,7 @@ String.prototype.numDate = function ()
 {	//Thai date (11 พค. 2557) to MySQL date (2014-05-11)
 	var date = this.split(" ")
 	if ((date.length === 1) || parseInt(date[1])) {
-		return false
+		return ""
 	}
 	var thmonth = date[1].substring(0, 3);
 	var mm = THAIMONTH.indexOf(thmonth) + 1
@@ -32,13 +22,6 @@ String.prototype.numDate = function ()
     var yyyy = Number(date[1].substr(date[1].length-4)) - 543;
     return yyyy +"-"+ mm +"-"+ date[0];
 } 
-
-String.prototype.nextdays = function (days)
-{	//MySQL date to be added or substract by days
-	var morrow = new Date(this);
-	morrow.setDate(morrow.getDate()+days);
-	return morrow.ISOdate();
-}
 
 String.prototype.getAge = function (toDate)
 {	//Calculate age at (toDate) (iso format) from birth date
@@ -87,12 +70,13 @@ String.prototype.getAge = function (toDate)
 
 function getOpdate(date)	//change Thai date from table to ISO date
 {
-	if (date === undefined) { return date }
+	if ((date === undefined) || (parseInt(date) === NaN)) {
+		return ""
+	}
 	if (date === "") {
 		return LARGESTDATE
-	} else {
-		return date.numDate()
 	}
+	return date.numDate()
 }
 
 function putOpdate(date)	//change date in book to show on table
@@ -187,18 +171,6 @@ function calculateWaitnum(tableID, $thisrow, thisOpdate)	//thisOpdate was set by
 	else if (prevOpdate === thisOpdate && thisOpdate === nextOpdate) {
 		return nextWaitNum? ((prevWaitNum + nextWaitNum) / 2) : (prevWaitNum + defaultWaitnum)
 	}	//in case of new blank row nextWaitNum is undefined
-}
-
-function addColor($this, thisOpdate) 
-{
-	var prevdate = $this.prev().children("td").eq(OPDATE).html()
-	prevdate = prevdate? prevdate.numDate() : ""
-	if (((thisOpdate !== prevdate) && ($this.prev()[0].className.indexOf("odd") < 0))
-	|| ((thisOpdate === prevdate) && ($this.prev()[0].className.indexOf("odd") >= 0))) {
-		$this.addClass("odd")
-	} else {
-		$this.removeClass()	//clear colored row that is moved to non-color opdate
-	}
 }
 
 function findPrevcell(event, editable, pointing) 

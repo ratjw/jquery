@@ -44,7 +44,7 @@ function entireMonth(fromDate)
 	var SERVICE = getfromBOOKCONSULT(fromDate, toDate)
 	showService(SERVICE, fromDate, toDate)
 
-	$(document).off("click")
+	$(document).off("click", '.ui-datepicker-title')
 	$("#btnExport").show()
 	$("#btnExport").on("click", function(e) {
 		e.preventDefault();
@@ -141,6 +141,7 @@ function showService(SERVICE, fromDate, toDate)
 			clearEditcell()
 			refillstaffqueue()
 			refillall()
+			$(window).off("resize")
 		}
 	})
 	getAdmitDischargeDate(SERVICE, fromDate, toDate)
@@ -186,7 +187,7 @@ function refillService(SERVICE, fromDate, toDate)
 jQuery.fn.extend({
 	filldataService : function(bookq, scase, color) {
 		var cells = this[0].cells
-		addColor(this, color)
+		addColorService(this, color)
 		cells[STCASENUM].innerHTML = scase
 		cells[STHN].innerHTML = bookq.hn
 		if (bookq.hn && globalvar.isPACS) {
@@ -205,7 +206,7 @@ jQuery.fn.extend({
 	}
 })
 
-function addColor($this, color)
+function addColorService($this, color)
 {
 	if (color) {
 		$this[0].className = color
@@ -441,7 +442,7 @@ function saveScontent(pointed, column, content)	//column name in MYSQL
 
 			rowi.className = newcolor		//tr.newclass
 			$(pointed).removeClass(color)	//prevent remained unused class
-			addColor($rowi, newcolor)		//td.newclass
+			addColorService($rowi, newcolor)		//td.newclass
 
 			//Not refillService because it may make next editTD back to old value when fast entry
 			//due to slow return from Ajax of previous input

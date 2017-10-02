@@ -128,8 +128,9 @@ function refillall()
 					fillrowdate(rows, i, date)	//existing row
 					fillblank(rows[i])	//clear a row for the day not in book
 					i++
-					if (i >= tlength)
+					if (i >= tlength) {
 						return
+					}
 					
 					madedate = date
 				}
@@ -143,16 +144,18 @@ function refillall()
 					}
 
 					i++
-					if (i >= tlength)
+					if (i >= tlength) {
 						return
+					}
 				}
 			}
 			fillrowdate(rows, i, date)	//existing row
 			filldata(book[q], rows[i])	//fill a row for the day in book
 			madedate = date
 			i++
-			if (i >= tlength)
+			if (i >= tlength) {
 				return
+			}
 			q++
 		}
 		else
@@ -168,16 +171,18 @@ function refillall()
 				}
 
 				i++
-				if (i >= tlength)
+				if (i >= tlength) {
 					return
+				}
 			}
 
 			//make a blank row
 			fillrowdate(rows, i, date)	//existing row
 			fillblank(rows[i])
 			i++
-			if (i >= tlength)
+			if (i >= tlength) {
 				return
+			}
 		}
 	}
 }
@@ -429,10 +434,23 @@ jQuery.fn.extend({
 		cells[CONTACT].innerHTML = bookq.contact
 		cells[QN].innerHTML = bookq.qn
 		this[0].title = bookq.waitnum
-		addColor(this, bookq.opdate)	//alternate day color
-		//tr[0] has className "ui-sortable-handle", so first case has no className 
+		addColor(this, bookq.opdate)
 	}
 })
+
+function addColor($this, bookqOpdate) 
+{
+	var prevdate = $this.prev().children("td").eq(OPDATE).html()
+	prevdate = prevdate? prevdate.numDate() : ""
+	//In LARGESTDATE, prevdate = "" but bookqOpdate = LARGESTDATE
+	//So LARGESTDATE cases has alternate colors
+	if (((bookqOpdate !== prevdate) && ($this.prev()[0].className.indexOf("odd") < 0))
+	|| ((bookqOpdate === prevdate) && ($this.prev()[0].className.indexOf("odd") >= 0))) {
+		$this.addClass("odd")
+	} else {
+		$this.removeClass("odd")	//clear colored row that is moved to non-color opdate
+	}
+}
 
 function fillStafflist()
 {
@@ -446,6 +464,23 @@ function fillStafflist()
 	staffmenu += '<li id="staffqueue"><div>Consults</div></li>'
 	document.getElementById("stafflist").innerHTML = stafflist
 	document.getElementById("staffmenu").innerHTML = staffmenu
+}
+ 
+Date.prototype.ISOdate = function () 
+{	//Javascript Date Object to MySQL date (2014-05-11)
+    var yyyy = this.getFullYear();
+    var mm = this.getMonth()+1;
+	mm = (mm < 10)? "0"+mm : ""+mm;
+    var dd = this.getDate();
+	dd = (dd < 10)? "0"+dd : ""+dd;
+    return yyyy + "-" + mm + "-" + dd;
+} 
+
+String.prototype.nextdays = function (days)
+{	//MySQL date to be added or substract by days
+	var morrow = new Date(this);
+	morrow.setDate(morrow.getDate()+days);
+	return morrow.ISOdate();
 }
 
 function getSunday(date)	//get Sunday in the same week
