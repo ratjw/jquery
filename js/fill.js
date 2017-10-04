@@ -20,7 +20,7 @@ function fillupstart()
 
 	//scroll to today
 	var today = new Date().ISOdate().thDate()
-	var thishead = $("tr:contains(" + today + ")").eq(0)//.prevAll(":has(th)").first()
+	var thishead = $("tr:contains(" + today + ")").eq(0)
 	$('#tblcontainer').animate({
 		scrollTop: thishead.offset().top
 	}, 300);
@@ -234,51 +234,6 @@ function refillOneDay(opdate)
 	}
 }
 
-function refillAnotherTableCell(tableID, cellindex, qn)
-{
-	var rowi
-	$.each($("#" + tableID + " tr:has(td)"), function() {
-		rowi = this
-		return (this.cells[QN].innerHTML !== qn);
-	})
-	if (rowi.cells[QN].innerHTML !== qn) {
-		return
-	}
-
-	var book = globalvar.BOOK	//Consults cases have no link to others
-	var bookq = getBOOKrowByQN(book, qn)
-	if (!bookq) {
-		return
-	}
-
-	var cells = rowi.cells
-
-	switch(cellindex)
-	{
-		case ROOMTIME:
-			cells[ROOMTIME].innerHTML = (bookq.oproom? bookq.oproom : "")
-				+ (bookq.optime? "<br>" + bookq.optime : "")
-			break
-		case STAFFNAME:
-			cells[STAFFNAME].innerHTML = bookq.staffname
-			break
-		case HN:
-			cells[HN].innerHTML = bookq.hn
-			cells[NAME].innerHTML = bookq.patient
-				+ "<br>อายุ " + (bookq.dob? bookq.dob.getAge(bookq.opdate) : "")
-			break
-		case DIAGNOSIS:
-			cells[DIAGNOSIS].innerHTML = bookq.diagnosis
-			break
-		case TREATMENT:
-			cells[TREATMENT].innerHTML = bookq.treatment
-			break
-		case CONTACT:
-			cells[CONTACT].innerHTML = bookq.contact
-			break
-	}
-}
-
 function makenextrow(table, date)	//create and decorate new row
 {
 	var tbody = table.getElementsByTagName("tbody")[0]
@@ -450,20 +405,6 @@ function addColor($this, bookqOpdate)
 	} else {
 		$this.removeClass("odd")	//clear colored row that is moved to non-color opdate
 	}
-}
-
-function fillStafflist()
-{
-	var stafflist = ''
-	var staffmenu = ''
-	for (var each = 0; each < STAFF.length; each++)
-	{
-		stafflist += '<li><div>' + STAFF[each] + '</div></li>'
-		staffmenu += '<li id="staffqueue"><div>' + STAFF[each] + '</div></li>'
-	}
-	staffmenu += '<li id="staffqueue"><div>Consults</div></li>'
-	document.getElementById("stafflist").innerHTML = stafflist
-	document.getElementById("staffmenu").innerHTML = staffmenu
 }
  
 Date.prototype.ISOdate = function () 

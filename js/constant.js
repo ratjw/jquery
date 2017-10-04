@@ -23,16 +23,16 @@ var CONTACT		= 7;
 var QN			= 8;
 
 //servicetbl
-var STCASENUM	= 0;
-var STHN		= 1;
-var STNAME		= 2;
-var STDIAGNOSIS	= 3;
-var STTREATMENT	= 4;
-var STADMISSION	= 5;
-var STFINAL		= 6;
-var STADMIT		= 7;
-var STDISCHARGE	= 8;
-var STQN		= 9;
+var CASENUMSERVICE		= 0;
+var HNSERVICE			= 1;
+var NAMESERVICE			= 2;
+var DIAGNOSISSERVICE	= 3;
+var TREATMENTSERVICE	= 4;
+var ADMISSIONSERVICE	= 5;
+var FINALSERVICE		= 6;
+var ADMITSERVICE		= 7;
+var DISCHARGESERVICE	= 8;
+var QNSERVICE			= 9;
 
 //use for row color
 var NAMEOFDAYABBR	= ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];

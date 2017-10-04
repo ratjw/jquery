@@ -139,7 +139,7 @@ function loading(response)
 			fillForScrub()
 		} else {
 			fillupstart();
-			fillStafflist()
+			setStafflist()
 		}
 	} else {
 		response = localStorage.getItem('ALLBOOK')
@@ -148,11 +148,25 @@ function loading(response)
 			alert("Server Error", error + "<br><br>Use localStorage instead");
 			updateBOOK(response)
 			fillupstart();
-			fillStafflist()
+			setStafflist()
 		} else {
 			alert("Server Error", error + "<br><br>No localStorage backup");
 		}
 	}
+}
+
+function setStafflist()
+{
+	var stafflist = ''
+	var staffmenu = ''
+	for (var each = 0; each < STAFF.length; each++)
+	{
+		stafflist += '<li><div>' + STAFF[each] + '</div></li>'
+		staffmenu += '<li id="staffqueue"><div>' + STAFF[each] + '</div></li>'
+	}
+	staffmenu += '<li id="staffqueue"><div>Consults</div></li>'
+	document.getElementById("stafflist").innerHTML = stafflist
+	document.getElementById("staffmenu").innerHTML = staffmenu
 }
 
 function updateBOOK(response)
@@ -222,9 +236,9 @@ function onChange()
 	if ($("#editcell").is(":visible")) {
 		var whereisEditcell = $("#editcell").siblings("table").attr("id")
 		if (whereisEditcell === "servicetbl") {
-			return savePreviouscellService()	//Service table
+			return savePreviousCellService()	//Service table
 		} else {
-			return savePreviouscell()			//Main and Staffqueue tables
+			return savePreviousCell()			//Main and Staffqueue tables
 		}
 	}
 	return false

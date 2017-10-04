@@ -43,6 +43,14 @@ require_once "book.php";
 			$discharge = $DateTime->format('Y-m-d');
 		}
 //echo "admit ".$admit." discharge ".$discharge;exit;
+		$date1 = date_create($admit);
+		$date2 = date_create($opdate);
+		$diff = date_diff($date1, $date2);
+		$datediff = $diff->format("%R%a");
+
+		if (($datediff < 0) || ($datediff > 30)) {
+			continue;
+		}
 
 		if (!$OldAdmit) {
 			if (!$OldDischarge && $discharge) {

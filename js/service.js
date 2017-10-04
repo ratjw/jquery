@@ -154,7 +154,7 @@ function refillService(SERVICE, fromDate, toDate)
 	$.each( STAFF, function() {
 		var staffname = String(this)
 		i++
-		var $thisCase = $('#servicetbl tr').eq(i).children("td").eq(STCASENUM)
+		var $thisCase = $('#servicetbl tr').eq(i).children("td").eq(CASENUMSERVICE)
 		if ($thisCase.prop("colSpan") === 1) {
 			$thisCase.prop("colSpan", 8)
 				.addClass("serviceStaff")
@@ -169,9 +169,9 @@ function refillService(SERVICE, fromDate, toDate)
 				i++
 				scase++
 				var $thisRow = $('#servicetbl tr').eq(i).children("td")
-				if ($thisRow.eq(STCASENUM).prop("colSpan") > 1) {
-					$thisRow.eq(STCASENUM).prop("colSpan", 1)
-						.nextUntil($thisRow.eq(STQN)).show()
+				if ($thisRow.eq(CASENUMSERVICE).prop("colSpan") > 1) {
+					$thisRow.eq(CASENUMSERVICE).prop("colSpan", 1)
+						.nextUntil($thisRow.eq(QNSERVICE)).show()
 				}
 				$('#servicetbl tr').eq(i)
 						.filldataService(this, scase, color)
@@ -188,21 +188,21 @@ jQuery.fn.extend({
 	filldataService : function(bookq, scase, color) {
 		var cells = this[0].cells
 		addColorService(this, color)
-		cells[STCASENUM].innerHTML = scase
-		cells[STHN].innerHTML = bookq.hn
+		cells[CASENUMSERVICE].innerHTML = scase
+		cells[HNSERVICE].innerHTML = bookq.hn
 		if (bookq.hn && globalvar.isPACS) {
-			cells[STHN].className = "pacs"
+			cells[HNSERVICE].className = "pacs"
 		}
-		cells[STNAME].innerHTML = bookq.patient
+		cells[NAMESERVICE].innerHTML = bookq.patient
 			+ (bookq.dob? ("<br>อายุ " + putAgeOpdate(bookq.dob, bookq.opdate)) : "")
-		cells[STNAME].className = "camera"
-		cells[STDIAGNOSIS].innerHTML = bookq.diagnosis
-		cells[STTREATMENT].innerHTML = bookq.treatment
-		cells[STADMISSION].innerHTML = bookq.admission
-		cells[STFINAL].innerHTML = bookq.final
-		cells[STADMIT].innerHTML = (bookq.admit? bookq.admit : "")
-		cells[STDISCHARGE].innerHTML = (bookq.discharge? bookq.discharge : "")
-		cells[STQN].innerHTML = bookq.qn
+		cells[NAMESERVICE].className = "camera"
+		cells[DIAGNOSISSERVICE].innerHTML = bookq.diagnosis
+		cells[TREATMENTSERVICE].innerHTML = bookq.treatment
+		cells[ADMISSIONSERVICE].innerHTML = bookq.admission
+		cells[FINALSERVICE].innerHTML = bookq.final
+		cells[ADMITSERVICE].innerHTML = (bookq.admit? bookq.admit : "")
+		cells[DISCHARGESERVICE].innerHTML = (bookq.discharge? bookq.discharge : "")
+		cells[QNSERVICE].innerHTML = bookq.qn
 	}
 })
 
@@ -211,12 +211,12 @@ function addColorService($this, color)
 	if (color) {
 		$this[0].className = color
 		var $cell = $this.children("td")
-		var $final = $cell.eq(STFINAL)
+		var $final = $cell.eq(FINALSERVICE)
 		if (/Readmission/.test(color)) {
-			$cell.eq(STADMISSION).addClass("Readmission")
+			$cell.eq(ADMISSIONSERVICE).addClass("Readmission")
 		}
 		if (/Reoperation/.test(color)) {
-			$cell.eq(STTREATMENT).addClass("Reoperation")
+			$cell.eq(TREATMENTSERVICE).addClass("Reoperation")
 		}
 		if (/Infection/.test(color)) {
 			$final.addClass("Infection")
@@ -261,14 +261,14 @@ function fillAdmitDischargeDate(SERVICE)
 			if (this.staffname === staffname) {
 				i++
 				var $thisRow = $('#servicetbl tr').eq(i).children("td")
-				if (this.admit && !$thisRow.eq(STADMIT).html()) {
+				if (this.admit && !$thisRow.eq(ADMITSERVICE).html()) {
 					document.getElementById("Admit").innerHTML++
 				}
-				$thisRow.eq(STADMIT).html(this.admit)
-				if (this.discharge && !$thisRow.eq(STDISCHARGE).html()) {
+				$thisRow.eq(ADMITSERVICE).html(this.admit)
+				if (this.discharge && !$thisRow.eq(DISCHARGESERVICE).html()) {
 					document.getElementById("Discharge").innerHTML++
 				}
-				$thisRow.eq(STDISCHARGE).html(this.discharge)
+				$thisRow.eq(DISCHARGESERVICE).html(this.discharge)
 			}
 		});
 	})
@@ -290,13 +290,13 @@ function countAllServices()
 
 function clickservice(clickedCell)
 {
-	savePreviouscellService()
-	storePresentScell(clickedCell)
+	savePreviousCellService()
+	storePresentCellService(clickedCell)
 }
 
 function Skeyin(event, keycode, pointing)
 {
-	var SEDITABLE	= [STDIAGNOSIS, STTREATMENT, STADMISSION, STFINAL]
+	var SEDITABLE	= [DIAGNOSISSERVICE, TREATMENTSERVICE, ADMISSIONSERVICE, FINALSERVICE]
 	var thiscell
 
 	if (keycode === 27) {
@@ -310,13 +310,13 @@ function Skeyin(event, keycode, pointing)
 		return
 	}
 	if (keycode === 9) {
-		savePreviouscellService()
+		savePreviousCellService()
 		if (event.shiftKey)
 			thiscell = findPrevcell(event, SEDITABLE, pointing)
 		else
 			thiscell = findNextcell(event, SEDITABLE, pointing)
 		if (thiscell) {
-			storePresentScell(thiscell)
+			storePresentCellService(thiscell)
 		} else {
 			clearEditcell()
 			window.focus()
@@ -328,10 +328,10 @@ function Skeyin(event, keycode, pointing)
 		if (event.shiftKey || event.ctrlKey) {
 			return
 		}
-		savePreviouscellService()
+		savePreviousCellService()
 		thiscell = findNextRow(event, SEDITABLE, pointing)
 		if (thiscell) {
-			storePresentScell(thiscell)
+			storePresentCellService(thiscell)
 		} else {
 			clearEditcell()
 			window.focus()
@@ -341,7 +341,7 @@ function Skeyin(event, keycode, pointing)
 	}
 }
 
-function savePreviouscellService()
+function savePreviousCellService()
 {
 	var oldcontent = $("#editcell").data("oldcontent")
 	var newcontent = getEditcellHtml()
@@ -352,37 +352,37 @@ function savePreviouscellService()
 	var content = ""
 	switch(pointed.cellIndex)
 	{
-		case STCASENUM:
-		case STHN:
-		case STNAME:
+		case CASENUMSERVICE:
+		case HNSERVICE:
+		case NAMESERVICE:
 			return false
-		case STDIAGNOSIS:
+		case DIAGNOSISSERVICE:
 			content = getEditcellHtml()
-			saveScontent(pointed, "diagnosis", content)
+			saveContentService(pointed, "diagnosis", content)
 			return true
-		case STTREATMENT:
+		case TREATMENTSERVICE:
 			content = getEditcellHtml()
-			saveScontent(pointed, "treatment", content)
+			saveContentService(pointed, "treatment", content)
 			return true
-		case STADMISSION:
+		case ADMISSIONSERVICE:
 			content = getEditcellHtml()
-			saveScontent(pointed, "admission", content)
+			saveContentService(pointed, "admission", content)
 			return true
-		case STFINAL:
+		case FINALSERVICE:
 			content = getEditcellHtml()
-			saveScontent(pointed, "final", content)
+			saveContentService(pointed, "final", content)
 			return true
-		case STADMIT:
-		case STDISCHARGE:
+		case ADMITSERVICE:
+		case DISCHARGESERVICE:
 			return false
 	}
 }
 
-function saveScontent(pointed, column, content)	//column name in MYSQL
+function saveContentService(pointed, column, content)	//column name in MYSQL
 {
 	var $rowi = $(pointed).closest('tr')
 	var rowi = $rowi[0]
-	var qn = rowi.cells[STQN].innerHTML
+	var qn = rowi.cells[QNSERVICE].innerHTML
 	var oldcontent = $("#editcell").data("oldcontent")
 
 	pointed.innerHTML = content? content : ''	//just for show instantly
@@ -447,28 +447,28 @@ function saveScontent(pointed, column, content)	//column name in MYSQL
 			//Not refillService because it may make next editTD back to old value when fast entry
 			//due to slow return from Ajax of previous input
 		} else {
-			alert("saveScontent", response)
+			alert("saveContentService", response)
 			pointed.innerHTML = oldcontent		//return to previous content
 		}
 	}
 }
 
-function storePresentScell(pointing)
+function storePresentCellService(pointing)
 {
 	var cindex = pointing.cellIndex
 
 	switch(cindex)
 	{
-		case STCASENUM:
+		case CASENUMSERVICE:
 			break
-		case STHN:
+		case HNSERVICE:
 			clearEditcell()
 			if (globalvar.isPACS) {
 				PACS(pointing.innerHTML)
 			}
 			break
-		case STNAME:
-			var hn = $(pointing).closest('tr').children("td").eq(STHN).html()
+		case NAMESERVICE:
+			var hn = $(pointing).closest('tr').children("td").eq(HNSERVICE).html()
 			var patient = pointing.innerHTML
 
 			clearEditcell()
@@ -481,14 +481,14 @@ function storePresentScell(pointing)
 				//hnName is a pre-defined variable in child window (jQuery-File-Upload)
 			}
 			break
-		case STDIAGNOSIS:
-		case STTREATMENT:
-		case STADMISSION:
-		case STFINAL:
+		case DIAGNOSISSERVICE:
+		case TREATMENTSERVICE:
+		case ADMISSIONSERVICE:
+		case FINALSERVICE:
 			createEditcell(pointing)
 			break
-		case STADMIT:
-		case STDISCHARGE:
+		case ADMITSERVICE:
+		case DISCHARGESERVICE:
 			clearEditcell()
 			break
 	}

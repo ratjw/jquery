@@ -140,6 +140,11 @@ function getBOOKrowByQN(book, qn)
 	return bookq
 }
 
+function ConsultsTbl(tableID)
+{  
+	return ((tableID === "queuetbl") && ($('#titlename').html() === "Consults"))? true : false
+}
+
 function calculateWaitnum(tableID, $thisrow, thisOpdate)	//thisOpdate was set by caller
 {	//queue within each day is sorted by waitnum only, not staffname
 	var prevWaitNum = $thisrow.prev()[0]
@@ -154,10 +159,8 @@ function calculateWaitnum(tableID, $thisrow, thisOpdate)	//thisOpdate was set by
 	var $nextRowCell = $thisrow.next().children("td")
 	var prevOpdate = getOpdate($prevRowCell.eq(OPDATE).html())
 	var nextOpdate = getOpdate($nextRowCell.eq(OPDATE).html())
-	var defaultWaitnum = 1
-	if ((tableID === "queuetbl") && ($('#titlename').html() === "Consults")) {
-		defaultWaitnum = -1		//Consults cases have negative waitnum
-	}
+	var defaultWaitnum = (ConsultsTbl(tableID))? -1 : 1
+	//Consults cases have negative waitnum
 
 	if (prevOpdate !== thisOpdate && thisOpdate !== nextOpdate) {
 		return defaultWaitnum

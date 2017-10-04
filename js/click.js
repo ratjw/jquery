@@ -1,7 +1,7 @@
 function clicktable(clickedCell)
 {
-	savePreviouscell()
-	storePresentcell(clickedCell)
+	savePreviousCell()
+	storePresentCell(clickedCell)
 }
 
 function keyin(event, keycode, pointing)
@@ -21,7 +21,7 @@ function keyin(event, keycode, pointing)
 	if (keycode === 9) {
 		$('#menu').hide();
 		$('#stafflist').hide();
-		savePreviouscell()
+		savePreviousCell()
 		if (event.shiftKey) {
 			thiscell = findPrevcell(event, EDITABLE, pointing)
 			if ((thiscell.cellIndex === HN) && (thiscell.innerHTML !== "")) {
@@ -34,7 +34,7 @@ function keyin(event, keycode, pointing)
 			}
 		}
 		if (thiscell) {
-			storePresentcell(thiscell)
+			storePresentCell(thiscell)
 		} else {
 			clearEditcell()
 			window.focus()
@@ -48,13 +48,13 @@ function keyin(event, keycode, pointing)
 		if (event.shiftKey || event.ctrlKey) {
 			return
 		}
-		savePreviouscell()
+		savePreviousCell()
 		thiscell = findNextRow(event, EDITABLE, pointing)
 		if ((thiscell.cellIndex === HN) && (thiscell.innerHTML !== "")) {
 			thiscell = findNextcell(event, EDITABLE, $(thiscell))
 		}
 		if (thiscell) {
-			storePresentcell(thiscell)
+			storePresentCell(thiscell)
 		} else {
 			clearEditcell()
 			window.focus()
@@ -69,7 +69,7 @@ function keyin(event, keycode, pointing)
 	}
 }
 
-function savePreviouscell() 
+function savePreviousCell() 
 {
 	var oldcontent = $("#editcell").data("oldcontent")
 	var newcontent = getEditcellHtml()
@@ -121,14 +121,18 @@ function getEditcellHtml()
 			.replace(HTMLNOTBR, '')
 }
 
+//	var ORSURG	= "XSU"		(theatre)
+//	var ORNEURO	= "4"		(orroom)
+//	var ORTIME	= "09.00"	(ortime)
+//	var roomtime = <input orroom + input ortime>
+//	content = theatre (XSU)
 function saveRoomTime(pointed, content)
 {
 	var oldcontent = $("#editcell").data("oldcontent")
-	var waitnum = 1
 	var tableID = $(pointed).closest("table").attr("id")
-	if ((tableID === "queuetbl") && ($('#titlename').html() === "Consults")) {
-		waitnum = -1		//negative waitnum in Consults cases
-	}
+	var waitnum = (ConsultsTbl(tableID))? -1 : 1
+	//negative waitnum in Consults cases
+
 	var $cells = $(pointed).closest('tr').children("td")
 	var opdate = getOpdate($cells.eq(OPDATE).html())
 	var qn = $cells.eq(QN).html()
@@ -194,19 +198,35 @@ function saveContent(pointed, column, content)	//use only "pointed" to save data
 
 	content = URIcomponent(content)	//take care of white space, double qoute, 
 									//single qoute, and back slash
+	var args = {
+		"pointed": pointed, 
+		"column": column, 
+		"content": content, 
+		"qn": qn, 
+		"oldcontent": oldcontent, 
+		"opdate": opdate, 
+		"oproom": oproom, 
+		"optime": optime, 
+		"$row": $row, 
+		"$cells": $cells, 
+		"tableID": tableID, 
+		"staffnamequeue": staffnamequeue, 
+		"staffname": staffname, 
+		"cellindex": cellindex
+	}
 	if (qn) {
-		saveContentQN(pointed, column, content, qn, oldcontent, tableID, staffnamequeue, staffname, cellindex)
+		saveContentQN(args)
 	} else {
-		saveContentNoQN(pointed, column, content, oldcontent, opdate, oproom, optime, $row, $cells, tableID, staffnamequeue, staffname)
+		saveContentNoQN(args)
 	}
 }
 
-function saveContentQN(pointed, column, content, qn, oldcontent, tableID, staffnamequeue, staffname, cellindex)
+function saveContentQN(args)
 {
 	var sql = "sqlReturnbook=UPDATE book SET "
-	sql += column +" = '"+ content
+	sql += args.column +" = '"+ args.content
 	sql += "', editor='"+ globalvar.user
-	sql += "' WHERE qn = "+ qn +";"
+	sql += "' WHERE qn = "+ args.qn +";"
 
 	Ajax(MYSQLIPHP, sql, callbacksaveContentQN);
 
@@ -214,57 +234,57 @@ function saveContentQN(pointed, column, content, qn, oldcontent, tableID, staffn
 	{
 		if (/BOOK/.test(response)) {
 			updateBOOK(response)
-			if (tableID === 'tbl') {
+			if (args.tableID === 'tbl') {
 				//Remote effect from editing on tbl to queuetbl
 				//Staffqueue is showing
 				if ($("#queuewrapper").css('display') === 'block') {
-					if ((oldcontent === staffnamequeue)					//this staffnamequeue was changed to another staff
-						|| (pointed.innerHTML === staffnamequeue)) {	//change to this staffnamequeue
+					if ((args.oldcontent === args.staffnamequeue)				//this staffnamequeue was changed to another staff
+						|| (args.pointed.innerHTML === args.staffnamequeue)) {	//change to this staffnamequeue
 						//New case or change to/from this staffname, update all queuetbl
 						refillstaffqueue()
 					} else {	//input is not staffname, but on this staffnamequeue row
-						if (staffnamequeue === staffname) {
-							refillAnotherTableCell('queuetbl', cellindex, qn)
+						if (args.staffnamequeue === args.staffname) {
+							refillAnotherTableCell('queuetbl', args.cellindex, args.qn)
 						}
 					}
 				}
 			} else {
 				//staffname has been changed
-				if (column === "staffname") {
+				if (args.column === "staffname") {
 					refillstaffqueue()
 				}
 				//consults are not apparent on tbl, no remote effect from editing on queuetbl
 				if ($('#titlename').html() !== "Consults") {
 					//Remote effect from editing on queuetbl to tbl
 					//fill corresponding row
-					refillAnotherTableCell('tbl', cellindex, qn)
+					refillAnotherTableCell('tbl', args.cellindex, args.qn)
 				}
 			}
 		} else {
 			alert("saveContentQN", response)
-			pointed.innerHTML = oldcontent
+			args.pointed.innerHTML = args.oldcontent
 			//return to previous content
 		}
 	}
 }
 
-function saveContentNoQN(pointed, column, content, oldcontent, opdate, oproom, optime, $row, $cells, tableID, staffnamequeue, staffname)
+function saveContentNoQN(args)
 {
 	//new case, calculate waitnum
-	waitnum = calculateWaitnum(tableID, $row, opdate)
+	waitnum = calculateWaitnum(args.tableID, args.$row, opdate)
 	//store waitnum in row title
-	$row[0].title = waitnum
+	args.$row[0].title = waitnum
 
-	if ((tableID === "queuetbl") && (column !== "staffname")) {
+	if ((args.tableID === "queuetbl") && (args.column !== "staffname")) {
 		var sql = "sqlReturnbook=INSERT INTO book ("
-		sql += "waitnum, opdate, oproom, optime, staffname, "+ column +", editor) VALUES ("
-		sql += waitnum + ", '" + opdate +"', '" + oproom +"', '" + optime + "', '"
-		sql += staffname + "', '"+ content +"', '"+ globalvar.user +"');"
+		sql += "waitnum, opdate, oproom, optime, staffname, "+ args.column +", editor) VALUES ("
+		sql += waitnum + ", '" + args.opdate +"', '" + args.oproom +"', '" + args.optime + "', '"
+		sql += args.staffname + "', '"+ args.content +"', '"+ globalvar.user +"');"
 	} else {
 		var sql = "sqlReturnbook=INSERT INTO book ("
-		sql += "waitnum, opdate, oproom, optime, "+ column +", editor) VALUES ("
-		sql += waitnum + ", '" + opdate +"', '" + oproom +"', '" + optime
-		sql += "', '"+ content +"', '"+ globalvar.user +"');"
+		sql += "waitnum, opdate, oproom, optime, "+ args.column +", editor) VALUES ("
+		sql += waitnum + ", '" + args.opdate +"', '" + args.oproom +"', '" + args.optime
+		sql += "', '"+ args.content +"', '"+ globalvar.user +"');"
 	}
 
 	Ajax(MYSQLIPHP, sql, callbacksaveContentNoQN);
@@ -275,39 +295,36 @@ function saveContentNoQN(pointed, column, content, oldcontent, opdate, oproom, o
 			updateBOOK(response)
 
 			//find and fill qn of new case input in that row, either tbl or queuetbl
-			var book = globalvar.BOOK
-			if ((tableID === "queuetbl") && ($('#titlename').html() === "Consults")) {
-				book = globalvar.CONSULT
-			}
+			var book = (ConsultsTbl(args.tableID))? globalvar.CONSULT : globalvar.BOOK
 			var qn = Math.max.apply(Math, $.map(book, function(bookq, i){
 						return bookq.qn
 					}))
-			$cells.eq(QN).html(qn)
+			args.$cells.eq(QN).html(qn)
 
-			if (tableID === 'tbl') {
+			if (args.tableID === 'tbl') {
 				//Remote effect from editing on tbl to queuetbl
 				//Staffqueue is showing
 				if ($("#queuewrapper").css('display') === 'block') {
 					//Create new case to this staffname
-					if (pointed.innerHTML === staffnamequeue) {
+					if (args.pointed.innerHTML === args.staffnamequeue) {
 						refillstaffqueue()
 					}
 				}
 			} else {
 				//staffname has been changed
-				if (column === "staffname") {
+				if (args.column === "staffname") {
 					refillstaffqueue()
 				}
 				//consults are not apparent on tbl
 				if ($('#titlename').html() !== "Consults") {
 					//Remote effect from editing on queuetbl to tbl
 					//Add new case to tbl, not just refillAnotherTableCell
-					refillOneDay(opdate)
+					refillOneDay(args.opdate)
 				}
 			}
 		} else {
 			alert("saveContentNoQN", response)
-			pointed.innerHTML = oldcontent
+			args.pointed.innerHTML = args.oldcontent
 			//return to previous content
 		}
 	}
@@ -357,10 +374,7 @@ function saveHN(pointed, hn, content)
 		if (/BOOK/.test(response)) {
 			updateBOOK(response)
 
-			var book = globalvar.BOOK
-			if ((tableID === "queuetbl") && ($('#titlename').html() === "Consults")) {
-				book = globalvar.CONSULT
-			}
+			var book = (ConsultsTbl(tableID))? globalvar.CONSULT : globalvar.BOOK
 			var qn = Math.max.apply(Math, $.map(book, function(row, i){
 					return row.qn
 				}))
@@ -407,7 +421,52 @@ function saveHN(pointed, hn, content)
 	}
 }
 
-function storePresentcell(pointing)
+function refillAnotherTableCell(tableID, cellindex, qn)
+{
+	var rowi
+	$.each($("#" + tableID + " tr:has(td)"), function() {
+		rowi = this
+		return (this.cells[QN].innerHTML !== qn);
+	})
+	if (rowi.cells[QN].innerHTML !== qn) {
+		return
+	}
+
+	var book = globalvar.BOOK	//Consults cases have no link to others
+	var bookq = getBOOKrowByQN(book, qn)
+	if (!bookq) {
+		return
+	}
+
+	var cells = rowi.cells
+
+	switch(cellindex)
+	{
+		case ROOMTIME:
+			cells[ROOMTIME].innerHTML = (bookq.oproom? bookq.oproom : "")
+				+ (bookq.optime? "<br>" + bookq.optime : "")
+			break
+		case STAFFNAME:
+			cells[STAFFNAME].innerHTML = bookq.staffname
+			break
+		case HN:
+			cells[HN].innerHTML = bookq.hn
+			cells[NAME].innerHTML = bookq.patient
+				+ "<br>อายุ " + (bookq.dob? bookq.dob.getAge(bookq.opdate) : "")
+			break
+		case DIAGNOSIS:
+			cells[DIAGNOSIS].innerHTML = bookq.diagnosis
+			break
+		case TREATMENT:
+			cells[TREATMENT].innerHTML = bookq.treatment
+			break
+		case CONTACT:
+			cells[CONTACT].innerHTML = bookq.contact
+			break
+	}
+}
+
+function storePresentCell(pointing)
 {
 	switch(pointing.cellIndex)
 	{
@@ -416,7 +475,7 @@ function storePresentcell(pointing)
 			mainMenu(pointing)
 			break
 		case ROOMTIME:
-			getRoomTime(pointing)
+			selectRoomTime(pointing)
 			createEditcellRoomtime(pointing)
 			break
 		case STAFFNAME:
@@ -454,6 +513,89 @@ function storePresentcell(pointing)
 			createEditcell(pointing)
 			break
 	}
+}
+
+function selectRoomTime(pointing)
+{
+	var ORSURG	= "XSU"
+	var ORNEURO	= "4"
+	var ORTIME	= "09.00"
+	var roomtime = pointing.innerHTML
+	roomtime = roomtime? roomtime.split("<br>") : ""
+	var oproom = roomtime[0]? roomtime[0] : ""
+	var optime = roomtime[1]? roomtime[1] : ""
+	var theatre = (oproom && oproom.match(/\D+/))? oproom.match(/\D+/)[0] : ORSURG
+	var $editcell = $("#editcell")
+	$editcell.css("height", "")
+	$editcell.html(theatre)
+	$editcell.append('<input id="orroom"><br><input id="ortime">')
+	var $orroom = $("#orroom")
+	var $ortime = $("#ortime")
+	$orroom.val(oproom? oproom.match(/\d+/)[0] : "(" + ORNEURO + ")")
+
+	var orroom = ""
+	$orroom.spinner({
+		min: 1,
+		max: 20,
+		step: -1,
+		spin: function( event, ui ) {
+			if ($orroom.val() === "(" + ORNEURO + ")") {
+				orroom = ORNEURO
+			}
+		},
+		stop: function( event, ui ) {
+			if (orroom) {
+				$orroom.val(orroom)
+				orroom = ""	
+			}
+		}
+	});
+
+	var ortime
+	$ortime.spinner({
+		min: 00,
+		max: 24,
+		step: -0.5,
+		create: function( event, ui ) {
+			$ortime.val(optime? optime : "(" + ORTIME + ")")
+		},
+		spin: function( event, ui ) {
+			if ($ortime.val() === "(" + ORTIME + ")") {
+				ortime = ORTIME
+			} else {
+				ortime = decimalToTime(ui.value)
+			}
+		},
+		stop: function( event, ui ) {
+			if (ortime) {
+				$ortime.val(ortime)
+				ortime = ""	
+			}
+		}
+	})
+}
+
+function stafflist(pointing)
+{
+	var $stafflist = $("#stafflist")
+	$stafflist.menu({
+		select: function( event, ui ) {
+			var staffname = ui.item.text()
+			saveContent(pointing, "staffname", staffname)
+			$(pointing).html(staffname)
+			clearEditcell()
+			$stafflist.hide()		//to disappear after selection
+			event.stopPropagation()
+		}
+	});
+
+	var width = $stafflist.outerWidth()
+
+	$stafflist.appendTo($(pointing).closest('div'))
+	reposition($stafflist, "left top", "left bottom", pointing)
+	menustyle($stafflist, pointing, width)
+	reposition($stafflist, "left top", "left bottom", pointing)
+	//To make it show on first click
 }
 
 function createEditcellOpdate(pointing)

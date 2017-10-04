@@ -11,7 +11,7 @@ function mainMenu(pointing)
 	var qn = tcell[QN].innerHTML
 	var consult = false
 	var book = globalvar.BOOK
-	if ((tableID === "queuetbl") && ($('#titlename').html() === "Consults")) {
+	if (ConsultsTbl(tableID)) {
 		book = globalvar.CONSULT
 		consult = true
 	}
@@ -104,29 +104,6 @@ function disable(item, id)
 	}
 }
 
-function stafflist(pointing)
-{
-	var $stafflist = $("#stafflist")
-	$stafflist.menu({
-		select: function( event, ui ) {
-			var staffname = ui.item.text()
-			saveContent(pointing, "staffname", staffname)
-			$(pointing).html(staffname)
-			clearEditcell()
-			$stafflist.hide()		//to disappear after selection
-			event.stopPropagation()
-		}
-	});
-
-	var width = $stafflist.outerWidth()
-
-	$stafflist.appendTo($(pointing).closest('div'))
-	reposition($stafflist, "left top", "left bottom", pointing)
-	menustyle($stafflist, pointing, width)
-	reposition($stafflist, "left top", "left bottom", pointing)
-	//To make it show on first click
-}
-
 function menustyle($me, target, width)
 {
 	if ($me.position().top > $(target).position().top) {
@@ -141,66 +118,6 @@ function menustyle($me, target, width)
 	})
 }
 
-function getRoomTime(pointing)
-{
-	var ORSURG 		= "XSU"
-	var ORNEURO 	= "4"
-	var ORTIME 		= "09.00"
-	var roomtime = pointing.innerHTML
-	roomtime = roomtime? roomtime.split("<br>") : ""
-	var oproom = roomtime[0]? roomtime[0] : ""
-	var optime = roomtime[1]? roomtime[1] : ""
-	var theatre = (oproom && oproom.match(/\D+/))? oproom.match(/\D+/)[0] : ORSURG
-	var $editcell = $("#editcell")
-	$editcell.css("height", "")
-	$editcell.html(theatre)
-	$editcell.append('<input id="orroom"><br><input id="ortime">')
-	var $orroom = $("#orroom")
-	var $ortime = $("#ortime")
-	$orroom.val(oproom? oproom.match(/\d+/)[0] : "(" + ORNEURO + ")")
-
-	var orroom = ""
-	$orroom.spinner({
-		min: 1,
-		max: 20,
-		step: -1,
-		spin: function( event, ui ) {
-			if ($orroom.val() === "(" + ORNEURO + ")") {
-				orroom = ORNEURO
-			}
-		},
-		stop: function( event, ui ) {
-			if (orroom) {
-				$orroom.val(orroom)
-				orroom = ""	
-			}
-		}
-	});
-
-	var ortime
-	$ortime.spinner({
-		min: 00,
-		max: 24,
-		step: -0.5,
-		create: function( event, ui ) {
-			$ortime.val(optime? optime : "(" + ORTIME + ")")
-		},
-		spin: function( event, ui ) {
-			if ($ortime.val() === "(" + ORTIME + ")") {
-				ortime = ORTIME
-			} else {
-				ortime = decimalToTime(ui.value)
-			}
-		},
-		stop: function( event, ui ) {
-			if (ortime) {
-				$ortime.val(ortime)
-				ortime = ""	
-			}
-		}
-	})
-}
-
 function decimalToTime(dec)
 {
 	var time = []
@@ -209,13 +126,6 @@ function decimalToTime(dec)
 	time[0] = (("" + integer).length === 1)? "0" + integer : "" + integer
 	time[1] = decimal? String(decimal * 60) : "00"
 	return time.join(".")
-}
-
-function timeToDecimal(time)
-{
-	var integer = Math.floor(time);
-	time = (time - integer) * 100 / 60;
-	return integer + time;
 }
 
 function checkblank(book, opdate, qn)
@@ -308,9 +218,7 @@ function changeDate(tableID, opdate, staffname, qn, pointing)
 				return false
 			}
 
-			//If moverow has roomtime, use that
-			//If not, use roomtime of the row that moved to
-			var RoomTime = calculateRoomTime($pointing.closest('tr'), $(this))
+			var RoomTime = getRoomTime($pointing.closest('tr'), $(this))
 			var sql = "sqlReturnbook=UPDATE book SET opdate='" + thisDate + "', "
 			if (RoomTime) {
 				sql += "oproom = '" + RoomTime[0] + "', "
@@ -357,20 +265,20 @@ function clearMouseoverTR()
 	$(document).off("keydown")
 }
 
-function calculateRoomTime($moverow, $thisrow)
+//If moverow has roomtime, use that (moveRoom)
+//If not, use roomtime of the row it moved to (thisRoom)
+function getRoomTime($moverow, $thisrow)
 {
 	var moveRoom = $moverow.children("td").eq(ROOMTIME).html()
 	moveRoom = moveRoom? moveRoom.split("<br>") : ""
-	var moveroom = moveRoom[0]? moveRoom[0] : ""
 
 	var thisRoom = $thisrow.children("td").eq(ROOMTIME).html()
 	thisRoom = thisRoom? thisRoom.split("<br>") : ""
-	var thisroom = thisRoom[0]? thisRoom[0] : ""
 
-	if ((thisroom) && (!moveroom)) {
+	if ((thisRoom.length) && (!moveRoom.length)) {
 		return thisRoom
 	}
-	return false
+	return ""
 }
 
 function deleteCase(tableID, rowi, opdate, staffname, qn)
@@ -508,7 +416,7 @@ function findVisibleHead(table)
 {
 	var tohead
 
-	$.each($(table + ' tr:has(th)'), function(i, tr) {
+	$.each($(table + ' tr'), function(i, tr) {
 		tohead = tr
 		return ($(tohead).offset().top < 0)
 	})

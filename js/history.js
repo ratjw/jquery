@@ -334,7 +334,7 @@ function makeFind(response, hn)
 
 	var show = scrolltoThisCase(found[0].qn)
 	if (!show || (found.length > 1)) {
-		makeDialogFind(found, hn )
+		makeDialogFound(found, hn )
 	}
 }
 
@@ -376,7 +376,7 @@ function showFind(containerID, tableID, qn)
 	}
 }
 
-function makeDialogFind(found, hn)
+function makeDialogFound(found, hn)
 {
 	$('#historytbl').attr('id', '')
 
