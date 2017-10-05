@@ -210,7 +210,7 @@
   </span>
   <br>
   <br>
-  <div id="clearPosition" style="width:110px;">Position</div>
+  <div id="clearPosition" style="width:110px;">Position <small>(deselect)</small></div>
   <span style="width:240px;">
 	<input type="radio" name="pose" id="leftSupine">
 	<label for="leftSupine">หงาย ซ้ายขึ้น หันหน้าไปทางขวา</label>
@@ -365,7 +365,7 @@
   </span>
   <span> <input type="text" size="15" id="US"></span>
   <br>
-  <div id="clearShunt" style="width:110px;">Shunt</div>
+  <div id="clearShunt" style="width:110px;">Shunt <small>(deselect)</small></div>
   <span style="width:106px;">Pudenz</span>
   <span style="width:40px;">หัว</span>
   <span style="width:140px;">

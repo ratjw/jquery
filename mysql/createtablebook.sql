@@ -16,7 +16,7 @@ CREATE TABLE `book` (
 	`admission` varchar(7000) NOT NULL DEFAULT '', 
 	`final` varchar(7000) NOT NULL DEFAULT '', 
 	`equipment` varchar(2000) NOT NULL DEFAULT '',
-	`contact` varchar(2000) NOT NULL DEFAULT '',
+	`contact` varchar(1000) NOT NULL DEFAULT '',
 	`admit` date, 
 	`discharge` date, 
 	`qn` int(10) unsigned NOT NULL AUTO_INCREMENT,
