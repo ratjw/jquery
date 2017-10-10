@@ -16,10 +16,11 @@ String.prototype.numDate = function ()
 	if ((date.length === 1) || parseInt(date[1])) {
 		return ""
 	}
-	var thmonth = date[1].substring(0, 3);
+	var last4 = date[1].length-4
+	var thmonth = date[1].substring(0, last4);
 	var mm = THAIMONTH.indexOf(thmonth) + 1
 	mm = (mm < 10? '0' : '') + mm
-    var yyyy = Number(date[1].substr(date[1].length-4)) - 543;
+    var yyyy = Number(date[1].substr(last4)) - 543;
     return yyyy +"-"+ mm +"-"+ date[0];
 } 
 
