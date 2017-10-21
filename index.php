@@ -159,7 +159,7 @@
 
 <ul id="menu" style="display:none">
   <li id="addrow"><div>เพิ่ม case</div></li>
-  <li id="postpone"><div>เลื่อนไป ไม่มีกำหนด</div></li>
+  <li id="postpone"><div>เลื่อนไป ไม่กำหนดวัน</div></li>
   <li id="changedate"><div>เปลี่ยนวันที่</div></li>
   <li id="equip"><div>Equipment</div></li>
   <li id="history"><div>ประวัติการแก้ไข</div></li>
@@ -476,16 +476,16 @@
   <h3>ตาราง</h3>
   <ul style="margin-top:0px;">
 	<li>คอลัมน์ <b>Date</b> : วันผ่าตัด (ไม่ใช่วันนัดมา admit)</li>
-		<dt>: หรือ วันที่รับ consult จากหน่วยอื่น</dt>
-		<dt>: คลิกช่องนี้ จะปรากฏ Popup Menu</dt>
+	<dt>: หรือ วันที่รับ consult จากหน่วยอื่น</dt>
+	<dt>: คลิกช่องนี้ จะปรากฏ Popup Menu</dt>
 	<li>คอลัมน์ <b>Room Time</b> : คลิกเลือกห้องผ่าตัดและเวลา โดยใช้ล้อหมุนของเมาส์</li>
 	<li>คอลัมน์ <b>Staff</b> : คลิกเลือกชื่ออาจารย์เจ้าของไข้</li>
 	<li>คอลัมน์ <b>HN</b></li>
-		<dt>: เมื่อว่าง ใส่ hn เลข 7 หลัก</dt>
-		<dt>: เมื่อมีเคส คลิกดู PACS</dt>
+	<dt>: เมื่อว่าง ใส่ hn เลข 7 หลัก</dt>
+	<dt>: เมื่อมีเคส คลิกดู PACS</dt>
 	<li>คอลัมน์ <b>PatientName Age</b></li>
-		<dt>: ปรากฏเองตาม HN</dt>
-		<dt>: เมื่อมีเคส คลิกไป upload files</dt>
+	<dt>: ปรากฏเองตาม HN</dt>
+	<dt>: เมื่อมีเคส คลิกไป upload files</dt>
 	<li>คอลัมน์ <b>Diagnosis</b> : รวมทั้ง underlying disease</li>
 	<li>คอลัมน์ <b>Treatment</b> : เครื่องมือผ่าตัด ให้ใส่ที่ Equipment</li>
 	<li>คอลัมน์ <b>Contact</b> : หมายเลขโทรศัพท์ ภูมิลำเนา</li>
@@ -495,26 +495,23 @@
   <p style="margin:0px;">มาจากการคลิกตรงวันที่ ทั้งตารางรวม และตารางเดี่ยว</p>
   <ul style="margin-top:0px;">
 	<li><b>เพิ่ม case</b> : ต่อจากเคสนี้</li>
-	<li><b>เพิ่ม case ไม่ระบุวัน</b> : ต่อท้ายตาราง</li>
-		<dt>: ดูวันที่ลงคิวครั้งแรกของผู้ป่วยรายนี้ได้ที่ <b>ประวัติการแก้ไข</b></dt>
+	<li><b>เลื่อนไป ไม่กำหนดวัน</b> : ต้องมีชื่อ  <b>Staff </b> ก่อน</li>
 	<li><b>เปลี่ยนวันที่</b></li>
-		<dt>: เลือกโดยคลิกวันที่ในปฏิทิน</dt>
-		<dd>: ต้องการไม่มีวันที่ คลิก No Date ตรงขวาล่างของปฏิทิน</dd>
-		<dt>: เลือกโดยเลื่อนเมาส์ไปตามตาราง แล้วคลิก</dt>
+	<dt>: เลือกโดยเลื่อนเมาส์ไปตามตาราง แล้วคลิกตรงวันที่ต้องการ</dt>
 	<li><b>Equipment</b> : สำหรับพยาบาล ใช้ Login ID:000000</li>
 	<li><b>ประวัติการแก้ไข</b> : ดูย้อนหลังการเปลี่ยนข้อมูล</li>
 	<li><b>Delete</b> : ถ้าต้องการกลับคืน Undelete ได้ที่ <b>All Deleted Cases</b></li>
 	<li><b>คิวของอาจารย์</b> : มี submenu เลือกชื่ออาจารย์</li>
-	  <dt>เมื่อเลือกอาจารย์แล้ว จะแบ่งหน้าจอเป็น 2 ส่วน</dt>
-		<dt>: ครึ่งซ้าย เป็นตารางรวม</dt>
-		<dt>: ครึ่งขวา เป็นตารางของอาจารย์ท่านเดียว</dt>
-		<dt>: resizable เลื่อนที่เส้นแบ่งกลาง</dt>
+	<dt>เมื่อเลือกอาจารย์แล้ว จะแบ่งหน้าจอเป็น 2 ส่วน</dt>
+		<dd>: ครึ่งซ้าย เป็นตารางรวม</dd>
+		<dd>: ครึ่งขวา เป็นตารางของอาจารย์ท่านเดียว</dd>
+		<dd>: resizable ซ้าย|ขวา เลื่อนที่เส้นแบ่งกลาง</dd>
 	<li><b>Service Review</b> : ทั้งเคสผ่าตัด และเคส consult</li>
-		<dt>: ต้องลงเคสที่ตารางรวมก่อน</dt>
+	<dt>: ต้องลงเคสที่ตารางรวมก่อน</dt>
 	<li><b>All Deleted Cases</b> : เรียงวันที่ทำการลบ ไม่ใช่เรียงวันผ่าตัด</li>
 	<li><b>Find</b> : หาผู้ป่วย ด้วย HN หรือคำใดๆ </li>
-		<dt>: ผู้ป่วยทั้งหมด รวมทั้งที่ไม่ปรากฏในตาราง</dt>
-		<dt>: Ctrl-F เป็น feature ของ browser หาคำ เฉพาะที่ปรากฏในตาราง</dt>
+	<dt>: ผู้ป่วยทั้งหมด รวมทั้งที่ไม่ปรากฏในตาราง</dt>
+	<dt>: Ctrl-F เป็น feature ของ browser หาคำ เฉพาะที่ปรากฏในตาราง</dt>
 	<li><b>Readme</b></li>
   </ul>
 
@@ -540,14 +537,14 @@
 	<li>ช่อง <b>HN Name</b> คลิกดู PACS ได้เฉพาะเครื่องที่เชื่อมกับ PACS</li>
 	<li>ช่อง <b>Diagnosis</b></li>
 	<li>ช่อง <b>Treatment</b> มีผลต่อจำนวน Operation, และ Re-operation</li>
-		<dt>: ถ้านับจำนวน Operation ขาดไป ให้ใส่คำว่า op(eration)</dt>
-		<dt>: เคสที่มีการผ่าตัดซ้ำ ใส่คำว่า re-op(eration)</dt>
+	<dt>: ถ้านับจำนวน Operation ขาดไป ให้ใส่คำว่า op(eration)</dt>
+	<dt>: เคสที่มีการผ่าตัดซ้ำ ใส่คำว่า re-op(eration)</dt>
 	<li>ช่อง <b>Admission Status</b> มีผลต่อจำนวน Re-admission</li>
-		<dt>: เคสที่ admit ซ้ำ ใส่คำว่า re-ad(mission)</dt>
+	<dt>: เคสที่ admit ซ้ำ ใส่คำว่า re-ad(mission)</dt>
 	<li>ช่อง <b>Final Status</b> มีผลต่อจำนวน Infection, Morbidity, และ Dead</li>
-		<dt>: เคสที่มี Infection ใส่คำว่า Infect(ion) หรือ SSI</dt>
-		<dt>: เคสที่มี Morbidity ใส่คำว่า Morbid</dt>
-		<dt>: เคส Dead ใส่คำว่า Dead หรือ  passed away</dt>
+	<dt>: เคสที่มี Infection ใส่คำว่า Infect(ion) หรือ SSI</dt>
+	<dt>: เคสที่มี Morbidity ใส่คำว่า Morbid</dt>
+	<dt>: เคส Dead ใส่คำว่า Dead หรือ  passed away</dt>
 	<li>ช่อง <b>Admit</b> ข้อมูลของโรงพยาบาล</li>
 	<li>ช่อง <b>D/C</b> ข้อมูลของโรงพยาบาล</li>
   </ul>

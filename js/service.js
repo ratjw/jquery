@@ -41,8 +41,18 @@ function entireMonth(fromDate)
 	toDate = $.datepicker.formatDate('yy-mm-dd', toDate);	//end of this month
 	$('#monthpicker').val(toDate)
 
-	var SERVICE = getfromBOOKCONSULT(fromDate, toDate)
-	showService(SERVICE, fromDate, toDate)
+	var start = getStart()
+	var beforeStart = function () {
+		getfromServer(fromDate, toDate).then( function (SERVICE) {
+			showService(SERVICE, fromDate, toDate)
+		} )
+	}
+	var afterStart = function () {
+		var SERVICE = getfromBOOKCONSULT(fromDate, toDate)
+		showService(SERVICE, fromDate, toDate)
+	}
+
+	fromDate < start ? beforeStart() : afterStart()
 
 	$(document).off("click", '.ui-datepicker-title')
 	$("#btnExport").show()
@@ -57,6 +67,14 @@ function entireMonth(fromDate)
 			height: window.innerHeight * 95 / 100
 		})
 	})
+}
+
+//get 1st of last month
+function getStart()
+{
+	var start = new Date()
+
+	return new Date(start.getFullYear(), start.getMonth()-1, 1).ISOdate()
 }
 
 function getfromBOOKCONSULT(fromDate, toDate)
@@ -75,6 +93,28 @@ function getfromBOOKCONSULT(fromDate, toDate)
 		}
 		return 0;
 	})
+}
+
+//No data before last month in globalvar.BOOK, globalvar.CONSULT
+//Retrieve the specified month from server
+function getfromServer(fromDate, toDate)
+{
+	var sql = "sqlReturnData=SELECT * FROM book "
+			  + "WHERE opdate BETWEEN '" + fromDate + "' AND '" + toDate
+			  + "' AND waitnum is not NULL "
+			  + "ORDER BY opdate, oproom='', oproom, optime, waitnum;";
+
+	return new Promise(function (resolve, reject) {
+
+		Ajax(MYSQLIPHP, sql, callbackgetfromServer)
+
+		function callbackgetfromServer(response)
+		{
+			resolve( /dob/.test(response)
+								? JSON.parse(response)
+								: alert("getfromServer", response) )
+		}
+	});
 }
 
 function addfromRAM(book, fromDate, toDate, serv)
