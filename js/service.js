@@ -77,6 +77,28 @@ function getStart()
 	return new Date(start.getFullYear(), start.getMonth()-1, 1).ISOdate()
 }
 
+//No data before last month in globalvar.BOOK, globalvar.CONSULT
+//Retrieve the specified month from server
+function getfromServer(fromDate, toDate)
+{
+	var sql = "sqlReturnData=SELECT * FROM book "
+			  + "WHERE opdate BETWEEN '" + fromDate + "' AND '" + toDate
+			  + "' AND waitnum is not NULL "
+			  + "ORDER BY opdate, oproom='', oproom, optime, waitnum;";
+
+	return new Promise(function (resolve, reject) {
+
+		Ajax(MYSQLIPHP, sql, callbackgetfromServer)
+
+		function callbackgetfromServer(response)
+		{
+			/dob/.test(response)
+				? resolve( JSON.parse(response) )
+				: alert("getfromServer", response)
+		}
+	});
+}
+
 function getfromBOOKCONSULT(fromDate, toDate)
 {
 	var book = globalvar.BOOK
@@ -93,28 +115,6 @@ function getfromBOOKCONSULT(fromDate, toDate)
 		}
 		return 0;
 	})
-}
-
-//No data before last month in globalvar.BOOK, globalvar.CONSULT
-//Retrieve the specified month from server
-function getfromServer(fromDate, toDate)
-{
-	var sql = "sqlReturnData=SELECT * FROM book "
-			  + "WHERE opdate BETWEEN '" + fromDate + "' AND '" + toDate
-			  + "' AND waitnum is not NULL "
-			  + "ORDER BY opdate, oproom='', oproom, optime, waitnum;";
-
-	return new Promise(function (resolve, reject) {
-
-		Ajax(MYSQLIPHP, sql, callbackgetfromServer)
-
-		function callbackgetfromServer(response)
-		{
-			resolve( /dob/.test(response)
-								? JSON.parse(response)
-								: alert("getfromServer", response) )
-		}
-	});
 }
 
 function addfromRAM(book, fromDate, toDate, serv)
