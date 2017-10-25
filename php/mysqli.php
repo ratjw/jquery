@@ -97,6 +97,7 @@ function undelete($mysqli, $opdate)
 		return $mysqli->error;
 	}
 	$owaitnum = current($result->fetch_row());	//array.toString();
+	$neg_pos = $owaitnum ? $owaitnum / abs($owaitnum) : 1;
 
 	$sql = "SELECT MAX(ABS(waitnum)) FROM book WHERE opdate='$opdate';";
 	$result = $mysqli->query($sql);
@@ -104,7 +105,7 @@ function undelete($mysqli, $opdate)
 		return $mysqli->error;
 	}
 	$waitnum = current($result->fetch_row());	//array.toString();
-	$waitnum = ($waitnum  + 1) * $owaitnum / abs($owaitnum);
+	$waitnum = ($waitnum  + 1) * $neg_pos;
 
 	$sql = "UPDATE book SET waitnum=$waitnum, editor='$editor' WHERE qn=$qn";
 	$result = $mysqli->query ($sql);

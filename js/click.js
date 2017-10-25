@@ -271,7 +271,7 @@ function saveContentQN(args)
 function saveContentNoQN(args)
 {
 	//new case, calculate waitnum
-	waitnum = calculateWaitnum(args.tableID, args.$row, opdate)
+	waitnum = calculateWaitnum(args.tableID, args.$row, args.opdate)
 	//store waitnum in row title
 	args.$row[0].title = waitnum
 
