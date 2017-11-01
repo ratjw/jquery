@@ -446,18 +446,24 @@
 </div>
 
 <div id="dialogReadme" class="dialogBox">
+  <p style="margin:0px;">
+    <span class="ui-icon ui-icon-info"></span> <b>Update 1 พย. 2560</b>
+  </p>
+	  <ol style="margin:0px;">
+		<li>ดู service review เดือนก่อนๆได้</li>
+		<li>ดู PACS หรือ upload file ไปที่ Menu -> Find หาเคสที่ต้องการ แล้วคลิกที่ HN หรือชื่อ</li>
+	  </ol>
   <p style="margin-bottom:0px;"><span class="ui-icon ui-icon-info"></span>
       ใช้ Browser : Chrome, Firefox, หรือ Edge (ie 10+)</p>
   <p style="margin:0px;"><span class="ui-icon ui-icon-info"></span>
   Login ID, Password ของโรงพยาบาล</p>
   <p style="margin:0px;">
-    <span class="ui-icon ui-icon-info"></span>
-             การเปลี่ยนวันผ่าตัด (Date)
+    <span class="ui-icon ui-icon-info"></span> การเปลี่ยนวันผ่าตัด (Date)
   </p>
-  <ol style="margin:0px;">
-	<li>ใช้ Drag & Drop สามารถลากข้ามตารางได้</li>
-	<li>ใช้ Menu เปลี่ยนวันที่ (ดูหัวข้อ Menu)</li>
-  </ol>
+	  <ol style="margin:0px;">
+		<li>ใช้ Drag & Drop สามารถลากข้ามตารางได้</li>
+		<li>ใช้ Menu เปลี่ยนวันที่ (ดูหัวข้อ Menu)</li>
+	  </ol>
   <p style="margin:0px;"><span class="ui-icon ui-icon-info"></span>
        บันทึกข้อมูลที่ใส่ตามช่อง (cell)  โดย<br><span style="width:20px;"></span>
    1. อยู่นิ่งๆ 10 วินาที่<br><span style="width:20px;"></span>
@@ -492,7 +498,7 @@
   </ul>
 
   <h3>Menu</h3>
-  <p style="margin:0px;">มาจากการคลิกตรงวันที่ ทั้งตารางรวม และตารางเดี่ยว</p>
+  <p style="margin:0px;">มาจากการคลิกตรงวันที่ ทั้งตารางรวม และตารางของอาจารย์ท่านเดียว</p>
   <ul style="margin-top:0px;">
 	<li><b>เพิ่ม case</b> : ต่อจากเคสนี้</li>
 	<li><b>เลื่อนไป ไม่กำหนดวัน</b> : ต้องมีชื่อ  <b>Staff </b> ก่อน</li>
@@ -628,6 +634,9 @@ function namesix()
 				$resultz = (string)$resulty->children()->children()->role;
 			}
 			elseif (strpos($_SERVER["SERVER_NAME"], "localhost") !== false)  {
+				$resultz = "S";
+			}
+			elseif (strpos($_SERVER["SERVER_NAME"], "10.6.166.92") !== false)  {
 				$resultz = "S";
 			}
 			elseif (strpos($_SERVER["SERVER_NAME"], "192.168") !== false)  {

@@ -86,17 +86,18 @@ function getfromServer(fromDate, toDate)
 			  + "' AND waitnum is not NULL "
 			  + "ORDER BY opdate, oproom='', oproom, optime, waitnum;";
 
-	return new Promise(function (resolve, reject) {
+	var defer = $.Deferred()
 
-		Ajax(MYSQLIPHP, sql, callbackgetfromServer)
+	Ajax(MYSQLIPHP, sql, callbackgetfromServer)
 
-		function callbackgetfromServer(response)
-		{
-			/dob/.test(response)
-				? resolve( JSON.parse(response) )
-				: alert("getfromServer", response)
-		}
-	});
+	return defer.promise()
+
+	function callbackgetfromServer(response)
+	{
+		/dob/.test(response)
+			? defer.resolve( JSON.parse(response) )
+			: alert("getfromServer", response)
+	}
 }
 
 function getfromBOOKCONSULT(fromDate, toDate)

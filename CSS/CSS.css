@@ -266,6 +266,7 @@ td.camera {
 	margin-right: auto; 
 	text-align: center;
 	color: white;
+	background: #306ab5;
 /*	background: radial-gradient(at bottom left, #112244, #172949, #203F6F, #5077aa, #E0F0FF);*/
 	background: radial-gradient(at bottom left, #152f51, #1b3b65, #25528d, #306ab5, #ebf1fa);
 	border-radius: 10px;
@@ -273,6 +274,7 @@ td.camera {
 }
 
 input[type=submit] {
+	background: #c4445C;
 /*	background: linear-gradient(#FFCCDD, #AA3740, #552233);*/
 	background: linear-gradient(#f8d3e4, #AC1B5C, #580e2f);
 	border-radius: 5px;

@@ -400,8 +400,10 @@ function makeDialogFound(found, hn)
 		}
 		HTML_String += '<td>' + found[j].opdate +'</td>';
 		HTML_String += '<td>' + found[j].staffname +'</td>';
-		HTML_String += '<td>' + found[j].hn +'</td>';
-		HTML_String += '<td>' + found[j].patient +'</td>';
+		HTML_String += '<td'  + (found[j].hn && globalvar.isPACS ? ' class="pacs"' : '')
+						+ '>' + found[j].hn +'</td>';
+		HTML_String += '<td'  + (found[j].patient ? ' class="camera"' : '')
+						+ '>' + found[j].patient +'</td>';
 		HTML_String += '<td>' + found[j].diagnosis +'</td>';
 		HTML_String += '<td>' + found[j].treatment +'</td>';
 		HTML_String += '<td>' + found[j].contact +'</td>';
@@ -419,6 +421,25 @@ function makeDialogFound(found, hn)
 		width: window.innerWidth * 9 / 10,
 		height: window.innerHeight * 8 / 10,
 		buttons: []
+	})
+	$('#dialogFind .pacs').on("click", function() {
+		if (globalvar.isPACS) {
+			PACS(this.innerHTML)
+		}
+	})
+	$('#dialogFind .camera').on("click", function() {
+		var patient = this.innerHTML
+		var hn = this.previousSibling.innerHTML
+		var win = globalvar.uploadWindow
+
+		if (hn) {
+			if (win && !win.closed) {
+				win.close();
+			}
+			globalvar.uploadWindow = win = window.open("jQuery-File-Upload", "_blank")
+			win.hnName = {"hn": hn, "patient": patient}
+			//hnName is a pre-defined variable in child window (jQuery-File-Upload)
+		}
 	})
 }
 
