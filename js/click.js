@@ -271,7 +271,7 @@ function saveContentQN(args)
 function saveContentNoQN(args)
 {
 	//new case, calculate waitnum
-	waitnum = calculateWaitnum(args.tableID, args.$row, args.opdate)
+	var waitnum = calculateWaitnum(args.tableID, args.$row, args.opdate)
 	//store waitnum in row title
 	args.$row[0].title = waitnum
 
@@ -348,7 +348,7 @@ function saveHN(pointed, hn, content)
 	pointed.innerHTML = content
 
 	if (!qn) {	//if new case, calculate waitnum
-		waitnum = calculateWaitnum(tableID, $row, opdate)
+		var waitnum = calculateWaitnum(tableID, $row, opdate)
 		$row[0].title = waitnum		//store waitnum in row title
 		var sql = "hn=" + content
 		sql += "&waitnum="+ waitnum
@@ -375,11 +375,15 @@ function saveHN(pointed, hn, content)
 			updateBOOK(response)
 
 			var book = (ConsultsTbl(tableID))? globalvar.CONSULT : globalvar.BOOK
-			var qn = Math.max.apply(Math, $.map(book, function(row, i){
-					return row.qn
-				}))
-			qn = String(qn)
-			$cells.eq(QN).html(qn)
+
+			if (!qn) {	//New case input
+				qn = Math.max.apply(Math, $.map(book, function(row, i){
+						return row.qn
+					}))
+				qn = String(qn)
+				$cells.eq(QN).html(qn)
+			}
+
 			var bookq
 			$.each(book, function() {
 				bookq = this
@@ -397,9 +401,6 @@ function saveHN(pointed, hn, content)
 			$cells.eq(DIAGNOSIS).html(bookq.diagnosis)
 			$cells.eq(TREATMENT).html(bookq.treatment)
 			$cells.eq(CONTACT).html(bookq.contact)
-			if (!qn) {	//New case input
-				$cells.eq(QN).html(book[NewRow].qn)
-			}
 
 			if (tableID === 'tbl') {
 				if (($("#queuewrapper").css('display') === 'block') && 

@@ -16,7 +16,12 @@ require_once "book.php";
 	$diagnosis = "";
 	$treatment = "";
 	$contact = "";
-
+/*
+	$initial_name = "Mr.";
+	$first_name = "Name";
+	$last_name = "Surname";
+	$dob = "1955-02-03";
+*/
 	extract($_POST);
 
 	$wsdl="http://appcenter/webservice/patientservice.wsdl";
@@ -71,9 +76,9 @@ require_once "book.php";
 					patient = '$initial_name$first_name $last_name',
 					dob = CASE WHEN $dob <> '' THEN '$dob' ELSE dob END,
 					gender = '$gender', 
-					diagnosis = '$diagnosis',
-					treatment = '$treatment',
-					contact = '$contact',
+					diagnosis = CASE WHEN diagnosis = '' THEN '$diagnosis' ELSE diagnosis END,
+					treatment = CASE WHEN treatment = '' THEN '$treatment' ELSE treatment END,
+					contact = CASE WHEN contact = '' THEN '$contact' ELSE contact END,
 					editor = '$username' 
 				WHERE qn = $qn;";
 	}

@@ -41,18 +41,9 @@ function entireMonth(fromDate)
 	toDate = $.datepicker.formatDate('yy-mm-dd', toDate);	//end of this month
 	$('#monthpicker').val(toDate)
 
-	var start = getStart()
-	var beforeStart = function () {
-		getfromServer(fromDate, toDate).then( function (SERVICE) {
+	getServiceOneMonth(fromDate, toDate).then( function (SERVICE) {
 			showService(SERVICE, fromDate, toDate)
-		} )
-	}
-	var afterStart = function () {
-		var SERVICE = getfromBOOKCONSULT(fromDate, toDate)
-		showService(SERVICE, fromDate, toDate)
-	}
-
-	fromDate < start ? beforeStart() : afterStart()
+		})
 
 	$(document).off("click", '.ui-datepicker-title')
 	$("#btnExport").show()
@@ -75,6 +66,26 @@ function getStart()
 	var start = new Date()
 
 	return new Date(start.getFullYear(), start.getMonth()-1, 1).ISOdate()
+}
+
+function getServiceOneMonth(fromDate, toDate) {
+	var start = getStart()
+
+	var deferService = $.Deferred()
+
+	var beforeStart = function () {
+		getfromServer(fromDate, toDate).then( function (SERVICE) {
+			deferService.resolve(SERVICE)
+		}, function (title, message) {
+			deferService.reject(title, message)
+		})
+	}
+	var afterStart = function () {
+		deferService.resolve(getfromBOOKCONSULT(fromDate, toDate))
+	}
+
+	fromDate < start ? beforeStart() : afterStart()
+	return deferService.promise()
 }
 
 //No data before last month in globalvar.BOOK, globalvar.CONSULT
@@ -444,49 +455,49 @@ function saveContentService(pointed, column, content)	//column name in MYSQL
 		if (/BOOK/.test(response)) {
 			updateBOOK(response)
 
+			//Not refillService because it may make next editTD back to old value when fast entry
+			//due to slow return from Ajax of previous input
 			var fromDate = $('#monthpicking').val()
 			var toDate = $('#monthpicker').val()
 			var color = rowi.className
-			var book = getfromBOOKCONSULT(fromDate, toDate)
-			var bookq = getBOOKrowByQN(book, qn)		//for countService of this case
-			var newcolor = countService(bookq, fromDate, toDate)
-			var colorArray = color.split(" ")
-			var newcolorArray = newcolor.split(" ")
-			var counter
-			var newcounter
-			if (color) {
-				if (newcolor) {
-					if (color !== newcolor) {
+			getServiceOneMonth(fromDate, toDate).then( function (book) {
+				var bookq = getBOOKrowByQN(book, qn)		//for countService of this case
+				var newcolor = countService(bookq, fromDate, toDate)
+				var colorArray = color.split(" ")
+				var newcolorArray = newcolor.split(" ")
+				var counter
+				var newcounter
+				if (color) {
+					if (newcolor) {
+						if (color !== newcolor) {
+							$.each( colorArray, function(i, each) {
+								counter = document.getElementById(each)
+								counter.innerHTML = Number(counter.innerHTML) - 1
+							})
+							$.each( newcolorArray, function(i, each) {
+								newcounter = document.getElementById(each)
+								newcounter.innerHTML = Number(newcounter.innerHTML) + 1
+							})
+						}
+					} else {
 						$.each( colorArray, function(i, each) {
 							counter = document.getElementById(each)
 							counter.innerHTML = Number(counter.innerHTML) - 1
 						})
-						$.each( newcolorArray, function(i, each) {
-							newcounter = document.getElementById(each)
-							newcounter.innerHTML = Number(newcounter.innerHTML) + 1
-						})
 					}
-				} else {
-					$.each( colorArray, function(i, each) {
-						counter = document.getElementById(each)
-						counter.innerHTML = Number(counter.innerHTML) - 1
-					})
-				}
-			} else {
-				if (newcolor) {
-					$.each( newcolorArray, function(i, each) {
-						newcounter = document.getElementById(each)
-						newcounter.innerHTML = Number(newcounter.innerHTML) + 1
-					})
-				}
-			}
+					} else {
+						if (newcolor) {
+							$.each( newcolorArray, function(i, each) {
+								newcounter = document.getElementById(each)
+								newcounter.innerHTML = Number(newcounter.innerHTML) + 1
+							})
+						}
+					}
 
-			rowi.className = newcolor		//tr.newclass
-			$(pointed).removeClass(color)	//prevent remained unused class
-			addColorService($rowi, newcolor)		//td.newclass
-
-			//Not refillService because it may make next editTD back to old value when fast entry
-			//due to slow return from Ajax of previous input
+					rowi.className = newcolor			//tr.newclass
+					$(pointed).removeClass(color)		//prevent remained unused class
+					addColorService($rowi, newcolor)	//td.newclass
+			})
 		} else {
 			alert("saveContentService", response)
 			pointed.innerHTML = oldcontent		//return to previous content
