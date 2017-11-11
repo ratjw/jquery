@@ -85,7 +85,7 @@ function showEquip(equipString)
 		var equipHistory = JSON.parse(equipString)
 		$.each(equipHistory, function(key, value) {
 			if (value === "checked") {
-				var itemname = $('#' + key).parent().prevAll('div').first().html()
+					var itemname = $('#' + key).closest('div').prop("title")
 				equip += (itemname + ":" + key + ", ")
 			} else {
 				equip += (key + ":" + value + ", ")

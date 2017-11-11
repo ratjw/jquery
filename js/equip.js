@@ -101,16 +101,8 @@ function showNonEditableEquip(qn, bookqEquip)
 			}
 		}
 	]);
-	$('#dialogEquip input[type=radio]').prop("disabled", true)
-	$('#dialogEquip input[type=text]').on("click", function() {
-		$(this).prop('disabled', true)
-	})
-	$('#dialogEquip textarea').on("click", function() {
-		$(this).prop('disabled', true)
-	})
-	$('#dialogEquip input').on("click", function() {
-		return false
-	})
+	$('#dialogEquip input').prop("disabled", true)
+	$('#dialogEquip textarea').prop('disabled', true)
 }
 
 function showEditableEquip(qn, bookqEquip)
@@ -133,9 +125,7 @@ function showEditableEquip(qn, bookqEquip)
 		}
 	]);
 	$('#dialogEquip input').prop('disabled', false)
-	$('#dialogEquip input').off("click")
 	$('#dialogEquip textarea').prop('disabled', false)
-	$('#dialogEquip textarea').off("click")
 }
 
 function showNonEditableForScrub()
@@ -166,19 +156,10 @@ function showNonEditableForScrub()
 function Checklistequip(qn, bookqEquip) 
 {
 	var equipment = {}
-	$( "#dialogEquip input:checked" ).each( function() {
-		equipment[this.id] = "checked"
-	})
-	$("#dialogEquip input[type=text]").each(function() {
-		if (this.value) {
-			equipment[this.id] = this.value
-		}
-	})
-	$("#dialogEquip textarea").each(function() {
-		if (this.value) {
-			equipment[this.id] = this.value
-		}
-	})
+		$( "#dialogEquip input, #dialogEquip textarea" ).each( function() {
+			this.checked && (equipment[this.id] = "checked")
+			this.value && (equipment[this.id] = this.value)
+		})
 	equipment = JSON.stringify(equipment)
 	if (equipment === bookqEquip) {
 		return

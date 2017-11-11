@@ -201,6 +201,7 @@
   <span style="width:540px;" id="treatment"></span>
   <br>
   <br>
+ <div title="ส่วนเกิน">
   <span style="width:110px;"></span>
   <span style="width:500px;">
 	<input type="checkbox" id="selfpay">
@@ -210,7 +211,9 @@
   </span>
   <br>
   <br>
-  <div id="clearPosition" style="width:110px;">Position <small>(deselect)</small></div>
+ </div>
+ <div title="Position">
+  <span id="clearPosition" style="width:110px;">Position <small>(deselect)</small></span>
   <span style="width:240px;">
 	<input type="radio" name="pose" id="leftSupine">
 	<label for="leftSupine">หงาย ซ้ายขึ้น หันหน้าไปทางขวา</label>
@@ -234,7 +237,7 @@
 	<label for="rightLateral">Lateral ขวาลง</label>
   </span>
   <span style="width:180px;">
-	<input type="radio" name="pose" id="rightProne">
+	<input type="radio" name="pose" id="right3quarter">
 	<label for="rightProne">3/4 ขวาลง</label>
   </span>
   <span style="width:70px;">
@@ -252,12 +255,14 @@
 	<label for="leftLateral">Lateral ซ้ายลง</label>
   </span>
   <span style="width:110px;">
-	<input type="radio" name="pose" id="leftProne">
+	<input type="radio" name="pose" id="left3quarter">
 	<label for="leftProne">3/4 ซ้ายลง</label>
   </span>
   <span> <input type="text" size="15" id="position"></span>
   <br>
-  <div style="width:110px;">Imaging</div>
+ </div>
+ <div title="Imaging">
+  <span style="width:110px;">Imaging</span>
   <span style="width:70px;">
 	<input type="checkbox" id="iMRI">
 	<label for="iMRI">iMRI</label>
@@ -275,7 +280,9 @@
   </span>
   <span> <input type="text" size="15" id="Imaging"></span>
   <br>
-  <div style="width:110px;">อุปกรณ์ยึดศีรษะ</div>
+ </div>
+ <div title="อุปกรณ์ยึดศีรษะ">
+  <span style="width:110px;">อุปกรณ์ยึดศีรษะ</span>
   <span style="width:150px;">
 	<input type="checkbox" id="Mayfield">
 	<label for="Mayfield">Mayfield</label>
@@ -290,7 +297,9 @@
   </span>
   <span> <input type="text" size="15" id="headHolder"></span>
   <br>
-  <div style="width:110px;">เครื่องตัดกระดูก</div>
+ </div>
+ <div title="เครื่องตัดกระดูก">
+  <span style="width:110px;">เครื่องตัดกระดูก</span>
   <span style="width:150px;">
 	<input type="checkbox" id="HighSpeedDrill">
 	<label for="HighSpeedDrill">High Speed Drill</label>
@@ -305,7 +314,9 @@
   </span>
   <span> <input type="text" size="15" id="Craniotome"></span>
   <br>
-  <div style="width:110px;">กล้อง</div>
+ </div>
+ <div title="กล้อง">
+  <span style="width:110px;">กล้อง</span>
   <span style="width:150px;">
 	<input type="checkbox" id="Microscope">
 	<label for="Microscope">Microscope</label>
@@ -320,7 +331,9 @@
   </span>
   <span> <input type="text" size="15" id="scope"></span>
   <br>
-  <div style="width:110px;">CUSA</div>
+ </div>
+ <div title="CUSA">
+  <span style="width:110px;">CUSA</span>
   <span style="width:150px;">
 	<input type="checkbox" id="Excell">
 	<label for="Excell">Excell</label>
@@ -335,7 +348,9 @@
   </span>
   <span> <input type="text" size="15" id="CUSA"></span>
   <br>
-  <div style="width:110px;">Retractor</div>
+ </div>
+ <div title="Retractor">
+  <span style="width:110px;">Retractor</span>
   <span style="width:150px;">
 	<input type="checkbox" id="Leylar">
 	<label for="Leylar">Leylar</label>
@@ -350,7 +365,9 @@
   </span>
   <span> <input type="text" size="15" id="Retractor"></span>
   <br>
-  <div style="width:110px;">U/S</div>
+ </div>
+ <div title="U/S">
+  <span style="width:110px;">U/S</span>
   <span style="width:150px;">
 	<input type="checkbox" id="ultrasound">
 	<label for="ultrasound">Ultrasound</label>
@@ -365,7 +382,9 @@
   </span>
   <span> <input type="text" size="15" id="US"></span>
   <br>
-  <div id="clearShunt" style="width:110px;">Shunt <small>(deselect)</small></div>
+ </div>
+ <div title="Shunt">
+  <span id="clearShunt" style="width:110px;">Shunt <small>(deselect)</small></span>
   <span style="width:106px;">Pudenz</span>
   <span style="width:40px;">หัว</span>
   <span style="width:140px;">
@@ -406,11 +425,15 @@
   </span>
   <span> <input type="text" size="15" id="Shunt"></span>
   <br>
+ </div>
+ <div title="เครื่องมือบริษัท">
   <span style="width:110px;">เครื่องมือบริษัท </span>
   <span style="width:150px;">เวลาส่งเครื่อง <input type="text" size="1" id="equiptime"> น. </span>
   <span style="width:300px;"><input type="text" size="50" id="company"></span>
   <br>
-  <div style="width:110px;">อุปกรณ์อื่นๆ</div>
+ </div>
+ <div title="อุปกรณ์อื่นๆ">
+  <span style="width:110px;">อุปกรณ์อื่นๆ</span>
   <span style="width:150px;">
 	<input type="checkbox" id="cranioCement">
 	<label for="cranioCement">Cranio cement</label>
@@ -421,7 +444,9 @@
   </span>
   <span> <input type="text" size="30" id="Other"></span>
   <br>
-  <div style="width:110px;">Monitor</div>
+ </div>
+ <div title="Monitor">
+  <span style="width:110px;">Monitor</span>
   <span style="width:73px;"><input type="checkbox" id="CN5"><label for="CN5">CN5</label></span>
   <span style="width:73px;"><input type="checkbox" id="CN6"><label for="CN6">CN6</label></span>
   <span style="width:70px;"><input type="checkbox" id="CN7"><label for="CN7">CN7</label></span>
@@ -434,7 +459,9 @@
   <span> <input type="text" size="21" id="Monitor"></span>
   <br>
   <br>
-  <div style="width:110px;float:left">Notice</div>
+ </div>
+ <div title="รายละเอียด">
+  <span style="width:110px;float:left">Notice</span>
   <span> <textarea placeholder="รายละเอียด" id="Notice"></textarea></span>
   <br>
   <br>
@@ -443,6 +470,7 @@
   <span style="position:absolute" id="editedby"></span>
   <br>
   <br>
+ </div>
 </div>
 
 <div id="dialogReadme" class="dialogBox">
