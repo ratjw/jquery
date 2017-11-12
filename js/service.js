@@ -189,6 +189,9 @@ function showService(SERVICE, fromDate, toDate)
 	$('#servicehead').show()
 	$('#dialogService').dialog({
 		title: 'Service Neurosurgery เดือน ' + $monthpicker.val(),
+		hide: 200,
+		width: window.innerWidth * 95 / 100,
+		height: window.innerHeight * 95 / 100,
 		close: function() {
 			clearEditcell()
 			refillstaffqueue()
