@@ -52,7 +52,7 @@ SET bkupdir=C:\path\to\where\you\want\backups
 SET mysqldir=D:\path\to\mysql
 SET dbname=this_is_the_name_of_my_database
 SET dbuser=this_is_my_user_name
------------------------------------------------------------------
+
 @ECHO Beginning backup of %dbname%...
 
 %mysqldir%\bin\mysqldump -B %dbname% -u %dbuser% > %bkupdir%\dbBkup_%dbname%_%yy%%mm%%dd%.sql
