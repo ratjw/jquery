@@ -154,11 +154,12 @@ function showService(SERVICE, fromDate, toDate)
 		globalvar.idleCounter = 0
 		event.stopPropagation()
 		var target = event.target
+		var editable = fromDate >= getStart()
 		if (target.nodeName === "TH") {
 			clearEditcell()
 			return	
 		} else {
-			clickservice(target, fromDate, toDate)
+			clickservice(target, editable)
 		}
 	})
 
@@ -343,10 +344,10 @@ function countAllServices()
 	})
 }
 
-function clickservice(clickedCell)
+function clickservice(clickedCell, editable)
 {
 	savePreviousCellService()
-	storePresentCellService(clickedCell)
+	storePresentCellService(clickedCell, editable)
 }
 
 function Skeyin(event, keycode, pointing)
@@ -508,7 +509,7 @@ function saveContentService(pointed, column, content)	//column name in MYSQL
 	}
 }
 
-function storePresentCellService(pointing)
+function storePresentCellService(pointing, editable)
 {
 	var cindex = pointing.cellIndex
 
@@ -540,7 +541,9 @@ function storePresentCellService(pointing)
 		case TREATMENTSERVICE:
 		case ADMISSIONSERVICE:
 		case FINALSERVICE:
-			createEditcell(pointing)
+			editable
+			? createEditcell(pointing)
+			: clearEditcell()
 			break
 		case ADMITSERVICE:
 		case DISCHARGESERVICE:
