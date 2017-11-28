@@ -33,14 +33,14 @@
 	border-left: solid 2px snow;
 }
 
-#tbl {
+table {
 	table-layout: fixed;	/*make cell width = first row specified*/
 	border-right: solid 1px slategray;
 	width: auto;
 	border-collapse: collapse;
 }
 
-#tbl th {
+th {
 	height: 30px;
 	font-size: 14px;
 	font-weight: bold;
@@ -51,7 +51,7 @@
 	border-bottom: solid 1px silver;
 }
 
-#tbl td {
+td {
 	empty-cells: show;
 	height: 30px;
 	font-size: 14px;
@@ -60,6 +60,10 @@
 	border-bottom: solid 1px silver;
 	background-repeat: no-repeat;
 	background-position: center;
+}
+
+#alltbl td {
+	font-size: 12px;
 }
 
 #tbl td:first-child,
@@ -71,7 +75,7 @@
 }
 
 tr.bordergroove {
-	border: 6px groove skyblue !important;
+	border: solid 3px skyblue !important;
 }
 
 tr.changeDate {
@@ -132,13 +136,6 @@ td.camera {
 	margin-left: 25px;
 }
 
-#queuetbl, #historytbl, #servicetbl {
-	table-layout: fixed;	/*make cell width = first row specified*/
-	width: auto;
-	border-right: solid 1px slategray;
-	border-collapse: collapse;
-}
-
 #queuetbl {
 	margin-bottom: 100px;
 }
@@ -147,30 +144,12 @@ td.camera {
     background-color: #EEEEFF;
 }
 
+#servicetbl tr:nth-child(odd),
 #historytbl tr:nth-child(odd), 
-#servicetbl tr:nth-child(odd) {
+#deletedtbl tr:nth-child(odd),
+#findtbl tr:nth-child(odd), 
+#latesttbl tr:nth-child(odd) { 
     background-color: #E0FFE0;
-}
-
-#queuetbl th, #historytbl th, #servicetbl th {
-	height: 30px;
-	font-size: 16px;
-	font-weight: bold;
-	height: 40px;
-	background-color: #7799AA;
-	color: white;
-	border-left: solid 1px silver;
-	border-top: solid 1px silver;
-	border-bottom: solid 1px silver;
-}
-
-#queuetbl td, #historytbl td, #servicetbl td {
-	empty-cells: show;
-	height: 30px;
-	font-size: 14px;
-	padding-left: 3px;
-	border-left: solid 1px silver;
-	border-bottom: solid 1px silver;
 }
 
 #servicetbl td:first-child {
@@ -189,21 +168,11 @@ td.camera {
 	padding: 2px 10px;
 }
 
-#servicehead span.Readmission,
-#servicetbl tr.Readmission,
-#servicetbl td.Readmission { background-color: #AACCCC; }
-#servicehead span.Reoperation,
-#servicetbl tr.Reoperation,
-#servicetbl td.Reoperation { background-color: #CCCCAA; }
-#servicehead span.Infection,
-#servicetbl tr.Infection,
-#servicetbl td.Infection { background-color: #CCAAAA; }
-#servicehead span.Morbidity,
-#servicetbl tr.Morbidity,
-#servicetbl td.Morbidity { background-color: #AAAACC; }
-#servicehead span.Dead,
-#servicetbl tr.Dead,
-#servicetbl td.Dead { background-color: #AAAAAA; }
+.Readmission { background-color: #AACCCC !important; }
+.Reoperation { background-color: #CCCCAA !important; }
+.Infection { background-color: #CCAAAA !important; }
+.Morbidity { background-color: #AAAACC !important; }
+.Dead { background-color: #AAAAAA !important; }
 
 #servicetbl td.serviceStaff {
 	height: 40px;
@@ -389,62 +358,23 @@ input[type=checkbox]:checked + label {
 	color: black;
 }
 
-.uploading {
-    margin-top: 15px;
-}
-
-.hidden {
-    display: none;
-}
-
-.gallery { 
-	width:100%; 
-	float:left; 
-}
-
-.gallery ul{ 
-	margin:0;
-	padding:0; 
-	list-style-type:none;
-}
-
-.gallery ul li{ 
-	padding:7px; 
-	border:2px solid #ccc;
-	float:left;
-	margin:10px 7px;
-	background:none; 
-	width:auto; 
-	height:auto;
-}
-
-.images {
-	width:200px;
-	height:200px;
-}
-
 @media only screen and (max-width: 640px) {
 
 	/* Force table to not be like tables anymore */
-	#tbl table, #queuetbl table, #servicetbl table, 
-	#tbl thead, #queuetbl thead, #servicetbl thead, 
-	#tbl tbody, #queuetbl tbody, #servicetbl tbody, 
-	#tbl tr, #queuetbl tr, #servicetbl tr, 
-	#tbl th, #queuetbl th, #servicetbl th, 
-	#tbl td, #queuetbl td, #servicetbl td { 
+	table, thead, tbody, tr, th, td { 
 		display: block; 
 	}
 
 	/* Hide table headers (but not display: none;, for accessibility) */
-	#tbl tr th, #queuetbl tr th, #servicetbl tr th { 
+	th { 
 		position: absolute;
 		top: -9999px;
 		left: -9999px;
 	}
  
-	#tbl tr, #queuetbl tr, #servicetbl tr { border: 1px solid #ccc; }
+	tr { border: 1px solid #ccc; }
 
-	#tbl td, #queuetbl td, #servicetbl td { 
+	td { 
 		/* Behave  like a "row" */
 		height: auto;
 		min-height: 30px;
@@ -457,12 +387,11 @@ input[type=checkbox]:checked + label {
 		empty-cells: show;
 	}
 
-	#tbl td:first-child,
-	#queuetbl td:first-child {
+	td:first-child {
 		font-size: 16px;
 	}
 
-	#tbl td:before, #queuetbl td:before, #servicetbl td:before { 
+	td:before { 
 		/* Now like a table header */
 		position: absolute;
 		/* Top/left values mimic padding */
@@ -478,13 +407,13 @@ input[type=checkbox]:checked + label {
 		content: attr(data-title);
 	}
 
-	#tbl td.sun:before { font-size: 18px; top: 2px; content: "วันอาทิตย์ "; }
-	#tbl td.mon:before { font-size: 18px; top: 2px; content: "วันจันทร์ "; }
-	#tbl td.tue:before { font-size: 18px; top: 2px; content: "วันอังคาร "; }
-	#tbl td.wed:before { font-size: 18px; top: 2px; content: "วันพุธ "; }
-	#tbl td.thu:before { font-size: 18px; top: 2px; content: "วันพฤหัส "; }
-	#tbl td.fri:before { font-size: 18px; top: 2px; content: "วันศุกร์ "; }
-	#tbl td.sat:before { font-size: 18px; top: 2px; content: "วันเสาร์ "; }
+	td.sun:before { font-size: 18px; top: 2px; content: "วันอาทิตย์ "; }
+	td.mon:before { font-size: 18px; top: 2px; content: "วันจันทร์ "; }
+	td.tue:before { font-size: 18px; top: 2px; content: "วันอังคาร "; }
+	td.wed:before { font-size: 18px; top: 2px; content: "วันพุธ "; }
+	td.thu:before { font-size: 18px; top: 2px; content: "วันพฤหัส "; }
+	td.fri:before { font-size: 18px; top: 2px; content: "วันศุกร์ "; }
+	td.sat:before { font-size: 18px; top: 2px; content: "วันเสาร์ "; }
 }
 
 @media print { 

@@ -157,6 +157,24 @@
 
 <div id="dialogAlert"></div>
 
+<div id="dialogAll" style="display:none">
+ <table id="alltbl" class="fixed_headers">
+  <tbody>
+   <tr>
+     <th style="width:10%">Date</th>
+     <th style="width:3%">Room Time</th>
+     <th style="width:3%">Staff</th>
+     <th style="width:4%">HN</th>
+     <th style="width:10%">PatientName<br>Age</th>
+     <th style="width:20%">Diagnosis</th>
+     <th style="width:30%">Treatment</th>
+     <th style="width:20%">Contact</th>
+     <th style="display:none"></th>
+   </tr>
+  </tbody>
+ </table>
+</div>
+
 <ul id="menu" style="display:none">
   <li id="addrow"><div>เพิ่ม case</div></li>
   <li id="postpone"><div>เลื่อนไป ไม่กำหนดวัน</div></li>
@@ -166,7 +184,10 @@
   <li id="del" style="color:gray"><div>Delete</div></li>
   <li><div>คิวของอาจารย์</div><ul id="staffmenu" style="width:100px"></ul></li>
   <li id="service"><div>Service Review</div></li>
-  <li id="deleted"><div>All Deleted Cases</div></li>
+  <li><div>ดูเคสทั้งหมด</div><ul id="allcases" style="width:120px">
+    <li id="deleted"><div>All Deleted Cases</div></li>
+    <li id="notdeleted"><div>All Saved Cases</div></li>
+  </ul></li>
   <li id="search"><div>Find</div></li>
   <li id="readme"><div>Readme</div></li>
 </ul>

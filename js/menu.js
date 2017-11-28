@@ -71,6 +71,9 @@ function mainMenu(pointing)
 				case "deleted":
 					deletedCases()
 					break
+				case "notdeleted":
+					allCases()
+					break
 				case "search":
 					find()
 					break
