@@ -496,16 +496,22 @@
 
 <div id="dialogReadme" class="dialogBox">
   <p style="margin:0px;">
+    <span class="ui-icon ui-icon-info"></span> <b>Update 27 พย. 2560</b>
+  </p>
+	  <ol style="margin:0px;">
+		<li>Menu -> ดูเคสทั้งหมด -> All Saved Cases</li>
+	  </ol>
+  <p style="margin:0px;">
     <span class="ui-icon ui-icon-info"></span> <b>Update 1 พย. 2560</b>
   </p>
 	  <ol style="margin:0px;">
 		<li>ดู service review เดือนก่อนๆได้</li>
-		<li>ดู PACS หรือ upload file ไปที่ Menu -> Find หาเคสที่ต้องการ แล้วคลิกที่ HN หรือชื่อ</li>
+		<li>ดู PACS หรือ upload file ได้ทุกตาราง</li>
 	  </ol>
   <p style="margin-bottom:0px;"><span class="ui-icon ui-icon-info"></span>
       ใช้ Browser : Chrome, Firefox, หรือ Edge (ie 10+)</p>
   <p style="margin:0px;"><span class="ui-icon ui-icon-info"></span>
-  Login ID, Password ของโรงพยาบาล</p>
+  Login ID, Password ของโรงพยาบาล สำหรับพยาบาล ใช้ Login ID:000000</p>
   <p style="margin:0px;">
     <span class="ui-icon ui-icon-info"></span> การเปลี่ยนวันผ่าตัด (Date)
   </p>
@@ -547,39 +553,36 @@
   </ul>
 
   <h3>Menu</h3>
-  <p style="margin:0px;">มาจากการคลิกตรงวันที่ ทั้งตารางรวม และตารางของอาจารย์ท่านเดียว</p>
   <ul style="margin-top:0px;">
-	<li><b>เพิ่ม case</b> : ต่อจากเคสนี้</li>
+	<li><b>เพิ่ม case</b> : มีวัน เวลา ห้องผ่าตัดเดียวกับเคสนี้</li>
 	<li><b>เลื่อนไป ไม่กำหนดวัน</b> : ต้องมีชื่อ  <b>Staff </b> ก่อน</li>
-	<li><b>เปลี่ยนวันที่</b></li>
-	<dt>: เลือกโดยเลื่อนเมาส์ไปตามตาราง แล้วคลิกตรงวันที่ต้องการ</dt>
-	<li><b>Equipment</b> : สำหรับพยาบาล ใช้ Login ID:000000</li>
+	<li><b>เปลี่ยนวันที่</b> : เลือกโดยเลื่อนเมาส์ไปตามตาราง แล้วคลิกตรงวันที่ต้องการ</li>
+	<li><b>Equipment</b> : <button>Print</button>พิมพ์ลงกระดาษ</li>
 	<li><b>ประวัติการแก้ไข</b> : ดูย้อนหลังการเปลี่ยนข้อมูล</li>
 	<li><b>Delete</b> : ถ้าต้องการกลับคืน Undelete ได้ที่ <b>All Deleted Cases</b></li>
 	<li><b>คิวของอาจารย์</b> : มี submenu เลือกชื่ออาจารย์</li>
-	<dt>เมื่อเลือกอาจารย์แล้ว จะแบ่งหน้าจอเป็น 2 ส่วน</dt>
-		<dd>: ครึ่งซ้าย เป็นตารางรวม</dd>
-		<dd>: ครึ่งขวา เป็นตารางของอาจารย์ท่านเดียว</dd>
-		<dd>: resizable ซ้าย|ขวา เลื่อนที่เส้นแบ่งกลาง</dd>
+	  <dt>เมื่อเลือกอาจารย์แล้ว จะแบ่งหน้าจอเป็น 2 ส่วน</dt>
+		<ul><li>ครึ่งซ้าย เป็นตารางรวม</li></ul>
+		<ul><li>ครึ่งขวา เป็นตารางของอาจารย์ท่านเดียว</li></ul>
+		<ul><li>resizable ซ้าย <b>|</b> ขวา เลื่อนที่เส้นแบ่งกลาง</li></ul>
 	<li><b>Service Review</b> : ทั้งเคสผ่าตัด และเคส consult</li>
-	<dt>: ต้องลงเคสที่ตารางรวมก่อน</dt>
-	<li><b>All Deleted Cases</b> : เรียงวันที่ทำการลบ ไม่ใช่เรียงวันผ่าตัด</li>
-	<li><b>Find</b> : หาผู้ป่วย ด้วย HN หรือคำใดๆ </li>
-	<dt>: ผู้ป่วยทั้งหมด รวมทั้งที่ไม่ปรากฏในตาราง</dt>
-	<dt>: Ctrl-F เป็น feature ของ browser หาคำ เฉพาะที่ปรากฏในตาราง</dt>
+	  <dt>: ต้องลงเคสที่ตารางรวมก่อน</dt>
+	<li><b>ดูเคสทั้งหมด</b> : ตั้งแต่เริ่มต้นถึงปัจจุบัน
+	  <dt><b>- All Deleted Cases</b>	: เรียงวันที่ทำการลบ ไม่ใช่เรียงวันผ่าตัด</dt>
+		<ul><li>ต้องการ Undelete คลิกช่อง <b>Date Time</b> ของเคสนั้น</li></ul>
+	  <dt><b>- All Saved Cases</b>	: เหมือนตารางรวม</dt>
+	</li>
+	<li><b>Find</b> : หาผู้ป่วย ด้วย HN หรือคำใดๆ ตามช่องที่ต้องการ</li>
+	  <dt>: จะหาผู้ป่วยทั้งหมด รวมทั้งที่ไม่ปรากฏในตาราง</dt>
+	  <dt>: ถ้าใช้ Ctrl-F จะหาคำ เฉพาะที่ปรากฏในตาราง</dt>
 	<li><b>Readme</b></li>
-  </ul>
-
-  <h3>All Deleted Cases</h3>
-  <ul style="margin-top:0px;">
-	<li>ต้องการ Undelete คลิกช่อง <b>Date Time</b> ของเคสนั้น</li>
   </ul>
 
   <h3>Equipment</h3>
   <ul style="margin-top:0px;">
-	<li>แบบฟอร์มที่เคยใส่ข้อมูลแล้ว ต้องคลิก <b>แก้ไข</b></li>
-	<li>ยกเลิกเลือกการจัดท่า คลิก <b>Position</b></li>
-	<li>ยกเลิกเลือกชนิด shunt คลิก <b>Shunt</b></li>
+	<li>แบบฟอร์มที่เคยใส่ข้อมูลแล้ว ต้องคลิก <button>แก้ไข</button></li>
+	<li>ยกเลิกเลือกปุ่มการจัดท่า คลิก <b>Position</b></li>
+	<li>ยกเลิกเลือกปุ่มชนิด shunt คลิก <b>Shunt</b></li>
 	<li>ช่องใส่ข้อความท้ายแต่ละอุปกรณ์ เป็นบรรทัดเดียว ยาวๆได้ แต่จะซ่อนอยู่ ต้องเลื่อนดู</li>
 	<li>ช่องใส่ข้อความสุดท้าย ได้หลายบรรทัดไม่จำกัด แต่ถ้าเกิน 3 บรรทัด ต้องเลื่อนดู</li>
   </ul>
@@ -588,6 +591,7 @@
   <ul style="margin-top:0px;">
 	<li>ต้องการเปลี่ยนเดือน คลิกหัวลูกศร ซ้าย ขวา</li>
 	<li>เข้าดู Service Review คลิกแถบชื่อเดือน</li>
+	<li><button>Export to xls</button> โอนข้อมูลไป Excel แต่ยังไม่ใช่ไฟล์ Excel ต้อง Save ข้อมูลนั้นที่ Excel อีกที</li>
 	<li>ช่อง <b>Case</b> ลำดับเคสของอาจารย์แต่ละท่าน</li>
 	<li>ช่อง <b>HN Name</b> คลิกดู PACS ได้เฉพาะเครื่องที่เชื่อมกับ PACS</li>
 	<li>ช่อง <b>Diagnosis</b></li>
