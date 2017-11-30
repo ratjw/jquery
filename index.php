@@ -106,7 +106,7 @@
   <div id="monthpicker" style="margin-left:5px"></div>
   <div id="monthpicking" style="display:none"></div>
   <table id="servicetbl">
-   <tbody>
+   <thead>
     <tr>
      <th style="width:2%">case</th>
      <th style="width:3%">HN</th>
@@ -119,6 +119,8 @@
      <th style="width:5%">D/C</th>
      <th style="display:none"></th>
     </tr>
+   </thead>
+   <tbody>
    </tbody>
   </table>
 </div>
@@ -140,7 +142,7 @@
   </tbody>
 </table>
 
-<div id="dialogDataHistory"></div>
+<div id="dialogHistory"></div>
 
 <div id="dialogDeleted">
   <table>

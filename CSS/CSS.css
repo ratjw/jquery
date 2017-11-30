@@ -182,6 +182,14 @@ td.camera {
 	padding-left: 10px;
 }
 
+.fixed{
+	top: 0;
+	position: fixed;
+	width: auto;
+	display: none;
+	border: none;
+}
+
 .ui-sortable-helper {
 	display: table;
 }

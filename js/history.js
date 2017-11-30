@@ -1,3 +1,52 @@
+
+;(function($) {
+	$.fn.fixMe = function($container) {
+		var $this = $(this),
+			$t_fixed,
+			pad = $container.css("paddingLeft")
+		init();
+		$container.off("scroll").on("scroll", scrollFixed);
+
+		function init() {
+			$t_fixed = $this.clone();
+			$t_fixed.attr("id", "fixheader")
+			$t_fixed.find("tbody").remove().end().addClass("fixed").insertBefore($this);
+			$container.scrollTop(0)
+			resizeFixed();
+			reposition($t_fixed, "left top", "left+" + pad + " top", $container)
+			$t_fixed.hide()
+		}
+		function resizeFixed() {
+			$t_fixed.find("th").each(function(index) {
+				$(this).css("width",$this.find("th").eq(index).width() + "px");
+			});
+		}
+		function scrollFixed() {
+			var offset = $(this).scrollTop(),
+			tableTop = $this[0].offsetTop,
+			tableBottom = tableTop + $this.height() - $this.find("thead").height();
+			if(offset < tableTop || offset > tableBottom) {
+				$t_fixed.hide();
+			}
+			else if (offset >= tableTop && offset <= tableBottom && $t_fixed.is(":hidden")) {
+				$t_fixed.show();
+			}
+		}
+	};
+})(jQuery);
+
+function winResizeFix($this, $container) {
+	var $fix = $("#fixheader"),
+		hide = $fix.css("display") === "none",
+		pad = $container.css("paddingLeft")
+
+	$fix.find("th").each(function(index) {
+		$(this).css("width",$this.find("th").eq(index).width() + "px");
+	});
+	reposition($fix, "left top", "left+" + pad + " top", $container)
+	hide && $fix.hide()
+}
+
 function editHistory(rowi, qn)
 {
 	if (rowi.cells[QN].innerHTML)
@@ -27,7 +76,7 @@ function makehistory(rowi, response)
 	$('#historytbl').attr('id', '')
 
 	var HTML_String = '<table id = "historytbl">';
-	HTML_String += '<tr>';
+	HTML_String += '<thead><tr>';
 	HTML_String += '<th style="width:2%">When</th>';
 	HTML_String += '<th style="width:2%">Date</th>';
 	HTML_String += '<th style="width:2%">Room Time</th>';
@@ -39,7 +88,7 @@ function makehistory(rowi, response)
 	HTML_String += '<th style="width:15%">Equipment</th>';
 	HTML_String += '<th style="width:15%">Contact</th>';
 	HTML_String += '<th style="width:2%">Editor</th>';
-	HTML_String += '</tr>';
+	HTML_String += '</tr></thead><tbody>';
 	for (var j = 0; j < tracing.length; j++) 
 	{
 		if (tracing[j].action === 'delete') {
@@ -63,18 +112,19 @@ function makehistory(rowi, response)
 		HTML_String += '<td>' + tracing[j].editor +'</td>';
 		HTML_String += '</tr>';
 	}
-	HTML_String += '</table>';
+	HTML_String += '</tbody></table>';
 
-	$dialogDataHistory = $("#dialogDataHistory")
-	$dialogDataHistory.css("height", 0)
-	$dialogDataHistory.html(HTML_String)
-	$dialogDataHistory.dialog({
+	var $dialogHistory = $("#dialogHistory")
+	$dialogHistory.css("height", 0)
+	$dialogHistory.html(HTML_String)
+	$dialogHistory.dialog({
 		title: rowi.cells[HN].innerHTML +' '+ rowi.cells[NAME].innerHTML,
 		closeOnEscape: true,
 		modal: true,
 		width: window.innerWidth * 9 / 10,
 		height: window.innerHeight * 8 / 10
 	})
+   $("#historytbl").fixMe($dialogHistory);
 }
 
 function showEquip(equipString)
@@ -118,7 +168,7 @@ function makedeletedCases(response)
 	$('#historytbl').attr('id', '')
 
 	var HTML_String = '<table id = "historytbl">';
-	HTML_String += '<tr>';
+	HTML_String += '<thead><tr>';
 	HTML_String += '<th style="width:10%">When</th>';
 	HTML_String += '<th style="width:5%">Date</th>';
 	HTML_String += '<th style="width:5%">Staff</th>';
@@ -129,7 +179,7 @@ function makedeletedCases(response)
 	HTML_String += '<th style="width:20%">Contact</th>';
 	HTML_String += '<th style="width:5%">Editor</th>';
 	HTML_String += '<th style="display:none"></th>';
-	HTML_String += '</tr>';
+	HTML_String += '</tr></thead><tbody>';
 	for (var j = 0; j < deleted.length; j++) 
 	{
 		HTML_String += '<tr>';
@@ -145,18 +195,20 @@ function makedeletedCases(response)
 		HTML_String += '<td style="display:none">' + deleted[j].qn +'</td>';
 		HTML_String += '</tr>';
 	}
-	HTML_String += '</table>';
+	HTML_String += '</tbody></table>';
 
-	$("#dialogDeleted").css("height", 0)
-	$('#dialogDeleted').find('table').replaceWith(HTML_String)
+	var $dialogDeleted = $("#dialogDeleted")
+	$dialogDeleted.css("height", 0)
+	$dialogDeleted.find('table').replaceWith(HTML_String)
 	$("#undelete").hide()
-	$('#dialogDeleted').dialog({
+	$dialogDeleted.dialog({
 		title: "Deleted Cases",
 		closeOnEscape: true,
 		modal: true,
 		width: window.innerWidth * 9 / 10,
 		height: window.innerHeight * 8 / 10
 	})
+   $("#historytbl").fixMe($dialogDeleted);
 }
 
 function undelete(thiscase) 
@@ -461,7 +513,7 @@ function makeDialogFound(found, hn)
 	$('#historytbl').attr('id', '')
 
 	var HTML_String = '<table id = "historytbl">';
-	HTML_String += '<tr>';
+	HTML_String += '<thead><tr>';
 	HTML_String += '<th style="width:5%">Date</th>';
 	HTML_String += '<th style="width:5%">Staff</th>';
 	HTML_String += '<th style="width:5%">HN</th>';
@@ -470,7 +522,7 @@ function makeDialogFound(found, hn)
 	HTML_String += '<th style="width:20%">Treatment</th>';
 	HTML_String += '<th style="width:20%">Contact</th>';
 	HTML_String += '<th style="width:5%">Editor</th>';
-	HTML_String += '</tr>';
+	HTML_String += '</tr></thead><tbody>';
 	for (var j = 0; j < found.length; j++) 
 	{
 		if (!found[j].waitnum) {
@@ -490,11 +542,12 @@ function makeDialogFound(found, hn)
 		HTML_String += '<td>' + found[j].editor +'</td>';
 		HTML_String += '</tr>';
 	}
-	HTML_String += '</table>';
+	HTML_String += '</tbody></table>';
 
-	$("#dialogFind").css("height", 0)
-	$('#dialogFind').html(HTML_String)
-	$('#dialogFind').dialog({
+	var $dialogFind = $("#dialogFind")
+	$dialogFind.css("height", 0)
+	$dialogFind.html(HTML_String)
+	$dialogFind.dialog({
 		title: "HN " + hn,
 		closeOnEscape: true,
 		modal: true,
@@ -502,6 +555,7 @@ function makeDialogFound(found, hn)
 		height: window.innerHeight * 8 / 10,
 		buttons: []
 	})
+	$("#historytbl").fixMe($dialogFind);
 	$('#dialogFind .pacs').on("click", function() {
 		if (globalvar.isPACS) {
 			PACS(this.innerHTML)

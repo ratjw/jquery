@@ -24,8 +24,8 @@ function initialize(userid)
 	$("#dialogFind").dialog('close')
 	$("#dialogService").dialog()
 	$("#dialogService").dialog('close')
-	$("#dialogDataHistory").dialog()
-	$("#dialogDataHistory").dialog('close')
+	$("#dialogHistory").dialog()
+	$("#dialogHistory").dialog('close')
 
 	if (userid === "000000") {
 		$("#wrapper").on("click", function (event) {

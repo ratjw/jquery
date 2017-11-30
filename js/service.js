@@ -53,10 +53,12 @@ function entireMonth(fromDate)
 	})
 
 	$(window).resize(function() {	//for resizing dialogs in landscape / portrait view
-		$("#dialogService").dialog({
+		var $dialogService = $("#dialogService")
+		$dialogService.dialog({
 			width: window.innerWidth * 95 / 100,
 			height: window.innerHeight * 95 / 100
 		})
+		winResizeFix($("#servicetbl"), $dialogService)
 	})
 }
 
@@ -166,7 +168,7 @@ function showService(SERVICE, fromDate, toDate)
 	$.each( STAFF, function() {
 		var staffname = String(this)
 		$('#servicecells tr').clone()
-			.insertAfter($('#servicetbl tr:last'))
+			.appendTo($('#servicetbl tbody'))
 				.children("td").eq(OPDATE)
 					.prop("colSpan", 8)
 						.addClass("serviceStaff")
@@ -178,7 +180,7 @@ function showService(SERVICE, fromDate, toDate)
 				var color = countService(this, fromDate, toDate)
 				scase++
 				$('#servicecells tr').clone()
-					.insertAfter($('#servicetbl tr:last'))
+					.appendTo($('#servicetbl tbody'))
 						.filldataService(this, scase, color)
 			}
 		});
@@ -188,7 +190,8 @@ function showService(SERVICE, fromDate, toDate)
 	$monthpicker.hide()
 //	$monthpicker.datepicker( "hide" )
 	$('#servicehead').show()
-	$('#dialogService').dialog({
+	var $dialogService = $('#dialogService')
+	$dialogService.dialog({
 		title: 'Service Neurosurgery เดือน ' + $monthpicker.val(),
 		hide: 200,
 		width: window.innerWidth * 95 / 100,
@@ -198,10 +201,12 @@ function showService(SERVICE, fromDate, toDate)
 			refillstaffqueue()
 			refillall()
 			$(window).off("resize")
+			$("#fixheader").remove()
 		}
 	})
 	getAdmitDischargeDate(SERVICE, fromDate, toDate)
 	countAllServices()
+	$("#servicetbl").fixMe($dialogService);
 }
 
 function refillService(SERVICE, fromDate, toDate)
