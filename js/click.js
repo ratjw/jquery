@@ -632,7 +632,7 @@ function createEditcell(pointing)
 	var $pointing = $(pointing)
 	var height = $pointing.height() + "px"
 	var width = $pointing.width() + "px"
-	var context = pointing.innerHTML
+	var context = $.trim(pointing.innerHTML)
 	editcellData($editcell, pointing, context)
 	$editcell.html(context)
 	showEditcell($editcell, $pointing, height, width)
