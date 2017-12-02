@@ -125,7 +125,8 @@
   </table>
 </div>
 
-<table id="servicecells" style="display:none">	<!--template for "servicetbl"-->
+<!--template for "servicetbl"-->
+<table id="servicecells" style="display:none">
   <tbody>
    <tr>
     <td data-title="case"></td>
@@ -637,7 +638,7 @@
 
 <div id="images_preview"></div>
 
-<p id="logo" style="text-align:center;"><img width="170" height="150" src="pic/logoRama.jpg"></p>
+<p id="logo" style="text-align:center;"><img width="170" height="150" src="css/pic/logoRama.jpg"></p>
 
 <div id="login">
 	<br>

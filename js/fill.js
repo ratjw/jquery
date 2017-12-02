@@ -443,28 +443,24 @@ function findStartRowInBOOK(book, opdate)
 function holiday(date)
 {
 	var HOLIDAY = {
-		"2017-02-11" : "url('pic/Magha.jpg')",
-		"2017-02-13" : "url('pic/Maghasub.jpg')",	//หยุดชดเชยวันมาฆบูชา
-		"2017-05-10" : "url('pic/Vesak.jpg')",
-		"2017-05-12" : "url('pic/Ploughing.jpg')",
-		"2017-07-08" : "url('pic/Asalha.jpg')",
-		"2017-07-09" : "url('pic/Vassa.jpg')",
-		"2017-07-10" : "url('pic/Asalhasub.jpg')",	//หยุดชดเชยวันอาสาฬหบูชา
-		"2018-03-01" : "url('pic/Magha.jpg')",
-		"2018-05-09" : "url('pic/Ploughing.jpg')",
-		"2018-05-29" : "url('pic/Vesak.jpg')",
-		"2018-07-27" : "url('pic/Asalha.jpg')",
-		"2018-07-28" : "url('pic/Vassa.jpg')",
-		"2019-02-19" : "url('pic/Magha.jpg')",		//วันมาฆบูชา
-		"2019-05-13" : "url('pic/Ploughing.jpg')",	//วันพืชมงคล
-		"2019-05-18" : "url('pic/Vesak.jpg')",		//วันวิสาขบูชา
-		"2019-05-20" : "url('pic/Vesaksub.jpg')",	//หยุดชดเชยวันวิสาขบูชา
-		"2019-07-16" : "url('pic/Asalha.jpg')",		//วันอาสาฬหบูชา
-		"2019-07-17" : "url('pic/Vassa.jpg')"		//วันเข้าพรรษา
+		"2018-03-01" : "url('css/pic/Magha.jpg')",
+		"2018-05-09" : "url('css/pic/Ploughing.jpg')",
+		"2018-05-29" : "url('css/pic/Vesak.jpg')",
+		"2018-07-27" : "url('css/pic/Asalha.jpg')",
+		"2018-07-28" : "url('css/pic/Vassa.jpg')",
+		"2019-02-19" : "url('css/pic/Magha.jpg')",		//วันมาฆบูชา
+		"2019-05-13" : "url('css/pic/Ploughing.jpg')",	//วันพืชมงคล
+		"2019-05-18" : "url('css/pic/Vesak.jpg')",		//วันวิสาขบูชา
+		"2019-05-20" : "url('css/pic/Vesaksub.jpg')",	//หยุดชดเชยวันวิสาขบูชา
+		"2019-07-16" : "url('css/pic/Asalha.jpg')",		//วันอาสาฬหบูชา
+		"2019-07-17" : "url('css/pic/Vassa.jpg')"		//วันเข้าพรรษา
 		}
 	var monthdate = date.substring(5)
 	var dayofweek = (new Date(date)).getDay()
 	var holidayname = ""
+	var Mon = (dayofweek === 1)
+	var Tue = (dayofweek === 2)
+	var Wed = (dayofweek === 3)
 
 	for (var key in HOLIDAY) 
 	{
@@ -476,84 +472,84 @@ function holiday(date)
 	switch (monthdate)
 	{
 	case "12-31":
-		holidayname = "url('pic/Yearend.jpg')"
+		holidayname = "url('css/pic/Yearend.jpg')"
 		break
 	case "01-01":
-		holidayname = "url('pic/Newyear.jpg')"
+		holidayname = "url('css/pic/Newyear.jpg')"
 		break
 	case "01-02":
-		if ((dayofweek === 1) || (dayofweek === 2))
-			holidayname = "url('pic/Yearendsub.jpg')"
+		if (Mon || Tue)
+			holidayname = "url('css/pic/Yearendsub.jpg')"
 		break
 	case "01-03":
-		if ((dayofweek === 1) || (dayofweek === 2))
-			holidayname = "url('pic/Newyearsub.jpg')"
+		if (Mon || Tue)
+			holidayname = "url('css/pic/Newyearsub.jpg')"
 		break
 	case "04-06":
-		holidayname = "url('pic/Chakri.jpg')"
+		holidayname = "url('css/pic/Chakri.jpg')"
 		break
 	case "04-07":
 	case "04-08":
-		if (dayofweek === 1)
-			holidayname = "url('pic/Chakrisub.jpg')"
+		if (Mon)
+			holidayname = "url('css/pic/Chakrisub.jpg')"
 		break
 	case "04-13":
 	case "04-14":
 	case "04-15":
-		holidayname = "url('pic/Songkran.jpg')"
+		holidayname = "url('css/pic/Songkran.jpg')"
 		break
 	case "04-16":
 	case "04-17":
-		if (dayofweek && (dayofweek < 4))
-			holidayname = "url('pic/Songkransub.jpg')"
+		if (Mon || Tue || Wed)
+			holidayname = "url('css/pic/Songkransub.jpg')"
 		break
 	case "07-28":
-		holidayname = "url('pic/King10.jpg')"
+		holidayname = "url('css/pic/King10.jpg')"
 		break
 	case "07-29":
 	case "07-30":
-		if (dayofweek === 1)
-			holidayname = "url('pic/King10sub.jpg')"
+		if (Mon)
+			holidayname = "url('css/pic/King10sub.jpg')"
 		break
 	case "08-12":
-		holidayname = "url('pic/Queen.jpg')"
+		holidayname = "url('css/pic/Queen.jpg')"
 		break
 	case "08-13":
 	case "08-14":
-		if (dayofweek === 1)
-			holidayname = "url('pic/Queensub.jpg')"
+		if (Mon)
+			holidayname = "url('css/pic/Queensub.jpg')"
 		break
 	case "10-13":
-		holidayname = "url('pic/King09.jpg')"
+		holidayname = "url('css/pic/King09.jpg')"
 		break
 	case "10-14":
 	case "10-15":
-		if (dayofweek === 1)
-			holidayname = "url('pic/King09sub.jpg')"
+		if (Mon)
+			holidayname = "url('css/pic/King09sub.jpg')"
 		break
 	case "10-23":
-		holidayname = "url('pic/Piya.jpg')"
+		holidayname = "url('css/pic/Piya.jpg')"
 		break
 	case "10-24":
 	case "10-25":
-		if (dayofweek === 1)
-			holidayname = "url('pic/Piyasub.jpg')"
+		if (Mon)
+			holidayname = "url('css/pic/Piyasub.jpg')"
 		break
 	case "12-05":
-		holidayname = "url('pic/King9.jpg')"
+		holidayname = "url('css/pic/King9.jpg')"
 		break
 	case "12-06":
 	case "12-07":
-		if (dayofweek === 1)
-			holidayname = "url('pic/Kingsub.jpg')"
+		if (Mon)
+			holidayname = "url('css/pic/Kingsub.jpg')"
 		break
 	case "12-10":
-		holidayname = "url('pic/Constitution.jpg')"
+		holidayname = "url('css/pic/Constitution.jpg')"
 		break
 	case "12-11":
 	case "12-12":
-		if (dayofweek === 1)
-			holidayname = "url('pic/Constitutionsub.jpg')"
+		if (Mon)
+			holidayname = "url('css/pic/Constitutionsub.jpg')"
 		break
 	}
 	return holidayname
