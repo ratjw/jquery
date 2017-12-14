@@ -9,7 +9,7 @@
 
 		function init() {
 			$t_fixed = $this.clone();
-			$t_fixed.attr("id", "fixheader")
+			$t_fixed.removeAttr("id")
 			$t_fixed.find("tbody").remove().end().addClass("fixed").insertBefore($this);
 			$container.scrollTop(0)
 			resizeFixed();
@@ -36,7 +36,7 @@
 })(jQuery);
 
 function winResizeFix($this, $container) {
-	var $fix = $("#fixheader"),
+	var $fix = $(".fixed"),
 		hide = $fix.css("display") === "none",
 		pad = $container.css("paddingLeft")
 

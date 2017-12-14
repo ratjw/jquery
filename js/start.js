@@ -234,7 +234,7 @@ function updating()
 function onChange()
 {
 	if ($("#editcell").is(":visible")) {
-		var whereisEditcell = $("#editcell").siblings("table").attr("id")
+		var whereisEditcell = $($("#editcell").data("pointing")).closest("table").attr("id")
 		if (whereisEditcell === "servicetbl") {
 			return savePreviousCellService()	//Service table
 		} else {

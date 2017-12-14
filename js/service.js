@@ -201,7 +201,7 @@ function showService(SERVICE, fromDate, toDate)
 			refillstaffqueue()
 			refillall()
 			$(window).off("resize")
-			$("#fixheader").remove()
+			$(".fixed").remove()
 		}
 	})
 	getAdmitDischargeDate(SERVICE, fromDate, toDate)
