@@ -1,9 +1,9 @@
 
 DROP TABLE IF EXISTS bookhistory;
 
-CREATE TABLE bookhistory LIKE book;
+CREATE TABLE bookh LIKE book;
 
-ALTER TABLE bookhistory 
+ALTER TABLE bookh 
 	MODIFY COLUMN qn int(10) UNSIGNED NOT NULL, 
 	DROP PRIMARY KEY, 
 	DROP KEY opdate, 
@@ -13,4 +13,4 @@ ALTER TABLE bookhistory
 	ADD revision INT(6) NOT NULL AUTO_INCREMENT AFTER action,
 	ADD editdatetime DATETIME NOT NULL AFTER revision,
 	ADD PRIMARY KEY (qn, revision),
-	ADD KEY (revision);
+	ADD KEY (revision,qn);
