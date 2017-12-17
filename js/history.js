@@ -12,15 +12,11 @@
 			$t_fixed.removeAttr("id")
 			$t_fixed.find("tbody").remove().end().addClass("fixed").insertBefore($this);
 			$container.scrollTop(0)
-			resizeFixed();
+			resizeFixed($t_fixed, $this);
 			reposition($t_fixed, "left top", "left+" + pad + " top", $container)
 			$t_fixed.hide()
 		}
-		function resizeFixed() {
-			$t_fixed.find("th").each(function(index) {
-				$(this).css("width",$this.find("th").eq(index).width() + "px");
-			});
-		}
+
 		function scrollFixed() {
 			var offset = $(this).scrollTop(),
 			tableTop = $this[0].offsetTop,
@@ -35,14 +31,26 @@
 	};
 })(jQuery);
 
+function resizeFixed($fix, $this) {
+	var over = 0
+	$fix.find("th").each(function(index) {
+		var wide = $this.find("th").eq(index).width()
+		over += (wide - Math.round(wide))
+		if (Math.round(over)) {
+			wide += 1
+			over = 0
+		}
+
+		$(this).css("width", wide + "px")
+	});
+}
+
 function winResizeFix($this, $container) {
 	var $fix = $(".fixed"),
 		hide = $fix.css("display") === "none",
 		pad = $container.css("paddingLeft")
 
-	$fix.find("th").each(function(index) {
-		$(this).css("width",$this.find("th").eq(index).width() + "px");
-	});
+	resizeFixed($fix, $this)
 	reposition($fix, "left top", "left+" + pad + " top", $container)
 	hide && $fix.hide()
 }

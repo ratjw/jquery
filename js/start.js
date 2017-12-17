@@ -27,6 +27,41 @@ function initialize(userid)
 	$("#dialogHistory").dialog()
 	$("#dialogHistory").dialog('close')
 
+	$(document).contextmenu( function (event) {
+		event.preventDefault();
+	})
+
+	// Prevent the backspace key from navigating back.
+	$(document).unbind('keydown').bind('keydown', function (event) {
+		if (event.keyCode === 8) {
+			var doPrevent = true;
+			var types = ["text", "password", "file", "search", "email", "number",
+						"date", "color", "datetime", "datetime-local", "month", "range",
+						"search", "tel", "time", "url", "week"];
+			var d = $(event.srcElement || event.target);
+			var disabled = d.prop("readonly") || d.prop("disabled");
+			if (!disabled) {
+				if (d[0].isContentEditable) {
+					doPrevent = false;
+				} else if (d.is("input")) {
+					var type = d.attr("type");
+					if (type) {
+						type = type.toLowerCase();
+					}
+					if (types.indexOf(type) > -1) {
+						doPrevent = false;
+					}
+				} else if (d.is("textarea")) {
+					doPrevent = false;
+				}
+			}
+			if (doPrevent) {
+				event.preventDefault();
+				return false;
+			}
+		}
+	});
+
 	if (userid === "000000") {
 		$("#wrapper").on("click", function (event) {
 			event.stopPropagation()
@@ -41,8 +76,8 @@ function initialize(userid)
 			fillEquipTable(globalvar.BOOK, rowi[0], qn)
 			showNonEditableForScrub()
 		})
-		$("#wrapper").keydown(function(e) {
-			e.preventDefault();
+		$("#wrapper").keydown(function(event) {
+			event.preventDefault();
 		})
 		return
 	}
@@ -83,14 +118,15 @@ function initialize(userid)
 		clicktable(target)
 	})
 
+	//click on parent of submenu
 	$('#menu li > div').on("click", function(event){
-		if ($(this).siblings('ul').length > 0){	//click on parent of submenu
+		if ($(this).siblings('ul').length > 0){
 			event.preventDefault()
 			event.stopPropagation()
 		}
 	});
 
-	$("#editcell").keydown( function (event) {
+	$("#editcell").on("keydown", function (event) {
 		resetTimer();
 		globalvar.idleCounter = 0
 		var keycode = event.which || window.event.keyCode
@@ -102,7 +138,8 @@ function initialize(userid)
 		}
 	})
 
-	$("#editcell").keyup( function (event) {	//for resizing the editing cell
+	//for resizing the editing cell
+	$("#editcell").on("keyup", function (event) {
 		var $editcell = $("#editcell")
 		var pointing = $editcell.data("pointing")
 		if (pointing.cellIndex < 2) {
@@ -117,10 +154,6 @@ function initialize(userid)
 			height: $(pointing).height() + "px",
 		})
 		reposition($editcell, "center", "center", pointing)
-	})
-
-	$(document).contextmenu( function (event) {
-		return false
 	})
 
 	$("html, body").css( {
