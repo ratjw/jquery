@@ -149,11 +149,11 @@ function undelete($mysqli, $opdate)
 	}
 	
 	return book($mysqli);
-	$case = array();
 }
 
 function deletedCases($mysqli)
 {
+	$case = array();
 	$sql = "SELECT a.editdatetime, a.opdate, a.staffname, a.hn, a.patient, 
 				a.diagnosis, a.treatment, a.contact, a.editor, a.qn 
 			FROM (SELECT editdatetime, revision, b.* 
