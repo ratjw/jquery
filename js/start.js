@@ -1,9 +1,9 @@
 
 function initialize(userid)
 {
-	Ajax(MYSQLIPHP, "nosqlReturnbook=''", loading);
+	Ajax(MYSQLIPHP, "nosqlReturnbook=init", loading);
 
-	globalvar.user = userid
+	gv.user = userid
 	resetTimer()
 
 	$("#login").remove()
@@ -32,7 +32,7 @@ function initialize(userid)
 	})
 
 	// Prevent the backspace key from navigating back.
-	$(document).unbind('keydown').bind('keydown', function (event) {
+	$(document).off('keydown').on('keydown', function (event) {
 		if (event.keyCode === 8) {
 			var doPrevent = true;
 			var types = ["text", "password", "file", "search", "email", "number",
@@ -73,7 +73,7 @@ function initialize(userid)
 				event.stopPropagation()
 				return false
 			}
-			fillEquipTable(globalvar.BOOK, rowi[0], qn)
+			fillEquipTable(gv.BOOK, rowi[0], qn)
 			showNonEditableForScrub()
 		})
 		$("#wrapper").keydown(function(event) {
@@ -88,9 +88,8 @@ function initialize(userid)
 
 	$("#wrapper").on("click", function (event) {
 		resetTimer();
-		globalvar.idleCounter = 0
+		gv.idleCounter = 0
 		$(".bordergroove").removeClass("bordergroove")
-		event.stopPropagation()
 		var target = event.target
 		if ($('#menu').is(":visible")) {
 			if (!$(target).closest('#menu').length) {
@@ -104,18 +103,17 @@ function initialize(userid)
 				clearEditcell()
 			}
 		}
-		if ($('#undelete').is(":visible")) {
-			if ($(target).index()) {
-				$('#undelete').hide()
-				return false
-			}
+		if (target.className === "oncall") {
+			createEditcell(target)
+			stafflist(target)
 		}
-		if (target.nodeName !== "TD") {
+		else if (target.nodeName === "TD") {
+			clicktable(target)
+		} else {
 			clearEditcell()
-			return	
 		}
 
-		clicktable(target)
+		event.stopPropagation()
 	})
 
 	//click on parent of submenu
@@ -128,7 +126,7 @@ function initialize(userid)
 
 	$("#editcell").on("keydown", function (event) {
 		resetTimer();
-		globalvar.idleCounter = 0
+		gv.idleCounter = 0
 		var keycode = event.which || window.event.keyCode
 		var pointing = $("#editcell").data("pointing")
 		if ($('#dialogService').is(':visible')) {
@@ -168,11 +166,13 @@ function loading(response)
 	if (/BOOK/.test(response)) {
 		localStorage.setItem('ALLBOOK', response)
 		updateBOOK(response)
-		if (globalvar.user === "000000") {
+		getSTAFF()
+		if (gv.user === "000000") {
 			fillForScrub()
 		} else {
 			fillupstart();
 			setStafflist()
+			fillConsults()
 		}
 	} else {
 		response = localStorage.getItem('ALLBOOK')
@@ -180,26 +180,14 @@ function loading(response)
 		if (/BOOK/.test(response)) {
 			alert("Server Error", error + "<br><br>Use localStorage instead");
 			updateBOOK(response)
+			getSTAFF()
 			fillupstart();
 			setStafflist()
+			fillConsults()
 		} else {
 			alert("Server Error", error + "<br><br>No localStorage backup");
 		}
 	}
-}
-
-function setStafflist()
-{
-	var stafflist = ''
-	var staffmenu = ''
-	for (var each = 0; each < STAFF.length; each++)
-	{
-		stafflist += '<li><div>' + STAFF[each] + '</div></li>'
-		staffmenu += '<li id="staffqueue"><div>' + STAFF[each] + '</div></li>'
-	}
-	staffmenu += '<li id="staffqueue"><div>Consults</div></li>'
-	document.getElementById("stafflist").innerHTML = stafflist
-	document.getElementById("staffmenu").innerHTML = staffmenu
 }
 
 function updateBOOK(response)
@@ -208,30 +196,116 @@ function updateBOOK(response)
 	var book = temp.BOOK? temp.BOOK : []
 	var consult = temp.CONSULT? temp.CONSULT : []
 	var timestamp = temp.QTIME
-	globalvar.BOOK = book
-	globalvar.CONSULT = consult
-	globalvar.timestamp = timestamp
+	gv.BOOK = book
+	gv.CONSULT = consult
+	gv.timestamp = timestamp
 	//datetime of last fetching from server: $mysqli->query ("SELECT now();")
+}
+
+// gv.STAFF[q].opdate = the oncall date
+// gv.STAFF[q].staffname = staffname oncall on this date
+// gv.STAFF[q].hn = staff sequence order
+// gv.STAFF[q].patient = staffname in sequence order
+// gv.STAFF[q].diagnosis = staffname png
+function getSTAFF()
+{
+	var clen = gv.CONSULT.length
+
+	for (i=clen-1; i>=0; i--) {
+		if (gv.CONSULT[i].waitnum === "0") {
+			gv.STAFF[gv.CONSULT[i].hn] = gv.CONSULT[i]
+			gv.CONSULT.splice(i, 1)
+		}
+	}
+}
+
+function setStafflist()
+{
+	var stafflist = ''
+	var staffmenu = ''
+
+	for (var each = 0; each < gv.STAFF.length; each++)
+	{
+		stafflist += '<li><div>' + gv.STAFF[each].patient + '</div></li>'
+		staffmenu += '<li id="staffqueue"><div>' + gv.STAFF[each].patient + '</div></li>'
+	}
+	staffmenu += '<li id="staffqueue"><div>Consults</div></li>'
+	document.getElementById("stafflist").innerHTML = stafflist
+	document.getElementById("staffmenu").innerHTML = staffmenu
+}
+
+// Only on main table
+function fillConsults()
+{
+	var table = document.getElementById("tbl")
+	var rows = table.rows
+	var tlen = rows.length
+	var slen = gv.STAFF.length
+	var q = 0
+	var oncallRow = {}
+
+	while (q < slen) {
+		oncallRow = findOncallRow(rows, tlen, gv.STAFF[q].opdate)
+		if (!oncallRow.cells[QN].innerHTML) {
+			oncallRow.cells[STAFFNAME].style.backgroundImage = findStaffImage(gv.STAFF[q].staffname)
+		}
+		nowRow = oncallRow.rowIndex
+		q++
+	}
+}
+
+function findOncallRow(rows, tlen, opdate) {
+	var opdateth = opdate.thDate()
+	var i = 1
+
+	while (i < tlen) {
+		if (rows[i].cells[OPDATE].innerHTML === opdateth) {
+			return rows[i]
+		}
+		i++
+	}
+}
+
+function findStaffImage(staffname) {
+	var i = 0
+
+	while (i < gv.STAFF.length) {
+		if (gv.STAFF[i].patient === staffname) {
+			return gv.STAFF[i].diagnosis
+		}
+		i++
+	}
+}
+
+function showStaffImage(opdate, staffcolumn) {
+	var i = gv.STAFF.length
+
+	while (i--) {
+		if (gv.STAFF[i].opdate === opdate) {
+			staffcolumn.style.backgroundImage = gv.STAFF[i].diagnosis
+			return
+		}
+	}
 }
 
 function resetTimer()
 {
-	clearTimeout(globalvar.timer); //globalvar.timer is just an id, not the clock
-	globalvar.timer = setTimeout( updating, 10000)	//poke server every 10 sec.
+	clearTimeout(gv.timer); //gv.timer is just an id, not the clock
+	gv.timer = setTimeout( updating, 10000)	//poke server every 10 sec.
 }
 
 function updating()
 {
 	if (onChange()) {	//making some change
-		globalvar.idleCounter = 0
+		gv.idleCounter = 0
 	} else {
 		//idling
-		Ajax(MYSQLIPHP, "functionName=checkupdate&time=" + globalvar.timestamp, updatingback);
+		Ajax(MYSQLIPHP, "functionName=checkupdate&time=" + gv.timestamp, updatingback);
 
 		function updatingback(response)
 		{
 			//not being editing on screen
-			if (globalvar.idleCounter === 5) {
+			if (gv.idleCounter === 5) {
 				//idling 1 minute, clear editing setup
 				//do this only once, not every 1 minute
 				clearEditcell()
@@ -239,10 +313,10 @@ function updating()
 				$('#stafflist').hide()	//editcell may be on staff
 				clearMouseoverTR()
 			}
-			else if (globalvar.idleCounter > 59) {	//idling 10 minutes, logout
+			else if (gv.idleCounter > 59) {	//idling 10 minutes, logout
 				window.location = window.location.href
 			}
-			globalvar.idleCounter += 1
+			gv.idleCounter += 1
 
 			//some changes in database from other users
 			if (/BOOK/.test(response)) {

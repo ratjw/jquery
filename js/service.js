@@ -51,15 +51,6 @@ function entireMonth(fromDate)
 		e.preventDefault();
 		exportToExcel()
 	})
-
-	$(window).resize(function() {	//for resizing dialogs in landscape / portrait view
-		var $dialogService = $("#dialogService")
-		$dialogService.dialog({
-			width: window.innerWidth * 95 / 100,
-			height: window.innerHeight * 95 / 100
-		})
-		winResizeFix($("#servicetbl"), $dialogService)
-	})
 }
 
 //get 1st of last month
@@ -90,13 +81,13 @@ function getServiceOneMonth(fromDate, toDate) {
 	return deferService.promise()
 }
 
-//No data before last month in globalvar.BOOK, globalvar.CONSULT
+//No data before last month in gv.BOOK, gv.CONSULT
 //Retrieve the specified month from server
 function getfromServer(fromDate, toDate)
 {
 	var sql = "sqlReturnData=SELECT * FROM book "
 			  + "WHERE opdate BETWEEN '" + fromDate + "' AND '" + toDate
-			  + "' AND waitnum is not NULL "
+			  + "' AND waitnum<>0 "
 			  + "ORDER BY opdate, oproom='', oproom, optime, waitnum;";
 
 	var defer = $.Deferred()
@@ -115,8 +106,8 @@ function getfromServer(fromDate, toDate)
 
 function getfromBOOKCONSULT(fromDate, toDate)
 {
-	var book = globalvar.BOOK
-	var consult = globalvar.CONSULT
+	var book = gv.BOOK
+	var consult = gv.CONSULT
 	var SERV = []
 	SERV = addfromRAM(book, fromDate, toDate, SERV)
 	SERV = addfromRAM(consult, fromDate, toDate, SERV)
@@ -153,7 +144,7 @@ function showService(SERVICE, fromDate, toDate)
 	$('#servicetbl').show()
 	$("#servicetbl").on("click", function (event) {
 		resetTimer();
-		globalvar.idleCounter = 0
+		gv.idleCounter = 0
 		event.stopPropagation()
 		var target = event.target
 		var editable = fromDate >= getStart()
@@ -165,8 +156,8 @@ function showService(SERVICE, fromDate, toDate)
 		}
 	})
 
-	$.each( STAFF, function() {
-		var staffname = String(this)
+	$.each( gv.STAFF, function() {
+		var staffname = this.staffname
 		$('#servicecells tr').clone()
 			.appendTo($('#servicetbl tbody'))
 				.children("td").eq(OPDATE)
@@ -200,20 +191,31 @@ function showService(SERVICE, fromDate, toDate)
 			clearEditcell()
 			refillstaffqueue()
 			refillall()
-			$(window).off("resize")
 			$(".fixed").remove()
+			$(window).on("resize", function() {
+				$dialogService.dialog("close")
+			})
 		}
 	})
 	getAdmitDischargeDate(SERVICE, fromDate, toDate)
 	countAllServices()
 	$("#servicetbl").fixMe($dialogService);
+
+	//for resizing dialogs in landscape / portrait view
+	$(window).resize(function() {
+		$dialogService.dialog({
+			width: window.innerWidth * 95 / 100,
+			height: window.innerHeight * 95 / 100
+		})
+		winResizeFix($("#servicetbl"), $dialogService)
+	})
 }
 
 function refillService(SERVICE, fromDate, toDate)
 {
 	var i = 0
-	$.each( STAFF, function() {
-		var staffname = String(this)
+	$.each( gv.STAFF, function() {
+		var staffname = this.staffname
 		i++
 		var $thisCase = $('#servicetbl tr').eq(i).children("td").eq(CASENUMSERVICE)
 		if ($thisCase.prop("colSpan") === 1) {
@@ -251,7 +253,7 @@ jQuery.fn.extend({
 		addColorService(this, color)
 		cells[CASENUMSERVICE].innerHTML = scase
 		cells[HNSERVICE].innerHTML = bookq.hn
-		if (bookq.hn && globalvar.isPACS) {
+		if (bookq.hn && gv.isPACS) {
 			cells[HNSERVICE].className = "pacs"
 		}
 		cells[NAMESERVICE].innerHTML = bookq.patient
@@ -315,8 +317,8 @@ function getAdmitDischargeDate(SERVICE, fromDate, toDate)
 function fillAdmitDischargeDate(SERVICE)
 {
 	var i = 0
-	$.each( STAFF, function() {
-		var staffname = String(this)
+	$.each( gv.STAFF, function() {
+		var staffname = this.staffname
 		i++
 		$.each( SERVICE, function() {
 			if (this.staffname === staffname) {
@@ -454,7 +456,7 @@ function saveContentService(pointed, column, content)	//column name in MYSQL
 	}
 	var sql = "sqlReturnbook=UPDATE book SET "
 		sql += column +" = '"+ content
-		sql += "', editor='"+ globalvar.user
+		sql += "', editor='"+ gv.user
 		sql += "' WHERE qn = "+ qn +";"
 
 	Ajax(MYSQLIPHP, sql, callbacksaveScontent);
@@ -524,7 +526,7 @@ function storePresentCellService(pointing, editable)
 			break
 		case HNSERVICE:
 			clearEditcell()
-			if (globalvar.isPACS) {
+			if (gv.isPACS) {
 				PACS(pointing.innerHTML)
 			}
 			break
@@ -534,11 +536,11 @@ function storePresentCellService(pointing, editable)
 
 			clearEditcell()
 			if (hn) {
-				if (globalvar.uploadWindow && !globalvar.uploadWindow.closed) {
-					globalvar.uploadWindow.close();
+				if (gv.uploadWindow && !gv.uploadWindow.closed) {
+					gv.uploadWindow.close();
 				}
-				globalvar.uploadWindow = window.open("jQuery-File-Upload", "_blank")
-				globalvar.uploadWindow.hnName = {"hn": hn, "patient": patient}
+				gv.uploadWindow = window.open("jQuery-File-Upload", "_blank")
+				gv.uploadWindow.hnName = {"hn": hn, "patient": patient}
 				//hnName is a pre-defined variable in child window (jQuery-File-Upload)
 			}
 			break

@@ -9,6 +9,7 @@
 #tblwrapper {
 	float: left;
 	height: 100%;
+	width: 100%;
 	font-size: 0;
 }
 
@@ -71,7 +72,6 @@ td {
 	font-size: 12px;
 	background-image: url("pic/menu.png");
 	background-position: right center;
-	background-repeat: no-repeat;
 }
 
 tr.bordergroove {
@@ -112,14 +112,10 @@ td.sat:before { content: "เสาร์ "; }
 
 td.pacs {
 	background-image: url("pic/pacs.png");
-	background-position: center center;
-	background-repeat: no-repeat;
 }
 
 td.camera {
 	background-image: url("pic/camera.png");
-	background-position: center center;
-	background-repeat: no-repeat;
 }
 
 #titlebar {
@@ -330,10 +326,6 @@ button.ui-datepicker-current {
 	background-color: white;
 }
 
-.dialogBox span {
-	display:inline-block;
-}
-
 #dialogReadme h3 {
 	padding: 0px;
 	margin: 0px;
@@ -346,6 +338,10 @@ button.ui-datepicker-current {
 	width: 70px;
 	padding: 0px 0px 0px 3px;
 	margin: 0px;
+}
+
+.dialogBox span {
+	display:inline-block;
 }
 
 input[type=radio] + label {

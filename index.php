@@ -638,7 +638,7 @@
 
 <div id="images_preview"></div>
 
-<p id="logo" style="text-align:center;"><img width="170" height="150" src="css/pic/logoRama.jpg"></p>
+<p id="logo" style="text-align:center;"><img width="170" height="150" src="css/pic/logoRama.png"></p>
 
 <div id="login">
 	<br>

@@ -169,7 +169,7 @@ function Checklistequip(qn, bookqEquip)
 
 	var sql = "sqlReturnbook=UPDATE book SET ";
 	sql += "equipment='"+ equipment +"' ,";
-	sql += "editor='"+ globalvar.user +"' ";
+	sql += "editor='"+ gv.user +"' ";
 	sql += "WHERE qn="+ qn +";"
 
 	Ajax(MYSQLIPHP, sql, callbackEq);
