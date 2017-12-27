@@ -212,10 +212,10 @@ function refillOneDay(opdate)
 		}
 		var $cells = $opdateTblRows.children("td")
 		$cells.eq(OPDATE).siblings().html("")
+		$cells.eq(STAFFNAME).html(showStaffImage(opdate))
 		$cells.eq(HN).removeClass("pacs")
 		$cells.eq(NAME).removeClass("camera")
 		$opdateTblRows.attr("title", "")
-		showStaffImage(opdate, $cells[STAFFNAME])
 	} else {
 		if (tblRows > bookRows) {
 			while ($opdateTblRows.length > bookRows) {
@@ -231,7 +231,7 @@ function refillOneDay(opdate)
 		}
 		$.each(opdateBOOKrows, function(key, val) {
 			filldata(this, $opdateTblRows[key])
-			$opdateTblRows[key].cells[STAFFNAME].style.backgroundImage = ""
+			$opdateTblRows[key].cells[STAFFNAME].innerHTML = ""
 		})
 	}
 }

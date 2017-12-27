@@ -286,7 +286,6 @@ function deleteMenu(unuse, tableID, rowi, opdate, staffname, qn)
 	} else {
 		deleteCase(tableID, rowi, opdate, staffname, qn)
 	}
-	showStaffImage(opdate, $(rowi).find('td')[STAFFNAME])
 }
 
 function deleteCase(tableID, rowi, opdate, staffname, qn)
@@ -337,6 +336,7 @@ function deleteRow(rowi, opdate)
 		$(rowi).children("td").eq(OPDATE).siblings().html("")
 		$(rowi).children("td").eq(HN).removeClass("pacs")
 		$(rowi).children("td").eq(NAME).removeClass("camera")
+		$(rowi).children('td').eq(STAFFNAME).html(showStaffImage(opdate))
 	}
 }
 

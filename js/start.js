@@ -103,11 +103,10 @@ function initialize(userid)
 				clearEditcell()
 			}
 		}
-		if (target.className === "oncall") {
-			createEditcell(target)
-			stafflist(target)
+		if (target.nodeName === "P") {
+			target = $(target).closest('td')[0]
 		}
-		else if (target.nodeName === "TD") {
+		if (target.nodeName === "TD") {
 			clicktable(target)
 		} else {
 			clearEditcell()
@@ -209,9 +208,8 @@ function updateBOOK(response)
 // gv.STAFF[q].diagnosis = staffname png
 function getSTAFF()
 {
-	var clen = gv.CONSULT.length
-
-	for (i=clen-1; i>=0; i--) {
+	var i = gv.CONSULT.length
+	while (i--) {
 		if (gv.CONSULT[i].waitnum === "0") {
 			gv.STAFF[gv.CONSULT[i].hn] = gv.CONSULT[i]
 			gv.CONSULT.splice(i, 1)
@@ -241,49 +239,37 @@ function fillConsults()
 	var rows = table.rows
 	var tlen = rows.length
 	var slen = gv.STAFF.length
-	var q = 0
 	var oncallRow = {}
 
-	while (q < slen) {
+	for (var q = 0; q < slen; q++) {
 		oncallRow = findOncallRow(rows, tlen, gv.STAFF[q].opdate)
 		if (!oncallRow.cells[QN].innerHTML) {
-			oncallRow.cells[STAFFNAME].style.backgroundImage = findStaffImage(gv.STAFF[q].staffname)
+			oncallRow.cells[STAFFNAME].innerHTML = htmlwrap(gv.STAFF[q].staffname)
 		}
 		nowRow = oncallRow.rowIndex
-		q++
 	}
 }
 
 function findOncallRow(rows, tlen, opdate) {
 	var opdateth = opdate.thDate()
-	var i = 1
 
-	while (i < tlen) {
+	for (var i = 1; i < tlen; i++) {
 		if (rows[i].cells[OPDATE].innerHTML === opdateth) {
 			return rows[i]
 		}
-		i++
 	}
 }
 
-function findStaffImage(staffname) {
-	var i = 0
-
-	while (i < gv.STAFF.length) {
-		if (gv.STAFF[i].patient === staffname) {
-			return gv.STAFF[i].diagnosis
-		}
-		i++
-	}
+function htmlwrap(staffname) {
+	return '<p style="color:#B0B0B0;font-size:14px">' + staffname + '</p>'
 }
 
-function showStaffImage(opdate, staffcolumn) {
+function showStaffImage(opdate) {
 	var i = gv.STAFF.length
 
 	while (i--) {
 		if (gv.STAFF[i].opdate === opdate) {
-			staffcolumn.style.backgroundImage = gv.STAFF[i].diagnosis
-			return
+			return htmlwrap(gv.STAFF[i].staffname)
 		}
 	}
 }

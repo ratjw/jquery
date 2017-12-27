@@ -310,7 +310,7 @@ function saveContentNoQN(args)
 						refillstaffqueue()
 					}
 				}
-				args.$cells.eq(STAFFNAME).css("backgroundImage", "")
+				args.$cells.eq(STAFFNAME).html("")
 			} else {
 				//staffname has been changed
 				if (args.column === "staffname") {
@@ -392,7 +392,7 @@ function saveHN(pointed, hn, content)
 			})
 			$cells.eq(ROOMTIME).html(putRoomTime(bookq))
 			$cells.eq(STAFFNAME).html(bookq.staffname)
-			$cells.eq(STAFFNAME).css("backgroundImage", "")
+			$cells.eq(STAFFNAME).html("")
 			if (gv.isPACS) {
 				$cells.eq(HN).addClass("pacs")
 			}
@@ -589,7 +589,7 @@ function stafflist(pointing)
 			var qn = $cells.eq(QN).html()
 
 			// change staff oncall when there is no case
-			if (pointing.style.backgroundImage && !qn) {
+			if (pointing.innerHTML && !qn) {
 				changeOncall(pointing, opdate, staffname)
 			} else {
 				saveContent(pointing, "staffname", staffname)
@@ -620,7 +620,7 @@ function changeOncall(pointing, opdate, staffname)
 	function callbackchangeOncall(response)
 	{
 		if (response === "success") {
-			pointing.style.backgroundImage = findStaffImage(staffname)
+			pointing.innerHTML = htmlwrap(staffname)
 		} else {
 			alert("changeOncall", response)
 		}
