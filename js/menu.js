@@ -10,9 +10,9 @@ function mainMenu(pointing)
 	var hn = tcell[HN].innerHTML
 	var qn = tcell[QN].innerHTML
 	var consult = false
-	var book = globalvar.BOOK
+	var book = gv.BOOK
 	if (ConsultsTbl(tableID)) {
-		book = globalvar.CONSULT
+		book = gv.CONSULT
 		consult = true
 	}
 
@@ -54,16 +54,10 @@ function mainMenu(pointing)
 					editHistory(rowi, qn)
 					break
 				case "del":
-					if (unuse) {		//from add new row
-						$(rowi).remove()
-					} else {
-						deleteCase(tableID, rowi, opdate, staffname, qn)
-					}
+					deleteMenu(unuse, tableID, rowi, opdate, staffname, qn)
 					break
 				case "staffqueue":
 					staffqueue(ui.item.text())
-					if ($("#queuewrapper").css("display") !== "block")
-						splitPane()
 					break
 				case "service":
 					serviceReview()
@@ -179,7 +173,7 @@ function addnewrow(tableID, rowi)
 function postpone(rowi, opdate, staffname, qn)
 {
 	var sql = "sqlReturnbook=UPDATE book SET opdate='" + LARGESTDATE
-	sql += "', editor='" + globalvar.user
+	sql += "', editor='" + gv.user
 	sql += "' WHERE qn="+ qn + ";"
 
 	Ajax(MYSQLIPHP, sql, callbackpostpone)
@@ -227,7 +221,7 @@ function changeDate(tableID, opdate, staffname, qn, pointing)
 				sql += "oproom = '" + RoomTime[0] + "', "
 				sql += "optime = '" + RoomTime[1] + "', "
 			}
-			sql += "editor = '" + globalvar.user + "' WHERE qn="+ qn + ";"
+			sql += "editor = '" + gv.user + "' WHERE qn="+ qn + ";"
 
 			Ajax(MYSQLIPHP, sql, callbackchangeDateClick)
 
@@ -284,11 +278,22 @@ function getRoomTime($moverow, $thisrow)
 	return ""
 }
 
+function deleteMenu(unuse, tableID, rowi, opdate, staffname, qn)
+{
+	//from add new row
+	if (unuse) {
+		$(rowi).remove()
+	} else {
+		deleteCase(tableID, rowi, opdate, staffname, qn)
+	}
+	showStaffImage(opdate, $(rowi).find('td')[STAFFNAME])
+}
+
 function deleteCase(tableID, rowi, opdate, staffname, qn)
 {
 	//not actually delete the case but set waitnum=NULL
 	var sql = "sqlReturnbook=UPDATE book SET waitnum=NULL, "
-	sql += "editor = '" + globalvar.user + "' WHERE qn="+ qn + ";"
+	sql += "editor = '" + gv.user + "' WHERE qn="+ qn + ";"
 
 	Ajax(MYSQLIPHP, sql, callbackdeleterow)
 

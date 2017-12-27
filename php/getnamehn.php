@@ -47,7 +47,7 @@ require_once "book.php";
 	extract($resultz);
 
 	//Find last entry of patient with this hn
-	$sql = "SELECT MAX(qn) FROM book WHERE hn = $hn AND waitnum IS NOT NULL;";
+	$sql = "SELECT MAX(qn) FROM book WHERE hn = $hn AND waitnum<>0;";
 	$query = $mysqli->query ($sql);
 	if ($query) {
 		$oldqn = $query->fetch_row();		//Array

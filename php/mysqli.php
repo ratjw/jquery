@@ -2,16 +2,39 @@
 include "connect.php";
 require_once "book.php";
 
-	//start.js (initialize)
+	// start.js (initialize)
 	if (isset($_POST['nosqlReturnbook']))
 	{
-		echo json_encode(book($mysqli));
+		$sql = "SELECT MIN(opdate) FROM book WHERE waitnum=0;";
+		$result = $mysqli->query($sql);
+		if (!$result) {
+			return $mysqli->error;
+		}
+		// array.toString();
+		$opdate = current($result->fetch_row());
+		if ($opdate <= date('Y-m-d')) {
+			$sql = "UPDATE book
+					SET staffname= CASE WHEN opdate<=CURDATE()
+										THEN patient
+										ELSE staffname
+								   END,
+						opdate= CASE WHEN opdate<=CURDATE()
+										THEN DATE_ADD(opdate,INTERVAL 5 WEEK)
+										ELSE opdate
+									 END
+					WHERE waitnum=0;";
+			if (!$result = $mysqli->query ($sql)) {
+				return $mysqli->error;
+			}
+		}
+		echo json_encode(book($mysqli, $_POST['nosqlReturnbook']));
 	}
-	//click.js (saveRoomTime 2 ways, saveContentQN, saveContentNoQN 2 ways)
-	//equip.js (Checklistequip)
-	//menu.js (changeDate - $datepicker, changeDate - $trNOth, deleteCase)
-	//service.js (saveScontent)
-	//sortable.js (sortable)
+
+	// click.js (saveRoomTime 2 ways, saveContentQN, saveContentNoQN 2 ways)
+	// equip.js (Checklistequip)
+	// menu.js (changeDate - $datepicker, changeDate - $trNOth, deleteCase)
+	// service.js (saveScontent)
+	// sortable.js (sortable)
 	else if (isset($_POST['sqlReturnbook']))
 	{
 		$return = multiquery($mysqli, $_POST['sqlReturnbook']);
@@ -20,14 +43,26 @@ require_once "book.php";
 		else
 			echo json_encode(book($mysqli));
 	}
-	//equip.js (fillEquipTable)
-	//history.js (editHistory, sqlFind)
+
+	// click.js (changeOncall)
+	else if (isset($_POST['sqlReturnCONSULT']))
+	{
+		$return = multiquery($mysqli, $_POST['sqlReturnCONSULT']);
+		if (strpos($return, "DBfailed") !== false)
+			echo $return;
+		else
+			echo "success";
+	}
+
+	// equip.js (fillEquipTable)
+	// history.js (editHistory, sqlFind)
 	else if (isset($_POST['sqlReturnData']))
 	{
 		echo multiquery($mysqli, $_POST['sqlReturnData']);
 	}
-	//history.js (deletedCases, undelete)
-	//start.js (updating)
+
+	// history.js (deletedCases, undelete)
+	// start.js (updating)
 	else if (isset($_POST['functionName']))
 	{
 		echo json_encode($_POST['functionName']($mysqli, $_POST['opdate']));
@@ -37,10 +72,10 @@ function multiquery($mysqli, $sql)
 {
 	$returndata = "";
 	if ($mysqli->multi_query(urldecode($sql))) {
-		//multiple queries
+		// multiple queries
 		do {
 			if ($result = $mysqli->store_result())
-			{	//has no result, but no error (success query INSERT, UPDATE), skip this
+			{	// has no result, but no error (success query INSERT, UPDATE), skip this
 				$rowi = array();
 				$data = array();
 				while ($rowi = $result->fetch_assoc()) {
@@ -48,20 +83,20 @@ function multiquery($mysqli, $sql)
 				}
 				$returndata .= json_encode($data);
 			}
-			//if error, return error message
-			//if has no result, but no error (INSERT, UPDATE), fall through
+			// if error, return error message
+			// if has no result, but no error (INSERT, UPDATE), fall through
 			else if ($mysqli->errno)
 			{
 				$returndata .= 'DBfailed multi query ' . $sql . " \n" . $mysqli->error;
 			}
-			//nom more query
+			// nom more query
 			if (!$mysqli->more_results()) {
 				break;
 			}
-		//next query
+		// next query
 		} while ($mysqli->next_result());
 	}
-	//handle failed first query
+	// handle failed first query
 	else if ($mysqli->errno)
 	{
 		$returndata .= 'DBfailed first query ' . $sql . " \n" . $mysqli->error;
@@ -76,13 +111,13 @@ function checkupdate($mysqli)
 	$result = $mysqli->query ("SELECT MAX(editdatetime) from bookhistory;");
 	if ($result) {
 		$stamp = $result->fetch_row();
-		if ($time < $stamp[0]) {		//fetch_row result is an array
-			return book($mysqli);	//there is an update
+		if ($time < $stamp[0]) {		// fetch_row result is an array
+			return book($mysqli);	// there is an update
 		}
-		//no update if ($time > $stamp[0])
-		//current time > TIMESTAMP of last entry
+		// no update if ($time > $stamp[0])
+		// current time > TIMESTAMP of last entry
 	} else {
-		return "";	//no front-end update
+		return "";	// no front-end update
 	}
 }
 
@@ -96,7 +131,7 @@ function undelete($mysqli, $opdate)
 	if (!$result) {
 		return $mysqli->error;
 	}
-	$owaitnum = current($result->fetch_row());	//array.toString();
+	$owaitnum = current($result->fetch_row());	// array.toString();
 	$neg_pos = $owaitnum ? $owaitnum / abs($owaitnum) : 1;
 
 	$sql = "SELECT MAX(ABS(waitnum)) FROM book WHERE opdate='$opdate';";
@@ -104,7 +139,7 @@ function undelete($mysqli, $opdate)
 	if (!$result) {
 		return $mysqli->error;
 	}
-	$waitnum = current($result->fetch_row());	//array.toString();
+	$waitnum = current($result->fetch_row());	// array.toString();
 	$waitnum = ($waitnum  + 1) * $neg_pos;
 
 	$sql = "UPDATE book SET waitnum=$waitnum, editor='$editor' WHERE qn=$qn";
@@ -114,11 +149,11 @@ function undelete($mysqli, $opdate)
 	}
 	
 	return book($mysqli);
-
 }
 
 function deletedCases($mysqli)
 {
+	$case = array();
 	$sql = "SELECT a.editdatetime, a.opdate, a.staffname, a.hn, a.patient, 
 				a.diagnosis, a.treatment, a.contact, a.editor, a.qn 
 			FROM (SELECT editdatetime, revision, b.* 
@@ -142,4 +177,22 @@ function deletedCases($mysqli)
 	}
 
 	return $case;
+}
+
+function consult($mysqli)
+{
+	$consult = array();
+	$sql = "SELECT * FROM book 
+			WHERE opdate >= DATE_FORMAT(CURDATE()-INTERVAL 1 MONTH,'%Y-%m-01') AND waitnum <= 0
+			ORDER BY opdate, oproom='', oproom, optime, waitnum DESC;";
+	$result = $mysqli->query ($sql);
+	if (!$result) {
+		return $mysqli->error;
+	}
+
+	while ($rowi = $result->fetch_assoc()) {
+		$consult[] = $rowi;
+	}
+
+	return $consult;
 }

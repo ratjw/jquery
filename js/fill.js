@@ -1,26 +1,25 @@
 
 function fillupstart()		
 {	//Display all cases in each day of 5 weeks
-	var book = globalvar.BOOK
-	if (book.length === 0)
-		book.push({"opdate" : getSunday()})
+	var table = document.getElementById("tbl")
+	var today = new Date()
 
-	var start = new Date()
-	start = new Date(start.getFullYear(), start.getMonth()-1).ISOdate()
-	start = getSunday(start)				//1st of last month
+	// Find the 1st of last month
+	var start = new Date(today.getFullYear(), today.getMonth()-1).ISOdate()
 
 	//fill until 1 year from now
-	var nextyear = new Date().getFullYear() + 1
-	var month = new Date().getMonth()
-	var todate = new Date().getDate()
-	var until = (new Date(nextyear, month, todate)).ISOdate()
+	var nextyear = today.getFullYear() + 2
+	var month = today.getMonth()
+	var date = today.getDate()
+	var until = (new Date(nextyear, month, date)).ISOdate()
+	var book = gv.BOOK
+	if (book.length === 0) { book.push({"opdate" : today.ISOdate()}) }
 
-	var table = document.getElementById("tbl")
 	fillall(book, table, start, until)
 
-	//scroll to today
-	var today = new Date().ISOdate().thDate()
-	var thishead = $("tr:contains(" + today + ")").eq(0)
+	//scroll to todate
+	var todate = today.ISOdate().thDate()
+	var thishead = $("tr:contains(" + todate + ")").eq(0)
 	$('#tblcontainer').animate({
 		scrollTop: thishead.offset().top
 	}, 300);
@@ -31,7 +30,7 @@ function fillForScrub()
 	var table = document.getElementById("tbl")
 	var start = new Date().ISOdate()
 	var until = start.nextdays(6)
-	var book = globalvar.BOOK
+	var book = gv.BOOK
 
 	fillall(book, table, start, until)
 }
@@ -69,8 +68,8 @@ function fillall(book, table, start, until)
 				return
 			}
 
-			//make table head row before every Sunday
-			if ((new Date(date).getDay())%7 === 0)
+			//make table head row before every Monday
+			if ((new Date(date).getDay())%7 === 1)
 			{
 				var clone = head.cloneNode(true)
 				tbody.appendChild(clone)
@@ -87,8 +86,8 @@ function fillall(book, table, start, until)
 	{
 		date = date.nextdays(1)
 
-		//make table head row before every Sunday
-		if (((new Date(date)).getDay())%7 === 0)
+		//make table head row before every Monday
+		if (((new Date(date)).getDay())%7 === 1)
 		{
 			var clone = head.cloneNode(true)
 			tbody.appendChild(clone)
@@ -100,11 +99,11 @@ function fillall(book, table, start, until)
 
 function refillall()
 {
-	var book = globalvar.BOOK
+	var book = gv.BOOK
 	var table = document.getElementById("tbl")
 	var tbody = table.getElementsByTagName("tbody")[0]
 	var rows = table.rows
-	var tlength = rows.length
+	var tlen = rows.length
 	var head = rows[0]
 	var start = $('#tbl tr:has("td"):first td').eq(OPDATE).html().numDate()
 	var date = start
@@ -117,7 +116,7 @@ function refillall()
 	//i for rows in table (with head as the first row)
 	var i = 1
 	var booklength = book.length
-	while (i < tlength)		//make blank rows till the end of existing table
+	while (i < tlen)		//make blank rows till the end of existing table
 	{
 		if (q < booklength) {
 			//step over each day that is not in book
@@ -128,15 +127,15 @@ function refillall()
 					fillrowdate(rows, i, date)	//existing row
 					fillblank(rows[i])	//clear a row for the day not in book
 					i++
-					if (i >= tlength) {
+					if (i >= tlen) {
 						return
 					}
 					
 					madedate = date
 				}
 				date = date.nextdays(1)
-				//make table head row before every Sunday
-				if ((new Date(date).getDay())%7 === 0)
+				//make table head row before every Monday
+				if ((new Date(date).getDay())%7 === 1)
 				{
 					if (rows[i].cells[OPDATE].nodeName !== "TH") {
 						var rowh = head.cloneNode(true)
@@ -144,7 +143,7 @@ function refillall()
 					}
 
 					i++
-					if (i >= tlength) {
+					if (i >= tlen) {
 						return
 					}
 				}
@@ -153,7 +152,7 @@ function refillall()
 			filldata(book[q], rows[i])	//fill a row for the day in book
 			madedate = date
 			i++
-			if (i >= tlength) {
+			if (i >= tlen) {
 				return
 			}
 			q++
@@ -162,8 +161,8 @@ function refillall()
 		{
 			date = date.nextdays(1)
 
-			//make table head row before every Sunday
-			if (((new Date(date)).getDay())%7 === 0)
+			//make table head row before every Monday
+			if (((new Date(date)).getDay())%7 === 1)
 			{
 				if (rows[i].cells[OPDATE].nodeName !== "TH") {
 					var rowh = head.cloneNode(true)
@@ -171,7 +170,7 @@ function refillall()
 				}
 
 				i++
-				if (i >= tlength) {
+				if (i >= tlen) {
 					return
 				}
 			}
@@ -180,7 +179,7 @@ function refillall()
 			fillrowdate(rows, i, date)	//existing row
 			fillblank(rows[i])
 			i++
-			if (i >= tlength) {
+			if (i >= tlen) {
 				return
 			}
 		}
@@ -191,11 +190,11 @@ function refillOneDay(opdate)
 {
 	var getOpdateRows = function (opdate) {
 		var opdateth = opdate.thDate()
-			return $('#tbl tr').filter(function() {
-					return $(this).find("td").eq(OPDATE).html() === opdateth;
-				}).closest("tr")
-		}
-	var book = globalvar.BOOK
+		return $('#tbl tr').filter(function() {
+			return $(this).find("td").eq(OPDATE).html() === opdateth;
+		}).closest("tr")
+	}
+	var book = gv.BOOK
 	var opdateBOOKrows = book.filter(function(row) {
 			return (row.opdate === opdate);
 		})
@@ -211,10 +210,12 @@ function refillOneDay(opdate)
 			$opdateTblRows.eq(0).remove()
 			$opdateTblRows = getOpdateRows(opdate)
 		}
-		$opdateTblRows.children("td").eq(OPDATE).siblings().html("")
-		$opdateTblRows.children("td").eq(HN).removeClass("pacs")
-		$opdateTblRows.children("td").eq(NAME).removeClass("camera")
+		var $cells = $opdateTblRows.children("td")
+		$cells.eq(OPDATE).siblings().html("")
+		$cells.eq(HN).removeClass("pacs")
+		$cells.eq(NAME).removeClass("camera")
 		$opdateTblRows.attr("title", "")
+		showStaffImage(opdate, $cells[STAFFNAME])
 	} else {
 		if (tblRows > bookRows) {
 			while ($opdateTblRows.length > bookRows) {
@@ -230,6 +231,7 @@ function refillOneDay(opdate)
 		}
 		$.each(opdateBOOKrows, function(key, val) {
 			filldata(this, $opdateTblRows[key])
+			$opdateTblRows[key].cells[STAFFNAME].style.backgroundImage = ""
 		})
 	}
 }
@@ -276,20 +278,20 @@ function fillblank(rowi)
 	cells[QN].innerHTML = ""
 }
 
-function filldata(bookq, rowi)		//bookq = book[q]
+function filldata(bookq, rowi)
 {
 	var cells = rowi.cells
+
 	rowi.title = bookq.waitnum
-	cells[ROOMTIME].innerHTML = (bookq.oproom? bookq.oproom : "")
-		+ (bookq.optime? "<br>" + bookq.optime : "")
-	cells[STAFFNAME].innerHTML = bookq.staffname
-	cells[HN].innerHTML = bookq.hn
-	if (bookq.hn && globalvar.isPACS) {
+	if (bookq.hn && gv.isPACS) {
 		cells[HN].className = "pacs"
 	}
-	cells[NAME].innerHTML = bookq.patient
-		+ (bookq.dob? ("<br>อายุ " + bookq.dob.getAge(bookq.opdate)) : "")
 	cells[NAME].className = bookq.patient? "camera" : ""
+
+	cells[ROOMTIME].innerHTML = putRoomTime(bookq)
+	cells[STAFFNAME].innerHTML = bookq.staffname
+	cells[HN].innerHTML = bookq.hn
+	cells[NAME].innerHTML = putNameAge(bookq)
 	cells[DIAGNOSIS].innerHTML = bookq.diagnosis
 	cells[TREATMENT].innerHTML = bookq.treatment
 	cells[CONTACT].innerHTML = bookq.contact
@@ -298,11 +300,15 @@ function filldata(bookq, rowi)		//bookq = book[q]
 
 function staffqueue(staffname)
 {
-	var todate = new Date().ISOdate()
+	var today = new Date()
+	var todate = today.ISOdate()
 	var scrolled = $("#queuecontainer").scrollTop()
-	var book = globalvar.BOOK
-	var consult = globalvar.CONSULT
+	var book = gv.BOOK
+	var consult = gv.CONSULT
 
+	if ($("#queuewrapper").css("display") !== "block") {
+		splitPane()
+	}
 	$('#titlename').html(staffname)
 	
 	//delete previous queuetbl lest it accumulates
@@ -313,9 +319,12 @@ function staffqueue(staffname)
 			consult.push({"opdate" : getSunday()})
 
 		var table = document.getElementById("queuetbl")
-		var start = (new Date((new Date()).getFullYear(), (new Date()).getMonth() - 1, 1)).ISOdate()
+		var start = (new Date((today).getFullYear(), (today).getMonth() - 1, 1)).ISOdate()
 
 		fillall(consult, table, start, todate)
+
+		var queueh = $("#queuetbl").height()
+		$("#queuecontainer").scrollTop(queueh)
 	} else {
 		$.each( book, function() {	// each === this
 			if (( this.staffname === staffname ) && this.opdate >= todate) {
@@ -324,17 +333,18 @@ function staffqueue(staffname)
 						.filldataQueue(this)
 			}
 		});
-	}
 
-	$("#queuecontainer").scrollTop(scrolled)
+		$("#queuecontainer").scrollTop(scrolled)
+	}
 }
 
 function refillstaffqueue()
 {
-	var todate = new Date().ISOdate()
+	var today = new Date()
+	var todate = today.ISOdate()
 	var staffname = $('#titlename').html()
-	var book = globalvar.BOOK
-	var consult = globalvar.CONSULT
+	var book = gv.BOOK
+	var consult = gv.CONSULT
 
 	if (staffname === "Consults") {
 		//Consults table is rendered same as fillall
@@ -343,7 +353,7 @@ function refillstaffqueue()
 			consult.push({"opdate" : getSunday()})
 
 		var table = document.getElementById("queuetbl")
-		var start = (new Date((new Date()).getFullYear(), (new Date()).getMonth() - 1, 1)).ISOdate()
+		var start = (new Date((today).getFullYear(), (today).getMonth() - 1, 1)).ISOdate()
 
 		fillall(consult, table, start, todate)
 	} else {
@@ -376,13 +386,11 @@ jQuery.fn.extend({
 			cells[OPDATE].className = NAMEOFDAYABBR[(new Date(bookq.opdate)).getDay()]
 		}
 		cells[OPDATE].innerHTML = putOpdate(bookq.opdate)
-		cells[ROOMTIME].innerHTML = (bookq.oproom? bookq.oproom : "")
-			+ (bookq.optime? "<br>" + bookq.optime : "")
+		cells[ROOMTIME].innerHTML = putRoomTime(bookq)
 		cells[STAFFNAME].innerHTML = bookq.staffname
 		cells[HN].innerHTML = bookq.hn
-		cells[HN].className = (bookq.hn && globalvar.isPACS)? "pacs" : ""
-		cells[NAME].innerHTML = bookq.patient
-			+ (bookq.dob? ("<br>อายุ " + putAgeOpdate(bookq.dob, bookq.opdate)) : "")
+		cells[HN].className = (bookq.hn && gv.isPACS)? "pacs" : ""
+		cells[NAME].innerHTML = putNameAge(bookq)
 		cells[NAME].className = bookq.patient? "camera" : ""
 		cells[DIAGNOSIS].innerHTML = bookq.diagnosis
 		cells[TREATMENT].innerHTML = bookq.treatment
@@ -392,6 +400,18 @@ jQuery.fn.extend({
 		addColor(this, bookq.opdate)
 	}
 })
+
+function putRoomTime(bookq)
+{
+	return (bookq.oproom? bookq.oproom : "")
+		 + (bookq.optime? "<br>" + bookq.optime : "")
+}
+
+function putNameAge(bookq)
+{
+	return bookq.patient
+		+ (bookq.dob? ("<br>อายุ " + putAgeOpdate(bookq.dob, bookq.opdate)) : "")
+}
 
 function addColor($this, bookqOpdate) 
 {
@@ -424,13 +444,6 @@ String.prototype.nextdays = function (days)
 	return morrow.ISOdate();
 }
 
-function getSunday(date)	//get Sunday in the same week
-{
-	var today = date? new Date(date) : new Date();
-	today.setDate(today.getDate() - today.getDay());
-	return today.ISOdate();
-}
-
 function findStartRowInBOOK(book, opdate)
 {
 	var q = 0
@@ -443,17 +456,17 @@ function findStartRowInBOOK(book, opdate)
 function holiday(date)
 {
 	var HOLIDAY = {
-		"2018-03-01" : "url('css/pic/Magha.jpg')",
-		"2018-05-09" : "url('css/pic/Ploughing.jpg')",
-		"2018-05-29" : "url('css/pic/Vesak.jpg')",
-		"2018-07-27" : "url('css/pic/Asalha.jpg')",
-		"2018-07-28" : "url('css/pic/Vassa.jpg')",
-		"2019-02-19" : "url('css/pic/Magha.jpg')",		//วันมาฆบูชา
-		"2019-05-13" : "url('css/pic/Ploughing.jpg')",	//วันพืชมงคล
-		"2019-05-18" : "url('css/pic/Vesak.jpg')",		//วันวิสาขบูชา
-		"2019-05-20" : "url('css/pic/Vesaksub.jpg')",	//หยุดชดเชยวันวิสาขบูชา
-		"2019-07-16" : "url('css/pic/Asalha.jpg')",		//วันอาสาฬหบูชา
-		"2019-07-17" : "url('css/pic/Vassa.jpg')"		//วันเข้าพรรษา
+		"2018-03-01" : "url('css/pic/Magha.png')",
+		"2018-05-09" : "url('css/pic/Ploughing.png')",
+		"2018-05-29" : "url('css/pic/Vesak.png')",
+		"2018-07-27" : "url('css/pic/Asalha.png')",
+		"2018-07-28" : "url('css/pic/Vassa.png')",
+		"2019-02-19" : "url('css/pic/Magha.png')",		//วันมาฆบูชา
+		"2019-05-13" : "url('css/pic/Ploughing.png')",	//วันพืชมงคล
+		"2019-05-18" : "url('css/pic/Vesak.png')",		//วันวิสาขบูชา
+		"2019-05-20" : "url('css/pic/Vesaksub.png')",	//หยุดชดเชยวันวิสาขบูชา
+		"2019-07-16" : "url('css/pic/Asalha.png')",		//วันอาสาฬหบูชา
+		"2019-07-17" : "url('css/pic/Vassa.png')"		//วันเข้าพรรษา
 		}
 	var monthdate = date.substring(5)
 	var dayofweek = (new Date(date)).getDay()
@@ -472,84 +485,84 @@ function holiday(date)
 	switch (monthdate)
 	{
 	case "12-31":
-		holidayname = "url('css/pic/Yearend.jpg')"
+		holidayname = "url('css/pic/Yearend.png')"
 		break
 	case "01-01":
-		holidayname = "url('css/pic/Newyear.jpg')"
+		holidayname = "url('css/pic/Newyear.png')"
 		break
 	case "01-02":
 		if (Mon || Tue)
-			holidayname = "url('css/pic/Yearendsub.jpg')"
+			holidayname = "url('css/pic/Yearendsub.png')"
 		break
 	case "01-03":
 		if (Mon || Tue)
-			holidayname = "url('css/pic/Newyearsub.jpg')"
+			holidayname = "url('css/pic/Newyearsub.png')"
 		break
 	case "04-06":
-		holidayname = "url('css/pic/Chakri.jpg')"
+		holidayname = "url('css/pic/Chakri.png')"
 		break
 	case "04-07":
 	case "04-08":
 		if (Mon)
-			holidayname = "url('css/pic/Chakrisub.jpg')"
+			holidayname = "url('css/pic/Chakrisub.png')"
 		break
 	case "04-13":
 	case "04-14":
 	case "04-15":
-		holidayname = "url('css/pic/Songkran.jpg')"
+		holidayname = "url('css/pic/Songkran.png')"
 		break
 	case "04-16":
 	case "04-17":
 		if (Mon || Tue || Wed)
-			holidayname = "url('css/pic/Songkransub.jpg')"
+			holidayname = "url('css/pic/Songkransub.png')"
 		break
 	case "07-28":
-		holidayname = "url('css/pic/King10.jpg')"
+		holidayname = "url('css/pic/King10.png')"
 		break
 	case "07-29":
 	case "07-30":
 		if (Mon)
-			holidayname = "url('css/pic/King10sub.jpg')"
+			holidayname = "url('css/pic/King10sub.png')"
 		break
 	case "08-12":
-		holidayname = "url('css/pic/Queen.jpg')"
+		holidayname = "url('css/pic/Queen.png')"
 		break
 	case "08-13":
 	case "08-14":
 		if (Mon)
-			holidayname = "url('css/pic/Queensub.jpg')"
+			holidayname = "url('css/pic/Queensub.png')"
 		break
 	case "10-13":
-		holidayname = "url('css/pic/King09.jpg')"
+		holidayname = "url('css/pic/King09.png')"
 		break
 	case "10-14":
 	case "10-15":
 		if (Mon)
-			holidayname = "url('css/pic/King09sub.jpg')"
+			holidayname = "url('css/pic/King09sub.png')"
 		break
 	case "10-23":
-		holidayname = "url('css/pic/Piya.jpg')"
+		holidayname = "url('css/pic/Piya.png')"
 		break
 	case "10-24":
 	case "10-25":
 		if (Mon)
-			holidayname = "url('css/pic/Piyasub.jpg')"
+			holidayname = "url('css/pic/Piyasub.png')"
 		break
 	case "12-05":
-		holidayname = "url('css/pic/King9.jpg')"
+		holidayname = "url('css/pic/King9.png')"
 		break
 	case "12-06":
 	case "12-07":
 		if (Mon)
-			holidayname = "url('css/pic/Kingsub.jpg')"
+			holidayname = "url('css/pic/Kingsub.png')"
 		break
 	case "12-10":
-		holidayname = "url('css/pic/Constitution.jpg')"
+		holidayname = "url('css/pic/Constitution.png')"
 		break
 	case "12-11":
 	case "12-12":
 		if (Mon)
-			holidayname = "url('css/pic/Constitutionsub.jpg')"
+			holidayname = "url('css/pic/Constitutionsub.png')"
 		break
 	}
 	return holidayname

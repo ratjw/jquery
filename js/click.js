@@ -151,12 +151,12 @@ function saveRoomTime(pointed, content)
 		sql = "sqlReturnbook=UPDATE book SET "
 		sql += "oproom = '" + oproom + "', "
 		sql += "optime = '" + optime + "', "
-		sql += "editor = '" + globalvar.user + "' WHERE qn="+ qn + ";"	
+		sql += "editor = '" + gv.user + "' WHERE qn="+ qn + ";"	
 	} else {
 		sql = "sqlReturnbook=INSERT INTO book ("
 		sql += "waitnum, opdate, oproom, optime, editor) VALUES ("
 		sql += waitnum + ", '" + opdate +"', '" + oproom +"', '" + optime
-		sql += "', '"+ globalvar.user +"');"
+		sql += "', '"+ gv.user +"');"
 	}
 
 	Ajax(MYSQLIPHP, sql, callbacksaveRoomTime)
@@ -225,7 +225,7 @@ function saveContentQN(args)
 {
 	var sql = "sqlReturnbook=UPDATE book SET "
 	sql += args.column +" = '"+ args.content
-	sql += "', editor='"+ globalvar.user
+	sql += "', editor='"+ gv.user
 	sql += "' WHERE qn = "+ args.qn +";"
 
 	Ajax(MYSQLIPHP, sql, callbacksaveContentQN);
@@ -279,12 +279,12 @@ function saveContentNoQN(args)
 		var sql = "sqlReturnbook=INSERT INTO book ("
 		sql += "waitnum, opdate, oproom, optime, staffname, "+ args.column +", editor) VALUES ("
 		sql += waitnum + ", '" + args.opdate +"', '" + args.oproom +"', '" + args.optime + "', '"
-		sql += args.staffname + "', '"+ args.content +"', '"+ globalvar.user +"');"
+		sql += args.staffname + "', '"+ args.content +"', '"+ gv.user +"');"
 	} else {
 		var sql = "sqlReturnbook=INSERT INTO book ("
 		sql += "waitnum, opdate, oproom, optime, "+ args.column +", editor) VALUES ("
 		sql += waitnum + ", '" + args.opdate +"', '" + args.oproom +"', '" + args.optime
-		sql += "', '"+ args.content +"', '"+ globalvar.user +"');"
+		sql += "', '"+ args.content +"', '"+ gv.user +"');"
 	}
 
 	Ajax(MYSQLIPHP, sql, callbacksaveContentNoQN);
@@ -295,7 +295,7 @@ function saveContentNoQN(args)
 			updateBOOK(response)
 
 			//find and fill qn of new case input in that row, either tbl or queuetbl
-			var book = (ConsultsTbl(args.tableID))? globalvar.CONSULT : globalvar.BOOK
+			var book = (ConsultsTbl(args.tableID))? gv.CONSULT : gv.BOOK
 			var qn = Math.max.apply(Math, $.map(book, function(bookq, i){
 						return bookq.qn
 					}))
@@ -310,6 +310,7 @@ function saveContentNoQN(args)
 						refillstaffqueue()
 					}
 				}
+				args.$cells.eq(STAFFNAME).css("backgroundImage", "")
 			} else {
 				//staffname has been changed
 				if (args.column === "staffname") {
@@ -359,12 +360,12 @@ function saveHN(pointed, hn, content)
 			sql += "&staffname="+ staffname
 		}
 		sql += "&qn="+ qn
-		sql += "&username="+ globalvar.user
+		sql += "&username="+ gv.user
 	} else {
 		var sql = "hn=" + content
 		sql += "&opdate="+ opdate
 		sql += "&qn="+ qn
-		sql += "&username="+ globalvar.user
+		sql += "&username="+ gv.user
 	}
 
 	Ajax(GETNAMEHN, sql, callbackgetByHN)
@@ -374,7 +375,7 @@ function saveHN(pointed, hn, content)
 		if (/BOOK/.test(response)) {
 			updateBOOK(response)
 
-			var book = (ConsultsTbl(tableID))? globalvar.CONSULT : globalvar.BOOK
+			var book = (ConsultsTbl(tableID))? gv.CONSULT : gv.BOOK
 
 			if (!qn) {	//New case input
 				qn = Math.max.apply(Math, $.map(book, function(row, i){
@@ -389,14 +390,13 @@ function saveHN(pointed, hn, content)
 				bookq = this
 				return this.qn !== qn
 			})
-			$cells.eq(ROOMTIME).html((bookq.oproom? bookq.oproom : "")
-				+ (bookq.optime? "<br>" + bookq.optime : ""))
+			$cells.eq(ROOMTIME).html(putRoomTime(bookq))
 			$cells.eq(STAFFNAME).html(bookq.staffname)
-			if (globalvar.isPACS) {
+			$cells.eq(STAFFNAME).css("backgroundImage", "")
+			if (gv.isPACS) {
 				$cells.eq(HN).addClass("pacs")
 			}
-			$cells.eq(NAME).html(bookq.patient 
-				+ "<br>อายุ " + putAgeOpdate(bookq.dob, bookq.opdate))
+			$cells.eq(NAME).html(putNameAge(bookq))
 			$cells.eq(NAME).addClass("camera")
 			$cells.eq(DIAGNOSIS).html(bookq.diagnosis)
 			$cells.eq(TREATMENT).html(bookq.treatment)
@@ -433,7 +433,7 @@ function refillAnotherTableCell(tableID, cellindex, qn)
 		return
 	}
 
-	var book = globalvar.BOOK	//Consults cases have no link to others
+	var book = gv.BOOK	//Consults cases have no link to others
 	var bookq = getBOOKrowByQN(book, qn)
 	if (!bookq) {
 		return
@@ -444,16 +444,14 @@ function refillAnotherTableCell(tableID, cellindex, qn)
 	switch(cellindex)
 	{
 		case ROOMTIME:
-			cells[ROOMTIME].innerHTML = (bookq.oproom? bookq.oproom : "")
-				+ (bookq.optime? "<br>" + bookq.optime : "")
+			cells[ROOMTIME].innerHTML = putRoomTime(bookq)
 			break
 		case STAFFNAME:
 			cells[STAFFNAME].innerHTML = bookq.staffname
 			break
 		case HN:
 			cells[HN].innerHTML = bookq.hn
-			cells[NAME].innerHTML = bookq.patient
-				+ "<br>อายุ " + (bookq.dob? bookq.dob.getAge(bookq.opdate) : "")
+			cells[NAME].innerHTML = putNameAge(bookq)
 			break
 		case DIAGNOSIS:
 			cells[DIAGNOSIS].innerHTML = bookq.diagnosis
@@ -489,7 +487,7 @@ function storePresentCell(pointing)
 				break
 			} else {
 				clearEditcell()
-				if (globalvar.isPACS) {
+				if (gv.isPACS) {
 					PACS(pointing.innerHTML)
 				}
 			}
@@ -500,11 +498,11 @@ function storePresentCell(pointing)
 
 			clearEditcell()
 			if (hn) {
-				if (globalvar.uploadWindow && !globalvar.uploadWindow.closed) {
-					globalvar.uploadWindow.close();
+				if (gv.uploadWindow && !gv.uploadWindow.closed) {
+					gv.uploadWindow.close();
 				}
-				globalvar.uploadWindow = window.open("jQuery-File-Upload", "_blank")
-				globalvar.uploadWindow.hnName = {"hn": hn, "patient": patient}
+				gv.uploadWindow = window.open("jQuery-File-Upload", "_blank")
+				gv.uploadWindow.hnName = {"hn": hn, "patient": patient}
 				//hnName is a pre-defined variable in child window (jQuery-File-Upload)
 			}
 			break
@@ -579,24 +577,54 @@ function selectRoomTime(pointing)
 function stafflist(pointing)
 {
 	var $stafflist = $("#stafflist")
+	var width = $stafflist.outerWidth()
+
 	$stafflist.menu({
 		select: function( event, ui ) {
 			var staffname = ui.item.text()
-			saveContent(pointing, "staffname", staffname)
-			$(pointing).html(staffname)
+			var tableID = $(pointing).closest("table").attr("id")
+			var $row = $(pointing).closest('tr')
+			var $cells = $row.children("td")
+			var opdate = getOpdate($cells.eq(OPDATE).html())
+			var qn = $cells.eq(QN).html()
+
+			// change staff oncall when there is no case
+			if (pointing.style.backgroundImage && !qn) {
+				changeOncall(pointing, opdate, staffname)
+			} else {
+				saveContent(pointing, "staffname", staffname)
+			}
 			clearEditcell()
-			$stafflist.hide()		//to disappear after selection
+			$stafflist.hide()
 			event.stopPropagation()
 		}
 	});
 
-	var width = $stafflist.outerWidth()
-
 	$stafflist.appendTo($(pointing).closest('div'))
 	reposition($stafflist, "left top", "left bottom", pointing)
 	menustyle($stafflist, pointing, width)
+
+	// repeat reposition to make it show on first click
 	reposition($stafflist, "left top", "left bottom", pointing)
-	//To make it show on first click
+}
+
+function changeOncall(pointing, opdate, staffname)
+{
+	var sql = "sqlReturnCONSULT=UPDATE book SET "
+			+ "staffname= '" + staffname
+			+ "', editor='" + gv.user
+			+ "' WHERE waitnum=0 AND opdate='" + opdate + "';"
+
+	Ajax(MYSQLIPHP, sql, callbackchangeOncall);
+
+	function callbackchangeOncall(response)
+	{
+		if (response === "success") {
+			pointing.style.backgroundImage = findStaffImage(staffname)
+		} else {
+			alert("changeOncall", response)
+		}
+	}
 }
 
 function createEditcellOpdate(pointing)
