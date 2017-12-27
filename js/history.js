@@ -107,17 +107,17 @@ function makehistory(rowi, response)
 		} else {
 			HTML_String += '<tr>';
 		}
-		HTML_String += '<td>' + tracing[j].editdatetime +'</td>';
-		HTML_String += '<td>' + (tracing[j].opdate? tracing[j].opdate : "") +'</td>';
-		HTML_String += '<td>' + tracing[j].oproom +' '+ tracing[j].optime +'</td>';
-		HTML_String += '<td>' + tracing[j].staffname +'</td>';
-		HTML_String += '<td>' + tracing[j].diagnosis +'</td>';
-		HTML_String += '<td>' + tracing[j].treatment +'</td>';
-		HTML_String += '<td>' + tracing[j].admission +'</td>';
-		HTML_String += '<td>' + tracing[j].final +'</td>';
-		HTML_String += '<td>' + showEquip(tracing[j].equipment) +'</td>';
-		HTML_String += '<td>' + tracing[j].contact +'</td>';
-		HTML_String += '<td>' + tracing[j].editor +'</td>';
+		HTML_String += '<td data-title="Edited When">' + tracing[j].editdatetime +'</td>';
+		HTML_String += '<td data-title="Date">' + (tracing[j].opdate? tracing[j].opdate : "") +'</td>';
+		HTML_String += '<td data-title="Room Time">' + tracing[j].oproom +' '+ tracing[j].optime +'</td>';
+		HTML_String += '<td data-title="Staff">' + tracing[j].staffname +'</td>';
+		HTML_String += '<td data-title="Diagnosis">' + tracing[j].diagnosis +'</td>';
+		HTML_String += '<td data-title="Treatment">' + tracing[j].treatment +'</td>';
+		HTML_String += '<td data-title="Admission">' + tracing[j].admission +'</td>';
+		HTML_String += '<td data-title="Final Status">' + tracing[j].final +'</td>';
+		HTML_String += '<td data-title="Equipment">' + showEquip(tracing[j].equipment) +'</td>';
+		HTML_String += '<td data-title="Contact">' + tracing[j].contact +'</td>';
+		HTML_String += '<td data-title="Editor">' + tracing[j].editor +'</td>';
 		HTML_String += '</tr>';
 	}
 	HTML_String += '</tbody></table>';
@@ -191,15 +191,15 @@ function makedeletedCases(response)
 	for (var j = 0; j < deleted.length; j++) 
 	{
 		HTML_String += '<tr>';
-		HTML_String += '<td onclick="undelete(this)">' + deleted[j].editdatetime +'</td>';
-		HTML_String += '<td>' + deleted[j].opdate +'</td>';
-		HTML_String += '<td>' + deleted[j].staffname +'</td>';
-		HTML_String += '<td>' + deleted[j].hn +'</td>';
-		HTML_String += '<td>' + deleted[j].patient +'</td>';
-		HTML_String += '<td>' + deleted[j].diagnosis +'</td>';
-		HTML_String += '<td>' + deleted[j].treatment +'</td>';
-		HTML_String += '<td>' + deleted[j].contact +'</td>';
-		HTML_String += '<td>' + deleted[j].editor +'</td>';
+		HTML_String += '<td data-title="Edited When" onclick="undelete(this)">' + deleted[j].editdatetime +'</td>';
+		HTML_String += '<td data-title="Date">' + deleted[j].opdate +'</td>';
+		HTML_String += '<td data-title="Staff">' + deleted[j].staffname +'</td>';
+		HTML_String += '<td data-title="HN">' + deleted[j].hn +'</td>';
+		HTML_String += '<td data-title="Patient Name">' + deleted[j].patient +'</td>';
+		HTML_String += '<td data-title="Diagnosis">' + deleted[j].diagnosis +'</td>';
+		HTML_String += '<td data-title="Treatment">' + deleted[j].treatment +'</td>';
+		HTML_String += '<td data-title="Contact">' + deleted[j].contact +'</td>';
+		HTML_String += '<td data-title="Editor">' + deleted[j].editor +'</td>';
 		HTML_String += '<td style="display:none">' + deleted[j].qn +'</td>';
 		HTML_String += '</tr>';
 	}
@@ -538,16 +538,16 @@ function makeDialogFound(found, hn)
 		} else {
 			HTML_String += '<tr>';
 		}
-		HTML_String += '<td>' + found[j].opdate +'</td>';
-		HTML_String += '<td>' + found[j].staffname +'</td>';
-		HTML_String += '<td'  + (found[j].hn && globalvar.isPACS ? ' class="pacs"' : '')
+		HTML_String += '<td data-title="Date">' + found[j].opdate +'</td>';
+		HTML_String += '<td data-title="Staff">' + found[j].staffname +'</td>';
+		HTML_String += '<td data-title="HN"'  + (found[j].hn && globalvar.isPACS ? ' class="pacs"' : '')
 						+ '>' + found[j].hn +'</td>';
-		HTML_String += '<td'  + (found[j].patient ? ' class="camera"' : '')
+		HTML_String += '<td data-title="Patient Name"'  + (found[j].patient ? ' class="camera"' : '')
 						+ '>' + found[j].patient +'</td>';
-		HTML_String += '<td>' + found[j].diagnosis +'</td>';
-		HTML_String += '<td>' + found[j].treatment +'</td>';
-		HTML_String += '<td>' + found[j].contact +'</td>';
-		HTML_String += '<td>' + found[j].editor +'</td>';
+		HTML_String += '<td data-title="Diagnosis">' + found[j].diagnosis +'</td>';
+		HTML_String += '<td data-title="Treatment">' + found[j].treatment +'</td>';
+		HTML_String += '<td data-title="Contact">' + found[j].contact +'</td>';
+		HTML_String += '<td data-title="Editor">' + found[j].editor +'</td>';
 		HTML_String += '</tr>';
 	}
 	HTML_String += '</tbody></table>';
