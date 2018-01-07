@@ -12,7 +12,7 @@ require_once "book.php";
 	$qn = "";
 	$username = "";
 	$oproom = "";
-	$optime = "";
+	$casenum = "";
 	$diagnosis = "";
 	$treatment = "";
 	$contact = "";
@@ -83,12 +83,12 @@ require_once "book.php";
 				WHERE qn = $qn;";
 	}
 	else
-	{			//new row, insert waitnum, opdate, oproom, optime, staffname
+	{			//new row, insert waitnum, opdate, oproom, casenum, staffname
 		$sql = "INSERT INTO book (
 					waitnum, 
 					opdate, 
 					oproom, 
-					optime, 
+					casenum, 
 					staffname, 
 					hn, 
 					patient, 
@@ -102,7 +102,7 @@ require_once "book.php";
 					$waitnum, 
 					'$opdate', 
 					'$oproom', 
-					'$optime', 
+					'$casenum', 
 					'$staffname', 
 					'$hn', 
 					'$initial_name$first_name $last_name', 

@@ -1,8 +1,8 @@
 function sortable()
 {
-	var prevplace
-	var thisplace
-	var sender
+	var prevplace,
+		thisplace,
+		sender
 
 	$("#tbl tbody, #queuetbl tbody").sortable({
 		items: "tr",
@@ -10,7 +10,7 @@ function sortable()
 		forceHelperSize: true,
 		forcePlaceholderSize: true,
 		revert: true,
-		delay: 300,
+		delay: 150,
 		cancel: "tr:has('th')",
 		start: function(e, ui){
 			clearTimeout(gv.timer);
@@ -30,13 +30,16 @@ function sortable()
 			prevplace = thisplace
 			thisplace = ui.placeholder.index()
 		},
-		stop: function(e, ui){
-			var $item = ui.item
-			var $itemcell = $item.children("td")
-			var receiver = $item.closest('table').attr('id')
-			var oldOpdate = getOpdate($itemcell.eq(OPDATE).html())
-			var staffname = $itemcell.eq(STAFFNAME).html()
-			var titlename = $('#titlename').html()
+		stop: function(e, ui) {
+			var $item = ui.item,
+				$itemcell = $item.children("td"),
+				receiver = $item.closest('table').attr('id'),
+				oldOpdateth = $itemcell.eq(OPDATE).html(),
+				oldOpdate = getOpdate(oldOpdateth),
+				oldroom = $itemcell.eq(ROOM).html(),
+				staffname = $itemcell.eq(STAFFNAME).html(),
+				oldqn = $itemcell.eq(QN).html(),
+				titlename = $('#titlename').html()
 
 			if ((sender === "tbl") && (receiver === "queuetbl")) {
 				if ((titlename !== "Consults") && (staffname !== titlename)) {
@@ -50,63 +53,102 @@ function sortable()
 				return false
 			}
 
-			var $thisdrop
-			var $previtem = $item.prev()
-			var $nextitem = $item.next()
+			var $thisdrop, before,
+				$previtem = $item.prev(),
+				$nextitem = $item.next()
 			if (!$previtem.length || $previtem.has('th').length) {
 				$thisdrop = $nextitem
+				before = 1
 			} else {
 				if (!$nextitem.length || $nextitem.has('th').length) {
 					$thisdrop = $previtem
+					before = 0
 				} else {		//ui.offset (no '()') = helper position
-					var helperpos = ui.offset.top
-					var prevpos = $previtem.offset().top
-					var thispos = $item.offset().top
-					var nextpos = $nextitem.offset().top
-					var nearprev = Math.abs(helperpos - prevpos)
-					var nearplace = Math.abs(helperpos - thispos)
-					var nearnext = Math.abs(helperpos - nextpos)
-					var nearest = Math.min(nearprev, nearplace, nearnext)
-					if (nearest === nearprev) 
+					var helperpos = ui.offset.top,
+						prevpos = $previtem.offset().top,
+						thispos = $item.offset().top,
+						nextpos = $nextitem.offset().top,
+						nearprev = Math.abs(helperpos - prevpos),
+						nearplace = Math.abs(helperpos - thispos),
+						nearnext = Math.abs(helperpos - nextpos),
+						nearest = Math.min(nearprev, nearplace, nearnext)
+					if (nearest === nearprev) {
 						$thisdrop = $previtem
-					if (nearest === nearnext) 
+						before = 0
+					} 
+					if (nearest === nearnext) {
 						$thisdrop = $nextitem
+						before = 1
+					}
 					if (nearest === nearplace) {
 						if ((prevplace === thisplace) && (sender === receiver)) {
-							stopsorting()	//same place as before sorting
+							stopsorting()
 							return false
 						}
 						if (prevplace < thisplace) {
 							$thisdrop = $previtem
+							before = 0
 						} else {
 							$thisdrop = $nextitem
+							before = 1
 						}
 					}
 				}
 			}
 
-			var thisOpdate = getOpdate($thisdrop.children("td").eq(OPDATE).html())
-			var thisqn = $itemcell.eq(QN).html()
-			var roomtime = checkRoomTime($item, thisOpdate, oldOpdate)
-			if (roomtime.conflict) {
-				alert("Cancel Sorting", roomtime.conflict)
-				stopsorting()
-				return false
-			}
-			var finalWaitnum = calculateWaitnum(receiver, $item, thisOpdate)	
+			var $thiscell = $thisdrop.children("td"),
+				thisOpdateth = $thisdrop.children("td").eq(OPDATE).html(),
+				thisOpdate = getOpdate(thisOpdateth),
+				thisroom = $thiscell.eq(ROOM).html(),
+				thisqn = $thiscell.eq(QN).html(),
+				thisWaitnum = calculateWaitnum(receiver, $thisdrop, thisOpdateth),
 
-			var sql = "sqlReturnbook=UPDATE book SET Waitnum = "+ finalWaitnum
-			sql += ", opdate='" + thisOpdate
-			if (roomtime.roomtime) {
-				sql += "', oproom='" + roomtime.roomtime[0]
-				sql += "', optime='" + roomtime.roomtime[1]
+				index,
+				sql = ""
+
+			// click the same case
+			if (thisqn === oldqn) { return }
+
+			// assimilate into receiver
+			$itemcell.eq(OPDATE).html(thisOpdateth)
+			$itemcell.eq(ROOM).html(thisroom)
+
+			if (oldroom) {
+				allOldCases = sameDateRoomTableQN(oldOpdateth, oldroom)
+				if (sender === "queuetbl") {
+					index = allOldCases.indexOf(oldqn)
+					allOldCases.splice(index, 1)
+				}
+
+				for (var i=0; i<allOldCases.length; i++) {
+					sql += sqlCaseNum(i + 1, allOldCases[i])
+				}
 			}
-			sql += "', editor='"+ gv.user
-			sql += "' WHERE qn="+ thisqn +";"
+
+			if (thisroom) {
+				allNewCases = sameDateRoomTableQN(thisOpdateth, thisroom)
+				if (receiver === "queuetbl") {
+					index = allNewCases.indexOf(thisqn)
+					if (before) {
+						allNewCases.splice(index, 0, oldqn)
+					} else {
+						allNewCases.splice(index + 1, 0, oldqn)
+					}
+				}
+
+				for (var i=0; i<allNewCases.length; i++) {
+					if (allNewCases[i] === oldqn) {
+						sql += sqlMover(thisWaitnum, thisOpdate, thisroom, i + 1, oldqn)
+					} else {
+						sql += sqlCaseNum(i + 1, allNewCases[i])
+					}
+				}
+			}
+
+			if (!sql) { return }
+			sql = "sqlReturnbook=" + sql
 
 			Ajax(MYSQLIPHP, sql, callbacksortable);
-			
-			stopsorting()
 
 			function callbacksortable(response)
 			{
@@ -115,7 +157,7 @@ function sortable()
 					if (receiver === "tbl") {
 						refillOneDay(oldOpdate)
 						refillOneDay(thisOpdate)
-						if (($("#queuewrapper").css('display') === 'block')
+						if ((isSplited())
 							&& (titlename === staffname)) {
 								//dragging inside tbl of this staff's case
 							refillstaffqueue()
@@ -135,76 +177,33 @@ function sortable()
 
 function stopsorting()
 {
-	//Return to original place so that refillOneDay(oldOpdate)
-	//will not render this row in wrong position
+	// Return to original place
+	// Timer: Global timer every 10 sec
+	// idleCounter: Idle timer counts number of Timer cycles
 	$("#tbl tbody, #queuetbl tbody").sortable( "cancel" )
-	resetTimer()					//Global timer
-	gv.idleCounter = 0		//Idle timer
-	//after sorting, editcell was placed at row 0 column 1
-	//and display at placeholder position in entire width
+	resetTimer()
+	gv.idleCounter = 0
+
+	// after sorting, editcell was placed at row 0 column 1
+	// and display at placeholder position in entire row width
 	$('#editcell').hide()
 }
 
-function checkRoomTime($thisrow, thisOpdate, oldOpdate)
-{
-	var $thisRowCell = $thisrow.children("td")
-	var $prevRowCell = $thisrow.prev().children("td")
-	var $nextRowCell = $thisrow.next().children("td")
-	var prevOpdate = getOpdate($prevRowCell.eq(OPDATE).html())
-	var nextOpdate = getOpdate($nextRowCell.eq(OPDATE).html())
-	var thisroomtime = $thisRowCell.eq(ROOMTIME).html()
-	thisroomtime = thisroomtime? thisroomtime.split("<br>") : ""
-	var prevroomtime = $prevRowCell.eq(ROOMTIME).html()
-	prevroomtime = prevroomtime? prevroomtime.split("<br>") : ""
-	var nextroomtime = $nextRowCell.eq(ROOMTIME).html()
-	nextroomtime = nextroomtime? nextroomtime.split("<br>") : ""
-	var moveroom = thisroomtime[0]? thisroomtime[0].match(/\d+/)[0] : ""
-	var movetime = thisroomtime[1]
-	var prevroom = prevroomtime[0]? prevroomtime[0].match(/\d+/)[0] : ""
-	var prevtime = prevroomtime[1]
-	var nextroom = nextroomtime[0]? nextroomtime[0].match(/\d+/)[0] : ""
-	var nexttime = nextroomtime[1]
-	var roomtime = {
-		"conflict": "",
-		"roomtime": ""
-	}
+function sqlCaseNum(casenum, qn)
+{	
+	return "UPDATE book SET "
+		+  "casenum='" + casenum
+		+  "',editor='" + gv.user
+		+  "' WHERE qn="+ qn + ";";
+}
 
-	if (moveroom) {
-		if (oldOpdate !== thisOpdate) {	//move from another date
-			return roomtime		//do nothing, same as before move
-		}
-		//move in the same date
-		if (prevOpdate === thisOpdate) {	
-			if (prevroom) {
-				if (prevroom > moveroom) {
-					roomtime.conflict = "<br><br>Room conflict with previous case"
-				}
-				if ((prevroom === moveroom) && (prevtime > movetime)) {
-					roomtime.conflict = "<br><br>Time conflict with previous case"
-				}
-			}
-		}
-		if (thisOpdate === nextOpdate) {
-			if (nextroom) {
-				if (moveroom > nextroom) {
-					roomtime.conflict = "<br><br>Room conflict with next case"
-				}
-				if ((moveroom === nextroom) && (movetime > nexttime)) {
-					roomtime.conflict = "<br><br>Time conflict with next case"
-				}
-			}
-		}
-	} else {	//no old roomtime, use roomtime as the same opdate
-		if (prevOpdate === thisOpdate) {
-			if (prevroom) {
-				roomtime.roomtime = prevroomtime
-			}
-		}
-		else if (thisOpdate === nextOpdate) {
-			if (nextroom) {
-				roomtime.roomtime = nextroomtime
-			}
-		}
-	}
-	return roomtime
+function sqlMover(waitnum, opdate, oproom, casenum, qn)
+{
+	return "UPDATE book SET "
+		+  "waitnum=" + waitnum
+		+  ", opdate='" + opdate
+		+  "',oproom='" + oproom
+		+  "',casenum='" + casenum
+		+  "',editor='" + gv.user
+		+  "' WHERE qn="+ qn + ";";
 }

@@ -5,14 +5,15 @@ var MYSQLIPHP	= "php/mysqli.php";
 
 //tbl, queuetbl
 var OPDATE		= 0;
-var ROOMTIME	= 1;
-var STAFFNAME	= 2;
-var HN			= 3;
-var NAME		= 4;
-var DIAGNOSIS	= 5;
-var TREATMENT	= 6;
-var CONTACT		= 7;
-var QN			= 8;
+var ROOM		= 1;
+var NUM			= 2;
+var STAFFNAME	= 3;
+var HN			= 4;
+var NAME		= 5;
+var DIAGNOSIS	= 6;
+var TREATMENT	= 7;
+var CONTACT		= 8;
+var QN			= 9;
 
 //servicetbl
 var CASENUMSERVICE		= 0;

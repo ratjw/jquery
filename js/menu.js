@@ -1,24 +1,19 @@
 
 function mainMenu(pointing)
 {
-	var tableID = $(pointing).closest('table').attr('id')
-	var rowi = $(pointing).closest('tr')[0]
-	var tcell = rowi.cells
-	var opdateth = tcell[OPDATE].innerHTML
-	var opdate = getOpdate(opdateth)		//Thai to ISO date
-	var staffname = tcell[STAFFNAME].innerHTML
-	var hn = tcell[HN].innerHTML
-	var qn = tcell[QN].innerHTML
-	var consult = false
-	var book = gv.BOOK
-	if (ConsultsTbl(tableID)) {
-		book = gv.CONSULT
-		consult = true
-	}
+	var tableID = $(pointing).closest('table').attr('id'),
+		$row = $(pointing).closest('tr'),
+		$cell = $row.find("td"),
+		opdateth = $cell.eq(OPDATE).html(),
+		opdate = getOpdate(opdateth),
+		staffname = $cell.eq(STAFFNAME).html(),
+		qn = $cell.eq(QN).html(),
+		book = ConsultsTbl(tableID)? gv.CONSULT : gv.BOOK,
+		notLARGE = (opdate !== LARGESTDATE)
 
 	disable(qn, "#addrow")
 
-	disable((qn && staffname && (opdate !== LARGESTDATE)), "#postpone")
+	disable((qn && staffname && notLARGE), "#postpone")
 
 	disable(qn, "#changedate")
 
@@ -26,8 +21,8 @@ function mainMenu(pointing)
 
 	disable(qn, "#history")
 
-	var unuse = (checkblank(book, opdate, qn))? true : false
-	var del = (qn || unuse)? true : false
+	var unuse = !!checkblank(book, opdate, qn),
+		del = !!(qn || unuse)
 	disable(del, "#del")
 
 	var $menu = $("#menu")
@@ -39,22 +34,22 @@ function mainMenu(pointing)
 			switch(item)
 			{
 				case "addrow":
-					addnewrow(tableID, rowi, qn)
+					addnewrow(tableID, $row, qn)
 					break
 				case "postpone":
-					postpone(rowi, opdate, staffname, qn)
+					postpone(tableID, $row, opdateth, opdate, staffname, qn)
 					break
 				case "changedate":
-					changeDate(tableID, opdate, staffname, qn, pointing)
+					changeDate(tableID, $row, opdateth, opdate, staffname, qn)
 					break
 				case "equip":
-					fillEquipTable(book, rowi, qn)
+					fillEquipTable(book, $row, qn)
 					break
 				case "history":
-					editHistory(rowi, qn)
+					editHistory($row[0], qn)
 					break
 				case "del":
-					deleteMenu(unuse, tableID, rowi, opdate, staffname, qn)
+					delCase(unuse, tableID, $row, opdateth, opdate, staffname, qn)
 					break
 				case "staffqueue":
 					staffqueue(ui.item.text())
@@ -75,9 +70,9 @@ function mainMenu(pointing)
 					readme()
 					break
 			}
-
+			// clear after selection
 			clearEditcell()
-			$menu.hide()		//to disappear after selection
+			$menu.hide()
 			event.stopPropagation()
 		}
 	});
@@ -115,53 +110,49 @@ function menustyle($me, target, width)
 	})
 }
 
-function decimalToTime(dec)
-{
-	var time = []
-	var integer = Math.floor(dec)
-	var decimal = dec - integer
-	time[0] = (("" + integer).length === 1)? "0" + integer : "" + integer
-	time[1] = decimal? String(decimal * 60) : "00"
-	return time.join(".")
-}
-
+// Is this a blank row?
+// If blank, is there a case(s) in this date? 
 function checkblank(book, opdate, qn)
-{	//Is this a blank row?
-	//If blank, is there a case(s) in this date? 
-	var q = 0
+{	var q = 0
 
+	// No, this is not a blank row
 	if (qn) {
-		return false	//No, this is not a blank row
+		return false
 	}
-	//the following is a blank row
-	while (opdate > book[q].opdate)	//find this opdate in book
+	// the following is a blank row
+	// find this opdate in book
+	while (opdate > book[q].opdate)
 	{
 		q++
-		if (q >= book.length) {			//not found
-			return false	//beyond book, do not delete blank row
+		if (q >= book.length) {
+			// beyond book, do not delete blank row
+			return false
 		}
 	}
-	if (opdate === book[q].opdate) {	//found
-		return true	//there is a case(s) in this opdate, can delete blank row
+	// found
+	// if there is a case(s) in this opdate, can delete blank row
+	// if no case in this opdate, do not delete blank row
+	if (opdate === book[q].opdate) {
+		return true
 	} else {
-		return false	//No case in this opdate, do not delete blank row
+		return false
 	}
 }
 
-function addnewrow(tableID, rowi)
+function addnewrow(tableID, $row)
 {
 	if (tableID === "tbl") {
-		$(rowi).clone()
-			.insertAfter($(rowi))
+		$row.clone()
+			.insertAfter($row)
 				.find("td").eq(HN).removeClass("pacs")
 				.parent().find("td").eq(NAME).removeClass("camera")
-				.parent().find("td").eq(ROOMTIME)
+				.parent().find("td").eq(OPDATE)
 					.nextAll()
 						.html("")
 	}
 	else if (tableID === "queuetbl") {
-		$(rowi).clone()
-			.insertAfter($(rowi))
+		$row.clone()
+			.insertAfter($row)
 				.find("td").eq(HN).removeClass("pacs")
 				.parent().find("td").eq(NAME).removeClass("camera")
 				.parent().find("td").eq(STAFFNAME)
@@ -170,11 +161,24 @@ function addnewrow(tableID, rowi)
 	}
 }
 
-function postpone(rowi, opdate, staffname, qn)
+function postpone(tableID, $row, opdateth, opdate, staffname, qn)
 {
-	var sql = "sqlReturnbook=UPDATE book SET opdate='" + LARGESTDATE
-	sql += "', editor='" + gv.user
-	sql += "' WHERE qn="+ qn + ";"
+	var oproom = $row.find("td").eq(ROOM).html(),
+		allCases, index,
+
+		sql = "sqlReturnbook=UPDATE book SET opdate='" + LARGESTDATE
+			+ "', editor='" + gv.user
+			+ "' WHERE qn="+ qn + ";"
+
+	if (oproom) {
+		allCases = sameDateRoomTableQN(opdateth, oproom)
+		index = allCases.indexOf(qn)
+		allCases.splice(index, 1)
+
+		for (var i=0; i<allCases.length; i++) {
+			sql += sqlCaseNum(i + 1, allCases[i])
+		}
+	}
 
 	Ajax(MYSQLIPHP, sql, callbackpostpone)
 
@@ -182,10 +186,10 @@ function postpone(rowi, opdate, staffname, qn)
 	{
 		if (/BOOK/.test(response)) {
 			updateBOOK(response)
-			deleteRow(rowi, opdate)
-			if (($("#queuewrapper").css('display') === 'block') && 
-				($('#titlename').html() === staffname)) {
-				//changeDate of this staffname's case
+			refillOneDay(opdate)
+			if ((isSplited()) && 
+				(isStaffname(staffname))) {
+				// changeDate of this staffname's case
 				refillstaffqueue()
 			}
 			scrolltoThisCase(qn)
@@ -195,104 +199,155 @@ function postpone(rowi, opdate, staffname, qn)
 	}
 }
 
-function changeDate(tableID, opdate, staffname, qn, pointing)
+function changeDate(tableID, $row)
 {
-	var $mouseoverTR = $("#tbl tr, #queuetbl tr")
-	var $pointing = $(pointing)
+	var $allRows = $("#tbl tr:has('td'), #queuetbl tr:has('td')")
+	$allRows.on("mouseover", overDate)
+	$allRows.on("mouseout", outDate)
+	$allRows.on("click", arguments, clickDate)
 
-	$pointing.closest('tr').addClass("changeDate")
-	$mouseoverTR.on({
-		"mouseover": function() { $(this).addClass("pasteDate") },
-		"mouseout": function() { $(this).removeClass("pasteDate") },
-		"click": function(event) {
-			event.stopPropagation()
-			clearMouseoverTR()
+	$row.addClass("changeDate")
+	$(document).on("keydown", clearOnEscape)
+}
 
-			var thisDate = $(this).children("td").eq(OPDATE).html()
-			thisDate = getOpdate(thisDate)
-			//!thisDate = click on th
-			if (!thisDate || (opdate === thisDate)) {
-				return false
+function overDate() { $(this).addClass("pasteDate") }
+
+function outDate() { $(this).removeClass("pasteDate") }
+
+// changeDate arguments = (tableID, $row, opdateth, opdate, staffname, qn)
+function clickDate(event)
+{
+	var args = event.data,
+		tableID =  args[0],
+		$moverow = args[1],
+		moveOpdateth = args[2],
+		moveOpdate = args[3],
+		staffname = args[4],
+		moveQN = args[5],
+		moveroom = $moverow.find("td").eq(ROOM).html(),
+
+		$thisrow = $(this),
+		$thiscell = $thisrow.children("td"),
+		thisOpdateth = $thiscell.eq(OPDATE).html(),
+		thisOpdate = getOpdate(thisOpdateth),
+		thisroom = $thiscell.eq(ROOM).html(),
+		thisqn = $thiscell.eq(QN).html(),
+		thisWaitnum = calculateWaitnum(tableID, $thisrow, thisOpdateth),
+		allSameDate,
+		allOldCases, moveindex,
+		allNewCases, index, thisindex,
+		sql = ""
+
+	allOldCases = sameDateRoomTableQN(moveOpdateth, moveroom)
+	moveindex = allOldCases.indexOf(moveQN)
+
+	allNewCases = sameDateRoomTableQN(thisOpdateth, thisroom)
+	sameroomindex = allNewCases.indexOf(moveQN)
+	if (sameroomindex >= 0) {
+		allNewCases.splice(sameroomindex, 1)
+	}
+	thisindex = allNewCases.indexOf(thisqn)
+
+	allOldCases.splice(moveindex, 1)
+	allNewCases.splice(thisindex + 1, 0, moveQN)
+
+	event.stopPropagation()
+	clearMouseoverTR()
+	// click the same case
+	if (thisqn === moveQN) { return }
+
+	for (var i=0; i<allOldCases.length; i++) {
+		sql += sqlCaseNum(i + 1, allOldCases[i])
+	}
+
+	for (var i=0; i<allNewCases.length; i++) {
+		if (allNewCases[i] === moveQN) {
+			sql += sqlMover(thisWaitnum, thisOpdate, thisroom, i + 1, moveQN)
+		} else {
+			sql += sqlCaseNum(i + 1, allNewCases[i])
+		}
+	}
+
+	if (!sql) { return }
+	sql = "sqlReturnbook=" + sql
+
+	Ajax(MYSQLIPHP, sql, callbackClickDate)
+
+	function callbackClickDate(response)
+	{
+		if (/BOOK/.test(response)) {
+			updateBOOK(response);
+			refillOneDay(moveOpdate)
+			if (moveOpdate !== thisOpdate) {
+				refillOneDay(thisOpdate)
 			}
-
-			var RoomTime = getRoomTime($pointing.closest('tr'), $(this))
-			var sql = "sqlReturnbook=UPDATE book SET opdate='" + thisDate + "', "
-			if (RoomTime) {
-				sql += "oproom = '" + RoomTime[0] + "', "
-				sql += "optime = '" + RoomTime[1] + "', "
-			}
-			sql += "editor = '" + gv.user + "' WHERE qn="+ qn + ";"
-
-			Ajax(MYSQLIPHP, sql, callbackchangeDateClick)
-
-			function callbackchangeDateClick(response)
-			{
-				if (/BOOK/.test(response)) {
-					updateBOOK(response);
-					refillOneDay(opdate)
-					refillOneDay(thisDate)
-					if (($("#queuewrapper").css('display') === 'block') && 
-						($('#titlename').html() === staffname)) {
-						//changeDate of this staffname's case
-						refillstaffqueue()
-					}
-					scrolltoThisCase(qn)
-				} else {
-					alert ("changeDate", response)
+			if (isSplited()) {
+				var titlename = $('#titlename').html()
+				if ((titlename === staffname) ||
+					(titlename === "Consults")) {
+					// changeDate of this staffname's case
+					refillstaffqueue()
 				}
-			}
+			} 
+			scrolltoThisCase(moveQN)
+		} else {
+			alert ("changeDate", response)
 		}
-	});
-	$(document).on("keydown", function(event) {
-		var keycode = event.which || window.event.keyCode
-		if (keycode === 27)	{
-			clearMouseoverTR()
-		}
-	})
+	}
+}
+
+function clearOnEscape(event) {
+	var keycode = event.which || window.event.keyCode
+
+	if (keycode === 27)	{
+		clearMouseoverTR()
+	}
 }
 
 function clearMouseoverTR()
 {
-	var $mouseoverTR = $("#tbl tr, #queuetbl tr")
-	$mouseoverTR.off("mouseover");
-	$mouseoverTR.off("click");
-	$mouseoverTR.off("mouseout");
+	$("#tbl tr:has('td'), #queuetbl tr:has('td')").off({
+		"mouseover": overDate,
+		"mouseout": outDate,
+		"click": clickDate
+	})
 	$(".pasteDate").removeClass("pasteDate")
 	$(".changeDate").removeClass("changeDate")
-	$(document).off("keydown")
+	$(document).off("keydown", clearOnEscape)
 }
 
-//If moverow has roomtime, use that (moveRoom)
-//If not, use roomtime of the row it moved to (thisRoom)
-function getRoomTime($moverow, $thisrow)
+function delCase(unuse, tableID, $row, opdateth, opdate, staffname, qn)
 {
-	var moveRoom = $moverow.children("td").eq(ROOMTIME).html()
-	moveRoom = moveRoom? moveRoom.split("<br>") : ""
-
-	var thisRoom = $thisrow.children("td").eq(ROOMTIME).html()
-	thisRoom = thisRoom? thisRoom.split("<br>") : ""
-
-	if ((thisRoom.length) && (!moveRoom.length)) {
-		return thisRoom
-	}
-	return ""
-}
-
-function deleteMenu(unuse, tableID, rowi, opdate, staffname, qn)
-{
-	//from add new row
+	// blank from add new row
 	if (unuse) {
-		$(rowi).remove()
+		$row.remove()
 	} else {
-		deleteCase(tableID, rowi, opdate, staffname, qn)
+		deleteCase(tableID, $row, opdateth, opdate, staffname, qn)
 	}
 }
 
-function deleteCase(tableID, rowi, opdate, staffname, qn)
+function deleteCase(tableID, $row, opdateth, opdate, staffname, qn)
 {
-	//not actually delete the case but set waitnum=NULL
-	var sql = "sqlReturnbook=UPDATE book SET waitnum=NULL, "
-	sql += "editor = '" + gv.user + "' WHERE qn="+ qn + ";"
+	var oproom = $row.find("td").eq(ROOM).html(),
+		allCases, index,
+
+		// not actually delete the case but set waitnum=NULL
+		// deposit waitnum in optime for undelete
+		sql = "sqlReturnbook=UPDATE book SET "
+			+ "optime=waitnum, "
+			+ "waitnum=NULL, "
+			+ "editor = '" + gv.user
+			+ "' WHERE qn="+ qn + ";"
+
+	if (oproom) {
+		allCases = sameDateRoomTableQN(opdateth, oproom)
+		index = allCases.indexOf(qn)
+		allCases.splice(index, 1)
+
+		for (var i=0; i<allCases.length; i++) {
+			sql += sqlCaseNum(i + 1, allCases[i])
+		}
+	}
 
 	Ajax(MYSQLIPHP, sql, callbackdeleterow)
 
@@ -301,16 +356,16 @@ function deleteCase(tableID, rowi, opdate, staffname, qn)
 		if (/BOOK/.test(response)) {
 			updateBOOK(response)
 			if (tableID === "tbl") {
-				deleteRow(rowi, opdate)
-				if (($("#queuewrapper").css('display') === 'block') && 
-					($('#titlename').html() === staffname)) {
+				refillOneDay(opdate)
+				if ((isSplited()) && 
+					(isStaffname(staffname))) {
 					refillstaffqueue()
 				}
 			} else {
-				if ($('#titlename').html() === "Consults") {
-					deleteRow(rowi, opdate)
+				if (isConsults()) {
+					deleteRow($row, opdate)
 				} else {
-					$(rowi).remove()
+					$row.remove()
 				}
 				refillOneDay(opdate)
 			}
@@ -320,23 +375,23 @@ function deleteCase(tableID, rowi, opdate, staffname, qn)
 	}
 }
 
-function deleteRow(rowi, opdate)
+function deleteRow($row, opdate)
 {
-	var prevDate = $(rowi).prev().children("td").eq(OPDATE).html()
-	var nextDate = $(rowi).next().children("td").eq(OPDATE).html()
+	var prevDate = $row.prev().children("td").eq(OPDATE).html()
+	var nextDate = $row.next().children("td").eq(OPDATE).html()
 
 	prevDate = getOpdate(prevDate)
 	nextDate = getOpdate(nextDate)
 
 	if ((prevDate === opdate)
 	|| (nextDate === opdate)
-	|| $(rowi).closest("tr").is(":last-child")) {
-		$(rowi).remove()
+	|| $row.closest("tr").is(":last-child")) {
+		$row.remove()
 	} else {
-		$(rowi).children("td").eq(OPDATE).siblings().html("")
-		$(rowi).children("td").eq(HN).removeClass("pacs")
-		$(rowi).children("td").eq(NAME).removeClass("camera")
-		$(rowi).children('td').eq(STAFFNAME).html(showStaffImage(opdate))
+		$row.children("td").eq(OPDATE).siblings().html("")
+		$row.children("td").eq(HN).removeClass("pacs")
+		$row.children("td").eq(NAME).removeClass("camera")
+		$row.children('td').eq(STAFFNAME).html(showStaffImage(opdate))
 	}
 }
 
@@ -417,7 +472,7 @@ function fakeScrollAnimate(containerID, tableID, scrolledTop, offsetTop)
 		}, 500);
 	} else {
 		$container.scrollTop(offsetTop)
-	}	//table end
+	}	// table end
 }
 
 function findVisibleHead(table)

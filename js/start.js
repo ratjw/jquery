@@ -1,6 +1,7 @@
 
 function initialize(userid)
 {
+	// "=init" tells book.php to get staff oncall also
 	Ajax(MYSQLIPHP, "nosqlReturnbook=init", loading);
 
 	gv.user = userid
@@ -11,9 +12,9 @@ function initialize(userid)
 	$("#tblwrapper").show()
 
 	sortable()
-	//call sortable before render, otherwise, it renders very slowly
+	// call sortable before render, otherwise, it renders very slowly
 
-	//Prevent error message : call 'isOpen' before initialization
+	// Prevent error message : call 'isOpen' before initialization
 	$("#dialogAlert").dialog()
 	$("#dialogAlert").dialog('close')
 	$("#dialogDeleted").dialog()
@@ -74,7 +75,7 @@ function initialize(userid)
 				return false
 			}
 			fillEquipTable(gv.BOOK, rowi[0], qn)
-			showNonEditableForScrub()
+			$('#dialogEquip').dialog("option", "buttons", {})
 		})
 		$("#wrapper").keydown(function(event) {
 			event.preventDefault();
@@ -84,6 +85,7 @@ function initialize(userid)
 
 	$("#editcell").on("click", function (event) {
 		event.stopPropagation()
+		return
 	})
 
 	$("#wrapper").on("click", function (event) {
@@ -110,12 +112,15 @@ function initialize(userid)
 			clicktable(target)
 		} else {
 			clearEditcell()
+			$('#menu').hide()
+			$('#stafflist').hide()
+			clearMouseoverTR()
 		}
 
 		event.stopPropagation()
 	})
 
-	//click on parent of submenu
+	// click on parent of submenu
 	$('#menu li > div').on("click", function(event){
 		if ($(this).siblings('ul').length > 0){
 			event.preventDefault()
@@ -135,16 +140,17 @@ function initialize(userid)
 		}
 	})
 
-	//for resizing the editing cell
+	// for resizing the editing cell
+	// not resize in opdate cell or after non-char was pressed
 	$("#editcell").on("keyup", function (event) {
 		var $editcell = $("#editcell")
 		var pointing = $editcell.data("pointing")
-		if (pointing.cellIndex < 2) {
-			return		//not render in opdate & roomtime cells
+		if (!pointing.cellIndex) {
+			return
 		}
 		var keycode = event.which || window.event.keyCode
 		if (keycode < 32)	{
-			return		//not render after non-char was pressed
+			return
 		}
 		pointing.innerHTML = $editcell.html()
 		$editcell.css({
@@ -153,8 +159,9 @@ function initialize(userid)
 		reposition($editcell, "center", "center", pointing)
 	})
 
+	// to make table scrollable while dragging
 	$("html, body").css( {
-		height: "100%",		//to make table scrollable while dragging
+		height: "100%",
 		overflow: "hidden",
 		margin: "0px"
 	})
@@ -198,14 +205,13 @@ function updateBOOK(response)
 	gv.BOOK = book
 	gv.CONSULT = consult
 	gv.timestamp = timestamp
-	//datetime of last fetching from server: $mysqli->query ("SELECT now();")
+	// datetime of last fetching from server: $mysqli->query ("SELECT now();")
 }
 
 // gv.STAFF[q].opdate = the oncall date
 // gv.STAFF[q].staffname = staffname oncall on this date
 // gv.STAFF[q].hn = staff sequence order
 // gv.STAFF[q].patient = staffname in sequence order
-// gv.STAFF[q].diagnosis = staffname png
 function getSTAFF()
 {
 	var i = gv.CONSULT.length
@@ -261,7 +267,7 @@ function findOncallRow(rows, tlen, opdate) {
 }
 
 function htmlwrap(staffname) {
-	return '<p style="color:#B0B0B0;font-size:14px">' + staffname + '</p>'
+	return '<p style="color:#999999;font-size:14px">' + staffname + '</p>'
 }
 
 function showStaffImage(opdate) {
@@ -276,46 +282,46 @@ function showStaffImage(opdate) {
 
 function resetTimer()
 {
-	clearTimeout(gv.timer); //gv.timer is just an id, not the clock
-	gv.timer = setTimeout( updating, 10000)	//poke server every 10 sec.
+	// gv.timer is just an id, not the clock
+	// poke server every 10 sec.
+	clearTimeout(gv.timer)
+	gv.timer = setTimeout( updating, 10000)
 }
 
 function updating()
 {
-	if (onChange()) {	//making some change
+	// If there is some changes, reset idleCounter
+	// if not, get update from server
+	if (onChange()) {
 		gv.idleCounter = 0
 	} else {
-		//idling
-		Ajax(MYSQLIPHP, "functionName=checkupdate&time=" + gv.timestamp, updatingback);
+		var sql = "sqlReturnData=SELECT MAX(editdatetime) as timestamp from bookhistory;"
+
+		Ajax(MYSQLIPHP, sql, updatingback);
 
 		function updatingback(response)
 		{
-			//not being editing on screen
+			// idling (5+1)*10 = 1 minute, clear editing setup
+			// editcell may be on first column, on staff, during changeDate
 			if (gv.idleCounter === 5) {
-				//idling 1 minute, clear editing setup
-				//do this only once, not every 1 minute
 				clearEditcell()
-				$('#menu').hide()		//editcell may be on first column
-				$('#stafflist').hide()	//editcell may be on staff
+				$('#menu').hide()
+				$('#stafflist').hide()
 				clearMouseoverTR()
 			}
-			else if (gv.idleCounter > 59) {	//idling 10 minutes, logout
+			// idling (59+1)*10 = 10 minutes, logout
+			else if (gv.idleCounter > 59) {
 				window.location = window.location.href
 			}
 			gv.idleCounter += 1
 
-			//some changes in database from other users
-			if (/BOOK/.test(response)) {
-				updateBOOK(response)
-				if ($("#dialogService").dialog('isOpen')) {
-					var fromDate = $('#monthpicking').val()
-					var toDate = $('#monthpicker').val()
-					var SERVICE = getfromBOOKCONSULT(fromDate, toDate)
-					refillService(SERVICE, fromDate, toDate)
-				}
-				refillall()
-				if ($("#queuewrapper").css('display') === 'block') {
-					refillstaffqueue()
+			// gv.timestamp is this client last edit
+			// timestamp is from server
+			if (/timestamp/.test(response)) {
+				var timeserver = JSON.parse(response),
+					timestamp = timeserver[0].timestamp
+				if (gv.timestamp < timestamp) {
+					getUpdate()
 				}
 			}
 		}
@@ -324,14 +330,41 @@ function updating()
 	resetTimer()
 }
 
+// There is some changes in database from other users
+function getUpdate()
+{
+	Ajax(MYSQLIPHP, "nosqlReturnbook=''", callbackGetUpdate);
+
+	function callbackGetUpdate(response)
+	{
+		if (/BOOK/.test(response)) {
+			updateBOOK(response)
+			if ($("#dialogService").dialog('isOpen')) {
+				var fromDate = $('#monthpicking').val()
+				var toDate = $('#monthpicker').val()
+				var SERVICE = getfromBOOKCONSULT(fromDate, toDate)
+				refillService(SERVICE, fromDate, toDate)
+			}
+			refillall()
+			if (isSplited()) {
+				refillstaffqueue()
+			}
+		} else {
+			alert ("getUpdate", response)
+		}
+	}
+}
+
 function onChange()
 {
+	// savePreviousCell is for Main and Staffqueue tables
+	// When editcell is not seen, there must be no change
 	if ($("#editcell").is(":visible")) {
 		var whereisEditcell = $($("#editcell").data("pointing")).closest("table").attr("id")
 		if (whereisEditcell === "servicetbl") {
-			return savePreviousCellService()	//Service table
+			return savePreviousCellService()
 		} else {
-			return savePreviousCell()			//Main and Staffqueue tables
+			return savePreviousCell()
 		}
 	}
 	return false

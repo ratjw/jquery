@@ -6,6 +6,7 @@ CREATE TABLE `book` (
 	`opdate` date,
 	`oproom` varchar(10) NOT NULL DEFAULT '',
 	`optime` varchar(10) NOT NULL DEFAULT '',
+	`casenum` varchar(10) NOT NULL DEFAULT '',
 	`staffname` varchar(255) NOT NULL DEFAULT '',
 	`hn` varchar(10) NOT NULL DEFAULT '',
 	`patient` varchar(255) NOT NULL DEFAULT '',

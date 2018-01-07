@@ -140,13 +140,80 @@ function getBOOKrowByQN(book, qn)
 	return bookq
 }
 
-function ConsultsTbl(tableID)
-{  
-	return ((tableID === "queuetbl") && ($('#titlename').html() === "Consults"))? true : false
+function getOpdateTableRows(opdateth)
+{
+	return $('#tbl tr').filter(function() {
+		return $(this).find("td").eq(OPDATE).html() === opdateth;
+	})
 }
 
-function calculateWaitnum(tableID, $thisrow, thisOpdate)	//thisOpdate was set by caller
-{	//queue within each day is sorted by waitnum only, not staffname
+function getOpdateBOOKrows(book, opdate)
+{
+	return book.filter(function(row) {
+		return (row.opdate === opdate);
+	})
+}
+
+function sameDateRoomTableQN(opdateth, room)
+{
+	var sameRoom = $('#tbl tr').filter(function() {
+		return $(this).find("td").eq(OPDATE).html() === opdateth
+			&& $(this).find("td").eq(ROOM).html() === room;
+	})
+	$.each(sameRoom, function(i) {
+		sameRoom[i] = $(this).find("td").eq(QN).html()
+	})
+	return $.makeArray(sameRoom)
+}
+
+function sameRoomTableQN(allSameDate, room)
+{
+	var sameRoom = allSameDate.filter(function() {
+		return $(this).find("td").eq(ROOM).html() === room;
+	})
+	$.each(sameRoom, function(i) {
+		sameRoom[i] = $(this).find("td").eq(QN).html()
+	})
+	return $.makeArray(sameRoom)
+}
+
+function sameRoomBookQN(allSameDate, room)
+{
+	var sameRoom = allSameDate.filter(function(row) {
+		return row.oproom === room;
+	})
+	$.each(sameRoom, function(i) {
+		sameRoom[i] = this.qn
+	})
+	return sameRoom
+}
+
+function isSplited()
+{  
+	return $("#queuewrapper").css("display") === "block"
+}
+
+function isStaffname(staffname)
+{  
+	return $('#titlename').html() === staffname
+}
+
+function isConsults()
+{  
+	return $('#titlename').html() === "Consults"
+}
+
+function ConsultsTbl(tableID)
+{  
+	var queuetbl = tableID === "queuetbl"
+	var consult = $("#titlename").html() === "Consults"
+
+	return queuetbl && consult
+}
+
+// waitnum is for ordering where there is no oproom, casenum
+function calculateWaitnum(tableID, $thisrow, thisOpdate)
+{
 	var prevWaitNum = $thisrow.prev()[0]
 	var nextWaitNum = $thisrow.next()[0]
 	if (prevWaitNum) {
@@ -157,8 +224,8 @@ function calculateWaitnum(tableID, $thisrow, thisOpdate)	//thisOpdate was set by
 	}
 	var $prevRowCell = $thisrow.prev().children("td")
 	var $nextRowCell = $thisrow.next().children("td")
-	var prevOpdate = getOpdate($prevRowCell.eq(OPDATE).html())
-	var nextOpdate = getOpdate($nextRowCell.eq(OPDATE).html())
+	var prevOpdate = $prevRowCell.eq(OPDATE).html()
+	var nextOpdate = $nextRowCell.eq(OPDATE).html()
 	var defaultWaitnum = (ConsultsTbl(tableID))? -1 : 1
 	//Consults cases have negative waitnum
 
@@ -173,7 +240,7 @@ function calculateWaitnum(tableID, $thisrow, thisOpdate)	//thisOpdate was set by
 	}
 	else if (prevOpdate === thisOpdate && thisOpdate === nextOpdate) {
 		return nextWaitNum? ((prevWaitNum + nextWaitNum) / 2) : (prevWaitNum + defaultWaitnum)
-	}	//in case of new blank row nextWaitNum is undefined
+	}	// nextWaitNum is undefined in case of new blank row
 }
 
 function findPrevcell(event, editable, pointing) 
@@ -199,8 +266,9 @@ function findPrevcell(event, editable, pointing)
 				return false
 			}
 		}
-		while (($prevcell.get(0).nodeName === "TH")	//THEAD row
-			|| (!$prevcell.is(':visible')))			//invisible due to colspan
+		while (($prevcell.get(0).nodeName === "TH")
+			|| (!$prevcell.is(':visible')))
+				//invisible due to colspan
 	}
 
 	return $prevcell.get(0)

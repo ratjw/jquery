@@ -87,7 +87,8 @@ function makehistory(rowi, response)
 	HTML_String += '<thead><tr>';
 	HTML_String += '<th style="width:2%">When</th>';
 	HTML_String += '<th style="width:2%">Date</th>';
-	HTML_String += '<th style="width:2%">Room Time</th>';
+	HTML_String += '<th style="width:2%">Room</th>';
+	HTML_String += '<th style="width:2%">№</th>';
 	HTML_String += '<th style="width:2%">Staff</th>';
 	HTML_String += '<th style="width:15%">Diagnosis</th>';
 	HTML_String += '<th style="width:15%">Treatment</th>';
@@ -109,7 +110,8 @@ function makehistory(rowi, response)
 		}
 		HTML_String += '<td data-title="Edited When">' + tracing[j].editdatetime +'</td>';
 		HTML_String += '<td data-title="Date">' + (tracing[j].opdate? tracing[j].opdate : "") +'</td>';
-		HTML_String += '<td data-title="Room Time">' + tracing[j].oproom +' '+ tracing[j].optime +'</td>';
+		HTML_String += '<td data-title="Room">' + tracing[j].oproom +'</td>';
+		HTML_String += '<td data-title="№">' + tracing[j].casenum +'</td>';
 		HTML_String += '<td data-title="Staff">' + tracing[j].staffname +'</td>';
 		HTML_String += '<td data-title="Diagnosis">' + tracing[j].diagnosis +'</td>';
 		HTML_String += '<td data-title="Treatment">' + tracing[j].treatment +'</td>';
@@ -170,7 +172,22 @@ function showEquip(equipString)
 
 function deletedCases()
 {
-	Ajax(MYSQLIPHP, "functionName=deletedCases", callbackdeletedCases)
+	var sql = "sqlReturnData=SELECT a.editdatetime, a.opdate, a.oproom, "
+			+ "a.optime, a.casenum, a.staffname, a.hn, a.patient, "
+			+ "a.diagnosis, a.treatment, a.contact, a.editor, a.qn "
+			+ "FROM (SELECT editdatetime, revision, b.* "
+					+ "FROM book b INNER JOIN bookhistory bh ON b.qn = bh.qn "
+					+ "WHERE b.waitnum IS NULL AND bh.action = 'delete') a "
+				+ "INNER JOIN (SELECT MAX(revision) mr, qn "
+					+ "FROM (SELECT editdatetime, revision, b.qn "
+						+ "FROM book b INNER JOIN bookhistory bh ON b.qn = bh.qn "
+						+ "WHERE b.waitnum IS NULL AND bh.action = 'delete') aa "
+						+ "GROUP BY qn) d "
+				+ "ON a.qn = d.qn "
+				+ "WHERE a.revision = d.mr "
+			+ "ORDER BY a.editdatetime DESC;"
+
+	Ajax(MYSQLIPHP, sql, callbackdeletedCases)
 
 	clearEditcell()
 
@@ -206,7 +223,7 @@ function makedeletedCases(response)
 	for (var j = 0; j < deleted.length; j++) 
 	{
 		HTML_String += '<tr>';
-		HTML_String += '<td data-title="Edited When" onclick="undelete(this)">' + deleted[j].editdatetime +'</td>';
+		HTML_String += '<td data-title="Edited When" class="undelete">' + deleted[j].editdatetime +'</td>';
 		HTML_String += '<td data-title="Date">' + deleted[j].opdate +'</td>';
 		HTML_String += '<td data-title="Staff">' + deleted[j].staffname +'</td>';
 		HTML_String += '<td data-title="HN">' + deleted[j].hn +'</td>';
@@ -235,7 +252,10 @@ function makedeletedCases(response)
 			$(".fixed").remove()
 		}
 	})
-	$("#historytbl").fixMe($dialogDeleted);
+	$("#historytbl").fixMe($dialogDeleted)
+	$(".undelete").on("click", function() {
+		undelete(this, deleted)
+	})
 
 	//for resizing dialogs in landscape / portrait view
 	$(window).on("resize", resizeDeleted )
@@ -249,7 +269,7 @@ function makedeletedCases(response)
 	}
 }
 
-function undelete(thiscase) 
+function undelete(thiscase, deleted) 
 {
 //	var UNDELEDITDATETIME	= 0;
 	var UNDELOPDATE			= 1;
@@ -266,16 +286,46 @@ function undelete(thiscase)
 
 	doUndelete = function() 
 	{
-		var $thiscase = $(thiscase).parent().children("td")
-		var opdate = $thiscase.eq(UNDELOPDATE).html()
-		var staffname = $thiscase.eq(UNDELSTAFFNAME).html()
-		var qn = $thiscase.eq(UNDELQN).html()
+		var $thiscase = $(thiscase).parent().children("td"),
+			opdate = $thiscase.eq(UNDELOPDATE).html(),
+			staffname = $thiscase.eq(UNDELSTAFFNAME).html(),
+			qn = $thiscase.eq(UNDELQN).html(),
+			sql = "sqlReturnbook=",
 
-		var sqlstring = "functionName=undelete&qn="+ qn
-		sqlstring += "&opdate="+ opdate
-		sqlstring += "&editor="+ gv.user
+			delrow = getBOOKrowByQN(deleted, qn),
+			waitnum = delrow.optime,
+			oproom = delrow.oproom,
+			casenum = delrow.casenum,
 
-		Ajax(MYSQLIPHP, sqlstring, callbackUndelete);
+			book = (waitnum > 0)? gv.BOOK : gv.CONSULT,
+			allCases = getOpdateBOOKrows(book, opdate)
+
+			allCases = sameRoomBookQN(allCases, oproom)
+
+		if (waitnum) {
+			var alllen = allCases.length
+			if (casenum > alllen) {
+				casenum = alllen
+			}
+			allCases.splice(casenum, 0, qn)
+
+			for (var i=0; i<alllen; i++) {
+				if (i === casenum - 1) {
+					sql += "UPDATE book SET "
+						+  "waitnum=optime,"
+						+  "editor='" + gv.user
+						+  "' WHERE qn="+ qn + ";"
+				} else {
+					sql += sqlCaseNum(i + 1, allCases[i])
+				}
+			}
+		} else {
+			sql = "functionName=undelete&qn="+ qn
+				+ "&opdate="+ opdate
+				+ "&editor="+ gv.user
+		}
+
+		Ajax(MYSQLIPHP, sql, callbackUndelete);
 
 		$('#dialogDeleted').dialog("close")
 
@@ -284,10 +334,11 @@ function undelete(thiscase)
 			if (/BOOK/.test(response)) {
 				updateBOOK(response);
 				refillOneDay(opdate)
-				if (($("#queuewrapper").css('display') === 'block') && 
-					(($('#titlename').html() === staffname) || ($('#titlename').html() === "Consults"))) {
-					refillstaffqueue()	//undelete this staff's case or a Consults case
+				//undelete this staff's case or a Consults case
+				if (isSplited() && (isStaffname(staffname) || isConsults())) {
+					refillstaffqueue()
 				}
+				scrolltoThisCase(qn)
 			} else {
 				alert("undelete", response)
 			}
@@ -300,7 +351,7 @@ function closeUndel()
 	$('#undelete').hide()
 }
 
-// All cases (exclude the deleted ones)
+// All cases (include consult caes, exclude deleted ones)
 function allCases() {
 	var sql = "sqlReturnData=SELECT * FROM book "
 			+ "WHERE waitnum <> 0 "
@@ -524,7 +575,7 @@ function scrolltoThisCase(qn)
 {
 	var showtbl = showFind("tblcontainer", "tbl", qn)
 
-	if ($("#queuewrapper").css('display') === 'block') {
+	if (isSplited()) {
 		var showqueuetbl = showFind("queuecontainer", "queuetbl", qn)
 	}
 	return showtbl || showqueuetbl
@@ -582,7 +633,7 @@ function makeDialogFound(found, hn)
 		}
 		HTML_String += '<td data-title="Date">' + found[j].opdate +'</td>';
 		HTML_String += '<td data-title="Staff">' + found[j].staffname +'</td>';
-		HTML_String += '<td data-title="HN"'  + (found[j].hn && globalvar.isPACS ? ' class="pacs"' : '')
+		HTML_String += '<td data-title="HN"'  + (found[j].hn && gv.isPACS ? ' class="pacs"' : '')
 						+ '>' + found[j].hn +'</td>';
 		HTML_String += '<td data-title="Patient Name"'  + (found[j].patient ? ' class="camera"' : '')
 						+ '>' + found[j].patient +'</td>';

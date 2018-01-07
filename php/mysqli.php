@@ -72,7 +72,6 @@ function multiquery($mysqli, $sql)
 {
 	$returndata = "";
 	if ($mysqli->multi_query(urldecode($sql))) {
-		// multiple queries
 		do {
 			if ($result = $mysqli->store_result())
 			{	// has no result, but no error (success query INSERT, UPDATE), skip this
@@ -89,7 +88,7 @@ function multiquery($mysqli, $sql)
 			{
 				$returndata .= 'DBfailed multi query ' . $sql . " \n" . $mysqli->error;
 			}
-			// nom more query
+			// no more query
 			if (!$mysqli->more_results()) {
 				break;
 			}
@@ -104,23 +103,26 @@ function multiquery($mysqli, $sql)
 
 	return $returndata;
 }
-
+/*
+// $stamp = $result->fetch_row() is an array, so [0]
+// return BOOK if there is an update
+// no update if ($time > $stamp[0])
+// that is current time > TIMESTAMP of last entry
 function checkupdate($mysqli)
 {
 	$time = $_POST['time'];
 	$result = $mysqli->query ("SELECT MAX(editdatetime) from bookhistory;");
 	if ($result) {
 		$stamp = $result->fetch_row();
-		if ($time < $stamp[0]) {		// fetch_row result is an array
-			return book($mysqli);	// there is an update
+		if ($time < $stamp[0]) {
+			return book($mysqli);
 		}
-		// no update if ($time > $stamp[0])
-		// current time > TIMESTAMP of last entry
 	} else {
-		return "";	// no front-end update
+		return $mysqli->error;
 	}
 }
-
+*/
+// current(): array.toString();
 function undelete($mysqli, $opdate)
 {
 	$qn = $_POST['qn'];
@@ -131,7 +133,7 @@ function undelete($mysqli, $opdate)
 	if (!$result) {
 		return $mysqli->error;
 	}
-	$owaitnum = current($result->fetch_row());	// array.toString();
+	$owaitnum = current($result->fetch_row());
 	$neg_pos = $owaitnum ? $owaitnum / abs($owaitnum) : 1;
 
 	$sql = "SELECT MAX(ABS(waitnum)) FROM book WHERE opdate='$opdate';";
@@ -139,7 +141,7 @@ function undelete($mysqli, $opdate)
 	if (!$result) {
 		return $mysqli->error;
 	}
-	$waitnum = current($result->fetch_row());	// array.toString();
+	$waitnum = current($result->fetch_row());
 	$waitnum = ($waitnum  + 1) * $neg_pos;
 
 	$sql = "UPDATE book SET waitnum=$waitnum, editor='$editor' WHERE qn=$qn";
@@ -150,7 +152,7 @@ function undelete($mysqli, $opdate)
 	
 	return book($mysqli);
 }
-
+/*
 function deletedCases($mysqli)
 {
 	$case = array();
@@ -178,21 +180,4 @@ function deletedCases($mysqli)
 
 	return $case;
 }
-
-function consult($mysqli)
-{
-	$consult = array();
-	$sql = "SELECT * FROM book 
-			WHERE opdate >= DATE_FORMAT(CURDATE()-INTERVAL 1 MONTH,'%Y-%m-01') AND waitnum <= 0
-			ORDER BY opdate, oproom='', oproom, optime, waitnum DESC;";
-	$result = $mysqli->query ($sql);
-	if (!$result) {
-		return $mysqli->error;
-	}
-
-	while ($rowi = $result->fetch_assoc()) {
-		$consult[] = $rowi;
-	}
-
-	return $consult;
-}
+*/

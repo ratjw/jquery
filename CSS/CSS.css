@@ -35,8 +35,9 @@
 }
 
 table {
-	table-layout: fixed;	/*make cell width = first row specified*/
-	border-right: solid 1px slategray;
+	/*make cell width = first row specified*/
+	table-layout: fixed;
+	border-right: solid 1px gray;
 	width: auto;
 	border-collapse: collapse;
 }
@@ -47,8 +48,8 @@ th {
 	font-weight: bold;
 	background-color: #7799AA;
 	color: white;
-	border-left: solid 1px silver;
 	border-top: solid 1px silver;
+	border-left: solid 1px silver;
 	border-bottom: solid 1px silver;
 }
 
@@ -57,7 +58,7 @@ td {
 	height: 30px;
 	font-size: 14px;
 	padding-left: 3px;
-	border-left: solid 1px silver;
+	border-left: solid 1px lightgray;
 	border-bottom: solid 1px silver;
 	background-repeat: no-repeat;
 	background-position: center;
@@ -72,6 +73,21 @@ td {
 	font-size: 12px;
 	background-image: url("pic/menu.png");
 	background-position: right center;
+}
+
+#tbl td:nth-child(3) {
+	text-align: center;
+}
+
+#queuetbl th:nth-child(2),
+#queuetbl th:nth-child(3),
+#alltbl th:nth-child(2),
+#alltbl th:nth-child(3),
+#queuetbl td:nth-child(2),
+#queuetbl td:nth-child(3),
+#alltbl td:nth-child(2),
+#alltbl td:nth-child(3)  {
+	display: none;
 }
 
 tr.bordergroove {
@@ -268,7 +284,7 @@ input[type=submit] {
 
 #menu, #stafflist {
 /*	position: relative;*/
-	font-size: 12px;
+	font-size: 14px;
 }
 
 #undelete { 
@@ -312,9 +328,36 @@ button.ui-datepicker-current {
 	border: 0;
 }
 
+#dialogEquip input[type=radio] + label {
+	color: #999999;
+	background-color: white;
+}
+ 
+#dialogEquip input[type=radio]:checked + label {
+	color: black;
+}
+
+#dialogEquip input[type=checkbox] + label {
+	color: #999999;
+	background-color: white;
+}
+ 
+#dialogEquip input[type=checkbox]:checked + label {
+	color: black;
+}
+
+#dialogEquip input {
+	border: 0;
+	outline: 0;
+	background: transparent;
+	border-bottom: 1px dashed gray;
+	color: blue;
+}
+
 #Notice {
 	width: 500px;
-	height: 65px;
+	height: 70px;
+	color: blue;
 }
 
 #find,
@@ -332,34 +375,15 @@ button.ui-datepicker-current {
 	background-color: yellow;
 }
 
-#orroom,
-#ortime {
-	height: 20px;
-	width: 70px;
+#spin {
+	height: 40px;
+	width: 50px;
 	padding: 0px 0px 0px 3px;
 	margin: 0px;
 }
 
 .dialogBox span {
 	display:inline-block;
-}
-
-input[type=radio] + label {
-	color: lightgray;
-	background-color: white;
-}
- 
-input[type=radio]:checked + label {
-	color: black;
-}
-
-input[type=checkbox] + label {
-	color: lightgray;
-	background-color: white;
-}
- 
-input[type=checkbox]:checked + label {
-	color: black;
 }
 
 @media only screen and (max-width: 640px) {
@@ -418,6 +442,11 @@ input[type=checkbox]:checked + label {
 	td.thu:before { font-size: 18px; top: 2px; content: "วันพฤหัส "; }
 	td.fri:before { font-size: 18px; top: 2px; content: "วันศุกร์ "; }
 	td.sat:before { font-size: 18px; top: 2px; content: "วันเสาร์ "; }
+
+	#menu, #stafflist {
+	/*	position: relative;*/
+		font-size: 14px;
+	}
 }
 
 @media print { 

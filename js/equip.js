@@ -1,12 +1,12 @@
-function fillEquipTable(book, rowi, qn)
+function fillEquipTable(book, $row, qn)
 {
 	var NAMEOFDAYTHAI	= ["อาทิตย์", "จันทร์", "อังคาร", "พุธ", "พฤหัส", "ศุกร์", "เสาร์"];
-
 	var bookq = getBOOKrowByQN(book, qn)
 	var bookqEquip = bookq.equipment
+	var JsonEquip = bookqEquip? JSON.parse(bookqEquip) : {}
 
 	document.getElementById("oproom").innerHTML = bookq.oproom
-	document.getElementById("optime").innerHTML = bookq.optime
+	document.getElementById("casenum").innerHTML = bookq.casenum
 	document.getElementById("opday").innerHTML = NAMEOFDAYTHAI[(new Date(bookq.opdate)).getDay()]
 	document.getElementById("opdate").innerHTML = putOpdate(bookq.opdate)
 	document.getElementById("staffname").innerHTML = bookq.staffname
@@ -16,51 +16,29 @@ function fillEquipTable(book, rowi, qn)
 	document.getElementById("diagnosis").innerHTML = bookq.diagnosis
 	document.getElementById("treatment").innerHTML = bookq.treatment
 
-	$(rowi).addClass("bordergroove")
+	// mark table row
+	// clear all previous dialog values
+	$row.addClass("bordergroove")
 	$('#dialogEquip').show()
-	$('#dialogEquip input').prop('checked', false)
 	$('#dialogEquip input').val('')
 	$('#dialogEquip textarea').val('')
-	$('#dialogEquip input[type=text]').prop('disabled', false)//make it easier to see
-	$('#dialogEquip textarea').prop('disabled', false)//make it easier to see
-	$('#clearPosition').click(function() {	//uncheck radio button of all Positions
-		$('#dialogEquip input[name=pose]').prop('checked', false)
-	})
-	$('#clearShunt').click(function() {	//uncheck radio button of all Shunts
-		$('#dialogEquip input[name=head]').prop('checked', false)
-		$('#dialogEquip input[name=peritoneum]').prop('checked', false)
-		$('#dialogEquip input[name=program]').prop('checked', false)
-	})
+	$('#dialogEquip input').prop('checked', false)
 
-	if ( bookqEquip ) {			// If any, fill checked & others
-		$.each(JSON.parse(bookqEquip), function(key, val) {
+	// If ever filled, show checked equips & texts
+	// .prop("checked", true) : radio and checkbox
+	// .val(val) : <input text> && <textarea>
+	if ( Object.keys(JsonEquip).length ) {
+		$.each(JsonEquip, function(key, val) {
 			if (val === 'checked') {
-				$("#"+ key).prop("checked", true)	//radio and checkbox
+				$("#"+ key).prop("checked", true)
 			} else {
-				$("#"+ key).val(val)	//fill <input> && <textarea>
+				$("#"+ key).val(val)
 			}
 		});
-		showNonEditableEquip(qn, bookqEquip)
-
-		var sql = "sqlReturnData=SELECT editor, editdatetime FROM bookhistory "
-		sql += "WHERE qn="+ qn + " AND equipment <> '';"
-
-		Ajax(MYSQLIPHP, sql, callbackgetEditedby)
-
-		function callbackgetEditedby(response)
-		{
-			if (/{/.test(response)) {
-				var Editedby = ""
-				$.each(JSON.parse(response), function(key, val) {
-					Editedby += (val.editor + " : " + val.editdatetime + "<br>")
-				});
-				$('#editedby').html(Editedby)
-			} else {
-				alert("callbackgetEditedby", response)
-			}
-		}
+		showNonEditableEquip()
+		getEditedBy(qn)
  	} else {
-		showEditableEquip(qn, bookqEquip)
+		showEditableEquip()
 		$('#editedby').html("")
 	}
 	var height = window.innerHeight
@@ -74,87 +52,119 @@ function fillEquipTable(book, rowi, qn)
 		width: 750,
 		height: height,
 		open: function(event, ui) {
-			$("input").blur();	//disable default autofocus on text input
+			//disable default autofocus on text input
+			$("input").blur()
 		},
 		close: function(event, ui) {
-			$(rowi).removeClass("bordergroove")
+			$row.removeClass("bordergroove")
 		}
 	})
-	
+	$('#dialogEquip').data("bookqEquip", bookqEquip)
+	$('#dialogEquip').data("JsonEquip", JsonEquip)
+	$('#dialogEquip').data("qn", qn)
 }
 
-function showNonEditableEquip(qn, bookqEquip)
+function showNonEditableEquip()
 {
 	$('#dialogEquip').dialog("option", "buttons", [
 		{
 			text: "แก้ไข",
 			width: "100",
 			click: function () {
-				showEditableEquip(qn, bookqEquip)
+				showEditableEquip()
 			}
 		},
 		{
 			text: "Print",
 			width: "100",
 			click: function () {
-				printpaper(qn);
+				printpaper();
 			}
 		}
-	]);
-	$('#dialogEquip input').prop("disabled", true)
-	$('#dialogEquip textarea').prop('disabled', true)
+	])
+	disableInput()
 }
 
-function showEditableEquip(qn, bookqEquip)
+function showEditableEquip()
 {
 	$('#dialogEquip').dialog("option", "buttons", [
 		{
 			text: "Save",
 			width: "100",
 			click: function () {
-				Checklistequip(qn, bookqEquip)
-				showNonEditableEquip(qn, bookqEquip)
+				Checklistequip()
+				showNonEditableEquip()
 			}
 		},
 		{
 			text: "Print",
 			width: "100",
 			click: function () {
-				printpaper(qn);
+				printpaper();
 			}
 		}
 	]);
-	$('#dialogEquip input').prop('disabled', false)
+	enableInput()
+}
+
+function disableInput() {
+	$('#dialogEquip input').on("click", returnFalse)
+	$('#dialogEquip input[type=text]').prop('disabled', true)
+	$('#dialogEquip textarea').prop('disabled', true)
+	$('#clearPosition').off('click', clearPosition)
+	$('#clearShunt').off('click', clearShunt)
+}
+
+// clearPosition : uncheck radio button of Positions
+// clearShunt : uncheck radio button of Shunts
+function enableInput() {
+	$('#dialogEquip input').off("click", returnFalse)
+	$('#dialogEquip input[type=text]').prop('disabled', false)
 	$('#dialogEquip textarea').prop('disabled', false)
+	$('#clearPosition').on('click', clearPosition)
+	$('#clearShunt').on('click', clearShunt)
 }
 
-function showNonEditableForScrub()
-{
-	var height = window.innerHeight
-	if (height > 800) {
-		height = 800
+function clearPosition() {
+	$('#dialogEquip input[name=pose]').prop('checked', false)
+}
+
+function clearShunt() {
+	$('#dialogEquip input[name=head]').prop('checked', false)
+	$('#dialogEquip input[name=peritoneum]').prop('checked', false)
+	$('#dialogEquip input[name=program]').prop('checked', false)
+}
+
+function returnFalse() {
+	return false
+}
+
+function getEditedBy(qn) {
+	var sql = "sqlReturnData=SELECT editor,editdatetime FROM bookhistory "
+			+ "WHERE qn="+ qn + " AND equipment <> '' "
+			+ "ORDER BY editdatetime DESC;"
+
+	Ajax(MYSQLIPHP, sql, callbackgetEditedby)
+
+	function callbackgetEditedby(response)
+	{
+		if (/{/.test(response)) {
+			var Editedby = ""
+			$.each(JSON.parse(response), function(key, val) {
+				Editedby += (val.editor + " : " + val.editdatetime + "<br>")
+			});
+			$('#editedby').html(Editedby)
+		} else {
+			alert("getEditedby", response)
+		}
 	}
-	$('#dialogEquip').dialog("option", "buttons", {})
-	$('#dialogEquip').dialog({height: height})
-	$('#dialogEquip input[type=radio]').prop("disabled", true)
-	$('#dialogEquip input[type=text]').on("click", function() {
-		$(this).prop('disabled', true)
-	})
-	$('#dialogEquip input').on("click", function() {
-		return false
-	})
-	$('#dialogEquip textarea').on("click", function() {
-		$(this).prop('disabled', true)
-	})
-	$('#dialogEquip textarea').on("click", function() {
-		return false
-	})
-	$('#clearPosition').off('click')
-	$('#clearShunt').off('click')
 }
 
-function Checklistequip(qn, bookqEquip) 
+function Checklistequip() 
 {
+	var bookqEquip = $('#dialogEquip').data("bookqEquip")
+	var JsonEquip = $('#dialogEquip').data("JsonEquip")
+	var qn = $('#dialogEquip').data("qn")
 	var equipment = {}
 		$( "#dialogEquip input, #dialogEquip textarea" ).each( function() {
 			this.checked && (equipment[this.id] = "checked")
@@ -164,8 +174,9 @@ function Checklistequip(qn, bookqEquip)
 	if (equipment === bookqEquip) {
 		return
 	}
-	equipment = equipment.replace(/\\/g,"\\\\").replace(/'/g,"\\'")
+
 	//escape the \ (escape) and ' (single quote) for sql string, not for JSON
+	equipment = equipment.replace(/\\/g,"\\\\").replace(/'/g,"\\'")
 
 	var sql = "sqlReturnbook=UPDATE book SET ";
 	sql += "equipment='"+ equipment +"' ,";
@@ -179,17 +190,19 @@ function Checklistequip(qn, bookqEquip)
 		if (/BOOK/.test(response)) {
 			updateBOOK(response)
 		} else {
-			//Error update server
+			// Error in update server
+			// Roll back. If old form has equips, fill checked & texts
+			// prop("checked", true) : radio and checkbox
+			// .val(val) : <input text> && <textarea>
 			alert("Checklistequip", response)
-			//Roll back
 			$('#dialogEquip input').val('')
 			$('#dialogEquip textarea').val('')
-			if ( bookqEquip ) {			// If any, fill checked & others
-				$.each(JSON.parse(bookqEquip), function(key, val) {
+			if ( bookqEquip ) {
+				$.each(JsonEquip, function(key, val) {
 					if (val === 'checked') {
-						$("#"+ key).prop("checked", true)	//radio and checkbox
+						$("#"+ key).prop("checked", true)
 					} else {
-						$("#"+ key).val(val)	//fill <input> && <textarea>
+						$("#"+ key).val(val)
 					}
 				});
 			}
@@ -197,7 +210,8 @@ function Checklistequip(qn, bookqEquip)
 	}
 }
 
-function printpaper(qn)	//*** have to set equip padding to top:70px; bottom:70px
+//*** have to set equip padding to top:70px; bottom:70px
+function printpaper()
 {
 	if (/Edge|MS/.test(navigator.userAgent)) {
 		var orgEquip = document.getElementById('dialogEquip');
@@ -219,12 +233,13 @@ function printpaper(qn)	//*** have to set equip padding to top:70px; bottom:70px
 			else if (originEquip[i].value) {
 				printEquip[i].value = originEquip[i].value
 			}
-			else {	//pale color for no input items
+			else {
 				temp = printEquip[i]
 				while (temp.nodeName !== "SPAN") {
 					temp = temp.parentNode
 				}
 				temp.className = "pale"
+				//pale color for no input items
 			}
 		}
 
@@ -236,12 +251,13 @@ function printpaper(qn)	//*** have to set equip padding to top:70px; bottom:70px
 			if (originEquip[i].value) {
 				printEquip[i].value = originEquip[i].value
 			}
-			else {	//pale color for no input items
+			else {
 				temp = printEquip[i]
 				while (temp.nodeName !== "SPAN") {
 					temp = temp.parentNode
 				}
 				temp.className = "pale"
+				//pale color for no input items
 			}
 		}
 
@@ -270,12 +286,13 @@ function printpaper(qn)	//*** have to set equip padding to top:70px; bottom:70px
 			else if (originEquip[i].value) {
 				printEquip[i].value = originEquip[i].value
 			}
-			else {	//pale color for no input items
+			else {
 				temp = printEquip[i]
 				while (temp.nodeName !== "SPAN") {
 					temp = temp.parentNode
 				}
 				temp.className = "pale"
+				//pale color for no input items
 			}
 		}
 
@@ -287,12 +304,13 @@ function printpaper(qn)	//*** have to set equip padding to top:70px; bottom:70px
 			if (originEquip[i].value) {
 				printEquip[i].value = originEquip[i].value
 			}
-			else {	//pale color for no input items
+			else {
 				temp = printEquip[i]
 				while (temp.nodeName !== "SPAN") {
 					temp = temp.parentNode
 				}
 				temp.className = "pale"
+				//pale color for no input items
 			}
 		}
 

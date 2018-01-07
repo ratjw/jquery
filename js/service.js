@@ -88,7 +88,7 @@ function getfromServer(fromDate, toDate)
 	var sql = "sqlReturnData=SELECT * FROM book "
 			  + "WHERE opdate BETWEEN '" + fromDate + "' AND '" + toDate
 			  + "' AND waitnum<>0 "
-			  + "ORDER BY opdate, oproom='', oproom, optime, waitnum;";
+			  + "ORDER BY opdate, oproom='', oproom, casenum, waitnum;";
 
 	var defer = $.Deferred()
 
@@ -443,8 +443,8 @@ function savePreviousCellService()
 
 function saveContentService(pointed, column, content)	//column name in MYSQL
 {
-	var $rowi = $(pointed).closest('tr')
-	var rowi = $rowi[0]
+	var $row = $(pointed).closest('tr')
+	var rowi = $row[0]
 	var qn = rowi.cells[QNSERVICE].innerHTML
 	var oldcontent = $("#editcell").data("oldcontent")
 
@@ -507,7 +507,7 @@ function saveContentService(pointed, column, content)	//column name in MYSQL
 
 					rowi.className = newcolor			//tr.newclass
 					$(pointed).removeClass(color)		//prevent remained unused class
-					addColorService($rowi, newcolor)	//td.newclass
+					addColorService($row, newcolor)	//td.newclass
 			})
 		} else {
 			alert("saveContentService", response)
@@ -792,7 +792,7 @@ function exportToExcel()
 	var msie = ua.indexOf("MSIE")
 	var edge = ua.indexOf("Edge"); 
 
-	if (msie > 0 || edge > 0 || !!navigator.userAgent.match(/Trident.*rv\:11\./)) // If Internet Explorer
+	if (msie > 0 || edge > 0 || navigator.userAgent.match(/Trident.*rv\:11\./)) // If Internet Explorer
 	{
 	  if (typeof Blob !== "undefined") {
 		//use blobs if we can

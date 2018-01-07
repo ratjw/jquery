@@ -21,10 +21,13 @@ function book($mysqli, $init)
 	$staff = array();
 
 	$sql = "SELECT * FROM book 
-			WHERE opdate >= DATE_FORMAT(CURDATE()-INTERVAL 1 MONTH,'%Y-%m-01') AND waitnum > 0
-			ORDER BY opdate, oproom='', oproom, optime, waitnum;";
-			//The oproom='' will be 0 for cases with an oproom and 1 with no oproom.
-			//As the default sort order is ASC, non-blank items are now placed first.
+			WHERE opdate >= DATE_FORMAT(CURDATE()-INTERVAL 1 MONTH,'%Y-%m-01')
+				AND waitnum > 0
+			ORDER BY opdate, oproom='', LENGTH(oproom), oproom,
+				casenum='', LENGTH(casenum), casenum, waitnum;";
+			// The oproom='' makes cases with an oproom to 0 and with no oproom to 1.
+			// Non-blank items are now placed first,
+			// oproom is sorted by alphanumeric
 
 	if (!$result = $mysqli->query ($sql)) {
 		return $mysqli->error;
@@ -34,15 +37,20 @@ function book($mysqli, $init)
 	}
 
 	if ($init) {
-		// Also get staff oncall waitnum=0
+		// Also get staff oncall (waitnum=0)
 		$sql = "SELECT * FROM book 
-				WHERE opdate >= DATE_FORMAT(CURDATE()-INTERVAL 1 MONTH,'%Y-%m-01') AND waitnum <= 0
-				ORDER BY opdate, oproom='', oproom, optime, waitnum DESC;";
+				WHERE opdate >= DATE_FORMAT(CURDATE()-INTERVAL 1 MONTH,'%Y-%m-01')
+					AND waitnum <= 0
+				ORDER BY opdate, oproom='', LENGTH(oproom), oproom,
+					casenum='', LENGTH(casenum), casenum, waitnum DESC;";
 	} else {
+		// get consult cases only
 		$sql = "SELECT * FROM book 
-				WHERE opdate >= DATE_FORMAT(CURDATE()-INTERVAL 1 MONTH,'%Y-%m-01') AND waitnum < 0
-				ORDER BY opdate, oproom='', oproom, optime, waitnum DESC;";
-				//Consults cases have negative waitnum.
+				WHERE opdate >= DATE_FORMAT(CURDATE()-INTERVAL 1 MONTH,'%Y-%m-01')
+					AND waitnum < 0
+				ORDER BY opdate, oproom='', LENGTH(oproom), oproom,
+					casenum='', LENGTH(casenum), casenum, waitnum DESC;";
+				//Consult cases have negative waitnum.
 				//Greater waitnum (less negative) are placed first
 	}
 

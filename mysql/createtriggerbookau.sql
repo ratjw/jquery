@@ -3,7 +3,7 @@ DROP TRIGGER IF EXISTS bookau;
 
 CREATE TRIGGER bookau AFTER UPDATE ON book FOR EACH ROW
 	INSERT INTO bookhistory 
-			(action, revision, editdatetime, waitnum, opdate, oproom, optime, 
+			(action, revision, editdatetime, waitnum, opdate, oproom, casenum, 
 			staffname, hn, patient, diagnosis, treatment, admission, final, 
 			equipment, contact, admit, discharge, qn, editor)
 	VALUES (
@@ -13,7 +13,7 @@ CREATE TRIGGER bookau AFTER UPDATE ON book FOR EACH ROW
 			OLD.waitnum,
 			IF (OLD.opdate=NEW.opdate, NULL, NEW.opdate),
 			IF (OLD.oproom=NEW.oproom, '', NEW.oproom),
-			IF (OLD.optime=NEW.optime, '', NEW.optime),
+			IF (OLD.casenum=NEW.casenum, '', NEW.casenum),
 			IF (OLD.staffname=NEW.staffname, '', NEW.staffname),
 			IF (OLD.hn=NEW.hn, '', NEW.hn),
 			IF (OLD.patient=NEW.patient, '', NEW.patient),

@@ -124,7 +124,7 @@ function refillall()
 			{
 				if (date !== madedate)
 				{
-					fillrowdate(rows, i, date)	//existing row
+					fillrowdate(rows[i], date)	//existing row
 					fillblank(rows[i])	//clear a row for the day not in book
 					i++
 					if (i >= tlen) {
@@ -148,7 +148,7 @@ function refillall()
 					}
 				}
 			}
-			fillrowdate(rows, i, date)	//existing row
+			fillrowdate(rows[i], date)	//existing row
 			filldata(book[q], rows[i])	//fill a row for the day in book
 			madedate = date
 			i++
@@ -176,7 +176,7 @@ function refillall()
 			}
 
 			//make a blank row
-			fillrowdate(rows, i, date)	//existing row
+			fillrowdate(rows[i], date)	//existing row
 			fillblank(rows[i])
 			i++
 			if (i >= tlen) {
@@ -186,29 +186,25 @@ function refillall()
 	}
 }
 
+// main table (#tbl) only
+// others would refill entire table
 function refillOneDay(opdate)
 {
-	var getOpdateRows = function (opdate) {
-		var opdateth = opdate.thDate()
-		return $('#tbl tr').filter(function() {
-			return $(this).find("td").eq(OPDATE).html() === opdateth;
-		}).closest("tr")
-	}
 	var book = gv.BOOK
-	var opdateBOOKrows = book.filter(function(row) {
-			return (row.opdate === opdate);
-		})
-	var $opdateTblRows = getOpdateRows(opdate)
+	var opdateth = opdate.thDate()
+	var opdateBOOKrows = getOpdateBOOKrows(book, opdate)
+	var $opdateTblRows = getOpdateTableRows(opdateth)
 	var bookRows = opdateBOOKrows.length
 	var tblRows = $opdateTblRows.length
 
+	//Out of tbl range
 	if (!tblRows) {
-		return		//Out of tbl range
+		return
 	}
 	if (!bookRows) {
 		while ($opdateTblRows.length > 1) {
 			$opdateTblRows.eq(0).remove()
-			$opdateTblRows = getOpdateRows(opdate)
+			$opdateTblRows = getOpdateTableRows(opdateth)
 		}
 		var $cells = $opdateTblRows.children("td")
 		$cells.eq(OPDATE).siblings().html("")
@@ -220,23 +216,28 @@ function refillOneDay(opdate)
 		if (tblRows > bookRows) {
 			while ($opdateTblRows.length > bookRows) {
 				$opdateTblRows.eq(0).remove()
-				$opdateTblRows = getOpdateRows(opdate)
+				$opdateTblRows = getOpdateTableRows(opdateth)
 			}
 		}
 		else if (tblRows < bookRows) {
 			while ($opdateTblRows.length < bookRows) {
 				$opdateTblRows.eq(0).clone().insertAfter($opdateTblRows.eq(0))
-				$opdateTblRows = getOpdateRows(opdate)
+				$opdateTblRows = getOpdateTableRows(opdateth)
 			}
 		}
 		$.each(opdateBOOKrows, function(key, val) {
+			fillrowdate($opdateTblRows[key], this.opdate)
 			filldata(this, $opdateTblRows[key])
-			$opdateTblRows[key].cells[STAFFNAME].innerHTML = ""
+			var staff = $opdateTblRows[key].cells[STAFFNAME].innerHTML
+			if (staff && /<\/p>/.test(staff)) {
+				$opdateTblRows[key].cells[STAFFNAME].innerHTML = ""
+			}
 		})
 	}
 }
 
-function makenextrow(table, date)	//create and decorate new row
+//create and decorate new row
+function makenextrow(table, date)
 {
 	var tbody = table.getElementsByTagName("tbody")[0]
 	var tblcells = document.getElementById("tblcells")
@@ -249,24 +250,27 @@ function makenextrow(table, date)	//create and decorate new row
 	rowi.className = NAMEOFDAYFULL[(new Date(date)).getDay()]
 }
 
-function fillrowdate(rows, i, date)	//renew and decorate existing row
+//renew and decorate existing row
+function fillrowdate(rowi, date)
 {
 	var tblcells = document.getElementById("tblcells")
 
-	if (rows[i].cells[OPDATE].nodeName !== "TD") {
+	if (rowi.cells[OPDATE].nodeName !== "TD") {
 		var row = tblcells.rows[0].cloneNode(true)
-		rows[i].parentNode.replaceChild(row, rows[i])
+		rowi.parentNode.replaceChild(row, rowi)
+		rowi = row
 	}
-	rows[i].cells[OPDATE].innerHTML = date.thDate()
-	rows[i].cells[OPDATE].className = NAMEOFDAYABBR[(new Date(date)).getDay()]
-	rows[i].cells[DIAGNOSIS].style.backgroundImage = holiday(date)
-	rows[i].className = NAMEOFDAYFULL[(new Date(date)).getDay()]
+	rowi.cells[OPDATE].innerHTML = date.thDate()
+	rowi.cells[OPDATE].className = NAMEOFDAYABBR[(new Date(date)).getDay()]
+	rowi.cells[DIAGNOSIS].style.backgroundImage = holiday(date)
+	rowi.className = NAMEOFDAYFULL[(new Date(date)).getDay()]
 }
 
 function fillblank(rowi)
 {
 	var cells = rowi.cells
-	cells[ROOMTIME].innerHTML = ""
+	cells[ROOM].innerHTML = ""
+	cells[NUM].innerHTML = ""
 	cells[STAFFNAME].innerHTML = ""
 	cells[HN].innerHTML = ""
 	cells[HN].className = ""
@@ -288,7 +292,8 @@ function filldata(bookq, rowi)
 	}
 	cells[NAME].className = bookq.patient? "camera" : ""
 
-	cells[ROOMTIME].innerHTML = putRoomTime(bookq)
+	cells[ROOM].innerHTML = bookq.oproom
+	cells[NUM].innerHTML = bookq.casenum
 	cells[STAFFNAME].innerHTML = bookq.staffname
 	cells[HN].innerHTML = bookq.hn
 	cells[NAME].innerHTML = putNameAge(bookq)
@@ -306,7 +311,7 @@ function staffqueue(staffname)
 	var book = gv.BOOK
 	var consult = gv.CONSULT
 
-	if ($("#queuewrapper").css("display") !== "block") {
+	if (!isSplited()) {
 		splitPane()
 	}
 	$('#titlename').html(staffname)
@@ -314,7 +319,8 @@ function staffqueue(staffname)
 	//delete previous queuetbl lest it accumulates
 	$('#queuetbl tr').slice(1).remove()
 
-	if (staffname === "Consults") {		//Consults cases are not in BOOK
+	//Consults cases are not in BOOK
+	if (staffname === "Consults") {
 		if (consult.length === 0)
 			consult.push({"opdate" : getSunday()})
 
@@ -326,7 +332,7 @@ function staffqueue(staffname)
 		var queueh = $("#queuetbl").height()
 		$("#queuecontainer").scrollTop(queueh)
 	} else {
-		$.each( book, function() {	// each === this
+		$.each( book, function() {
 			if (( this.staffname === staffname ) && this.opdate >= todate) {
 				$('#tblcells tr').clone()
 					.appendTo($('#queuetbl'))
@@ -346,6 +352,7 @@ function refillstaffqueue()
 	var book = gv.BOOK
 	var consult = gv.CONSULT
 
+	if ($('#queuetbl'))
 	if (staffname === "Consults") {
 		//Consults table is rendered same as fillall
 		$('#queuetbl tr').slice(1).remove()
@@ -359,7 +366,7 @@ function refillstaffqueue()
 	} else {
 		//render as staffqueue
 		var i = 0
-		$.each( book, function(q, each) {	// each === this
+		$.each( book, function(q, each) {
 			if ((this.opdate >= todate) && (this.staffname === staffname)) {
 				i++
 				if (i >= $('#queuetbl tr').length) {
@@ -386,7 +393,8 @@ jQuery.fn.extend({
 			cells[OPDATE].className = NAMEOFDAYABBR[(new Date(bookq.opdate)).getDay()]
 		}
 		cells[OPDATE].innerHTML = putOpdate(bookq.opdate)
-		cells[ROOMTIME].innerHTML = putRoomTime(bookq)
+		cells[ROOM].innerHTML = bookq.oproom
+		cells[NUM].innerHTML = bookq.casenum
 		cells[STAFFNAME].innerHTML = bookq.staffname
 		cells[HN].innerHTML = bookq.hn
 		cells[HN].className = (bookq.hn && gv.isPACS)? "pacs" : ""
@@ -400,12 +408,6 @@ jQuery.fn.extend({
 		addColor(this, bookq.opdate)
 	}
 })
-
-function putRoomTime(bookq)
-{
-	return (bookq.oproom? bookq.oproom : "")
-		 + (bookq.optime? "<br>" + bookq.optime : "")
-}
 
 function putNameAge(bookq)
 {
@@ -423,7 +425,8 @@ function addColor($this, bookqOpdate)
 	|| ((bookqOpdate === prevdate) && ($this.prev()[0].className.indexOf("odd") >= 0))) {
 		$this.addClass("odd")
 	} else {
-		$this.removeClass("odd")	//clear colored row that is moved to non-color opdate
+	//clear colored row that is moved to non-color opdate
+	$this.removeClass("odd")
 	}
 }
  
@@ -478,9 +481,10 @@ function holiday(date)
 	for (var key in HOLIDAY) 
 	{
 		if (key === date)
-			return HOLIDAY[key]	//matched a holiday
+			return HOLIDAY[key]
 		if (key > date)
-			break		//Not a listed holiday. Neither a fixed nor a compensation holiday
+			//Not a listed holiday. Neither a fixed nor a compensation holiday
+			break
 	}
 	switch (monthdate)
 	{
