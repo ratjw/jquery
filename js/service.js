@@ -697,6 +697,9 @@ function exportToExcel()
 				border-right: solid 1px slategray;\
 				border-collapse: collapse;\
 			}\
+			#exceltbl tr:nth-child(odd) {\
+				background-color: #E0FFE0;\
+			}\
 			#exceltbl th {\
 				font-size: 16px;\
 				font-weight: bold;\
