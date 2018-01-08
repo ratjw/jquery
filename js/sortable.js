@@ -34,6 +34,7 @@ function sortable()
 			var $item = ui.item,
 				$itemcell = $item.children("td"),
 				receiver = $item.closest('table').attr('id'),
+				oldwaitnum = $item[0].title,
 				oldOpdateth = $itemcell.eq(OPDATE).html(),
 				oldOpdate = getOpdate(oldOpdateth),
 				oldroom = $itemcell.eq(ROOM).html(),
@@ -101,8 +102,8 @@ function sortable()
 				thisOpdate = getOpdate(thisOpdateth),
 				thisroom = $thiscell.eq(ROOM).html(),
 				thisqn = $thiscell.eq(QN).html(),
-				thisWaitnum = calculateWaitnum(receiver, $thisdrop, thisOpdateth),
 
+				newWaitnum = calculateWaitnum(receiver, $thisdrop, thisOpdateth),
 				index,
 				sql = ""
 
@@ -138,14 +139,19 @@ function sortable()
 
 				for (var i=0; i<allNewCases.length; i++) {
 					if (allNewCases[i] === oldqn) {
-						sql += sqlMover(thisWaitnum, thisOpdate, thisroom, i + 1, oldqn)
+						sql += sqlMover(newWaitnum, thisOpdate, thisroom, i + 1, oldqn)
 					} else {
 						sql += sqlCaseNum(i + 1, allNewCases[i])
 					}
 				}
 			}
 
-			if (!sql) { return }
+			if (!sql) {
+				if (newWaitnum === oldwaitnum) {
+					return
+				}
+				sql += sqlMover(newWaitnum, thisOpdate, "", "", oldqn)
+			}
 			sql = "sqlReturnbook=" + sql
 
 			Ajax(MYSQLIPHP, sql, callbacksortable);
