@@ -32,9 +32,9 @@
 	 <tr>
      <th style="width:10%">Date</th>
      <th style="width:2%">Room</th>
-     <th style="width:1%">№</th>
+     <th style="width:2%">Case</th>
      <th style="width:3%">Staff</th>
-     <th style="width:4%">HN</th>
+     <th style="width:3%">HN</th>
      <th style="width:10%">PatientName</th>
      <th style="width:20%">Diagnosis</th>
      <th style="width:30%">Treatment</th>
@@ -58,9 +58,9 @@
 	  <tr>
       <th style="width:10%">Date</th>
       <th style="width:2%">Room</th>
-      <th style="width:1%">№</th>
+      <th style="width:2%">Case</th>
       <th style="width:3%">Staff</th>
-      <th style="width:4%">HN</th>
+      <th style="width:3%">HN</th>
       <th style="width:10%">PatientName</th>
       <th style="width:20%">Diagnosis</th>
       <th style="width:30%">Treatment</th>
@@ -78,7 +78,7 @@
    <tr>
     <td data-title="Date"></td>
     <td data-title="Room"></td>
-    <td data-title="№"></td>
+    <td data-title="Case"></td>
     <td data-title="Staff"></td>
     <td data-title="HN"></td>
     <td data-title="PatientName"></td>
@@ -169,9 +169,9 @@
    <tr>
      <th style="width:10%">Date</th>
      <th style="width:2%">Room</th>
-     <th style="width:1%">№</th>
+     <th style="width:2%">Case</th>
      <th style="width:3%">Staff</th>
-     <th style="width:4%">HN</th>
+     <th style="width:3%">HN</th>
      <th style="width:10%">PatientName</th>
      <th style="width:20%">Diagnosis</th>
      <th style="width:30%">Treatment</th>

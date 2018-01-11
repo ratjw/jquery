@@ -406,13 +406,15 @@ function Skeyin(event, keycode, pointing)
 
 function savePreviousCellService()
 {
-	var oldcontent = $("#editcell").data("oldcontent")
-	var newcontent = getEditcellHtml()
-	var pointed = $("#editcell").data("pointing")
+	var $editcell = $("#editcell"),
+		oldcontent = $editcell.data("oldcontent"),
+		newcontent = getText($editcell),
+		pointed = $editcell.data("pointing")
+
 	if (!pointed || (oldcontent === newcontent)) {
 		return false
 	}
-	var content = ""
+
 	switch(pointed.cellIndex)
 	{
 		case CASENUMSERVICE:
@@ -420,20 +422,16 @@ function savePreviousCellService()
 		case NAMESERVICE:
 			return false
 		case DIAGNOSISSERVICE:
-			content = getEditcellHtml()
-			saveContentService(pointed, "diagnosis", content)
+			saveContentService(pointed, "diagnosis", newcontent)
 			return true
 		case TREATMENTSERVICE:
-			content = getEditcellHtml()
-			saveContentService(pointed, "treatment", content)
+			saveContentService(pointed, "treatment", newcontent)
 			return true
 		case ADMISSIONSERVICE:
-			content = getEditcellHtml()
-			saveContentService(pointed, "admission", content)
+			saveContentService(pointed, "admission", newcontent)
 			return true
 		case FINALSERVICE:
-			content = getEditcellHtml()
-			saveContentService(pointed, "final", content)
+			saveContentService(pointed, "final", newcontent)
 			return true
 		case ADMITSERVICE:
 		case DISCHARGESERVICE:

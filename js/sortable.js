@@ -107,7 +107,7 @@ function sortable()
 				index,
 				sql = ""
 
-			// click the same case
+			// drop on the same case
 			if (thisqn === oldqn) { return }
 
 			// assimilate into receiver

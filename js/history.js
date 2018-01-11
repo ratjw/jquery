@@ -1,60 +1,4 @@
 
-;(function($) {
-	$.fn.fixMe = function($container) {
-		var $this = $(this),
-			$t_fixed,
-			pad = $container.css("paddingLeft")
-		init();
-		$container.off("scroll").on("scroll", scrollFixed);
-
-		function init() {
-			$t_fixed = $this.clone();
-			$t_fixed.removeAttr("id")
-			$t_fixed.find("tbody").remove().end().addClass("fixed").insertBefore($this);
-			$container.scrollTop(0)
-			resizeFixed($t_fixed, $this);
-			reposition($t_fixed, "left top", "left+" + pad + " top", $container)
-			$t_fixed.hide()
-		}
-
-		function scrollFixed() {
-			var offset = $(this).scrollTop(),
-			tableTop = $this[0].offsetTop,
-			tableBottom = tableTop + $this.height() - $this.find("thead").height();
-			if(offset < tableTop || offset > tableBottom) {
-				$t_fixed.hide();
-			}
-			else if (offset >= tableTop && offset <= tableBottom && $t_fixed.is(":hidden")) {
-				$t_fixed.show();
-			}
-		}
-	};
-})(jQuery);
-
-function resizeFixed($fix, $this) {
-	var over = 0
-	$fix.find("th").each(function(index) {
-		var wide = $this.find("th").eq(index).width()
-		over += (wide - Math.round(wide))
-		if (Math.round(over)) {
-			wide += 1
-			over = 0
-		}
-
-		$(this).css("width", wide + "px")
-	});
-}
-
-function winResizeFix($this, $container) {
-	var $fix = $(".fixed"),
-		hide = $fix.css("display") === "none",
-		pad = $container.css("paddingLeft")
-
-	resizeFixed($fix, $this)
-	reposition($fix, "left top", "left+" + pad + " top", $container)
-	hide && $fix.hide()
-}
-
 function editHistory(rowi, qn)
 {
 	if (rowi.cells[QN].innerHTML)
@@ -172,19 +116,10 @@ function showEquip(equipString)
 
 function deletedCases()
 {
-	var sql = "sqlReturnData=SELECT a.editdatetime, a.opdate, a.oproom, "
-			+ "a.optime, a.casenum, a.staffname, a.hn, a.patient, "
-			+ "a.diagnosis, a.treatment, a.contact, a.editor, a.qn "
+	var sql = "sqlReturnData=SELECT a.* "
 			+ "FROM (SELECT editdatetime, revision, b.* "
-					+ "FROM book b INNER JOIN bookhistory bh ON b.qn = bh.qn "
-					+ "WHERE b.waitnum IS NULL AND bh.action = 'delete') a "
-				+ "INNER JOIN (SELECT MAX(revision) mr, qn "
-					+ "FROM (SELECT editdatetime, revision, b.qn "
-						+ "FROM book b INNER JOIN bookhistory bh ON b.qn = bh.qn "
-						+ "WHERE b.waitnum IS NULL AND bh.action = 'delete') aa "
-						+ "GROUP BY qn) d "
-				+ "ON a.qn = d.qn "
-				+ "WHERE a.revision = d.mr "
+				+ "FROM book b INNER JOIN bookhistory bh ON b.qn = bh.qn "
+				+ "WHERE b.deleted > 0 AND bh.action = 'delete') a "
 			+ "ORDER BY a.editdatetime DESC;"
 
 	Ajax(MYSQLIPHP, sql, callbackdeletedCases)
@@ -293,36 +228,26 @@ function undelete(thiscase, deleted)
 			sql = "sqlReturnbook=",
 
 			delrow = getBOOKrowByQN(deleted, qn),
-			waitnum = delrow.optime,
+			waitnum = delrow.waitnum,
 			oproom = delrow.oproom,
 			casenum = delrow.casenum,
 
 			book = (waitnum > 0)? gv.BOOK : gv.CONSULT,
-			allCases = getOpdateBOOKrows(book, opdate)
+			allCases = sameDateRoomBookQN(book, opdate, oproom),
+			alllen = 0
 
-			allCases = sameRoomBookQN(allCases, oproom)
+		allCases.splice(casenum, 0, qn)
+		alllen = allCases.length
 
-		if (waitnum) {
-			var alllen = allCases.length
-			if (casenum > alllen) {
-				casenum = alllen
+		for (var i=0; i<alllen; i++) {
+			if (allCases[i] === qn) {
+				sql += "UPDATE book SET "
+					+  "deleted=0,"
+					+  "editor='" + gv.user
+					+  "' WHERE qn="+ qn + ";"
+			} else {
+				sql += sqlCaseNum(i + 1, allCases[i])
 			}
-			allCases.splice(casenum, 0, qn)
-
-			for (var i=0; i<alllen; i++) {
-				if (i === casenum - 1) {
-					sql += "UPDATE book SET "
-						+  "waitnum=optime,"
-						+  "editor='" + gv.user
-						+  "' WHERE qn="+ qn + ";"
-				} else {
-					sql += sqlCaseNum(i + 1, allCases[i])
-				}
-			}
-		} else {
-			sql = "functionName=undelete&qn="+ qn
-				+ "&opdate="+ opdate
-				+ "&editor="+ gv.user
 		}
 
 		Ajax(MYSQLIPHP, sql, callbackUndelete);
@@ -626,7 +551,7 @@ function makeDialogFound(found, hn)
 	HTML_String += '</tr></thead><tbody>';
 	for (var j = 0; j < found.length; j++) 
 	{
-		if (!found[j].waitnum) {
+		if (found[j].deleted > 0) {
 			HTML_String += '<tr style="background-color:#FFCCCC">';
 		} else {
 			HTML_String += '<tr>';

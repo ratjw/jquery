@@ -71,17 +71,29 @@ function keyin(event, keycode, pointing)
 
 function savePreviousCell() 
 {
-	var oldcontent = $("#editcell").data("oldcontent")
-	var newcontent = getEditcellHtml()
-	var pointed = $("#editcell").data("pointing")
-	var column = pointed && pointed.cellIndex
+	var $editcell = $("#editcell"),
+		oldcontent = $editcell.data("oldcontent"),
+		newcontent = getText($editcell),
+		pointed = $editcell.data("pointing"),
+		column = pointed && pointed.cellIndex
 
-	if (column === ROOM || column === NUM) {
+	if (column === ROOM) {
 		newcontent = newcontent + $("#spin").val()
 	}
+	if (column === NUM) {
+		var numtime = oldcontent.split("<br>"),
+			oldnum = numtime[0],
+			oldtime = numtime[1],
+			num = $("#spin").val(),
+			time = $("#time").val()
+
+		newcontent = num + (time ? ("<br>" + time) : "")
+	}
+
 	if (!pointed || (oldcontent === newcontent)) {
 		return false
 	}
+
 	switch(column)
 	{
 		case OPDATE:
@@ -90,7 +102,7 @@ function savePreviousCell()
 			saveRoom(pointed, newcontent)
 			return true
 		case NUM:
-			saveCaseNum(pointed, newcontent)
+			saveCaseNum(pointed, oldnum, oldtime, num, time)
 			return true
 		case STAFFNAME:
 			return false
@@ -112,16 +124,6 @@ function savePreviousCell()
 			saveContent(pointed, "contact", newcontent)
 			return true
 	}
-}
- 
-function getEditcellHtml()
-{
-	var TRIMHTML		= /^(\s*<[^>]*>)*\s*|\s*(<[^>]*>\s*)*$/g
-	var HTMLNOTBR		= /(<((?!br)[^>]+)>)/ig
-
-	return $("#editcell").html()
-			.replace(TRIMHTML, '')
-			.replace(HTMLNOTBR, '')
 }
 
 function saveRoom(pointed, newcontent)
@@ -145,11 +147,13 @@ function saveRoom(pointed, newcontent)
 		for (var i=0; i<allOldCases.length; i++) {
 			sql += sqlCaseNum(i + 1, allOldCases[i])
 		}
+
+		if (newcontent.match(/\d+/)[0] === "0") {
+			sql += sqlNewRoom("", "", qn)
+		}
 	}
 
-	if (newcontent.match(/\d+/)[0] === "0") {
-		sql += sqlNewRoom("", "", qn)
-	} else {
+	if (newcontent.match(/\d+/)[0] !== "0") {
 		allNewCases = sameDateRoomTableQN(opdateth, newcontent)
 		allNewCases.push(qn)
 
@@ -162,6 +166,7 @@ function saveRoom(pointed, newcontent)
 		}
 	}
 
+	// no oproom, no newcontent
 	if (!sql) { return }
 	sql = "sqlReturnbook=" + sql
 
@@ -197,7 +202,7 @@ function sqlNewRoom(oproom, casenum, qn)
 		+  "' WHERE qn="+ qn + ";"
 }
 
-function saveCaseNum(pointed, newcontent)
+function saveCaseNum(pointed, oldnum, oldtime, num, time)
 {
 	var tableID = $(pointed).closest("table").attr("id"),
 		$row = $(pointed).closest("tr"),
@@ -207,24 +212,25 @@ function saveCaseNum(pointed, newcontent)
 		oproom = cells.eq(ROOM).html(),
 		qn = cells.eq(QN).html(),
 		index,
-		sql = "",
+		sql = "sqlReturnbook="
 
-	allCases = sameDateRoomTableQN(opdateth, oproom)
-	index = allCases.indexOf(qn)
-	allCases.splice(index, 1)
+	if (oldnum !== num) {
+		// must have oproom, if no, can't be clicked
+		allCases = sameDateRoomTableQN(opdateth, oproom)
+		index = allCases.indexOf(qn)
+		allCases.splice(index, 1)
+		allCases.splice(num - 1, 0, qn)
 
-	if (newcontent === "0") {
-		allCases.push(qn)
-	} else {
-		allCases.splice(newcontent - 1, 0, qn)
+		for (var i=0; i<allCases.length; i++) {
+			sql += sqlCaseNum(i + 1, allCases[i])
+		}
 	}
-
-	for (var i=0; i<allCases.length; i++) {
-		sql += sqlCaseNum(i + 1, allCases[i])
+	if (oldtime !== time) {
+		sql += "UPDATE book SET "
+			+  "optime='" + ((time === "00.00") ? "" : time)
+			+  "',editor='" + gv.user
+			+  "' WHERE qn="+ qn + ";"		
 	}
-
-	if (!sql) { return }
-	sql = "sqlReturnbook=" + sql
 
 	Ajax(MYSQLIPHP, sql, callbackCaseNum)
 
@@ -569,13 +575,14 @@ function storePresentCell(pointing)
 			mainMenu(pointing)
 			break
 		case ROOM:
+			if ( !$(pointing).siblings(":last").html() ) { return }
 			createEditcell(pointing)
-			getRoomNum(pointing, pointing.cellIndex)
+			getRoom(pointing, pointing.cellIndex)
 			break
 		case NUM:
 			if ( !$(pointing).prev().html() ) { return }
 			createEditcell(pointing)
-			getRoomNum(pointing, pointing.cellIndex)
+			getCase(pointing, pointing.cellIndex)
 			break
 		case STAFFNAME:
 			createEditcell(pointing)
@@ -595,29 +602,19 @@ function storePresentCell(pointing)
 	}
 }
 
-function getRoomNum(pointing, index)
+function getRoom(pointing, index)
 {
-	var ORSURG = "XSU"
-	var ORROOM = "4"
-	var CASENUM	= "1"
-	var content = pointing.innerHTML
-	var $editcell = $("#editcell")
-	var val = 0
-	var html = ""
-
-	if (index === ROOM) {
-		var room = content && content.match(/\d+/)
-			val = room? room[0] : ORROOM
-		var theatre = content && content.match(/\D+/)
-			theatre = theatre? theatre[0] : ORSURG
+	var ORSURG = "XSU",
+		ORROOM = "4",
+		content = pointing.innerHTML,
+		$editcell = $("#editcell"),
+		room = content && content.match(/\d+/),
+		theatre = content && content.match(/\D+/),
+		val = room ? room[0] : ORROOM,
+		theatre = theatre ? theatre[0] : ORSURG,
 		html = theatre + '<input id="spin">'
-	}
-	else if (index === NUM) {
-		val = content || CASENUM
-		html = '<input id="spin">'
-	}
 
-	if ($editcell.css("height") < "50px") {
+	if ($editcell.css("height") < "60px") {
 		$editcell.css("height", 60)
 	}
 	$editcell.css("width", 55)
@@ -625,9 +622,67 @@ function getRoomNum(pointing, index)
 	$("#spin").val(val)
 	$("#spin").spinner({
 		min: 0,
-		max: 100,
+		max: 99,
 		step: 1
 	});
+	clearTimeout(gv.timer)
+}
+
+function getCase(pointing, index)
+{
+	var CASENUM	= "1",
+		content = pointing.innerHTML,
+		$editcell = $("#editcell"),
+		val = content || CASENUM,
+		numtime = val.split("<br>"),
+		num = numtime[0],
+		time = numtime[1],
+		ortime = "",
+		html = '<input id="spin"><input id="time">'
+
+	if (val.indexOf("<br>") === -1) {
+		num = val
+		time = ""
+	}
+
+	if ($editcell.css("height") < "65px") {
+		$editcell.css("height", 65)
+	}
+	$editcell.css("width", 70)
+	$editcell.html(html)
+	$spin = $("#spin")
+	$spin.val(num)
+	$spin.spinner({
+		min: 1,
+		max: 99,
+		step: 1
+	});
+
+	$time = $("#time")
+	$time.val(time)
+	$time.spinner({
+		min: 00,
+		max: 24,
+		step: 0.5,
+		create: function( event, ui ) {
+			$time.val(time)
+		},
+		start: function( event, ui ) {
+			if (!$time.val()) {
+				$time.val(9.5)
+			}
+		},
+		spin: function( event, ui ) {
+			ortime = decimalToTime(ui.value)
+		},
+		stop: function( event, ui ) {
+			if (ortime) {
+				$time.val(ortime)
+				ortime = ""	
+			}
+		}
+	})
+	clearTimeout(gv.timer)
 }
 
 function stafflist(pointing)
@@ -730,7 +785,8 @@ function createEditcell(pointing)
 	var $pointing = $(pointing)
 	var height = $pointing.height() + "px"
 	var width = $pointing.width() + "px"
-	var context = $.trim(pointing.innerHTML)
+	var context = getText($pointing)
+
 	editcellData($editcell, pointing, context)
 	$editcell.html(context)
 	showEditcell($editcell, $pointing, height, width)
@@ -777,4 +833,14 @@ function clearEditcell()
 	$editcell.data("oldcontent", "")
 	$editcell.html("")
 	$editcell.hide()
+}
+ 
+function getText($cell)
+{
+	var TRIMHTML		= /^(\s*<[^>]*>)*\s*|\s*(<[^>]*>\s*)*$/g
+	var HTMLNOTBR		= /(<((?!br)[^>]+)>)/ig
+
+	return $cell.html()
+			.replace(TRIMHTML, '')
+			.replace(HTMLNOTBR, '')
 }

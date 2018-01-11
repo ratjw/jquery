@@ -331,11 +331,9 @@ function deleteCase(tableID, $row, opdateth, opdate, staffname, qn)
 	var oproom = $row.find("td").eq(ROOM).html(),
 		allCases, index,
 
-		// not actually delete the case but set waitnum=NULL
-		// deposit waitnum in optime for undelete
+		// not actually delete the case but set deleted = 1
 		sql = "sqlReturnbook=UPDATE book SET "
-			+ "optime=waitnum, "
-			+ "waitnum=NULL, "
+			+ "deleted=1, "
 			+ "editor = '" + gv.user
 			+ "' WHERE qn="+ qn + ";"
 
@@ -391,7 +389,7 @@ function deleteRow($row, opdate)
 		$row.children("td").eq(OPDATE).siblings().html("")
 		$row.children("td").eq(HN).removeClass("pacs")
 		$row.children("td").eq(NAME).removeClass("camera")
-		$row.children('td').eq(STAFFNAME).html(showStaffImage(opdate))
+		$row.children('td').eq(STAFFNAME).html(showStaffOnCall(opdate))
 	}
 }
 

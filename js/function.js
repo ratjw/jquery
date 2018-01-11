@@ -1,4 +1,60 @@
 
+;(function($) {
+	$.fn.fixMe = function($container) {
+		var $this = $(this),
+			$t_fixed,
+			pad = $container.css("paddingLeft")
+		init();
+		$container.off("scroll").on("scroll", scrollFixed);
+
+		function init() {
+			$t_fixed = $this.clone();
+			$t_fixed.removeAttr("id")
+			$t_fixed.find("tbody").remove().end().addClass("fixed").insertBefore($this);
+			$container.scrollTop(0)
+			resizeFixed($t_fixed, $this);
+			reposition($t_fixed, "left top", "left+" + pad + " top", $container)
+			$t_fixed.hide()
+		}
+
+		function scrollFixed() {
+			var offset = $(this).scrollTop(),
+			tableTop = $this[0].offsetTop,
+			tableBottom = tableTop + $this.height() - $this.find("thead").height();
+			if(offset < tableTop || offset > tableBottom) {
+				$t_fixed.hide();
+			}
+			else if (offset >= tableTop && offset <= tableBottom && $t_fixed.is(":hidden")) {
+				$t_fixed.show();
+			}
+		}
+	};
+})(jQuery);
+
+function resizeFixed($fix, $this) {
+	var over = 0
+	$fix.find("th").each(function(index) {
+		var wide = $this.find("th").eq(index).width()
+		over += (wide - Math.round(wide))
+		if (Math.round(over)) {
+			wide += 1
+			over = 0
+		}
+
+		$(this).css("width", wide + "px")
+	});
+}
+
+function winResizeFix($this, $container) {
+	var $fix = $(".fixed"),
+		hide = $fix.css("display") === "none",
+		pad = $container.css("paddingLeft")
+
+	resizeFixed($fix, $this)
+	reposition($fix, "left top", "left+" + pad + " top", $container)
+	hide && $fix.hide()
+}
+
 String.prototype.thDate = function () 
 {	//MySQL date (2014-05-11) to Thai date (11 พค. 2557) 
 	var date = this.split("-")
@@ -166,21 +222,10 @@ function sameDateRoomTableQN(opdateth, room)
 	return $.makeArray(sameRoom)
 }
 
-function sameRoomTableQN(allSameDate, room)
+function sameDateRoomBookQN(book, opdate, room)
 {
-	var sameRoom = allSameDate.filter(function() {
-		return $(this).find("td").eq(ROOM).html() === room;
-	})
-	$.each(sameRoom, function(i) {
-		sameRoom[i] = $(this).find("td").eq(QN).html()
-	})
-	return $.makeArray(sameRoom)
-}
-
-function sameRoomBookQN(allSameDate, room)
-{
-	var sameRoom = allSameDate.filter(function(row) {
-		return row.oproom === room;
+	var sameRoom = book.filter(function(row) {
+		return row.opdate === opdate && row.oproom === room;
 	})
 	$.each(sameRoom, function(i) {
 		sameRoom[i] = this.qn
@@ -241,6 +286,18 @@ function calculateWaitnum(tableID, $thisrow, thisOpdate)
 	else if (prevOpdate === thisOpdate && thisOpdate === nextOpdate) {
 		return nextWaitNum? ((prevWaitNum + nextWaitNum) / 2) : (prevWaitNum + defaultWaitnum)
 	}	// nextWaitNum is undefined in case of new blank row
+}
+
+function decimalToTime(dec)
+{
+	var time = [],
+		integer = Math.floor(dec),
+		decimal = dec - integer,
+		time0 = "" + integer
+
+	time[0] = (integer < 10)? "0" + time0 : time0
+	time[1] = decimal? String(decimal * 60) : "00"
+	return time.join(".")
 }
 
 function findPrevcell(event, editable, pointing) 

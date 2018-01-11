@@ -2,6 +2,7 @@
 DROP TABLE IF EXISTS book;
 
 CREATE TABLE `book` (
+	`deleted` tinyint DEFAULT 0,
 	`waitnum` double DEFAULT 1,
 	`opdate` date,
 	`oproom` varchar(10) NOT NULL DEFAULT '',

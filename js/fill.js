@@ -208,7 +208,7 @@ function refillOneDay(opdate)
 		}
 		var $cells = $opdateTblRows.children("td")
 		$cells.eq(OPDATE).siblings().html("")
-		$cells.eq(STAFFNAME).html(showStaffImage(opdate))
+		$cells.eq(STAFFNAME).html(showStaffOnCall(opdate))
 		$cells.eq(HN).removeClass("pacs")
 		$cells.eq(NAME).removeClass("camera")
 		$opdateTblRows.attr("title", "")
@@ -293,7 +293,7 @@ function filldata(bookq, rowi)
 	cells[NAME].className = bookq.patient? "camera" : ""
 
 	cells[ROOM].innerHTML = bookq.oproom
-	cells[NUM].innerHTML = bookq.casenum
+	cells[NUM].innerHTML = bookq.casenum + (bookq.optime? ("<br>" + bookq.optime) : "")
 	cells[STAFFNAME].innerHTML = bookq.staffname
 	cells[HN].innerHTML = bookq.hn
 	cells[NAME].innerHTML = putNameAge(bookq)
@@ -394,7 +394,7 @@ jQuery.fn.extend({
 		}
 		cells[OPDATE].innerHTML = putOpdate(bookq.opdate)
 		cells[ROOM].innerHTML = bookq.oproom
-		cells[NUM].innerHTML = bookq.casenum
+		cells[NUM].innerHTML = bookq.casenum + (bookq.optime? ("<br>" + bookq.optime) : "")
 		cells[STAFFNAME].innerHTML = bookq.staffname
 		cells[HN].innerHTML = bookq.hn
 		cells[HN].className = (bookq.hn && gv.isPACS)? "pacs" : ""

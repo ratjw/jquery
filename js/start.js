@@ -74,7 +74,7 @@ function initialize(userid)
 				event.stopPropagation()
 				return false
 			}
-			fillEquipTable(gv.BOOK, rowi[0], qn)
+			fillEquipTable(gv.BOOK, rowi, qn)
 			$('#dialogEquip').dialog("option", "buttons", {})
 		})
 		$("#wrapper").keydown(function(event) {
@@ -270,7 +270,7 @@ function htmlwrap(staffname) {
 	return '<p style="color:#999999;font-size:14px">' + staffname + '</p>'
 }
 
-function showStaffImage(opdate) {
+function showStaffOnCall(opdate) {
 	var i = gv.STAFF.length
 
 	while (i--) {
@@ -290,8 +290,9 @@ function resetTimer()
 
 function updating()
 {
-	// If there is some changes, reset idleCounter
-	// if not, get update from server
+	// If there is some changes, reset idle time
+	// If not, continue counting idle time
+	// Both ways get update from server
 	if (onChange()) {
 		gv.idleCounter = 0
 	} else {

@@ -376,8 +376,17 @@ button.ui-datepicker-current {
 }
 
 #spin {
-	height: 40px;
+	height: 30px;
 	width: 50px;
+	font-size: 16px;
+	padding: 0px 0px 0px 3px;
+	margin: 0px;
+}
+
+#time {
+	height: 30px;
+	width: 65px;
+	font-size: 14px;
 	padding: 0px 0px 0px 3px;
 	margin: 0px;
 }

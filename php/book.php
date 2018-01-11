@@ -4,17 +4,18 @@
 //		exit("Connect failed: %s\n". $mysqli->connect_error);
 //	echo json_encode(book($mysqli));
 
-	//waitnum < 0		//consult cases
-	//waitnum = 0		//Staff on-call
-	//waitnum > 0		//booking cases
-	//waitnum = null	//deleted cases 
-
+// waitnum < 0		: consult cases
+// waitnum = 0		: Staff on-call
+// waitnum > 0		: booking cases
+// waitnum = null	: deleted cases deprecated due to no waitnum when undelete
+// deleted > 0		: deleted cases
+// deleted = 0		: normal cases
 function book($mysqli, $init)
 {
 	date_default_timezone_set("Asia/Bangkok");
 
 	$rowi = array();
-	$case = array();
+	$book = array();
 	$cons = array();
 	$time = array();
 	$wait = array();
@@ -23,17 +24,22 @@ function book($mysqli, $init)
 	$sql = "SELECT * FROM book 
 			WHERE opdate >= DATE_FORMAT(CURDATE()-INTERVAL 1 MONTH,'%Y-%m-01')
 				AND waitnum > 0
-			ORDER BY opdate, oproom='', LENGTH(oproom), oproom,
-				casenum='', LENGTH(casenum), casenum, waitnum;";
-			// The oproom='' makes cases with an oproom to 0 and with no oproom to 1.
+				AND deleted = 0
+			ORDER BY opdate,
+				oproom='', LENGTH(oproom), oproom,
+				casenum='', LENGTH(casenum), casenum,
+				optime,
+				waitnum;";
+			// The oproom='' makes cases with an oproom to 0
+			// and with no oproom to 1.
 			// Non-blank items are now placed first,
-			// oproom is sorted by alphanumeric
+			// then sorted by alphanumeric
 
 	if (!$result = $mysqli->query ($sql)) {
 		return $mysqli->error;
 	}
 	while ($rowi = $result->fetch_assoc()) {
-		$case[] = $rowi;
+		$book[] = $rowi;
 	}
 
 	if ($init) {
@@ -41,15 +47,23 @@ function book($mysqli, $init)
 		$sql = "SELECT * FROM book 
 				WHERE opdate >= DATE_FORMAT(CURDATE()-INTERVAL 1 MONTH,'%Y-%m-01')
 					AND waitnum <= 0
-				ORDER BY opdate, oproom='', LENGTH(oproom), oproom,
-					casenum='', LENGTH(casenum), casenum, waitnum DESC;";
+					AND deleted = 0
+			ORDER BY opdate,
+				oproom='', LENGTH(oproom), oproom,
+				casenum='', LENGTH(casenum), casenum,
+				optime,
+				waitnum DESC;";
 	} else {
 		// get consult cases only
 		$sql = "SELECT * FROM book 
 				WHERE opdate >= DATE_FORMAT(CURDATE()-INTERVAL 1 MONTH,'%Y-%m-01')
 					AND waitnum < 0
-				ORDER BY opdate, oproom='', LENGTH(oproom), oproom,
-					casenum='', LENGTH(casenum), casenum, waitnum DESC;";
+					AND deleted = 0
+			ORDER BY opdate,
+				oproom='', LENGTH(oproom), oproom,
+				casenum='', LENGTH(casenum), casenum,
+				optime,
+				waitnum DESC;";
 				//Consult cases have negative waitnum.
 				//Greater waitnum (less negative) are placed first
 	}
@@ -65,7 +79,7 @@ function book($mysqli, $init)
 		$time = current($result->fetch_row());	//array.toString()
 	}
 
-	$allarray["BOOK"] = $case;
+	$allarray["BOOK"] = $book;
 	$allarray["CONSULT"] = $cons;
 	$allarray["QTIME"] = $time;
 

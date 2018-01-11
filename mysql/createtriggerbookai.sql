@@ -3,10 +3,11 @@ DROP TRIGGER IF EXISTS bookai;
 
 CREATE TRIGGER bookai AFTER INSERT ON book FOR EACH ROW
 	INSERT INTO bookhistory 
-			(action, revision, editdatetime, waitnum, opdate, oproom, casenum, 
+			(action, revision, editdatetime, deleted, waitnum, opdate, oproom, casenum, 
 			staffname, hn, patient, diagnosis, treatment, admission, final, 
 			equipment, contact, admit, discharge, qn, editor)
 	VALUES ('insert', NULL, NOW(), 
+			NEW.deleted,
 			NEW.waitnum,
 			NEW.opdate,
 			NEW.oproom,
