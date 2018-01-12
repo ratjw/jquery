@@ -190,23 +190,25 @@ function refillall()
 // others would refill entire table
 function refillOneDay(opdate)
 {
-	var book = gv.BOOK
-	var opdateth = opdate.thDate()
-	var opdateBOOKrows = getOpdateBOOKrows(book, opdate)
-	var $opdateTblRows = getOpdateTableRows(opdateth)
-	var bookRows = opdateBOOKrows.length
-	var tblRows = $opdateTblRows.length
+	var book = gv.BOOK,
+		opdateth = opdate.thDate(),
+		opdateBOOKrows = getBOOKrowsByDate(book, opdate),
+		$opdateTblRows = getTableRowsByDate(opdateth),
+		bookRows = opdateBOOKrows.length,
+		tblRows = $opdateTblRows.length,
+		$cells, staff
 
-	//Out of tbl range
 	if (!tblRows) {
-		return
+		$opdateTblRows = createThisdateTableRow(opdate, opdateth)
+		tblRows = $opdateTblRows.length
 	}
+
 	if (!bookRows) {
 		while ($opdateTblRows.length > 1) {
 			$opdateTblRows.eq(0).remove()
-			$opdateTblRows = getOpdateTableRows(opdateth)
+			$opdateTblRows = getTableRowsByDate(opdateth)
 		}
-		var $cells = $opdateTblRows.children("td")
+		$cells = $opdateTblRows.eq(0).children("td")
 		$cells.eq(OPDATE).siblings().html("")
 		$cells.eq(STAFFNAME).html(showStaffOnCall(opdate))
 		$cells.eq(HN).removeClass("pacs")
@@ -216,20 +218,21 @@ function refillOneDay(opdate)
 		if (tblRows > bookRows) {
 			while ($opdateTblRows.length > bookRows) {
 				$opdateTblRows.eq(0).remove()
-				$opdateTblRows = getOpdateTableRows(opdateth)
+				$opdateTblRows = getTableRowsByDate(opdateth)
 			}
 		}
 		else if (tblRows < bookRows) {
 			while ($opdateTblRows.length < bookRows) {
 				$opdateTblRows.eq(0).clone().insertAfter($opdateTblRows.eq(0))
-				$opdateTblRows = getOpdateTableRows(opdateth)
+				$opdateTblRows = getTableRowsByDate(opdateth)
 			}
 		}
 		$.each(opdateBOOKrows, function(key, val) {
 			fillrowdate($opdateTblRows[key], this.opdate)
 			filldata(this, $opdateTblRows[key])
-			var staff = $opdateTblRows[key].cells[STAFFNAME].innerHTML
-			if (staff && /<\/p>/.test(staff)) {
+			staff = $opdateTblRows[key].cells[STAFFNAME].innerHTML
+			// on call <p style..>staffname</p>
+			if (staff && /<p[^>]*>([^<]*)<\/p>/.test(staff)) {
 				$opdateTblRows[key].cells[STAFFNAME].innerHTML = ""
 			}
 		})
@@ -245,9 +248,9 @@ function makenextrow(table, date)
 	var rowi = tbody.appendChild(row)
 
 	rowi.cells[OPDATE].innerHTML = date.thDate()
-	rowi.cells[OPDATE].className = NAMEOFDAYABBR[(new Date(date)).getDay()]
+	rowi.cells[OPDATE].className = dayName(NAMEOFDAYABBR, date)
 	rowi.cells[DIAGNOSIS].style.backgroundImage = holiday(date)
-	rowi.className = NAMEOFDAYFULL[(new Date(date)).getDay()]
+	rowi.className = dayName(NAMEOFDAYFULL, date)
 }
 
 //renew and decorate existing row
@@ -261,9 +264,14 @@ function fillrowdate(rowi, date)
 		rowi = row
 	}
 	rowi.cells[OPDATE].innerHTML = date.thDate()
-	rowi.cells[OPDATE].className = NAMEOFDAYABBR[(new Date(date)).getDay()]
+	rowi.cells[OPDATE].className = dayName(NAMEOFDAYABBR, date)
 	rowi.cells[DIAGNOSIS].style.backgroundImage = holiday(date)
-	rowi.className = NAMEOFDAYFULL[(new Date(date)).getDay()]
+	rowi.className = dayName(NAMEOFDAYFULL, date)
+}
+
+function dayName(DAYNAME, date)
+{
+	return DAYNAME[(new Date(date)).getDay()]
 }
 
 function fillblank(rowi)
@@ -293,7 +301,7 @@ function filldata(bookq, rowi)
 	cells[NAME].className = bookq.patient? "camera" : ""
 
 	cells[ROOM].innerHTML = bookq.oproom
-	cells[NUM].innerHTML = bookq.casenum + (bookq.optime? ("<br>" + bookq.optime) : "")
+	cells[NUM].innerHTML = putCasenumTime(bookq)
 	cells[STAFFNAME].innerHTML = bookq.staffname
 	cells[HN].innerHTML = bookq.hn
 	cells[NAME].innerHTML = putNameAge(bookq)
@@ -390,11 +398,11 @@ jQuery.fn.extend({
 		if  (bookq.opdate === LARGESTDATE) {
 			cells[OPDATE].className = ""
 		} else {
-			cells[OPDATE].className = NAMEOFDAYABBR[(new Date(bookq.opdate)).getDay()]
+			cells[OPDATE].className = dayName(NAMEOFDAYABBR, bookq.opdate)
 		}
 		cells[OPDATE].innerHTML = putOpdate(bookq.opdate)
 		cells[ROOM].innerHTML = bookq.oproom
-		cells[NUM].innerHTML = bookq.casenum + (bookq.optime? ("<br>" + bookq.optime) : "")
+		cells[NUM].innerHTML = putCasenumTime(bookq)
 		cells[STAFFNAME].innerHTML = bookq.staffname
 		cells[HN].innerHTML = bookq.hn
 		cells[HN].className = (bookq.hn && gv.isPACS)? "pacs" : ""
@@ -409,6 +417,11 @@ jQuery.fn.extend({
 	}
 })
 
+function putCasenumTime(bookq)
+{
+	return bookq.casenum + (bookq.optime? ("<br>" + bookq.optime) : "")
+}
+
 function putNameAge(bookq)
 {
 	return bookq.patient
@@ -419,19 +432,19 @@ function addColor($this, bookqOpdate)
 {
 	var prevdate = $this.prev().children("td").eq(OPDATE).html()
 	prevdate = prevdate? prevdate.numDate() : ""
-	//In LARGESTDATE, prevdate = "" but bookqOpdate = LARGESTDATE
-	//So LARGESTDATE cases has alternate colors
+	// In LARGESTDATE, prevdate = "" but bookqOpdate = LARGESTDATE
+	// So LARGESTDATE cases has alternate colors
 	if (((bookqOpdate !== prevdate) && ($this.prev()[0].className.indexOf("odd") < 0))
 	|| ((bookqOpdate === prevdate) && ($this.prev()[0].className.indexOf("odd") >= 0))) {
 		$this.addClass("odd")
 	} else {
-	//clear colored row that is moved to non-color opdate
+	// clear colored row that is moved to non-color opdate
 	$this.removeClass("odd")
 	}
 }
  
 Date.prototype.ISOdate = function () 
-{	//Javascript Date Object to MySQL date (2014-05-11)
+{	// Javascript Date Object to MySQL date (2014-05-11)
     var yyyy = this.getFullYear();
     var mm = this.getMonth()+1;
 	mm = (mm < 10)? "0"+mm : ""+mm;
@@ -441,7 +454,7 @@ Date.prototype.ISOdate = function ()
 } 
 
 String.prototype.nextdays = function (days)
-{	//MySQL date to be added or substract by days
+{	// ISOdate to be added or substract by days
 	var morrow = new Date(this);
 	morrow.setDate(morrow.getDate()+days);
 	return morrow.ISOdate();

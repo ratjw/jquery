@@ -187,7 +187,7 @@
   <li><div>เลื่อนไป ไม่กำหนดวัน</div><ul>
     <li id="postpone"><div style="height:40px;width:100px">Confirm เลื่อนไป ไม่กำหนดวัน</div></li>
   </ul></li>
-  <li id="changedate"><div>เปลี่ยนวัน / ลำดับที่</div></li>
+  <li id="changedate"><div>เปลี่ยนวัน / เปลี่ยนลำดับ</div></li>
   <li id="equip"><div>Equipment</div></li>
   <li id="history"><div>ประวัติการแก้ไข</div></li>
   <li><div>Delete</div><ul>

@@ -39,14 +39,13 @@ function sortable()
 				oldOpdate = getOpdate(oldOpdateth),
 				oldroom = $itemcell.eq(ROOM).html(),
 				staffname = $itemcell.eq(STAFFNAME).html(),
-				oldqn = $itemcell.eq(QN).html(),
-				titlename = $('#titlename').html()
+				oldqn = $itemcell.eq(QN).html()
 
-			if ((sender === "tbl") && (receiver === "queuetbl")) {
-				if ((titlename !== "Consults") && (staffname !== titlename)) {
-					stopsorting()	//allow drag to Consults, but not to wrong staffname
+			//allow drag to Consults, but not to wrong staffname
+			if ((sender === "tbl") && (receiver === "queuetbl")
+				&& !isConsults() && !isStaffname(staffname)) {
+					stopsorting()
 					return false
-				}
 			}
 				
 			if (!$itemcell.eq(QN).html()) {
@@ -144,6 +143,8 @@ function sortable()
 						sql += sqlCaseNum(i + 1, allNewCases[i])
 					}
 				}
+			} else {
+				sql += sqlMover(newWaitnum, thisOpdate, "", "", oldqn)
 			}
 
 			if (!sql) {
@@ -164,7 +165,7 @@ function sortable()
 						refillOneDay(oldOpdate)
 						refillOneDay(thisOpdate)
 						if ((isSplited())
-							&& (titlename === staffname)) {
+							&& isStaffname(staffname)) {
 								//dragging inside tbl of this staff's case
 							refillstaffqueue()
 						}

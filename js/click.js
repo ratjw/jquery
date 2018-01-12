@@ -81,10 +81,7 @@ function savePreviousCell()
 		newcontent = newcontent + $("#spin").val()
 	}
 	if (column === NUM) {
-		var numtime = oldcontent.split("<br>"),
-			oldnum = numtime[0],
-			oldtime = numtime[1],
-			num = $("#spin").val(),
+		var num = $("#spin").val(),
 			time = $("#time").val()
 
 		newcontent = num + (time ? ("<br>" + time) : "")
@@ -102,7 +99,7 @@ function savePreviousCell()
 			saveRoom(pointed, newcontent)
 			return true
 		case NUM:
-			saveCaseNum(pointed, oldnum, oldtime, num, time)
+			saveCaseNum(pointed, oldcontent, num, time)
 			return true
 		case STAFFNAME:
 			return false
@@ -134,9 +131,10 @@ function saveRoom(pointed, newcontent)
 		opdateth = $cell.eq(OPDATE).html(),
 		opdate = getOpdate(opdateth),
 		oproom = $cell.eq(ROOM).html(),
+		casenum = $cell.eq(NUM).html(),
 		qn = $cell.eq(QN).html(),
 		allSameDate = allOldCases = allNewCases = [],
-		casenum, index,
+		index,
 		sql = ""
 
 	if (oproom) {
@@ -155,7 +153,11 @@ function saveRoom(pointed, newcontent)
 
 	if (newcontent.match(/\d+/)[0] !== "0") {
 		allNewCases = sameDateRoomTableQN(opdateth, newcontent)
-		allNewCases.push(qn)
+		if (casenum) {
+			allNewCases.splice(casenum-1, 0, qn)
+		} else {
+			allNewCases.push(qn)
+		}
 
 		for (var i=0; i<allNewCases.length; i++) {
 			if (allNewCases[i] === qn) {
@@ -202,15 +204,16 @@ function sqlNewRoom(oproom, casenum, qn)
 		+  "' WHERE qn="+ qn + ";"
 }
 
-function saveCaseNum(pointed, oldnum, oldtime, num, time)
+function saveCaseNum(pointed, oldcontent, num, time)
 {
-	var tableID = $(pointed).closest("table").attr("id"),
-		$row = $(pointed).closest("tr"),
-		cells = $row.find("td"),
-		opdateth = cells.eq(OPDATE).html(),
+	var $cells = $(pointed).closest("tr").find("td"),
+		opdateth = $cells.eq(OPDATE).html(),
 		opdate = getOpdate(opdateth),
-		oproom = cells.eq(ROOM).html(),
-		qn = cells.eq(QN).html(),
+		oproom = $cells.eq(ROOM).html(),
+		qn = $cells.eq(QN).html(),
+		numtime = oldcontent.split("<br>"),
+		oldnum = numtime[0],
+		oldtime = numtime[1],
 		index,
 		sql = "sqlReturnbook="
 
@@ -468,34 +471,29 @@ function saveHN(pointed, hn, content)
 
 			var book = (ConsultsTbl(tableID))? gv.CONSULT : gv.BOOK
 
-			if (!qn) {	// New case input
-				qn = Math.max.apply(Math, $.map(book, function(row, i){
-						return row.qn
-					}))
-				qn = String(qn)
+			// New case input
+			if (!qn) {
+				qn = getMaxQN(book)
 				$cells.eq(QN).html(qn)
 			}
 
-			var bookq
-			$.each(book, function() {
-				bookq = this
-				return this.qn !== qn
-			})
-			$cells.eq(ROOM).html(bookq.optime)
-			$cells.eq(NUM).html(bookq.casenum)
-			$cells.eq(STAFFNAME).html(bookq.staffname)
-			$cells.eq(STAFFNAME).html("")
+			var bookq = getBOOKrowByQN(book, qn)
 			if (gv.isPACS) {
 				$cells.eq(HN).addClass("pacs")
 			}
-			$cells.eq(NAME).html(putNameAge(bookq))
 			$cells.eq(NAME).addClass("camera")
+
+			// old case patient
+			$cells.eq(ROOM).html(bookq.oproom)
+			$cells.eq(NUM).html(putCasenumTime(bookq))
+			$cells.eq(STAFFNAME).html(bookq.staffname)
+			$cells.eq(NAME).html(putNameAge(bookq))
 			$cells.eq(DIAGNOSIS).html(bookq.diagnosis)
 			$cells.eq(TREATMENT).html(bookq.treatment)
 			$cells.eq(CONTACT).html(bookq.contact)
 
 			// Both cases remote effect -> refill corresponding cell
-			// no need to refill main table because new case row was already there
+			// no need to refillall main table because new case row was already there
 			// Consults cases are not shown in main table
 			if (tableID === 'tbl') {
 				if (isSplited() && isStaffname(staffname)) {
@@ -514,30 +512,23 @@ function saveHN(pointed, hn, content)
 		} else {
 			alert("saveHN", response)
 			pointed.innerHTML = oldcontent
-			// return to previous content
+			// unsuccessful entry
 		}
 	}
 }
 
 function refillAnotherTableCell(tableID, cellindex, qn)
 {
-	var rowi
-	$.each($("#" + tableID + " tr:has(td)"), function() {
-		rowi = this
-		return (this.cells[QN].innerHTML !== qn);
-	})
-	if (rowi.cells[QN].innerHTML !== qn) {
-		return
-	}
-
 	// No consults cases involved
 	var book = gv.BOOK
 	var bookq = getBOOKrowByQN(book, qn)
-	if (!bookq) {
+	var row = getTableRowByQN(tableID, qn)
+
+	if (!bookq || !row) {
 		return
 	}
 
-	var cells = rowi.cells
+	var cells = row.cells
 
 	switch(cellindex)
 	{
@@ -545,7 +536,7 @@ function refillAnotherTableCell(tableID, cellindex, qn)
 			cells[ROOM].innerHTML = bookq.oproom
 			break
 		case NUM:
-			cells[NUM].innerHTML = bookq.casenum
+			cells[NUM].innerHTML = putCasenumTime(bookq)
 			break
 		case STAFFNAME:
 			cells[STAFFNAME].innerHTML = bookq.staffname
@@ -571,28 +562,22 @@ function storePresentCell(pointing)
 	switch(pointing.cellIndex)
 	{
 		case OPDATE:
-			createEditcellOpdate(pointing)
-			mainMenu(pointing)
+			getOPDATE(pointing)
 			break
 		case ROOM:
-			if ( !$(pointing).siblings(":last").html() ) { return }
-			createEditcell(pointing)
-			getRoom(pointing, pointing.cellIndex)
+			getROOM(pointing)
 			break
 		case NUM:
-			if ( !$(pointing).prev().html() ) { return }
-			createEditcell(pointing)
-			getCase(pointing, pointing.cellIndex)
+			getCASE(pointing)
 			break
 		case STAFFNAME:
-			createEditcell(pointing)
-			stafflist(pointing)
+			getSTAFFNAME(pointing)
 			break
 		case HN:
 			getHN(pointing)
 			break
 		case NAME:
-			getName(pointing)
+			getNAME(pointing)
 			break
 		case DIAGNOSIS:
 		case TREATMENT:
@@ -602,7 +587,13 @@ function storePresentCell(pointing)
 	}
 }
 
-function getRoom(pointing, index)
+function getOPDATE(pointing)
+{
+	createEditcellOpdate(pointing)
+	mainMenu(pointing)
+}
+
+function getROOM(pointing)
 {
 	var ORSURG = "XSU",
 		ORROOM = "4",
@@ -614,11 +605,16 @@ function getRoom(pointing, index)
 		theatre = theatre ? theatre[0] : ORSURG,
 		html = theatre + '<input id="spin">'
 
+	// no case
+	if ( !$(pointing).siblings(":last").html() ) { return }
+
+	createEditcell(pointing)
 	if ($editcell.css("height") < "60px") {
 		$editcell.css("height", 60)
 	}
 	$editcell.css("width", 55)
 	$editcell.html(html)
+
 	$("#spin").val(val)
 	$("#spin").spinner({
 		min: 0,
@@ -628,7 +624,7 @@ function getRoom(pointing, index)
 	clearTimeout(gv.timer)
 }
 
-function getCase(pointing, index)
+function getCASE(pointing)
 {
 	var CASENUM	= "1",
 		content = pointing.innerHTML,
@@ -640,16 +636,20 @@ function getCase(pointing, index)
 		ortime = "",
 		html = '<input id="spin"><input id="time">'
 
+	if ( !$(pointing).prev().html() ) { return }
+
 	if (val.indexOf("<br>") === -1) {
 		num = val
 		time = ""
 	}
 
+	createEditcell(pointing)
 	if ($editcell.css("height") < "65px") {
 		$editcell.css("height", 65)
 	}
 	$editcell.css("width", 70)
 	$editcell.html(html)
+
 	$spin = $("#spin")
 	$spin.val(num)
 	$spin.spinner({
@@ -685,10 +685,14 @@ function getCase(pointing, index)
 	clearTimeout(gv.timer)
 }
 
-function stafflist(pointing)
+function getSTAFFNAME(pointing)
 {
-	var $stafflist = $("#stafflist")
-	var width = $stafflist.outerWidth()
+	var $stafflist = $("#stafflist"),
+		width = 0
+
+	createEditcell(pointing)
+	$stafflist.appendTo($(pointing).closest('div'))
+	width = $stafflist.outerWidth()
 
 	$stafflist.menu({
 		select: function( event, ui ) {
@@ -711,11 +715,11 @@ function stafflist(pointing)
 		}
 	});
 
-	$stafflist.appendTo($(pointing).closest('div'))
+	// reposition from main menu to determine shadow
 	reposition($stafflist, "left top", "left bottom", pointing)
 	menustyle($stafflist, pointing, width)
 
-	// repeat reposition to make it show on first click
+	// repeat to make it show on first click in queuetbl
 	reposition($stafflist, "left top", "left bottom", pointing)
 }
 
@@ -747,7 +751,7 @@ function getHN(pointing) {
 	}
 }
 
-function getName(pointing) {
+function getNAME(pointing) {
 	var hn = $(pointing).closest('tr').children("td").eq(HN).html()
 	var patient = pointing.innerHTML
 	var upload = gv.uploadWindow

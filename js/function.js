@@ -183,6 +183,13 @@ function URIcomponent(qoute)	//necessary when post in http, not when export to e
 	return qoute
 }
 
+function getMaxQN(book) {
+	var qn = Math.max.apply(Math, $.map(book, function(row, i) {
+			return row.qn
+		}))
+	return String(qn)
+}
+
 function getBOOKrowByQN(book, qn)
 {  
 	var bookq
@@ -196,14 +203,27 @@ function getBOOKrowByQN(book, qn)
 	return bookq
 }
 
-function getOpdateTableRows(opdateth)
+function getTableRowByQN(tableID, qn)
+{
+	var row
+	$.each($("#" + tableID + " tr:has(td)"), function() {
+		row = this
+		return (this.cells[QN].innerHTML !== qn);
+	})
+	if (row.cells[QN].innerHTML !== qn) {
+		return null
+	}
+	return row
+}
+
+function getTableRowsByDate(opdateth)
 {
 	return $('#tbl tr').filter(function() {
 		return $(this).find("td").eq(OPDATE).html() === opdateth;
 	})
 }
 
-function getOpdateBOOKrows(book, opdate)
+function getBOOKrowsByDate(book, opdate)
 {
 	return book.filter(function(row) {
 		return (row.opdate === opdate);
@@ -231,6 +251,17 @@ function sameDateRoomBookQN(book, opdate, room)
 		sameRoom[i] = this.qn
 	})
 	return sameRoom
+}
+
+function createThisdateTableRow(opdate, opdateth)
+{
+	var rows = getTableRowsByDate(opdate.nextdays(-1).thDate()),
+		$row = $(rows[rows.length-1]),
+		$thisrow = $row && $row.clone().insertAfter($row)
+
+	$thisrow && $thisrow.find("td").eq(OPDATE).html(opdateth)
+
+	return $thisrow
 }
 
 function isSplited()

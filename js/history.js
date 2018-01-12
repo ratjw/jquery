@@ -1,7 +1,7 @@
 
-function editHistory(rowi, qn)
+function editHistory(row, qn)
 {
-	if (rowi.cells[QN].innerHTML)
+	if (row.cells[QN].innerHTML)
 	{
 		var sql = "sqlReturnData=SELECT * FROM bookhistory "
 		sql += "WHERE qn="+ qn +" ORDER BY editdatetime DESC;"
@@ -14,14 +14,14 @@ function editHistory(rowi, qn)
 	function callbackeditHistory(response)
 	{
 		if (/dob/.test(response)) {
-			makehistory(rowi, response)
+			makehistory(row, response)
 		} else {
 			alert("editHistory", response)
 		}
 	}
 }
 
-function makehistory(rowi, response)
+function makehistory(row, response)
 {
 	var tracing	= JSON.parse(response)
 
@@ -72,7 +72,7 @@ function makehistory(rowi, response)
 	$dialogHistory.css("height", 0)
 	$dialogHistory.html(HTML_String)
 	$dialogHistory.dialog({
-		title: rowi.cells[HN].innerHTML +' '+ rowi.cells[NAME].innerHTML,
+		title: row.cells[HN].innerHTML +' '+ row.cells[NAME].innerHTML,
 		closeOnEscape: true,
 		modal: true,
 		width: window.innerWidth * 9 / 10,
@@ -509,15 +509,11 @@ function scrolltoThisCase(qn)
 function showFind(containerID, tableID, qn)
 {
 	$("#" + tableID + " tr.bordergroove").removeClass("bordergroove")
-	var rowi
-	$.each($("#" + tableID + " tr:has(td)"), function() {
-		rowi = this
-		return (this.cells[QN].innerHTML !== qn);
-	})
-	if (rowi.cells[QN].innerHTML === qn) {
-		$(rowi).addClass("bordergroove")
+	var row = getTableRowByQN(tableID, qn)
+	if (row) {
+		$(row).addClass("bordergroove")
 		var scrolledTop = document.getElementById(containerID).scrollTop
-		var offset = rowi.offsetTop
+		var offset = row.offsetTop
 		var winheight = window.innerHeight
 		if (containerID === "queuecontainer") {
 			winheight = winheight - 100
@@ -525,10 +521,10 @@ function showFind(containerID, tableID, qn)
 
 		if ((offset < scrolledTop) || (offset > (scrolledTop + winheight))) {
 			do {
-				rowi = rowi.previousSibling
-			} while ((offset - rowi.offsetTop) < winheight / 2)
+				row = row.previousSibling
+			} while ((offset - row.offsetTop) < winheight / 2)
 
-			fakeScrollAnimate(containerID, tableID, scrolledTop, rowi.offsetTop)
+			fakeScrollAnimate(containerID, tableID, scrolledTop, row.offsetTop)
 		}
 		return true
 	}
