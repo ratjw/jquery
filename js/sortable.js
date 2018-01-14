@@ -103,6 +103,7 @@ function sortable()
 				thisqn = $thiscell.eq(QN).html(),
 
 				newWaitnum = calculateWaitnum(receiver, $thisdrop, thisOpdateth),
+				allNewCases = allOldCases = [],
 				index,
 				sql = ""
 

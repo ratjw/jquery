@@ -230,6 +230,7 @@ function setStafflist()
 
 	for (var each = 0; each < gv.STAFF.length; each++)
 	{
+		// staffname fixed sequence is in patient column
 		stafflist += '<li><div>' + gv.STAFF[each].patient + '</div></li>'
 		staffmenu += '<li id="staffqueue"><div>' + gv.STAFF[each].patient + '</div></li>'
 	}
@@ -252,7 +253,6 @@ function fillConsults()
 		if (!oncallRow.cells[QN].innerHTML) {
 			oncallRow.cells[STAFFNAME].innerHTML = htmlwrap(gv.STAFF[q].staffname)
 		}
-		nowRow = oncallRow.rowIndex
 	}
 }
 

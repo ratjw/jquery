@@ -13,7 +13,12 @@ function mainMenu(pointing)
 
 	disable(qn, "#addrow")
 
-	disable((qn && staffname && notLARGE), "#postpone")
+	var itempost = !!(qn && staffname && notLARGE)
+	if (itempost) {
+		itemtext("#postpone", "<b>Confirm เลื่อน ไม่กำหนดวัน  </b>", $cell)
+	}
+	disable(itempost, "#itempost")
+	disable(itempost, "#postpone")
 
 	disable(qn, "#changedate")
 
@@ -23,6 +28,10 @@ function mainMenu(pointing)
 
 	var unuse = !!checkblank(book, opdate, qn),
 		del = !!(qn || unuse)
+	if (del) {
+		itemtext("#del", "<b>Confirm Delete </b>", $cell)
+	}
+	disable(del, "#itemdel")
 	disable(del, "#del")
 
 	var $menu = $("#menu")
@@ -85,6 +94,12 @@ function mainMenu(pointing)
 	menustyle($menu, pointing, width)
 }
 
+function itemtext(id, item, $cell) {
+	var $itemdiv = $(id).find("div"),
+		itemtext = item,
+		itemname = $cell.eq(NAME).html()
+	$itemdiv.html(itemtext + "<br>" + itemname)
+}
 
 function disable(item, id)
 {
@@ -235,20 +250,24 @@ function clickDate(event)
 		thisWaitnum = calculateWaitnum(tableID, $thisrow, thisOpdateth),
 		allSameDate,
 		allOldCases, moveindex,
-		allNewCases, index, thisindex,
+		allNewCases, index, thisindex, casenum,
 		sql = ""
 
 	allOldCases = sameDateRoomTableQN(moveOpdateth, moveroom)
 	moveindex = allOldCases.indexOf(moveQN)
+	// remove itself from old sameDateRoom
+	if (moveindex >= 0) {
+		allOldCases.splice(moveindex, 1)
+	}
 
 	allNewCases = sameDateRoomTableQN(thisOpdateth, thisroom)
 	sameroomindex = allNewCases.indexOf(moveQN)
+	// remove itself in new sameDateRoom, in case new === old
 	if (sameroomindex >= 0) {
 		allNewCases.splice(sameroomindex, 1)
 	}
 	thisindex = allNewCases.indexOf(thisqn)
 
-	allOldCases.splice(moveindex, 1)
 	allNewCases.splice(thisindex + 1, 0, moveQN)
 
 	event.stopPropagation()
@@ -262,7 +281,8 @@ function clickDate(event)
 
 	for (var i=0; i<allNewCases.length; i++) {
 		if (allNewCases[i] === moveQN) {
-			sql += sqlMover(thisWaitnum, thisOpdate, thisroom, i + 1, moveQN)
+			casenum = thisroom? (i + 1) : ""
+			sql += sqlMover(thisWaitnum, thisOpdate, thisroom, casenum, moveQN)
 		} else {
 			sql += sqlCaseNum(i + 1, allNewCases[i])
 		}

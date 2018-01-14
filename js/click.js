@@ -96,30 +96,21 @@ function savePreviousCell()
 		case OPDATE:
 			return false
 		case ROOM:
-			saveRoom(pointed, newcontent)
-			return true
+			return saveRoom(pointed, newcontent)
 		case NUM:
-			saveCaseNum(pointed, oldcontent, num, time)
-			return true
+			return saveCaseNum(pointed, oldcontent, num, time)
 		case STAFFNAME:
 			return false
 		case HN:
-			if (newcontent.length === 7) {
-				saveHN(pointed, "hn", newcontent)
-				return true
-			}
-			return false
+			return saveHN(pointed, "hn", newcontent)
 		case NAME:
 			return false
 		case DIAGNOSIS:
-			saveContent(pointed, "diagnosis", newcontent)
-			return true
+			return saveContent(pointed, "diagnosis", newcontent)
 		case TREATMENT:
-			saveContent(pointed, "treatment", newcontent)
-			return true
+			return saveContent(pointed, "treatment", newcontent)
 		case CONTACT:
-			saveContent(pointed, "contact", newcontent)
-			return true
+			return saveContent(pointed, "contact", newcontent)
 	}
 }
 
@@ -169,10 +160,12 @@ function saveRoom(pointed, newcontent)
 	}
 
 	// no oproom, no newcontent
-	if (!sql) { return }
+	if (!sql) { return false }
 	sql = "sqlReturnbook=" + sql
 
 	Ajax(MYSQLIPHP, sql, callbackSaveRoom)
+
+	return true
 
 	function callbackSaveRoom(response)
 	{
@@ -237,6 +230,8 @@ function saveCaseNum(pointed, oldcontent, num, time)
 
 	Ajax(MYSQLIPHP, sql, callbackCaseNum)
 
+	return true
+
 	function callbackCaseNum(response)
 	{
 		if (/BOOK/.test(response)) {
@@ -274,6 +269,7 @@ function saveContent(pointed, column, content)
 	} else {
 		saveContentNoQN(pointed, column, content)
 	}
+	return true
 }
 
 function saveContentQN(pointed, column, content)
@@ -428,24 +424,32 @@ function saveContentNoQN(pointed, column, content)
 
 function saveHN(pointed, hn, content)
 {
-	var tableID = $(pointed).closest("table").attr("id")
-	var $row = $(pointed).closest('tr')
-	var $cells = $row.children("td")
-	var cellindex = pointed.cellIndex
-	var opdateth = $cells.eq(OPDATE).html()
-	var opdate = getOpdate(opdateth)
-	var oproom = $cells.eq(ROOM).html()
-	var casenum = $cells.eq(NUM).html()
-	var staffname = $cells.eq(STAFFNAME).html()
-	var qn = $cells.eq(QN).html()
-	var oldcontent = $("#editcell").data("oldcontent")
+	var tableID = $(pointed).closest("table").attr("id"),
+		$row = $(pointed).closest('tr'),
+		$cells = $row.children("td"),
+		cellindex = pointed.cellIndex,
+		opdateth = $cells.eq(OPDATE).html(),
+		opdate = getOpdate(opdateth),
+		oproom = $cells.eq(ROOM).html(),
+		casenum = $cells.eq(NUM).html(),
+		staffname = $cells.eq(STAFFNAME).html(),
+		qn = $cells.eq(QN).html(),
+		oldcontent = $("#editcell").data("oldcontent"),
+		waitnum, sql
 
-	pointed.innerHTML = content
+	if (content.length !== 7) {
+		pointed.innerHTML = ""
+		return false
+	} else {
+		pointed.innerHTML = content
+	}
 
-	if (!qn) {	// if new case, calculate waitnum
-		var waitnum = calculateWaitnum(tableID, $row, opdateth)
-		$row[0].title = waitnum		// store waitnum in row title
-		var sql = "hn=" + content
+	// if new case, calculate waitnum
+	// store waitnum in row title
+	if (!qn) {
+		waitnum = calculateWaitnum(tableID, $row, opdateth)
+		$row[0].title = waitnum	
+		sql = "hn=" + content
 		sql += "&waitnum="+ waitnum
 		sql += "&opdate="+ opdate
 		sql += "&oproom="+ oproom
@@ -456,13 +460,15 @@ function saveHN(pointed, hn, content)
 		sql += "&qn="+ qn
 		sql += "&username="+ gv.user
 	} else {
-		var sql = "hn=" + content
+		sql = "hn=" + content
 		sql += "&opdate="+ opdate
 		sql += "&qn="+ qn
 		sql += "&username="+ gv.user
 	}
 
 	Ajax(GETNAMEHN, sql, callbackgetByHN)
+
+	return true
 
 	function callbackgetByHN(response)
 	{

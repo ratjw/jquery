@@ -42,8 +42,8 @@ function entireMonth(fromDate)
 	$('#monthpicker').val(toDate)
 
 	getServiceOneMonth(fromDate, toDate).then( function (SERVICE) {
-			showService(SERVICE, fromDate, toDate)
-		})
+		showService(SERVICE, fromDate, toDate)
+	})
 
 	$(document).off("click", '.ui-datepicker-title')
 	$("#btnExport").show()
@@ -124,13 +124,12 @@ function getfromBOOKCONSULT(fromDate, toDate)
 
 function addfromRAM(book, fromDate, toDate, serv)
 {
-	var i = serv.length
 	for (var q = 0; q < book.length; q++) {
-		if ((book[q].opdate >= fromDate) && (book[q].opdate <= toDate)) {
-			serv[i] = book[q]
-			i++
-		}
-		if (book[q].opdate > toDate) {
+		if (book[q].opdate <= toDate) {
+			if (book[q].opdate >= fromDate) {
+				serv.push(book[q])
+			}
+		} else {
 			break
 		}
 	}
@@ -157,7 +156,8 @@ function showService(SERVICE, fromDate, toDate)
 	})
 
 	$.each( gv.STAFF, function() {
-		var staffname = this.staffname
+		// staffname fixed sequence is in patient column
+		var staffname = this.patient
 		$('#servicecells tr').clone()
 			.appendTo($('#servicetbl tbody'))
 				.children("td").eq(OPDATE)
@@ -215,7 +215,8 @@ function refillService(SERVICE, fromDate, toDate)
 {
 	var i = 0
 	$.each( gv.STAFF, function() {
-		var staffname = this.staffname
+		// staffname fixed sequence is in patient column
+		var staffname = this.patient
 		i++
 		var $thisCase = $('#servicetbl tr').eq(i).children("td").eq(CASENUMSERVICE)
 		if ($thisCase.prop("colSpan") === 1) {
@@ -318,7 +319,8 @@ function fillAdmitDischargeDate(SERVICE)
 {
 	var i = 0
 	$.each( gv.STAFF, function() {
-		var staffname = this.staffname
+		// staffname fixed sequence is in patient column
+		var staffname = this.patient
 		i++
 		$.each( SERVICE, function() {
 			if (this.staffname === staffname) {

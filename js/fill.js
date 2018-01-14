@@ -199,7 +199,8 @@ function refillOneDay(opdate)
 		$cells, staff
 
 	if (!tblRows) {
-		$opdateTblRows = createThisdateTableRow(opdate, opdateth)
+		createThisdateTableRow(opdate, opdateth)
+		$opdateTblRows = getTableRowsByDate(opdateth)
 		tblRows = $opdateTblRows.length
 	}
 
@@ -208,12 +209,15 @@ function refillOneDay(opdate)
 			$opdateTblRows.eq(0).remove()
 			$opdateTblRows = getTableRowsByDate(opdateth)
 		}
+		$opdateTblRows.attr("title", "")
+		$opdateTblRows.prop("class", dayName(NAMEOFDAYFULL, opdate))
 		$cells = $opdateTblRows.eq(0).children("td")
 		$cells.eq(OPDATE).siblings().html("")
+		$cells.eq(OPDATE).prop("class", dayName(NAMEOFDAYABBR, opdate))
 		$cells.eq(STAFFNAME).html(showStaffOnCall(opdate))
 		$cells.eq(HN).removeClass("pacs")
 		$cells.eq(NAME).removeClass("camera")
-		$opdateTblRows.attr("title", "")
+		$cells.eq(DIAGNOSIS).css("backgroundImage", holiday(opdate))
 	} else {
 		if (tblRows > bookRows) {
 			while ($opdateTblRows.length > bookRows) {
@@ -263,10 +267,10 @@ function fillrowdate(rowi, date)
 		rowi.parentNode.replaceChild(row, rowi)
 		rowi = row
 	}
+	rowi.className = dayName(NAMEOFDAYFULL, date)
 	rowi.cells[OPDATE].innerHTML = date.thDate()
 	rowi.cells[OPDATE].className = dayName(NAMEOFDAYABBR, date)
 	rowi.cells[DIAGNOSIS].style.backgroundImage = holiday(date)
-	rowi.className = dayName(NAMEOFDAYFULL, date)
 }
 
 function dayName(DAYNAME, date)

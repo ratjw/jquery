@@ -175,8 +175,9 @@ function URIcomponent(qoute)	//necessary when post in http, not when export to e
 {
 	if (qoute) {
 		qoute = qoute.replace(/\s+$/,'')
-		qoute = qoute.replace(/\"/g, "&#34;")	// double quotes ((&#34;) or (&quot))
-		qoute = qoute.replace(/\'/g, "&#39;")	// and single quotes (&#39;)
+		qoute = qoute.replace(/\"/g, "&#34;")	// double quotes
+		qoute = qoute.replace(/\'/g, "&#39;")	// single quotes
+//		qoute = qoute.replace(/%/g, "&#37;")	// per cent, mysql: like "%...%"
 		qoute = qoute.replace(/\\/g, "\\\\")
 		qoute = encodeURIComponent(qoute)
 	}
@@ -232,6 +233,8 @@ function getBOOKrowsByDate(book, opdate)
 
 function sameDateRoomTableQN(opdateth, room)
 {
+	if (!room) { return [] }
+
 	var sameRoom = $('#tbl tr').filter(function() {
 		return $(this).find("td").eq(OPDATE).html() === opdateth
 			&& $(this).find("td").eq(ROOM).html() === room;
@@ -244,6 +247,8 @@ function sameDateRoomTableQN(opdateth, room)
 
 function sameDateRoomBookQN(book, opdate, room)
 {
+	if (!room) { return [] }
+
 	var sameRoom = book.filter(function(row) {
 		return row.opdate === opdate && row.oproom === room;
 	})

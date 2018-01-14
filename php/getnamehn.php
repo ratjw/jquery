@@ -16,13 +16,15 @@ require_once "book.php";
 	$diagnosis = "";
 	$treatment = "";
 	$contact = "";
-/*
+
 	$initial_name = "Mr.";
 	$first_name = "Name";
 	$last_name = "Surname";
-	$dob = "1955-02-03";
-*/
+	$dob = "1954-03-02";
+
 	extract($_POST);
+
+	if (strpos($_SERVER["SERVER_NAME"], "surgery.rama") !== false) {
 
 	$wsdl="http://appcenter/webservice/patientservice.wsdl";
 	$client = new SoapClient($wsdl);
@@ -45,12 +47,12 @@ require_once "book.php";
 		$resultz["gender"] = "";
 
 	extract($resultz);
-
+	}
 	//Find last entry of patient with this hn
-	$sql = "SELECT MAX(qn) FROM book WHERE hn = $hn AND waitnum<>0;";
+	$sql = "SELECT MAX(qn) FROM book WHERE hn = $hn;";
 	$query = $mysqli->query ($sql);
 	if ($query) {
-		$oldqn = $query->fetch_row();		//Array
+		$oldqn = $query->fetch_row();
 		$oldqn = $oldqn[0];
 		if ($oldqn) {
 			$sql = "SELECT staffname,diagnosis,treatment,contact FROM book WHERE qn = $oldqn;";
@@ -68,27 +70,33 @@ require_once "book.php";
 		$staffname = $oldstaffname;
 	}
 
-	if ($qn)	//existing row, ignore waitnum
-	{
+	if ($qn) {
+		//existing row, ignore waitnum
 		$sql = "UPDATE book 
 				SET staffname = CASE WHEN staffname = '' THEN '$staffname' ELSE staffname END,
 					hn = '$hn', 
 					patient = '$initial_name$first_name $last_name',
 					dob = CASE WHEN $dob <> '' THEN '$dob' ELSE dob END,
 					gender = '$gender', 
-					diagnosis = CASE WHEN diagnosis = '' THEN '$diagnosis' ELSE diagnosis END,
-					treatment = CASE WHEN treatment = '' THEN '$treatment' ELSE treatment END,
-					contact = CASE WHEN contact = '' THEN '$contact' ELSE contact END,
+					diagnosis = CASE WHEN diagnosis = ''
+									 THEN '$diagnosis'
+									 ELSE diagnosis
+								END,
+					treatment = CASE WHEN treatment = ''
+									 THEN '$treatment'
+									 ELSE treatment
+								END,
+					contact =  CASE WHEN contact = ''
+									THEN '$contact'
+									ELSE contact
+								END,
 					editor = '$username' 
 				WHERE qn = $qn;";
-	}
-	else
-	{			//new row, insert waitnum, opdate, oproom, casenum, staffname
+	} else {
+		//new row, insert waitnum, opdate and others if any
 		$sql = "INSERT INTO book (
 					waitnum, 
 					opdate, 
-					oproom, 
-					casenum, 
 					staffname, 
 					hn, 
 					patient, 
@@ -101,8 +109,6 @@ require_once "book.php";
 				VALUES (
 					$waitnum, 
 					'$opdate', 
-					'$oproom', 
-					'$casenum', 
 					'$staffname', 
 					'$hn', 
 					'$initial_name$first_name $last_name', 

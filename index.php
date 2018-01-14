@@ -184,20 +184,20 @@
 
 <ul id="menu" style="display:none">
   <li id="addrow"><div>Add a Row</div></li>
-  <li><div>เลื่อนไป ไม่กำหนดวัน</div><ul>
-    <li id="postpone"><div style="height:40px;width:100px">Confirm เลื่อนไป ไม่กำหนดวัน</div></li>
+  <li id="itempost"><div>เลื่อนไป ไม่กำหนดวัน</div><ul>
+    <li id="postpone"><div></div></li>
   </ul></li>
   <li id="changedate"><div>เปลี่ยนวัน / เปลี่ยนลำดับ</div></li>
   <li id="equip"><div>Equipment</div></li>
   <li id="history"><div>ประวัติการแก้ไข</div></li>
-  <li><div>Delete</div><ul>
-    <li id="del"><div style="height:30px;width:100px">Confirm Delete</div></li>
+  <li id="itemdel"><div>Delete</div><ul>
+    <li id="del"><div></div></li>
   </ul></li>
-  <li><div>คิวของอาจารย์</div><ul id="staffmenu" style="width:100px"></ul></li>
+  <li><div>คิวของอาจารย์</div><ul id="staffmenu"></ul></li>
   <li id="service"><div>Service Review</div></li>
-  <li><div>All Cases</div><ul>
-    <li id="deleted" style="height:30px;width:140px"><div>All Deleted Cases</div></li>
-    <li id="notdeleted" style="height:30px;width:140px"><div>All Saved Cases</div></li>
+  <li><div>All Cases</div><ul id="allcases">
+    <li id="deleted"><div>All Deleted Cases</div></li>
+    <li id="notdeleted"><div>All Saved Cases</div></li>
   </ul></li>
   <li id="search"><div>Find</div></li>
   <li id="readme"><div>Readme</div></li>
@@ -649,8 +649,12 @@
 </div>
 
 <div id="find" class="dialogBox">
+	<span style="width:90px;">Staff:</span>
+	<input type="text" name="staffname">
+	<br>
+	<br>
 	<span style="width:90px;">HN:</span>
-	<input type="text" name="hn" maxlength="7" size="7">
+	<input type="text" name="hn" maxlength="7">
 	<br>
 	<br>
 	<span style="width:90px;">Name:</span>

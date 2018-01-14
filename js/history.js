@@ -234,7 +234,7 @@ function undelete(thiscase, deleted)
 
 			book = (waitnum > 0)? gv.BOOK : gv.CONSULT,
 			allCases = sameDateRoomBookQN(book, opdate, oproom),
-			alllen = 0
+			alllen
 
 		allCases.splice(casenum, 0, qn)
 		alllen = allCases.length
@@ -393,12 +393,6 @@ function PACS(hn)
 
 function find()
 {
-	var hn = ""
-	var patient = ""
-	var diagnosis = ""
-	var treatment = ""
-	var contact = ""
-
 	var $dialogFind = $("#dialogFind")
 		$dialogFind.css("height", 0)
 		$dialogFind.html($("#find").show())
@@ -412,16 +406,21 @@ function find()
 			{
 				text: "OK",
 				click: function() {
-					hn = $('input[name="hn"]').val()
-					patient = $('input[name="patient"]').val()
-					diagnosis = $('input[name="diagnosis"]').val()
-					treatment = $('input[name="treatment"]').val()
-					contact = $('input[name="contact"]').val()
-					if (!hn && !patient && !diagnosis && !treatment && !contact) {
+					var args = {
+						staffname: $('input[name="staffname"]').val(),
+						hn: $('input[name="hn"]').val(),
+						patient: $('input[name="patient"]').val(),
+						diagnosis: $('input[name="diagnosis"]').val(),
+						treatment: $('input[name="treatment"]').val(),
+						contact: $('input[name="contact"]').val()
+					}
+					
+					if (!staffname && !hn && !patient && !diagnosis
+						&& !treatment && !contact) {
 						return
 					}
 					$("body").append($('#find').hide())
-					sqlFind(hn, patient, diagnosis, treatment, contact)
+					sqlFind(args)
 					$( this ).dialog( "close" );
 				}
 			}
@@ -436,41 +435,25 @@ function find()
 	})
 }
 
-function sqlFind(hn, patient, diagnosis, treatment, contact)
+function sqlFind(args)
 {
-	var sql = "sqlReturnData=SELECT * FROM book WHERE "
-		if (hn) {
-			sql += "hn = '" + hn + "' "
-		}
-		if (patient) {
-			if (hn) {
-				sql += " AND patient like '%" + patient + "%' "
+	var sql = ""
+
+	$.each(args, function(key, val) {
+		if (val) {
+			if (sql) { sql += " AND " }
+			// '%51' will be changed to 'Q' (by PHP?)
+			if (parseInt(val)) {
+				sql += (key + " like '" + val + "%' ")
 			} else {
-				sql += "patient like '%" + patient + "%' "
+				sql += (key + " like '%" + val + "%' ")
 			}
 		}
-		if (diagnosis) {
-			if (hn || patient) {
-				sql += " AND diagnosis like '%" + diagnosis + "%' "
-			} else {
-				sql += "diagnosis like '%" + diagnosis + "%' "
-			}
-		}
-		if (treatment) {
-			if (hn || patient || diagnosis) {
-				sql += " AND treatment like '%" + treatment + "%' "
-			} else {
-				sql += "treatment like '%" + treatment + "%' "
-			}
-		}
-		if (contact) {
-			if (hn || patient || diagnosis || treatment) {
-				sql += " AND contact like '%" + contact + "%' "
-			} else {
-				sql += "contact like '%" + contact + "%' "
-			}
-		}
-		sql += "ORDER BY opdate DESC;"
+	})
+
+	sql = "sqlReturnData=SELECT * FROM book WHERE "
+		+ sql
+		+ "ORDER BY opdate;"
 
 	Ajax(MYSQLIPHP, sql, callbackfind)
 
@@ -490,7 +473,7 @@ function makeFind(response, hn)
 {
 	var found = JSON.parse(response);
 
-	var show = scrolltoThisCase(found[0].qn)
+	var show = scrolltoThisCase(found[found.length-1].qn)
 	if (!show || (found.length > 1)) {
 		makeDialogFound(found, hn )
 	}
@@ -498,31 +481,35 @@ function makeFind(response, hn)
 
 function scrolltoThisCase(qn)
 {
-	var showtbl = showFind("tblcontainer", "tbl", qn)
+	var showtbl, showqueuetbl
 
+	showtbl = showFind("tblcontainer", "tbl", qn)
 	if (isSplited()) {
-		var showqueuetbl = showFind("queuecontainer", "queuetbl", qn)
+		showqueuetbl = showFind("queuecontainer", "queuetbl", qn)
 	}
 	return showtbl || showqueuetbl
 }
 
 function showFind(containerID, tableID, qn)
 {
+	var container = document.getElementById(containerID),
+		row = getTableRowByQN(tableID, qn),
+		scrolledTop = container.scrollTop,
+		offset = row && row.offsetTop,
+		height = container.offsetHeight
+
 	$("#" + tableID + " tr.bordergroove").removeClass("bordergroove")
-	var row = getTableRowByQN(tableID, qn)
 	if (row) {
 		$(row).addClass("bordergroove")
-		var scrolledTop = document.getElementById(containerID).scrollTop
-		var offset = row.offsetTop
-		var winheight = window.innerHeight
 		if (containerID === "queuecontainer") {
-			winheight = winheight - 100
+			height = height - 100
 		}
 
-		if ((offset < scrolledTop) || (offset > (scrolledTop + winheight))) {
+		if ((offset < scrolledTop) || (offset > (scrolledTop + height))) {
 			do {
 				row = row.previousSibling
-			} while ((offset - row.offsetTop) < winheight / 2)
+			}
+			while ((offset - row.offsetTop) < height / 2)
 
 			fakeScrollAnimate(containerID, tableID, scrolledTop, row.offsetTop)
 		}
