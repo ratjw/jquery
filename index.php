@@ -211,8 +211,11 @@
   <span style="width:100px;">
 	ห้อง <span id="oproom" style="font-size: 16px; font-weight: bold;"></span>
   </span>
-  <span style="width:200px;">
+  <span style="width:80px;">
 	Case <span id="casenum" style="font-size: 16px; font-weight: bold;"></span>
+  </span>
+  <span style="width:120px;">
+	เวลา <span id="optime" style="font-size: 16px; font-weight: bold;"></span>
   </span>
   <span style="width:200px;">วัน<span id="opday"></span>ที่
 	<span id="opdate" style="font-size: 16px; font-weight: bold;"></span>

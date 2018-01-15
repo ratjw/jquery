@@ -7,6 +7,7 @@ function fillEquipTable(book, $row, qn)
 
 	document.getElementById("oproom").innerHTML = bookq.oproom
 	document.getElementById("casenum").innerHTML = bookq.casenum
+	document.getElementById("optime").innerHTML = bookq.optime
 	document.getElementById("opday").innerHTML = NAMEOFDAYTHAI[(new Date(bookq.opdate)).getDay()]
 	document.getElementById("opdate").innerHTML = putOpdate(bookq.opdate)
 	document.getElementById("staffname").innerHTML = bookq.staffname

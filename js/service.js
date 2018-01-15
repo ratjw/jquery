@@ -36,10 +36,14 @@ function serviceReview()
 
 function entireMonth(fromDate)
 {
-	var date = new Date(fromDate)
-	var toDate = new Date(date.getFullYear(), date.getMonth()+1, 0)
+	var date = new Date(fromDate),
+		toDate = new Date(date.getFullYear(), date.getMonth()+1, 0),
+		$monthpicker = $('#monthpicker')
 	toDate = $.datepicker.formatDate('yy-mm-dd', toDate);	//end of this month
-	$('#monthpicker').val(toDate)
+	$('#dialogService').dialog({
+		title: 'Service Neurosurgery เดือน ' + $monthpicker.val()
+	})
+	$monthpicker.val(toDate)
 
 	getServiceOneMonth(fromDate, toDate).then( function (SERVICE) {
 		showService(SERVICE, fromDate, toDate)
@@ -87,7 +91,8 @@ function getfromServer(fromDate, toDate)
 {
 	var sql = "sqlReturnData=SELECT * FROM book "
 			  + "WHERE opdate BETWEEN '" + fromDate + "' AND '" + toDate
-			  + "' AND waitnum<>0 "
+			  + "' AND deleted=0 "
+			  + "AND waitnum<>0 "
 			  + "ORDER BY opdate, oproom='', oproom, casenum, waitnum;";
 
 	var defer = $.Deferred()
@@ -157,7 +162,7 @@ function showService(SERVICE, fromDate, toDate)
 
 	$.each( gv.STAFF, function() {
 		// staffname fixed sequence is in patient column
-		var staffname = this.patient
+		var staffname = this.staffname
 		$('#servicecells tr').clone()
 			.appendTo($('#servicetbl tbody'))
 				.children("td").eq(OPDATE)
@@ -179,11 +184,9 @@ function showService(SERVICE, fromDate, toDate)
 
 	var $monthpicker = $('#monthpicker')
 	$monthpicker.hide()
-//	$monthpicker.datepicker( "hide" )
 	$('#servicehead').show()
 	var $dialogService = $('#dialogService')
 	$dialogService.dialog({
-		title: 'Service Neurosurgery เดือน ' + $monthpicker.val(),
 		hide: 200,
 		width: window.innerWidth * 95 / 100,
 		height: window.innerHeight * 95 / 100,
@@ -216,7 +219,7 @@ function refillService(SERVICE, fromDate, toDate)
 	var i = 0
 	$.each( gv.STAFF, function() {
 		// staffname fixed sequence is in patient column
-		var staffname = this.patient
+		var staffname = this.staffname
 		i++
 		var $thisCase = $('#servicetbl tr').eq(i).children("td").eq(CASENUMSERVICE)
 		if ($thisCase.prop("colSpan") === 1) {
@@ -320,7 +323,7 @@ function fillAdmitDischargeDate(SERVICE)
 	var i = 0
 	$.each( gv.STAFF, function() {
 		// staffname fixed sequence is in patient column
-		var staffname = this.patient
+		var staffname = this.staffname
 		i++
 		$.each( SERVICE, function() {
 			if (this.staffname === staffname) {

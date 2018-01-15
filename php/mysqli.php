@@ -5,29 +5,39 @@ require_once "book.php";
 	// start.js (initialize)
 	if (isset($_POST['nosqlReturnbook']))
 	{
-		$sql = "SELECT MIN(opdate) FROM book WHERE waitnum=0;";
-		$result = $mysqli->query($sql);
-		if (!$result) {
-			return $mysqli->error;
-		}
-		// array.toString();
-		$opdate = current($result->fetch_row());
-		if ($opdate <= date('Y-m-d')) {
-			$sql = "UPDATE book
-					SET staffname= CASE WHEN opdate<=CURDATE()
-										THEN patient
-										ELSE staffname
-								   END,
-						opdate= CASE WHEN opdate<=CURDATE()
-										THEN DATE_ADD(opdate,INTERVAL 5 WEEK)
-										ELSE opdate
-									 END
-					WHERE waitnum=0;";
-			if (!$result = $mysqli->query ($sql)) {
+		if ($_POST['nosqlReturnbook'] === "init") {
+			$sql = "SELECT MIN(dateoncall) AS mindate, COUNT(dateoncall) AS countdate
+					FROM staff WHERE dateoncall;";
+			$result = $mysqli->query($sql);
+			if (!$result) {
 				return $mysqli->error;
 			}
+			while ($rowi = $result->fetch_assoc()) {
+				$data = $rowi;
+			}
+			$mindate = $data["mindate"];
+			$countdate = $data["countdate"];
+			if ($mindate <= date('Y-m-d')) {
+				$sql = "UPDATE staff SET staffoncall=staffname,
+										 dateoncall=DATE_ADD(dateoncall,INTERVAL $countdate WEEK)
+									 WHERE dateoncall<=CURDATE();";
+				if (!$result = $mysqli->query ($sql)) {
+					return $mysqli->error;
+				}
+			}
+			$sql = "SELECT * FROM staff;";
+			$result = $mysqli->query($sql);
+			if (!$result) {
+				return $mysqli->error;
+			}
+			while ($rowi = $result->fetch_assoc()) {
+				$staff[] = $rowi;
+			}
+			$staff["STAFF"] = $staff;
+			echo json_encode(array_merge(book($mysqli), $staff));
+		} else {
+			echo json_encode(book($mysqli));
 		}
-		echo json_encode(book($mysqli, $_POST['nosqlReturnbook']));
 	}
 
 	// click.js (saveRoomTime 2 ways, saveContentQN, saveContentNoQN 2 ways)

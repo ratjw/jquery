@@ -172,7 +172,6 @@ function loading(response)
 	if (/BOOK/.test(response)) {
 		localStorage.setItem('ALLBOOK', response)
 		updateBOOK(response)
-		getSTAFF()
 		if (gv.user === "000000") {
 			fillForScrub()
 		} else {
@@ -186,7 +185,6 @@ function loading(response)
 		if (/BOOK/.test(response)) {
 			alert("Server Error", error + "<br><br>Use localStorage instead");
 			updateBOOK(response)
-			getSTAFF()
 			fillupstart();
 			setStafflist()
 			fillConsults()
@@ -198,31 +196,23 @@ function loading(response)
 
 function updateBOOK(response)
 {
-	var temp = JSON.parse(response)
-	var book = temp.BOOK? temp.BOOK : []
-	var consult = temp.CONSULT? temp.CONSULT : []
-	var timestamp = temp.QTIME
+	var temp = JSON.parse(response),
+		book = temp.BOOK? temp.BOOK : [],
+		consult = temp.CONSULT? temp.CONSULT : [],
+		staff = temp.STAFF? temp.STAFF : [],
+		timestamp = temp.QTIME
 	gv.BOOK = book
 	gv.CONSULT = consult
+	if (staff.length) { gv.STAFF = staff }
 	gv.timestamp = timestamp
 	// datetime of last fetching from server: $mysqli->query ("SELECT now();")
 }
 
-// gv.STAFF[q].opdate = the oncall date
-// gv.STAFF[q].staffname = staffname oncall on this date
-// gv.STAFF[q].hn = staff sequence order
-// gv.STAFF[q].patient = staffname in sequence order
-function getSTAFF()
-{
-	var i = gv.CONSULT.length
-	while (i--) {
-		if (gv.CONSULT[i].waitnum === "0") {
-			gv.STAFF[gv.CONSULT[i].hn] = gv.CONSULT[i]
-			gv.CONSULT.splice(i, 1)
-		}
-	}
-}
-
+// stafflist: menu of Staff column
+// staffmenu: submenu of Date column
+// gv.STAFF[each].staffname: fixed order
+// gv.STAFF[each].staffoncall: no order according to substitution
+// gv.STAFF[each].dateoncall: Saturday of the oncall week
 function setStafflist()
 {
 	var stafflist = ''
@@ -230,9 +220,10 @@ function setStafflist()
 
 	for (var each = 0; each < gv.STAFF.length; each++)
 	{
-		// staffname fixed sequence is in patient column
-		stafflist += '<li><div>' + gv.STAFF[each].patient + '</div></li>'
-		staffmenu += '<li id="staffqueue"><div>' + gv.STAFF[each].patient + '</div></li>'
+		if (gv.STAFF[each].dateoncall) {
+			stafflist += '<li><div>' + gv.STAFF[each].staffname + '</div></li>'
+			staffmenu += '<li id="staffqueue"><div>' + gv.STAFF[each].staffname + '</div></li>'
+		}
 	}
 	staffmenu += '<li id="staffqueue"><div>Consults</div></li>'
 	document.getElementById("stafflist").innerHTML = stafflist
@@ -249,15 +240,16 @@ function fillConsults()
 	var oncallRow = {}
 
 	for (var q = 0; q < slen; q++) {
-		oncallRow = findOncallRow(rows, tlen, gv.STAFF[q].opdate)
-		if (!oncallRow.cells[QN].innerHTML) {
-			oncallRow.cells[STAFFNAME].innerHTML = htmlwrap(gv.STAFF[q].staffname)
+		oncallRow = findOncallRow(rows, tlen, gv.STAFF[q].dateoncall)
+		if (oncallRow && !oncallRow.cells[QN].innerHTML) {
+			oncallRow.cells[STAFFNAME].innerHTML = htmlwrap(gv.STAFF[q].staffoncall)
 		}
 	}
 }
 
-function findOncallRow(rows, tlen, opdate) {
-	var opdateth = opdate.thDate()
+function findOncallRow(rows, tlen, dateoncall) {
+	
+	var opdateth = dateoncall && dateoncall.thDate()
 
 	for (var i = 1; i < tlen; i++) {
 		if (rows[i].cells[OPDATE].innerHTML === opdateth) {
@@ -274,8 +266,8 @@ function showStaffOnCall(opdate) {
 	var i = gv.STAFF.length
 
 	while (i--) {
-		if (gv.STAFF[i].opdate === opdate) {
-			return htmlwrap(gv.STAFF[i].staffname)
+		if (gv.STAFF[i].dateoncall === opdate) {
+			return htmlwrap(gv.STAFF[i].staffoncall)
 		}
 	}
 }

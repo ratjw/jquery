@@ -10,7 +10,7 @@
 // waitnum = null	: deleted cases deprecated due to no waitnum when undelete
 // deleted > 0		: deleted cases
 // deleted = 0		: normal cases
-function book($mysqli, $init)
+function book($mysqli)
 {
 	date_default_timezone_set("Asia/Bangkok");
 
@@ -42,31 +42,17 @@ function book($mysqli, $init)
 		$book[] = $rowi;
 	}
 
-	if ($init) {
-		// Also get staff oncall (waitnum=0)
-		$sql = "SELECT * FROM book 
-				WHERE opdate >= DATE_FORMAT(CURDATE()-INTERVAL 1 MONTH,'%Y-%m-01')
-					AND waitnum <= 0
-					AND deleted = 0
-			ORDER BY opdate,
-				oproom='', LENGTH(oproom), oproom,
-				casenum='', LENGTH(casenum), casenum,
-				optime,
-				waitnum DESC;";
-	} else {
-		// get consult cases only
-		$sql = "SELECT * FROM book 
-				WHERE opdate >= DATE_FORMAT(CURDATE()-INTERVAL 1 MONTH,'%Y-%m-01')
-					AND waitnum < 0
-					AND deleted = 0
-			ORDER BY opdate,
-				oproom='', LENGTH(oproom), oproom,
-				casenum='', LENGTH(casenum), casenum,
-				optime,
-				waitnum DESC;";
-				//Consult cases have negative waitnum.
-				//Greater waitnum (less negative) are placed first
-	}
+	$sql = "SELECT * FROM book 
+			WHERE opdate >= DATE_FORMAT(CURDATE()-INTERVAL 1 MONTH,'%Y-%m-01')
+				AND waitnum < 0
+				AND deleted = 0
+		ORDER BY opdate,
+			oproom='', LENGTH(oproom), oproom,
+			casenum='', LENGTH(casenum), casenum,
+			optime,
+			waitnum DESC;";
+			//Consult cases have negative waitnum.
+			//Greater waitnum (less negative) are placed first
 
 	if (!$result = $mysqli->query ($sql)) {
 		return $mysqli->error;

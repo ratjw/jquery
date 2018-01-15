@@ -191,7 +191,7 @@ function refillall()
 function refillOneDay(opdate)
 {
 	var book = gv.BOOK,
-		opdateth = opdate.thDate(),
+		opdateth = putOpdate(opdate),
 		opdateBOOKrows = getBOOKrowsByDate(book, opdate),
 		$opdateTblRows = getTableRowsByDate(opdateth),
 		bookRows = opdateBOOKrows.length,

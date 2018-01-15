@@ -219,6 +219,7 @@ function getTableRowByQN(tableID, qn)
 
 function getTableRowsByDate(opdateth)
 {
+	if (!opdateth) { return [] }
 	return $('#tbl tr').filter(function() {
 		return $(this).find("td").eq(OPDATE).html() === opdateth;
 	})

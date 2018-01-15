@@ -228,11 +228,11 @@ function undelete(thiscase, deleted)
 			sql = "sqlReturnbook=",
 
 			delrow = getBOOKrowByQN(deleted, qn),
-			waitnum = delrow.waitnum,
+			waitnum = delrow.waitnum || 1,
 			oproom = delrow.oproom,
 			casenum = delrow.casenum,
 
-			book = (waitnum > 0)? gv.BOOK : gv.CONSULT,
+			book = (waitnum < 0)? gv.CONSULT : gv.BOOK,
 			allCases = sameDateRoomBookQN(book, opdate, oproom),
 			alllen
 
