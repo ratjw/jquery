@@ -159,6 +159,31 @@
 
 <div id="dialogFind"></div>
 
+<div id="find" class="dialogBox">
+	<span style="width:90px;">HN:</span>
+	<input type="text" name="hn" maxlength="7">
+	<br>
+	<br>
+	<span style="width:90px;">Name:</span>
+	<input type="text" name="patient">
+	<br>
+	<br>
+	<span style="width:90px;">Staff:</span>
+	<input type="text" name="staffname">
+	<br>
+	<br>
+	<span style="width:90px;">Diagnosis:</span>
+	<input itype="text" name="diagnosis">
+	<br>
+	<br>
+	<span style="width:90px;">Treatment:</span>
+	<input type="text" name="treatment">
+	<br>
+	<br>
+	<span style="width:90px;">Contact:</span>
+	<input type="text" name="contact">
+</div>
+
 <div id="dialogScrub"></div>
 
 <div id="dialogAlert"></div>
@@ -649,31 +674,6 @@
 	<li>ช่อง <b>Admit</b> ข้อมูลของโรงพยาบาล</li>
 	<li>ช่อง <b>D/C</b> ข้อมูลของโรงพยาบาล</li>
   </ul>
-</div>
-
-<div id="find" class="dialogBox">
-	<span style="width:90px;">Staff:</span>
-	<input type="text" name="staffname">
-	<br>
-	<br>
-	<span style="width:90px;">HN:</span>
-	<input type="text" name="hn" maxlength="7">
-	<br>
-	<br>
-	<span style="width:90px;">Name:</span>
-	<input type="text" name="patient">
-	<br>
-	<br>
-	<span style="width:90px;">Diagnosis:</span>
-	<input itype="text" name="diagnosis">
-	<br>
-	<br>
-	<span style="width:90px;">Treatment:</span>
-	<input type="text" name="treatment">
-	<br>
-	<br>
-	<span style="width:90px;">Contact:</span>
-	<input type="text" name="contact">
 </div>
 
 <!-- For IE that not support <a download>, used in Export to Excel -->

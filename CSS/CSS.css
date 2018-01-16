@@ -256,7 +256,6 @@ td.camera {
 	text-align: center;
 	color: white;
 	background: #306ab5;
-/*	background: radial-gradient(at bottom left, #112244, #172949, #203F6F, #5077aa, #E0F0FF);*/
 	background: radial-gradient(at bottom left, #152f51, #1b3b65, #25528d, #306ab5, #ebf1fa);
 	border-radius: 10px;
 	box-shadow: -20px 30px 40px slategray;
@@ -264,7 +263,6 @@ td.camera {
 
 input[type=submit] {
 	background: #c4445C;
-/*	background: linear-gradient(#FFCCDD, #AA3740, #552233);*/
 	background: linear-gradient(#f8d3e4, #AC1B5C, #580e2f);
 	border-radius: 5px;
 	color: white;
@@ -273,7 +271,6 @@ input[type=submit] {
 
 #editcell { 
 	display: none;
-/*	position: relative;*/
 	text-align: left; 
 	overflow: hidden;
 	padding-left: 3px;
@@ -282,9 +279,14 @@ input[type=submit] {
 	box-shadow: 5px 5px 10px slategray;
 }
 
-#menu, #stafflist {
-/*	position: relative;*/
+#menu {
 	font-size: 14px;
+	width: 165px;
+}
+
+#stafflist {
+	font-size: 14px;
+	width: 110px;
 }
 
 #postpone,
@@ -296,10 +298,12 @@ input[type=submit] {
 
 #postpone {
 	width: 200px;
+	white-space: nowrap;
 }
 
 #del {
 	width: 170px;
+	white-space: nowrap;
 }
 
 #staffmenu {
@@ -314,7 +318,6 @@ input[type=submit] {
 
 #undelete { 
 	display: none;
-/*	position: relative;*/
 	width: 125px;
 }
 
@@ -385,7 +388,12 @@ button.ui-datepicker-current {
 	color: blue;
 }
 
-#find,
+#dialogFind,
+#find {
+	display: none;
+	font-size: 14px;
+}
+
 #dialogReadme {
 	display: none;
 	line-height: 150%;

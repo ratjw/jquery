@@ -6,7 +6,8 @@ require_once "book.php";
 	if (isset($_POST['nosqlReturnbook']))
 	{
 		if ($_POST['nosqlReturnbook'] === "init") {
-			$sql = "SELECT MIN(dateoncall) AS mindate, COUNT(dateoncall) AS countdate
+			$sql = "SELECT MIN(dateoncall) AS mindate,
+						COUNT(dateoncall) AS countdate
 					FROM staff WHERE dateoncall;";
 			$result = $mysqli->query($sql);
 			if (!$result) {
@@ -18,9 +19,10 @@ require_once "book.php";
 			$mindate = $data["mindate"];
 			$countdate = $data["countdate"];
 			if ($mindate <= date('Y-m-d')) {
-				$sql = "UPDATE staff SET staffoncall=staffname,
-										 dateoncall=DATE_ADD(dateoncall,INTERVAL $countdate WEEK)
-									 WHERE dateoncall<=CURDATE();";
+				$sql = "UPDATE staff
+						SET staffoncall=staffname,
+							dateoncall=DATE_ADD(dateoncall,INTERVAL $countdate WEEK)
+						WHERE dateoncall<=CURDATE();";
 				if (!$result = $mysqli->query ($sql)) {
 					return $mysqli->error;
 				}

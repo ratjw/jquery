@@ -1,5 +1,5 @@
 
-function fillupstart()		
+function fillupstart()
 {	//Display all cases in each day of 5 weeks
 	var table = document.getElementById("tbl")
 	var today = new Date()
@@ -19,7 +19,7 @@ function fillupstart()
 
 	//scroll to todate
 	var todate = today.ISOdate().thDate()
-	var thishead = $("tr:contains(" + todate + ")").eq(0)
+	var thishead = $("#tbl tr:contains(" + todate + ")").eq(0)
 	$('#tblcontainer').animate({
 		scrollTop: thishead.offset().top
 	}, 300);

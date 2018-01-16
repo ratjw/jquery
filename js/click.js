@@ -693,12 +693,10 @@ function getCASE(pointing)
 
 function getSTAFFNAME(pointing)
 {
-	var $stafflist = $("#stafflist"),
-		width = 0
+	var $stafflist = $("#stafflist")
 
 	createEditcell(pointing)
 	$stafflist.appendTo($(pointing).closest('div'))
-	width = $stafflist.outerWidth()
 
 	$stafflist.menu({
 		select: function( event, ui ) {
@@ -723,7 +721,7 @@ function getSTAFFNAME(pointing)
 
 	// reposition from main menu to determine shadow
 	reposition($stafflist, "left top", "left bottom", pointing)
-	menustyle($stafflist, pointing, width)
+	menustyle($stafflist, pointing)
 
 	// repeat to make it show on first click in queuetbl
 	reposition($stafflist, "left top", "left bottom", pointing)
@@ -763,14 +761,7 @@ function getNAME(pointing) {
 	var upload = gv.uploadWindow
 
 	clearEditcell()
-	if (hn) {
-		if (upload && !upload.closed) {
-			upload.close();
-		}
-		upload = gv.uploadWindow = window.open("jQuery-File-Upload", "_blank")
-		upload.hnName = {"hn": hn, "patient": patient}
-		// hnName is a pre-defined variable in child window (jQuery-File-Upload)
-	}
+	showPAC(hn, patient)
 }
 
 function createEditcellOpdate(pointing)

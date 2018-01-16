@@ -92,16 +92,18 @@ function initialize(userid)
 		resetTimer();
 		gv.idleCounter = 0
 		$(".bordergroove").removeClass("bordergroove")
-		var target = event.target
-		if ($('#menu').is(":visible")) {
+		var target = event.target,
+			$menu = $('#menu'),
+			$stafflist = $('#stafflist')
+		if ($menu.is(":visible")) {
 			if (!$(target).closest('#menu').length) {
-				$('#menu').hide();
+				$menu.hide();
 				clearEditcell()
 			}
 		}
-		if ($('#stafflist').is(":visible")) {
+		if ($stafflist.is(":visible")) {
 			if (!$(target).closest('#stafflist').length) {
-				$('#stafflist').hide();
+				$stafflist.hide();
 				clearEditcell()
 			}
 		}
@@ -112,8 +114,8 @@ function initialize(userid)
 			clicktable(target)
 		} else {
 			clearEditcell()
-			$('#menu').hide()
-			$('#stafflist').hide()
+			$menu.hide()
+			$stafflist.hide()
 			clearMouseoverTR()
 		}
 
@@ -220,10 +222,8 @@ function setStafflist()
 
 	for (var each = 0; each < gv.STAFF.length; each++)
 	{
-		if (gv.STAFF[each].dateoncall) {
-			stafflist += '<li><div>' + gv.STAFF[each].staffname + '</div></li>'
-			staffmenu += '<li id="staffqueue"><div>' + gv.STAFF[each].staffname + '</div></li>'
-		}
+		stafflist += '<li><div>' + gv.STAFF[each].staffname + '</div></li>'
+		staffmenu += '<li id="staffqueue"><div>' + gv.STAFF[each].staffname + '</div></li>'
 	}
 	staffmenu += '<li id="staffqueue"><div>Consults</div></li>'
 	document.getElementById("stafflist").innerHTML = stafflist

@@ -86,12 +86,11 @@ function mainMenu(pointing)
 		}
 	});
 
-	var width = $menu.outerWidth()
 	var $container = $(pointing).closest('div')
 
 	$menu.appendTo($container)
 	reposition($menu, "left top", "left bottom", pointing, $container)
-	menustyle($menu, pointing, width)
+	menustyle($menu, pointing)
 }
 
 function itemtext(id, item, $cell) {
@@ -111,16 +110,15 @@ function disable(item, id)
 	}
 }
 
-function menustyle($me, target, width)
+function menustyle($me, target)
 {
-	if ($me.position().top > $(target).position().top) {
+	if ($me.position().top > ($(target).position().top - $me.height())) {
 		var shadow = '10px 20px 30px slategray'
 	} else {
 		var shadow = '10px -20px 30px slategray'
 	}
 
 	$me.css({
-		width: width,
 		boxShadow: shadow
 	})
 }
