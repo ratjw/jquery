@@ -75,6 +75,7 @@ td {
 	background-position: right center;
 }
 
+#tbl td:nth-child(2),
 #tbl td:nth-child(3) {
 	text-align: center;
 }
@@ -356,22 +357,15 @@ button.ui-datepicker-current {
 	border: 0;
 }
 
-#dialogEquip input[type=radio] + label {
-	color: #999999;
-	background-color: white;
-}
- 
-#dialogEquip input[type=radio]:checked + label {
-	color: black;
-}
-
+#dialogEquip input[type=radio] + label,
 #dialogEquip input[type=checkbox] + label {
 	color: #999999;
-	background-color: white;
 }
  
+#dialogEquip input[type=radio]:checked + label,
 #dialogEquip input[type=checkbox]:checked + label {
 	color: black;
+	font-weight: bold;
 }
 
 #dialogEquip input {
@@ -380,12 +374,14 @@ button.ui-datepicker-current {
 	background: transparent;
 	border-bottom: 1px dashed gray;
 	color: blue;
+	font-weight: bold;
 }
 
 #Notice {
 	width: 500px;
 	height: 70px;
 	color: blue;
+	font-weight: bold;
 }
 
 #dialogFind,

@@ -145,14 +145,14 @@ function sortable()
 					}
 				}
 			} else {
-				sql += sqlMover(newWaitnum, thisOpdate, "", "", oldqn)
+				sql += sqlMover(newWaitnum, thisOpdate, null, null, oldqn)
 			}
 
 			if (!sql) {
 				if (newWaitnum === oldwaitnum) {
 					return
 				}
-				sql += sqlMover(newWaitnum, thisOpdate, "", "", oldqn)
+				sql += sqlMover(newWaitnum, thisOpdate, null, null, oldqn)
 			}
 			sql = "sqlReturnbook=" + sql
 
@@ -200,8 +200,8 @@ function stopsorting()
 function sqlCaseNum(casenum, qn)
 {	
 	return "UPDATE book SET "
-		+  "casenum='" + casenum
-		+  "',editor='" + gv.user
+		+  "casenum=" + casenum
+		+  ",editor='" + gv.user
 		+  "' WHERE qn="+ qn + ";";
 }
 
@@ -210,8 +210,8 @@ function sqlMover(waitnum, opdate, oproom, casenum, qn)
 	return "UPDATE book SET "
 		+  "waitnum=" + waitnum
 		+  ", opdate='" + opdate
-		+  "',oproom='" + oproom
-		+  "',casenum='" + casenum
-		+  "',editor='" + gv.user
+		+  "',oproom=" + oproom
+		+  ",casenum=" + casenum
+		+  ",editor='" + gv.user
 		+  "' WHERE qn="+ qn + ";";
 }

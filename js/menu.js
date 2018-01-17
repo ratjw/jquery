@@ -279,8 +279,8 @@ function clickDate(event)
 
 	for (var i=0; i<allNewCases.length; i++) {
 		if (allNewCases[i] === moveQN) {
-			casenum = thisroom? (i + 1) : ""
-			sql += sqlMover(thisWaitnum, thisOpdate, thisroom, casenum, moveQN)
+			casenum = thisroom? (i + 1) : null
+			sql += sqlMover(thisWaitnum, thisOpdate, thisroom || null, casenum, moveQN)
 		} else {
 			sql += sqlCaseNum(i + 1, allNewCases[i])
 		}

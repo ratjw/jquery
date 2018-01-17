@@ -282,7 +282,7 @@ function fillblank(rowi)
 {
 	var cells = rowi.cells
 	cells[ROOM].innerHTML = ""
-	cells[NUM].innerHTML = ""
+	cells[CASENUM].innerHTML = ""
 	cells[STAFFNAME].innerHTML = ""
 	cells[HN].innerHTML = ""
 	cells[HN].className = ""
@@ -305,7 +305,7 @@ function filldata(bookq, rowi)
 	cells[NAME].className = bookq.patient? "camera" : ""
 
 	cells[ROOM].innerHTML = bookq.oproom
-	cells[NUM].innerHTML = putCasenumTime(bookq)
+	cells[CASENUM].innerHTML = putCasenumTime(bookq)
 	cells[STAFFNAME].innerHTML = bookq.staffname
 	cells[HN].innerHTML = bookq.hn
 	cells[NAME].innerHTML = putNameAge(bookq)
@@ -406,7 +406,7 @@ jQuery.fn.extend({
 		}
 		cells[OPDATE].innerHTML = putOpdate(bookq.opdate)
 		cells[ROOM].innerHTML = bookq.oproom
-		cells[NUM].innerHTML = putCasenumTime(bookq)
+		cells[CASENUM].innerHTML = putCasenumTime(bookq)
 		cells[STAFFNAME].innerHTML = bookq.staffname
 		cells[HN].innerHTML = bookq.hn
 		cells[HN].className = (bookq.hn && gv.isPACS)? "pacs" : ""
@@ -423,7 +423,7 @@ jQuery.fn.extend({
 
 function putCasenumTime(bookq)
 {
-	return bookq.casenum + (bookq.optime? ("<br>" + bookq.optime) : "")
+	return (bookq.casenum || "") + (bookq.optime? ("<br>" + bookq.optime) : "")
 }
 
 function putNameAge(bookq)

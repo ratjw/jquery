@@ -274,15 +274,15 @@
  </div>
  <div title="Position">
   <span id="clearPosition" style="width:110px;">Position <small>(คลิกลบ)</small></span>
-  <span style="width:217px;">
+  <span style="width:230px;">
 	<input type="radio" name="pose" id="leftSupine">
 	<label for="leftSupine">หงาย ซ้ายขึ้น หันหน้าไปทางขวา</label>
   </span>
-  <span style="width:217px;">
+  <span style="width:230px;">
 	<input type="radio" name="pose" id="rightSupine">
 	<label for="rightSupine">หงาย ขวาขึ้น หันหน้าไปทางซ้าย</label>
   </span>
-  <span style="width:80px;">
+  <span style="width:90px;">
 	<input type="radio" name="pose" id="supine">
 	<label for="supine">หงายตรง</label>
   </span>
@@ -298,9 +298,9 @@
   </span>
   <span style="width:140px;">
 	<input type="radio" name="pose" id="right3quarter">
-	<label for="rightProne">3/4 ขวาลง</label>
+	<label for="right3quarter">3/4 ขวาลง</label>
   </span>
-  <span style="width:90px;">
+  <span style="width:100px;">
 	<input type="radio" name="pose" id="Concorde">
 	<label for="Concorde">Concorde</label>
   </span>
@@ -316,9 +316,9 @@
   </span>
   <span style="width:140px;">
 	<input type="radio" name="pose" id="left3quarter">
-	<label for="leftProne">3/4 ซ้ายลง</label>
+	<label for="left3quarter">3/4 ซ้ายลง</label>
   </span>
-  <span style="width:50px;">
+  <span style="width:70px;">
 	<input type="radio" name="pose" id="prone">
 	<label for="prone">คว่ำ</label>
   </span>

@@ -1,9 +1,9 @@
 
 DROP TABLE IF EXISTS bookhistory;
 
-CREATE TABLE bookh LIKE book;
+CREATE TABLE bookhistory LIKE book;
 
-ALTER TABLE bookh 
+ALTER TABLE bookhistory 
 	MODIFY COLUMN qn int(10) UNSIGNED NOT NULL, 
 	DROP PRIMARY KEY, 
 	DROP KEY opdate, 

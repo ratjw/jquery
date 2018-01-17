@@ -6,28 +6,14 @@ require_once "book.php";
 	if (isset($_POST['nosqlReturnbook']))
 	{
 		if ($_POST['nosqlReturnbook'] === "init") {
-			$sql = "SELECT MIN(dateoncall) AS mindate,
-						COUNT(dateoncall) AS countdate
-					FROM staff WHERE dateoncall;";
-			$result = $mysqli->query($sql);
-			if (!$result) {
+			$sql = "UPDATE staff,(SELECT MAX(dateoncall) AS max FROM staff) as oncall
+						SET staffoncall=staffname,
+							dateoncall=DATE_ADD(oncall.max,INTERVAL 1 WEEK)
+					WHERE dateoncall<=CURDATE();";
+			if (!$result = $mysqli->query ($sql)) {
 				return $mysqli->error;
 			}
-			while ($rowi = $result->fetch_assoc()) {
-				$data = $rowi;
-			}
-			$mindate = $data["mindate"];
-			$countdate = $data["countdate"];
-			if ($mindate <= date('Y-m-d')) {
-				$sql = "UPDATE staff
-						SET staffoncall=staffname,
-							dateoncall=DATE_ADD(dateoncall,INTERVAL $countdate WEEK)
-						WHERE dateoncall<=CURDATE();";
-				if (!$result = $mysqli->query ($sql)) {
-					return $mysqli->error;
-				}
-			}
-			$sql = "SELECT * FROM staff;";
+			$sql = "SELECT * FROM staff ORDER BY number;";
 			$result = $mysqli->query($sql);
 			if (!$result) {
 				return $mysqli->error;

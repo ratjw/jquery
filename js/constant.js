@@ -6,7 +6,7 @@ var MYSQLIPHP	= "php/mysqli.php";
 //tbl, queuetbl
 var OPDATE		= 0;
 var ROOM		= 1;
-var NUM			= 2;
+var CASENUM		= 2;
 var STAFFNAME	= 3;
 var HN			= 4;
 var NAME		= 5;
@@ -16,16 +16,16 @@ var CONTACT		= 8;
 var QN			= 9;
 
 //servicetbl
-var CASENUMSERVICE		= 0;
-var HNSERVICE			= 1;
-var NAMESERVICE			= 2;
-var DIAGNOSISSERVICE	= 3;
-var TREATMENTSERVICE	= 4;
-var ADMISSIONSERVICE	= 5;
-var FINALSERVICE		= 6;
-var ADMITSERVICE		= 7;
-var DISCHARGESERVICE	= 8;
-var QNSERVICE			= 9;
+var CASENUMSV		= 0;
+var HNSV			= 1;
+var NAMESV			= 2;
+var DIAGNOSISSV	= 3;
+var TREATMENTSV	= 4;
+var ADMISSIONSV	= 5;
+var FINALSV		= 6;
+var ADMITSV		= 7;
+var DISCHARGESV	= 8;
+var QNSV			= 9;
 
 // NAMEOFDAYABBR for row color
 // NAMEOFDAYFULL for 1st column color

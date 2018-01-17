@@ -93,7 +93,7 @@ function getfromServer(fromDate, toDate)
 			  + "WHERE opdate BETWEEN '" + fromDate + "' AND '" + toDate
 			  + "' AND deleted=0 "
 			  + "AND waitnum<>0 "
-			  + "ORDER BY opdate, oproom='', oproom, casenum, waitnum;";
+			  + "ORDER BY opdate, oproom, casenum, waitnum;";
 
 	var defer = $.Deferred()
 
@@ -221,7 +221,7 @@ function refillService(SERVICE, fromDate, toDate)
 		// staffname fixed sequence is in patient column
 		var staffname = this.staffname
 		i++
-		var $thisCase = $('#servicetbl tr').eq(i).children("td").eq(CASENUMSERVICE)
+		var $thisCase = $('#servicetbl tr').eq(i).children("td").eq(CASENUMSV)
 		if ($thisCase.prop("colSpan") === 1) {
 			$thisCase.prop("colSpan", 8)
 				.addClass("serviceStaff")
@@ -236,9 +236,9 @@ function refillService(SERVICE, fromDate, toDate)
 				i++
 				scase++
 				var $thisRow = $('#servicetbl tr').eq(i).children("td")
-				if ($thisRow.eq(CASENUMSERVICE).prop("colSpan") > 1) {
-					$thisRow.eq(CASENUMSERVICE).prop("colSpan", 1)
-						.nextUntil($thisRow.eq(QNSERVICE)).show()
+				if ($thisRow.eq(CASENUMSV).prop("colSpan") > 1) {
+					$thisRow.eq(CASENUMSV).prop("colSpan", 1)
+						.nextUntil($thisRow.eq(QNSV)).show()
 				}
 				$('#servicetbl tr').eq(i)
 						.filldataService(this, scase, color)
@@ -255,21 +255,21 @@ jQuery.fn.extend({
 	filldataService : function(bookq, scase, color) {
 		var cells = this[0].cells
 		addColorService(this, color)
-		cells[CASENUMSERVICE].innerHTML = scase
-		cells[HNSERVICE].innerHTML = bookq.hn
+		cells[CASENUMSV].innerHTML = scase
+		cells[HNSV].innerHTML = bookq.hn
 		if (bookq.hn && gv.isPACS) {
-			cells[HNSERVICE].className = "pacs"
+			cells[HNSV].className = "pacs"
 		}
-		cells[NAMESERVICE].innerHTML = bookq.patient
+		cells[NAMESV].innerHTML = bookq.patient
 			+ (bookq.dob? ("<br>อายุ " + putAgeOpdate(bookq.dob, bookq.opdate)) : "")
-		cells[NAMESERVICE].className = "camera"
-		cells[DIAGNOSISSERVICE].innerHTML = bookq.diagnosis
-		cells[TREATMENTSERVICE].innerHTML = bookq.treatment
-		cells[ADMISSIONSERVICE].innerHTML = bookq.admission
-		cells[FINALSERVICE].innerHTML = bookq.final
-		cells[ADMITSERVICE].innerHTML = (bookq.admit? bookq.admit : "")
-		cells[DISCHARGESERVICE].innerHTML = (bookq.discharge? bookq.discharge : "")
-		cells[QNSERVICE].innerHTML = bookq.qn
+		cells[NAMESV].className = "camera"
+		cells[DIAGNOSISSV].innerHTML = bookq.diagnosis
+		cells[TREATMENTSV].innerHTML = bookq.treatment
+		cells[ADMISSIONSV].innerHTML = bookq.admission
+		cells[FINALSV].innerHTML = bookq.final
+		cells[ADMITSV].innerHTML = (bookq.admit? bookq.admit : "")
+		cells[DISCHARGESV].innerHTML = (bookq.discharge? bookq.discharge : "")
+		cells[QNSV].innerHTML = bookq.qn
 	}
 })
 
@@ -278,12 +278,12 @@ function addColorService($this, color)
 	if (color) {
 		$this[0].className = color
 		var $cell = $this.children("td")
-		var $final = $cell.eq(FINALSERVICE)
+		var $final = $cell.eq(FINALSV)
 		if (/Readmission/.test(color)) {
-			$cell.eq(ADMISSIONSERVICE).addClass("Readmission")
+			$cell.eq(ADMISSIONSV).addClass("Readmission")
 		}
 		if (/Reoperation/.test(color)) {
-			$cell.eq(TREATMENTSERVICE).addClass("Reoperation")
+			$cell.eq(TREATMENTSV).addClass("Reoperation")
 		}
 		if (/Infection/.test(color)) {
 			$final.addClass("Infection")
@@ -329,14 +329,14 @@ function fillAdmitDischargeDate(SERVICE)
 			if (this.staffname === staffname) {
 				i++
 				var $thisRow = $('#servicetbl tr').eq(i).children("td")
-				if (this.admit && !$thisRow.eq(ADMITSERVICE).html()) {
+				if (this.admit && !$thisRow.eq(ADMITSV).html()) {
 					document.getElementById("Admit").innerHTML++
 				}
-				$thisRow.eq(ADMITSERVICE).html(this.admit)
-				if (this.discharge && !$thisRow.eq(DISCHARGESERVICE).html()) {
+				$thisRow.eq(ADMITSV).html(this.admit)
+				if (this.discharge && !$thisRow.eq(DISCHARGESV).html()) {
 					document.getElementById("Discharge").innerHTML++
 				}
-				$thisRow.eq(DISCHARGESERVICE).html(this.discharge)
+				$thisRow.eq(DISCHARGESV).html(this.discharge)
 			}
 		});
 	})
@@ -364,7 +364,7 @@ function clickservice(clickedCell, editable)
 
 function Skeyin(event, keycode, pointing)
 {
-	var SEDITABLE	= [DIAGNOSISSERVICE, TREATMENTSERVICE, ADMISSIONSERVICE, FINALSERVICE]
+	var SEDITABLE	= [DIAGNOSISSV, TREATMENTSV, ADMISSIONSV, FINALSV]
 	var thiscell
 
 	if (keycode === 27) {
@@ -422,24 +422,24 @@ function savePreviousCellService()
 
 	switch(pointed.cellIndex)
 	{
-		case CASENUMSERVICE:
-		case HNSERVICE:
-		case NAMESERVICE:
+		case CASENUMSV:
+		case HNSV:
+		case NAMESV:
 			return false
-		case DIAGNOSISSERVICE:
+		case DIAGNOSISSV:
 			saveContentService(pointed, "diagnosis", newcontent)
 			return true
-		case TREATMENTSERVICE:
+		case TREATMENTSV:
 			saveContentService(pointed, "treatment", newcontent)
 			return true
-		case ADMISSIONSERVICE:
+		case ADMISSIONSV:
 			saveContentService(pointed, "admission", newcontent)
 			return true
-		case FINALSERVICE:
+		case FINALSV:
 			saveContentService(pointed, "final", newcontent)
 			return true
-		case ADMITSERVICE:
-		case DISCHARGESERVICE:
+		case ADMITSV:
+		case DISCHARGESV:
 			return false
 	}
 }
@@ -448,7 +448,7 @@ function saveContentService(pointed, column, content)	//column name in MYSQL
 {
 	var $row = $(pointed).closest('tr')
 	var rowi = $row[0]
-	var qn = rowi.cells[QNSERVICE].innerHTML
+	var qn = rowi.cells[QNSV].innerHTML
 	var oldcontent = $("#editcell").data("oldcontent")
 
 	pointed.innerHTML = content? content : ''	//just for show instantly
@@ -525,16 +525,16 @@ function storePresentCellService(pointing, editable)
 
 	switch(cindex)
 	{
-		case CASENUMSERVICE:
+		case CASENUMSV:
 			break
-		case HNSERVICE:
+		case HNSV:
 			clearEditcell()
 			if (gv.isPACS) {
 				PACS(pointing.innerHTML)
 			}
 			break
-		case NAMESERVICE:
-			var hn = $(pointing).closest('tr').children("td").eq(HNSERVICE).html()
+		case NAMESV:
+			var hn = $(pointing).closest('tr').children("td").eq(HNSV).html()
 			var patient = pointing.innerHTML
 
 			clearEditcell()
@@ -547,16 +547,16 @@ function storePresentCellService(pointing, editable)
 				//hnName is a pre-defined variable in child window (jQuery-File-Upload)
 			}
 			break
-		case DIAGNOSISSERVICE:
-		case TREATMENTSERVICE:
-		case ADMISSIONSERVICE:
-		case FINALSERVICE:
+		case DIAGNOSISSV:
+		case TREATMENTSV:
+		case ADMISSIONSV:
+		case FINALSV:
 			editable
 			? createEditcell(pointing)
 			: clearEditcell()
 			break
-		case ADMITSERVICE:
-		case DISCHARGESERVICE:
+		case ADMITSV:
+		case DISCHARGESV:
 			clearEditcell()
 			break
 	}

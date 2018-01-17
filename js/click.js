@@ -80,7 +80,7 @@ function savePreviousCell()
 	if (column === ROOM) {
 		newcontent = newcontent + $("#spin").val()
 	}
-	if (column === NUM) {
+	if (column === CASENUM) {
 		var num = $("#spin").val(),
 			time = $("#time").val()
 
@@ -97,7 +97,7 @@ function savePreviousCell()
 			return false
 		case ROOM:
 			return saveRoom(pointed, newcontent)
-		case NUM:
+		case CASENUM:
 			return saveCaseNum(pointed, oldcontent, num, time)
 		case STAFFNAME:
 			return false
@@ -122,7 +122,7 @@ function saveRoom(pointed, newcontent)
 		opdateth = $cell.eq(OPDATE).html(),
 		opdate = getOpdate(opdateth),
 		oproom = $cell.eq(ROOM).html(),
-		casenum = $cell.eq(NUM).html(),
+		casenum = $cell.eq(CASENUM).html(),
 		qn = $cell.eq(QN).html(),
 		allSameDate = allOldCases = allNewCases = [],
 		index,
@@ -137,12 +137,12 @@ function saveRoom(pointed, newcontent)
 			sql += sqlCaseNum(i + 1, allOldCases[i])
 		}
 
-		if (newcontent.match(/\d+/)[0] === "0") {
-			sql += sqlNewRoom("", "", qn)
+		if (newcontent === "0") {
+			sql += sqlNewRoom(null, null, qn)
 		}
 	}
 
-	if (newcontent.match(/\d+/)[0] !== "0") {
+	if (newcontent !== "0") {
 		allNewCases = sameDateRoomTableQN(opdateth, newcontent)
 		if (casenum) {
 			allNewCases.splice(casenum-1, 0, qn)
@@ -191,9 +191,9 @@ function saveRoom(pointed, newcontent)
 function sqlNewRoom(oproom, casenum, qn)
 {
 	return "UPDATE book SET "
-		+  "oproom='" + oproom
-		+  "',casenum='" + casenum
-		+  "',editor='" + gv.user
+		+  "oproom=" + oproom
+		+  ",casenum=" + casenum
+		+  ",editor='" + gv.user
 		+  "' WHERE qn="+ qn + ";"
 }
 
@@ -281,7 +281,7 @@ function saveContentQN(pointed, column, content)
 	var opdateth = $cells.eq(OPDATE).html()
 	var opdate = getOpdate(opdateth)
 	var oproom = $cells.eq(ROOM).html()
-	var casenum = $cells.eq(NUM).html()
+	var casenum = $cells.eq(CASENUM).html()
 	var staffname = $cells.eq(STAFFNAME).html()
 	var qn = $cells.eq(QN).html()
 	var oldcontent = $("#editcell").data("oldcontent")
@@ -356,7 +356,7 @@ function saveContentNoQN(pointed, column, content)
 	var opdateth = $cells.eq(OPDATE).html()
 	var opdate = getOpdate(opdateth)
 	var oproom = $cells.eq(ROOM).html()
-	var casenum = $cells.eq(NUM).html()
+	var casenum = $cells.eq(CASENUM).html()
 	var staffname = $cells.eq(STAFFNAME).html()
 	var qn = $cells.eq(QN).html()
 	var oldcontent = $("#editcell").data("oldcontent")
@@ -370,13 +370,13 @@ function saveContentNoQN(pointed, column, content)
 	if ((tableID === "queuetbl") && (column !== "staffname")) {
 		var sql = "sqlReturnbook=INSERT INTO book ("
 		sql += "waitnum, opdate, oproom, casenum, staffname, "+ column +", editor) VALUES ("
-		sql += waitnum + ", '" + opdate +"', '" + oproom +"', '" + casenum + "', '"
+		sql += waitnum + ", '" + opdate +"', " + oproom +"," + casenum + ", '"
 		sql += staffname + "', '"+ content +"', '"+ gv.user +"');"
 	} else {
 		var sql = "sqlReturnbook=INSERT INTO book ("
 		sql += "waitnum, opdate, oproom, casenum, "+ column +", editor) VALUES ("
-		sql += waitnum + ", '" + opdate +"', '" + oproom +"', '" + casenum
-		sql += "', '"+ content +"', '"+ gv.user +"');"
+		sql += waitnum + ", '" + opdate +"'," + oproom +"," + casenum
+		sql += ", '"+ content +"', '"+ gv.user +"');"
 	}
 
 	Ajax(MYSQLIPHP, sql, callbacksaveContentNoQN);
@@ -431,7 +431,7 @@ function saveHN(pointed, hn, content)
 		opdateth = $cells.eq(OPDATE).html(),
 		opdate = getOpdate(opdateth),
 		oproom = $cells.eq(ROOM).html(),
-		casenum = $cells.eq(NUM).html(),
+		casenum = $cells.eq(CASENUM).html(),
 		staffname = $cells.eq(STAFFNAME).html(),
 		qn = $cells.eq(QN).html(),
 		oldcontent = $("#editcell").data("oldcontent"),
@@ -491,7 +491,7 @@ function saveHN(pointed, hn, content)
 
 			// old case patient
 			$cells.eq(ROOM).html(bookq.oproom)
-			$cells.eq(NUM).html(putCasenumTime(bookq))
+			$cells.eq(CASENUM).html(putCasenumTime(bookq))
 			$cells.eq(STAFFNAME).html(bookq.staffname)
 			$cells.eq(NAME).html(putNameAge(bookq))
 			$cells.eq(DIAGNOSIS).html(bookq.diagnosis)
@@ -541,8 +541,8 @@ function refillAnotherTableCell(tableID, cellindex, qn)
 		case ROOM:
 			cells[ROOM].innerHTML = bookq.oproom
 			break
-		case NUM:
-			cells[NUM].innerHTML = putCasenumTime(bookq)
+		case CASENUM:
+			cells[CASENUM].innerHTML = putCasenumTime(bookq)
 			break
 		case STAFFNAME:
 			cells[STAFFNAME].innerHTML = bookq.staffname
@@ -573,8 +573,8 @@ function storePresentCell(pointing)
 		case ROOM:
 			getROOM(pointing)
 			break
-		case NUM:
-			getCASE(pointing)
+		case CASENUM:
+			getCASENUM(pointing)
 			break
 		case STAFFNAME:
 			getSTAFFNAME(pointing)
@@ -601,15 +601,10 @@ function getOPDATE(pointing)
 
 function getROOM(pointing)
 {
-	var ORSURG = "XSU",
-		ORROOM = "4",
-		content = pointing.innerHTML,
+	var ORROOM = "4",
+		val = pointing.innerHTML || ORROOM,
 		$editcell = $("#editcell"),
-		room = content && content.match(/\d+/),
-		theatre = content && content.match(/\D+/),
-		val = room ? room[0] : ORROOM,
-		theatre = theatre ? theatre[0] : ORSURG,
-		html = theatre + '<input id="spin">'
+		html = '<input id="spin">'
 
 	// no case
 	if ( !$(pointing).siblings(":last").html() ) { return }
@@ -630,16 +625,15 @@ function getROOM(pointing)
 	clearTimeout(gv.timer)
 }
 
-function getCASE(pointing)
+function getCASENUM(pointing)
 {
 	var CASENUM	= "1",
-		content = pointing.innerHTML,
-		$editcell = $("#editcell"),
-		val = content || CASENUM,
+		val = pointing.innerHTML || CASENUM,
 		numtime = val.split("<br>"),
 		num = numtime[0],
 		time = numtime[1],
 		ortime = "",
+		$editcell = $("#editcell"),
 		html = '<input id="spin"><input id="time">'
 
 	if ( !$(pointing).prev().html() ) { return }
@@ -761,7 +755,7 @@ function getNAME(pointing) {
 	var upload = gv.uploadWindow
 
 	clearEditcell()
-	showPAC(hn, patient)
+	showUpload(hn, patient)
 }
 
 function createEditcellOpdate(pointing)
