@@ -38,7 +38,7 @@
      <th style="width:10%">PatientName</th>
      <th style="width:20%">Diagnosis</th>
      <th style="width:30%">Treatment</th>
-     <th style="width:20%">Contact</th>
+     <th style="width:20%">Note</th>
      <th style="display:none"></th>
 	 </tr>
     </tbody>
@@ -64,7 +64,7 @@
       <th style="width:10%">PatientName</th>
       <th style="width:20%">Diagnosis</th>
       <th style="width:30%">Treatment</th>
-      <th style="width:20%">Contact</th>
+      <th style="width:20%">Note</th>
       <th style="display:none"></th>
 	  </tr>
      </tbody>
@@ -84,7 +84,7 @@
     <td data-title="PatientName"></td>
     <td data-title="Diagnosis"></td>
     <td data-title="Treatment"></td>
-    <td data-title="Contact"></td>
+    <td data-title="Note"></td>
     <td style="display:none"></td>
    </tr>
   </tbody>
@@ -160,7 +160,7 @@
 	<th style="width:15%">Admission</th>
 	<th style="width:15%">Final Status</th>
 	<th style="width:15%">Equipment</th>
-	<th style="width:15%">Contact</th>
+	<th style="width:15%">Note</th>
 	<th style="width:2%">Editor</th>
    </tr>
   </thead>
@@ -182,7 +182,7 @@
     <td data-title="Admission"></td>
     <td data-title="Final Status"></td>
     <td data-title="Equipment"></td>
-    <td data-title="Contact"></td>
+    <td data-title="Note"></td>
     <td data-title="Editor"></td>
    </tr>
   </tbody>
@@ -199,7 +199,7 @@
 	<th style="width:10%">Patient Name</th>
 	<th style="width:20%">Diagnosis</th>
 	<th style="width:20%">Treatment</th>
-	<th style="width:20%">Contact</th>
+	<th style="width:20%">Note</th>
 	<th style="width:5%">Editor</th>
 	<th style="display:none"></th>
    </tr>
@@ -223,7 +223,7 @@
     <td data-title="Patient Name"></td>
     <td data-title="Diagnosis"></td>
     <td data-title="Treatment"></td>
-    <td data-title="Contact"></td>
+    <td data-title="Note"></td>
     <td data-title="Editor"></td>
     <td style="display:none"></td>
    </tr>
@@ -242,7 +242,7 @@
      <th style="width:10%">PatientName</th>
      <th style="width:20%">Diagnosis</th>
      <th style="width:30%">Treatment</th>
-     <th style="width:20%">Contact</th>
+     <th style="width:20%">Note</th>
      <th style="display:none"></th>
    </tr>
   </tbody>
@@ -260,7 +260,7 @@
     <td data-title="PatientName Age"></td>
     <td data-title="Diagnosis"></td>
     <td data-title="Treatment"></td>
-    <td data-title="Contact"></td>
+    <td data-title="Note"></td>
    </tr>
   </tbody>
 </table>
@@ -288,8 +288,8 @@
 	<input type="text" name="treatment">
 	<br>
 	<br>
-	<span style="width:90px;">Contact:</span>
-	<input type="text" name="contact">
+	<span style="width:90px;">Note:</span>
+	<input type="text" name="note">
   </div>
 
   <table id="findtbl">
@@ -301,7 +301,7 @@
 	<th style="width:10%">Patient Name</th>
 	<th style="width:20%">Diagnosis</th>
 	<th style="width:20%">Treatment</th>
-	<th style="width:20%">Contact</th>
+	<th style="width:20%">Note</th>
 	<th style="width:5%">Editor</th>
    </tr>
   </thead>
@@ -319,7 +319,7 @@
     <td data-title="Patient Name"></td>
     <td data-title="Diagnosis"></td>
     <td data-title="Treatment"></td>
-    <td data-title="Contact"></td>
+    <td data-title="Note"></td>
     <td data-title="Editor"></td>
    </tr>
   </tbody>
@@ -747,7 +747,7 @@
 	<dt>: เมื่อมีเคส คลิกไป upload files</dt>
 	<li>คอลัมน์ <b>Diagnosis</b> : รวมทั้ง underlying disease</li>
 	<li>คอลัมน์ <b>Treatment</b> : เครื่องมือผ่าตัด ให้ใส่ที่ Equipment</li>
-	<li>คอลัมน์ <b>Contact</b> : หมายเลขโทรศัพท์ ภูมิลำเนา</li>
+	<li>คอลัมน์ <b>Note</b> : หมายเลขโทรศัพท์ ภูมิลำเนา</li>
   </ul>
 
   <h3>Menu</h3>

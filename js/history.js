@@ -208,7 +208,7 @@ function undelete(thisWhen, deleted)
 //	var UNDELPATIENT		= 4;
 //	var UNDELDIAGNOSIS		= 5;
 //	var UNDELTREATMENT		= 6;
-//	var UNDELCONTACT		= 7;
+//	var UNDELNOTE			= 7;
 //	var UNDELEDITOR			= 8;
 	var UNDELQN				= 9;
 
@@ -399,7 +399,7 @@ function find()
 						staffname: $('input[name="staffname"]').val(),
 						diagnosis: $('input[name="diagnosis"]').val(),
 						treatment: $('input[name="treatment"]').val(),
-						contact: $('input[name="contact"]').val()
+						note: $('input[name="note"]').val()
 					}
 					
 					var search = ""

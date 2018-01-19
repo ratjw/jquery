@@ -290,7 +290,7 @@ function fillblank(rowi)
 	cells[NAME].className = ""
 	cells[DIAGNOSIS].innerHTML = ""
 	cells[TREATMENT].innerHTML = ""
-	cells[CONTACT].innerHTML = ""
+	cells[NOTE].innerHTML = ""
 	cells[QN].innerHTML = ""
 }
 
@@ -311,7 +311,7 @@ function filldata(bookq, rowi)
 	cells[NAME].innerHTML = putNameAge(bookq)
 	cells[DIAGNOSIS].innerHTML = bookq.diagnosis
 	cells[TREATMENT].innerHTML = bookq.treatment
-	cells[CONTACT].innerHTML = bookq.contact
+	cells[NOTE].innerHTML = bookq.contact
 	cells[QN].innerHTML = bookq.qn
 }
 
@@ -414,7 +414,7 @@ jQuery.fn.extend({
 		cells[NAME].className = bookq.patient? "camera" : ""
 		cells[DIAGNOSIS].innerHTML = bookq.diagnosis
 		cells[TREATMENT].innerHTML = bookq.treatment
-		cells[CONTACT].innerHTML = bookq.contact
+		cells[NOTE].innerHTML = bookq.contact
 		cells[QN].innerHTML = bookq.qn
 		this[0].title = bookq.waitnum
 		addColor(this, bookq.opdate)
