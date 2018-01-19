@@ -201,7 +201,6 @@
 	<th style="width:20%">Treatment</th>
 	<th style="width:20%">Note</th>
 	<th style="width:5%">Editor</th>
-	<th style="display:none"></th>
    </tr>
   </thead>
   <tbody>
@@ -225,13 +224,12 @@
     <td data-title="Treatment"></td>
     <td data-title="Note"></td>
     <td data-title="Editor"></td>
-    <td style="display:none"></td>
    </tr>
   </tbody>
 </table>
 
 <div id="dialogAll" style="display:none">
- <table id="alltbl" class="fixed_headers">
+ <table id="alltbl">
   <tbody>
    <tr>
      <th style="width:10%">Date</th>
@@ -243,7 +241,6 @@
      <th style="width:20%">Diagnosis</th>
      <th style="width:30%">Treatment</th>
      <th style="width:20%">Note</th>
-     <th style="display:none"></th>
    </tr>
   </tbody>
  </table>
@@ -295,14 +292,15 @@
   <table id="findtbl">
   <thead>
    <tr>
-	<th style="width:5%">Date</th>
-	<th style="width:5%">Staff</th>
-	<th style="width:5%">HN</th>
+	<th style="width:4%">Date</th>
+	<th style="width:3%">Staff</th>
+	<th style="width:3%">HN</th>
 	<th style="width:10%">Patient Name</th>
 	<th style="width:20%">Diagnosis</th>
-	<th style="width:20%">Treatment</th>
-	<th style="width:20%">Note</th>
-	<th style="width:5%">Editor</th>
+	<th style="width:15%">Treatment</th>
+	<th style="width:20%">Admission Status</th>
+	<th style="width:15%">Final Status</th>
+	<th style="width:10%">Note</th>
    </tr>
   </thead>
   <tbody>
@@ -319,8 +317,9 @@
     <td data-title="Patient Name"></td>
     <td data-title="Diagnosis"></td>
     <td data-title="Treatment"></td>
+    <td data-title="Admission Status"></td>
+    <td data-title="Final Status"></td>
     <td data-title="Note"></td>
-    <td data-title="Editor"></td>
    </tr>
   </tbody>
 </table>

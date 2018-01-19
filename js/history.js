@@ -159,7 +159,7 @@ function makedeletedCases(response)
 			$(".fixed").remove()
 		}
 	})
-	$deletedtbl.fixMe($("#dialogDeleted"));
+	$deletedtbl.fixMe($dialogDeleted);
 
 	var $undelete = $("#undelete")
 	$undelete.hide()
@@ -194,8 +194,6 @@ jQuery.fn.extend({
 		cells[6].innerHTML = q.treatment
 		cells[7].innerHTML = q.contact
 		cells[8].innerHTML = q.editor
-		cells[9].innerHTML = q.qn
-		cells[9].style.display = "none"
 	}
 })
 
@@ -543,8 +541,9 @@ function showFind(containerID, tableID, qn)
 
 function makeDialogFound(found, search)
 {
+	var $findtbl = $("#findtbl")
+	$findtbl.show()
 	$("#find").hide()
-	$("#findtbl").show()
 	
 	// delete previous table lest it accumulates
 	$('#findtbl tr').slice(1).remove()
@@ -555,8 +554,7 @@ function makeDialogFound(found, search)
 				.filldataFind(this)
 	});
 
-	var $dialogFind = $("#dialogFind"),
-		$findtbl = $("#findtbl")
+	var $dialogFind = $("#dialogFind")
 	$dialogFind.css("height", 0)
 	$dialogFind.dialog({
 		title: "Find: " + search,
@@ -570,7 +568,7 @@ function makeDialogFound(found, search)
 			$(".fixed").remove()
 		}
 	})
-	$findtbl.fixMe($dialogFind);
+//	$findtbl.fixMe($dialogFind);
 
 	//for resizing dialogs in landscape / portrait view
 	$(window).on("resize", resizeFind )
@@ -623,8 +621,9 @@ jQuery.fn.extend({
 		cells[3].innerHTML = q.patient
 		cells[4].innerHTML = q.diagnosis
 		cells[5].innerHTML = q.treatment
-		cells[6].innerHTML = q.contact
-		cells[7].innerHTML = q.editor
+		cells[6].innerHTML = q.admission
+		cells[7].innerHTML = q.final
+		cells[8].innerHTML = q.contact
 	}
 })
 
