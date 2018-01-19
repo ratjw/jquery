@@ -278,7 +278,7 @@
 	<br>
 	<br>
 	<span style="width:90px;">Diagnosis:</span>
-	<input itype="text" name="diagnosis">
+	<input type="text" name="diagnosis">
 	<br>
 	<br>
 	<span style="width:90px;">Treatment:</span>
