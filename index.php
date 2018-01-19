@@ -146,20 +146,128 @@
   </tbody>
 </table>
 
-<div id="dialogHistory"></div>
-
-<div id="dialogDeleted">
-  <table>
-  </table>
-  <div id="undelete">
-    <span id="undel" onclick="doUndelete()">Undelete</span>
-    <span class="ui-icon ui-icon-circle-close" onclick="closeUndel()"></span>
-  </div>
+<div id="dialogHistory" style="display:none">
+ <table id="historytbl">
+  <thead>
+   <tr>
+	<th style="width:2%">Edited When</th>
+	<th style="width:2%">Date</th>
+	<th style="width:2%">Room</th>
+	<th style="width:2%">Case</th>
+	<th style="width:2%">Staff</th>
+	<th style="width:15%">Diagnosis</th>
+	<th style="width:15%">Treatment</th>
+	<th style="width:15%">Admission</th>
+	<th style="width:15%">Final Status</th>
+	<th style="width:15%">Equipment</th>
+	<th style="width:15%">Contact</th>
+	<th style="width:2%">Editor</th>
+   </tr>
+  </thead>
+  <tbody>
+  </tbody>
+ </table>
 </div>
 
-<div id="dialogFind"></div>
+<table id="historycells" style="display:none">
+  <tbody>
+   <tr>
+    <td data-title="Edited When"></td>
+    <td data-title="Date"></td>
+    <td data-title="Room"></td>
+    <td data-title="Case"></td>
+    <td data-title="Staff"></td>
+    <td data-title="Diagnosis"></td>
+    <td data-title="Treatment"></td>
+    <td data-title="Admission"></td>
+    <td data-title="Final Status"></td>
+    <td data-title="Equipment"></td>
+    <td data-title="Contact"></td>
+    <td data-title="Editor"></td>
+   </tr>
+  </tbody>
+</table>
 
-<div id="find" class="dialogBox">
+<div id="dialogDeleted" style="display:none">
+ <table id="deletedtbl">
+  <thead>
+   <tr>
+	<th style="width:10%">Edited When</th>
+	<th style="width:5%">Date</th>
+	<th style="width:5%">Staff</th>
+	<th style="width:5%">HN</th>
+	<th style="width:10%">Patient Name</th>
+	<th style="width:20%">Diagnosis</th>
+	<th style="width:20%">Treatment</th>
+	<th style="width:20%">Contact</th>
+	<th style="width:5%">Editor</th>
+	<th style="display:none"></th>
+   </tr>
+  </thead>
+  <tbody>
+  </tbody>
+ </table>
+ <div id="undelete">
+   <span id="undel" >Undelete</span>
+   <span class="ui-icon ui-icon-circle-close" id="closeUndel"></span>
+ </div>
+</div>
+
+<table id="deletedcells" style="display:none">
+  <tbody>
+   <tr>
+    <td data-title="Edited When"></td>
+    <td data-title="Date"></td>
+    <td data-title="Staff"></td>
+    <td data-title="HN"></td>
+    <td data-title="Patient Name"></td>
+    <td data-title="Diagnosis"></td>
+    <td data-title="Treatment"></td>
+    <td data-title="Contact"></td>
+    <td data-title="Editor"></td>
+    <td style="display:none"></td>
+   </tr>
+  </tbody>
+</table>
+
+<div id="dialogAll" style="display:none">
+ <table id="alltbl" class="fixed_headers">
+  <tbody>
+   <tr>
+     <th style="width:10%">Date</th>
+     <th style="width:2%">Room</th>
+     <th style="width:2%">Case</th>
+     <th style="width:3%">Staff</th>
+     <th style="width:3%">HN</th>
+     <th style="width:10%">PatientName</th>
+     <th style="width:20%">Diagnosis</th>
+     <th style="width:30%">Treatment</th>
+     <th style="width:20%">Contact</th>
+     <th style="display:none"></th>
+   </tr>
+  </tbody>
+ </table>
+</div>
+
+<table id="allcells" style="display:none">
+  <tbody>
+   <tr>
+    <td data-title="Date"></td>
+    <td data-title="Room"></td>
+    <td data-title="Case"></td>
+    <td data-title="Staff"></td>
+    <td data-title="HN"></td>
+    <td data-title="PatientName Age"></td>
+    <td data-title="Diagnosis"></td>
+    <td data-title="Treatment"></td>
+    <td data-title="Contact"></td>
+   </tr>
+  </tbody>
+</table>
+
+<div id="dialogFind" style="display:none">
+
+  <div id="find" class="dialogBox">
 	<span style="width:90px;">HN:</span>
 	<input type="text" name="hn" maxlength="7">
 	<br>
@@ -182,30 +290,44 @@
 	<br>
 	<span style="width:90px;">Contact:</span>
 	<input type="text" name="contact">
+  </div>
+
+  <table id="findtbl">
+  <thead>
+   <tr>
+	<th style="width:5%">Date</th>
+	<th style="width:5%">Staff</th>
+	<th style="width:5%">HN</th>
+	<th style="width:10%">Patient Name</th>
+	<th style="width:20%">Diagnosis</th>
+	<th style="width:20%">Treatment</th>
+	<th style="width:20%">Contact</th>
+	<th style="width:5%">Editor</th>
+   </tr>
+  </thead>
+  <tbody>
+  </tbody>
+  </table>
 </div>
+
+<table id="findcells" style="display:none">
+  <tbody>
+   <tr>
+    <td data-title="Date"></td>
+    <td data-title="Staff"></td>
+    <td data-title="HN"></td>
+    <td data-title="Patient Name"></td>
+    <td data-title="Diagnosis"></td>
+    <td data-title="Treatment"></td>
+    <td data-title="Contact"></td>
+    <td data-title="Editor"></td>
+   </tr>
+  </tbody>
+</table>
 
 <div id="dialogScrub"></div>
 
 <div id="dialogAlert"></div>
-
-<div id="dialogAll" style="display:none">
- <table id="alltbl" class="fixed_headers">
-  <tbody>
-   <tr>
-     <th style="width:10%">Date</th>
-     <th style="width:2%">Room</th>
-     <th style="width:2%">Case</th>
-     <th style="width:3%">Staff</th>
-     <th style="width:3%">HN</th>
-     <th style="width:10%">PatientName</th>
-     <th style="width:20%">Diagnosis</th>
-     <th style="width:30%">Treatment</th>
-     <th style="width:20%">Contact</th>
-     <th style="display:none"></th>
-   </tr>
-  </tbody>
- </table>
-</div>
 
 <ul id="menu" style="display:none">
   <li id="addrow"><div>Add a Row</div></li>
@@ -329,20 +451,29 @@
  </div>
  <div title="Imaging">
   <span style="width:110px;">Imaging</span>
+  <span style="width:120px;">
+	<input type="checkbox" id="Fluoroscope">
+	<label for="Fluoroscope">Fluoroscope</label>
+  </span>
+  <span style="width:100px;">
+	<input type="checkbox" id="Navigator">
+	<label for="Navigator">Navigator</label>
+  </span>
   <span style="width:70px;">
 	<input type="checkbox" id="iMRI">
 	<label for="iMRI">iMRI</label>
   </span>
-  <span style="width:76px;">
+  <span style="width:70px;">
 	<input type="checkbox" id="iCT">
-	<label for="iCT">iCT</label></span>
-  <span style="width:140px;">
-	<input type="checkbox" id="Fluoroscope">
-	<label for="Fluoroscope">Fluoroscope</label>
+	<label for="iCT">iCT</label>
   </span>
-  <span style="width:110px;">
-	<input type="checkbox" id="Navigator">
-	<label for="Navigator">Navigator</label>
+  <span style="width:90px;">
+	<input type="checkbox" id="Robotic">
+	<label for="Robotic">Robotic</label>
+  </span>
+  <span style="width:70px;">
+	<input type="checkbox" id="OArm">
+	<label for="OArm">O-Arm</label>
   </span>
   <br>
   <span style="width:120px;"></span>

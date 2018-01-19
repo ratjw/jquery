@@ -23,69 +23,37 @@ function editHistory(row, qn)
 
 function makehistory(row, response)
 {
-	var tracing	= JSON.parse(response)
+	var tracing	= JSON.parse(response),
+		$historytbl = $('#historytbl')
+	
+	// delete previous table lest it accumulates
+	$('#historytbl tr').slice(1).remove()
 
-	$('#historytbl').attr('id', '')
-
-	var HTML_String = '<table id = "historytbl">';
-	HTML_String += '<thead><tr>';
-	HTML_String += '<th style="width:2%">When</th>';
-	HTML_String += '<th style="width:2%">Date</th>';
-	HTML_String += '<th style="width:2%">Room</th>';
-	HTML_String += '<th style="width:2%">№</th>';
-	HTML_String += '<th style="width:2%">Staff</th>';
-	HTML_String += '<th style="width:15%">Diagnosis</th>';
-	HTML_String += '<th style="width:15%">Treatment</th>';
-	HTML_String += '<th style="width:15%">Admission</th>';
-	HTML_String += '<th style="width:15%">Final Status</th>';
-	HTML_String += '<th style="width:15%">Equipment</th>';
-	HTML_String += '<th style="width:15%">Contact</th>';
-	HTML_String += '<th style="width:2%">Editor</th>';
-	HTML_String += '</tr></thead><tbody>';
-	for (var j = 0; j < tracing.length; j++) 
-	{
-		if (tracing[j].action === 'delete') {
-			HTML_String += '<tr style="background-color:#FFCCCC">';
-		}
-		else if (tracing[j].action === 'undelete') {
-			HTML_String += '<tr style="background-color:#CCFFCC">';
-		} else {
-			HTML_String += '<tr>';
-		}
-		HTML_String += '<td data-title="Edited When">' + tracing[j].editdatetime +'</td>';
-		HTML_String += '<td data-title="Date">' + (tracing[j].opdate? tracing[j].opdate : "") +'</td>';
-		HTML_String += '<td data-title="Room">' + tracing[j].oproom +'</td>';
-		HTML_String += '<td data-title="№">' + tracing[j].casenum +'</td>';
-		HTML_String += '<td data-title="Staff">' + tracing[j].staffname +'</td>';
-		HTML_String += '<td data-title="Diagnosis">' + tracing[j].diagnosis +'</td>';
-		HTML_String += '<td data-title="Treatment">' + tracing[j].treatment +'</td>';
-		HTML_String += '<td data-title="Admission">' + tracing[j].admission +'</td>';
-		HTML_String += '<td data-title="Final Status">' + tracing[j].final +'</td>';
-		HTML_String += '<td data-title="Equipment">' + showEquip(tracing[j].equipment) +'</td>';
-		HTML_String += '<td data-title="Contact">' + tracing[j].contact +'</td>';
-		HTML_String += '<td data-title="Editor">' + tracing[j].editor +'</td>';
-		HTML_String += '</tr>';
-	}
-	HTML_String += '</tbody></table>';
+	$.each( tracing, function() {
+		$('#historycells tr').clone()
+			.appendTo($('#historytbl tbody'))
+				.filldataHistory(this)
+	});
 
 	var hn = row.cells[HN].innerHTML,
 		nam = row.cells[NAME].innerHTML,
-		name = nam && nam.replace('<br>', ' ')
+		name = nam && nam.replace('<br>', ' '),
 		$dialogHistory = $("#dialogHistory")
 	$dialogHistory.css("height", 0)
-	$dialogHistory.html(HTML_String)
 	$dialogHistory.dialog({
 		title: hn +' '+ name,
 		closeOnEscape: true,
 		modal: true,
-		width: window.innerWidth * 9 / 10,
-		height: window.innerHeight * 8 / 10,
+		hide: 200,
+		width: window.innerWidth * 95 / 100,
+		height: window.innerHeight * 95 / 100,
 		close: function() {
 			$(window).off("resize", resizeHistory )
 			$(".fixed").remove()
 		}
 	})
-   $("#historytbl").fixMe($dialogHistory);
+
+	$historytbl.fixMe($dialogHistory);
 
 	//for resizing dialogs in landscape / portrait view
 	$(window).on("resize", resizeHistory )
@@ -95,9 +63,33 @@ function makehistory(row, response)
 			width: window.innerWidth * 9 / 10,
 			height: window.innerHeight * 8 / 10
 		})
-		winResizeFix($("#historytbl"), $dialogHistory)
+		winResizeFix($historytbl, $dialogHistory)
 	}
 }
+
+jQuery.fn.extend({
+	filldataHistory : function(q) {
+		var cells = this[0].cells
+
+		// Define colors for deleted and undeleted rows
+		q.action === 'delete'
+		? this.css("background-color", "#FFCCCC")
+		: (q.action === 'undelete') && this.css("background-color", "#CCFFCC")
+
+		cells[0].innerHTML = q.editdatetime
+		cells[1].innerHTML = putOpdate(q.opdate)
+		cells[2].innerHTML = q.oproom
+		cells[3].innerHTML = putCasenumTime(q)
+		cells[4].innerHTML = q.staffname
+		cells[5].innerHTML = q.diagnosis
+		cells[6].innerHTML = q.treatment
+		cells[7].innerHTML = q.admission
+		cells[8].innerHTML = q.final
+		cells[9].innerHTML = showEquip(q.equipment)
+		cells[10].innerHTML = q.contact
+		cells[11].innerHTML = q.editor
+	}
+})
 
 function showEquip(equipString)
 {
@@ -122,7 +114,7 @@ function deletedCases()
 	var sql = "sqlReturnData=SELECT a.* "
 			+ "FROM (SELECT editdatetime, revision, b.* "
 				+ "FROM book b INNER JOIN bookhistory bh ON b.qn = bh.qn "
-				+ "WHERE b.deleted > 0 AND bh.action = 'delete') a "
+				+ "WHERE b.deleted > 0 AND bh.action = 'delete' GROUP BY b.qn) a "
 			+ "ORDER BY a.editdatetime DESC;"
 
 	Ajax(MYSQLIPHP, sql, callbackdeletedCases)
@@ -141,57 +133,38 @@ function deletedCases()
 
 function makedeletedCases(response)
 {
-	var deleted = JSON.parse(response);
+	var deleted = JSON.parse(response),
+		$deletedtbl = $('#deletedtbl')
 
-	$('#historytbl').attr('id', '')
+	// delete previous table lest it accumulates
+	$('#deletedtbl tr').slice(1).remove()
 
-	var HTML_String = '<table id = "historytbl">';
-	HTML_String += '<thead><tr>';
-	HTML_String += '<th style="width:10%">When</th>';
-	HTML_String += '<th style="width:5%">Date</th>';
-	HTML_String += '<th style="width:5%">Staff</th>';
-	HTML_String += '<th style="width:5%">HN</th>';
-	HTML_String += '<th style="width:10%">Patient Name</th>';
-	HTML_String += '<th style="width:20%">Diagnosis</th>';
-	HTML_String += '<th style="width:20%">Treatment</th>';
-	HTML_String += '<th style="width:20%">Contact</th>';
-	HTML_String += '<th style="width:5%">Editor</th>';
-	HTML_String += '<th style="display:none"></th>';
-	HTML_String += '</tr></thead><tbody>';
-	for (var j = 0; j < deleted.length; j++) 
-	{
-		HTML_String += '<tr>';
-		HTML_String += '<td data-title="Edited When" class="undelete">' + deleted[j].editdatetime +'</td>';
-		HTML_String += '<td data-title="Date">' + deleted[j].opdate +'</td>';
-		HTML_String += '<td data-title="Staff">' + deleted[j].staffname +'</td>';
-		HTML_String += '<td data-title="HN">' + deleted[j].hn +'</td>';
-		HTML_String += '<td data-title="Patient Name">' + deleted[j].patient +'</td>';
-		HTML_String += '<td data-title="Diagnosis">' + deleted[j].diagnosis +'</td>';
-		HTML_String += '<td data-title="Treatment">' + deleted[j].treatment +'</td>';
-		HTML_String += '<td data-title="Contact">' + deleted[j].contact +'</td>';
-		HTML_String += '<td data-title="Editor">' + deleted[j].editor +'</td>';
-		HTML_String += '<td style="display:none">' + deleted[j].qn +'</td>';
-		HTML_String += '</tr>';
-	}
-	HTML_String += '</tbody></table>';
+	$.each( deleted, function() {	// each === this
+		$('#deletedcells tr').clone()
+			.appendTo($('#deletedtbl tbody'))
+				.filldataDeleted(this)
+	});
 
 	var $dialogDeleted = $("#dialogDeleted")
 	$dialogDeleted.css("height", 0)
-	$dialogDeleted.find('table').replaceWith(HTML_String)
-	$("#undelete").hide()
 	$dialogDeleted.dialog({
-		title: "Deleted Cases",
+		title: "All Deleted Cases",
 		closeOnEscape: true,
 		modal: true,
-		width: window.innerWidth * 9 / 10,
-		height: window.innerHeight * 8 / 10,
+		hide: 200,
+		width: window.innerWidth * 95 / 100,
+		height: window.innerHeight * 95 / 100,
 		close: function() {
 			$(window).off("resize", resizeDeleted )
 			$(".fixed").remove()
 		}
 	})
-	$("#historytbl").fixMe($dialogDeleted)
-	$(".undelete").on("click", function() {
+	$deletedtbl.fixMe($("#dialogDeleted"));
+
+	var $undelete = $("#undelete")
+	$undelete.hide()
+	$undelete.off("click").on("click", function () { closeUndel() }).hide()
+	$(".undelete").off("click").on("click", function () {
 		undelete(this, deleted)
 	})
 
@@ -203,11 +176,30 @@ function makedeletedCases(response)
 			width: window.innerWidth * 9 / 10,
 			height: window.innerHeight * 8 / 10
 		})
-		winResizeFix($("#historytbl"), $dialogDeleted)
+		winResizeFix($deletedtbl, $dialogDeleted)
 	}
 }
 
-function undelete(thiscase, deleted) 
+jQuery.fn.extend({
+	filldataDeleted : function(q) {
+		let cells = this[0].cells
+
+		cells[0].className = "undelete"
+		cells[0].innerHTML = q.editdatetime
+		cells[1].innerHTML = putOpdate(q.opdate)
+		cells[2].innerHTML = q.staffname
+		cells[3].innerHTML = q.hn
+		cells[4].innerHTML = q.patient
+		cells[5].innerHTML = q.diagnosis
+		cells[6].innerHTML = q.treatment
+		cells[7].innerHTML = q.contact
+		cells[8].innerHTML = q.editor
+		cells[9].innerHTML = q.qn
+		cells[9].style.display = "none"
+	}
+})
+
+function undelete(thisWhen, deleted) 
 {
 //	var UNDELEDITDATETIME	= 0;
 	var UNDELOPDATE			= 1;
@@ -220,12 +212,11 @@ function undelete(thiscase, deleted)
 //	var UNDELEDITOR			= 8;
 	var UNDELQN				= 9;
 
-	reposition($("#undelete"), "left center", "left center", thiscase)
-
-	doUndelete = function() 
-	{
-		var $thiscase = $(thiscase).parent().children("td"),
-			opdate = $thiscase.eq(UNDELOPDATE).html(),
+	reposition($("#undelete"), "left center", "left center", thisWhen)
+	$("#undel").on("click", function() {
+		var $thiscase = $(thisWhen).closest("tr").children("td"),
+			opdateth = $thiscase.eq(UNDELOPDATE).html(),
+			opdate = getOpdate(opdateth),
 			staffname = $thiscase.eq(UNDELSTAFFNAME).html(),
 			qn = $thiscase.eq(UNDELQN).html(),
 			sql = "sqlReturnbook=",
@@ -271,7 +262,8 @@ function undelete(thiscase, deleted)
 				alert("undelete", response)
 			}
 		}
-	}
+		
+	})
 }
 
 function closeUndel() 
@@ -359,7 +351,7 @@ function makeAllCases(response) {
 		// dialogFind table is generated by Javascript and has no preceded #text
 		var hn = $(this).prev().html()
 
-		showUpload(hn, patient)
+		showPAC(hn, patient)
 	})
 }
 
@@ -388,9 +380,10 @@ function PACS(hn)
 
 function find()
 {
-	var $dialogFind = $("#dialogFind")
-		$dialogFind.html($("#find").show())
-	var dialogFind	= $dialogFind.dialog({
+	$("#find").show()
+	$("#findtbl").hide()
+	var $dialogFind = $("#dialogFind"),
+		$instanceFind = $dialogFind.dialog({
 		title: "Find",
 		closeOnEscape: true,
 		modal: true,
@@ -419,17 +412,14 @@ function find()
 			}
 		],
 		close: function() {
-			// put div#find & div#stafflist back to original place
-			// if not, it will be lost
-			$("body").append($('#find').hide())
-			$("body").append($('#stafflist').hide())
+			$('#stafflist').hide()
 		}
 	})
 	$dialogFind.on("keydown", function(event) {
 		var keycode = event.which || window.event.keyCode
 		if (keycode === 13) {
-			var buttons = dialogFind.dialog('option', 'buttons')
-			buttons[0].click.apply(dialogFind)
+			var buttons = $instanceFind.dialog('option', 'buttons')
+			buttons[0].click.apply($instanceFind)
 		}
 	})
 	$('input[name="staffname"]').on("click", function(event) {
@@ -449,9 +439,11 @@ function find()
 
 function getSaffName(pointing)
 {
-	var $stafflist = $("#stafflist")
+	var $stafflist = $("#stafflist"),
+		width = 0
 
 	$stafflist.appendTo($(pointing).closest('div'))
+	width = $stafflist.outerWidth()
 
 	$stafflist.menu({
 		select: function( event, ui ) {
@@ -551,43 +543,21 @@ function showFind(containerID, tableID, qn)
 
 function makeDialogFound(found, search)
 {
-	$('#historytbl').attr('id', '')
+	$("#find").hide()
+	$("#findtbl").show()
+	
+	// delete previous table lest it accumulates
+	$('#findtbl tr').slice(1).remove()
 
-	var HTML_String = '<table id = "historytbl">';
-	HTML_String += '<thead><tr>';
-	HTML_String += '<th style="width:5%">Date</th>';
-	HTML_String += '<th style="width:5%">Staff</th>';
-	HTML_String += '<th style="width:5%">HN</th>';
-	HTML_String += '<th style="width:10%">Patient Name</th>';
-	HTML_String += '<th style="width:20%">Diagnosis</th>';
-	HTML_String += '<th style="width:20%">Treatment</th>';
-	HTML_String += '<th style="width:20%">Contact</th>';
-	HTML_String += '<th style="width:5%">Editor</th>';
-	HTML_String += '</tr></thead><tbody>';
-	for (var j = 0; j < found.length; j++) 
-	{
-		if (found[j].deleted > 0) {
-			HTML_String += '<tr style="background-color:#FFCCCC">';
-		} else {
-			HTML_String += '<tr>';
-		}
-		HTML_String += '<td data-title="Date">' + found[j].opdate +'</td>';
-		HTML_String += '<td data-title="Staff">' + found[j].staffname +'</td>';
-		HTML_String += '<td data-title="HN"'  + (found[j].hn && gv.isPACS ? ' class="pacs"' : '')
-						+ '>' + found[j].hn +'</td>';
-		HTML_String += '<td data-title="Patient Name"'  + (found[j].patient ? ' class="camera"' : '')
-						+ '>' + found[j].patient +'</td>';
-		HTML_String += '<td data-title="Diagnosis">' + found[j].diagnosis +'</td>';
-		HTML_String += '<td data-title="Treatment">' + found[j].treatment +'</td>';
-		HTML_String += '<td data-title="Contact">' + found[j].contact +'</td>';
-		HTML_String += '<td data-title="Editor">' + found[j].editor +'</td>';
-		HTML_String += '</tr>';
-	}
-	HTML_String += '</tbody></table>';
+	$.each( found, function() {	// each === this
+		$('#findcells tr').clone()
+			.appendTo($('#findtbl tbody'))
+				.filldataFind(this)
+	});
 
-	var $dialogFind = $("#dialogFind")
+	var $dialogFind = $("#dialogFind"),
+		$findtbl = $("#findtbl")
 	$dialogFind.css("height", 0)
-	$dialogFind.html(HTML_String)
 	$dialogFind.dialog({
 		title: "Find: " + search,
 		closeOnEscape: true,
@@ -600,7 +570,7 @@ function makeDialogFound(found, search)
 			$(".fixed").remove()
 		}
 	})
-	$("#historytbl").fixMe($dialogFind);
+	$findtbl.fixMe($dialogFind);
 
 	//for resizing dialogs in landscape / portrait view
 	$(window).on("resize", resizeFind )
@@ -610,7 +580,7 @@ function makeDialogFound(found, search)
 			width: window.innerWidth * 9 / 10,
 			height: window.innerHeight * 8 / 10
 		})
-		winResizeFix($("#historytbl"), $dialogFind)
+		winResizeFix($findtbl, $dialogFind)
 	}
 
 	$('#dialogFind .pacs').on("click", function() {
@@ -622,24 +592,43 @@ function makeDialogFound(found, search)
 		var patient = this.innerHTML
 		var hn = this.previousSibling.innerHTML
 
-		showUpload(hn, patient)
+		showPAC(hn)
 	})
 
-	//scroll to todate
+	//scroll to todate when there many cases
 	var today = new Date(),
 		todate = today.ISOdate(),
-		$thishead
+		thishead
 
-	$('#historytbl tr:has("td")').each(function() {
-		$thishead = $(this)
-		return $thishead.find("td").eq(OPDATE).html() < todate
+	$("#findtbl tr").each(function() {
+		thishead = this
+		return this.cells[OPDATE].innerHTML.numDate() < todate
 	})
 	$('#dialogFind').animate({
-		scrollTop: $thishead.offset().top - $('#dialogFind').height()
-	}, 300)
+		scrollTop: $(thishead).offset().top - $dialogFind.height()
+	}, 300);
 }
 
-function showUpload(hn, patient)
+jQuery.fn.extend({
+	filldataFind : function(q) {
+		var cells = this[0].cells
+
+		Number(q.deleted) && this.css("background-color", "#FFCCCC")
+		q.hn && gv.isPACS && (cells[2].className = "pacs")
+		q.patient && (cells[3].className = "camera")
+
+		cells[0].innerHTML = putOpdate(q.opdate)
+		cells[1].innerHTML = q.staffname
+		cells[2].innerHTML = q.hn
+		cells[3].innerHTML = q.patient
+		cells[4].innerHTML = q.diagnosis
+		cells[5].innerHTML = q.treatment
+		cells[6].innerHTML = q.contact
+		cells[7].innerHTML = q.editor
+	}
+})
+
+function showPAC(hn, patient)
 {
 	var win = gv.uploadWindow
 	if (hn) {
