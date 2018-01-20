@@ -105,7 +105,7 @@
 	  <span class="item Dead">Dead : <span id="Dead"></span></span>
 	</div>
   </div>
-  <button id="btnExport">Export to xls</button>
+  <button id="exportService">Export to xls</button>
   <div id="monthpicker" style="margin-left:5px"></div>
   <div id="monthpicking" style="display:none"></div>
   <table id="servicetbl">
@@ -262,8 +262,7 @@
   </tbody>
 </table>
 
-<div id="dialogFind" style="display:none">
-
+<div id="dialogInput" style="display:none">
   <div id="find" class="dialogBox">
 	<span style="width:90px;">HN:</span>
 	<input type="text" name="hn" maxlength="7">
@@ -288,7 +287,9 @@
 	<span style="width:90px;">Note:</span>
 	<input type="text" name="note">
   </div>
+</div>
 
+<div id="dialogFind" style="display:none">
   <table id="findtbl">
   <thead>
    <tr>
@@ -680,7 +681,7 @@
  </div>
  <div title="รายละเอียด">
   <span style="width:113px;float:left;">Notice</span>
-  <span> <textarea placeholder="รายละเอียด" id="Notice"></textarea></span>
+  <span> <textarea placeholder="รายละเอียด"></textarea></span>
   <br>
   <br>
   <span style="width:300px;"></span>

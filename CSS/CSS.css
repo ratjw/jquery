@@ -1,7 +1,7 @@
 #wrapper {
 	height: 100%;
 	width: 100%;
-	font-size: 0;
+/*	font-size: 0;*/
 	overflow: hidden;
 	font-family: sans-serif;
 }
@@ -10,7 +10,7 @@
 	float: left;
 	height: 100%;
 	width: 100%;
-	font-size: 0;
+/*	font-size: 0;*/
 }
 
 #tblcontainer {
@@ -368,7 +368,7 @@ button.ui-datepicker-current {
 	font-weight: bold;
 }
 
-#dialogEquip input {
+#dialogEquip input[type=text] {
 	border: 0;
 	outline: 0;
 	background: transparent;
@@ -377,16 +377,14 @@ button.ui-datepicker-current {
 	font-weight: bold;
 }
 
-#Notice {
+#dialogEquip textarea {
 	width: 500px;
 	height: 70px;
 	color: blue;
 	font-weight: bold;
 }
 
-#dialogFind,
 #find {
-	display: none;
 	font-size: 14px;
 }
 

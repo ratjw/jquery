@@ -4,7 +4,7 @@ function serviceReview()
 	resetcountService()
 	$('#servicehead').hide()
 	$('#servicetbl').hide()
-	$('#btnExport').hide()
+	$('#exportService').hide()
 	$('#dialogService').dialog({
 		title: 'Service Neurosurgery',
 		closeOnEscape: true,
@@ -50,8 +50,8 @@ function entireMonth(fromDate)
 	})
 
 	$(document).off("click", '.ui-datepicker-title')
-	$("#btnExport").show()
-	$("#btnExport").on("click", function(e) {
+	$("#exportService").show()
+	$("#exportService").on("click", function(e) {
 		e.preventDefault();
 		exportToExcel()
 	})

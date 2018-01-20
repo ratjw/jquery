@@ -10,7 +10,8 @@
 		function init() {
 			$t_fixed = $this.clone();
 			$t_fixed.removeAttr("id")
-			$t_fixed.find("tbody").remove().end().addClass("fixed").insertBefore($this);
+			$t_fixed.find("tbody").remove().end()
+					.addClass("fixed").insertBefore($this);
 			$container.scrollTop(0)
 			resizeFixed($t_fixed, $this);
 			reposition($t_fixed, "left top", "left+" + pad + " top", $container)
