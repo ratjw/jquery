@@ -694,20 +694,16 @@
 
 <div id="dialogReadme" class="dialogBox">
   <p style="margin:0px;">
-    <span class="ui-icon ui-icon-info"></span> <b>Update 27 พย. 2560</b>
+    <span class="ui-icon ui-icon-info"></span> <b>Update 22 มค. 2561</b>
   </p>
 	  <ol style="margin:0px;">
-		<li>Menu -> ดูเคสทั้งหมด -> All Saved Cases</li>
-	  </ol>
-  <p style="margin:0px;">
-    <span class="ui-icon ui-icon-info"></span> <b>Update 1 พย. 2560</b>
-  </p>
-	  <ol style="margin:0px;">
-		<li>ดู service review เดือนก่อนๆได้</li>
-		<li>ดู PACS หรือ upload file ได้ทุกตาราง</li>
+		<li>Confirm เมื่อ เลื่อนเคสไม่มีกำหนด, ลบเคส</li>
+		<li>Equipment ช่องรายละเอียดยาวตลอดบรรทัด</li>
+		<li>Find รวบรวมเคสของอาจารย์, ชื่อโรค, การผ่าตัด ฯลฯ ส่งออก Excel</li>
+		<li>เรียงเคสตามห้องผ่าตัดและลำดับเคส เวลา-ไม่มีผลในการเรียง</li>
 	  </ol>
   <p style="margin-bottom:0px;"><span class="ui-icon ui-icon-info"></span>
-      ใช้ Browser : Chrome, Firefox, หรือ Edge (ie 10+)</p>
+      ใช้ Browser : Chrome, Firefox, Edge หรือ IE 9+</p>
   <p style="margin:0px;"><span class="ui-icon ui-icon-info"></span>
   Login ID, Password ของโรงพยาบาล สำหรับพยาบาล ใช้ Login ID:000000</p>
   <p style="margin:0px;">
@@ -734,76 +730,115 @@
 
   <h3>ตาราง</h3>
   <ul style="margin-top:0px;">
-	<li>คอลัมน์ <b>Date</b> : วันผ่าตัด (ไม่ใช่วันนัดมา admit)</li>
-	<dt>: หรือ วันที่รับ consult จากหน่วยอื่น</dt>
+	<li>คอลัมน์ <b>Date</b></li>
 	<dt>: คลิกช่องนี้ จะปรากฏ Popup Menu</dt>
-	<li>คอลัมน์ <b>Room</b> : คลิกเลือกห้องผ่าตัดและเวลา โดยใช้ล้อหมุนของเมาส์</li>
-	<li>คอลัมน์ <b>Staff</b> : คลิกเลือกชื่ออาจารย์เจ้าของไข้</li>
+	<dt>: วันผ่าตัด หรือ วันที่รับ consult ไม่ใช่วันนัดมา admit</dt>
+	<li>คอลัมน์ <b>Room</b></li>
+	<dt>: คลิกเลือกห้องผ่าตัด โดยใช้ล้อหมุนของเมาส์</dt>
+	<dt>: ลบห้องผ่าตัดโดยใช้เลข 0</dt>
+	<li>คอลัมน์ <b>Case</b></li>
+	<dt>: คลิกเลือกลำดับเคสและเวลา โดยใช้ล้อหมุนของเมาส์</dt>
+	<dt>: ลบเวลาผ่าตัดโดยใช้เลข 00.00</dt>
+	<li>คอลัมน์ <b>Staff</b></li>
+	<dt>: คลิกเลือกชื่ออาจารย์เจ้าของไข้</dt>
 	<li>คอลัมน์ <b>HN</b></li>
 	<dt>: เมื่อว่าง ใส่ hn เลข 7 หลัก</dt>
 	<dt>: เมื่อมีเคส คลิกดู PACS</dt>
 	<li>คอลัมน์ <b>PatientName</b></li>
 	<dt>: ปรากฏเองตาม HN</dt>
 	<dt>: เมื่อมีเคส คลิกไป upload files</dt>
-	<li>คอลัมน์ <b>Diagnosis</b> : รวมทั้ง underlying disease</li>
-	<li>คอลัมน์ <b>Treatment</b> : เครื่องมือผ่าตัด ให้ใส่ที่ Equipment</li>
-	<li>คอลัมน์ <b>Note</b> : หมายเลขโทรศัพท์ ภูมิลำเนา</li>
+	<li>คอลัมน์ <b>Diagnosis</b></li>
+	<dt>: รวมทั้ง underlying disease</dt>
+	<li>คอลัมน์ <b>Treatment</b></li>
+	<dt>: เครื่องมือผ่าตัด ให้ใส่ที่ Equipment</dt>
+	<li>คอลัมน์ <b>Note</b></li>
+	<dt>: หมายเลขโทรศัพท์ ภูมิลำเนา หมายเหตุอื่นๆ</dt>
   </ul>
 
   <h3>Menu</h3>
   <ul style="margin-top:0px;">
-	<li><b>เพิ่ม case</b> : มีวัน เวลา ห้องผ่าตัดเดียวกับเคสนี้</li>
-	<li><b>เลื่อนไป ไม่กำหนดวัน</b> : ต้องมีชื่อ  <b>Staff </b> ก่อน</li>
-	<li><b>เปลี่ยนวันที่</b> : เลือกโดยเลื่อนเมาส์ไปตามตาราง แล้วคลิกตรงวันที่ต้องการ</li>
-	<li><b>Equipment</b> : <button>Print</button>พิมพ์ลงกระดาษ</li>
-	<li><b>ประวัติการแก้ไข</b> : ดูย้อนหลังการเปลี่ยนข้อมูล</li>
-	<li><b>Delete</b> : ถ้าต้องการกลับคืน Undelete ได้ที่ <b>All Deleted Cases</b></li>
-	<li><b>คิวของอาจารย์</b> : มี submenu เลือกชื่ออาจารย์</li>
-	  <dt>เมื่อเลือกอาจารย์แล้ว จะแบ่งหน้าจอเป็น 2 ส่วน</dt>
+	<li><b>เพิ่ม case</b></li>
+	<dt>: มีวันเดียวกันกับเคสที่คลิก</dt>
+	<li><b>เลื่อนไป ไม่กำหนดวัน</b> -> Confirm</li>
+	<dt>: ต้องมีชื่อ  <b>Staff </b> ก่อน</dt>
+	<li><b>เปลี่ยนวันที่</b></li>
+	<dt>: เลือกโดยเลื่อนเมาส์ไปตามตาราง แล้วคลิกตรงวันที่ต้องการ</dt>
+	<li><b>Equipment</b></li>
+	<dt>: <button>Print</button> พิมพ์ลงกระดาษ</dt>
+	<li><b>ประวัติการแก้ไข</b></li>
+	<dt>: ดูย้อนหลังการเปลี่ยนข้อมูล</dt>
+	<li><b>Delete -> Confirm</b></li>
+	<dt>: ถ้าต้องการกลับคืน Undelete ได้ที่ <b>All Deleted Cases</b></dt>
+	<li><b>คิวของอาจารย์</b></li>
+	  <dt>: มี submenu เลือกชื่ออาจารย์</dt>
+	  <dt>: เมื่อเลือกอาจารย์แล้ว จะแบ่งหน้าจอเป็น 2 ส่วน</dt>
 		<ul><li>ครึ่งซ้าย เป็นตารางรวม</li></ul>
 		<ul><li>ครึ่งขวา เป็นตารางของอาจารย์ท่านเดียว</li></ul>
 		<ul><li>resizable ซ้าย <b>|</b> ขวา เลื่อนที่เส้นแบ่งกลาง</li></ul>
-	<li><b>Service Review</b> : ทั้งเคสผ่าตัด และเคส consult</li>
+	<li><b>Service Review</b></li>
+	  <dt>: ทั้งเคสผ่าตัด และเคส consult</dt>
 	  <dt>: ต้องลงเคสที่ตารางรวมก่อน</dt>
-	<li><b>ดูเคสทั้งหมด</b> : ตั้งแต่เริ่มต้นถึงปัจจุบัน
-	  <dt><b>- All Deleted Cases</b>	: เรียงวันที่ทำการลบ ไม่ใช่เรียงวันผ่าตัด</dt>
+	<li><b>ดูเคสทั้งหมด</b>
+	  <dt>: ตั้งแต่เริ่มต้นถึงปัจจุบัน</dt>
+	  <dt><b>- All Deleted Cases</b></dt>
+	  <dt>: เรียงวันที่ทำการลบ ไม่ใช่เรียงวันผ่าตัด</dt>
 		<ul><li>ต้องการ Undelete คลิกช่อง <b>Date Time</b> ของเคสนั้น</li></ul>
-	  <dt><b>- All Saved Cases</b>	: เหมือนตารางรวม</dt>
+	  <dt><b>- All Saved Cases</b></dt>
+	  <dt>: เหมือนตารางรวม ย้อนหลังไปทุกเคส</dt>
 	</li>
-	<li><b>Find</b> : หาผู้ป่วย ด้วย HN หรือคำใดๆ ตามช่องที่ต้องการ</li>
-	  <dt>: จะหาผู้ป่วยทั้งหมด รวมทั้งที่ไม่ปรากฏในตาราง</dt>
-	  <dt>: ถ้าใช้ Ctrl-F จะหาคำ เฉพาะที่ปรากฏในตาราง</dt>
+	<li><b>Find</b></li>
+	  <dt>: หาผู้ป่วย ด้วย HN หรือคำใดๆ ตามช่องที่ต้องการ</dt>
+	  <dt>: เป็นการหาผู้ป่วยทั้งหมด รวมทั้งที่ไม่ปรากฏในตาราง</dt>
+	  <dt>: ถ้าใช้ Ctrl-F เป็นการหาคำ เฉพาะที่ปรากฏในตาราง</dt>
 	<li><b>Readme</b></li>
   </ul>
 
   <h3>Equipment</h3>
   <ul style="margin-top:0px;">
-	<li>แบบฟอร์มที่เคยใส่ข้อมูลแล้ว ต้องคลิก <button>แก้ไข</button></li>
-	<li>ยกเลิกเลือกปุ่มการจัดท่า คลิก <b>Position</b></li>
-	<li>ยกเลิกเลือกปุ่มชนิด shunt คลิก <b>Shunt</b></li>
-	<li>ช่องใส่ข้อความท้ายแต่ละอุปกรณ์ เป็นบรรทัดเดียว ยาวๆได้ แต่จะซ่อนอยู่ ต้องเลื่อนดู</li>
-	<li>ช่องใส่ข้อความสุดท้าย ได้หลายบรรทัดไม่จำกัด แต่ถ้าเกิน 3 บรรทัด ต้องเลื่อนดู</li>
+	<li>แบบฟอร์มที่เคยใส่ข้อมูลแล้ว</li>
+	<dt>: ต้องคลิก <button>แก้ไข</button></dt>
+	<li>ยกเลิกเลือกปุ่มการจัดท่า</b></li>
+	<dt>: คลิก <b>Position</b> (คลิกลบ)</dt>
+	<li>ยกเลิกเลือกปุ่มชนิด shunt</li>
+	<dt>: คลิก <b>Shunt</b> (คลิกลบ)</dt>
+	<li>ข้อความท้ายอุปกรณ์</li>
+	<dt>: เป็นบรรทัดเดียว ยาวๆได้ ถ้าเกิน จะซ่อนอยู่ ต้องเลื่อนดู</dt>
+	<li>ช่องใส่ข้อความสุดท้าย</li>
+	<dt>: ได้หลายบรรทัดไม่จำกัด แต่ถ้าเกิน 3 บรรทัด ต้องเลื่อนดู</dt>
   </ul>
 
   <h3>Service Review</h3>
   <ul style="margin-top:0px;">
-	<li>ต้องการเปลี่ยนเดือน คลิกหัวลูกศร ซ้าย ขวา</li>
-	<li>เข้าดู Service Review คลิกแถบชื่อเดือน</li>
-	<li><button>Export to xls</button> โอนข้อมูลไป Excel แต่ยังไม่ใช่ไฟล์ Excel ต้อง Save ข้อมูลนั้นที่ Excel อีกที</li>
-	<li>ช่อง <b>Case</b> ลำดับเคสของอาจารย์แต่ละท่าน</li>
-	<li>ช่อง <b>HN Name</b> คลิกดู PACS ได้เฉพาะเครื่องที่เชื่อมกับ PACS</li>
+	<li>ต้องการเปลี่ยนเดือน</li>
+	<dt>: คลิกหัวลูกศร ซ้าย ขวา</dt>
+	<li>เข้าดู Service Review</li>
+	<dt>: คลิกแถบชื่อเดือน</dt>
+	<li><button>Export to xls</button></li>
+	<dt>: โอนข้อมูลไป Excel แต่ยังไม่ใช่ไฟล์ Excel</dt>
+	<dt>: <b>ต้อง Save ข้อมูลที่ Excel อีกที</b></dt>
+	<li>ช่อง <b>№</b></li>
+	<dt>: ลำดับเคสของอาจารย์แต่ละท่าน</dt>
+	<li>ช่อง <b>HN</b></li>
+	<dt>: คลิกดู PACS ได้เฉพาะเครื่องที่เชื่อมกับ PACS</dt>
+	<li>ช่อง <b>Name</b></li>
+	<dt>: คลิกดูภาพถ่ายหรือไฟล์ที่ upload</dt>
 	<li>ช่อง <b>Diagnosis</b></li>
-	<li>ช่อง <b>Treatment</b> มีผลต่อจำนวน Operation, และ Re-operation</li>
-	<dt>: ถ้านับจำนวน Operation ขาดไป ให้ใส่คำว่า op(eration)</dt>
+	<li>ช่อง <b>Treatment</b></li>
+	<dt>: มีผลต่อจำนวน Operation, และ Re-operation</dt>
+	<dt>: ถ้าโปรแกรมนับจำนวน Operation ขาดไป ให้ใส่คำว่า op(eration)</dt>
 	<dt>: เคสที่มีการผ่าตัดซ้ำ ใส่คำว่า re-op(eration)</dt>
-	<li>ช่อง <b>Admission Status</b> มีผลต่อจำนวน Re-admission</li>
+	<li>ช่อง <b>Admission Status</b></li>
+	<dt>: มีผลต่อจำนวน Re-admission</dt>
 	<dt>: เคสที่ admit ซ้ำ ใส่คำว่า re-ad(mission)</dt>
-	<li>ช่อง <b>Final Status</b> มีผลต่อจำนวน Infection, Morbidity, และ Dead</li>
+	<li>ช่อง <b>Final Status</b></li>
+	<dt>: มีผลต่อจำนวน Infection, Morbidity, และ Dead</dt>
 	<dt>: เคสที่มี Infection ใส่คำว่า Infect(ion) หรือ SSI</dt>
 	<dt>: เคสที่มี Morbidity ใส่คำว่า Morbid</dt>
 	<dt>: เคส Dead ใส่คำว่า Dead หรือ  passed away</dt>
-	<li>ช่อง <b>Admit</b> ข้อมูลของโรงพยาบาล</li>
-	<li>ช่อง <b>D/C</b> ข้อมูลของโรงพยาบาล</li>
+	<li>ช่อง <b>Admit</b></li>
+	<dt>: ข้อมูลของโรงพยาบาล</dt>
+	<li>ช่อง <b>D/C</b></li>
+	<dt>: ข้อมูลของโรงพยาบาล</dt>
   </ul>
 </div>
 

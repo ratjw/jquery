@@ -49,7 +49,7 @@ function mainMenu(pointing)
 					postpone(tableID, $row, opdateth, opdate, staffname, qn)
 					break
 				case "changedate":
-					changeDate(tableID, $row, opdateth, opdate, staffname, qn)
+					changeDate($row, opdateth, opdate, staffname, qn)
 					break
 				case "equip":
 					fillEquipTable(book, $row, qn)
@@ -212,7 +212,7 @@ function postpone(tableID, $row, opdateth, opdate, staffname, qn)
 	}
 }
 
-function changeDate(tableID, $row)
+function changeDate($row)
 {
 	var $allRows = $("#tbl tr:has('td'), #queuetbl tr:has('td')")
 	$allRows.on("mouseover", overDate)
@@ -227,16 +227,15 @@ function overDate() { $(this).addClass("pasteDate") }
 
 function outDate() { $(this).removeClass("pasteDate") }
 
-// changeDate arguments = (tableID, $row, opdateth, opdate, staffname, qn)
+// changeDate arguments = ($row, opdateth, opdate, staffname, qn)
 function clickDate(event)
 {
 	var args = event.data,
-		tableID =  args[0],
-		$moverow = args[1],
-		moveOpdateth = args[2],
-		moveOpdate = args[3],
-		staffname = args[4],
-		moveQN = args[5],
+		$moverow = args[0],
+		moveOpdateth = args[1],
+		moveOpdate = args[2],
+		staffname = args[3],
+		moveQN = args[4],
 		moveroom = $moverow.find("td").eq(ROOM).html(),
 
 		$thisrow = $(this),
@@ -245,7 +244,7 @@ function clickDate(event)
 		thisOpdate = getOpdate(thisOpdateth),
 		thisroom = $thiscell.eq(ROOM).html(),
 		thisqn = $thiscell.eq(QN).html(),
-		thisWaitnum = calcWaitnum(tableID, thisOpdateth, $thisrow, $thisrow.next()),
+		thisWaitnum = calcWaitnum(thisOpdateth, $thisrow, $thisrow.next()),
 		allSameDate,
 		allOldCases, moveindex,
 		allNewCases, index, thisindex, casenum,
