@@ -4,5 +4,5 @@
 2013 Third version.
 2017 Fourth version.
 
-Use framework tools jQuery.
+Use library jQuery.
 Not aim at many links to Rama Internal System.
