@@ -295,9 +295,7 @@ function clickDate(event)
 	{
 		if (/BOOK/.test(response)) {
 			updateBOOK(response);
-			if (moveOpdateth) {
-				refillOneDay(moveOpdate)
-			}
+			refillOneDay(moveOpdate)
 			if (moveOpdate !== thisOpdate) {
 				refillOneDay(thisOpdate)
 			}

@@ -434,21 +434,17 @@ function putNameAge(bookq)
 
 function addColor($this, bookqOpdate) 
 {
-	var predate = $this.prev().children("td").eq(OPDATE).html(),
-		prevdate = (predate? predate.numDate() : ""),
-		prevIsOdd = function() {
-			return $this.prev().prop("class").indexOf("odd") >= 0
-		},
-		samePrevDate = function() {
-			return bookqOpdate === prevdate
-		}
-	// clear colored NAMEOFDAYFULL row that is moved to non-color opdate
-	$this.prop("class", "")
-	if ((!samePrevDate && !prevIsOdd()) || (samePrevDate && prevIsOdd())) {
-		$this.addClass("odd")
-	}
+	var prevdate = $this.prev().children("td").eq(OPDATE).html()
+	prevdate = prevdate? prevdate.numDate() : ""
 	// In LARGESTDATE, prevdate = "" but bookqOpdate = LARGESTDATE
-	// So LARGESTDATE cases are !samePrevDate, thus has alternate colors
+	// So LARGESTDATE cases has alternate colors
+	if (((bookqOpdate !== prevdate) && ($this.prev()[0].className.indexOf("odd") < 0))
+	|| ((bookqOpdate === prevdate) && ($this.prev()[0].className.indexOf("odd") >= 0))) {
+		$this.addClass("odd")
+	} else {
+	// clear colored row that is moved to non-color opdate
+	$this.removeClass("odd")
+	}
 }
  
 Date.prototype.ISOdate = function () 

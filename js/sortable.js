@@ -163,14 +163,14 @@ function sortable()
 				if (/BOOK/.test(response)) {
 					updateBOOK(response)
 					if (receiver === "tbl") {
-						if (oldOpdateth) {
-							refillOneDay(oldOpdate)
-						}
+						refillOneDay(oldOpdate)
 						refillOneDay(thisOpdate)
-						if (isSplited()) {
+						if ((isSplited())
+							&& isStaffname(staffname)) {
+								//dragging inside tbl of this staff's case
 							refillstaffqueue()
 						}
-					} else {
+					} else {	//receiver === "queuetbl"
 						refillstaffqueue()
 						refillOneDay(oldOpdate)
 						refillOneDay(thisOpdate)
