@@ -102,7 +102,7 @@ function sortable()
 				thisroom = $thiscell.eq(ROOM).html(),
 				thisqn = $thiscell.eq(QN).html(),
 
-				newWaitnum = calculateWaitnum(receiver, $thisdrop, thisOpdateth),
+				newWaitnum = calcWaitnum(receiver, thisOpdateth, $previtem, $nextitem),
 				allNewCases = allOldCases = [],
 				index,
 				sql = ""

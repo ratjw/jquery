@@ -245,7 +245,7 @@ function clickDate(event)
 		thisOpdate = getOpdate(thisOpdateth),
 		thisroom = $thiscell.eq(ROOM).html(),
 		thisqn = $thiscell.eq(QN).html(),
-		thisWaitnum = calculateWaitnum(tableID, $thisrow, thisOpdateth),
+		thisWaitnum = calcWaitnum(tableID, thisOpdateth, $thisrow, $thisrow.next()),
 		allSameDate,
 		allOldCases, moveindex,
 		allNewCases, index, thisindex, casenum,

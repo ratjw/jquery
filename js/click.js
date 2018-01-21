@@ -363,7 +363,7 @@ function saveContentNoQN(pointed, column, content)
 	var titlename = $('#titlename').html()
 
 	// new case, calculate waitnum
-	var waitnum = calculateWaitnum(tableID, $row, opdateth)
+	var waitnum = calcWaitnum(tableID, opdateth, $row.prev(), $row.next())
 	// store waitnum in row title
 	$row[0].title = waitnum
 
@@ -447,7 +447,7 @@ function saveHN(pointed, hn, content)
 	// if new case, calculate waitnum
 	// store waitnum in row title
 	if (!qn) {
-		waitnum = calculateWaitnum(tableID, $row, opdateth)
+		waitnum = calcWaitnum(tableID, opdateth, $row.prev(), $row.next())
 		$row[0].title = waitnum	
 		sql = "hn=" + content
 		sql += "&waitnum="+ waitnum

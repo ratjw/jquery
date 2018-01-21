@@ -295,21 +295,16 @@ function ConsultsTbl(tableID)
 }
 
 // waitnum is for ordering where there is no oproom, casenum
-function calculateWaitnum(tableID, $thisrow, thisOpdate)
+function calcWaitnum(tableID, thisOpdate, $prevrow, $nextrow)
 {
-	var prevWaitNum = $thisrow.prev()[0]
-	var nextWaitNum = $thisrow.next()[0]
-	if (prevWaitNum) {
-		prevWaitNum = Number(prevWaitNum.title)
-	}
-	if (nextWaitNum) {
-		nextWaitNum = Number(nextWaitNum.title)
-	}
-	var $prevRowCell = $thisrow.prev().children("td")
-	var $nextRowCell = $thisrow.next().children("td")
-	var prevOpdate = $prevRowCell.eq(OPDATE).html()
-	var nextOpdate = $nextRowCell.eq(OPDATE).html()
-	var defaultWaitnum = (ConsultsTbl(tableID))? -1 : 1
+	var prevWaitNum = Number($prevrow.prop("title")),
+		nextWaitNum = Number($nextrow.prop("title")),
+
+		$prevRowCell = $prevrow.children("td"),
+		$nextRowCell = $nextrow.children("td"),
+		prevOpdate = $prevRowCell.eq(OPDATE).html(),
+		nextOpdate = $nextRowCell.eq(OPDATE).html(),
+		defaultWaitnum = (ConsultsTbl(tableID))? -1 : 1
 	//Consults cases have negative waitnum
 
 	if (prevOpdate !== thisOpdate && thisOpdate !== nextOpdate) {

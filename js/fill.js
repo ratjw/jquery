@@ -45,12 +45,16 @@ function fillall(book, table, start, until)
 	var q = findStartRowInBOOK(book, start)
 	var k = findStartRowInBOOK(book, LARGESTDATE)
 
-	book = book.slice(0, k)
+	// get rid of cases with unspecified opdate
+	// Consult cases and new start have no LARGESTDATE, so k = -1
+	if (k >= 0) {
+		book = book.slice(0, k)
+	}
 
 	//i for rows in table (with head as the first row)
 	var i = 0
-	var booklength = book.length
-	for (q; q < booklength; q++)
+	var blen = book.length
+	for (q; q < blen; q++)
 	{	
 		//step over each day that is not in QBOOK
 		while (date < book[q].opdate)
@@ -115,10 +119,10 @@ function refillall()
 
 	//i for rows in table (with head as the first row)
 	var i = 1
-	var booklength = book.length
+	var blen = book.length
 	while (i < tlen)		//make blank rows till the end of existing table
 	{
-		if (q < booklength) {
+		if (q < blen) {
 			//step over each day that is not in book
 			while (date < book[q].opdate)
 			{
