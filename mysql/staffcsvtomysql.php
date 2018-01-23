@@ -1,11 +1,14 @@
 <?php
+	$servername = "localhost";
+	$username = "root";
+	$password = "Zaq1@wsx";
+	$dbname = "neurosurgery";
 
-    $conn = mysql_connect("localhost", "root", "Zaq1@wsx");
-	if (!$conn)
-	    echo "failed to connect the database";
+	$mysqli = new mysqli($servername, $username, $password, $dbname);
+	//$mysqli->query("SET CHARACTER SET utf8");
 
-    mysql_query("use neurosurgery")
-		or die('failed to opendb: ' . mysql_error());
+	if ($mysqli->connect_errno)
+		exit("Connect failed: %s\n". $mysqli->connect_error);
 
     $file = 'staff.csv';
     $size = filesize($file);
@@ -25,18 +28,19 @@
 		if (!array_filter($data))
 			continue;
 		$sql = 'INSERT INTO staff
-					(number, active, code, staffname, specialty, staffoncall)
+					(number, active, code, staffname, specialty, staffoncall, dateoncall)
 				VALUES ('
 					.$data[0].',"'.$data[1]
 					.'","'.$data[2].'","'.$data[3]
-					.'","'.$data[4].'","'.$data[5].'");';
-		mysql_query($sql) 
-			or die (mysql_error());
+					.'","'.$data[4].'","'.$data[5]
+					.'","'.$data[6].'");';
+		$result = $mysqli->query($sql);
+		if (!$result) {
+			return $mysqli->error;
+		}
     }
 
     print 'Wrote data from CSV-File into MySQL';
     fclose ($f);
-
-    mysql_close($conn);
 
 ?>
