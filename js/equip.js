@@ -93,6 +93,10 @@ function showEditableEquip()
 			text: "Save",
 			width: "100",
 			click: function () {
+				if (!$('#copay').val()) {
+					alert("Checklistequip", "<br>ต้องระบุจำนวนเงิน<br>จ่ายไม่ได้เลย = 0")
+					return
+				}
 				Checklistequip()
 				showNonEditableEquip()
 			}
@@ -163,14 +167,15 @@ function getEditedBy(qn) {
 
 function Checklistequip() 
 {
-	var bookqEquip = $('#dialogEquip').data("bookqEquip")
-	var JsonEquip = $('#dialogEquip').data("JsonEquip")
-	var qn = $('#dialogEquip').data("qn")
-	var equipment = {}
-		$( "#dialogEquip input, #dialogEquip textarea" ).each( function() {
-			this.checked && (equipment[this.id] = "checked")
-			this.value && (equipment[this.id] = this.value)
-		})
+	var bookqEquip = $('#dialogEquip').data("bookqEquip"),
+		JsonEquip = $('#dialogEquip').data("JsonEquip"),
+		qn = $('#dialogEquip').data("qn"),
+		equipment = {}
+
+	$( "#dialogEquip input, #dialogEquip textarea" ).each( function() {
+		this.checked && (equipment[this.id] = "checked")
+		this.value && (equipment[this.id] = this.value)
+	})
 	equipment = JSON.stringify(equipment)
 	if (equipment === bookqEquip) {
 		return

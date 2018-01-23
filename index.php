@@ -386,10 +386,10 @@
  <div title="ส่วนเกิน">
   <span style="width:110px;"></span>
   <span style="width:500px;">
-	<input type="checkbox" id="selfpay">
-	<label for="selfpay"><i>**ผู้ป่วยและญาติสามารถ<b><u>จ่ายส่วนเกินได้ </u></b>(เบิกไม่ได้)</i>**
-	 <input type="text" style="width:100px;text-align:right" id="copay"> บาท
-	</label>
+	<span style="color:red;"> ***</span>
+	<i>ผู้ป่วยและญาติสามารถ<b><u>จ่ายส่วนเกินได้ </u></b></i> 
+	<input type="text" style="width:70px;text-align:center" id="copay"> บาท
+	<span style="color:red;"> ***</span>
   </span>
   <br>
   <br>
@@ -693,19 +693,21 @@
 </div>
 
 <div id="dialogReadme" class="dialogBox">
-  <p style="margin:0px;">
-    <span class="ui-icon ui-icon-info"></span> <b>Update 22 มค. 2561</b>
-  </p>
+  <br>
+  <h3><span class="ui-icon ui-icon-info"></span> Update 22 มค. 2561</h3>
 	  <ol style="margin:0px;">
 		<li>Confirm เมื่อ เลื่อนเคสไม่มีกำหนด, ลบเคส</li>
 		<li>Equipment ช่องรายละเอียดยาวตลอดบรรทัด</li>
-		<li>Find รวบรวมเคสของอาจารย์, ชื่อโรค, การผ่าตัด ฯลฯ ส่งออก Excel</li>
-		<li>เรียงเคสตามห้องผ่าตัดและลำดับเคส เวลา-ไม่มีผลในการเรียง</li>
+		<li>Find รวบรวมเคสของอาจารย์, ชื่อโรค, การผ่าตัด ฯลฯ</li>
+		<dt>: ส่งออก Excel</dt>
+		<li>เรียงเคสตามห้องผ่าตัดและลำดับเคส</li>
+		<dt>: เวลา-ไม่มีผลในการเรียง</dt>
 	  </ol>
-  <p style="margin-bottom:0px;"><span class="ui-icon ui-icon-info"></span>
-      ใช้ Browser : Chrome, Firefox, Edge หรือ IE 9+</p>
+  <br>
+  <h3 style="text-align: center;">Web-based Service Record</h3>
   <p style="margin:0px;"><span class="ui-icon ui-icon-info"></span>
-  Login ID, Password ของโรงพยาบาล สำหรับพยาบาล ใช้ Login ID:000000</p>
+  Login ID, Password ของโรงพยาบาล</p>
+	<dd>: พยาบาล ใช้ Login ID:000000 ไม่มี password</dd>
   <p style="margin:0px;">
     <span class="ui-icon ui-icon-info"></span> การเปลี่ยนวันผ่าตัด (Date)
   </p>
@@ -714,13 +716,15 @@
 		<li>ใช้ Menu เปลี่ยนวันที่ (ดูหัวข้อ Menu)</li>
 	  </ol>
   <p style="margin:0px;"><span class="ui-icon ui-icon-info"></span>
-       บันทึกข้อมูลที่ใส่ตามช่อง (cell)  โดย<br><span style="width:20px;"></span>
-   1. อยู่นิ่งๆ 10 วินาที่<br><span style="width:20px;"></span>
-   2. เลื่อนไปตำแหน่งอื่น<br><span style="width:30px;"></span>
-1. คลิกช่องอื่น<br><span style="width:30px;"></span>
-2. กด Tab (ช่องต่อไป) <br><span style="width:30px;"></span>
-3. กด Shift+Tab (ช่องย้อนหลัง)<br><span style="width:30px;"></span>
-4. กด Enter</p>
+       บันทึกข้อมูลที่ใส่ตามช่อง (cell)  โดย
+	<br><span style="width:30px;"></span>
+	1. คลิกช่องอื่น
+	<br><span style="width:30px;"></span>
+	2. กด Tab (ช่องต่อไป) 
+	<br><span style="width:30px;"></span>
+	3. กด Shift+Tab (ช่องย้อนหลัง)
+	<br><span style="width:30px;"></span>
+	4. กด Enter</p>
   <ul style="margin:0px;">
     <li>Enter ขึ้นบรรทัดใหม่บนตาราง</li>
     <li>Shift+Enter ขึ้นบรรทัดใหม่ภายในช่องนั้น</li>
