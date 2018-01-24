@@ -450,7 +450,7 @@
   <br>
   <br>
  </div>
- <div>
+ <span>
   <br>
   <br>
   <span style="width:350px;"></span>
@@ -458,7 +458,7 @@
   <span style="position:absolute" id="editedby"></span>
   <br>
   <br>
- </div>
+ </span>
 </div>
 
 <script type="text/javascript">
