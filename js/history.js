@@ -16,7 +16,7 @@ function editHistory(row, qn)
 		if (/dob/.test(response)) {
 			makehistory(row, response)
 		} else {
-			alert("editHistory", response)
+			Alert("editHistory", response)
 		}
 	}
 }
@@ -125,7 +125,7 @@ function deletedCases()
 		if (/editdatetime/.test(response)) {
 			makedeletedCases(response)
 		} else {
-			alert("deletedCases", response)
+			Alert("deletedCases", response)
 		}
 	}
 }
@@ -255,7 +255,7 @@ function undelete(thisWhen, deleted)
 				}
 				scrolltoThisCase(qn)
 			} else {
-				alert("undelete", response)
+				Alert("undelete", response)
 			}
 		}
 		
@@ -282,7 +282,7 @@ function allCases() {
 		if (/dob/.test(response)) {
 			makeAllCases(response)
 		} else {
-			alert("allCases", response)
+			Alert("allCases", response)
 		}
 	}
 }
@@ -479,7 +479,7 @@ function sqlFind(args)
 		if (/dob/.test(response)) {
 			makeFind(response, search)
 		} else {
-			alert("Find: " + search, response)
+			Alert("Find: " + search, response)
 		}
 	}
 }
@@ -755,7 +755,7 @@ function readme()
 	}).fadeIn();
 }
 
-function alert(title, message)
+function Alert(title, message)
 {
 	var $dialogAlert = $("#dialogAlert")
 	$dialogAlert.css({

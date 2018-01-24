@@ -182,7 +182,7 @@ function saveRoom(pointed, newcontent)
 				createEditcell(newpoint)
 			}
 		} else {
-			alert ("saveRoom", response)
+			Alert ("saveRoom", response)
 		}
 		clearEditcell()
 	}
@@ -218,7 +218,11 @@ function saveCaseNum(pointed, oldcontent, num, time)
 		allCases.splice(num - 1, 0, qn)
 
 		for (var i=0; i<allCases.length; i++) {
-			sql += sqlCaseNum(i + 1, allCases[i])
+			if (allCases[i] === qn) {
+				sql += sqlCaseNum(num, qn)
+			} else {
+				sql += sqlCaseNum(i + 1, allCases[i])
+			}
 		}
 	}
 	if (oldtime !== time) {
@@ -247,7 +251,7 @@ function saveCaseNum(pointed, oldcontent, num, time)
 				createEditcell(newpoint)
 			}
 		} else {
-			alert ("saveCaseNum", response)
+			Alert ("saveCaseNum", response)
 		}
 		clearEditcell()
 	}
@@ -340,7 +344,7 @@ function saveContentQN(pointed, column, content)
 				createEditcell(newpoint)
 			}
 		} else {
-			alert("saveContentQN", response)
+			Alert("saveContentQN", response)
 			pointed.innerHTML = oldcontent
 			// return to previous content
 		}
@@ -355,8 +359,8 @@ function saveContentNoQN(pointed, column, content)
 	var $cells = $row.children("td")
 	var opdateth = $cells.eq(OPDATE).html()
 	var opdate = getOpdate(opdateth)
-	var oproom = $cells.eq(ROOM).html()
-	var casenum = $cells.eq(CASENUM).html()
+	var oproom = $cells.eq(ROOM).html() || null
+	var casenum = $cells.eq(CASENUM).html() || null
 	var staffname = $cells.eq(STAFFNAME).html()
 	var qn = $cells.eq(QN).html()
 	var oldcontent = $("#editcell").data("oldcontent")
@@ -415,7 +419,7 @@ function saveContentNoQN(pointed, column, content)
 				}
 			}
 		} else {
-			alert("saveContentNoQN", response)
+			Alert("saveContentNoQN", response)
 			pointed.innerHTML = oldcontent
 			// return to previous content
 		}
@@ -516,7 +520,7 @@ function saveHN(pointed, hn, content)
 				createEditcell(newpoint)
 			}
 		} else {
-			alert("saveHN", response)
+			Alert("saveHN", response)
 			pointed.innerHTML = oldcontent
 			// unsuccessful entry
 		}
@@ -735,7 +739,7 @@ function changeOncall(pointing, opdate, staffname)
 		if (response === "success") {
 			pointing.innerHTML = htmlwrap(staffname)
 		} else {
-			alert("changeOncall", response)
+			Alert("changeOncall", response)
 		}
 	}
 }

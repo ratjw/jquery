@@ -173,25 +173,6 @@ function putNameAge(bookq)
 	return bookq.patient
 		+ (bookq.dob? ("<br>อายุ " + putAgeOpdate(bookq.dob, bookq.opdate)) : "")
 }
-
-function addColor($this, bookqOpdate) 
-{
-	var predate = $this.prev().children("td").eq(OPDATE).html(),
-		prevdate = (predate? predate.numDate() : ""),
-		prevIsOdd = function() {
-			return $this.prev().prop("class").indexOf("odd") >= 0
-		},
-		samePrevDate = function() {
-			return bookqOpdate === prevdate
-		}
-	// clear colored NAMEOFDAYFULL row that is moved to non-color opdate
-	$this.prop("class", "")
-	if ((!samePrevDate && !prevIsOdd()) || (samePrevDate && prevIsOdd())) {
-		$this.addClass("odd")
-	}
-	// In LARGESTDATE, prevdate = "" but bookqOpdate = LARGESTDATE
-	// So LARGESTDATE cases are !samePrevDate, thus has alternate colors
-}
  
 Date.prototype.ISOdate = function () 
 {	// Javascript Date Object to MySQL date (2014-05-11)

@@ -94,7 +94,7 @@ function showEditableEquip()
 			width: "100",
 			click: function () {
 				if (!$('#copay').val()) {
-					alert("Checklistequip", "<br>ต้องระบุจำนวนเงิน<br>จ่ายไม่ได้เลย = 0")
+					Alert("Checklistequip", "<br>ต้องระบุจำนวนเงิน<br>จ่ายไม่ได้เลย = 0")
 					return
 				}
 				Checklistequip()
@@ -153,14 +153,14 @@ function getEditedBy(qn) {
 
 	function callbackgetEditedby(response)
 	{
-		if (/{/.test(response)) {
+		if (/\[/.test(response)) {
 			var Editedby = ""
 			$.each(JSON.parse(response), function(key, val) {
 				Editedby += (val.editor + " : " + val.editdatetime + "<br>")
 			});
 			$('#editedby').html(Editedby)
 		} else {
-			alert("getEditedby", response)
+			Alert("getEditedby", response)
 		}
 	}
 }
@@ -200,7 +200,7 @@ function Checklistequip()
 			// Roll back. If old form has equips, fill checked & texts
 			// prop("checked", true) : radio and checkbox
 			// .val(val) : <input text> && <textarea>
-			alert("Checklistequip", response)
+			Alert("Checklistequip", response)
 			$('#dialogEquip input').val('')
 			$('#dialogEquip textarea').val('')
 			if ( bookqEquip ) {

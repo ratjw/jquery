@@ -176,7 +176,7 @@ function sortable()
 						refillOneDay(thisOpdate)
 					}
 				} else {
-					alert ("Sortable", response)
+					Alert ("Sortable", response)
 				}
 			}
 		}

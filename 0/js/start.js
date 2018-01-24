@@ -7,58 +7,29 @@ function initialize(userid)
 	gv.user = userid
 	resetTimer()
 
-	$("#login").remove()
-	$("#logo").remove()
-	$("#tblwrapper").show()
+	if (gv.user.length === 6) {
+		$("#login").remove()
+		$("#logo").remove()
+		$("#tblwrapper").show()
+	}
 
 	$(document).contextmenu( function (event) {
 		event.preventDefault();
 	})
 
-	// Prevent the backspace key from navigating back.
-	$(document).off('keydown').on('keydown', function (event) {
-		if (event.keyCode === 8) {
-			var doPrevent = true;
-			var types = ["text", "password", "file", "search", "email", "number",
-						"date", "color", "datetime", "datetime-local", "month", "range",
-						"search", "tel", "time", "url", "week"];
-			var d = $(event.srcElement || event.target);
-			var disabled = d.prop("readonly") || d.prop("disabled");
-			if (!disabled) {
-				if (d[0].isContentEditable) {
-					doPrevent = false;
-				} else if (d.is("input")) {
-					var type = d.attr("type");
-					if (type) {
-						type = type.toLowerCase();
-					}
-					if (types.indexOf(type) > -1) {
-						doPrevent = false;
-					}
-				} else if (d.is("textarea")) {
-					doPrevent = false;
-				}
-			}
-			if (doPrevent) {
-				event.preventDefault();
-				return false;
-			}
-		}
-	});
-
 	$("#wrapper").on("click", function (event) {
+		resetTimer();
 		event.stopPropagation()
 		var target = event.target
-		var rowi = $(target).closest('tr')
-		var qn = rowi.children('td').eq(QN).html()
+		var row = $(target).closest('tr')
+		var qn = row.children('td').eq(QN).html()
 		if ((target.nodeName !== "TD") || (!qn)) {
-			event.preventDefault()
-			event.stopPropagation()
 			return false
 		}
-		fillEquipTable(gv.BOOK, rowi, qn)
+		fillEquipTable(gv.BOOK, row, qn)
 	})
-	$("#wrapper").keydown(function(event) {
+
+	$(document).keydown(function(event) {
 		event.preventDefault();
 	})
 
@@ -75,19 +46,63 @@ function loading(response)
 	if (/BOOK/.test(response)) {
 		localStorage.setItem('ALLBOOK', response)
 		updateBOOK(response)
+		if (gv.user.length === 6) {
 			fillupstart();
 			fillConsults()
+		} else {
+			fillForRoom()
+		}
 	} else {
 		response = localStorage.getItem('ALLBOOK')
 		var error = "<br><br>Response from server has no data"
 		if (/BOOK/.test(response)) {
-			alert("Server Error", error + "<br><br>Use localStorage instead");
+			Alert("Server Error", error + "<br><br>Use localStorage instead");
 			updateBOOK(response)
 			fillupstart();
 			fillConsults()
 		} else {
-			alert("Server Error", error + "<br><br>No localStorage backup");
+			Alert("Server Error", error + "<br><br>No localStorage backup");
 		}
+	}
+}
+
+function fillForRoom()
+{
+	var today = new Date().ISOdate(),
+		book = gv.BOOK,
+		sameDateRoom = sameDateRoomBookQN(book, today, gv.user),
+		slen = sameDateRoom.length,
+		i = 0,
+		showCase = function() {
+			fillEquipTable(book, $(), sameDateRoom[i])
+		}
+
+	if (slen) {
+		showCase()
+		$('#dialogEquip').dialog("option", "buttons", [
+			{
+				text: "Previous",
+				width: "100",
+				click: function () {
+					if (i > 0) {
+						i = i-1
+						showCase()
+					}
+				}
+			},
+			{
+				text: "Next",
+				width: "100",
+				click: function () {
+					if (i < slen-1) {
+						i = i+1
+						showCase()
+					}
+				}
+			}
+		])
+	} else {
+		Alert("dialogEquip", "<br><br>No Case")
 	}
 }
 
@@ -153,6 +168,7 @@ function resetTimer()
 	// poke server every 10 sec.
 	clearTimeout(gv.timer)
 	gv.timer = setTimeout( updating, 10000)
+	gv.idleCounter = 0
 }
 
 function updating()
@@ -172,9 +188,12 @@ function updating()
 				getUpdate()
 			}
 		}
+		// idle not more than 10 min.
+		gv.idleCounter += 1
+		if (gv.idleCounter > 59) {
+			window.location = window.location.href
+		}
 	}
-
-	resetTimer()
 }
 
 // There is some changes in database from other users
@@ -188,7 +207,7 @@ function getUpdate()
 			updateBOOK(response)
 			refillall()
 		} else {
-			alert ("getUpdate", response)
+			Alert ("getUpdate", response)
 		}
 	}
 }

@@ -448,6 +448,7 @@
   <span style="width:120px;"></span>
   <input type="text" style="width:500px;" id="position">
   <br>
+  <br>
  </div>
  <div title="Imaging">
   <span style="width:110px;">Imaging</span>
@@ -479,6 +480,7 @@
   <span style="width:120px;"></span>
   <input type="text" style="width:500px;" id="Imaging">
   <br>
+  <br>
  </div>
  <div title="อุปกรณ์ยึดศีรษะ">
   <span style="width:110px;">อุปกรณ์ยึดศีรษะ</span>
@@ -497,6 +499,7 @@
   <br>
   <span style="width:120px;"></span>
   <input type="text" style="width:500px;" id="headHolder">
+  <br>
   <br>
  </div>
  <div title="เครื่องตัดกระดูก">
@@ -517,6 +520,7 @@
   <span style="width:120px;"></span>
   <input type="text" style="width:500px;" id="Craniotome">
   <br>
+  <br>
  </div>
  <div title="กล้อง">
   <span style="width:110px;">กล้อง</span>
@@ -536,24 +540,6 @@
   <span style="width:120px;"></span>
   <input type="text" placeholder="ระบุยี่ห้อ" style="width:500px;" id="scope">
   <br>
- </div>
- <div title="CUSA">
-  <span style="width:110px;">CUSA</span>
-  <span style="width:150px;">
-	<input type="checkbox" id="Excell">
-	<label for="Excell">Excell</label>
-  </span>
-  <span style="width:140px;">
-	<input type="checkbox" id="Soring">
-	<label for="Soring">Soring</label>
-  </span>
-  <span style="width:110px;">
-	<input type="checkbox" id="Sonar">
-	<label for="Sonar">Sonar</label>
-  </span>
-  <br>
-  <span style="width:120px;"></span>
-  <input type="text" style="width:500px;" id="CUSA">
   <br>
  </div>
  <div title="Retractor">
@@ -574,6 +560,27 @@
   <span style="width:120px;"></span>
   <input type="text" style="width:500px;" id="Retractor">
   <br>
+  <br>
+ </div>
+ <div title="CUSA">
+  <span style="width:110px;">CUSA</span>
+  <span style="width:150px;">
+	<input type="checkbox" id="Excell">
+	<label for="Excell">Excell</label>
+  </span>
+  <span style="width:140px;">
+	<input type="checkbox" id="Soring">
+	<label for="Soring">Soring</label>
+  </span>
+  <span style="width:110px;">
+	<input type="checkbox" id="Sonar">
+	<label for="Sonar">Sonar</label>
+  </span>
+  <br>
+  <span style="width:120px;"></span>
+  <input type="text" style="width:500px;" id="CUSA">
+  <br>
+  <br>
  </div>
  <div title="U/S">
   <span style="width:110px;">U/S</span>
@@ -592,6 +599,7 @@
   <br>
   <span style="width:120px;"></span>
   <input type="text" style="width:500px;" id="US">
+  <br>
   <br>
  </div>
  <div title="Shunt">
@@ -638,6 +646,7 @@
   <span style="width:120px;"></span>
   <input type="text" style="width:500px;" id="Shunt">
   <br>
+  <br>
  </div>
  <div title="เครื่องมือบริษัท">
   <span style="width:110px;">เครื่องมือบริษัท </span>
@@ -647,6 +656,7 @@
   <br>
   <span style="width:120px;"></span>
   <input type="text" placeholder="ชื่อบริษัท ชื่อเครื่องมือ" style="width:500px;" id="company">
+  <br>
   <br>
  </div>
  <div title="อุปกรณ์อื่นๆ">
@@ -662,6 +672,7 @@
   <br>
   <span style="width:120px;"></span>
   <input type="text" style="width:500px;" id="other">
+  <br>
   <br>
  </div>
  <div title="Monitor">
@@ -679,11 +690,7 @@
   <br>
   <br>
  </div>
- <div title="รายละเอียด">
-  <span style="width:113px;float:left;">Notice</span>
-  <span> <textarea placeholder="รายละเอียด"></textarea></span>
-  <br>
-  <br>
+ <div>
   <span style="width:300px;"></span>
   <span style="width:70px;"> Edited by </span>
   <span style="position:absolute" id="editedby"></span>

@@ -20,6 +20,32 @@
 </HEAD>
 <BODY>
 
+<p id="logo" style="text-align:center;"><img width="170" height="150" src="css/pic/logoRama.png"></p>
+
+<div id="login">
+	<br>
+	<h3>Neurosurgery Service</h3>
+
+	<form method="post" action="">
+
+		<?php 
+			$userid = $password = "";
+		?>
+
+		Login ID: <input id="userid" type="text" maxlength="6" size="6" name="userid"
+					value="<?php echo $userid;?>" oninput="namesix()" 
+					onpropertychange="namesix()">
+		<br>
+		<br>
+		Password: <input id="password" type="password" name="password"
+					maxlength="16" size="8" value="<?php echo $password;?>">
+		<br>
+		<br>
+		<input type="submit" value="Sign in">
+		<br><br>
+	</form>
+</div>
+
 <div id="wrapper">
  <div id="tblwrapper" style="display:none">
   <div id="tblcontainer">
@@ -182,6 +208,7 @@
   <span style="width:120px;"></span>
   <input type="text" style="width:500px;" id="position">
   <br>
+  <br>
  </div>
  <div title="Imaging">
   <span style="width:110px;">Imaging</span>
@@ -213,6 +240,7 @@
   <span style="width:120px;"></span>
   <input type="text" style="width:500px;" id="Imaging">
   <br>
+  <br>
  </div>
  <div title="อุปกรณ์ยึดศีรษะ">
   <span style="width:110px;">อุปกรณ์ยึดศีรษะ</span>
@@ -231,6 +259,7 @@
   <br>
   <span style="width:120px;"></span>
   <input type="text" style="width:500px;" id="headHolder">
+  <br>
   <br>
  </div>
  <div title="เครื่องตัดกระดูก">
@@ -251,6 +280,7 @@
   <span style="width:120px;"></span>
   <input type="text" style="width:500px;" id="Craniotome">
   <br>
+  <br>
  </div>
  <div title="กล้อง">
   <span style="width:110px;">กล้อง</span>
@@ -268,26 +298,8 @@
   </span>
   <br>
   <span style="width:120px;"></span>
-  <input type="text" placeholder="ระบุยี่ห้อ" style="width:500px;" id="scope">
+  <input type="text" style="width:500px;" id="scope">
   <br>
- </div>
- <div title="CUSA">
-  <span style="width:110px;">CUSA</span>
-  <span style="width:150px;">
-	<input type="checkbox" id="Excell">
-	<label for="Excell">Excell</label>
-  </span>
-  <span style="width:140px;">
-	<input type="checkbox" id="Soring">
-	<label for="Soring">Soring</label>
-  </span>
-  <span style="width:110px;">
-	<input type="checkbox" id="Sonar">
-	<label for="Sonar">Sonar</label>
-  </span>
-  <br>
-  <span style="width:120px;"></span>
-  <input type="text" style="width:500px;" id="CUSA">
   <br>
  </div>
  <div title="Retractor">
@@ -308,6 +320,27 @@
   <span style="width:120px;"></span>
   <input type="text" style="width:500px;" id="Retractor">
   <br>
+  <br>
+ </div>
+ <div title="CUSA">
+  <span style="width:110px;">CUSA</span>
+  <span style="width:150px;">
+	<input type="checkbox" id="Excell">
+	<label for="Excell">Excell</label>
+  </span>
+  <span style="width:140px;">
+	<input type="checkbox" id="Soring">
+	<label for="Soring">Soring</label>
+  </span>
+  <span style="width:110px;">
+	<input type="checkbox" id="Sonar">
+	<label for="Sonar">Sonar</label>
+  </span>
+  <br>
+  <span style="width:120px;"></span>
+  <input type="text" style="width:500px;" id="CUSA">
+  <br>
+  <br>
  </div>
  <div title="U/S">
   <span style="width:110px;">U/S</span>
@@ -326,6 +359,7 @@
   <br>
   <span style="width:120px;"></span>
   <input type="text" style="width:500px;" id="US">
+  <br>
   <br>
  </div>
  <div title="Shunt">
@@ -372,6 +406,7 @@
   <span style="width:120px;"></span>
   <input type="text" style="width:500px;" id="Shunt">
   <br>
+  <br>
  </div>
  <div title="เครื่องมือบริษัท">
   <span style="width:110px;">เครื่องมือบริษัท </span>
@@ -380,7 +415,8 @@
   </span>
   <br>
   <span style="width:120px;"></span>
-  <input type="text" placeholder="ชื่อบริษัท ชื่อเครื่องมือ" style="width:500px;" id="company">
+  <input type="text" style="width:500px;" id="company">
+  <br>
   <br>
  </div>
  <div title="อุปกรณ์อื่นๆ">
@@ -397,6 +433,7 @@
   <span style="width:120px;"></span>
   <input type="text" style="width:500px;" id="other">
   <br>
+  <br>
  </div>
  <div title="Monitor">
   <span style="width:110px;">Monitor</span>
@@ -409,13 +446,11 @@
   <span style="width:65px;"><input type="checkbox" id="MEP"><label for="MEP">MEP</label></span>
   <br>
   <span style="width:120px;"></span>
-  <input type="text" placeholder="อื่นๆ" style="width:500px;" id="Monitor">
+  <input type="text" style="width:500px;" id="Monitor">
   <br>
   <br>
  </div>
- <div title="รายละเอียด">
-  <span style="width:113px;float:left;">Notice</span>
-  <span> <textarea placeholder="รายละเอียด"></textarea></span>
+ <div>
   <br>
   <br>
   <span style="width:300px;"></span>
@@ -426,38 +461,12 @@
  </div>
 </div>
 
-<p id="logo" style="text-align:center;"><img width="170" height="150" src="css/pic/logoRama.png"></p>
-
-<div id="login">
-	<br>
-	<h3>Neurosurgery Service</h3>
-
-	<form method="post" action="">
-
-		<?php 
-			$userid = $password = "";
-		?>
-
-		Login ID: <input id="userid" type="text" maxlength="6" size="6" name="userid"
-					value="<?php echo $userid;?>" oninput="namesix()" 
-					onpropertychange="namesix()">
-		<br>
-		<br>
-		Password: <input id="password" type="password" name="password"
-					maxlength="16" size="8" value="<?php echo $password;?>">
-		<br>
-		<br>
-		<input type="submit" value="Sign in">
-		<br><br>
-	</form>
-</div>
-
 <script type="text/javascript">
 
 function namesix()
 {
 	var userid = $("#userid").val()
-	if (/^\d{6}$/.test(userid)) {	//six digits only
+	if (/^\d{6}$/.test(userid)) {
 		$("#password").focus()
 	}
 }
@@ -469,7 +478,13 @@ function namesix()
 		$userid = $_POST["userid"];
 		$password = $_POST["password"];
 
-		if (preg_match('/^\d{6}$/', $userid)) {	//six digits only
+		// for each OR room
+		if ($userid > "0" && $userid < "20") {
+			echo "<SCRIPT type='text/javascript'>initialize('".$userid."')</SCRIPT>";
+		}
+
+		elseif (preg_match('/^\d{6}$/', $userid)) {
+			// for production
 			if (strpos($_SERVER["SERVER_NAME"], "surgery.rama") !== false) {
 				$wsdl="http://appcenter/webservice/patientservice.wsdl";
 				$client = new SoapClient($wsdl);
@@ -477,6 +492,7 @@ function namesix()
 				$resulty = simplexml_load_string($resultx);
 				$resultz = (string)$resulty->children()->children()->role;
 			}
+			// for developer
 			elseif (strpos($_SERVER["SERVER_NAME"], "localhost") !== false)  {
 				$resultz = "S";
 			}
@@ -490,7 +506,7 @@ function namesix()
 			if ($resultz === "S" || $resultz === "R" || $resultz === "N") {
 				echo "<SCRIPT type='text/javascript'>initialize('".$userid."')</SCRIPT>";
 			} else {
-				echo "<SCRIPT type='text/javascript'>alert('Login Error','<br><br>wrong username or password')</SCRIPT>";
+				echo "<SCRIPT type='text/javascript'>Alert('Login Error','<br><br>wrong username or password')</SCRIPT>";
 			}
 		}
 	}

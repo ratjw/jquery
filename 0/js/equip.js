@@ -45,6 +45,16 @@ function fillEquipTable(book, $row, qn)
 	}
 	showNonEditableEquip()
 
+	$dialogEquip.find("div").each(function() {
+		this.style.display = "none" 
+	})
+	$dialogEquip.find("input").each(function() {
+		if (this.checked || this.value) {
+			$(this).closest("div").css("display", "block")
+		}
+	})
+
+
 	var height = window.innerHeight
 	if (height > 1000) {
 		height = 1000
@@ -67,40 +77,9 @@ function fillEquipTable(book, $row, qn)
 
 function showNonEditableEquip()
 {
-	$('#dialogEquip').dialog("option", "buttons", [])
-	disableInput()
-}
-
-function disableInput() {
-	$('#dialogEquip input').on("click", returnFalse)
+	$('#dialogEquip input').on("click", function() { return false })
 	$('#dialogEquip input[type=text]').prop('disabled', true)
 	$('#dialogEquip textarea').prop('disabled', true)
-	$('#clearPosition').off('click', clearPosition)
-	$('#clearShunt').off('click', clearShunt)
-}
-
-// clearPosition : uncheck radio button of Positions
-// clearShunt : uncheck radio button of Shunts
-function enableInput() {
-	$('#dialogEquip input').off("click", returnFalse)
-	$('#dialogEquip input[type=text]').prop('disabled', false)
-	$('#dialogEquip textarea').prop('disabled', false)
-	$('#clearPosition').on('click', clearPosition)
-	$('#clearShunt').on('click', clearShunt)
-}
-
-function clearPosition() {
-	$('#dialogEquip input[name=pose]').prop('checked', false)
-}
-
-function clearShunt() {
-	$('#dialogEquip input[name=head]').prop('checked', false)
-	$('#dialogEquip input[name=peritoneum]').prop('checked', false)
-	$('#dialogEquip input[name=program]').prop('checked', false)
-}
-
-function returnFalse() {
-	return false
 }
 
 function getEditedBy(qn) {
@@ -112,14 +91,14 @@ function getEditedBy(qn) {
 
 	function callbackgetEditedby(response)
 	{
-		if (/{/.test(response)) {
+		if (/\[/.test(response)) {
 			var Editedby = ""
 			$.each(JSON.parse(response), function(key, val) {
 				Editedby += (val.editor + " : " + val.editdatetime + "<br>")
 			});
 			$('#editedby').html(Editedby)
 		} else {
-			alert("getEditedby", response)
+			Alert("getEditedby", response)
 		}
 	}
 }

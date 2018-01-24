@@ -207,7 +207,7 @@ function postpone(tableID, $row, opdateth, opdate, staffname, qn)
 			}
 			scrolltoThisCase(qn)
 		} else {
-			alert ("postpone", response)
+			Alert ("postpone", response)
 		}
 	}
 }
@@ -310,7 +310,7 @@ function clickDate(event)
 			} 
 			scrolltoThisCase(moveQN)
 		} else {
-			alert ("changeDate", response)
+			Alert ("changeDate", response)
 		}
 	}
 }
@@ -387,7 +387,7 @@ function deleteCase(tableID, $row, opdateth, opdate, staffname, qn)
 				refillOneDay(opdate)
 			}
 		} else {
-			alert ("deleteCase", response)
+			Alert ("deleteCase", response)
 		}
 	}
 }

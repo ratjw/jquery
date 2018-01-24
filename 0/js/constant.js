@@ -15,18 +15,6 @@ var TREATMENT	= 7;
 var NOTE		= 8;
 var QN			= 9;
 
-//servicetbl
-var CASENUMSV		= 0;
-var HNSV			= 1;
-var NAMESV			= 2;
-var DIAGNOSISSV	= 3;
-var TREATMENTSV	= 4;
-var ADMISSIONSV	= 5;
-var FINALSV		= 6;
-var ADMITSV		= 7;
-var DISCHARGESV	= 8;
-var QNSV			= 9;
-
 // NAMEOFDAYABBR for row color
 // NAMEOFDAYFULL for 1st column color
 var NAMEOFDAYABBR	= ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];

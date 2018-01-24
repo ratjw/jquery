@@ -105,7 +105,7 @@ function getfromServer(fromDate, toDate)
 	{
 		/dob/.test(response)
 			? defer.resolve( JSON.parse(response) )
-			: alert("getfromServer", response)
+			: Alert("getfromServer", response)
 	}
 }
 
@@ -313,7 +313,7 @@ function getAdmitDischargeDate(SERVICE, fromDate, toDate)
 			fillAdmitDischargeDate(SERVICE)
 		}
 //		else {
-//			alert("getAdmitDischargeDate", response)
+//			Alert("getAdmitDischargeDate", response)
 //		}
 	}
 }
@@ -513,7 +513,7 @@ function saveContentService(pointed, column, content)	//column name in MYSQL
 					addColorService($row, newcolor)	//td.newclass
 			})
 		} else {
-			alert("saveContentService", response)
+			Alert("saveContentService", response)
 			pointed.innerHTML = oldcontent		//return to previous content
 		}
 	}

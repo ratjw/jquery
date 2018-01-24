@@ -185,13 +185,13 @@ function loading(response)
 		response = localStorage.getItem('ALLBOOK')
 		var error = "<br><br>Response from server has no data"
 		if (/BOOK/.test(response)) {
-			alert("Server Error", error + "<br><br>Use localStorage instead");
+			Alert("Server Error", error + "<br><br>Use localStorage instead");
 			updateBOOK(response)
 			fillupstart();
 			setStafflist()
 			fillConsults()
 		} else {
-			alert("Server Error", error + "<br><br>No localStorage backup");
+			Alert("Server Error", error + "<br><br>No localStorage backup");
 		}
 	}
 }
@@ -343,7 +343,7 @@ function getUpdate()
 				refillstaffqueue()
 			}
 		} else {
-			alert ("getUpdate", response)
+			Alert ("getUpdate", response)
 		}
 	}
 }
