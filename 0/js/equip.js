@@ -45,7 +45,7 @@ function fillEquipTable(book, $row, qn)
 	}
 	showNonEditableEquip()
 
-	$dialogEquip.find("div").each(function() {
+	$dialogEquip.find("div:has('input')").each(function() {
 		this.style.display = "none" 
 	})
 	$dialogEquip.find("input").each(function() {
