@@ -308,7 +308,7 @@ function filldata(bookq, rowi)
 	}
 	cells[NAME].className = bookq.patient? "camera" : ""
 
-	cells[ROOM].innerHTML = bookq.oproom
+	cells[ROOM].innerHTML = bookq.oproom || ""
 	cells[CASENUM].innerHTML = putCasenumTime(bookq)
 	cells[STAFFNAME].innerHTML = bookq.staffname
 	cells[HN].innerHTML = bookq.hn
@@ -409,7 +409,7 @@ jQuery.fn.extend({
 			cells[OPDATE].className = dayName(NAMEOFDAYABBR, bookq.opdate)
 		}
 		cells[OPDATE].innerHTML = putOpdate(bookq.opdate)
-		cells[ROOM].innerHTML = bookq.oproom
+		cells[ROOM].innerHTML = bookq.oproom || ""
 		cells[CASENUM].innerHTML = putCasenumTime(bookq)
 		cells[STAFFNAME].innerHTML = bookq.staffname
 		cells[HN].innerHTML = bookq.hn

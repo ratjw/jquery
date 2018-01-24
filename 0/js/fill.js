@@ -152,7 +152,7 @@ function filldata(bookq, rowi)
 	}
 	cells[NAME].className = bookq.patient? "camera" : ""
 
-	cells[ROOM].innerHTML = bookq.oproom
+	cells[ROOM].innerHTML = bookq.oproom || ""
 	cells[CASENUM].innerHTML = putCasenumTime(bookq)
 	cells[STAFFNAME].innerHTML = bookq.staffname
 	cells[HN].innerHTML = bookq.hn

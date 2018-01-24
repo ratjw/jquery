@@ -494,7 +494,7 @@ function saveHN(pointed, hn, content)
 			$cells.eq(NAME).addClass("camera")
 
 			// old case patient
-			$cells.eq(ROOM).html(bookq.oproom)
+			$cells.eq(ROOM).html(bookq.oproom || "")
 			$cells.eq(CASENUM).html(putCasenumTime(bookq))
 			$cells.eq(STAFFNAME).html(bookq.staffname)
 			$cells.eq(NAME).html(putNameAge(bookq))
@@ -543,7 +543,7 @@ function refillAnotherTableCell(tableID, cellindex, qn)
 	switch(cellindex)
 	{
 		case ROOM:
-			cells[ROOM].innerHTML = bookq.oproom
+			cells[ROOM].innerHTML = bookq.oproom || ""
 			break
 		case CASENUM:
 			cells[CASENUM].innerHTML = putCasenumTime(bookq)

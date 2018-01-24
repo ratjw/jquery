@@ -5,8 +5,8 @@ function fillEquipTable(book, $row, qn)
 	var bookqEquip = bookq.equipment
 	var JsonEquip = bookqEquip? JSON.parse(bookqEquip) : {}
 
-	document.getElementById("oproom").innerHTML = bookq.oproom
-	document.getElementById("casenum").innerHTML = bookq.casenum
+	document.getElementById("oproom").innerHTML = bookq.oproom || ""
+	document.getElementById("casenum").innerHTML = bookq.casenum || ""
 	document.getElementById("optime").innerHTML = bookq.optime
 	document.getElementById("opday").innerHTML = NAMEOFDAYTHAI[(new Date(bookq.opdate)).getDay()]
 	document.getElementById("opdate").innerHTML = putOpdate(bookq.opdate)
