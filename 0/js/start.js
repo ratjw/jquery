@@ -46,7 +46,8 @@ function loading(response)
 			$("#tblwrapper").show()
 			fillupstart();
 			fillConsults()
-		} else {
+		}
+		else if (gv.user.length === 1 || gv.user.length === 2) {
 			fillForRoom()
 		}
 	} else {

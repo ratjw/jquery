@@ -896,7 +896,7 @@
 function namesix()
 {
 	var userid = $("#userid").val()
-	if (/^\d{6}$/.test(userid)) {	//six digits only
+	if (/^\d{6}$/.test(userid)) {
 		$("#password").focus()
 	}
 }
@@ -918,28 +918,35 @@ function namesix()
 				$resulty = simplexml_load_string($resultx);
 				$resultz = (string)$resulty->children()->children()->role;
 			}
-			elseif (strpos($_SERVER["SERVER_NAME"], "localhost") !== false)  {
+			elseif ($userid === "002717") {
+				$resultz = "N";
+			} else {
 				$resultz = "S";
 			}
-			elseif (strpos($_SERVER["SERVER_NAME"], "10.6.166.92") !== false)  {
+/*
+			elseif (strpos($_SERVER["SERVER_NAME"], "localhost") !== false) {
 				$resultz = "S";
 			}
-			elseif (strpos($_SERVER["SERVER_NAME"], "192.168") !== false)  {
+			elseif (strpos($_SERVER["SERVER_NAME"], "10.6.166.92") !== false) {
 				$resultz = "S";
 			}
+			elseif (strpos($_SERVER["SERVER_NAME"], "192.168") !== false) {
+				$resultz = "S";
+			}
+*/
 		}
 
 		if ($resultz === "S" || $resultz === "R" || $userid === "000000") {
 			echo "<SCRIPT type='text/javascript'>
-				initialize()
 				localStorage.setItem('userid', '$userid')
+				initialize()
 			</SCRIPT>";
 		}
 		// 1 or 2 digits for each OR room
 		elseif ($resultz === "N" || preg_match('/^\d{1,2}$/', $userid)) {
 			echo "<SCRIPT type='text/javascript'>
-				window.open('0','_self')
 				localStorage.setItem('userid', '$userid')
+				window.open('0','_self')
 			</SCRIPT>";
 		}
 	}
