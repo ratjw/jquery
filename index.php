@@ -11,6 +11,7 @@
 <script src="js/jquery-1.12.4.min.js"></script>
 <script src="js/jquery.mousewheel.min.js"></script>
 <script src="js/jquery-ui.min.js"></script>
+
 <script src="js/click.js"></script>
 <script src="js/constant.js"></script>
 <script src="js/equip.js"></script>
@@ -690,13 +691,19 @@
   <br>
   <br>
  </div>
- <div>
-  <span style="width:300px;"></span>
+ <div title="Notice">
+  <span style="width:110px;float:left">Notice</span>
+  <span> <textarea placeholder="เครื่องมือพิเศษอื่นๆ" id="Notice"></textarea></span>
+  <br>
+  <br>
+ </div>
+ <span>
+  <span style="width:350px;"></span>
   <span style="width:70px;"> Edited by </span>
   <span style="position:absolute" id="editedby"></span>
   <br>
   <br>
- </div>
+ </span>
 </div>
 
 <div id="dialogReadme" class="dialogBox">
@@ -900,8 +907,10 @@ function namesix()
 	if ($_SERVER["REQUEST_METHOD"] === "POST") {
 		$userid = $_POST["userid"];
 		$password = $_POST["password"];
+		$resultz = "";
 
-		if (preg_match('/^\d{6}$/', $userid)) {	//six digits only
+		// 6 digits if use username
+		if (preg_match('/^\d{6}$/', $userid)) {
 			if (strpos($_SERVER["SERVER_NAME"], "surgery.rama") !== false) {
 				$wsdl="http://appcenter/webservice/patientservice.wsdl";
 				$client = new SoapClient($wsdl);
@@ -918,10 +927,20 @@ function namesix()
 			elseif (strpos($_SERVER["SERVER_NAME"], "192.168") !== false)  {
 				$resultz = "S";
 			}
+		}
 
-			if ($resultz === "S" || $resultz === "R" || $userid === "000000") {
-				echo "<SCRIPT type='text/javascript'>initialize('".$userid."')</SCRIPT>";
-			}
+		if ($resultz === "S" || $resultz === "R" || $userid === "000000") {
+			echo "<SCRIPT type='text/javascript'>
+				initialize()
+				localStorage.setItem('userid', '$userid')
+			</SCRIPT>";
+		}
+		// 1 or 2 digits for each OR room
+		elseif ($resultz === "N" || preg_match('/^\d{1,2}$/', $userid)) {
+			echo "<SCRIPT type='text/javascript'>
+				window.open('0','_self')
+				localStorage.setItem('userid', '$userid')
+			</SCRIPT>";
 		}
 	}
 ?>

@@ -45,7 +45,7 @@ function fillEquipTable(book, $row, qn)
 	}
 	showNonEditableEquip()
 
-	$dialogEquip.find("div:has('input')").each(function() {
+	$dialogEquip.find("div").each(function() {
 		this.style.display = "none" 
 	})
 	$dialogEquip.find("input").each(function() {
@@ -53,6 +53,9 @@ function fillEquipTable(book, $row, qn)
 			$(this).closest("div").css("display", "block")
 		}
 	})
+	if ($dialogEquip.find("textarea").val()) {
+		$dialogEquip.find("textarea").closest("div").css("display", "block")
+	}
 
 
 	var height = window.innerHeight

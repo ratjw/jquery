@@ -1,10 +1,10 @@
 
-function initialize(userid)
+function initialize()
 {
 	// "=init" tells book.php to get staff oncall also
 	Ajax(MYSQLIPHP, "nosqlReturnbook=init", loading);
 
-	gv.user = userid
+	gv.user = localStorage.getItem('userid')
 	resetTimer()
 
 	$("#login").remove()
@@ -63,7 +63,7 @@ function initialize(userid)
 		}
 	});
 
-	if (userid === "000000") {
+	if (gv.user === "000000") {
 		$("#wrapper").on("click", function (event) {
 			event.stopPropagation()
 			var target = event.target

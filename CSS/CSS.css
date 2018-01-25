@@ -379,7 +379,8 @@ button.ui-datepicker-current {
 
 #dialogEquip textarea {
 	width: 500px;
-	height: 70px;
+	height: 55px;
+	padding: 2;
 	color: blue;
 	font-weight: bold;
 }

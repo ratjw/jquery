@@ -1,17 +1,11 @@
 
-function initialize(userid)
+function initialize()
 {
 	// "=init" tells book.php to get staff oncall also
 	Ajax(MYSQLIPHP, "nosqlReturnbook=init", loading);
 
-	gv.user = userid
+	gv.user = localStorage.getItem('userid')
 	resetTimer()
-
-	if (gv.user.length === 6) {
-		$("#login").remove()
-		$("#logo").remove()
-		$("#tblwrapper").show()
-	}
 
 	$(document).contextmenu( function (event) {
 		event.preventDefault();
@@ -47,6 +41,9 @@ function loading(response)
 		localStorage.setItem('ALLBOOK', response)
 		updateBOOK(response)
 		if (gv.user.length === 6) {
+			$("#login").remove()
+			$("#logo").remove()
+			$("#tblwrapper").show()
 			fillupstart();
 			fillConsults()
 		} else {
@@ -66,6 +63,7 @@ function loading(response)
 	}
 }
 
+// gv.user is room number
 function fillForRoom()
 {
 	var today = new Date().ISOdate(),
