@@ -5,6 +5,7 @@ function initialize()
 	Ajax(MYSQLIPHP, "nosqlReturnbook=init", loading);
 
 	gv.user = localStorage.getItem('userid')
+	localStorage.removeItem('userid')
 	resetTimer()
 
 	$(document).contextmenu( function (event) {
