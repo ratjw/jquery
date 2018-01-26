@@ -3,9 +3,19 @@
 <HEAD>
 <link href="css/jquery-ui.min.css" rel="stylesheet">
 <link href="css/CSS.css" rel="stylesheet">
+
 <script src="js/jquery-1.12.4.min.js"></script>
 <script src="js/jquery.mousewheel.min.js"></script>
 <script src="js/jquery-ui.min.js"></script>
+
+<script>
+function namesix() {
+	var userid = document.getElementById("userid").value
+	if (/^\d{6}$/.test(userid)) {
+		$("#password").focus()
+	}
+}
+</script>
 </HEAD>
 <BODY>
 <p id="logo" style="text-align:center;"><img width="170" height="150" src="css/pic/logoRama.png"></p>
@@ -31,18 +41,6 @@
 	</form>
 </div>
 
-<script type="text/javascript">
-
-function namesix()
-{
-	var userid = document.getElementById("userid").value
-	if (/^\d{6}$/.test(userid)) {
-		$("#password").focus()
-	}
-}
-
-</script>
-
 <?php
 	if ($_SERVER["REQUEST_METHOD"] === "POST") {
 		$userid = $_POST["userid"];
@@ -63,17 +61,6 @@ function namesix()
 			} else {
 				$resultz = "S";
 			}
-/*
-			elseif (strpos($_SERVER["SERVER_NAME"], "localhost") !== false) {
-				$resultz = "S";
-			}
-			elseif (strpos($_SERVER["SERVER_NAME"], "10.6.166.92") !== false) {
-				$resultz = "S";
-			}
-			elseif (strpos($_SERVER["SERVER_NAME"], "192.168") !== false) {
-				$resultz = "S";
-			}
-*/
 		}
 
 		if ($resultz === "S" || $resultz === "R" || $userid === "000000") {
