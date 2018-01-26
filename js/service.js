@@ -538,14 +538,7 @@ function storePresentCellService(pointing, editable)
 			var patient = pointing.innerHTML
 
 			clearEditcell()
-			if (hn) {
-				if (gv.uploadWindow && !gv.uploadWindow.closed) {
-					gv.uploadWindow.close();
-				}
-				gv.uploadWindow = window.open("jQuery-File-Upload", "_blank")
-				gv.uploadWindow.hnName = {"hn": hn, "patient": patient}
-				//hnName is a pre-defined variable in child window (jQuery-File-Upload)
-			}
+			showUpload(hn, patient)
 			break
 		case DIAGNOSISSV:
 		case TREATMENTSV:
