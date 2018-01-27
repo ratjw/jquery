@@ -63,7 +63,7 @@ function namesix() {
 			}
 		}
 
-		if ($resultz === "S" || $resultz === "R" || $userid === "000000") {
+		if ($resultz === "S" || $resultz === "R") {
 			include ("staff.html");
 		}
 		// 1 or 2 digits for each OR room

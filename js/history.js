@@ -204,7 +204,7 @@ function undelete(thisWhen, deleted)
 //	var UNDELPATIENT		= 4;
 //	var UNDELDIAGNOSIS		= 5;
 //	var UNDELTREATMENT		= 6;
-//	var UNDELNOTE			= 7;
+//	var UNDELCONTACT			= 7;
 //	var UNDELEDITOR			= 8;
 	var UNDELQN				= 9;
 
@@ -296,11 +296,12 @@ function makeAllCases(response) {
 		until = book[k-1].opdate,
 
 		$dialogAll = $("#dialogAll"),
-		$alltbl = $("#alltbl"),
+		$alltbl = $("#tblhead").clone(true).prop("id", "alltbl"),
 		alltbl = $alltbl[0]
 
-	// Delete all rows except first
-	$alltbl.find("tbody").html(alltbl.rows[0].outerHTML)
+	if (book.length === 0) { book.push({"opdate" : today.ISOdate()}) }
+
+	$dialogAll.html(alltbl)
 
 	fillall(book, alltbl, start, until)
 
@@ -393,7 +394,7 @@ function find()
 						staffname: $('input[name="staffname"]').val(),
 						diagnosis: $('input[name="diagnosis"]').val(),
 						treatment: $('input[name="treatment"]').val(),
-						note: $('input[name="note"]').val()
+						contact: $('input[name="contact"]').val()
 					}
 					
 					var search = ""

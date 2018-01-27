@@ -1,20 +1,23 @@
 
 function fillupstart()
-{	//Display all cases in each day of 5 weeks
-	var table = document.getElementById("tbl")
-	var today = new Date()
-
+{	// Display all cases in each day of 5 weeks
 	// Find the 1st of last month
-	var start = new Date(today.getFullYear(), today.getMonth()-1).ISOdate()
+	// fill until 1 year from now
+	var today = new Date(),
+		start = new Date(today.getFullYear(), today.getMonth()-1).ISOdate(),
+		nextyear = today.getFullYear() + 2,
+		month = today.getMonth(),
+		date = today.getDate(),
+		until = (new Date(nextyear, month, date)).ISOdate(),
+		book = gv.BOOK,
+		tblcontainer = document.getElementById("tblcontainer"),
+		table = document.getElementById("tblhead").cloneNode(true)
 
-	//fill until 1 year from now
-	var nextyear = today.getFullYear() + 2
-	var month = today.getMonth()
-	var date = today.getDate()
-	var until = (new Date(nextyear, month, date)).ISOdate()
-	var book = gv.BOOK
 	if (book.length === 0) { book.push({"opdate" : today.ISOdate()}) }
 
+	table.id = "tbl"
+	tblcontainer.replaceChild(table, tblcontainer.childNodes[0])
+	
 	fillall(book, table, start, until)
 
 	//scroll to todate
@@ -23,16 +26,6 @@ function fillupstart()
 	$('#tblcontainer').animate({
 		scrollTop: thishead.offset().top
 	}, 300);
-}
-
-function fillForScrub()
-{
-	var table = document.getElementById("tbl")
-	var start = new Date().ISOdate()
-	var until = start.nextdays(6)
-	var book = gv.BOOK
-
-	fillall(book, table, start, until)
 }
 
 function fillall(book, table, start, until)
@@ -294,7 +287,7 @@ function fillblank(rowi)
 	cells[NAME].className = ""
 	cells[DIAGNOSIS].innerHTML = ""
 	cells[TREATMENT].innerHTML = ""
-	cells[NOTE].innerHTML = ""
+	cells[CONTACT].innerHTML = ""
 	cells[QN].innerHTML = ""
 }
 
@@ -315,33 +308,34 @@ function filldata(bookq, rowi)
 	cells[NAME].innerHTML = putNameAge(bookq)
 	cells[DIAGNOSIS].innerHTML = bookq.diagnosis
 	cells[TREATMENT].innerHTML = bookq.treatment
-	cells[NOTE].innerHTML = bookq.contact
+	cells[CONTACT].innerHTML = bookq.contact
 	cells[QN].innerHTML = bookq.qn
 }
 
 function staffqueue(staffname)
 {
-	var today = new Date()
-	var todate = today.ISOdate()
-	var scrolled = $("#queuecontainer").scrollTop()
-	var book = gv.BOOK
-	var consult = gv.CONSULT
+	var today = new Date(),
+		todate = today.ISOdate(),
+		scrolled = $("#queuecontainer").scrollTop(),
+		book = gv.BOOK,
+		consult = gv.CONSULT,
+		queue = document.getElementById("tblhead").cloneNode(true)
 
 	if (!isSplited()) {
 		splitPane()
 	}
 	$('#titlename').html(staffname)
-	
-	//delete previous queuetbl lest it accumulates
-	$('#queuetbl tr').slice(1).remove()
+
+	queue.id = "queuetbl"
+	$('#queuecontainer').html(queue)
 
 	//Consults cases are not in BOOK
 	if (staffname === "Consults") {
 		if (consult.length === 0)
 			consult.push({"opdate" : getSunday()})
 
-		var table = document.getElementById("queuetbl")
-		var start = (new Date((today).getFullYear(), (today).getMonth() - 1, 1)).ISOdate()
+		var table = document.getElementById("queuetbl"),
+			start = (new Date((today).getFullYear(), (today).getMonth() - 1, 1)).ISOdate()
 
 		fillall(consult, table, start, todate)
 
@@ -418,7 +412,7 @@ jQuery.fn.extend({
 		cells[NAME].className = bookq.patient? "camera" : ""
 		cells[DIAGNOSIS].innerHTML = bookq.diagnosis
 		cells[TREATMENT].innerHTML = bookq.treatment
-		cells[NOTE].innerHTML = bookq.contact
+		cells[CONTACT].innerHTML = bookq.contact
 		cells[QN].innerHTML = bookq.qn
 		this[0].title = bookq.waitnum
 		addColor(this, bookq.opdate)

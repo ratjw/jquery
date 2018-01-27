@@ -8,10 +8,6 @@ function initialize()
 	localStorage.removeItem('userid')
 	resetTimer()
 
-	$(document).contextmenu( function (event) {
-		event.preventDefault();
-	})
-
 	$("#wrapper").on("click", function (event) {
 		resetTimer();
 		event.stopPropagation()
@@ -22,6 +18,10 @@ function initialize()
 			return false
 		}
 		fillEquipTable(gv.BOOK, row, qn)
+	})
+
+	$(document).contextmenu( function (event) {
+		event.preventDefault();
 	})
 
 	$(document).keydown(function(event) {
@@ -41,14 +41,14 @@ function loading(response)
 	if (/BOOK/.test(response)) {
 		localStorage.setItem('ALLBOOK', response)
 		updateBOOK(response)
-		if (gv.user.length === 6) {
+		if (/^\d{6}$/.test(gv.user)) {
 			$("#login").remove()
 			$("#logo").remove()
 			$("#tblwrapper").show()
 			fillupstart();
 			fillConsults()
 		}
-		else if (gv.user.length === 1 || gv.user.length === 2) {
+		else if (/^\d{1,2}$/.test(gv.user)) {
 			fillForRoom()
 		}
 	} else {

@@ -6,7 +6,7 @@ function clicktable(clickedCell)
 
 function keyin(event, keycode, pointing)
 {
-	var EDITABLE = [HN, DIAGNOSIS, TREATMENT, NOTE];
+	var EDITABLE = [HN, DIAGNOSIS, TREATMENT, CONTACT];
 	var thiscell
 
 	if (keycode === 27)	{
@@ -109,7 +109,7 @@ function savePreviousCell()
 			return saveContent(pointed, "diagnosis", newcontent)
 		case TREATMENT:
 			return saveContent(pointed, "treatment", newcontent)
-		case NOTE:
+		case CONTACT:
 			return saveContent(pointed, "contact", newcontent)
 	}
 }
@@ -500,7 +500,7 @@ function saveHN(pointed, hn, content)
 			$cells.eq(NAME).html(putNameAge(bookq))
 			$cells.eq(DIAGNOSIS).html(bookq.diagnosis)
 			$cells.eq(TREATMENT).html(bookq.treatment)
-			$cells.eq(NOTE).html(bookq.contact)
+			$cells.eq(CONTACT).html(bookq.contact)
 
 			// Both cases remote effect -> refill corresponding cell
 			// no need to refillall main table because new case row was already there
@@ -561,8 +561,8 @@ function refillAnotherTableCell(tableID, cellindex, qn)
 		case TREATMENT:
 			cells[TREATMENT].innerHTML = bookq.treatment
 			break
-		case NOTE:
-			cells[NOTE].innerHTML = bookq.contact
+		case CONTACT:
+			cells[CONTACT].innerHTML = bookq.contact
 			break
 	}
 }
@@ -591,7 +591,7 @@ function storePresentCell(pointing)
 			break
 		case DIAGNOSIS:
 		case TREATMENT:
-		case NOTE:
+		case CONTACT:
 			createEditcell(pointing)
 			break
 	}

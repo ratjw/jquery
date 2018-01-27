@@ -47,6 +47,8 @@ function entireMonth(fromDate)
 
 	getServiceOneMonth(fromDate, toDate).then( function (SERVICE) {
 		showService(SERVICE, fromDate, toDate)
+	}, function (title, message) {
+		Alert(title, message)
 	})
 
 	$(document).off("click", '.ui-datepicker-title')
@@ -105,7 +107,7 @@ function getfromServer(fromDate, toDate)
 	{
 		/dob/.test(response)
 			? defer.resolve( JSON.parse(response) )
-			: Alert("getfromServer", response)
+			: defer.reject("getfromServer", response)
 	}
 }
 
@@ -475,7 +477,8 @@ function saveContentService(pointed, column, content)	//column name in MYSQL
 			var toDate = $('#monthpicker').val()
 			var color = rowi.className
 			getServiceOneMonth(fromDate, toDate).then( function (book) {
-				var bookq = getBOOKrowByQN(book, qn)		//for countService of this case
+				//for countService of this case
+				var bookq = getBOOKrowByQN(book, qn)
 				var newcolor = countService(bookq, fromDate, toDate)
 				var colorArray = color.split(" ")
 				var newcolorArray = newcolor.split(" ")
@@ -508,13 +511,19 @@ function saveContentService(pointed, column, content)	//column name in MYSQL
 						}
 					}
 
-					rowi.className = newcolor			//tr.newclass
-					$(pointed).removeClass(color)		//prevent remained unused class
-					addColorService($row, newcolor)	//td.newclass
+					//tr.newclass
+					//remove self cell class to prevent remained unused class
+					//td.newclass
+					rowi.className = newcolor
+					$(pointed).removeClass(color)
+					addColorService($row, newcolor)
+			}, function (title, message) {
+				Alert(title, message)
 			})
 		} else {
 			Alert("saveContentService", response)
-			pointed.innerHTML = oldcontent		//return to previous content
+			pointed.innerHTML = oldcontent
+			//return to previous content
 		}
 	}
 }

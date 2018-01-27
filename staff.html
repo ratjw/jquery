@@ -17,25 +17,9 @@
 <script src="js/sortable.js"></script>
 <script src="js/start.js"></script>
 
-<div id="wrapper">
- <div id="tblwrapper" style="display:none">
+<div id="wrapper" style="display:none">
+ <div id="tblwrapper">
   <div id="tblcontainer">
-   <table id="tbl">
-    <tbody>
-	 <tr>
-     <th style="width:10%">Date</th>
-     <th style="width:2%">Room</th>
-     <th style="width:2%">Case</th>
-     <th style="width:3%">Staff</th>
-     <th style="width:3%">HN</th>
-     <th style="width:10%">PatientName</th>
-     <th style="width:20%">Diagnosis</th>
-     <th style="width:30%">Treatment</th>
-     <th style="width:20%">Note</th>
-     <th style="display:none"></th>
-	 </tr>
-    </tbody>
-   </table>
   </div>
  </div>
 
@@ -46,41 +30,42 @@
 	</span>
   </div> 
   <div id="queuecontainer">
-    <table id="queuetbl">
-     <tbody>
-	  <tr>
-      <th style="width:10%">Date</th>
-      <th style="width:2%">Room</th>
-      <th style="width:2%">Case</th>
-      <th style="width:3%">Staff</th>
-      <th style="width:3%">HN</th>
-      <th style="width:10%">PatientName</th>
-      <th style="width:20%">Diagnosis</th>
-      <th style="width:30%">Treatment</th>
-      <th style="width:20%">Note</th>
-      <th style="display:none"></th>
-	  </tr>
-     </tbody>
-    </table>
   </div>
  </div>
 </div>
 
+<table id="tblhead" style="display:none">
+ <tbody>
+  <tr>
+	<th style="width:10%">Date</th>
+	<th style="width:2%">Room</th>
+	<th style="width:2%">Case</th>
+	<th style="width:3%">Staff</th>
+	<th style="width:3%">HN</th>
+	<th style="width:10%">PatientName</th>
+	<th style="width:20%">Diagnosis</th>
+	<th style="width:30%">Treatment</th>
+	<th style="width:20%">Contact</th>
+	<th style="display:none"></th>
+  </tr>
+ </tbody>
+</table>
+
 <table id="tblcells" style="display:none">	<!-- Used as cells template -->
-  <tbody>
-   <tr>
-    <td data-title="Date"></td>
-    <td data-title="Room"></td>
-    <td data-title="Case"></td>
-    <td data-title="Staff"></td>
-    <td data-title="HN"></td>
-    <td data-title="PatientName"></td>
-    <td data-title="Diagnosis"></td>
-    <td data-title="Treatment"></td>
-    <td data-title="Note"></td>
-    <td style="display:none"></td>
-   </tr>
-  </tbody>
+ <tbody>
+  <tr>
+	<td data-title="Date"></td>
+	<td data-title="Room"></td>
+	<td data-title="Case"></td>
+	<td data-title="Staff"></td>
+	<td data-title="HN"></td>
+	<td data-title="PatientName"></td>
+	<td data-title="Diagnosis"></td>
+	<td data-title="Treatment"></td>
+	<td data-title="Contact"></td>
+	<td style="display:none"></td>
+  </tr>
+ </tbody>
 </table>
 
 <div id="dialogService" style="display:none">
@@ -153,7 +138,7 @@
 	<th style="width:15%">Admission</th>
 	<th style="width:15%">Final Status</th>
 	<th style="width:15%">Equipment</th>
-	<th style="width:15%">Note</th>
+	<th style="width:15%">Contact</th>
 	<th style="width:2%">Editor</th>
    </tr>
   </thead>
@@ -175,7 +160,7 @@
     <td data-title="Admission"></td>
     <td data-title="Final Status"></td>
     <td data-title="Equipment"></td>
-    <td data-title="Note"></td>
+    <td data-title="Contact"></td>
     <td data-title="Editor"></td>
    </tr>
   </tbody>
@@ -192,7 +177,7 @@
 	<th style="width:10%">Patient Name</th>
 	<th style="width:20%">Diagnosis</th>
 	<th style="width:20%">Treatment</th>
-	<th style="width:20%">Note</th>
+	<th style="width:20%">Contact</th>
 	<th style="width:5%">Editor</th>
    </tr>
   </thead>
@@ -215,45 +200,13 @@
     <td data-title="Patient Name"></td>
     <td data-title="Diagnosis"></td>
     <td data-title="Treatment"></td>
-    <td data-title="Note"></td>
+    <td data-title="Contact"></td>
     <td data-title="Editor"></td>
    </tr>
   </tbody>
 </table>
 
-<div id="dialogAll" style="display:none">
- <table id="alltbl">
-  <tbody>
-   <tr>
-     <th style="width:10%">Date</th>
-     <th style="width:2%">Room</th>
-     <th style="width:2%">Case</th>
-     <th style="width:3%">Staff</th>
-     <th style="width:3%">HN</th>
-     <th style="width:10%">PatientName</th>
-     <th style="width:20%">Diagnosis</th>
-     <th style="width:30%">Treatment</th>
-     <th style="width:20%">Note</th>
-   </tr>
-  </tbody>
- </table>
-</div>
-
-<table id="allcells" style="display:none">
-  <tbody>
-   <tr>
-    <td data-title="Date"></td>
-    <td data-title="Room"></td>
-    <td data-title="Case"></td>
-    <td data-title="Staff"></td>
-    <td data-title="HN"></td>
-    <td data-title="PatientName Age"></td>
-    <td data-title="Diagnosis"></td>
-    <td data-title="Treatment"></td>
-    <td data-title="Note"></td>
-   </tr>
-  </tbody>
-</table>
+<div id="dialogAll"></div>
 
 <div id="dialogInput" style="display:none">
   <div id="find" class="dialogBox">
@@ -277,8 +230,8 @@
 	<input type="text" name="treatment">
 	<br>
 	<br>
-	<span style="width:90px;">Note:</span>
-	<input type="text" name="note">
+	<span style="width:90px;">Contact:</span>
+	<input type="text" name="contact">
   </div>
 </div>
 
@@ -294,7 +247,7 @@
 	<th style="width:15%">Treatment</th>
 	<th style="width:20%">Admission Status</th>
 	<th style="width:15%">Final Status</th>
-	<th style="width:10%">Note</th>
+	<th style="width:10%">Contact</th>
    </tr>
   </thead>
   <tbody>
@@ -313,7 +266,7 @@
     <td data-title="Treatment"></td>
     <td data-title="Admission Status"></td>
     <td data-title="Final Status"></td>
-    <td data-title="Note"></td>
+    <td data-title="Contact"></td>
    </tr>
   </tbody>
 </table>
@@ -711,7 +664,7 @@
   <h3 style="text-align: center;">Web-based Service Record</h3>
   <p style="margin:0px;"><span class="ui-icon ui-icon-info"></span>
   Login ID, Password ของโรงพยาบาล</p>
-	<dd>: พยาบาล ใช้ Login ID:000000 ไม่มี password</dd>
+	<dd>: เฉพาะห้องผ่าตัด ใช้ LoginID:เบอร์ห้อง ไม่มี password</dd>
   <p style="margin:0px;">
     <span class="ui-icon ui-icon-info"></span> การเปลี่ยนวันผ่าตัด (Date)
   </p>
@@ -759,7 +712,7 @@
 	<dt>: รวมทั้ง underlying disease</dt>
 	<li>คอลัมน์ <b>Treatment</b></li>
 	<dt>: เครื่องมือผ่าตัด ให้ใส่ที่ Equipment</dt>
-	<li>คอลัมน์ <b>Note</b></li>
+	<li>คอลัมน์ <b>Contact</b></li>
 	<dt>: หมายเลขโทรศัพท์ ภูมิลำเนา หมายเหตุอื่นๆ</dt>
   </ul>
 

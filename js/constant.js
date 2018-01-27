@@ -12,7 +12,7 @@ var HN			= 4;
 var NAME		= 5;
 var DIAGNOSIS	= 6;
 var TREATMENT	= 7;
-var NOTE		= 8;
+var CONTACT		= 8;
 var QN			= 9;
 
 //servicetbl

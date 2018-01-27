@@ -10,7 +10,8 @@ function initialize()
 
 	$("#login").remove()
 	$("#logo").remove()
-	$("#tblwrapper").show()
+	$("#wrapper").show()
+	$("#tblhead").show()
 
 	sortable()
 	// call sortable before render, otherwise, it renders very slowly
@@ -63,26 +64,6 @@ function initialize()
 			}
 		}
 	});
-
-	if (gv.user === "000000") {
-		$("#wrapper").on("click", function (event) {
-			event.stopPropagation()
-			var target = event.target
-			var rowi = $(target).closest('tr')
-			var qn = rowi.children('td').eq(QN).html()
-			if ((target.nodeName !== "TD") || (!qn)) {
-				event.preventDefault()
-				event.stopPropagation()
-				return false
-			}
-			fillEquipTable(gv.BOOK, rowi, qn)
-			$('#dialogEquip').dialog("option", "buttons", {})
-		})
-		$("#wrapper").keydown(function(event) {
-			event.preventDefault();
-		})
-		return
-	}
 
 	$("#editcell").on("click", function (event) {
 		event.stopPropagation()
@@ -175,13 +156,9 @@ function loading(response)
 	if (/BOOK/.test(response)) {
 		localStorage.setItem('ALLBOOK', response)
 		updateBOOK(response)
-		if (gv.user === "000000") {
-			fillForScrub()
-		} else {
-			fillupstart();
-			setStafflist()
-			fillConsults()
-		}
+		fillupstart();
+		setStafflist()
+		fillConsults()
 	} else {
 		response = localStorage.getItem('ALLBOOK')
 		var error = "<br><br>Response from server has no data"

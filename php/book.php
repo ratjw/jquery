@@ -17,10 +17,13 @@ function book($mysqli)
 	$wait = array();
 	$staff = array();
 
-	$sql = "SELECT * FROM book 
+	$sql = "SELECT waitnum,opdate,oproom,optime,casenum,theatre,
+				staffname,hn,patient,dob,diagnosis,treatment,
+				equipment,contact,qn,editor
+			FROM book 
 			WHERE opdate >= DATE_FORMAT(CURDATE()-INTERVAL 1 MONTH,'%Y-%m-01')
 				AND deleted = 0 AND waitnum > 0
-			ORDER BY opdate,oproom,casenum,optime,waitnum;";
+			ORDER BY opdate,theatre,oproom,casenum,optime,waitnum;";
 
 	if (!$result = $mysqli->query ($sql)) {
 		return $mysqli->error;
@@ -29,7 +32,10 @@ function book($mysqli)
 		$book[] = $rowi;
 	}
 
-	$sql = "SELECT * FROM book 
+	$sql = "SELECT waitnum,opdate,oproom,optime,casenum,theatre,
+				staffname,hn,patient,dob,diagnosis,treatment,
+				equipment,contact,qn,editor
+			FROM book 
 			WHERE opdate >= DATE_FORMAT(CURDATE()-INTERVAL 1 MONTH,'%Y-%m-01')
 				AND deleted = 0 AND waitnum < 0
 			ORDER BY opdate,oproom,casenum,optime,waitnum DESC;";

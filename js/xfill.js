@@ -138,7 +138,7 @@ function fillblank(rowi)
 	cells[NAME].className = ""
 	cells[DIAGNOSIS].innerHTML = ""
 	cells[TREATMENT].innerHTML = ""
-	cells[NOTE].innerHTML = ""
+	cells[CONTACT].innerHTML = ""
 	cells[QN].innerHTML = ""
 }
 
@@ -159,7 +159,7 @@ function filldata(bookq, rowi)
 	cells[NAME].innerHTML = putNameAge(bookq)
 	cells[DIAGNOSIS].innerHTML = bookq.diagnosis
 	cells[TREATMENT].innerHTML = bookq.treatment
-	cells[NOTE].innerHTML = bookq.contact
+	cells[CONTACT].innerHTML = bookq.contact
 	cells[QN].innerHTML = bookq.qn
 }
 
