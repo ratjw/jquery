@@ -59,8 +59,8 @@ function makehistory(row, response)
 
 	function resizeHistory() {
 		$dialogHistory.dialog({
-			width: window.innerWidth * 9 / 10,
-			height: window.innerHeight * 8 / 10
+			width: window.innerWidth * 95 / 100,
+			height: window.innerHeight * 95 / 100
 		})
 		winResizeFix($historytbl, $dialogHistory)
 	}
@@ -171,8 +171,8 @@ function makedeletedCases(response)
 
 	function resizeDeleted() {
 		$dialogDeleted.dialog({
-			width: window.innerWidth * 9 / 10,
-			height: window.innerHeight * 8 / 10
+			width: window.innerWidth * 95 / 100,
+			height: window.innerHeight * 95 / 100
 		})
 		winResizeFix($deletedtbl, $dialogDeleted)
 	}
@@ -192,6 +192,7 @@ jQuery.fn.extend({
 		cells[6].innerHTML = q.treatment
 		cells[7].innerHTML = q.contact
 		cells[8].innerHTML = q.editor
+		cells[9].innerHTML = q.qn
 	}
 })
 
@@ -269,7 +270,10 @@ function closeUndel()
 
 // All cases (include consult caes, exclude deleted ones)
 function allCases() {
-	var sql = "sqlReturnData=SELECT * FROM book "
+	var sql = "sqlReturnData=SELECT waitnum,opdate,oproom,optime,"
+			+ "casenum,theatre,staffname,hn,patient,dob,diagnosis,"
+			+ "treatment,contact,qn,editor "
+			+ "FROM book "
 			+ "WHERE waitnum <> 0 "
 			+ "ORDER BY opdate;"
 
@@ -296,12 +300,12 @@ function makeAllCases(response) {
 		until = book[k-1].opdate,
 
 		$dialogAll = $("#dialogAll"),
-		$alltbl = $("#tblhead").clone(true).prop("id", "alltbl"),
+		$alltbl = $("#alltbl"),
 		alltbl = $alltbl[0]
 
 	if (book.length === 0) { book.push({"opdate" : today.ISOdate()}) }
 
-	$dialogAll.html(alltbl)
+	$alltbl.find("tbody").html($("#tbl tbody tr:first").clone())
 
 	fillall(book, alltbl, start, until)
 
@@ -323,15 +327,15 @@ function makeAllCases(response) {
 
 	function resizeAll() {
 		$dialogAll.dialog({
-			width: window.innerWidth * 9 / 10,
-			height: window.innerHeight * 8 / 10
+			width: window.innerWidth * 95 / 100,
+			height: window.innerHeight * 95 / 100
 		})
 		winResizeFix($alltbl, $dialogAll)
 	}
 
 	//scroll to today
 	var today = new Date().ISOdate().thDate()
-	var thishead = $("#alltbl tr:contains(" + today + ")")[0]
+	var thishead = $alltbl.find("tr:contains(" + today + ")")[0]
 	$dialogAll.animate({
 		scrollTop: thishead.offsetTop
 	}, 300);

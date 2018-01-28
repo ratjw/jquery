@@ -1,7 +1,7 @@
-<!-- PHP!!!
+<!-- PHP include !!!
  When you save a page as UTF-8, a special signature called a byte-order mark (or BOM)
  is included at the beginning of the file, indicating that it is a UTF-8 file.
- You need to remove this signature from the included file in order to
+ You need to remove this signature from the included PHP file in order to
  get rid of the white space at the top of the page. 
  In Notepad++ you can change the encoding of the file to "UTF-8 without BOM"
  from the "Encoding" menu. -->
@@ -20,6 +20,22 @@
 <div id="wrapper" style="display:none">
  <div id="tblwrapper">
   <div id="tblcontainer">
+   <table id="tbl">
+    <tbody>
+	 <tr>
+     <th style="width:10%">Date</th>
+     <th style="width:2%">Room</th>
+     <th style="width:2%">Case</th>
+     <th style="width:3%">Staff</th>
+     <th style="width:3%">HN</th>
+     <th style="width:10%">PatientName</th>
+     <th style="width:20%">Diagnosis</th>
+     <th style="width:30%">Treatment</th>
+     <th style="width:20%">Contact</th>
+     <th style="display:none"></th>
+	 </tr>
+    </tbody>
+   </table>
   </div>
  </div>
 
@@ -30,28 +46,16 @@
 	</span>
   </div> 
   <div id="queuecontainer">
+    <table id="queuetbl">
+     <tbody>
+     </tbody>
+    </table>
   </div>
  </div>
 </div>
 
-<table id="tblhead" style="display:none">
- <tbody>
-  <tr>
-	<th style="width:10%">Date</th>
-	<th style="width:2%">Room</th>
-	<th style="width:2%">Case</th>
-	<th style="width:3%">Staff</th>
-	<th style="width:3%">HN</th>
-	<th style="width:10%">PatientName</th>
-	<th style="width:20%">Diagnosis</th>
-	<th style="width:30%">Treatment</th>
-	<th style="width:20%">Contact</th>
-	<th style="display:none"></th>
-  </tr>
- </tbody>
-</table>
-
-<table id="tblcells" style="display:none">	<!-- Used as cells template -->
+<!-- Used as cells template -->
+<table id="tblcells" style="display:none">
  <tbody>
   <tr>
 	<td data-title="Date"></td>
@@ -85,7 +89,7 @@
   </div>
   <button id="exportService">Export to xls</button>
   <div id="monthpicker" style="margin-left:5px"></div>
-  <div id="monthpicking" style="display:none"></div>
+  <div id="monthstart" style="display:none"></div>
   <table id="servicetbl">
    <thead>
     <tr>
@@ -179,6 +183,7 @@
 	<th style="width:20%">Treatment</th>
 	<th style="width:20%">Contact</th>
 	<th style="width:5%">Editor</th>
+	<th style="display:none"></th>
    </tr>
   </thead>
   <tbody>
@@ -193,20 +198,26 @@
 <table id="deletedcells" style="display:none">
   <tbody>
    <tr>
-    <td data-title="Edited When"></td>
-    <td data-title="Date"></td>
-    <td data-title="Staff"></td>
-    <td data-title="HN"></td>
-    <td data-title="Patient Name"></td>
-    <td data-title="Diagnosis"></td>
-    <td data-title="Treatment"></td>
-    <td data-title="Contact"></td>
-    <td data-title="Editor"></td>
+	<td data-title="Edited When"></td>
+	<td data-title="Date"></td>
+	<td data-title="Staff"></td>
+	<td data-title="HN"></td>
+	<td data-title="Patient Name"></td>
+	<td data-title="Diagnosis"></td>
+	<td data-title="Treatment"></td>
+	<td data-title="Contact"></td>
+	<td data-title="Editor"></td>
+	<td style="display:none"></td>
    </tr>
   </tbody>
 </table>
 
-<div id="dialogAll"></div>
+<div id="dialogAll">
+  <table id="alltbl">
+	<tbody>
+	</tbody>
+  </table>
+</div>
 
 <div id="dialogInput" style="display:none">
   <div id="find" class="dialogBox">

@@ -125,6 +125,14 @@ String.prototype.getAge = function (toDate)
 	return years? ageyears : months? agemonths : agedays;
 }
 
+//get 1st date of last month
+function getStart()
+{
+	var start = new Date()
+
+	return new Date(start.getFullYear(), start.getMonth()-1, 1).ISOdate()
+}
+
 function getOpdate(date)	//change Thai date from table to ISO date
 {
 	if ((date === undefined) || (parseInt(date) === NaN)) {
@@ -218,6 +226,7 @@ function getTableRowByQN(tableID, qn)
 	return row
 }
 
+// main table (#tbl) only
 function getTableRowsByDate(opdateth)
 {
 	if (!opdateth) { return [] }
@@ -233,6 +242,7 @@ function getBOOKrowsByDate(book, opdate)
 	})
 }
 
+// main table (#tbl) only
 function sameDateRoomTableQN(opdateth, room)
 {
 	if (!room) { return [] }
@@ -260,8 +270,10 @@ function sameDateRoomBookQN(book, opdate, room)
 	return sameRoom
 }
 
+// for main table (#tbl) only
 function createThisdateTableRow(opdate, opdateth)
 {
+	if (opdate === LARGESTDATE) { return null }
 	var rows = getTableRowsByDate(opdate.nextdays(-1).thDate()),
 		$row = $(rows[rows.length-1]),
 		$thisrow = $row && $row.clone().insertAfter($row)

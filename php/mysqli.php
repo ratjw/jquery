@@ -3,88 +3,97 @@ include "connect.php";
 require_once "book.php";
 
 	// start.js (initialize)
-	if (isset($_POST['nosqlReturnbook']))
+	if ($_POST['initialize'])
 	{
-		if ($_POST['nosqlReturnbook'] === "init") {
-			$sql = "UPDATE staff,(SELECT MAX(dateoncall) AS max FROM staff) as oncall
-						SET staffoncall=staffname,
-							dateoncall=DATE_ADD(oncall.max,INTERVAL 1 WEEK)
-					WHERE dateoncall<=CURDATE();";
-			if (!$result = $mysqli->query ($sql)) {
-				return $mysqli->error;
-			}
-			$sql = "SELECT * FROM staff ORDER BY number;";
-			$result = $mysqli->query($sql);
-			if (!$result) {
-				return $mysqli->error;
-			}
-			while ($rowi = $result->fetch_assoc()) {
-				$staff[] = $rowi;
-			}
-			$staff["STAFF"] = $staff;
-			echo json_encode(array_merge(book($mysqli), $staff));
+		$sql = "UPDATE staff,(SELECT MAX(dateoncall) AS max FROM staff) as oncall
+					SET staffoncall=staffname,
+						dateoncall=DATE_ADD(oncall.max,INTERVAL 1 WEEK)
+				WHERE dateoncall<=CURDATE();
+				SELECT * FROM staff ORDER BY number;";
+		$return = multiquery($mysqli, $sql);
+		if (gettype($return) === "string") {
+			echo $return;
 		} else {
-			echo json_encode(book($mysqli));
+			$data = book($mysqli);
+			$data["STAFF"] = $return;
+			echo json_encode($data);
 		}
+	}
+	// start.js (updating)
+	else if (isset($_POST['nosqlReturnbook']))
+	{
+		echo json_encode(book($mysqli));
 	}
 
 	// click.js (saveRoomTime 2 ways, saveContentQN, saveContentNoQN 2 ways)
 	// equip.js (Checklistequip)
 	// menu.js (changeDate - $datepicker, changeDate - $trNOth, deleteCase)
-	// service.js (saveScontent)
 	// sortable.js (sortable)
 	else if (isset($_POST['sqlReturnbook']))
 	{
 		$return = multiquery($mysqli, $_POST['sqlReturnbook']);
-		if (strpos($return, "DBfailed") !== false)
+		if (gettype($return) === "string") {
 			echo $return;
-		else
+		} else {
 			echo json_encode(book($mysqli));
+		}
 	}
 
-	// click.js (changeOncall)
-	else if (isset($_POST['sqlReturnCONSULT']))
-	{
-		$return = multiquery($mysqli, $_POST['sqlReturnCONSULT']);
-		if (strpos($return, "DBfailed") !== false)
+	// service.js (saveScontent)
+	else if (isset($_POST['sqlReturnService'])) {
+		$service = multiquery($mysqli, $_POST['sqlReturnService']);
+		if (gettype($return) === "string") {
 			echo $return;
-		else
-			echo "success";
+		} else {
+			$data = book($mysqli);
+			$data["SERVICE"] = $service;
+			echo json_encode($data);
+		}
 	}
 
 	// equip.js (fillEquipTable)
 	// history.js (editHistory, sqlFind)
-	else if (isset($_POST['sqlReturnData']))
-	{
-		echo multiquery($mysqli, $_POST['sqlReturnData']);
+	else if (isset($_POST['sqlReturnData'])) {
+		echo json_encode(multiquery($mysqli, $_POST['sqlReturnData']));
 	}
 
 	// history.js (deletedCases, undelete)
 	// start.js (updating)
-	else if (isset($_POST['functionName']))
-	{
+	else if (isset($_POST['functionName'])) {
 		echo json_encode($_POST['functionName']($mysqli, $_POST['opdate']));
+	}
+
+	// click.js (changeOncall)
+	else if (isset($_POST['sqlnoReturn'])) {
+		$return = multiquery($mysqli, $_POST['sqlnoReturn']);
+		if (gettype($return) === "string") {
+			echo $return;
+		} else {
+			echo "success";
+		}
 	}
 
 function multiquery($mysqli, $sql)
 {
-	$returndata = "";
+	$rowi = array();
+	$data = array();
+	$returndata = array();
+	$message = "";
 	if ($mysqli->multi_query(urldecode($sql))) {
 		do {
+			// This will be skipped when no result, but no error (success query INSERT, UPDATE)
 			if ($result = $mysqli->store_result())
-			{	// has no result, but no error (success query INSERT, UPDATE), skip this
-				$rowi = array();
-				$data = array();
+			{
 				while ($rowi = $result->fetch_assoc()) {
 					$data[] = $rowi;
 				}
-				$returndata .= json_encode($data);
+				$returndata = array_merge($returndata, $data);
 			}
 			// if error, return error message
 			// if has no result, but no error (INSERT, UPDATE), fall through
 			else if ($mysqli->errno)
 			{
-				$returndata .= 'DBfailed multi query ' . $sql . " \n" . $mysqli->error;
+				$message .= 'DBfailed multi query ' . $sql . " \n" . $mysqli->error;
 			}
 			// no more query
 			if (!$mysqli->more_results()) {
@@ -96,10 +105,14 @@ function multiquery($mysqli, $sql)
 	// handle failed first query
 	else if ($mysqli->errno)
 	{
-		$returndata .= 'DBfailed first query ' . $sql . " \n" . $mysqli->error;
+		$message .= 'DBfailed first query ' . $sql . " \n" . $mysqli->error;
 	}
 
-	return $returndata;
+	if ($mysqli->errno) {
+		return $message;
+	} else {
+		return $returndata;
+	}
 }
 /*
 // $stamp = $result->fetch_row() is an array, so [0]

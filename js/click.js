@@ -727,7 +727,7 @@ function getSTAFFNAME(pointing)
 
 function changeOncall(pointing, opdate, staffname)
 {
-	var sql = "sqlReturnCONSULT=UPDATE book SET "
+	var sql = "sqlnoReturn=UPDATE book SET "
 			+ "staffname= '" + staffname
 			+ "', editor='" + gv.user
 			+ "' WHERE waitnum=0 AND opdate='" + opdate + "';"

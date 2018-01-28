@@ -39,6 +39,7 @@ var LARGESTDATE		= "9999-12-31";
 var gv = {
 	BOOK: [],
 	CONSULT: [],
+	SERVICE: [],
 	STAFF: [],
 	user: "",
 	timestamp: "",

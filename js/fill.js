@@ -4,25 +4,22 @@ function fillupstart()
 	// Find the 1st of last month
 	// fill until 1 year from now
 	var today = new Date(),
-		start = new Date(today.getFullYear(), today.getMonth()-1).ISOdate(),
+		start = getStart(),
 		nextyear = today.getFullYear() + 2,
 		month = today.getMonth(),
 		date = today.getDate(),
 		until = (new Date(nextyear, month, date)).ISOdate(),
 		book = gv.BOOK,
-		tblcontainer = document.getElementById("tblcontainer"),
-		table = document.getElementById("tblhead").cloneNode(true)
+		table = document.getElementById("tbl"),
+		todate = today.ISOdate(),
+		todateth = todate.thDate()
 
-	if (book.length === 0) { book.push({"opdate" : today.ISOdate()}) }
-
-	table.id = "tbl"
-	tblcontainer.replaceChild(table, tblcontainer.childNodes[0])
+	if (book.length === 0) { book.push({"opdate" : todate}) }
 	
 	fillall(book, table, start, until)
 
-	//scroll to todate
-	var todate = today.ISOdate().thDate()
-	var thishead = $("#tbl tr:contains(" + todate + ")").eq(0)
+	//scroll to today
+	var thishead = $("#tbl tr:contains(" + todateth + ")").eq(0)
 	$('#tblcontainer').animate({
 		scrollTop: thishead.offset().top
 	}, 300);
@@ -187,6 +184,7 @@ function refillall()
 // others would refill entire table
 function refillOneDay(opdate)
 {
+	if (opdate === LARGESTDATE) { return }
 	var book = gv.BOOK,
 		opdateth = putOpdate(opdate),
 		opdateBOOKrows = getBOOKrowsByDate(book, opdate),
@@ -291,11 +289,11 @@ function fillblank(rowi)
 	cells[QN].innerHTML = ""
 }
 
-function filldata(bookq, rowi)
+function filldata(bookq, row)
 {
-	var cells = rowi.cells
+	var cells = row.cells
 
-	rowi.title = bookq.waitnum
+	row.title = bookq.waitnum
 	if (bookq.hn && gv.isPACS) {
 		cells[HN].className = "pacs"
 	}
@@ -316,41 +314,38 @@ function staffqueue(staffname)
 {
 	var today = new Date(),
 		todate = today.ISOdate(),
-		scrolled = $("#queuecontainer").scrollTop(),
 		book = gv.BOOK,
 		consult = gv.CONSULT,
-		queue = document.getElementById("tblhead").cloneNode(true)
+		$queuetbl = $('#queuetbl'),
+		queuetbl = $queuetbl[0]
+		
 
-	if (!isSplited()) {
-		splitPane()
-	}
+	if (!isSplited()) { splitPane() }
 	$('#titlename').html(staffname)
-
-	queue.id = "queuetbl"
-	$('#queuecontainer').html(queue)
+	
+	//delete previous queuetbl lest it accumulates
+//	$('#queuetbl tr').slice(1).remove()
+	$queuetbl.find("tbody").html($("#tbl tbody tr:first").clone())
 
 	//Consults cases are not in BOOK
 	if (staffname === "Consults") {
 		if (consult.length === 0)
-			consult.push({"opdate" : getSunday()})
+			consult.push({"opdate" : todate})
 
-		var table = document.getElementById("queuetbl"),
-			start = (new Date((today).getFullYear(), (today).getMonth() - 1, 1)).ISOdate()
+		var start = getStart()
 
-		fillall(consult, table, start, todate)
+		fillall(consult, queuetbl, start, todate)
 
-		var queueh = $("#queuetbl").height()
+		var queueh = $queuetbl.height()
 		$("#queuecontainer").scrollTop(queueh)
 	} else {
 		$.each( book, function() {
 			if (( this.staffname === staffname ) && this.opdate >= todate) {
 				$('#tblcells tr').clone()
-					.appendTo($('#queuetbl'))
+					.appendTo($("#queuetbl"))
 						.filldataQueue(this)
 			}
 		});
-
-		$("#queuecontainer").scrollTop(scrolled)
 	}
 }
 
@@ -362,12 +357,13 @@ function refillstaffqueue()
 	var book = gv.BOOK
 	var consult = gv.CONSULT
 
-	if ($('#queuetbl'))
+	if (!isSplited()) { return }
+
 	if (staffname === "Consults") {
 		//Consults table is rendered same as fillall
 		$('#queuetbl tr').slice(1).remove()
 		if (consult.length === 0)
-			consult.push({"opdate" : getSunday()})
+			consult.push({"opdate" : todate})
 
 		var table = document.getElementById("queuetbl")
 		var start = (new Date((today).getFullYear(), (today).getMonth() - 1, 1)).ISOdate()
@@ -434,15 +430,12 @@ function addColor($this, bookqOpdate)
 {
 	var predate = $this.prev().children("td").eq(OPDATE).html(),
 		prevdate = (predate? predate.numDate() : ""),
-		prevIsOdd = function() {
-			return $this.prev().prop("class").indexOf("odd") >= 0
-		},
-		samePrevDate = function() {
-			return bookqOpdate === prevdate
-		}
+		prevIsOdd = $this.prev().prop("class").indexOf("odd") >= 0,
+		samePrevDate = bookqOpdate === prevdate
+
 	// clear colored NAMEOFDAYFULL row that is moved to non-color opdate
 	$this.prop("class", "")
-	if ((!samePrevDate && !prevIsOdd()) || (samePrevDate && prevIsOdd())) {
+	if ((!samePrevDate && !prevIsOdd) || (samePrevDate && prevIsOdd)) {
 		$this.addClass("odd")
 	}
 	// In LARGESTDATE, prevdate = "" but bookqOpdate = LARGESTDATE

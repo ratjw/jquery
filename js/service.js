@@ -15,7 +15,7 @@ function serviceReview()
 
 	$('#monthpicker').show()
 	$('#monthpicker').datepicker( {
-		altField: $('#monthpicking'),
+		altField: $('#monthstart'),
 		altFormat: "yy-mm-dd",
 		autoSize: true,
 		dateFormat: "MM yy",
@@ -30,7 +30,7 @@ function serviceReview()
 	}).datepicker("setDate", new Date(new Date().getFullYear(), new Date().getMonth(), 1))
 
 	$(document).on("click", '.ui-datepicker-title', function() {
-		entireMonth($('#monthpicking').val())
+		entireMonth($('#monthstart').val())
 	})
 }
 
@@ -38,112 +38,54 @@ function entireMonth(fromDate)
 {
 	var date = new Date(fromDate),
 		toDate = new Date(date.getFullYear(), date.getMonth()+1, 0),
-		$monthpicker = $('#monthpicker')
-	toDate = $.datepicker.formatDate('yy-mm-dd', toDate);	//end of this month
+		$monthpicker = $('#monthpicker'),
+		$exportService = $("#exportService")
+
+	// show month name before change $monthpicker.val to last date of this month
 	$('#dialogService').dialog({
 		title: 'Service Neurosurgery เดือน ' + $monthpicker.val()
 	})
+	toDate = $.datepicker.formatDate('yy-mm-dd', toDate)
 	$monthpicker.val(toDate)
 
 	getServiceOneMonth(fromDate, toDate).then( function (SERVICE) {
-		showService(SERVICE, fromDate, toDate)
+		gv.SERVICE = SERVICE
+		showService(fromDate, toDate)
 	}, function (title, message) {
 		Alert(title, message)
 	})
 
 	$(document).off("click", '.ui-datepicker-title')
-	$("#exportService").show()
-	$("#exportService").on("click", function(e) {
-		e.preventDefault();
+	$exportService.show()
+	$exportService.on("click", function(e) {
+		e.preventDefault()
 		exportToExcel()
 	})
 }
 
-//get 1st of last month
-function getStart()
-{
-	var start = new Date()
-
-	return new Date(start.getFullYear(), start.getMonth()-1, 1).ISOdate()
-}
-
-function getServiceOneMonth(fromDate, toDate) {
-	var start = getStart()
-
-	var deferService = $.Deferred()
-
-	var beforeStart = function () {
-		getfromServer(fromDate, toDate).then( function (SERVICE) {
-			deferService.resolve(SERVICE)
-		}, function (title, message) {
-			deferService.reject(title, message)
-		})
-	}
-	var afterStart = function () {
-		deferService.resolve(getfromBOOKCONSULT(fromDate, toDate))
-	}
-
-	fromDate < start ? beforeStart() : afterStart()
-	return deferService.promise()
-}
-
-//No data before last month in gv.BOOK, gv.CONSULT
 //Retrieve the specified month from server
-function getfromServer(fromDate, toDate)
+function getServiceOneMonth(fromDate, toDate)
 {
-	var sql = "sqlReturnData=SELECT * FROM book "
+	var defer = $.Deferred(),
+		sql = "sqlReturnData=SELECT * FROM book "
 			  + "WHERE opdate BETWEEN '" + fromDate + "' AND '" + toDate
 			  + "' AND deleted=0 "
 			  + "AND waitnum<>0 "
 			  + "ORDER BY opdate, oproom, casenum, waitnum;";
 
-	var defer = $.Deferred()
-
-	Ajax(MYSQLIPHP, sql, callbackgetfromServer)
+	Ajax(MYSQLIPHP, sql, callbackGetService)
 
 	return defer.promise()
 
-	function callbackgetfromServer(response)
+	function callbackGetService(response)
 	{
 		/dob/.test(response)
 			? defer.resolve( JSON.parse(response) )
-			: defer.reject("getfromServer", response)
+			: defer.reject("getServiceOneMonth", response)
 	}
 }
 
-function getfromBOOKCONSULT(fromDate, toDate)
-{
-	var book = gv.BOOK
-	var consult = gv.CONSULT
-	var SERV = []
-	SERV = addfromRAM(book, fromDate, toDate, SERV)
-	SERV = addfromRAM(consult, fromDate, toDate, SERV)
-	return SERV.sort(function (a, b) {
-		if (a.opdate < b.opdate) {
-			return -1;
-		}
-		if (a.opdate > b.opdate) {
-			return 1;
-		}
-		return 0;
-	})
-}
-
-function addfromRAM(book, fromDate, toDate, serv)
-{
-	for (var q = 0; q < book.length; q++) {
-		if (book[q].opdate <= toDate) {
-			if (book[q].opdate >= fromDate) {
-				serv.push(book[q])
-			}
-		} else {
-			break
-		}
-	}
-	return serv
-}
-
-function showService(SERVICE, fromDate, toDate)
+function showService(fromDate, toDate)
 {
 	//delete previous servicetbl lest it accumulates
 	$('#servicetbl tr').slice(1).remove()
@@ -173,7 +115,7 @@ function showService(SERVICE, fromDate, toDate)
 							.html(staffname)
 								.siblings().hide()
 		var scase = 0
-		$.each( SERVICE, function() {
+		$.each( gv.SERVICE, function() {
 			if (this.staffname === staffname) {
 				var color = countService(this, fromDate, toDate)
 				scase++
@@ -202,7 +144,7 @@ function showService(SERVICE, fromDate, toDate)
 			})
 		}
 	})
-	getAdmitDischargeDate(SERVICE, fromDate, toDate)
+	getAdmitDischargeDate(gv.SERVICE, fromDate, toDate)
 	countAllServices()
 	$("#servicetbl").fixMe($dialogService);
 
@@ -216,7 +158,7 @@ function showService(SERVICE, fromDate, toDate)
 	})
 }
 
-function refillService(SERVICE, fromDate, toDate)
+function refillService(fromDate, toDate)
 {
 	var i = 0
 	$.each( gv.STAFF, function() {
@@ -232,7 +174,7 @@ function refillService(SERVICE, fromDate, toDate)
 		$thisCase.html(staffname)
 
 		var scase = 0
-		$.each( SERVICE, function() {
+		$.each( gv.SERVICE, function() {
 			if (this.staffname === staffname) {
 				var color = countService(this, fromDate, toDate)
 				i++
@@ -303,7 +245,7 @@ function addColorService($this, color)
 	}
 }
 
-function getAdmitDischargeDate(SERVICE, fromDate, toDate)
+function getAdmitDischargeDate(fromDate, toDate)
 {
 	Ajax(GETIPD, "from=" + fromDate + "&to=" + toDate, callbackgetipd)
 
@@ -311,8 +253,7 @@ function getAdmitDischargeDate(SERVICE, fromDate, toDate)
 	{
 		if (/BOOK/.test(response)) {
 			updateBOOK(response)
-			var SERVICE = getfromBOOKCONSULT(fromDate, toDate)
-			fillAdmitDischargeDate(SERVICE)
+			fillAdmitDischargeDate()
 		}
 //		else {
 //			Alert("getAdmitDischargeDate", response)
@@ -320,14 +261,14 @@ function getAdmitDischargeDate(SERVICE, fromDate, toDate)
 	}
 }
 
-function fillAdmitDischargeDate(SERVICE)
+function fillAdmitDischargeDate()
 {
 	var i = 0
 	$.each( gv.STAFF, function() {
 		// staffname fixed sequence is in patient column
 		var staffname = this.staffname
 		i++
-		$.each( SERVICE, function() {
+		$.each( gv.SERVICE, function() {
 			if (this.staffname === staffname) {
 				i++
 				var $thisRow = $('#servicetbl tr').eq(i).children("td")
@@ -452,17 +393,28 @@ function saveContentService(pointed, column, content)	//column name in MYSQL
 	var rowi = $row[0]
 	var qn = rowi.cells[QNSV].innerHTML
 	var oldcontent = $("#editcell").data("oldcontent")
+	var fromDate = $('#monthstart').val()
+	var toDate = $('#monthpicker').val()
 
-	pointed.innerHTML = content? content : ''	//just for show instantly
+	//just for show instantly
+	pointed.innerHTML = content? content : ''
 
+	//take care of white space, double qoute, single qoute, and back slash
 	if (content) {
-		content = URIcomponent(content)	//take care of white space, double qoute, 
-										//single qoute, and back slash
+		content = URIcomponent(content)
 	}
-	var sql = "sqlReturnbook=UPDATE book SET "
-		sql += column +" = '"+ content
-		sql += "', editor='"+ gv.user
-		sql += "' WHERE qn = "+ qn +";"
+	var sql = "sqlReturnService=UPDATE book SET "
+			+ column + "='" + content
+			+ "', editor='" + gv.user
+			+ "' WHERE qn=" + qn
+			+ ";SELECT opdate,staffname,hn,patient,dob,diagnosis,treatment,"
+			+ "admit,discharge,opday,readmit,reoperate,elective,doneby,"
+			+ "major,disease,infection,morbid,dead,qn,editor"
+			+ " FROM book"
+			+ " WHERE opdate BETWEEN '" + fromDate + "' AND '" + toDate
+			+ "' AND deleted=0"
+			+ " AND waitnum<>0"
+			+ " ORDER BY opdate, oproom, casenum, waitnum;";
 
 	Ajax(MYSQLIPHP, sql, callbacksaveScontent);
 
@@ -471,55 +423,50 @@ function saveContentService(pointed, column, content)	//column name in MYSQL
 		if (/BOOK/.test(response)) {
 			updateBOOK(response)
 
-			//Not refillService because it may make next editTD back to old value when fast entry
-			//due to slow return from Ajax of previous input
-			var fromDate = $('#monthpicking').val()
-			var toDate = $('#monthpicker').val()
+			// Not refillService because it may make next editTD back to old value
+			// when fast entry, due to slow return from Ajax of previous input
+			// Calc countService of this case only
 			var color = rowi.className
-			getServiceOneMonth(fromDate, toDate).then( function (book) {
-				//for countService of this case
-				var bookq = getBOOKrowByQN(book, qn)
-				var newcolor = countService(bookq, fromDate, toDate)
-				var colorArray = color.split(" ")
-				var newcolorArray = newcolor.split(" ")
-				var counter
-				var newcounter
-				if (color) {
-					if (newcolor) {
-						if (color !== newcolor) {
-							$.each( colorArray, function(i, each) {
-								counter = document.getElementById(each)
-								counter.innerHTML = Number(counter.innerHTML) - 1
-							})
-							$.each( newcolorArray, function(i, each) {
-								newcounter = document.getElementById(each)
-								newcounter.innerHTML = Number(newcounter.innerHTML) + 1
-							})
-						}
-					} else {
+			var bookq = getBOOKrowByQN(gv.SERVICE, qn)
+			var newcolor = countService(bookq, fromDate, toDate)
+			var colorArray = color.split(" ")
+			var newcolorArray = newcolor.split(" ")
+			var counter
+			var newcounter
+
+			if (color) {
+				if (newcolor) {
+					if (color !== newcolor) {
 						$.each( colorArray, function(i, each) {
 							counter = document.getElementById(each)
 							counter.innerHTML = Number(counter.innerHTML) - 1
 						})
+						$.each( newcolorArray, function(i, each) {
+							newcounter = document.getElementById(each)
+							newcounter.innerHTML = Number(newcounter.innerHTML) + 1
+						})
 					}
-					} else {
-						if (newcolor) {
-							$.each( newcolorArray, function(i, each) {
-								newcounter = document.getElementById(each)
-								newcounter.innerHTML = Number(newcounter.innerHTML) + 1
-							})
-						}
-					}
+				} else {
+					$.each( colorArray, function(i, each) {
+						counter = document.getElementById(each)
+						counter.innerHTML = Number(counter.innerHTML) - 1
+					})
+				}
+			} else {
+				if (newcolor) {
+					$.each( newcolorArray, function(i, each) {
+						newcounter = document.getElementById(each)
+						newcounter.innerHTML = Number(newcounter.innerHTML) + 1
+					})
+				}
+			}
 
-					//tr.newclass
-					//remove self cell class to prevent remained unused class
-					//td.newclass
-					rowi.className = newcolor
-					$(pointed).removeClass(color)
-					addColorService($row, newcolor)
-			}, function (title, message) {
-				Alert(title, message)
-			})
+			//tr.newclass
+			//remove self cell class to prevent remained unused class
+			//td.newclass
+			rowi.className = newcolor
+			$(pointed).removeClass(color)
+			addColorService($row, newcolor)
 		} else {
 			Alert("saveContentService", response)
 			pointed.innerHTML = oldcontent
@@ -792,7 +739,7 @@ function exportToExcel()
 	var tableToExcel = '<!DOCTYPE html><HTML><HEAD><meta charset="utf-8"/>' + style + '</HEAD><BODY>'
 	tableToExcel += head + table
 	tableToExcel += '</BODY></HTML>'
-	var month = $("#monthpicking").val()
+	var month = $("#monthstart").val()
 	month = month.substring(0, month.lastIndexOf("-"))	//use yyyy-mm for filename
 	var filename = 'Service Neurosurgery ' + month + '.xls'
 

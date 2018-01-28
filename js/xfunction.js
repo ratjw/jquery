@@ -140,3 +140,20 @@ function getBOOKrowByQN(book, qn)
 	}
 	return bookq
 }
+
+function Alert(title, message)
+{
+	var $dialogAlert = $("#dialogAlert")
+	$dialogAlert.css({
+		"fontSize":" 14px",
+		"textAlign" : "center"
+	})
+	$dialogAlert.html(message)
+	$dialogAlert.dialog({
+		title: title,
+		closeOnEscape: true,
+		modal: true,
+		minWidth: 400,
+		height: 230
+	}).fadeIn();
+}

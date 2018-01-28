@@ -2,7 +2,7 @@
 function initialize()
 {
 	// "=init" tells book.php to get staff oncall also
-	Ajax(MYSQLIPHP, "nosqlReturnbook=init", loading);
+	Ajax(MYSQLIPHP, "initialize=''", loading);
 
 	gv.user = localStorage.getItem('userid')
 	localStorage.removeItem('userid')
@@ -13,8 +13,8 @@ function initialize()
 	$("#wrapper").show()
 	$("#tblhead").show()
 
-	sortable()
 	// call sortable before render, otherwise, it renders very slowly
+	sortable()
 
 	// Prevent error message : call 'isOpen' before initialization
 	$("#dialogAlert").dialog()
@@ -176,15 +176,13 @@ function loading(response)
 
 function updateBOOK(response)
 {
-	var temp = JSON.parse(response),
-		book = temp.BOOK? temp.BOOK : [],
-		consult = temp.CONSULT? temp.CONSULT : [],
-		staff = temp.STAFF? temp.STAFF : [],
-		timestamp = temp.QTIME
-	gv.BOOK = book
-	gv.CONSULT = consult
-	if (staff.length) { gv.STAFF = staff }
-	gv.timestamp = timestamp
+	var temp = JSON.parse(response)
+
+	if (temp.BOOK) { gv.BOOK = temp.BOOK }
+	if (temp.CONSULT) { gv.CONSULT = temp.CONSULT }
+	if (temp.SERVICE) { gv.SERVICE = temp.SERVICE }
+	if (temp.STAFF) { gv.STAFF = temp.STAFF }
+	if (temp.QTIME) { gv.timestamp = temp.QTIME }
 	// datetime of last fetching from server: $mysqli->query ("SELECT now();")
 }
 
@@ -311,10 +309,10 @@ function getUpdate()
 		if (/BOOK/.test(response)) {
 			updateBOOK(response)
 			if ($("#dialogService").dialog('isOpen')) {
-				var fromDate = $('#monthpicking').val()
+				var fromDate = $('#monthstart').val()
 				var toDate = $('#monthpicker').val()
-				var SERVICE = getfromBOOKCONSULT(fromDate, toDate)
-				refillService(SERVICE, fromDate, toDate)
+
+				refillService(gv.SERVICE, fromDate, toDate)
 			}
 			refillall()
 			if (isSplited()) {
