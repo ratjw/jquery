@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <HTML>
 <HEAD>
 <link href="css/jquery-ui.min.css" rel="stylesheet">
@@ -71,8 +71,7 @@ function namesix() {
 			include ("nurse.html");
 		}
 		echo "<SCRIPT type='text/javascript'>
-			localStorage.setItem('userid', '$userid')
-			initialize()
+			start('$userid')
 		</SCRIPT>";
 	}
 ?>

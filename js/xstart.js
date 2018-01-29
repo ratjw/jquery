@@ -1,11 +1,10 @@
 
-function initialize()
+function start(userid)
 {
-	// "=init" tells book.php to get staff oncall also
-	Ajax(MYSQLIPHP, "nosqlReturnbook=init", loading);
+	// "=" to be isset in PHP
+	Ajax(MYSQLIPHP, "start=", loading);
 
-	gv.user = localStorage.getItem('userid')
-	localStorage.removeItem('userid')
+	gv.user = userid
 	resetTimer()
 
 	$("#wrapper").on("click", function (event) {
