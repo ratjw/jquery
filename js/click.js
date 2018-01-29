@@ -10,7 +10,6 @@ function keyin(event, keycode, pointing)
 	var thiscell
 
 	if (keycode === 27)	{
-		pointing.innerHTML = $("#editcell").data("oldcontent")
 		$('#menu').hide();
 		$('#stafflist').hide();
 		clearEditcell()

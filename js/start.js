@@ -125,22 +125,11 @@ function initialize()
 	})
 
 	// for resizing the editing cell
-	// not resize in opdate cell or after non-char was pressed
 	$("#editcell").on("keyup", function (event) {
 		var $editcell = $("#editcell")
-		var pointing = $editcell.data("pointing")
-		if (!pointing.cellIndex) {
-			return
-		}
 		var keycode = event.which || window.event.keyCode
-		if (keycode < 32)	{
-			return
-		}
-		pointing.innerHTML = $editcell.html()
-		$editcell.css({
-			height: $(pointing).height() + "px",
-		})
-		reposition($editcell, "center", "center", pointing)
+
+		$editcell.height($editcell[0].scrollHeight)
 	})
 
 	// to make table scrollable while dragging

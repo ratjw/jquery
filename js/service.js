@@ -110,7 +110,7 @@ function showService(fromDate, toDate)
 		$('#servicecells tr').clone()
 			.appendTo($('#servicetbl tbody'))
 				.children("td").eq(OPDATE)
-					.prop("colSpan", 8)
+					.prop("colSpan", 9)
 						.addClass("serviceStaff")
 							.html(staffname)
 								.siblings().hide()
@@ -167,7 +167,7 @@ function refillService(fromDate, toDate)
 		i++
 		var $thisCase = $('#servicetbl tr').eq(i).children("td").eq(CASENUMSV)
 		if ($thisCase.prop("colSpan") === 1) {
-			$thisCase.prop("colSpan", 8)
+			$thisCase.prop("colSpan", 9)
 				.addClass("serviceStaff")
 					.siblings().hide()
 		}
@@ -199,14 +199,14 @@ jQuery.fn.extend({
 	filldataService : function(bookq, scase, color) {
 		var cells = this[0].cells
 		addColorService(this, color)
-		cells[CASENUMSV].innerHTML = scase
-		cells[HNSV].innerHTML = bookq.hn
 		if (bookq.hn && gv.isPACS) {
 			cells[HNSV].className = "pacs"
 		}
-		cells[NAMESV].innerHTML = bookq.patient
-			+ (bookq.dob? ("<br>อายุ " + putAgeOpdate(bookq.dob, bookq.opdate)) : "")
 		cells[NAMESV].className = "camera"
+
+		cells[CASENUMSV].innerHTML = scase
+		cells[HNSV].innerHTML = bookq.hn
+		cells[NAMESV].innerHTML = putNameAge(bookq)
 		cells[DIAGNOSISSV].innerHTML = bookq.diagnosis
 		cells[TREATMENTSV].innerHTML = bookq.treatment
 		cells[ADMISSIONSV].innerHTML = bookq.admission

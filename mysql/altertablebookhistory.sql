@@ -1,5 +1,5 @@
 
-ALTER TABLE book
+ALTER TABLE bookhistory
 	ADD theatre varchar(255) NOT NULL DEFAULT '' AFTER casenum,
 	ADD opday date AFTER discharge, 
 	ADD elective varchar(255) NOT NULL DEFAULT '' AFTER opday,

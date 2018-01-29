@@ -393,25 +393,26 @@ function refillstaffqueue()
 jQuery.fn.extend({
 	filldataQueue : function(bookq) {
 		var cells = this[0].cells
+		this[0].title = bookq.waitnum
+		addColor(this, bookq.opdate)
 		if  (bookq.opdate === LARGESTDATE) {
 			cells[OPDATE].className = ""
 		} else {
 			cells[OPDATE].className = dayName(NAMEOFDAYABBR, bookq.opdate)
 		}
+		cells[HN].className = (bookq.hn && gv.isPACS)? "pacs" : ""
+		cells[NAME].className = bookq.patient? "camera" : ""
+
 		cells[OPDATE].innerHTML = putOpdate(bookq.opdate)
 		cells[ROOM].innerHTML = bookq.oproom || ""
 		cells[CASENUM].innerHTML = putCasenumTime(bookq)
 		cells[STAFFNAME].innerHTML = bookq.staffname
 		cells[HN].innerHTML = bookq.hn
-		cells[HN].className = (bookq.hn && gv.isPACS)? "pacs" : ""
 		cells[NAME].innerHTML = putNameAge(bookq)
-		cells[NAME].className = bookq.patient? "camera" : ""
 		cells[DIAGNOSIS].innerHTML = bookq.diagnosis
 		cells[TREATMENT].innerHTML = bookq.treatment
 		cells[CONTACT].innerHTML = bookq.contact
 		cells[QN].innerHTML = bookq.qn
-		this[0].title = bookq.waitnum
-		addColor(this, bookq.opdate)
 	}
 })
 
