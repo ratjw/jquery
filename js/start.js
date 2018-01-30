@@ -14,20 +14,6 @@ function start(userid)
 	// call sortable before render, otherwise, it renders very slowly
 	sortable()
 
-	// Prevent error message : call 'isOpen' before initialization
-	$("#dialogAlert").dialog()
-	$("#dialogAlert").dialog('close')
-	$("#dialogDeleted").dialog()
-	$("#dialogDeleted").dialog('close')
-	$("#dialogEquip").dialog()
-	$("#dialogEquip").dialog('close')
-	$("#dialogFind").dialog()
-	$("#dialogFind").dialog('close')
-	$("#dialogService").dialog()
-	$("#dialogService").dialog('close')
-	$("#dialogHistory").dialog()
-	$("#dialogHistory").dialog('close')
-
 	$(document).contextmenu( function (event) {
 		event.preventDefault();
 	})
@@ -295,7 +281,8 @@ function getUpdate()
 	{
 		if (/BOOK/.test(response)) {
 			updateBOOK(response)
-			if ($("#dialogService").dialog('isOpen')) {
+			if ($("#dialogService").hasClass('ui-dialog-content')
+				&& $("#dialogService").dialog('isOpen')) {
 				var fromDate = $('#monthstart').val()
 				var toDate = $('#monthpicker').val()
 

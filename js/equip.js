@@ -4,6 +4,11 @@ function fillEquipTable(book, $row, qn)
 	var bookq = getBOOKrowByQN(book, qn)
 	var bookqEquip = bookq.equipment
 	var JsonEquip = bookqEquip? JSON.parse(bookqEquip) : {}
+	var $dialogEquip = $('#dialogEquip')
+	var height = window.innerHeight
+	if (height > 800) {
+		height = 800
+	}
 
 	document.getElementById("oproom").innerHTML = bookq.oproom || ""
 	document.getElementById("casenum").innerHTML = bookq.casenum || ""
@@ -20,10 +25,24 @@ function fillEquipTable(book, $row, qn)
 	// mark table row
 	// clear all previous dialog values
 	$row.addClass("bordergroove")
-	$('#dialogEquip').show()
-	$('#dialogEquip input').val('')
-	$('#dialogEquip textarea').val('')
-	$('#dialogEquip input').prop('checked', false)
+	$dialogEquip.show()
+	$dialogEquip.find('input').val('')
+	$dialogEquip.find('textarea').val('')
+	$dialogEquip.find('input').prop('checked', false)
+	$dialogEquip.dialog({
+		title: "เครื่องมือผ่าตัด",
+		closeOnEscape: true,
+		modal: true,
+		width: 750,
+		height: height,
+		open: function(event, ui) {
+			//disable default autofocus on text input
+			$("input").blur()
+		},
+		close: function(event, ui) {
+			$row.removeClass("bordergroove")
+		}
+	})
 
 	// If ever filled, show checked equips & texts
 	// .prop("checked", true) : radio and checkbox
@@ -42,27 +61,9 @@ function fillEquipTable(book, $row, qn)
 		showEditableEquip()
 		$('#editedby').html("")
 	}
-	var height = window.innerHeight
-	if (height > 800) {
-		height = 800
-	}
-	$('#dialogEquip').dialog({
-		title: "เครื่องมือผ่าตัด",
-		closeOnEscape: true,
-		modal: true,
-		width: 750,
-		height: height,
-		open: function(event, ui) {
-			//disable default autofocus on text input
-			$("input").blur()
-		},
-		close: function(event, ui) {
-			$row.removeClass("bordergroove")
-		}
-	})
-	$('#dialogEquip').data("bookqEquip", bookqEquip)
-	$('#dialogEquip').data("JsonEquip", JsonEquip)
-	$('#dialogEquip').data("qn", qn)
+	$dialogEquip.data("bookqEquip", bookqEquip)
+	$dialogEquip.data("JsonEquip", JsonEquip)
+	$dialogEquip.data("qn", qn)
 }
 
 function showNonEditableEquip()

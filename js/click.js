@@ -761,6 +761,10 @@ function getNAME(pointing) {
 	showUpload(hn, patient)
 }
 
+function getClick(pointing) {
+	var y = (evt.pageY - $('#element').offset().top) + $(window).scrollTop();
+}
+
 function createEditcellOpdate(pointing)
 {
 	var $editcell = $("#editcell")
