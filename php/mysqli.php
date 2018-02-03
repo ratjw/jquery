@@ -41,12 +41,12 @@ require_once "book.php";
 
 	// service.js (saveScontent)
 	else if (isset($_POST['sqlReturnService'])) {
-		$service = multiquery($mysqli, $_POST['sqlReturnService']);
+		$return = multiquery($mysqli, $_POST['sqlReturnService']);
 		if (gettype($return) === "string") {
 			echo $return;
 		} else {
 			$data = book($mysqli);
-			$data["SERVICE"] = $service;
+			$data["SERVICE"] = $return;
 			echo json_encode($data);
 		}
 	}
@@ -69,22 +69,15 @@ require_once "book.php";
 
 function multiquery($mysqli, $sql)
 {
+	$rowi = array();
+	$data = array();
 	if ($mysqli->multi_query(urldecode($sql))) {
 		do {
 			// This will be skipped when no result, but no error (success query INSERT, UPDATE)
-			if ($result = $mysqli->store_result())
-			{
-				$rowi = array();
-				$data = array();
+			if ($result = $mysqli->store_result()) {
 				while ($rowi = $result->fetch_assoc()) {
 					$data[] = $rowi;
 				}
-			}
-			// if error, return error message
-			// if has no result, but no error (INSERT, UPDATE), fall through
-			else if ($mysqli->errno)
-			{
-				return 'DBfailed multi query ' . $sql . " \n" . $mysqli->error;
 			}
 			// no more query
 			if (!$mysqli->more_results()) {
@@ -94,8 +87,7 @@ function multiquery($mysqli, $sql)
 		} while ($mysqli->next_result());
 	}
 	// handle failed first query
-	else if ($mysqli->errno)
-	{
+	if ($mysqli->errno) {
 		return 'DBfailed first query ' . $sql . " \n" . $mysqli->error;
 	}
 }

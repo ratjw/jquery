@@ -23,6 +23,8 @@ function fillupstart()
 	$('#tblcontainer').animate({
 		scrollTop: thishead.offset().top
 	}, 300);
+
+	hoverMain()
 }
 
 function fillall(book, table, start, until)
@@ -298,6 +300,7 @@ function filldata(bookq, row)
 		cells[HN].className = "pacs"
 	}
 	cells[NAME].className = bookq.patient? "camera" : ""
+	cells[TREATMENT].className = bookq.treatment? "equip" : ""
 
 	cells[ROOM].innerHTML = bookq.oproom || ""
 	cells[CASENUM].innerHTML = putCasenumTime(bookq)
@@ -347,6 +350,8 @@ function staffqueue(staffname)
 			}
 		});
 	}
+
+	hoverMain()
 }
 
 function refillstaffqueue()
@@ -415,6 +420,24 @@ jQuery.fn.extend({
 		cells[QN].innerHTML = bookq.qn
 	}
 })
+
+// hover on background pics
+function hoverMain()
+{
+	$("td.pacs, td.camera, td.equip").mousemove(function(event) {
+		var classname = this.className
+		if (inPicArea(event, this)) {
+			this.className = /2/.test(classname.substr(-1))
+								? classname
+								: classname + "2"
+		} else {
+			this.className = classname.replace("2", "")
+		}
+	})
+	.mouseout(function (event) {
+		this.className = this.className.replace("2", "")
+	})
+}
 
 function putCasenumTime(bookq)
 {

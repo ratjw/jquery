@@ -1,10 +1,10 @@
-function clicktable(clickedCell)
+function clicktable(evt, clickedCell)
 {
 	savePreviousCell()
-	storePresentCell(clickedCell)
+	storePresentCell(evt, clickedCell)
 }
 
-function keyin(event, keycode, pointing)
+function keyin(evt, keycode, pointing)
 {
 	var EDITABLE = [HN, DIAGNOSIS, TREATMENT, CONTACT];
 	var thiscell
@@ -14,56 +14,56 @@ function keyin(event, keycode, pointing)
 		$('#stafflist').hide();
 		clearEditcell()
 		window.focus()
-		event.preventDefault()
+		evt.preventDefault()
 		return false
 	}
 	if (keycode === 9) {
 		$('#menu').hide();
 		$('#stafflist').hide();
 		savePreviousCell()
-		if (event.shiftKey) {
-			thiscell = findPrevcell(event, EDITABLE, pointing)
+		if (evt.shiftKey) {
+			thiscell = findPrevcell(evt, EDITABLE, pointing)
 			if ((thiscell.cellIndex === HN) && (thiscell.innerHTML !== "")) {
-				thiscell = findPrevcell(event, EDITABLE, $(thiscell))
+				thiscell = findPrevcell(evt, EDITABLE, $(thiscell))
 			}
 		} else {
-			thiscell = findNextcell(event, EDITABLE, pointing)
+			thiscell = findNextcell(evt, EDITABLE, pointing)
 			if ((thiscell.cellIndex === HN) && (thiscell.innerHTML !== "")) {
-				thiscell = findNextcell(event, EDITABLE, $(thiscell))
+				thiscell = findNextcell(evt, EDITABLE, $(thiscell))
 			}
 		}
 		if (thiscell) {
-			storePresentCell(thiscell)
+			storePresentCell(evt, thiscell)
 		} else {
 			clearEditcell()
 			window.focus()
 		}
-		event.preventDefault()
+		evt.preventDefault()
 		return false
 	}
 	if (keycode === 13) {
 		$('#menu').hide();
 		$('#stafflist').hide();
-		if (event.shiftKey || event.ctrlKey) {
+		if (evt.shiftKey || evt.ctrlKey) {
 			return
 		}
 		savePreviousCell()
-		thiscell = findNextRow(event, EDITABLE, pointing)
+		thiscell = findNextRow(evt, EDITABLE, pointing)
 		if ((thiscell.cellIndex === HN) && (thiscell.innerHTML !== "")) {
-			thiscell = findNextcell(event, EDITABLE, $(thiscell))
+			thiscell = findNextcell(evt, EDITABLE, $(thiscell))
 		}
 		if (thiscell) {
-			storePresentCell(thiscell)
+			storePresentCell(evt, thiscell)
 		} else {
 			clearEditcell()
 			window.focus()
 		}
-		event.preventDefault()
+		evt.preventDefault()
 		return false
 	}
 	// no keyin on date
 	if (pointing.cellIndex === 0) {
-		event.preventDefault()
+		evt.preventDefault()
 		return false
 	}
 }
@@ -265,7 +265,9 @@ function saveContent(pointed, column, content)
 	pointed.innerHTML = content
 
 	// take care of white space, double qoute, single qoute, and back slash
-	content = URIcomponent(content)
+	if (/\W/.test(content)) {
+		content = URIcomponent(content)
+	}
 
 	if (qn) {
 		saveContentQN(pointed, column, content)
@@ -461,12 +463,12 @@ function saveHN(pointed, hn, content)
 			sql += "&staffname="+ staffname
 		}
 		sql += "&qn="+ qn
-		sql += "&username="+ gv.user
+		sql += "&editor="+ gv.user
 	} else {
 		sql = "hn=" + content
 		sql += "&opdate="+ opdate
 		sql += "&qn="+ qn
-		sql += "&username="+ gv.user
+		sql += "&editor="+ gv.user
 	}
 
 	Ajax(GETNAMEHN, sql, callbackgetByHN)
@@ -566,7 +568,7 @@ function refillAnotherTableCell(tableID, cellindex, qn)
 	}
 }
 
-function storePresentCell(pointing)
+function storePresentCell(evt, pointing)
 {
 	switch(pointing.cellIndex)
 	{
@@ -583,13 +585,17 @@ function storePresentCell(pointing)
 			getSTAFFNAME(pointing)
 			break
 		case HN:
-			getHN(pointing)
+			getHN(evt, pointing)
 			break
 		case NAME:
-			getNAME(pointing)
+			getNAME(evt, pointing)
 			break
 		case DIAGNOSIS:
+			createEditcell(pointing)
+			break
 		case TREATMENT:
+			getEquip(evt, pointing)
+			break
 		case CONTACT:
 			createEditcell(pointing)
 			break
@@ -743,26 +749,39 @@ function changeOncall(pointing, opdate, staffname)
 	}
 }
 
-function getHN(pointing) {
+function getHN(evt, pointing) {
 	if (pointing.innerHTML) {
 		clearEditcell()
-		if (gv.isPACS) { PACS(pointing.innerHTML) }
+		if (gv.isPACS) {
+			if (inPicArea(evt, pointing)) {
+				PACS(pointing.innerHTML)
+			}
+		}
 	} else {
 		createEditcell(pointing)
 	}
 }
 
-function getNAME(pointing) {
+function getNAME(evt, pointing) {
 	var hn = $(pointing).closest('tr').children("td").eq(HN).html()
 	var patient = pointing.innerHTML
-	var upload = gv.uploadWindow
 
-	clearEditcell()
-	showUpload(hn, patient)
+	if (inPicArea(evt, pointing)) {
+		clearEditcell()
+		showUpload(hn, patient)
+	}
 }
 
-function getClick(pointing) {
-	var y = (evt.pageY - $('#element').offset().top) + $(window).scrollTop();
+function getEquip(evt, pointing) {
+	if (inPicArea(evt, pointing)) {
+		var tableID = $(pointing).closest('table').attr('id'),
+			book = ConsultsTbl(tableID)? gv.CONSULT : gv.BOOK,
+			$row = $(pointing).closest('tr'),
+			qn = $row.find("td").eq(QN).html()
+		fillEquipTable(book, $row, qn)
+	} else {
+		createEditcell(pointing)
+	}
 }
 
 function createEditcellOpdate(pointing)

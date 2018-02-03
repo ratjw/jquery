@@ -26,9 +26,9 @@ function fillEquipTable(book, $row, qn)
 	// clear all previous dialog values
 	$row.addClass("bordergroove")
 	$dialogEquip.show()
-	$dialogEquip.find('input').val('')
+	$dialogEquip.find('input[type=text]').val('')
 	$dialogEquip.find('textarea').val('')
-	$dialogEquip.find('input').prop('checked', false)
+	$dialogEquip.find('input[type=checkbox]').prop('checked', false)
 	$dialogEquip.dialog({
 		title: "เครื่องมือผ่าตัด",
 		closeOnEscape: true,

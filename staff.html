@@ -53,8 +53,6 @@
  </div>
 </div>
 
-<span id="br" class="ui-icon ui-icon-closethick" style="width:15px"></span>
-
 <!-- Used as cells template -->
 <table id="tblcells" style="display:none">
  <tbody>
@@ -128,6 +126,65 @@
    </tr>
   </tbody>
 </table>
+
+<div id="dialogRecord" class="dialogBox" style="display:none">
+	<span>วันที่ผ่าตัด:</span>
+	<input type="text" id="doneday" tabindex="-1">
+	<br>
+	<br>
+	<span>Set แบบ:</span>
+	<input type="text" name="set">
+	<br>
+	<br>
+	<span>ผ่าตัดโดย:</span>
+	<input type="text" name="doneby">
+	<br>
+	<br>
+	<span>ชนิดการผ่าตัด:</span>
+	<input type="text" name="type">
+	<br>
+	<br>
+	<span>ประเภทโรค:</span>
+	<input type="text" name="disease">
+	<br>
+	<br>
+	<label for="infect">Infection</label>
+	<input type="checkbox" id="infect">
+	<br>
+	<br>
+	<label for="morbid">Morbidity</label>
+	<input type="checkbox" id="morbid">
+	<br>
+	<br>
+	<label for="mortal">Dead</label>
+	<input type="checkbox" id="mortal">
+
+	<ul id="set" class="setting" style="display:none">
+	  <li><div>Elective</div></li>
+	  <li><div>Emergency</div></li>
+	</ul>
+
+	<ul id="doneby" class="setting" style="display:none">
+	  <li><div>Staff</div></li>
+	  <li><div>Resident</div></li>
+	</ul>
+
+	<ul id="type" class="setting" style="display:none">
+	  <li><div>Major</div></li>
+	  <li><div>Minor</div></li>
+	</ul>
+
+	<ul id="disease" class="setting" style="display:none">
+	  <li><div>Brain Tumor</div></li>
+	  <li><div>Brain Vascular</div></li>
+	  <li><div>CSF related</div></li>
+	  <li><div>Trauma</div></li>
+	  <li><div>Spine ++</div></li>
+	  <li><div>ETC</div></li>
+	  <li><div>Radiosurgery</div></li>
+	  <li><div>Endovascular</div></li>
+	</ul>
+</div>
 
 <div id="dialogHistory" style="display:none">
  <table id="historytbl">
@@ -220,8 +277,7 @@
   </table>
 </div>
 
-<div id="dialogInput" style="display:none">
-  <div id="find" class="dialogBox">
+<div id="dialogInput" class="dialogBox" style="display:none">
 	<span style="width:90px;">HN:</span>
 	<input type="text" name="hn" maxlength="7">
 	<br>
@@ -244,7 +300,6 @@
 	<br>
 	<span style="width:90px;">Contact:</span>
 	<input type="text" name="contact">
-  </div>
 </div>
 
 <div id="dialogFind" style="display:none">

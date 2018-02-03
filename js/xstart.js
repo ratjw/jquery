@@ -11,12 +11,12 @@ function start(userid)
 		resetTimer();
 		event.stopPropagation()
 		var target = event.target
-		var row = $(target).closest('tr')
-		var qn = row.children('td').eq(QN).html()
+		var $row = $(target).closest('tr')
+		var qn = $row.children('td').eq(QN).html()
 		if ((target.nodeName !== "TD") || (!qn)) {
 			return false
 		}
-		fillEquipTable(gv.BOOK, row, qn)
+		fillEquipTable(gv.BOOK, $row, qn)
 	})
 
 	$(document).contextmenu( function (event) {

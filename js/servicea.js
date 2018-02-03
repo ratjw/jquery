@@ -200,7 +200,7 @@ function refillService(fromDate, toDate)
 jQuery.fn.extend({
 	filldataService : function(bookq, scase, classes) {
 		var cells = this[0].cells
-		updateRowClasses(this, classes)
+		addClassService(this, classes)
 		if (bookq.hn && gv.isPACS) {
 			cells[HNSV].className = "pacs"
 		}
@@ -242,29 +242,33 @@ function hoverService()
 
 function putReoperate(classes)
 {
+	var operate = ""
+
 	if (/Reoperation/.test(classes)) {
-		return "Reoperation"
+		operate = "Reoperation"
 	}
 	else if (/Operation/.test(classes)) {
-		return "Operation"
+		operate = "Operation"
 	}
 
-	return ""
+	return operate
 }
 
 function putReadmit(classes)
 {
+	var admit = ""
+
 	if (/Readmission/.test(classes)) {
-		return "Readmission"
+		admit = "Readmission"
 	}
 	else if (/Admit/.test(classes)) {
-		return "Admit"
+		admit = "Admit"
 	}
 
-	return ""
+	return admit
 }
 
-function updateRowClasses($this, classname)
+function addClassService($this, classname)
 {
 	if (classname) {
 		$this[0].className = classname
@@ -274,16 +278,16 @@ function updateRowClasses($this, classname)
 			$final = $cell.eq(FINALSV)
 
 		if (/Admit/.test(classname)) {
-			$admit.addClass("Admit")
-		}
-		if (/Readmission/.test(classname)) {
-			$admit.addClass("Readmission")
+			$admit.eq(ADMISSIONSV).addClass("Admit")
 		}
 		if (/Operation/.test(classname)) {
-			$treat.addClass("Operation")
+			$treat.eq(TREATMENTSV).addClass("Operation")
+		}
+		if (/Readmission/.test(classname)) {
+			$admit.eq(ADMISSIONSV).addClass("Readmission")
 		}
 		if (/Reoperation/.test(classname)) {
-			$treat.addClass("Reoperation")
+			$treat.eq(TREATMENTSV).addClass("Reoperation")
 		}
 		if (/Infection/.test(classname)) {
 			$final.addClass("Infection")
@@ -341,7 +345,6 @@ function fillAdmitDischargeDate()
 				if (this.discharge && 
 					this.discharge !== $cells.eq(DISCHARGESV).html()) {
 					$cells.eq(DISCHARGESV).html(this.discharge)
-					$thisRow.addClass("Discharge")
 				}
 			}
 		});
@@ -463,10 +466,9 @@ function saveContentService(pointed, column, content)
 	var fromDate = $('#monthstart').val()
 	var toDate = $('#monthpicker').val()
 
-	// prevent showing of "readmit" and "reoperate" values
-	// Not refillService because it may make next cell back to old value
-	// when fast entry, due to slow return from Ajax of previous input
 	if (!(column === "readmit" || column === "reoperate")) {
+		// Not refillService because it may make next cell back to old value
+		// when fast entry, due to slow return from Ajax of previous input
 		pointed.innerHTML = content? content : ''
 	}
 
@@ -478,9 +480,9 @@ function saveContentService(pointed, column, content)
 			+ column + "='" + content
 			+ "', editor='" + gv.user
 			+ "' WHERE qn=" + qn
-			+ ";SELECT waitnum,opdate,staffname,hn,patient,dob,diagnosis,"
-			+ "treatment,admit,discharge,opday,readmit,reoperate,elective,"
-			+ "doneby,major,disease,infection,morbid,dead,qn,editor"
+			+ ";SELECT opdate,staffname,hn,patient,dob,diagnosis,treatment,"
+			+ "admit,discharge,opday,readmit,reoperate,elective,doneby,"
+			+ "major,disease,infection,morbid,dead,qn,editor"
 			+ " FROM book"
 			+ " WHERE opdate BETWEEN '" + fromDate + "' AND '" + toDate
 			+ "' AND deleted=0"
@@ -503,28 +505,49 @@ function saveContentService(pointed, column, content)
 			var counter
 			var newcounter
 
-			if (oldclass !== newclass) {
-				updateCounter(oldclassArray, -1)
-				updateCounter(newclassArray, 1)
-				pointed.className = ""
-				updateRowClasses($row, newclass)
+			if (oldclass) {
+				if (newclass) {
+					if (oldclass !== newclass) {
+						$.each( oldclassArray, function(i, each) {
+							if (counter = document.getElementById(each)) {
+								counter.innerHTML = Number(counter.innerHTML) - 1
+							}
+						})
+						$.each( newclassArray, function(i, each) {
+							if (newcounter = document.getElementById(each)) {
+								newcounter.innerHTML = Number(newcounter.innerHTML) + 1
+							}
+						})
+					}
+				} else {
+					$.each( oldclassArray, function(i, each) {
+						if (counter = document.getElementById(each)) {
+							counter.innerHTML = Number(counter.innerHTML) - 1
+						}
+					})
+				}
+			} else {
+				if (newclass) {
+					$.each( newclassArray, function(i, each) {
+						if (newcounter = document.getElementById(each)) {
+							newcounter.innerHTML = Number(newcounter.innerHTML) + 1
+						}
+					})
+				}
 			}
+
+			//tr.newclass
+			//remove self cell class to prevent remained unused class
+			//td.newclass
+			rowi.className = newclass
+			$(pointed).removeClass(oldclass)
+			addClassService($row, newclass)
 		} else {
 			Alert("saveContentService", response)
 			pointed.innerHTML = oldcontent
 			//return to previous content
 		}
 	}
-}
-
-function updateCounter(classArray, one) {
-	var counter
-
-	$.each( classArray, function(i, each) {
-		if (counter = document.getElementById(each)) {
-			counter.innerHTML = Number(counter.innerHTML) + one
-		}
-	})
 }
 
 function storePresentCellService(evt, pointing, editable)
@@ -597,7 +620,7 @@ function getTREATMENTSV(evt, pointing, editable) {
 		// null >= 0 is true in Javascript!?!?!?
 		// clear null out
 		// click toggle 0, 1
-		if ((reoperate !== null) && inPicArea(evt, pointing)) {
+		if ((reoperate || reoperate === 0) && inPicArea(evt, pointing)) {
 			clearEditcell()
 			saveContentService(pointing, "reoperate", 1 - reoperate)
 		} else {
@@ -620,7 +643,7 @@ function getADMISSIONSV(evt, pointing, editable) {
 			readmit = 0
 		}
 
-		if ((readmit !== null) && inPicArea(evt, pointing)) {
+		if ((readmit || readmit === 0) && inPicArea(evt, pointing)) {
 			clearEditcell()
 			saveContentService(pointing, "readmit", 1 - readmit)
 		} else {
@@ -630,150 +653,34 @@ function getADMISSIONSV(evt, pointing, editable) {
 }
 
 function getFINALSV(evt, pointing, editable) {
-	if (inPicArea(evt, pointing)) {
-		setFINALSV(evt, pointing, editable)
+	if (editable) {
+		if (inPicArea(evt, pointing)) {
+			setFINALSV(pointing)
+		} else {
+			createEditcell(pointing)
+		}
+	}
+}
+
+function setFINALSV(pointing) {
+	if (editable) {
+		if (inPicArea(evt, pointing)) {
+			saveService(pointing, "final")
+		} else {
+			createEditcell(pointing)
+		}
+	}
+}
+
+function saveService(pointing, column, content) {
+	var sql = this.className
+	if (inPicArea(event, this)) {
+		this.className = /2/.test(classname.substr(-1))
+							? classname
+							: classname + "2"
 	} else {
-		createEditcell(pointing)
+		this.className = classname.replace("2", "")
 	}
-}
-
-function setFINALSV(evt, pointing, editable) {
-	if (inPicArea(evt, pointing)) {
-		showRecord(pointing)
-//		if (editable) {
-			saveRecord(pointing)
-//		}
-	} else {
-		createEditcell(pointing)
-	}
-}
-
-function showRecord(pointing) {
-	$('#doneday').datepicker({
-		dateFormat: "yy-mm-dd"
-	})
-	var $row = $(row),
-		$cells = $row.find("td"),
-		qn = $cells.eq(QNSV).html(),
-		book = gv.SERVICE,
-
-		$dialogRecord = $("#dialogRecord"),
-		$instanceRecord = $dialogRecord.dialog({
-		title: "Operation Detail",
-		closeOnEscape: true,
-		modal: true,
-		width: 500,
-		height: 450,
-		buttons: [
-			{
-				text: "OK",
-				click: function() {
-					sqlRecord()
-					$( this ).dialog( "close" );
-				}
-			}
-		]
-	}),
-	allClasses = $row[0].className
-
-	$dialogRecord.find('input[type=text]').val('')
-	$dialogRecord.find('input[type=checkbox]').prop('checked', false)
-	$dialogRecord.on("keydown", function(event) {
-		var keycode = event.which || window.event.keyCode
-		if (keycode === 13) {
-			var buttons = $instanceRecord.dialog('option', 'buttons')
-			buttons[0].click.apply($instanceRecord)
-		}
-	})
-	$dialogRecord.find("input[type=text]").not("#doneday").on("click", function(event) {
-		getRecord(this.name, this)
-		event.stopPropagation()
-	})
-	$dialogRecord.on("click", function(event) {
-		var target = event.target,
-			$setting = $('.setting')
-
-		if ($setting.is(":visible")) {
-			if (!$(target).closest('.setting').length) {
-				$setting.hide();
-			}
-		}
-	})
-
-	setInput(book, qn, allClasses)
-}
-
-function setInput(book, qn, allClasses)
-{
-	var $dialogRecord = $("#dialogRecord"),
-		bookq = getBOOKrowByQN(book, qn),
-		JsonRecord
-
-	$("#doneday").val = bookq.opday
-	$("#set").val = bookq.elective
-	$("#doneby").val = bookq.doneby
-	$("#type").val = bookq.major
-	$("#disease").val = bookq.disease
-	$("#infect").checked = bookq.infection || /Infection/.test(allClasses)
-	$("#morbid").checked = bookq.morbid || /Morbidity/.test(allClasses)
-	$("#mortal").checked = bookq.dead || /Dead/.test(allClasses)
-
-	JsonRecord = getInput($dialogRecord.find("input"))
-	$dialogRecord.data("JsonRecord", JsonRecord)
-	$dialogRecord.data("qn", qn)
-}
-
-function getInput($input)
-{
-	var item = {}
-	$input.each( function() {
-		this.checked && (item[this.id] = "checked")
-		this.value && (item[this.id] = this.value)
-	})
-	return JSON.stringify(item)
-}
-
-function sqlRecord()
-{
-	var $dialogRecord = $('#dialogRecord'),
-		JsonRecord = $dialogRecord.data("JsonRecord"),
-		qn = $dialogRecord.data("qn"),
-
-		newrecord = getInput($dialogRecord.find("input")),
-		newJsonRecord = ""
-
-	newJsonRecord = JSON.stringify(newrecord)
-	if (newrecord === oldRecord) {
-		return
-	}
-
-	//escape the \ (escape) and ' (single quote) for sql string, not for JSON
-	record = record.replace(/\\/g,"\\\\").replace(/'/g,"\\'")
-
-	var sql = "sqlReturnbook=UPDATE book SET ";
-	sql += "record='"+ record +"' ,";
-	sql += "editor='"+ gv.user +"' ";
-	sql += "WHERE qn="+ qn +";"
-}
-
-function getRecord(id, pointing)
-{
-	var $record = $("#" + id)
-
-	$(".setting").hide()
-	$record.menu({
-		select: function( event, ui ) {
-			pointing.value = ui.item.text()
-			$record.hide()
-			event.stopPropagation()
-		}
-	})
-
-	reposition($record, "left center", "right center", pointing)
-	menustyle($record, pointing)
-}
-
-function saveRecord(pointing) {
 }
 
 function resetcountService()
@@ -903,4 +810,140 @@ function isMorbidity(thiscase)
 function isDead(thiscase)
 {
 	return thiscase.dead > 0
+}
+
+function exportServiceToExcel()
+{
+	//getting data from our table
+	var data_type = 'data:application/vnd.ms-excel';	//Chrome, FF, not IE
+	var title = $('#dialogService').dialog( "option", "title" )
+	var style = '\
+		<style type="text/css">\
+			#exceltbl {\
+				border-right: solid 1px slategray;\
+				border-collapse: collapse;\
+			}\
+			#exceltbl tr:nth-child(odd) {\
+				background-color: #E0FFE0;\
+			}\
+			#exceltbl th {\
+				font-size: 16px;\
+				font-weight: bold;\
+				height: 40px;\
+				background-color: #7799AA;\
+				color: white;\
+				border: solid 1px silver;\
+			}\
+			#exceltbl td {\
+				font-size: 14px;\
+				vertical-align: middle;\
+				padding-left: 3px;\
+				border-left: solid 1px silver;\
+				border-bottom: solid 1px silver;\
+			}\
+			#excelhead td {\
+				height: 30px; \
+				vertical-align: middle;\
+				font-size: 22px;\
+				text-align: center;\
+			}\
+			#excelhead td.Readmission,\
+			#exceltbl tr.Readmission,\
+			#exceltbl td.Readmission { background-color: #AACCCC; }\
+			#excelhead td.Reoperation,\
+			#exceltbl tr.Reoperation,\
+			#exceltbl td.Reoperation { background-color: #CCCCAA; }\
+			#excelhead td.Infection,\
+			#exceltbl tr.Infection,\
+			#exceltbl td.Infection { background-color: #CCAAAA; }\
+			#excelhead td.Morbidity,\
+			#exceltbl tr.Morbidity,\
+			#exceltbl td.Morbidity { background-color: #AAAACC; }\
+			#excelhead td.Dead,\
+			#exceltbl tr.Dead,\
+			#exceltbl td.Dead { background-color: #AAAAAA; }\
+		</style>'
+	var head = '\
+		  <table id="excelhead">\
+			<tr>\
+			  <td></td>\
+			  <td></td>\
+			  <td colspan="4" style="font-weight:bold;font-size:24px">' + title + '</td>\
+			</tr>\
+			<tr></tr>\
+			<tr></tr>\
+			<tr>\
+			  <td></td>\
+			  <td></td>\
+			  <td>Admit : ' + $("#Admit").html() + '</td>\
+			  <td>Discharge : ' + $("#Discharge").html() + '</td>\
+			  <td>Operation : ' + $("#Operation").html() + '</td>\
+			  <td class="Morbidity">Morbidity : ' + $("#Morbidity").html() + '</td>\
+			</tr>\
+			<tr>\
+			  <td></td>\
+			  <td></td>\
+			  <td class="Readmission">Re-admission : ' + $("#Readmission").html() + '</td>\
+			  <td class="Infection">Infection SSI : ' + $("#Infection").html() + '</td>\
+			  <td class="Reoperation">Re-operation : ' + $("#Reoperation").html() + '</td>\
+			  <td class="Dead">Dead : ' + $("#Dead").html() + '</td>\
+			</tr>\
+			<tr></tr>\
+			<tr></tr>\
+		  </table>'
+
+	if ($("#exceltbl").length) {
+		$("#exceltbl").remove()
+	}
+	$("#servicetbl").clone(true).attr("id", "exceltbl").appendTo("body")
+	$.each( $("#exceltbl tr"), function() {
+		var multiclass = this.className.split(" ")
+		if (multiclass.length > 1) {
+			this.className = multiclass[multiclass.length-1]
+		}	//use only the last class because excel not accept multiple classes
+	})
+	$.each( $("#exceltbl tr td, #exceltbl tr th"), function() {
+		if ($(this).css("display") === "none") {
+			$(this).remove()
+		}	//remove trailing hidden cells in excel
+	})
+	var table = $("#exceltbl")[0].outerHTML
+	table = table.replace(/<br>/g, " ")	//excel split <br> to another cell inside that cell 
+
+	var tableToExcel = '<!DOCTYPE html><HTML><HEAD><meta charset="utf-8"/>' + style + '</HEAD><BODY>'
+	tableToExcel += head + table
+	tableToExcel += '</BODY></HTML>'
+	var month = $("#monthstart").val()
+	month = month.substring(0, month.lastIndexOf("-"))	//use yyyy-mm for filename
+	var filename = 'Service Neurosurgery ' + month + '.xls'
+
+	var ua = window.navigator.userAgent;
+	var msie = ua.indexOf("MSIE")
+	var edge = ua.indexOf("Edge"); 
+
+	if (msie > 0 || edge > 0 || navigator.userAgent.match(/Trident.*rv\:11\./)) // If Internet Explorer
+	{
+	  if (typeof Blob !== "undefined") {
+		//use blobs if we can
+		tableToExcel = [tableToExcel];
+		//convert to array
+		var blob1 = new Blob(tableToExcel, {
+		  type: "text/html"
+		});
+		window.navigator.msSaveBlob(blob1, filename);	//tested with Egde
+	  } else {
+		txtArea1.document.open("txt/html", "replace");
+		txtArea1.document.write(tableToExcel);
+		txtArea1.document.close();
+		txtArea1.focus();
+		sa = txtArea1.document.execCommand("SaveAs", true, filename);
+		return (sa);	//not tested
+	  }
+	} else {
+		var a = document.createElement('a');
+		document.body.appendChild(a);  // You need to add this line in FF
+		a.href = data_type + ', ' + encodeURIComponent(tableToExcel);
+		a.download = filename
+		a.click();		//tested with Chrome and FF
+	}
 }

@@ -10,7 +10,7 @@ require_once "book.php";
 	$gender = "";
 	$staffname = "";
 	$qn = "";
-	$username = "";
+	$editor = "";
 	$oproom = "";
 	$casenum = "";
 	$diagnosis = "";
@@ -90,7 +90,7 @@ require_once "book.php";
 									THEN '$contact'
 									ELSE contact
 								END,
-					editor = '$username' 
+					editor = '$editor' 
 				WHERE qn = $qn;";
 	} else {
 		//new row, insert waitnum, opdate and others if any
@@ -117,7 +117,7 @@ require_once "book.php";
 					'$diagnosis',
 					'$treatment',
 					'$contact',
-					'$username');";
+					'$editor');";
 	}
 
 	$query = $mysqli->query ($sql);

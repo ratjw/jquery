@@ -49,10 +49,38 @@ function start(userid)
 		}
 	});
 
+	$("#editcell").on("keydown", function (event) {
+		resetTimer();
+		gv.idleCounter = 0
+		var keycode = event.which || window.event.keyCode
+		var pointing = $("#editcell").data("pointing")
+		if ($('#dialogService').is(':visible')) {
+			Skeyin(event, keycode, pointing)
+		} else {
+			keyin(event, keycode, pointing)
+		}
+	})
+
+	// for resizing the editing cell
+	$("#editcell").on("keyup", function (event) {
+		var $editcell = $("#editcell")
+		var keycode = event.which || window.event.keyCode
+
+		$editcell.height($editcell[0].scrollHeight)
+	})
+
 	$("#editcell").on("click", function (event) {
 		event.stopPropagation()
 		return
 	})
+
+	// click on parent of submenu
+	$('#menu li > div').on("click", function(event){
+		if ($(this).siblings('ul').length > 0){
+			event.preventDefault()
+			event.stopPropagation()
+		}
+	});
 
 	$("#wrapper").on("click", function (event) {
 		resetTimer();
@@ -77,7 +105,7 @@ function start(userid)
 			target = $(target).closest('td')[0]
 		}
 		if (target.nodeName === "TD") {
-			clicktable(target)
+			clicktable(event, target)
 		} else {
 			clearEditcell()
 			$menu.hide()
@@ -86,34 +114,6 @@ function start(userid)
 		}
 
 		event.stopPropagation()
-	})
-
-	// click on parent of submenu
-	$('#menu li > div').on("click", function(event){
-		if ($(this).siblings('ul').length > 0){
-			event.preventDefault()
-			event.stopPropagation()
-		}
-	});
-
-	$("#editcell").on("keydown", function (event) {
-		resetTimer();
-		gv.idleCounter = 0
-		var keycode = event.which || window.event.keyCode
-		var pointing = $("#editcell").data("pointing")
-		if ($('#dialogService').is(':visible')) {
-			Skeyin(event, keycode, pointing)
-		} else {
-			keyin(event, keycode, pointing)
-		}
-	})
-
-	// for resizing the editing cell
-	$("#editcell").on("keyup", function (event) {
-		var $editcell = $("#editcell")
-		var keycode = event.which || window.event.keyCode
-
-		$editcell.height($editcell[0].scrollHeight)
 	})
 
 	// to make table scrollable while dragging
@@ -134,9 +134,12 @@ function loading(response)
 		fillConsults()
 	} else {
 		response = localStorage.getItem('ALLBOOK')
-		var error = "<br><br>Response from server has no data"
+		var error = "<br><br>Response from server has no data."
 		if (/BOOK/.test(response)) {
-			Alert("Server Error", error + "<br><br>Use localStorage instead");
+			Alert("Server Error",
+					error
+					+ "<br><br>Use localStorage instead."
+					+ "<br><br>Read Only. Not editable.");
 			updateBOOK(response)
 			fillupstart();
 			setStafflist()

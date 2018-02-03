@@ -2,10 +2,15 @@
 include "connect.php";
 require_once "book.php";
 
+	if (strpos($_SERVER["SERVER_NAME"], "surgery.rama") === false) {
+		return;
+	}
+
 	$from = $_POST["from"];
 	$to = $_POST["to"];
 
-	$result = $mysqli->query ("SELECT opdate, hn, admit, discharge, qn from book
+	$result = $mysqli->query ("SELECT opdate, hn, admit, discharge, readmit, qn
+		FROM book
 		WHERE opdate BETWEEN '$from' AND '$to';");
 
 	if (!$result) {
@@ -42,7 +47,7 @@ require_once "book.php";
 			$DateTime = DateTime::createFromFormat('d/m/Y H:i:s', $ipd[effectiveenddate]);
 			$discharge = $DateTime->format('Y-m-d');
 		}
-//echo "admit ".$admit." discharge ".$discharge;exit;
+/*
 		$date1 = date_create($admit);
 		$date2 = date_create($opdate);
 		$diff = date_diff($date1, $date2);
@@ -51,20 +56,33 @@ require_once "book.php";
 		if (($datediff < 0) || ($datediff > 30)) {
 			continue;
 		}
-
+*/
 		if (!$OldAdmit) {
 			if (!$OldDischarge && $discharge) {
 				if ($admit) {
-					$mysqli->query ("UPDATE book SET admit = '$admit', discharge = '$discharge' WHERE qn = $qn;");
+					$mysqli->query ("UPDATE book
+									SET admit = '$admit',
+										discharge = '$discharge',
+										readmit = 0
+									WHERE qn = $qn;");
 				}
 			} else {
 				if ($admit) {
-					$mysqli->query ("UPDATE book SET admit = '$admit' WHERE qn = $qn;");
+					$mysqli->query ("UPDATE book
+									SET admit = '$admit',
+										readmit = 0
+									WHERE qn = $qn;");
 				}
 			}
 		} else {
 			if (!$OldDischarge && $discharge) {
-				$mysqli->query ("UPDATE book SET discharge = '$discharge' WHERE qn = $qn;");
+				$mysqli->query ("UPDATE book
+								SET discharge = '$discharge',
+									readmit = CASE WHEN readmit is null
+												   THEN readmit = 0
+												   ELSE readmit
+											  END
+								WHERE qn = $qn;");
 			}
 		}
 	}

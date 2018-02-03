@@ -137,8 +137,48 @@ td.pacs {
 	background-image: url("pic/pacs.png");
 }
 
+td.pacs2 {
+	background-image: url("pic/pacs2.png");
+}
+
 td.camera {
 	background-image: url("pic/camera.png");
+}
+
+td.camera2 {
+	background-image: url("pic/camera2.png");
+}
+
+td.equip {
+	background-image: url("pic/equip.png");
+}
+
+td.equip2 {
+	background-image: url("pic/equip2.png");
+}
+
+td.Operation {
+	background-image: url("pic/reop.png");
+}
+
+td.Reoperation {
+	background-image: url("pic/reop2.png");
+}
+
+td.Admit {
+	background-image: url("pic/readmit.png");
+}
+
+td.Readmission {
+	background-image: url("pic/readmit2.png");
+}
+
+td.record {
+	background-image: url("pic/record.png");
+}
+
+td.record2 {
+	background-image: url("pic/record2.png");
 }
 
 #titlebar {
@@ -340,7 +380,7 @@ input[type=submit] {
 	line-height: 25px;
 }
 
-button.ui-datepicker-current {
+#monthpicker button.ui-datepicker-current {
 	display: none;
 }
 
@@ -383,6 +423,21 @@ button.ui-datepicker-current {
 	font-weight: bold;
 }
 
+#dialogRecord span {
+	display: inline-block;
+	width: 120px;
+}
+
+#dialogRecord .setting {
+	font-size: 14px;
+	width: 120px;
+}
+
+#dialogRecord label {
+	display: inline-block;
+	width: 70px;
+}
+
 #dialogEquip textarea {
 	width: 500px;
 	height: 55px;
@@ -391,8 +446,8 @@ button.ui-datepicker-current {
 	font-weight: bold;
 }
 
-#find {
-	font-size: 14px;
+#find input {
+	width: 150px;
 }
 
 #dialogReadme {

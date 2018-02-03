@@ -428,6 +428,7 @@ function find()
 	$dialogInput.on("click", function(event) {
 		var target = event.target,
 			$stafflist = $('#stafflist')
+
 		if ($stafflist.is(":visible")) {
 			if (!$(target).closest('#stafflist').length) {
 				$stafflist.hide();
@@ -629,109 +630,6 @@ jQuery.fn.extend({
 		cells[8].innerHTML = q.contact
 	}
 })
-
-function exportFindToExcel()
-{
-	// getting data from our table
-	// data_type is for Chrome, FF
-	// IE uses "txt/html", "replace" with blob
-	var data_type = 'data:application/vnd.ms-excel'
-	var title = $('#dialogFind').dialog( "option", "title" )
-	var style = '\
-		<style type="text/css">\
-			#exceltbl {\
-				border-right: solid 1px slategray;\
-				border-collapse: collapse;\
-			}\
-			#exceltbl tr:nth-child(odd) {\
-				background-color: #E0FFE0;\
-			}\
-			#exceltbl th {\
-				font-size: 16px;\
-				font-weight: bold;\
-				height: 40px;\
-				background-color: #7799AA;\
-				color: white;\
-				border: solid 1px silver;\
-			}\
-			#exceltbl td {\
-				font-size: 14px;\
-				vertical-align: middle;\
-				padding-left: 3px;\
-				border-left: solid 1px silver;\
-				border-bottom: solid 1px silver;\
-			}\
-			#excelhead td {\
-				height: 30px; \
-				vertical-align: middle;\
-				font-size: 22px;\
-				text-align: center;\
-			}\
-		</style>'
-	var head = '\
-		  <table id="excelhead">\
-			<tr></tr>\
-			<tr>\
-			  <td></td>\
-			  <td></td>\
-			  <td colspan="4" style="font-weight:bold;font-size:24px">' + title + '</td>\
-			</tr>\
-			<tr></tr>\
-		  </table>'
-
-	if ($("#exceltbl").length) {
-		$("#exceltbl").remove()
-	}
-	$("#findtbl").clone(true).attr("id", "exceltbl").appendTo("body")
-	$.each( $("#exceltbl tr"), function() {
-		var multiclass = this.className.split(" ")
-		if (multiclass.length > 1) {
-			this.className = multiclass[multiclass.length-1]
-		}	//use only the last class because excel not accept multiple classes
-	})
-	$.each( $("#exceltbl tr td, #exceltbl tr th"), function() {
-		if ($(this).css("display") === "none") {
-			$(this).remove()
-		}	//remove trailing hidden cells in excel
-	})
-	var table = $("#exceltbl")[0].outerHTML
-	table = table.replace(/<br>/g, " ")	//excel split <br> to another cell inside that cell 
-
-	var tableToExcel = '<!DOCTYPE html><HTML><HEAD><meta charset="utf-8"/>' + style + '</HEAD><BODY>'
-	tableToExcel += head + table
-	tableToExcel += '</BODY></HTML>'
-	var filename = 'Find ' + 'xxx' + '.xls'
-
-	var ua = window.navigator.userAgent;
-	var msie = ua.indexOf("MSIE")
-	var edge = ua.indexOf("Edge"); 
-
-	if (msie > 0 || edge > 0 || navigator.userAgent.match(/Trident.*rv\:11\./)) // If Internet Explorer
-	{
-	  if (typeof Blob !== "undefined") {
-		//use blobs if we can
-		tableToExcel = [tableToExcel];
-		//convert to array
-		var blob1 = new Blob(tableToExcel, {
-		  type: "text/html"
-		});
-		window.navigator.msSaveBlob(blob1, filename);
-	  } else {
-		txtArea1.document.open("txt/html", "replace");
-		txtArea1.document.write(tableToExcel);
-		txtArea1.document.close();
-		txtArea1.focus();
-		sa = txtArea1.document.execCommand("SaveAs", true, filename);
-		return (sa);	//not tested
-	  }
-	} else {
-		var a = document.createElement('a');
-		document.body.appendChild(a);  // You need to add this line in FF
-		a.href = data_type + ', ' + encodeURIComponent(tableToExcel);
-		a.download = filename
-		a.click();		//tested with Chrome and FF
-	}
-}
 
 function showUpload(hn, patient)
 {

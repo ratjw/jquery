@@ -516,7 +516,57 @@ function exportServiceToExcel()
 	month = month.substring(0, month.lastIndexOf("-"))	//use yyyy-mm for filename
 	var filename = 'Service Neurosurgery ' + month + '.xls'
 
-	exportToExcel("servicetbl", data_type, title, style, head, filename)	  
+	if ($("#exceltbl").length) {
+		$("#exceltbl").remove()
+	}
+	$("#servicetbl").clone(true).attr("id", "exceltbl").appendTo("body")
+	$.each( $("#exceltbl tr"), function() {
+		var multiclass = this.className.split(" ")
+		if (multiclass.length > 1) {
+			this.className = multiclass[multiclass.length-1]
+		}	//use only the last class because excel not accept multiple classes
+	})
+	$.each( $("#exceltbl tr td, #exceltbl tr th"), function() {
+		if ($(this).css("display") === "none") {
+			$(this).remove()
+		}	//remove trailing hidden cells in excel
+	})
+	var table = $("#exceltbl")[0].outerHTML
+	table = table.replace(/<br>/g, " ")	//excel split <br> to another cell inside that cell 
+
+	var tableToExcel = '<!DOCTYPE html><HTML><HEAD><meta charset="utf-8"/>' + style + '</HEAD><BODY>'
+	tableToExcel += head + table
+	tableToExcel += '</BODY></HTML>'
+
+	var ua = window.navigator.userAgent;
+	var msie = ua.indexOf("MSIE")
+	var edge = ua.indexOf("Edge"); 
+
+	if (msie > 0 || edge > 0 || navigator.userAgent.match(/Trident.*rv\:11\./)) // If Internet Explorer
+	{
+	  if (typeof Blob !== "undefined") {
+		//use blobs if we can
+		tableToExcel = [tableToExcel];
+		//convert to array
+		var blob1 = new Blob(tableToExcel, {
+		  type: "text/html"
+		});
+		window.navigator.msSaveBlob(blob1, filename);	//tested with Egde
+	  } else {
+		txtArea1.document.open("txt/html", "replace");
+		txtArea1.document.write(tableToExcel);
+		txtArea1.document.close();
+		txtArea1.focus();
+		sa = txtArea1.document.execCommand("SaveAs", true, filename);
+		return (sa);	//not tested
+	  }
+	} else {
+		var a = document.createElement('a');
+		document.body.appendChild(a);  // You need to add this line in FF
+		a.href = data_type + ', ' + encodeURIComponent(tableToExcel);
+		a.download = filename
+		a.click();		//tested with Chrome and FF
+	}
 }
 
 function exportFindToExcel()
@@ -569,15 +619,15 @@ function exportFindToExcel()
 		  </table>'
 	var filename = 'Find ' + 'xxx' + '.xls'
 
-	exportToExcel("findtbl", data_type, title, style, head, filename)	  
+	exportToExcel(data_type, title, style, head, filename)	  
 }
 
-function exportToExcel(id, data_type, title, style, head, filename)
+function exportToExcel(data_type, title, style, head, filename)
 {
 	if ($("#exceltbl").length) {
 		$("#exceltbl").remove()
 	}
-	$("#" + id).clone(true).attr("id", "exceltbl").appendTo("body")
+	$("#findtbl").clone(true).attr("id", "exceltbl").appendTo("body")
 	$.each( $("#exceltbl tr"), function() {
 		var multiclass = this.className.split(" ")
 		if (multiclass.length > 1) {

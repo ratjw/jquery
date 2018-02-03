@@ -70,9 +70,8 @@ function namesix() {
 		elseif ($resultz === "N" || preg_match('/^\d{1,2}$/', $userid)) {
 			include ("nurse.html");
 		}
-		echo "<SCRIPT type='text/javascript'>
-			start('$userid')
-		</SCRIPT>";
+		// can't use localStorage, not supported in old browsers
+		echo "<SCRIPT>start('$userid')</SCRIPT>";
 	}
 ?>
 
