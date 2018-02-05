@@ -423,27 +423,51 @@ input[type=submit] {
 	font-weight: bold;
 }
 
-#dialogRecord span {
-	display: inline-block;
-	width: 120px;
-}
-
-#dialogRecord .setting {
-	font-size: 14px;
-	width: 120px;
-}
-
-#dialogRecord label {
-	display: inline-block;
-	width: 70px;
-}
-
 #dialogEquip textarea {
 	width: 500px;
 	height: 55px;
 	padding: 2px;
 	color: blue;
 	font-weight: bold;
+}
+
+#dialogRecord {
+	font-size: 14px;
+}
+
+#dialogRecord span {
+	display: inline-block;
+	width: 120px;
+}
+
+#dialogRecord label {
+	display: inline-block;
+	width: 90px;
+}
+
+#reviewtbl {
+	font-weight: bold;
+}
+
+#reviewtbl th.first {
+	width: 150px;
+}
+
+#reviewtbl td {
+	width: 40px;
+	text-align: center;
+}
+
+#reviewtbl td:first-child {
+	text-align: left;
+}
+
+#reviewtbl th.elect {
+	background-color: #33AA77;
+}
+
+#reviewtbl th.emer {
+	background-color: #FF7799;
 }
 
 #find input {

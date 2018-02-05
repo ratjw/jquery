@@ -16,16 +16,48 @@ var CONTACT		= 8;
 var QN			= 9;
 
 //servicetbl
-var CASENUMSV		= 0;
-var HNSV			= 1;
-var NAMESV			= 2;
+var CASENUMSV	= 0;
+var HNSV		= 1;
+var NAMESV		= 2;
 var DIAGNOSISSV	= 3;
 var TREATMENTSV	= 4;
 var ADMISSIONSV	= 5;
 var FINALSV		= 6;
 var ADMITSV		= 7;
 var DISCHARGESV	= 8;
-var QNSV			= 9;
+var QNSV		= 9;
+
+//reviewtbl
+var STAFFMAJEL	= 1;
+var STAFFMAJEM	= 2;
+var STAFFMINEL	= 3;
+var STAFFMINEM	= 4;
+var RESMAJEL	= 5;
+var RESMAJEM	= 6;
+var RESMINEL	= 7;
+var RESMINEM	= 8;
+
+var REVIEWTOTAL	= 11;
+var REVIEWGRAND	= 12;
+
+var ROWREPORT = {
+	"Brain Tumor": 3,
+	"Brain Vascular": 4,
+	"CSF related": 5,
+	"Trauma": 6,
+	"Spine": 7,
+	"etc.": 8,
+	"Radiosurgery": 9,
+	"Endovascular": 10
+}
+var COLUMNREPORT = {
+	"Staff": 1,
+	"Resident": 5,
+	"Major": 0,
+	"Minor": 2,
+	"Elective": 0,
+	"Emergency": 1
+}
 
 // NAMEOFDAYABBR for row color
 // NAMEOFDAYFULL for 1st column color

@@ -87,6 +87,7 @@
 	</div>
   </div>
   <button id="exportService">Export to xls</button>
+  <button id="reportService">Report to Dept.</button>
   <div id="monthpicker" style="margin-left:5px"></div>
   <div id="monthstart" style="display:none"></div>
   <table id="servicetbl">
@@ -132,58 +133,166 @@
 	<input type="text" id="doneday" tabindex="-1">
 	<br>
 	<br>
-	<span>Set แบบ:</span>
-	<input type="text" name="set">
+	<div id="manner">
+	  <span>Set แบบ:</span>
+	  <span>
+		<input type="radio" name="manner" id="Elective" title="Elective">
+		<label for="Elective">Elective</label>
+	  </span>
+	  <span>
+		<input type="radio" name="manner" id="Emergency" title="Emergency">
+		<label for="Emergency">Emergency</label>
+	  </span>
+	</div>
 	<br>
+	<div id="doneby">
+	  <span>ผ่าตัดโดย:</span>
+	  <span>
+		<input type="radio" name="doneby" id="Staff" title="Staff">
+		<label for="Staff">Staff</label>
+	  </span>
+	  <span>
+		<input type="radio" name="doneby" id="Resident" title="Resident">
+		<label for="Resident">Resident</label>
+	  </span>
+	</div>
 	<br>
-	<span>ผ่าตัดโดย:</span>
-	<input type="text" name="doneby">
+	<div id="scale">
+	  <span>ขนาดการผ่าตัด:</span>
+	  <span>
+		<input type="radio" name="scale" id="Major" title="Major">
+		<label for="Major">Major</label>
+	  </span>
+	  <span>
+		<input type="radio" name="scale" id="Minor" title="Minor">
+		<label for="Minor">Minor</label>
+	  </span>
+	</div>
 	<br>
+	<div id="disease">
+	  <span>ประเภทโรค:</span>
+	  <span>
+		<input type="radio" name="disease" id="BrainTumor" title="Brain Tumor">
+		<label for="BrainTumor">Brain Tumor</label>
+	  </span>
+	  <span>
+		<input type="radio" name="disease" id="BrainVascular" title="Brain Vascular">
+		<label for="BrainVascular">Brain Vascular</label>
+	  </span>
+	  <span>
+	  </span>
+	  <span>
+		<input type="radio" name="disease" id="CSFrelated" title="CSF related">
+		<label for="CSFrelated">CSF related</label>
+	  </span>
+	  <span>
+		<input type="radio" name="disease" id="Trauma" title="Trauma">
+		<label for="Trauma">Trauma</label>
+	  </span>
+	  <span>
+	  </span>
+	  <span>
+		<input type="radio" name="disease" id="Spine" title="Spine">
+		<label for="Spine">Spine++</label>
+	  </span>
+	  <span>
+		<input type="radio" name="disease" id="etc" title="etc.">
+		<label for="etc">etc.</label>
+	  </span>
+	  <span>
+	  </span>
+	  <span>
+		<input type="radio" name="disease" id="Radiosurgery" title="Radiosurgery">
+		<label for="Radiosurgery">Radiosurgery</label>
+	  </span>
+	  <span>
+		<input type="radio" name="disease" id="Endovascular" title="Endovascular">
+		<label for="Endovascular">Endovascular</label>
+	  </span>
+	</div>
 	<br>
-	<span>ชนิดการผ่าตัด:</span>
-	<input type="text" name="type">
+	<div id="infection">
+	  <label for="infect">Infection</label>
+	  <input type="checkbox" id="infect" title="Infection">
+	</div>
 	<br>
+	<div id="morbid">
+	  <label for="morbidity">Morbidity</label>
+	  <input type="checkbox" id="morbidity" title="Morbidity">
+	</div>
 	<br>
-	<span>ประเภทโรค:</span>
-	<input type="text" name="disease">
-	<br>
-	<br>
-	<label for="infect">Infection</label>
-	<input type="checkbox" id="infect">
-	<br>
-	<br>
-	<label for="morbid">Morbidity</label>
-	<input type="checkbox" id="morbid">
-	<br>
-	<br>
-	<label for="mortal">Dead</label>
-	<input type="checkbox" id="mortal">
+	<div id="dead">
+	  <label for="mortal">Dead</label>
+	  <input type="checkbox" id="mortal" title="Dead">
+	</div>
+</div>
 
-	<ul id="set" class="setting" style="display:none">
-	  <li><div>Elective</div></li>
-	  <li><div>Emergency</div></li>
-	</ul>
-
-	<ul id="doneby" class="setting" style="display:none">
-	  <li><div>Staff</div></li>
-	  <li><div>Resident</div></li>
-	</ul>
-
-	<ul id="type" class="setting" style="display:none">
-	  <li><div>Major</div></li>
-	  <li><div>Minor</div></li>
-	</ul>
-
-	<ul id="disease" class="setting" style="display:none">
-	  <li><div>Brain Tumor</div></li>
-	  <li><div>Brain Vascular</div></li>
-	  <li><div>CSF related</div></li>
-	  <li><div>Trauma</div></li>
-	  <li><div>Spine ++</div></li>
-	  <li><div>ETC</div></li>
-	  <li><div>Radiosurgery</div></li>
-	  <li><div>Endovascular</div></li>
-	</ul>
+<div id="dialogReview" class="dialogBox">
+ <table id="reviewtbl">
+  <thead>
+   <tr>
+     <th rowspan="3" colspan="2" class="first">OPERATION</th>
+     <th colspan="4">STAFF</th>
+     <th colspan="4">RESIDENT</th>
+   </tr>
+   <tr>
+     <th colspan="2">MAJOR</th>
+     <th colspan="2">MINOR</th>
+     <th colspan="2">MAJOR</th>
+     <th colspan="2">MINOR</th>
+   </tr>
+   <tr>
+     <th class="elect">Elect</th><th class="emer">Emer</th>
+     <th class="elect">Elect</th><th class="emer">Emer</th>
+     <th class="elect">Elect</th><th class="emer">Emer</th>
+     <th class="elect">Elect</th><th class="emer">Emer</th>
+   </tr>
+  </thead>
+  <tbody>
+   <tr>
+     <td colspan="2">Brain tumor</td>
+     <td>1</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+   </tr>
+   <tr>
+     <td colspan="2">Brain Vascular</td>
+     <td></td><td>2</td><td></td><td></td><td></td><td></td><td></td><td></td>
+   </tr>
+   <tr>
+     <td colspan="2">CSF related</td>
+     <td></td><td></td><td>3</td><td></td><td></td><td></td><td></td><td></td>
+   </tr>
+   <tr>
+     <td colspan="2">Trauma</td>
+     <td></td><td></td><td></td><td>4</td><td></td><td></td><td></td><td></td>
+   </tr>
+   <tr>
+     <td colspan="2">Spine++</td>
+     <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+   </tr>
+   <tr>
+     <td colspan="2">etc. (lesionectomy, tracheostomy, MVD,
+					change battery, sural n. bx)</td>
+     <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+   </tr>
+   <tr>
+     <td colspan="2">Radiosurgery</td>
+     <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+   </tr>
+   <tr>
+     <td colspan="2">Endovascular (not included in
+					total operation)</td>
+     <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+   </tr>
+   <tr>
+     <td colspan="2">Total</td>
+     <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+   </tr>
+   <tr>
+     <td colspan="2">Grand Total</td>
+     <td colspan="2"></td><td colspan="2"></td><td colspan="2"></td><td colspan="2">
+   </tr>
+  </tbody>
+ </table>
 </div>
 
 <div id="dialogHistory" style="display:none">
