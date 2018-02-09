@@ -86,8 +86,10 @@
 	  <span class="item Dead">Dead : <span id="Dead"></span></span>
 	</div>
   </div>
+  <br>
   <button id="exportService">Export to xls</button>
   <button id="reportService">Report to Dept.</button>
+  <br>
   <div id="monthpicker" style="margin-left:5px"></div>
   <div id="monthstart" style="display:none"></div>
   <table id="servicetbl">
@@ -129,12 +131,10 @@
 </table>
 
 <div id="dialogRecord" class="dialogBox" style="display:none">
-	<span>วันที่ผ่าตัด:</span>
+	<span class="itemheader">วันที่ผ่าตัด:</span>
 	<input type="text" id="doneday" tabindex="-1">
-	<br>
-	<br>
-	<div id="manner">
-	  <span>Set แบบ:</span>
+	<div id="manner" class="datacolumn">
+	  <span class="itemheader">Set แบบ:</span>
 	  <span>
 		<input type="radio" name="manner" id="Elective" title="Elective">
 		<label for="Elective">Elective</label>
@@ -144,9 +144,8 @@
 		<label for="Emergency">Emergency</label>
 	  </span>
 	</div>
-	<br>
-	<div id="doneby">
-	  <span>ผ่าตัดโดย:</span>
+	<div id="doneby" class="datacolumn">
+	  <span class="itemheader">ผ่าตัดโดย:</span>
 	  <span>
 		<input type="radio" name="doneby" id="Staff" title="Staff">
 		<label for="Staff">Staff</label>
@@ -156,9 +155,8 @@
 		<label for="Resident">Resident</label>
 	  </span>
 	</div>
-	<br>
-	<div id="scale">
-	  <span>ขนาดการผ่าตัด:</span>
+	<div id="scale" class="datacolumn">
+	  <span class="itemheader">แบบการผ่าตัด:</span>
 	  <span>
 		<input type="radio" name="scale" id="Major" title="Major">
 		<label for="Major">Major</label>
@@ -168,9 +166,8 @@
 		<label for="Minor">Minor</label>
 	  </span>
 	</div>
-	<br>
-	<div id="disease">
-	  <span>ประเภทโรค:</span>
+	<div id="disease" class="datacolumn">
+	  <span class="itemheader">ประเภทโรค:</span>
 	  <span>
 		<input type="radio" name="disease" id="BrainTumor" title="Brain Tumor">
 		<label for="BrainTumor">Brain Tumor</label>
@@ -180,16 +177,15 @@
 		<label for="BrainVascular">Brain Vascular</label>
 	  </span>
 	  <span>
-	  </span>
-	  <span>
 		<input type="radio" name="disease" id="CSFrelated" title="CSF related">
 		<label for="CSFrelated">CSF related</label>
+	  </span>
+	  <br>
+	  <span>
 	  </span>
 	  <span>
 		<input type="radio" name="disease" id="Trauma" title="Trauma">
 		<label for="Trauma">Trauma</label>
-	  </span>
-	  <span>
 	  </span>
 	  <span>
 		<input type="radio" name="disease" id="Spine" title="Spine">
@@ -199,39 +195,69 @@
 		<input type="radio" name="disease" id="etc" title="etc.">
 		<label for="etc">etc.</label>
 	  </span>
+	</div>
+	<div id="admitted" class="datacolumn">
+	  <span class="itemheader">Admission:</span>
 	  <span>
+		<input type="radio" name="admitted" id="noadmit" title="No">
+		<label for="noadmit">No Admission</label>
 	  </span>
 	  <span>
-		<input type="radio" name="disease" id="Radiosurgery" title="Radiosurgery">
+		<input type="radio" name="admitted" id="admit" title="Admit">
+		<label for="admit">Admit</label>
+	  </span>
+	  <span>
+		<input type="radio" name="admitted" id="readmit" title="Readmission">
+		<label for="readmit">Readmission</label>
+	  </span>
+	</div>
+	<div id="operated" class="datacolumn">
+	  <span class="itemheader">Operation:</span>
+	  <span>
+		<input type="radio" name="operated" id="noop" title="No">
+		<label for="noop">No Operation</label>
+	  </span>
+	  <span>
+		<input type="radio" name="operated" id="op" title="Operation">
+		<label for="op">Operation</label>
+	  </span>
+	  <span>
+		<input type="radio" name="operated" id="reop" title="Reoperation">
+		<label for="reop">Reoperation</label>
+	  </span>
+	</div>
+	<div id="nonsurgical" class="datacolumn">
+	  <span class="itemheader">Non-surgical:</span>
+	  <span>
+		<input type="checkbox" id="Radiosurgery" title="Radiosurgery">
 		<label for="Radiosurgery">Radiosurgery</label>
 	  </span>
 	  <span>
-		<input type="radio" name="disease" id="Endovascular" title="Endovascular">
+		<input type="checkbox" id="Endovascular" title="Endovascular">
 		<label for="Endovascular">Endovascular</label>
 	  </span>
 	</div>
-	<br>
-	<div id="infection">
-	  <label for="infect">Infection</label>
+	<span class="itemheader">Complications:</span>
+	<!-- ids "Infection", "Morbidity", "Dead" had been used by countService header -->
+	<span id="infection" class="datacolumn">
 	  <input type="checkbox" id="infect" title="Infection">
-	</div>
-	<br>
-	<div id="morbid">
-	  <label for="morbidity">Morbidity</label>
+	  <label for="infect">Infection</label>
+	</span>
+	<span id="morbid" class="datacolumn">
 	  <input type="checkbox" id="morbidity" title="Morbidity">
-	</div>
-	<br>
-	<div id="dead">
-	  <label for="mortal">Dead</label>
+	  <label for="morbidity">Morbidity</label>
+	</span>
+	<span id="dead" class="datacolumn">
 	  <input type="checkbox" id="mortal" title="Dead">
-	</div>
+	  <label for="mortal">Dead</label>
+	</span>
 </div>
 
 <div id="dialogReview" class="dialogBox">
  <table id="reviewtbl">
   <thead>
    <tr>
-     <th rowspan="3" colspan="2" class="first">OPERATION</th>
+     <th rowspan="3" class="first">OPERATION</th>
      <th colspan="4">STAFF</th>
      <th colspan="4">RESIDENT</th>
    </tr>
@@ -250,45 +276,50 @@
   </thead>
   <tbody>
    <tr>
-     <td colspan="2">Brain tumor</td>
-     <td>1</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
-   </tr>
-   <tr>
-     <td colspan="2">Brain Vascular</td>
-     <td></td><td>2</td><td></td><td></td><td></td><td></td><td></td><td></td>
-   </tr>
-   <tr>
-     <td colspan="2">CSF related</td>
-     <td></td><td></td><td>3</td><td></td><td></td><td></td><td></td><td></td>
-   </tr>
-   <tr>
-     <td colspan="2">Trauma</td>
-     <td></td><td></td><td></td><td>4</td><td></td><td></td><td></td><td></td>
-   </tr>
-   <tr>
-     <td colspan="2">Spine++</td>
+     <td>Brain tumor</td>
      <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
    </tr>
    <tr>
-     <td colspan="2">etc. (lesionectomy, tracheostomy, MVD,
-					change battery, sural n. bx)</td>
+     <td>Brain Vascular</td>
      <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
    </tr>
    <tr>
-     <td colspan="2">Radiosurgery</td>
+     <td>CSF related</td>
      <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
    </tr>
    <tr>
-     <td colspan="2">Endovascular (not included in
-					total operation)</td>
+     <td>Trauma</td>
      <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
    </tr>
    <tr>
-     <td colspan="2">Total</td>
+     <td>Spine++</td>
      <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
    </tr>
    <tr>
-     <td colspan="2">Grand Total</td>
+     <td style="font-weight:normal"><b>etc.</b>
+		<small>(lesionectomy, tracheostomy, MVD, change battery, sural n. bx)</small>
+	 </td>
+     <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+   </tr>
+    <tr class="notcount">
+     <th colspan="9" style="text-align:left;padding-left:20px">
+		Non-surgical <small>(not included in total operation)</small>
+	 </th>
+   </tr>
+  <tr class="notcount nonsurgical">
+     <td>Radiosurgery</td>
+     <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+   </tr>
+   <tr class="notcount nonsurgical">
+     <td>Endovascular</td>
+     <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+   </tr>
+   <tr id="Total" class="notcount">
+     <td>Total</td>
+     <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+   </tr>
+   <tr id="Grand" class="notcount">
+     <td>Grand Total</td>
      <td colspan="2"></td><td colspan="2"></td><td colspan="2"></td><td colspan="2">
    </tr>
   </tbody>

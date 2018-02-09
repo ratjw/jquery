@@ -113,7 +113,8 @@ function showEditableEquip()
 	enableInput()
 }
 
-function disableInput() {
+function disableInput()
+{
 	$('#dialogEquip input').on("click", returnFalse)
 	$('#dialogEquip input[type=text]').prop('disabled', true)
 	$('#dialogEquip textarea').prop('disabled', true)
@@ -123,7 +124,8 @@ function disableInput() {
 
 // clearPosition : uncheck radio button of Positions
 // clearShunt : uncheck radio button of Shunts
-function enableInput() {
+function enableInput()
+{
 	$('#dialogEquip input').off("click", returnFalse)
 	$('#dialogEquip input[type=text]').prop('disabled', false)
 	$('#dialogEquip textarea').prop('disabled', false)
@@ -131,21 +133,25 @@ function enableInput() {
 	$('#clearShunt').on('click', clearShunt)
 }
 
-function clearPosition() {
+function clearPosition()
+{
 	$('#dialogEquip input[name=pose]').prop('checked', false)
 }
 
-function clearShunt() {
+function clearShunt()
+{
 	$('#dialogEquip input[name=head]').prop('checked', false)
 	$('#dialogEquip input[name=peritoneum]').prop('checked', false)
 	$('#dialogEquip input[name=program]').prop('checked', false)
 }
 
-function returnFalse() {
+function returnFalse()
+{
 	return false
 }
 
-function getEditedBy(qn) {
+function getEditedBy(qn)
+{
 	var sql = "sqlReturnData=SELECT editor,editdatetime FROM bookhistory "
 			+ "WHERE qn="+ qn + " AND equipment <> '' "
 			+ "ORDER BY editdatetime DESC;"

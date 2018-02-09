@@ -424,19 +424,43 @@ jQuery.fn.extend({
 // hover on background pics
 function hoverMain()
 {
+	var	paleClasses = ["pacs", "camera", "equip"],
+		boldClasses = ["pacs2", "camera2", "equip2"]
+
 	$("td.pacs, td.camera, td.equip").mousemove(function(event) {
-		var classname = this.className
 		if (inPicArea(event, this)) {
-			this.className = /2/.test(classname.substr(-1))
-								? classname
-								: classname + "2"
+			getClass(this, paleClasses, boldClasses)
 		} else {
-			this.className = classname.replace("2", "")
+			getClass(this, boldClasses, paleClasses)
 		}
 	})
 	.mouseout(function (event) {
-		this.className = this.className.replace("2", "")
+		getClass(this, boldClasses, paleClasses)
 	})
+}
+
+function getClass(thiscell, fromClass, toClass)
+{
+	var	classname = thiscell.className,
+		classes = classname.split(" "),
+		oldClass = checkMatch(classes, fromClass)
+
+	if (oldClass) {
+		var hasIndex = fromClass.indexOf(oldClass),
+			newClass = toClass[hasIndex]
+		thiscell.className = classname.replace(oldClass, newClass)
+	}
+}
+
+function checkMatch(classes, oldClasses)
+{
+	for (var i=0; i<classes.length; i++) {
+		for (var j=0; j<oldClasses.length; j++) {
+			if (classes[i] === oldClasses[j]) {
+				return classes[i]
+			}
+		}
+	}
 }
 
 function putCasenumTime(bookq)

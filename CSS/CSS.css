@@ -133,53 +133,28 @@ td.thu:before { content: "พฤหัส "; }
 td.fri:before { content: "ศุกร์ "; }
 td.sat:before { content: "เสาร์ "; }
 
-td.pacs {
-	background-image: url("pic/pacs.png");
-}
+td.pacs { background-image: url("pic/pacs.png"); }
+td.pacs2 { background-image: url("pic/pacs2.png"); }
+td.camera { background-image: url("pic/camera.png"); }
+td.camera2 { background-image: url("pic/camera2.png"); }
+td.equip { background-image: url("pic/equip.png"); }
+td.equip2 { background-image: url("pic/equip2.png"); }
+td.Operation { background-image: url("pic/reop.png"); }
+td.Operation2 { background-image: url("pic/reop2.png"); }
+td.Reoperation { background-image: url("pic/reoperation.png"); }
+td.Reoperation2 { background-image: url("pic/reoperation2.png"); }
+td.Admit { background-image: url("pic/readmit.png"); }
+td.Admit2 { background-image: url("pic/readmit2.png"); }
+td.Readmission { background-image: url("pic/readmission.png"); }
+td.Readmission2 { background-image: url("pic/readmission2.png"); }
+td.record { background-image: url("pic/record.png"); }
+td.record2 { background-image: url("pic/record2.png"); }
 
-td.pacs2 {
-	background-image: url("pic/pacs2.png");
-}
-
-td.camera {
-	background-image: url("pic/camera.png");
-}
-
-td.camera2 {
-	background-image: url("pic/camera2.png");
-}
-
-td.equip {
-	background-image: url("pic/equip.png");
-}
-
-td.equip2 {
-	background-image: url("pic/equip2.png");
-}
-
-td.Operation {
-	background-image: url("pic/reop.png");
-}
-
-td.Reoperation {
-	background-image: url("pic/reop2.png");
-}
-
-td.Admit {
-	background-image: url("pic/readmit.png");
-}
-
-td.Readmission {
-	background-image: url("pic/readmit2.png");
-}
-
-td.record {
-	background-image: url("pic/record.png");
-}
-
-td.record2 {
-	background-image: url("pic/record2.png");
-}
+.Reoperation { background-color: #CCCCAA !important; }
+.Readmission { background-color: #AACCCC !important; } 
+.Infection { background-color: #CCAAAA !important; }
+.Morbidity { background-color: #AAAACC !important; }
+.Dead { background-color: #AAAAAA !important; }
 
 #titlebar {
 	height: 40px;
@@ -226,12 +201,6 @@ td.record2 {
 	width: 170px;
 	padding: 2px 10px;
 }
-
-.Readmission { background-color: #AACCCC !important; }
-.Reoperation { background-color: #CCCCAA !important; }
-.Infection { background-color: #CCAAAA !important; }
-.Morbidity { background-color: #AAAACC !important; }
-.Dead { background-color: #AAAAAA !important; }
 
 #servicetbl td.serviceStaff {
 	height: 40px;
@@ -435,14 +404,18 @@ input[type=submit] {
 	font-size: 14px;
 }
 
+#dialogRecord .itemheader {
+	font-weight: bold;
+}
+
 #dialogRecord span {
 	display: inline-block;
-	width: 120px;
+	width: 130px;
 }
 
 #dialogRecord label {
 	display: inline-block;
-	width: 90px;
+	width: 100px;
 }
 
 #reviewtbl {
@@ -467,7 +440,20 @@ input[type=submit] {
 }
 
 #reviewtbl th.emer {
-	background-color: #FF7799;
+	background-color: #FF6688;
+}
+
+.nonsurgical td {
+	background-color: LightGray;
+	border-left: solid 1px silver;
+}
+
+#Total {
+	background-color: BurlyWood;
+}
+
+#Grand {
+	background-color: Turquoise;
 }
 
 #find input {

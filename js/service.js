@@ -40,12 +40,13 @@ function entireMonth(fromDate)
 	var date = new Date(fromDate),
 		toDate = new Date(date.getFullYear(), date.getMonth()+1, 0),
 		$monthpicker = $('#monthpicker'),
-		$exportService = $("#exportService")
-		$reportService = $("#reportService")
+		$exportService = $("#exportService"),
+		$reportService = $("#reportService"),
+		title = 'Service Neurosurgery เดือน ' + $monthpicker.val()
 
 	// show month name before change $monthpicker.val to last date of this month
 	$('#dialogService').dialog({
-		title: 'Service Neurosurgery เดือน ' + $monthpicker.val()
+		title: title
 	})
 	toDate = $.datepicker.formatDate('yy-mm-dd', toDate)
 	$monthpicker.val(toDate)
@@ -66,7 +67,7 @@ function entireMonth(fromDate)
 	$reportService.show()
 	$reportService.on("click", function(e) {
 		e.preventDefault()
-		showReportToDept()
+		showReportToDept(title)
 	})
 }
 
@@ -147,10 +148,9 @@ function showService(fromDate, toDate)
 			clearEditcell()
 			refillstaffqueue()
 			refillall()
+			$(".ui-dialog:visible").find(".ui-dialog-content").dialog("close");
 			$(".fixed").remove()
-			$(window).on("resize", function() {
-				$dialogService.dialog("close")
-			})
+			$(window).off("resize", resizeDialog)
 		}
 	})
 	getAdmitDischargeDate(gv.SERVICE, fromDate, toDate)
@@ -159,13 +159,16 @@ function showService(fromDate, toDate)
 	hoverService()
 
 	//for resizing dialogs in landscape / portrait view
-	$(window).resize(function() {
-		$dialogService.dialog({
-			width: window.innerWidth * 95 / 100,
-			height: window.innerHeight * 95 / 100
-		})
-		winResizeFix($servicetbl, $dialogService)
+	$(window).on("resize", resizeDialog)
+}
+
+function resizeDialog()
+{
+	$dialogService.dialog({
+		width: window.innerWidth * 95 / 100,
+		height: window.innerHeight * 95 / 100
 	})
+	winResizeFix($servicetbl, $dialogService)
 }
 
 function refillService(fromDate, toDate)
@@ -227,21 +230,27 @@ jQuery.fn.extend({
 	}
 })
 
-// hover on background pics
+// Simulate hover on icon by changing background pics
 function hoverService()
 {
-	$("td.pacs, td.camera, td.record").mousemove(function(event) {
-		var classname = this.className
+	var	paleClasses = ["pacs", "camera", "record", "Operation",
+						"Admit", "Reoperation", "Readmission"
+		],
+		boldClasses = ["pacs2", "camera2", "record2", "Operation2",
+						"Admit2", "Reoperation2", "Readmission2"
+		]
+
+	$("td.pacs, td.camera, td.record, td.Operation, td.Admit,\
+		td.Reoperation, td.Readmission")
+	.mousemove(function(event) {
 		if (inPicArea(event, this)) {
-			this.className = /2/.test(classname.substr(-1))
-								? classname
-								: classname + "2"
+			getClass(this, paleClasses, boldClasses)
 		} else {
-			this.className = classname.replace("2", "")
+			getClass(this, boldClasses, paleClasses)
 		}
 	})
 	.mouseout(function (event) {
-		this.className = this.className.replace("2", "")
+		getClass(this, boldClasses, paleClasses)
 	})
 }
 
@@ -276,31 +285,27 @@ function updateRowClasses($this, classname)
 		var $cell = $this.children("td"),
 			$admit = $cell.eq(ADMISSIONSV),
 			$treat = $cell.eq(TREATMENTSV),
-			$final = $cell.eq(FINALSV),
-			Infection
+			$final = $cell.eq(FINALSV)
 
-		if (/Admit/.test(classname)) {
-			$admit.addClass("Admit")
-		}
+		// delete cell classes except "record"
+		$admit[0].className = ""
+		$treat[0].className = ""
+		$final[0].className = "record"
+
 		if (/Readmission/.test(classname)) {
 			$admit.addClass("Readmission")
 		}
-		if (/Operation/.test(classname)) {
-			$treat.addClass("Operation")
+		else if (/Admit/.test(classname)) {
+			$admit.addClass("Admit")
 		}
 		if (/Reoperation/.test(classname)) {
 			$treat.addClass("Reoperation")
 		}
+		else if (/Operation/.test(classname)) {
+			$treat.addClass("Operation")
+		}
 		if (/Infection/.test(classname)) {
 			$final.addClass("Infection")
-		}
-		//still show Infection
-		Infection = /Infection/.test($final.attr("class"))
-		if (/Morbidity/.test(classname)) {
-			if (!Infection) { $final.addClass("Morbidity") }
-		}
-		if (/Dead/.test(classname)) {
-			if (!Infection) { $final.addClass("Dead") }
 		}
 	}
 }
@@ -486,14 +491,11 @@ function saveService(pointed, sql)
 		fromDate = $('#monthstart').val(),
 		toDate = $('#monthpicker').val()
 
-	sql	+= "SELECT waitnum,opdate,staffname,hn,patient,dob,diagnosis,"
-		+ "treatment,admit,discharge,doneday,admitted,operated,manner,"
-		+ "doneby,scale,disease,infection,morbid,dead,qn,editor"
-		+ " FROM book"
-		+ " WHERE opdate BETWEEN '" + fromDate + "' AND '" + toDate
-		+ "' AND deleted=0"
-		+ " AND waitnum<>0"
-		+ " ORDER BY opdate, oproom, casenum, waitnum;";
+	sql	+= "SELECT * FROM book "
+		+ "WHERE opdate BETWEEN '" + fromDate + "' AND '" + toDate
+		+ "' AND deleted=0 "
+		+ "AND waitnum<>0 "
+		+ "ORDER BY opdate, oproom, casenum, waitnum;";
 
 	Ajax(MYSQLIPHP, sql, callbacksaveScontent);
 
@@ -512,12 +514,6 @@ function saveService(pointed, sql)
 			var newcounter
 
 			if (oldclass !== newclass) {
-				// reset cell classes except "record"
-				if (pointed.cellIndex === FINALSV) {
-					pointed.className = "record"
-				} else {
-					pointed.className = ""
-				}
 				updateCounter(oldclassArray, -1)
 				updateCounter(newclassArray, 1)
 				updateRowClasses($row, newclass)
@@ -530,7 +526,8 @@ function saveService(pointed, sql)
 	}
 }
 
-function updateCounter(classArray, one) {
+function updateCounter(classArray, one)
+{
 	var counter
 
 	$.each( classArray, function(i, each) {
@@ -573,7 +570,8 @@ function storePresentCellService(evt, pointing, editable)
 	}
 }
 
-function getHNSV(evt, pointing) {
+function getHNSV(evt, pointing)
+{
 	clearEditcell()
 	if (gv.isPACS) {
 		if (inPicArea(evt, pointing)) {
@@ -582,7 +580,8 @@ function getHNSV(evt, pointing) {
 	}
 }
 
-function getNAMESV(evt, pointing) {
+function getNAMESV(evt, pointing)
+{
 	var hn = $(pointing).closest('tr').children("td").eq(HNSV).html()
 	var patient = pointing.innerHTML
 
@@ -592,7 +591,8 @@ function getNAMESV(evt, pointing) {
 	}
 }
 
-function getTREATMENTSV(evt, pointing, editable) {
+function getTREATMENTSV(evt, pointing, editable)
+{
 	if (editable) {
 		var operated = sql = ""
 
@@ -615,7 +615,8 @@ function getTREATMENTSV(evt, pointing, editable) {
 // readmit = null => no admission
 // readmit = 0 => Admit but no Readmission
 // readmit = 1 => Readmission
-function getADMISSIONSV(evt, pointing, editable) {
+function getADMISSIONSV(evt, pointing, editable)
+{
 	if (editable) {
 		var admitted = sql = ""
 
@@ -635,35 +636,45 @@ function getADMISSIONSV(evt, pointing, editable) {
 	}
 }
 
-function getFINALSV(evt, pointing, editable) {
+function getFINALSV(evt, pointing, editable)
+{
 	if (inPicArea(evt, pointing)) {
+		clearEditcell()
 		showRecord(pointing, editable)
 	} else {
-		createEditcell(pointing)
+		if (editable) { createEditcell(pointing) }
 	}
 }
 
-function showRecord(pointing, editable) {
+function showRecord(pointing, editable)
+{
 	$('#doneday').datepicker({
 		dateFormat: "yy-mm-dd"
 	})
-	var oldRecord = setRecord(pointing),
+	var $pointing = $(pointing),
+		oldRecord = setRecord($pointing),
 		$dialogRecord = $("#dialogRecord"),
 		$instanceRecord = $dialogRecord.dialog({
 			title: "Operation Detail",
 			closeOnEscape: true,
-			modal: true,
-			width: 420,
-			height: 500,
+			width: 570,
+			position: {
+				'my': 'right top',
+				'at': 'right bottom',
+				'of': $pointing
+			},
 			buttons: [{
 				text: "OK",
 				click: function() {
-					if (editable) { saveRecord(pointing, oldRecord) }
+					if (editable) { saveRecord($pointing, oldRecord) }
 					$( this ).dialog( "close" );
 				}
-			}]
+			}],
+			dislogClass: "dialogRecord"
 		}),
-		keycode, buttons
+		keycode,
+		buttons,
+		shadow
 
 	$dialogRecord.on("keydown", function(event) {
 		keycode = event.which || window.event.keyCode
@@ -672,32 +683,58 @@ function showRecord(pointing, editable) {
 			buttons[0].click.apply($instanceRecord)
 		}
 	})
+
+	shadow = ($instanceRecord.offset().top > ($pointing.offset().top)) ? 1 : -1
+	$(".ui-dialog").css({
+		boxShadow: '10px ' + 20*shadow + 'px 30px slategray'
+	})
+
+	if (editable) {
+		$('#dialogRecord input').off("click", returnFalse)
+		$('#dialogRecord input[type=text]').prop('disabled', false)
+	} else {
+		$('#dialogRecord input').on("click", returnFalse)
+		$('#dialogRecord input[type=text]').prop('disabled', true)
+	}
 }
 
-function setRecord(pointing)
+function setRecord($pointing)
 {
-	var	$row = $(pointing).closest("tr"),
+	var	$row = $pointing.closest("tr"),
 		allClasses = $row.prop("class"),
 		qn = $row.find("td").eq(QNSV).html(),
 		book = gv.SERVICE,
 		bookq = getBOOKrowByQN(book, qn),
-		$dialogRecord = $("#dialogRecord")
+		$dialogRecord = $("#dialogRecord"),
+		setDefault
 
 	$dialogRecord.find('input[type=text]').val('')
 	$dialogRecord.find('input').prop('checked', false)
-	$("#doneday").val(bookq.doneday)
+	$("#doneday").val(bookq.doneday ? bookq.doneday : bookq.opdate)
 	
 	$.each($("#manner input"), function() {
-		this.checked = this.title === bookq.manner
+		setDefault = bookq.manner ? bookq.manner : "Elective"
+		this.checked = this.title === setDefault
 	})
 	$.each($("#doneby input"), function() {
-		this.checked = this.title === bookq.doneby
+		setDefault = bookq.doneby ? bookq.doneby : "Staff"
+		this.checked = this.title === setDefault
 	})
 	$.each($("#scale input"), function() {
-		this.checked = this.title === bookq.scale
+		setDefault = bookq.scale ? bookq.scale : "Major"
+		this.checked = this.title === setDefault
 	})
 	$.each($("#disease input"), function() {
-		this.checked = this.title === bookq.disease
+		this.checked = new RegExp(this.title).test(bookq.disease)
+	})
+	$.each($("#admitted input"), function() {
+		this.checked = this.title === bookq.admitted
+	})
+	$.each($("#operated input"), function() {
+		this.checked = this.title === bookq.operated
+	})
+	$.each($("#nonsurgical input"), function() {
+		this.checked = new RegExp(this.title).test(bookq.nonsurgical)
 	})
 	document.getElementById("infect").checked = /Infection/.test(allClasses)
 	document.getElementById("morbidity").checked = /Morbidity/.test(allClasses)
@@ -706,26 +743,32 @@ function setRecord(pointing)
 	return getRecord()
 }
 
-function getRecord() {
+function getRecord()
+{
 	var $dialogRecord = $('#dialogRecord'),
 		record = {},
 		input
 
 	record.doneday = document.getElementById("doneday").value
-	$.each($dialogRecord.find("div"), function(i, div) {
-		input = $(div).find("input").filter(function() {
+	$.each($dialogRecord.find(".datacolumn"), function() {
+		input = $(this).find("input").filter(function() {
 			return this.checked
 		})
 		if (input.length) {
-			record[div.id] = input[0].title
+			var item = ""
+			input.each(function() {
+				item += this.title + " "
+			})
+			record[this.id] = $.trim(item)
 		} else {
-			record[div.id] = ""
+			record[this.id] = ""
 		}
 	})
 	return record
 }
 
-function saveRecord(pointing, oldRecord) {
+function saveRecord($pointing, oldRecord)
+{
 	var newrecord = getRecord(),
 		sql
 
@@ -735,14 +778,14 @@ function saveRecord(pointing, oldRecord) {
 		}
 	})
 	if ( Object.keys(newrecord).length ) {
-		sql = sqlRecord(pointing, newrecord)
-		saveService(pointing, sql)
+		sql = sqlRecord($pointing, newrecord)
+		saveService($pointing[0], sql)
 	}
 }
 
-function sqlRecord(pointing, newrecord)
+function sqlRecord($pointing, newrecord)
 {
-	var qn = $(pointing).closest("tr").find("td").eq(QNSV).html(),
+	var qn = $pointing.closest("tr").find("td").eq(QNSV).html(),
 		sql = "sqlReturnService="
 
 	$.each(newrecord, function(column, content) {
@@ -752,7 +795,8 @@ function sqlRecord(pointing, newrecord)
 	return sql
 }
 
-function sqlItemService(pointing, column, content) {
+function sqlItemService(pointing, column, content)
+{
 	var qn = $(pointing).closest("tr").find("td").eq(QNSV).html()
 
 	return "sqlReturnService=" + sqlItem(column, content, qn)
@@ -765,50 +809,57 @@ function sqlItem(column, content, qn) {
 		+ "' WHERE qn=" + qn + ";"
 }
 
-function showReportToDept() {
-	var row,
-		column,
-		sumColumn = [0, 0, 0, 0, 0, 0, 0, 0]
-	$dialogReview = $("#dialogReview")
+function showReportToDept(title)
+{
+	var sumColumn = [0, 0, 0, 0, 0, 0, 0, 0]
 
-	$dialogReview.dialog({
-		title: "Neurosurgery Service Review",
+	$("#dialogReview").dialog({
+		title: title,
 		closeOnEscape: true,
 		modal: true,
 		width: 550,
 		buttons: [{
 			text: "Export to Excel",
 			click: function() {
+				exportReportToExcel(title)
 				$( this ).dialog( "close" );
 			}
 		}]
 	})
 
-	$.each($("#reviewtbl tr:not('th')"), function() {
+	$("#reviewtbl tr:not('th')").each(function() {
 		$.each($(this).find("td:not(:first-child)"), function() {
 			this.innerHTML = 0
 		})
 	})
 	$.each(gv.SERVICE, function() {
-		row = ROWREPORT[this.disease]
-		column = COLUMNREPORT[this.doneby]
-			   + COLUMNREPORT[this.scale]
-			   + COLUMNREPORT[this.manner]
-		if (row && column) {
-			$("#reviewtbl tr").eq(row)
-				.find("td").eq(column)[0].innerHTML++
-		}
+		fillCaseCount(this, this.disease)
+		fillCaseCount(this, this.nonsurgical)
 	})
-	$.each($("#reviewtbl tr:not('th')"), function(i) {
+	$("#reviewtbl tr:not('th, .notcount')").each(function(i) {
 		$.each($(this).find("td:not(:first-child)"), function(j) {
 			sumColumn[j] += Number(this.innerHTML)
 		})
 	})
-	$.each($("#reviewtbl tr").eq(REVIEWTOTAL)
-		.find("td:not(:first-child)"), function(i) {
+	$("#Total").find("td:not(:first-child)").each(function(i) {
 		this.innerHTML = sumColumn[i]
 	})
-	
+	$("#Grand").find("td:not(:first-child)").each(function(i) {
+		i = i * 2
+		this.innerHTML = sumColumn[i] + sumColumn[i+1]
+	})
+}
+
+function fillCaseCount(thisrow, thisitem)
+{
+	var row = ROWREPORT[thisitem],
+		column = COLUMNREPORT[thisrow.doneby]
+			   + COLUMNREPORT[thisrow.scale]
+			   + COLUMNREPORT[thisrow.manner]
+
+	if (row && column) {
+		$("#reviewtbl tr")[row].cells[column].innerHTML++
+	}
 }
 
 function resetcountService()

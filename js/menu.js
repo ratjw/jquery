@@ -1,8 +1,9 @@
 
 function mainMenu(pointing)
 {
-	var tableID = $(pointing).closest('table').attr('id'),
-		$row = $(pointing).closest('tr'),
+	var $pointing = $(pointing),
+		tableID = $pointing.closest('table').attr('id'),
+		$row = $pointing.closest('tr'),
 		$cell = $row.find("td"),
 		opdateth = $cell.eq(OPDATE).html(),
 		opdate = getOpdate(opdateth),
@@ -86,14 +87,15 @@ function mainMenu(pointing)
 		}
 	});
 
-	var $container = $(pointing).closest('div')
+	var $container = $pointing.closest('div')
 
 	$menu.appendTo($container)
-	reposition($menu, "left top", "left bottom", pointing, $container)
-	menustyle($menu, pointing)
+	reposition($menu, "left top", "left bottom", $pointing, $container)
+	menustyle($menu, $pointing)
 }
 
-function itemtext(id, item, $cell) {
+function itemtext(id, item, $cell)
+{
 	var $itemdiv = $(id).find("div"),
 		itemtext = item,
 		itemname = $cell.eq(NAME).html()
@@ -110,9 +112,9 @@ function disable(item, id)
 	}
 }
 
-function menustyle($me, target)
+function menustyle($me, $target)
 {
-	if ($me.position().top > ($(target).position().top - $me.height())) {
+	if ($me.position().top > ($target.position().top - $me.height())) {
 		var shadow = '10px 20px 30px slategray'
 	} else {
 		var shadow = '10px -20px 30px slategray'

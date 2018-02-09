@@ -696,16 +696,17 @@ function getCASENUM(pointing)
 
 function getSTAFFNAME(pointing)
 {
-	var $stafflist = $("#stafflist")
+	var $stafflist = $("#stafflist"),
+		$pointing = $(pointing)
 
 	createEditcell(pointing)
-	$stafflist.appendTo($(pointing).closest('div'))
+	$stafflist.appendTo($pointing.closest('div'))
 
 	$stafflist.menu({
 		select: function( event, ui ) {
 			var staffname = ui.item.text()
-			var tableID = $(pointing).closest("table").attr("id")
-			var $row = $(pointing).closest('tr')
+			var tableID = $pointing.closest("table").attr("id")
+			var $row = $pointing.closest('tr')
 			var $cells = $row.children("td")
 			var opdate = getOpdate($cells.eq(OPDATE).html())
 			var qn = $cells.eq(QN).html()
@@ -723,11 +724,11 @@ function getSTAFFNAME(pointing)
 	});
 
 	// reposition from main menu to determine shadow
-	reposition($stafflist, "left top", "left bottom", pointing)
-	menustyle($stafflist, pointing)
+	reposition($stafflist, "left top", "left bottom", $pointing)
+	menustyle($stafflist, $pointing)
 
 	// repeat to make it show on first click in queuetbl
-	reposition($stafflist, "left top", "left bottom", pointing)
+	reposition($stafflist, "left top", "left bottom", $pointing)
 }
 
 function changeOncall(pointing, opdate, staffname)
@@ -749,7 +750,8 @@ function changeOncall(pointing, opdate, staffname)
 	}
 }
 
-function getHN(evt, pointing) {
+function getHN(evt, pointing)
+{
 	if (pointing.innerHTML) {
 		clearEditcell()
 		if (gv.isPACS) {
@@ -762,7 +764,8 @@ function getHN(evt, pointing) {
 	}
 }
 
-function getNAME(evt, pointing) {
+function getNAME(evt, pointing)
+{
 	var hn = $(pointing).closest('tr').children("td").eq(HN).html()
 	var patient = pointing.innerHTML
 
@@ -772,7 +775,8 @@ function getNAME(evt, pointing) {
 	}
 }
 
-function getEquip(evt, pointing) {
+function getEquip(evt, pointing)
+{
 	if (inPicArea(evt, pointing)) {
 		var tableID = $(pointing).closest('table').attr('id'),
 			book = ConsultsTbl(tableID)? gv.CONSULT : gv.BOOK,
@@ -831,18 +835,18 @@ function showEditcell($editcell, $pointing, height, width)
 	$editcell.focus()
 }
 
-function reposition($me, mypos, atpos, target, within)
+function reposition($me, mypos, atpos, $target, within)
 {
 	$me.position({
 		my: mypos,
 		at: atpos,
-		of: target,
+		of: $target,
 		within: within
 	}).show()
 	$me.position({
 		my: mypos,
 		at: atpos,
-		of: target,
+		of: $target,
 		within: within
 	}).show()
 }	// Don't know why have to repeat 2 times

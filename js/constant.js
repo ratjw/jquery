@@ -27,19 +27,6 @@ var ADMITSV		= 7;
 var DISCHARGESV	= 8;
 var QNSV		= 9;
 
-//reviewtbl
-var STAFFMAJEL	= 1;
-var STAFFMAJEM	= 2;
-var STAFFMINEL	= 3;
-var STAFFMINEM	= 4;
-var RESMAJEL	= 5;
-var RESMAJEM	= 6;
-var RESMINEL	= 7;
-var RESMINEM	= 8;
-
-var REVIEWTOTAL	= 11;
-var REVIEWGRAND	= 12;
-
 var ROWREPORT = {
 	"Brain Tumor": 3,
 	"Brain Vascular": 4,
@@ -47,8 +34,8 @@ var ROWREPORT = {
 	"Trauma": 6,
 	"Spine": 7,
 	"etc.": 8,
-	"Radiosurgery": 9,
-	"Endovascular": 10
+	"Radiosurgery": 10,
+	"Endovascular": 11
 }
 var COLUMNREPORT = {
 	"Staff": 1,

@@ -1,5 +1,6 @@
 
-;(function($) {
+;(function($)
+{
 	$.fn.fixMe = function($container) {
 		var $this = $(this),
 			$t_fixed,
@@ -32,7 +33,8 @@
 	};
 })(jQuery);
 
-function resizeFixed($fix, $this) {
+function resizeFixed($fix, $this)
+{
 	var over = 0
 	$fix.find("th").each(function(index) {
 		var wide = $this.find("th").eq(index).width()
@@ -46,7 +48,8 @@ function resizeFixed($fix, $this) {
 	});
 }
 
-function winResizeFix($this, $container) {
+function winResizeFix($this, $container)
+{
 	var $fix = $(".fixed"),
 		hide = $fix.css("display") === "none",
 		pad = $container.css("paddingLeft")
@@ -133,7 +136,8 @@ function getStart()
 	return new Date(start.getFullYear(), start.getMonth()-1, 1).ISOdate()
 }
 
-function getOpdate(date)	//change Thai date from table to ISO date
+//change Thai date from table to ISO date
+function getOpdate(date)
 {
 	if ((date === undefined) || (parseInt(date) === NaN)) {
 		return ""
@@ -144,7 +148,8 @@ function getOpdate(date)	//change Thai date from table to ISO date
 	return date.numDate()
 }
 
-function putOpdate(date)	//change date in book to show on table
+//change date in book to show on table
+function putOpdate(date)
 {
 	if (!date) { return date }
 	if (date === LARGESTDATE) {
@@ -180,7 +185,8 @@ function Ajax(url, params, callback)
 	http.send(params);
 }
 
-function URIcomponent(qoute)	//necessary when post in http, not when export to excel
+//necessary when post in http, not when export to excel
+function URIcomponent(qoute)
 {
 	if (qoute) {
 		qoute = qoute.replace(/\s+$/,'')
@@ -193,7 +199,8 @@ function URIcomponent(qoute)	//necessary when post in http, not when export to e
 	return qoute
 }
 
-function getMaxQN(book) {
+function getMaxQN(book)
+{
 	var qn = Math.max.apply(Math, $.map(book, function(row, i) {
 			return row.qn
 		}))
@@ -352,8 +359,10 @@ function inPicArea(evt, pointing) {
 		y = evt.pageY,
 		right = $pointing.offset().left + $pointing.width(),
 		bottom = $pointing.offset().top + $pointing.height(),
-		left = (right - x) < 25,
-		above = (bottom - y) < 25
+		inX = right - x,
+		inY = bottom - y,
+		left = (inX > 0) && (inX < 25),
+		above = (inY > 0) && (inY < 25)
 
 	return left && above
 }
@@ -519,7 +528,7 @@ function exportServiceToExcel()
 	exportToExcel("servicetbl", data_type, title, style, head, filename)	  
 }
 
-function exportFindToExcel()
+function exportFindToExcel(search)
 {
 	// getting data from our table
 	// data_type is for Chrome, FF
@@ -567,9 +576,72 @@ function exportFindToExcel()
 			</tr>\
 			<tr></tr>\
 		  </table>'
-	var filename = 'Find ' + 'xxx' + '.xls'
+	var filename = 'Find ' + search + '.xls'
 
 	exportToExcel("findtbl", data_type, title, style, head, filename)	  
+}
+
+function exportReportToExcel(title)
+{
+	// getting data from our table
+	// data_type is for Chrome, FF
+	// IE uses "txt/html", "replace" with blob
+	var data_type = 'data:application/vnd.ms-excel'
+	var style = '\
+		<style type="text/css">\
+			#exceltbl {\
+				border-right: solid 1px slategray;\
+				border-collapse: collapse;\
+			}\
+			#exceltbl tr:nth-child(odd) {\
+				background-color: #E0FFE0;\
+			}\
+			#exceltbl th {\
+				font-size: 16px;\
+				font-weight: bold;\
+				height: 40px;\
+				background-color: #7799AA;\
+				color: white;\
+				border: solid 1px silver;\
+			}\
+			#exceltbl td {\
+				font-size: 14px;\
+				text-align: center;\
+				vertical-align: middle;\
+				padding-left: 3px;\
+				border-left: solid 1px silver;\
+				border-bottom: solid 1px silver;\
+			}\
+			#exceltbl td:first-child {\
+				text-align: left;\
+			}\
+			#exceltbl tr.nonsurgical {\
+				background-color: LightGrey;\
+			}\
+			#exceltbl tr#total {\
+				background-color: BurlyWood;\
+			}\
+			#exceltbl tr#grand {\
+				background-color: Turquoise;\
+			}\
+			#excelhead td {\
+				height: 30px; \
+				vertical-align: middle;\
+				font-size: 22px;\
+				text-align: center;\
+			}\
+		</style>'
+	var head = '\
+		  <table id="excelhead">\
+			<tr></tr>\
+			<tr>\
+			  <td colspan="9" style="font-weight:bold;font-size:24px">' + title + '</td>\
+			</tr>\
+			<tr></tr>\
+		  </table>'
+	var filename = 'Report ' + title + '.xls'
+
+	exportToExcel("reviewtbl", data_type, title, style, head, filename)	  
 }
 
 function exportToExcel(id, data_type, title, style, head, filename)

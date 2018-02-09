@@ -54,7 +54,12 @@ require_once "book.php";
 	// equip.js (fillEquipTable)
 	// history.js (editHistory, sqlFind)
 	else if (isset($_POST['sqlReturnData'])) {
-		echo json_encode(multiquery($mysqli, $_POST['sqlReturnData']));
+		$return = multiquery($mysqli, $_POST['sqlReturnData']);
+		if (gettype($return) === "string") {
+			echo $return;
+		} else {
+			echo json_encode($return);
+		}
 	}
 
 	// click.js (changeOncall)

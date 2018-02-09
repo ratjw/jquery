@@ -199,7 +199,8 @@ function fillConsults()
 	}
 }
 
-function findOncallRow(rows, tlen, dateoncall) {
+function findOncallRow(rows, tlen, dateoncall)
+{
 	
 	var opdateth = dateoncall && dateoncall.thDate()
 
@@ -210,11 +211,13 @@ function findOncallRow(rows, tlen, dateoncall) {
 	}
 }
 
-function htmlwrap(staffname) {
+function htmlwrap(staffname)
+{
 	return '<p style="color:#999999;font-size:14px">' + staffname + '</p>'
 }
 
-function showStaffOnCall(opdate) {
+function showStaffOnCall(opdate)
+{
 	var i = gv.STAFF.length
 
 	while (i--) {
@@ -257,6 +260,8 @@ function updating()
 			// idling (59+1)*10 = 10 minutes, logout
 			else if (gv.idleCounter > 59) {
 				window.location = window.location.href
+				gv.idleCounter = 0
+				// may not successfully access the url address
 			}
 			gv.idleCounter += 1
 

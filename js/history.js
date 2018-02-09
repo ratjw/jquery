@@ -1,13 +1,10 @@
 
 function editHistory(row, qn)
 {
-	if (row.cells[QN].innerHTML)
-	{
-		var sql = "sqlReturnData=SELECT * FROM bookhistory "
-		sql += "WHERE qn="+ qn +" ORDER BY editdatetime DESC;"
+	var sql = "sqlReturnData=SELECT * FROM bookhistory "
+			+ "WHERE qn="+ qn +" ORDER BY editdatetime DESC;"
 
-		Ajax(MYSQLIPHP, sql, callbackeditHistory)
-	}
+	Ajax(MYSQLIPHP, sql, callbackeditHistory)
 
 	clearEditcell()
 
@@ -208,10 +205,11 @@ function undelete(thisWhen, deleted)
 //	var UNDELCONTACT			= 7;
 //	var UNDELEDITOR			= 8;
 	var UNDELQN				= 9;
+	var $thisWhen			= $(thisWhen)
 
-	reposition($("#undelete"), "left center", "left center", thisWhen)
+	reposition($("#undelete"), "left center", "left center", $thisWhen)
 	$("#undel").on("click", function() {
-		var $thiscase = $(thisWhen).closest("tr").children("td"),
+		var $thiscase = $thisWhen.closest("tr").children("td"),
 			opdateth = $thiscase.eq(UNDELOPDATE).html(),
 			opdate = getOpdate(opdateth),
 			staffname = $thiscase.eq(UNDELSTAFFNAME).html(),
@@ -269,7 +267,8 @@ function closeUndel()
 }
 
 // All cases (include consult caes, exclude deleted ones)
-function allCases() {
+function allCases()
+{
 	var sql = "sqlReturnData=SELECT waitnum,opdate,oproom,optime,"
 			+ "casenum,theatre,staffname,hn,patient,dob,diagnosis,"
 			+ "treatment,contact,qn,editor "
@@ -292,7 +291,8 @@ function allCases() {
 }
 
 // Make box dialog dialogAll containing alltbl
-function makeAllCases(response) {
+function makeAllCases(response)
+{
 	var book = JSON.parse(response),
 
 		start = book[0].opdate,
@@ -439,9 +439,10 @@ function find()
 
 function getSaffName(pointing)
 {
-	var $stafflist = $("#stafflist")
+	var $stafflist = $("#stafflist"),
+		$pointing = $(pointing)
 
-	$stafflist.appendTo($(pointing).closest('div'))
+	$stafflist.appendTo($pointing.closest('div'))
 	$stafflist.menu({
 		select: function( event, ui ) {
 			pointing.value = ui.item.text()
@@ -450,8 +451,8 @@ function getSaffName(pointing)
 		}
 	})
 
-	reposition($stafflist, "left center", "right center", pointing)
-	menustyle($stafflist, pointing)
+	reposition($stafflist, "left center", "right center", $pointing)
+	menustyle($stafflist, $pointing)
 }
 
 function sqlFind(args)
@@ -563,7 +564,7 @@ function makeDialogFound(found, search)
 			{
 				text: "Export to xls",
 				click: function() {
-					exportFindToExcel()
+					exportFindToExcel(search)
 				}
 			}
 		],

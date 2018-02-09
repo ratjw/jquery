@@ -9,7 +9,8 @@
 <script src="js/jquery-ui.min.js"></script>
 
 <script>
-function namesix() {
+function namesix()
+{
 	var userid = document.getElementById("userid").value
 	if (/^\d{6}$/.test(userid)) {
 		$("#password").focus()
