@@ -136,7 +136,7 @@
 		<label for="Resident">Resident</label>
 	</span>
 	<br>
-	<span class="itemheader">แบบการผ่าตัด:</span>
+	<span class="itemheader">ขนาดการผ่าตัด:</span>
 	<span>
 		<input type="radio" id="Major" name="scale" title="Major">
 		<label for="Major">Major</label>
@@ -175,18 +175,6 @@
 		<label for="etc">etc.</label>
 	</span>
 	<br>
-	<span class="itemheader">Admission:</span>
-	<span>
-	</span>
-	<span>
-		<input type="radio" id="admit" name="admitted" title="Admit">
-		<label for="admit">Admit</label>
-	</span>
-	<span>
-		<input type="radio" id="readmit" name="admitted" title="Readmission">
-		<label for="readmit">Readmission</label>
-	</span>
-	<br>
 	<span class="itemheader">Operation:</span>
 	<span>
 		<input type="radio" id="noop" name="operated" title="No">
@@ -195,10 +183,6 @@
 	<span>
 		<input type="radio" id="op" name="operated" title="Operation">
 		<label for="op">Operation</label>
-	</span>
-	<span>
-		<input type="radio" id="reop" name="operated" title="Reoperation">
-		<label for="reop">Reoperation</label>
 	</span>
 	<br>
 	<span class="itemheader">Non-surgical:</span>
@@ -993,6 +977,7 @@
 	<dt>: ถ้าไม่มีภาพมีด ตรงเคสที่มีการผ่าตัด ให้ไปติ๊ก Operation ที่ช่อง Final Status</dt>
 	<li>ช่อง <b>Admission Status</b></li>
 	<dt>: คลิกที่รูปเตียง toggle Admit / Readmission</dt>
+	<dt>: Admit หรือ ไม่ได้ Admit ขึันอยู่กับข้อมูลจาก IT ของโรงพยาบาล</dt>
 	<li>ช่อง <b>Final Status</b></li>
 	<dt>: คลิกที่รูปสมุด เพื่อใส่รายละเอียดของเคส</dt>
 	<li>ช่อง <b>Admit</b></li>
