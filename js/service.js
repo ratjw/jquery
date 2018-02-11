@@ -97,23 +97,11 @@ function showService(fromDate, toDate)
 {
 	//delete previous servicetbl lest it accumulates
 	var $servicetbl = $('#servicetbl'),
-		$servicecells = $("#servicecells")
+		$servicecells = $("#servicecells"),
+		opDiffQN = []
 
 	$servicetbl.find('tr').slice(1).remove()
 	$servicetbl.show()
-	$servicetbl.on("click", function (event) {
-		resetTimer();
-		gv.idleCounter = 0
-		event.stopPropagation()
-		var target = event.target
-		var editable = fromDate >= getStart()
-		if (target.nodeName === "TH") {
-			clearEditcell()
-			return	
-		} else {
-			clickservice(event, target, editable)
-		}
-	})
 
 	$.each( gv.STAFF, function() {
 		var staffname = this.staffname
@@ -124,10 +112,14 @@ function showService(fromDate, toDate)
 						.addClass("serviceStaff")
 							.html(staffname)
 								.siblings().hide()
-		var scase = 0
+		var scase = 0, classname
 		$.each( gv.SERVICE, function() {
 			if (this.staffname === staffname) {
-				var classname = countService(this, fromDate, toDate)
+				if (isOpDiff(this)) {
+					this.operated = "Operation"
+					opDiffQN.push(this.qn)
+				}
+				classname = countService(this, fromDate, toDate)
 				scase++
 				$servicecells.find('tr').clone()
 					.appendTo($servicetbl.find('tbody'))
@@ -136,10 +128,11 @@ function showService(fromDate, toDate)
 		});
 	})
 
-	var $monthpicker = $('#monthpicker')
+	var $monthpicker = $('#monthpicker'),
+		$dialogService = $('#dialogService')
+
 	$monthpicker.hide()
 	$('#servicehead').show()
-	var $dialogService = $('#dialogService')
 	$dialogService.dialog({
 		hide: 200,
 		width: window.innerWidth * 95 / 100,
@@ -155,8 +148,30 @@ function showService(fromDate, toDate)
 	})
 	getAdmitDischargeDate(gv.SERVICE, fromDate, toDate)
 	countAllServices()
+	if (opDiffQN.length) {
+		updateBookService(opDiffQN)
+	}
 	$servicetbl.fixMe($dialogService)
 	hoverService()
+
+	$dialogService.off("click").on("click", function (event) {
+		resetTimer();
+		gv.idleCounter = 0
+		event.stopPropagation()
+		var	target = event.target,
+			editable = fromDate >= getStart(),
+			$dialogRecord = $("#dialogRecord")
+		if ($dialogRecord.is(":visible")) {
+			if (!$(target).closest('#dialogRecord').length) {
+				$dialogRecord.hide();
+			}
+		}
+		if (target.nodeName !== "TD" || target.colSpan > 1) {
+			clearEditcell()
+		} else {
+			clickservice(event, target, editable)
+		}
+	})
 
 	//for resizing dialogs in landscape / portrait view
 	$(window).on("resize", resizeDialog)
@@ -310,6 +325,27 @@ function updateRowClasses($this, classname)
 	}
 }
 
+function updateBookService(opDiffQN)
+{
+	var sql = "sqlnoReturn="
+
+	opDiffQN.forEach(function(item) {
+		sql += "UPDATE book SET "
+			+ "operated='Operation',"
+			+ "editor='auto' "
+			+ "WHERE qn=" + item + ";"
+	})
+
+	Ajax(MYSQLIPHP, sql, callbackopDiff)
+
+	function callbackopDiff(response)
+	{
+		if (response !== "success") {
+			Alert("getAdmitDischargeDate", response)
+		}
+	}
+}
+
 function getAdmitDischargeDate(fromDate, toDate)
 {
 	Ajax(GETIPD, "from=" + fromDate + "&to=" + toDate, callbackgetipd)
@@ -353,20 +389,6 @@ function fillAdmitDischargeDate()
 				}
 			}
 		});
-	})
-}
-
-function countAllServices()
-{
-	resetcountService()
-
-	$.each( $('#servicetbl tr'), function() {
-		var counter = this.className.split(" ")
-		$.each(counter, function() {
-			if (document.getElementById(this)) {
-				document.getElementById(this).innerHTML++
-			}
-		})
 	})
 }
 
@@ -447,7 +469,8 @@ function savePreviousCellService()
 			saveContentService(pointed, "diagnosis", newcontent)
 			return true
 		case TREATMENTSV:
-			saveContentService(pointed, "treatment", newcontent)
+			var updateOp = updateOperated(pointed, newcontent)
+			saveContentService(pointed, "treatment", newcontent, updateOp)
 			return true
 		case ADMISSIONSV:
 			saveContentService(pointed, "admission", newcontent)
@@ -461,8 +484,19 @@ function savePreviousCellService()
 	}
 }
 
+function updateOperated(pointed, newcontent)
+{
+	var $row = $(pointed).closest('tr'),
+		rowi = $row[0],
+		qn = rowi.cells[QNSV].innerHTML,
+		book = gv.SERVICE,
+		bookq = getBOOKrowByQN(book, qn)
+
+	return opChange(bookq, newcontent, qn)
+}
+
 //column matches column name in MYSQL
-function saveContentService(pointed, column, content)
+function saveContentService(pointed, column, content, updateOp)
 {
 	var qn = $(pointed).closest('tr').find('td').eq(QNSV).html()
 
@@ -478,6 +512,7 @@ function saveContentService(pointed, column, content)
 			+ column + "='" + content
 			+ "', editor='" + gv.user
 			+ "' WHERE qn=" + qn + ";"
+	if (updateOp) { sql = sql + updateOp }
 
 	saveService(pointed, sql)
 }
@@ -604,7 +639,7 @@ function getTREATMENTSV(evt, pointing, editable)
 			} else if (/Operation/.test(pointing.className)) {
 				operated = "Reoperation"
 			}
-			sql = sqlItemService(pointing, "operated", operated)
+			sql = sqlColumn(pointing, "operated", operated)
 			saveService(pointing, sql)
 		} else {
 			createEditcell(pointing)
@@ -628,7 +663,7 @@ function getADMISSIONSV(evt, pointing, editable)
 			} else if (/Admit/.test(pointing.className)) {
 				admitted = "Readmission"
 			}
-			sql = sqlItemService(pointing, "admitted", admitted)
+			sql = sqlColumn(pointing, "admitted", admitted)
 			saveService(pointing, sql)
 		} else {
 			createEditcell(pointing)
@@ -652,118 +687,105 @@ function showRecord(pointing, editable)
 		dateFormat: "yy-mm-dd"
 	})
 	var $pointing = $(pointing),
-		oldRecord = setRecord($pointing),
 		$dialogRecord = $("#dialogRecord"),
-		$instanceRecord = $dialogRecord.dialog({
-			title: "Operation Detail",
-			closeOnEscape: true,
-			width: 570,
-			position: {
-				'my': 'right top',
-				'at': 'right bottom',
-				'of': $pointing
-			},
-			buttons: [{
-				text: "OK",
-				click: function() {
-					if (editable) { saveRecord($pointing, oldRecord) }
-					$( this ).dialog( "close" );
-				}
-			}],
-			dislogClass: "dialogRecord"
-		}),
-		keycode,
-		buttons,
-		shadow
+		oldRecord,
+		keycode
 
-	$dialogRecord.on("keydown", function(event) {
+	setRecord($pointing)
+	oldRecord = getRecord()
+
+	// Enter key = OK
+	$dialogRecord.off("keydown").on("keydown", function(event) {
 		keycode = event.which || window.event.keyCode
+		event.preventDefault()
 		if (keycode === 13) {
-			buttons = $instanceRecord.dialog('option', 'buttons')
-			buttons[0].click.apply($instanceRecord)
+			if (editable) { saveRecord($pointing, oldRecord) }
+			$("#dialogRecord").hide()
 		}
 	})
 
-	shadow = ($instanceRecord.offset().top > ($pointing.offset().top)) ? 1 : -1
-	$(".ui-dialog").css({
-		boxShadow: '10px ' + 20*shadow + 'px 30px slategray'
+	// must off("click") lest it remember all previous clicks
+	$("#closeRecord").off("click").on("click", function(event) {
+		event.stopPropagation()
+		if (editable) { saveRecord($pointing, oldRecord) }
+		$("#dialogRecord").hide()
+	})
+	$("#cancelRecord").off("click").on("click", function() {
+		$("#dialogRecord").hide()
 	})
 
+	reposition($dialogRecord, "right top", "right bottom", $pointing)
+	menustyle($dialogRecord, $pointing)
+
 	if (editable) {
-		$('#dialogRecord input').off("click", returnFalse)
-		$('#dialogRecord input[type=text]').prop('disabled', false)
+		$dialogRecord.find('input').off("click", returnFalse)
+		$dialogRecord.find('input[type=text]').prop('disabled', false)
 	} else {
-		$('#dialogRecord input').on("click", returnFalse)
-		$('#dialogRecord input[type=text]').prop('disabled', true)
+		$dialogRecord.find('input').on("click", returnFalse)
+		$dialogRecord.find('input[type=text]').prop('disabled', true)
 	}
 }
 
+// can't use dialog, it will be hijacked to document body
+// and not sticky to pointing while scrolling
 function setRecord($pointing)
 {
-	var	$row = $pointing.closest("tr"),
-		allClasses = $row.prop("class"),
-		qn = $row.find("td").eq(QNSV).html(),
+	var	$cell = $pointing.closest("tr").find("td"),
+		operated = $cell.eq(TREATMENTSV).prop("class"),
+		qn = $cell.eq(QNSV).html(),
 		book = gv.SERVICE,
 		bookq = getBOOKrowByQN(book, qn),
 		$dialogRecord = $("#dialogRecord"),
-		setDefault
+		recordItems = {
+			"manner": "Elective",
+			"doneby": "Staff",
+			"scale": "Major",
+			"disease": "",
+			"admitted": "",
+			"operated": operated,
+			"nonsurgical": "",
+			"infection": "",
+			"morbid": "",
+			"dead": ""
+		},
+		bookValue
 
 	$dialogRecord.find('input[type=text]').val('')
 	$dialogRecord.find('input').prop('checked', false)
-	$("#doneday").val(bookq.doneday ? bookq.doneday : bookq.opdate)
-	
-	$.each($("#manner input"), function() {
-		setDefault = bookq.manner ? bookq.manner : "Elective"
-		this.checked = this.title === setDefault
-	})
-	$.each($("#doneby input"), function() {
-		setDefault = bookq.doneby ? bookq.doneby : "Staff"
-		this.checked = this.title === setDefault
-	})
-	$.each($("#scale input"), function() {
-		setDefault = bookq.scale ? bookq.scale : "Major"
-		this.checked = this.title === setDefault
-	})
-	$.each($("#disease input"), function() {
-		this.checked = new RegExp(this.title).test(bookq.disease)
-	})
-	$.each($("#admitted input"), function() {
-		this.checked = this.title === bookq.admitted
-	})
-	$.each($("#operated input"), function() {
-		this.checked = this.title === bookq.operated
-	})
-	$.each($("#nonsurgical input"), function() {
-		this.checked = new RegExp(this.title).test(bookq.nonsurgical)
-	})
-	document.getElementById("infect").checked = /Infection/.test(allClasses)
-	document.getElementById("morbidity").checked = /Morbidity/.test(allClasses)
-	document.getElementById("mortal").checked = /Dead/.test(allClasses)
 
-	return getRecord()
+	document.getElementsByName("doneday")[0].value = bookq.doneday
+													? bookq.doneday
+													: bookq.opdate
+	$.each(recordItems, function(key, val) {
+		bookValue = bookq[key] ? bookq[key] : val
+		$dialogRecord.find('input').each(function() {
+			if (this.name === key) {
+				this.checked = this.title === bookValue
+			}
+		})
+	})
 }
 
 function getRecord()
 {
-	var $dialogRecord = $('#dialogRecord'),
-		record = {},
-		input
+	var	record = {}
 
-	record.doneday = document.getElementById("doneday").value
-	$.each($dialogRecord.find(".datacolumn"), function() {
-		input = $(this).find("input").filter(function() {
-			return this.checked
-		})
-		if (input.length) {
-			var item = ""
-			input.each(function() {
-				item += this.title + " "
-			})
-			record[this.id] = $.trim(item)
-		} else {
-			record[this.id] = ""
+	record.doneday = document.getElementsByName("doneday")[0].value
+	$("#dialogRecord input").each(function() {
+		if (this.checked) {
+			if (record[this.name]) {
+				record[this.name] += " " + this.title
+			} else {
+				record[this.name] = this.title
+			}
+		}
+		else if (this.type === "checkbox") {
+			if (!record.hasOwnProperty(this.name)) {
+				record[this.name] = ""
+			}
 		}
 	})
+
 	return record
 }
 
@@ -795,7 +817,7 @@ function sqlRecord($pointing, newrecord)
 	return sql
 }
 
-function sqlItemService(pointing, column, content)
+function sqlColumn(pointing, column, content)
 {
 	var qn = $(pointing).closest("tr").find("td").eq(QNSV).html()
 
@@ -833,8 +855,8 @@ function showReportToDept(title)
 		})
 	})
 	$.each(gv.SERVICE, function() {
-		fillCaseCount(this, this.disease)
-		fillCaseCount(this, this.nonsurgical)
+		countCase(this, this.disease)
+		countCase(this, this.nonsurgical)
 	})
 	$("#reviewtbl tr:not('th, .notcount')").each(function(i) {
 		$.each($(this).find("td:not(:first-child)"), function(j) {
@@ -850,7 +872,7 @@ function showReportToDept(title)
 	})
 }
 
-function fillCaseCount(thisrow, thisitem)
+function countCase(thisrow, thisitem)
 {
 	var row = ROWREPORT[thisitem],
 		column = COLUMNREPORT[thisrow.doneby]
@@ -874,55 +896,43 @@ function resetcountService()
 	document.getElementById("Dead").innerHTML = 0
 }
 
-function countService(thiscase, fromDate, toDate)
+function opChange(bookq, newcontent, qn)
 {
-	var classname = ""
+	var sql = ""
 
-	if (thiscase.admitted) {
-		classname += thiscase.admitted + " "
-	}
-	if (thiscase.operated) {
-		classname += thiscase.operated + " "
-	}
-	if (thiscase.infection) {
-		classname += thiscase.infection + " "
-	}
-	if (thiscase.morbid) {
-		classname += thiscase.morbid + " "
-	}
-	if (thiscase.dead) {
-		classname += thiscase.dead + " "
-	}
-	// Consult cases (waitnum < 0) are admitted in another service
-	if ((thiscase.waitnum > 0)
-		&& (thiscase.admit >= fromDate)
-		&& (thiscase.admit <= toDate)) {
-		if (!/Admit/.test(classname)) {
-			classname += "Admit "
+	if (bookq.operated) {
+		if (!isOperation(newcontent)) {
+			sql += "UPDATE book SET "
+				+ "operated='',"
+				+ "editor='auto' "
+				+ "WHERE qn=" + qn + ";"
 		}
-	}
-	if ((thiscase.discharge >= fromDate)
-		&& (thiscase.discharge <= toDate)
-		&& (thiscase.waitnum > 0)) {
-		classname += "Discharge "
-	}
-	if (isOperation(thiscase)) {
-		if (!/Operation/.test(classname)) {
-			classname += "Operation"
+	} else {
+		if (isOperation(newcontent)) {
+			sql += "UPDATE book SET "
+				+ "operated='Operation',"
+				+ "editor='auto' "
+				+ "WHERE qn=" + qn + ";"
 		}
 	}
 
-	return $.trim(classname)
+	return sql
 }
 
-function isOperation(thiscase)
+function isOpDiff(thiscase)
 {
-	var neuroSxOp = [
+	return !thiscase.operated && isOperation(thiscase.treatment)
+}
+
+function isOperation(treatment)
+{
+	var Operation = false,
+		neuroSxOp = [
 		/ACDF/, /ALIF/, /[Aa]nast/, /[Aa]pproa/, /[Aa]spirat/, /[Aa]dvance/,
 		/[Bb]iop/, /[Bb]lock/, /[Bb]urr/, /[Bb]x/, /[Bb]ypass/, /[Bb]alloon/,
 		/[Cc]lip/, 
 		/[Dd]ecom/, /DBS/, /[Dd]rain/, /[Dd]isconnect/,
-		/[Ee]ctomy/, /[Ee]ndo/, /ESI/, /ETS/, /ETV/, /EVD/, /[Ee]xcis/, /ECOG/,
+		/[Ee]ctom/, /[Ee]ndo/, /ESI/, /ETS/, /ETV/, /EVD/, /[Ee]xcis/, /ECOG/,
 		/[Ff]ix/, /[Ff]usion/,
 		/[Gg]rid/,
 		/[Ii]nsert/,
@@ -937,9 +947,51 @@ function isOperation(thiscase)
 		/[Uu]ntether/,
 		/VNS/
 	]
-	var Operation = false
+
 	$.each( neuroSxOp, function(i, each) {
-		return !(Operation = each.test(thiscase.treatment))
+		return !(Operation = each.test(treatment))
 	})
 	return Operation
+}
+
+// Service Review of one case
+function countService(thiscase, fromDate, toDate)
+{
+	var classname = "",
+		items = ["admitted", "operated", "infection", "morbid", "dead"]
+
+	$.each(items, function() {
+		if (thiscase[this]) {
+			classname += thiscase[this] + " "
+		}
+	})
+	// Assume consult cases (waitnum < 0) are admitted in another service ???
+	if ((thiscase.waitnum > 0)
+		&& (thiscase.admit >= fromDate)
+		&& (thiscase.admit <= toDate)) {
+		if (!/Admit/.test(classname)) {
+			classname += "Admit "
+		}
+	}
+	if ((thiscase.discharge >= fromDate)
+		&& (thiscase.discharge <= toDate)
+		&& (thiscase.waitnum > 0)) {
+		classname += "Discharge "
+	}
+
+	return $.trim(classname)
+}
+
+function countAllServices()
+{
+	resetcountService()
+
+	$.each( $('#servicetbl tr'), function() {
+		var counter = this.className.split(" ")
+		$.each(counter, function() {
+			if (document.getElementById(this)) {
+				document.getElementById(this).innerHTML++
+			}
+		})
+	})
 }

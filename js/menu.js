@@ -114,7 +114,7 @@ function disable(item, id)
 
 function menustyle($me, $target)
 {
-	if ($me.position().top > ($target.position().top - $me.height())) {
+	if ($me.position().top > $target.position().top) {
 		var shadow = '10px 20px 30px slategray'
 	} else {
 		var shadow = '10px -20px 30px slategray'

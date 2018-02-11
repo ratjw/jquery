@@ -401,7 +401,11 @@ input[type=submit] {
 }
 
 #dialogRecord {
+	width: 550px;
+	height: 300px;
 	font-size: 14px;
+	background-color: snow;
+	padding-left: 25px;
 }
 
 #dialogRecord .itemheader {
@@ -411,6 +415,19 @@ input[type=submit] {
 #dialogRecord span {
 	display: inline-block;
 	width: 130px;
+}
+
+#dialogRecord button {
+	float: right;
+	width: 80px;
+	height: 30px;
+	padding: 0px;
+	margin: 25px;
+	border-radius: 5px;
+}
+
+#dialogRecord button:hover {
+	background-color: lightgrey;
 }
 
 #dialogRecord label {

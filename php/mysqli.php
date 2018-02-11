@@ -62,7 +62,7 @@ require_once "book.php";
 		}
 	}
 
-	// click.js (changeOncall)
+	// click.js (changeOncall), service.js (updateBookService(opDiffQN))
 	else if (isset($_POST['sqlnoReturn'])) {
 		$return = multiquery($mysqli, $_POST['sqlnoReturn']);
 		if (gettype($return) === "string") {

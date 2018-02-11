@@ -1,7 +1,7 @@
 
 function start(userid)
 {
-	// "=" to be isset in PHP
+	// "=" for isset in PHP
 	Ajax(MYSQLIPHP, "start=", loading);
 
 	gv.user = userid

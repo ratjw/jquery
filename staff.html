@@ -1,10 +1,6 @@
-<!-- PHP include !!!
- When you save a page as UTF-8, a special signature called a byte-order mark (or BOM)
- is included at the beginning of the file, indicating that it is a UTF-8 file.
- You need to remove this signature from the included PHP file in order to
- get rid of the white space at the top of the page. 
- In Notepad++ you can change the encoding of the file to "UTF-8 without BOM"
- from the "Encoding" menu. -->
+<!-- PHP include file !!!
+ Byte-order mark (or BOM) causes white space at the top of the page. 
+ Notepad++ can save "UTF-8" (without BOM) in "Encoding" menu. -->
 
 <script src="js/click.js"></script>
 <script src="js/constant.js"></script>
@@ -110,7 +106,129 @@
    <tbody>
    </tbody>
   </table>
+
+  <!--  name is the column name
+		title is the value -->
+  <div id="dialogRecord" class="dialogBox" style="display:none">
+	<div style="height:30px">
+	  <span id="cancelRecord" class="ui-icon ui-icon-closethick" style="width:18px"></span>
+	</div> 
+	<span class="itemheader">วันที่ผ่าตัด:</span>
+	<input type="text" id="doneday" name="doneday" tabindex="-1">
+	<br>
+	<span class="itemheader">Set แบบ:</span>
+	<span>
+		<input type="radio" id="Elective" name="manner" title="Elective">
+		<label for="Elective">Elective</label>
+	</span>
+	<span>
+		<input type="radio" id="Emergency" name="manner" title="Emergency">
+		<label for="Emergency">Emergency</label>
+	</span>
+	<br>
+	<span class="itemheader">ผ่าตัดโดย:</span>
+	<span>
+		<input type="radio" id="Staff" name="doneby" title="Staff">
+		<label for="Staff">Staff</label>
+	</span>
+	<span>
+		<input type="radio" id="Resident" name="doneby" title="Resident">
+		<label for="Resident">Resident</label>
+	</span>
+	<br>
+	<span class="itemheader">แบบการผ่าตัด:</span>
+	<span>
+		<input type="radio" id="Major" name="scale" title="Major">
+		<label for="Major">Major</label>
+	</span>
+	<span>
+		<input type="radio" id="Minor" name="scale" title="Minor">
+		<label for="Minor">Minor</label>
+	</span>
+	<br>
+	<span class="itemheader">ประเภทโรค:</span>
+	<span>
+		<input type="radio" id="BrainTumor" name="disease" title="Brain Tumor">
+		<label for="BrainTumor">Brain Tumor</label>
+	</span>
+	<span>
+		<input type="radio" id="BrainVascular" name="disease" title="Brain Vascular">
+		<label for="BrainVascular">Brain Vascular</label>
+	</span>
+	<span>
+		<input type="radio" id="CSFrelated" name="disease" title="CSF related">
+		<label for="CSFrelated">CSF related</label>
+	</span>
+	<br>
+	<span>
+	</span>
+	<span>
+		<input type="radio" id="Trauma" name="disease" title="Trauma">
+		<label for="Trauma">Trauma</label>
+	</span>
+	<span>
+		<input type="radio" id="Spine" name="disease" title="Spine">
+		<label for="Spine">Spine++</label>
+	</span>
+	<span>
+		<input type="radio" id="etc" name="disease" title="etc.">
+		<label for="etc">etc.</label>
+	</span>
+	<br>
+	<span class="itemheader">Admission:</span>
+	<span>
+	</span>
+	<span>
+		<input type="radio" id="admit" name="admitted" title="Admit">
+		<label for="admit">Admit</label>
+	</span>
+	<span>
+		<input type="radio" id="readmit" name="admitted" title="Readmission">
+		<label for="readmit">Readmission</label>
+	</span>
+	<br>
+	<span class="itemheader">Operation:</span>
+	<span>
+		<input type="radio" id="noop" name="operated" title="No">
+		<label for="noop">No Operation</label>
+	</span>
+	<span>
+		<input type="radio" id="op" name="operated" title="Operation">
+		<label for="op">Operation</label>
+	</span>
+	<span>
+		<input type="radio" id="reop" name="operated" title="Reoperation">
+		<label for="reop">Reoperation</label>
+	</span>
+	<br>
+	<span class="itemheader">Non-surgical:</span>
+	<span>
+		<input type="checkbox" id="Radiosurgery" name="nonsurgical" title="Radiosurgery">
+		<label for="Radiosurgery">Radiosurgery</label>
+	</span>
+	<span>
+		<input type="checkbox" id="Endovascular" name="nonsurgical" title="Endovascular">
+		<label for="Endovascular">Endovascular</label>
+	</span>
+	<br>
+	<span class="itemheader">Complications:</span>
+	<!-- ids "Infection", "Morbidity", "Dead" had been used by countService header -->
+	<span>
+		<input type="checkbox" id="infect" name="infection" title="Infection">
+		<label for="infect">Infection</label>
+	</span>
+	<span>
+		<input type="checkbox" id="morbidity" name="morbid" title="Morbidity">
+		<label for="morbidity">Morbidity</label>
+	</span>
+	<span>
+		<input type="checkbox" id="mortal" name="dead" title="Dead">
+		<label for="mortal">Dead</label>
+	</span>
+	<button id="closeRecord">OK</button>
+  </div>
 </div>
+<!-- dialogService ends here -->
 
 <!--template for "servicetbl"-->
 <table id="servicecells" style="display:none">
@@ -129,129 +247,6 @@
    </tr>
   </tbody>
 </table>
-
-<div id="dialogRecord" class="dialogBox" style="display:none">
-	<span class="itemheader">วันที่ผ่าตัด:</span>
-	<input type="text" id="doneday" tabindex="-1">
-	<div id="manner" class="datacolumn">
-	  <span class="itemheader">Set แบบ:</span>
-	  <span>
-		<input type="radio" name="manner" id="Elective" title="Elective">
-		<label for="Elective">Elective</label>
-	  </span>
-	  <span>
-		<input type="radio" name="manner" id="Emergency" title="Emergency">
-		<label for="Emergency">Emergency</label>
-	  </span>
-	</div>
-	<div id="doneby" class="datacolumn">
-	  <span class="itemheader">ผ่าตัดโดย:</span>
-	  <span>
-		<input type="radio" name="doneby" id="Staff" title="Staff">
-		<label for="Staff">Staff</label>
-	  </span>
-	  <span>
-		<input type="radio" name="doneby" id="Resident" title="Resident">
-		<label for="Resident">Resident</label>
-	  </span>
-	</div>
-	<div id="scale" class="datacolumn">
-	  <span class="itemheader">แบบการผ่าตัด:</span>
-	  <span>
-		<input type="radio" name="scale" id="Major" title="Major">
-		<label for="Major">Major</label>
-	  </span>
-	  <span>
-		<input type="radio" name="scale" id="Minor" title="Minor">
-		<label for="Minor">Minor</label>
-	  </span>
-	</div>
-	<div id="disease" class="datacolumn">
-	  <span class="itemheader">ประเภทโรค:</span>
-	  <span>
-		<input type="radio" name="disease" id="BrainTumor" title="Brain Tumor">
-		<label for="BrainTumor">Brain Tumor</label>
-	  </span>
-	  <span>
-		<input type="radio" name="disease" id="BrainVascular" title="Brain Vascular">
-		<label for="BrainVascular">Brain Vascular</label>
-	  </span>
-	  <span>
-		<input type="radio" name="disease" id="CSFrelated" title="CSF related">
-		<label for="CSFrelated">CSF related</label>
-	  </span>
-	  <br>
-	  <span>
-	  </span>
-	  <span>
-		<input type="radio" name="disease" id="Trauma" title="Trauma">
-		<label for="Trauma">Trauma</label>
-	  </span>
-	  <span>
-		<input type="radio" name="disease" id="Spine" title="Spine">
-		<label for="Spine">Spine++</label>
-	  </span>
-	  <span>
-		<input type="radio" name="disease" id="etc" title="etc.">
-		<label for="etc">etc.</label>
-	  </span>
-	</div>
-	<div id="admitted" class="datacolumn">
-	  <span class="itemheader">Admission:</span>
-	  <span>
-		<input type="radio" name="admitted" id="noadmit" title="No">
-		<label for="noadmit">No Admission</label>
-	  </span>
-	  <span>
-		<input type="radio" name="admitted" id="admit" title="Admit">
-		<label for="admit">Admit</label>
-	  </span>
-	  <span>
-		<input type="radio" name="admitted" id="readmit" title="Readmission">
-		<label for="readmit">Readmission</label>
-	  </span>
-	</div>
-	<div id="operated" class="datacolumn">
-	  <span class="itemheader">Operation:</span>
-	  <span>
-		<input type="radio" name="operated" id="noop" title="No">
-		<label for="noop">No Operation</label>
-	  </span>
-	  <span>
-		<input type="radio" name="operated" id="op" title="Operation">
-		<label for="op">Operation</label>
-	  </span>
-	  <span>
-		<input type="radio" name="operated" id="reop" title="Reoperation">
-		<label for="reop">Reoperation</label>
-	  </span>
-	</div>
-	<div id="nonsurgical" class="datacolumn">
-	  <span class="itemheader">Non-surgical:</span>
-	  <span>
-		<input type="checkbox" id="Radiosurgery" title="Radiosurgery">
-		<label for="Radiosurgery">Radiosurgery</label>
-	  </span>
-	  <span>
-		<input type="checkbox" id="Endovascular" title="Endovascular">
-		<label for="Endovascular">Endovascular</label>
-	  </span>
-	</div>
-	<span class="itemheader">Complications:</span>
-	<!-- ids "Infection", "Morbidity", "Dead" had been used by countService header -->
-	<span id="infection" class="datacolumn">
-	  <input type="checkbox" id="infect" title="Infection">
-	  <label for="infect">Infection</label>
-	</span>
-	<span id="morbid" class="datacolumn">
-	  <input type="checkbox" id="morbidity" title="Morbidity">
-	  <label for="morbidity">Morbidity</label>
-	</span>
-	<span id="dead" class="datacolumn">
-	  <input type="checkbox" id="mortal" title="Dead">
-	  <label for="mortal">Dead</label>
-	</span>
-</div>
 
 <div id="dialogReview" class="dialogBox">
  <table id="reviewtbl">
@@ -932,7 +927,7 @@
 	<li><b>เปลี่ยนวันที่</b></li>
 	<dt>: เลือกโดยเลื่อนเมาส์ไปตามตาราง แล้วคลิกตรงวันที่ต้องการ</dt>
 	<li><b>Equipment</b></li>
-	<dt>: <button>Print</button> พิมพ์ลงกระดาษ</dt>
+	<dt>: สำหรับพยาบาล แสดงเฉพาะเครื่องมือที่ใช้</dt>
 	<li><b>ประวัติการแก้ไข</b></li>
 	<dt>: ดูย้อนหลังการเปลี่ยนข้อมูล</dt>
 	<li><b>Delete -> Confirm</b></li>
@@ -973,6 +968,7 @@
 	<dt>: เป็นบรรทัดเดียว ยาวๆได้ ถ้าเกิน จะซ่อนอยู่ ต้องเลื่อนดู</dt>
 	<li>ช่องใส่ข้อความสุดท้าย</li>
 	<dt>: ได้หลายบรรทัดไม่จำกัด แต่ถ้าเกิน 3 บรรทัด ต้องเลื่อนดู</dt>
+	<dt>: <button>Print</button> พิมพ์ลงกระดาษ</dt>
   </ul>
 
   <h3>Service Review</h3>
@@ -992,17 +988,13 @@
 	<dt>: คลิกดูภาพถ่ายหรือไฟล์ที่ upload</dt>
 	<li>ช่อง <b>Diagnosis</b></li>
 	<li>ช่อง <b>Treatment</b></li>
-	<dt>: มีผลต่อจำนวน Operation, และ Re-operation</dt>
-	<dt>: ถ้าโปรแกรมนับจำนวน Operation ขาดไป ให้ใส่คำว่า op(eration)</dt>
-	<dt>: เคสที่มีการผ่าตัดซ้ำ ใส่คำว่า re-op(eration)</dt>
+	<dt>: คลิกที่รูปมีด toggle Operation / Reoperation</dt>
+	<dt>: ถ้ามีภาพมีด ตรงเคสที่ไม่มีการผ่าตัด ให้ไปติ๊ก No ที่ช่อง Final Status</dt>
+	<dt>: ถ้าไม่มีภาพมีด ตรงเคสที่มีการผ่าตัด ให้ไปติ๊ก Operation ที่ช่อง Final Status</dt>
 	<li>ช่อง <b>Admission Status</b></li>
-	<dt>: มีผลต่อจำนวน Re-admission</dt>
-	<dt>: เคสที่ admit ซ้ำ ใส่คำว่า re-ad(mission)</dt>
+	<dt>: คลิกที่รูปเตียง toggle Admit / Readmission</dt>
 	<li>ช่อง <b>Final Status</b></li>
-	<dt>: มีผลต่อจำนวน Infection, Morbidity, และ Dead</dt>
-	<dt>: เคสที่มี Infection ใส่คำว่า Infect(ion) หรือ SSI</dt>
-	<dt>: เคสที่มี Morbidity ใส่คำว่า Morbid</dt>
-	<dt>: เคส Dead ใส่คำว่า Dead หรือ  passed away</dt>
+	<dt>: คลิกที่รูปสมุด เพื่อใส่รายละเอียดของเคส</dt>
 	<li>ช่อง <b>Admit</b></li>
 	<dt>: ข้อมูลของโรงพยาบาล</dt>
 	<li>ช่อง <b>D/C</b></li>
