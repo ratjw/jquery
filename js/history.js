@@ -108,7 +108,7 @@ function showEquip(equipString)
 function deletedCases()
 {
 	var sql = "sqlReturnData=SELECT a.* "
-			+ "FROM (SELECT editdatetime, revision, b.* "
+			+ "FROM (SELECT editdatetime, b.* "
 				+ "FROM book b INNER JOIN bookhistory bh ON b.qn = bh.qn "
 				+ "WHERE b.deleted > 0 AND bh.action = 'delete' GROUP BY b.qn) a "
 			+ "ORDER BY a.editdatetime DESC;"

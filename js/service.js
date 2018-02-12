@@ -30,7 +30,7 @@ function serviceReview()
 		}
 	}).datepicker("setDate", new Date(new Date().getFullYear(), new Date().getMonth(), 1))
 
-	$(document).on("click", '.ui-datepicker-title', function() {
+	$('#dialogService').on("click", '.ui-datepicker-title', function() {
 		entireMonth($('#monthstart').val())
 	})
 }
@@ -58,7 +58,7 @@ function entireMonth(fromDate)
 		Alert(title, message)
 	})
 
-	$(document).off("click", '.ui-datepicker-title')
+	$('#dialogService').off("click", '.ui-datepicker-title')
 	$exportService.show()
 	$exportService.on("click", function(e) {
 		e.preventDefault()
@@ -811,6 +811,9 @@ function sqlRecord($pointing, newrecord)
 		sql = "sqlReturnService="
 
 	$.each(newrecord, function(column, content) {
+		if (column === "nonsurgical") {
+			sql += sqlnonSurgical(content, qn)
+		}
 		sql += sqlItem(column, content, qn)
 	})
 
@@ -829,6 +832,26 @@ function sqlItem(column, content, qn) {
 		+ column + "='" + content
 		+ "',editor='" + gv.user
 		+ "' WHERE qn=" + qn + ";"
+}
+
+function sqlnonSurgical(content, qn) {
+	if (content) {
+		return "UPDATE book SET "
+			+ "doneby='No',"
+			+ "manner='No',"
+			+ "scale='No',"
+			+ "operated='No',"
+			+ "editor='auto' "
+			+ "WHERE qn=" + qn + ";"
+	} else {
+		return "UPDATE book SET "
+			+ "doneby='',"
+			+ "manner='',"
+			+ "scale='',"
+			+ "operated='',"
+			+ "editor='auto' "
+			+ "WHERE qn=" + qn + ";"
+	}
 }
 
 function showReportToDept(title)

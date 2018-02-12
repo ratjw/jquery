@@ -10,7 +10,5 @@ ALTER TABLE bookhistory
 	DROP KEY hn, 
 	ENGINE = INNODB,
 	ADD action VARCHAR(8) DEFAULT 'update' FIRST, 
-	ADD revision INT(6) NOT NULL AUTO_INCREMENT AFTER action,
-	ADD editdatetime DATETIME NOT NULL AFTER revision,
-	ADD PRIMARY KEY (qn, revision),
-	ADD KEY (revision,qn);
+	ADD editdatetime DATETIME NOT NULL AFTER action,
+	ADD PRIMARY KEY (qn);

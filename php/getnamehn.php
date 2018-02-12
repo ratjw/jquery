@@ -2,7 +2,7 @@
 include "connect.php";
 require_once "book.php";
 
-	$hn = "";
+	$hn = "5232323";
 	$initial_name = "";
 	$first_name = "";
 	$last_name = "";
@@ -24,38 +24,42 @@ require_once "book.php";
 
 	extract($_POST);
 
-	if (strpos($_SERVER["SERVER_NAME"], "surgery.rama") !== false) {
+	$host = gethostname();
+	$ip = gethostbyname($host);
+	if (strpos($ip, "10.6") !== false) {
 
-	$wsdl="http://appcenter/webservice/patientservice.wsdl";
-	$client = new SoapClient($wsdl);
-	$resultx = $client->Get_demographic_short($hn);
-	$resulty = simplexml_load_string($resultx);
-	while ($resulty->children())			//find last children
-		$resulty = $resulty->children();
-	$resultj = json_encode($resulty);		//use json encode-decode to make
-	$resultz = json_decode($resultj,true);	//numeric array	into assoc array
+		$wsdl="http://appcenter/webservice/patientservice.wsdl";
+		$client = new SoapClient($wsdl);
+		$resultx = $client->Get_demographic_short($hn);
+		$resulty = simplexml_load_string($resultx);
+		while ($resulty->children())			//find last children
+			$resulty = $resulty->children();
+		$resultj = json_encode($resulty);		//use json encode-decode to make
+		$resultz = json_decode($resultj,true);	//numeric array	into assoc array
 
-	if (empty($resultz["initial_name"]))
-		$resultz["initial_name"] = "";
-	if (empty($resultz["first_name"]))
-		exit ("DBfailed ไม่มีผู้ป่วย hn นี้");		//Error exit 1
-	if (empty($resultz["last_name"]))
-		$resultz["last_name"] = "";
-	if (empty($resultz["dob"]))
-		$resultz["dob"] = "";
-	if (empty($resultz["gender"]))
-		$resultz["gender"] = "";
+		if (empty($resultz["initial_name"]))
+			$resultz["initial_name"] = "";
+		if (empty($resultz["first_name"]))
+			exit ("DBfailed ไม่มีผู้ป่วย hn นี้");		//Error exit 1
+		if (empty($resultz["last_name"]))
+			$resultz["last_name"] = "";
+		if (empty($resultz["dob"]))
+			$resultz["dob"] = null;
+		if (empty($resultz["gender"]))
+			$resultz["gender"] = "";
 
-	extract($resultz);
+		extract($resultz);
 	}
 	//Find last entry of patient with this hn
-	$sql = "SELECT MAX(qn) FROM book WHERE hn = $hn;";
+	$sql = "SELECT MAX(qn) FROM book WHERE hn = '$hn' AND deleted=0;";
 	$query = $mysqli->query ($sql);
 	if ($query) {
 		$oldqn = $query->fetch_row();
 		$oldqn = $oldqn[0];
 		if ($oldqn) {
-			$sql = "SELECT staffname,diagnosis,treatment,contact FROM book WHERE qn = $oldqn;";
+			$sql = "SELECT staffname,diagnosis,treatment,contact 
+					FROM book 
+					WHERE qn = $oldqn;";
 			$query = $mysqli->query ($sql);
 			if ($query) {
 				$oldpatient = $query->fetch_assoc();
@@ -112,7 +116,7 @@ require_once "book.php";
 					'$staffname', 
 					'$hn', 
 					'$initial_name$first_name $last_name', 
-					CASE WHEN $dob <> '' THEN '$dob' ELSE dob END, 
+					'$dob', 
 					'$gender', 
 					'$diagnosis',
 					'$treatment',
