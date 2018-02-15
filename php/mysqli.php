@@ -19,7 +19,7 @@ require_once "book.php";
 			echo json_encode($data);
 		}
 	}
-	// start.js (updating)
+	// start.js (getUpdate)
 	else if (isset($_POST['nosqlReturnbook']))
 	{
 		echo json_encode(book($mysqli));
@@ -40,6 +40,7 @@ require_once "book.php";
 	}
 
 	// service.js (saveScontent)
+	// This also gets BOOK
 	else if (isset($_POST['sqlReturnService'])) {
 		$return = multiquery($mysqli, $_POST['sqlReturnService']);
 		if (gettype($return) === "string") {
@@ -51,8 +52,11 @@ require_once "book.php";
 		}
 	}
 
+	// click.js (changeOncall)
 	// equip.js (fillEquipTable)
-	// history.js (editHistory, sqlFind)
+	// history.js (editHistory, deletedCases, allCases, sqlFind)
+	// service.js (getServiceOneMonth, updateDiff)
+	// start.js (updating)
 	else if (isset($_POST['sqlReturnData'])) {
 		$return = multiquery($mysqli, $_POST['sqlReturnData']);
 		if (gettype($return) === "string") {
@@ -62,13 +66,10 @@ require_once "book.php";
 		}
 	}
 
-	// click.js (changeOncall), service.js (updateBookService(opDiffQN))
 	else if (isset($_POST['sqlnoReturn'])) {
 		$return = multiquery($mysqli, $_POST['sqlnoReturn']);
 		if (gettype($return) === "string") {
 			echo $return;
-		} else {
-			echo "success";
 		}
 	}
 

@@ -733,17 +733,18 @@ function getSTAFFNAME(pointing)
 
 function changeOncall(pointing, opdate, staffname)
 {
-	var sql = "sqlnoReturn=UPDATE book SET "
-			+ "staffname= '" + staffname
-			+ "', editor='" + gv.user
-			+ "' WHERE waitnum=0 AND opdate='" + opdate + "';"
+	var sql = "sqlReturnData=UPDATE staff SET "
+			+ "staffoncall= '" + staffname
+			+ "' WHERE dateoncall='" + opdate
+			+ "';SELECT * FROM staff ORDER BY number;"
 
 	Ajax(MYSQLIPHP, sql, callbackchangeOncall);
 
 	function callbackchangeOncall(response)
 	{
-		if (response === "success") {
+		if (/neurosurgery/.test(response)) {
 			pointing.innerHTML = htmlwrap(staffname)
+			gv.STAFF = JSON.parse(response)
 		} else {
 			Alert("changeOncall", response)
 		}

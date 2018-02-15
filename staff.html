@@ -70,7 +70,7 @@
 <div id="dialogService" style="display:none">
   <div id="servicehead">
     <div>
-	  <span class="item">Admit : <span id="Admit"></span></span>
+	  <span class="item">Admission : <span id="Admission"></span></span>
 	  <span class="item">Discharge : <span id="Discharge"></span></span>
 	  <span class="item">Operation : <span id="Operation"></span></span>
 	  <span class="item Morbidity">Morbidity : <span id="Morbidity"></span></span>
@@ -107,9 +107,9 @@
    </tbody>
   </table>
 
-  <!--  name is the column name
+  <!--  name is the column in Mysql
 		title is the value -->
-  <div id="dialogRecord" class="dialogBox" style="display:none">
+  <div id="divRecord" class="dialogBox" style="display:none">
 	<div style="height:30px">
 	  <span id="cancelRecord" class="ui-icon ui-icon-closethick" style="width:18px"></span>
 	</div> 
@@ -173,26 +173,6 @@
 	<span>
 		<input type="radio" id="etc" name="disease" title="etc.">
 		<label for="etc">etc.</label>
-	</span>
-	<br>
-	<span class="itemheader">Operation:</span>
-	<span>
-		<input type="radio" id="noop" name="operated" title="No">
-		<label for="noop">No Operation</label>
-	</span>
-	<span>
-		<input type="radio" id="op" name="operated" title="Operation">
-		<label for="op">Operation</label>
-	</span>
-	<br>
-	<span class="itemheader">Non-surgical:</span>
-	<span>
-		<input type="checkbox" id="Radiosurgery" name="nonsurgical" title="Radiosurgery">
-		<label for="Radiosurgery">Radiosurgery</label>
-	</span>
-	<span>
-		<input type="checkbox" id="Endovascular" name="nonsurgical" title="Endovascular">
-		<label for="Endovascular">Endovascular</label>
 	</span>
 	<br>
 	<span class="itemheader">Complications:</span>
@@ -287,11 +267,11 @@
    </tr>
   <tr class="notcount nonsurgical">
      <td>Radiosurgery</td>
-     <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+     <td></td><td></td>
    </tr>
    <tr class="notcount nonsurgical">
      <td>Endovascular</td>
-     <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+     <td></td><td></td>
    </tr>
    <tr id="Total" class="notcount">
      <td>Total</td>
@@ -316,7 +296,7 @@
 	<th style="width:2%">Staff</th>
 	<th style="width:15%">Diagnosis</th>
 	<th style="width:15%">Treatment</th>
-	<th style="width:15%">Admission</th>
+	<th style="width:15%">Admission Status</th>
 	<th style="width:15%">Final Status</th>
 	<th style="width:15%">Equipment</th>
 	<th style="width:15%">Contact</th>
@@ -338,7 +318,7 @@
     <td data-title="Staff"></td>
     <td data-title="Diagnosis"></td>
     <td data-title="Treatment"></td>
-    <td data-title="Admission"></td>
+    <td data-title="Admission Status"></td>
     <td data-title="Final Status"></td>
     <td data-title="Equipment"></td>
     <td data-title="Contact"></td>
@@ -973,11 +953,10 @@
 	<li>ช่อง <b>Diagnosis</b></li>
 	<li>ช่อง <b>Treatment</b></li>
 	<dt>: คลิกที่รูปมีด toggle Operation / Reoperation</dt>
-	<dt>: ถ้ามีภาพมีด ตรงเคสที่ไม่มีการผ่าตัด ให้ไปติ๊ก No ที่ช่อง Final Status</dt>
-	<dt>: ถ้าไม่มีภาพมีด ตรงเคสที่มีการผ่าตัด ให้ไปติ๊ก Operation ที่ช่อง Final Status</dt>
+	<dt>: ถ้ามีภาพมีด ตรงเคสที่ไม่มีการผ่าตัด หรือ ไม่มีภาพมีด ตรงเคสที่มีการผ่าตัด กรุณาแจ้งเลขาหน่วยฯ</dt>
 	<li>ช่อง <b>Admission Status</b></li>
-	<dt>: คลิกที่รูปเตียง toggle Admit / Readmission</dt>
-	<dt>: Admit หรือ ไม่ได้ Admit ขึันอยู่กับข้อมูลจาก IT ของโรงพยาบาล</dt>
+	<dt>: คลิกที่รูปเตียง toggle Admission / Readmission</dt>
+	<dt>: Admission หรือ ไม่ได้ Admission ขึันอยู่กับข้อมูลจาก IT ของโรงพยาบาล</dt>
 	<li>ช่อง <b>Final Status</b></li>
 	<dt>: คลิกที่รูปสมุด เพื่อใส่รายละเอียดของเคส</dt>
 	<li>ช่อง <b>Admit</b></li>

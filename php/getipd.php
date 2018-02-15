@@ -9,7 +9,7 @@ require_once "book.php";
 	$from = $_POST["from"];
 	$to = $_POST["to"];
 
-	$result = $mysqli->query ("SELECT opdate, hn, admit, discharge, readmit, qn
+	$result = $mysqli->query ("SELECT opdate, hn, admit, discharge, admitted, qn
 		FROM book
 		WHERE opdate BETWEEN '$from' AND '$to';");
 
@@ -24,9 +24,9 @@ require_once "book.php";
 	$update = false;
 	for ($i = 0; $i < count($case); $i++)
 	{
-		$OldAdmit = $case[$i][admit];
-		$OldDischarge = $case[$i][discharge];
-		if ($OldAdmit && $OldDischarge) {
+		$oldAdmit = $case[$i][admit];
+		$oldDischarge = $case[$i][discharge];
+		if ($oldAdmit && $oldDischarge) {
 			continue;
 		}
 
@@ -36,52 +36,46 @@ require_once "book.php";
 		$ipd = getipd($hn);
 
 		if (empty($ipd[effectivestartdate])) {
-			$admit = null;
+			$newAdmit = null;
 		} else {
 			$DateTime = DateTime::createFromFormat('d/m/Y H:i:s', $ipd[effectivestartdate]);
-			$admit = $DateTime->format('Y-m-d');
+			$newAdmit = $DateTime->format('Y-m-d');
 		}
 		if (empty($ipd[effectiveenddate])) {
-			$discharge = null;
+			$newDischarge = null;
 		} else {
 			$DateTime = DateTime::createFromFormat('d/m/Y H:i:s', $ipd[effectiveenddate]);
-			$discharge = $DateTime->format('Y-m-d');
+			$newDischarge = $DateTime->format('Y-m-d');
 		}
-/*
-		$date1 = date_create($admit);
-		$date2 = date_create($opdate);
-		$diff = date_diff($date1, $date2);
-		$datediff = $diff->format("%R%a");
 
-		if (($datediff < 0) || ($datediff > 30)) {
-			continue;
-		}
-*/
-		if (!$OldAdmit) {
-			if (!$OldDischarge && $discharge) {
-				if ($admit) {
+		if (!$oldAdmit) {
+			if (!$oldDischarge && $newDischarge) {
+				if ($newAdmit) {
 					$mysqli->query ("UPDATE book
-									SET admit = '$admit',
-										discharge = '$discharge',
-										readmit = 0
+									SET admit = '$newAdmit',
+										admitted = 'Admission',
+										discharge = '$newDischarge',
+										editor = 'getipd'
 									WHERE qn = $qn;");
 				}
 			} else {
-				if ($admit) {
+				if ($newAdmit) {
 					$mysqli->query ("UPDATE book
-									SET admit = '$admit',
-										readmit = 0
+									SET admit = '$newAdmit',
+										admitted = 'Admission',
+										editor = 'getipd'
 									WHERE qn = $qn;");
 				}
 			}
 		} else {
-			if (!$OldDischarge && $discharge) {
+			if (!$oldDischarge && $newDischarge) {
 				$mysqli->query ("UPDATE book
-								SET discharge = '$discharge',
-									readmit = CASE WHEN readmit is null
-												   THEN readmit = 0
-												   ELSE readmit
-											  END
+								SET discharge = '$newDischarge',
+									admitted = CASE WHEN admitted = ''
+												   THEN admitted = 'Admission'
+												   ELSE admitted
+											  END,
+									editor = 'getipd'
 								WHERE qn = $qn;");
 			}
 		}
@@ -89,14 +83,16 @@ require_once "book.php";
 
  	echo json_encode(book($mysqli));
 
+//use json encode-decode to convert XML to assoc array
 function getipd($hn)
 {
 	$wsdl="http://appcenter/webservice/patientservice.wsdl";
 	$client = new SoapClient($wsdl);
 	$resultx = $client->GetEncounterDetailByMRNENCTYPE($hn, "IMP");
 	$resulty = simplexml_load_string($resultx);
-	while ($resulty->children())			//find last children
+	while ($resulty->children())
 		$resulty = $resulty->children();
-	$resultj = json_encode($resulty);		//use json encode-decode to
-	return json_decode($resultj,true);		//convert XML to assoc array
+	$resultj = json_encode($resulty);
+
+	return json_decode($resultj,true);
 }

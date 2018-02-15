@@ -357,14 +357,30 @@ function inPicArea(evt, pointing) {
 	var $pointing = $(pointing),
 		x = evt.pageX,
 		y = evt.pageY,
+		square = picArea(pointing),
+		top = square.top,
+		right = square.right,
+		bottom = square.bottom,
+		left = square.left,
+		inX = (left < x) && (x < right),
+		inY = (top < y) && (y < bottom)
+
+	return inX && inY
+}
+
+function picArea(pointing) {
+	var $pointing = $(pointing),
 		right = $pointing.offset().left + $pointing.width(),
 		bottom = $pointing.offset().top + $pointing.height(),
-		inX = right - x,
-		inY = bottom - y,
-		left = (inX > 0) && (inX < 25),
-		above = (inY > 0) && (inY < 25)
+		left = right - 25,
+		top = bottom - 25
 
-	return left && above
+	return {
+		top: top,
+		bottom: bottom,
+		left: left,
+		right: right
+	}
 }
 
 function findPrevcell(event, editable, pointing) 
@@ -505,7 +521,7 @@ function exportServiceToExcel()
 			<tr>\
 			  <td></td>\
 			  <td></td>\
-			  <td>Admit : ' + $("#Admit").html() + '</td>\
+			  <td>Admission : ' + $("#Admission").html() + '</td>\
 			  <td>Discharge : ' + $("#Discharge").html() + '</td>\
 			  <td>Operation : ' + $("#Operation").html() + '</td>\
 			  <td class="Morbidity">Morbidity : ' + $("#Morbidity").html() + '</td>\

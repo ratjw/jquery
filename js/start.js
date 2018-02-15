@@ -294,7 +294,7 @@ function getUpdate()
 				var fromDate = $('#monthstart').val()
 				var toDate = $('#monthpicker').val()
 
-				refillService(gv.SERVICE, fromDate, toDate)
+				refillService(fromDate, toDate)
 			}
 			refillall()
 			if (isSplited()) {

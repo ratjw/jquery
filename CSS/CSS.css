@@ -139,16 +139,31 @@ td.camera { background-image: url("pic/camera.png"); }
 td.camera2 { background-image: url("pic/camera2.png"); }
 td.equip { background-image: url("pic/equip.png"); }
 td.equip2 { background-image: url("pic/equip2.png"); }
-td.Operation { background-image: url("pic/reop.png"); }
-td.Operation2 { background-image: url("pic/reop2.png"); }
-td.Reoperation { background-image: url("pic/reoperation.png"); }
-td.Reoperation2 { background-image: url("pic/reoperation2.png"); }
-td.Admit { background-image: url("pic/readmit.png"); }
-td.Admit2 { background-image: url("pic/readmit2.png"); }
-td.Readmission { background-image: url("pic/readmission.png"); }
-td.Readmission2 { background-image: url("pic/readmission2.png"); }
+td.Endovascular { background-image: url("pic/Endovascular.png"); }
+td.Radiosurgery { background-image: url("pic/Radiosurgery.png"); }
+td.Operation { background-image: url("pic/Operation.png"); }
+td.Operation2 { background-image: url("pic/Operation2.png"); }
+td.Reoperation { background-image: url("pic/Reoperation.png"); }
+td.Reoperation2 { background-image: url("pic/Reoperation2.png"); }
+td.Admission { background-image: url("pic/Admission.png"); }
+td.Admission2 { background-image: url("pic/Admission2.png"); }
+td.Readmission { background-image: url("pic/Readmission.png"); }
+td.Readmission2 { background-image: url("pic/Readmission2.png"); }
 td.record { background-image: url("pic/record.png"); }
 td.record2 { background-image: url("pic/record2.png"); }
+
+td.Operation.Radiosurgery.Endovascular {
+	background-image: url("pic/Operation.png"), url("pic/Radiosurgery.png"), url("pic/Endovascular.png");
+}
+td.Operation.Radiosurgery {
+	background-image: url("pic/Operation.png"), url("pic/Radiosurgery.png");
+}
+td.Operation.Endovascular {
+	background-image: url("pic/Operation.png"), url("pic/Endovascular.png");
+}
+td.Radiosurgery.Endovascular {
+	background-image: url("pic/Radiosurgery.png"), url("pic/Endovascular.png");
+}
 
 .Reoperation { background-color: #CCCCAA !important; }
 .Readmission { background-color: #AACCCC !important; } 
@@ -400,24 +415,24 @@ input[type=submit] {
 	font-weight: bold;
 }
 
-#dialogRecord {
+#divRecord {
 	width: 550px;
-	height: 270px;
+	height: 240px;
 	font-size: 14px;
 	background-color: snow;
 	padding-left: 25px;
 }
 
-#dialogRecord .itemheader {
+#divRecord .itemheader {
 	font-weight: bold;
 }
 
-#dialogRecord span {
+#divRecord span {
 	display: inline-block;
 	width: 130px;
 }
 
-#dialogRecord button {
+#divRecord button {
 	float: right;
 	width: 80px;
 	height: 30px;
@@ -427,11 +442,11 @@ input[type=submit] {
 	border-radius: 5px;
 }
 
-#dialogRecord button:hover {
+#divRecord button:hover {
 	background-color: lightgrey;
 }
 
-#dialogRecord label {
+#divRecord label {
 	display: inline-block;
 	width: 100px;
 }
