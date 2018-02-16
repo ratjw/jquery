@@ -2,36 +2,36 @@
 function serviceReview()
 {
 	resetcountService()
-	$('#servicehead').hide()
-	$('#servicetbl').hide()
-	$('#exportService').hide()
-	$('#reportService').hide()
-	$('#dialogService').dialog({
-		title: 'Service Neurosurgery',
+	$("#servicehead").hide()
+	$("#servicetbl").hide()
+	$("#exportService").hide()
+	$("#reportService").hide()
+	$("#dialogService").dialog({
+		title: "Service Neurosurgery",
 		closeOnEscape: true,
 		modal: true,
 		width: window.innerWidth * 95 / 100,
 		height: window.innerHeight * 95 / 100
 	})
 
-	$('#monthpicker').show()
-	$('#monthpicker').datepicker( {
-		altField: $('#monthstart'),
+	$("#monthpicker").show()
+	$("#monthpicker").datepicker( {
+		altField: $("#monthstart"),
 		altFormat: "yy-mm-dd",
 		autoSize: true,
 		dateFormat: "MM yy",
 		monthNames: [ "มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", 
 					  "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม" ],
 		onChangeMonthYear: function (year, month, inst) {
-			$(this).datepicker('setDate', new Date(inst.selectedYear, inst.selectedMonth, 1))
+			$(this).datepicker("setDate", new Date(inst.selectedYear, inst.selectedMonth, 1))
 		},
 		beforeShow: function (input, obj) {
-			$('.ui-datepicker-calendar').hide()
+			$(".ui-datepicker-calendar").hide()
 		}
 	}).datepicker("setDate", new Date(new Date().getFullYear(), new Date().getMonth(), 1))
 
-	$('#dialogService').off("click").on("click", '.ui-datepicker-title', function() {
-		entireMonth($('#monthstart').val())
+	$("#dialogService").off("click").on("click", ".ui-datepicker-title", function() {
+		entireMonth($("#monthstart").val())
 	})
 }
 
@@ -39,16 +39,16 @@ function entireMonth(fromDate)
 {
 	var date = new Date(fromDate),
 		toDate = new Date(date.getFullYear(), date.getMonth()+1, 0),
-		$monthpicker = $('#monthpicker'),
+		$monthpicker = $("#monthpicker"),
 		$exportService = $("#exportService"),
 		$reportService = $("#reportService"),
-		title = 'Service Neurosurgery เดือน ' + $monthpicker.val()
+		title = "Service Neurosurgery เดือน " + $monthpicker.val()
 
 	// show month name before change $monthpicker.val to last date of this month
-	$('#dialogService').dialog({
+	$("#dialogService").dialog({
 		title: title
 	})
-	toDate = $.datepicker.formatDate('yy-mm-dd', toDate)
+	toDate = $.datepicker.formatDate("yy-mm-dd", toDate)
 	$monthpicker.val(toDate)
 
 	getServiceOneMonth(fromDate, toDate).then( function (SERVICE) {
@@ -102,13 +102,16 @@ function sqlOneMonth(fromDate, toDate)
 function showService(fromDate, toDate)
 {
 	//delete previous servicetbl lest it accumulates
-	var $servicetbl = $('#servicetbl'),
+	var $servicetbl = $("#servicetbl"),
 		$servicecells = $("#servicecells"),
 		opDiff = {},
 		endoDiff = {},
 		radioDiff = {}
 
-	// check all treatment details
+	// TREATMENTSV is linked to 3 Mysql columns
+	// 1. operated : "", Operation, Reoperation
+	// 2. radiosurgery : "", Radiosurgery
+	// 3. endovascular : "", Endovascular
 	$.each(gv.SERVICE, function() {
 		var	treatment = this.treatment,
 			operated = this.operated,
@@ -117,28 +120,26 @@ function showService(fromDate, toDate)
 			qn = this.qn
 
 		// diff when data in db are not the same as keywords
-		if (!operated || (operated === 'Operation')) {
-			if (!!operated !== isOperation(treatment)) {
-				opDiff[qn] = this.operated = operated ? "" : 'Operation'
-			}
-			if (!!radiosurgery !== isRadiosurgery(treatment)) {
-				radioDiff[qn] = this.radiosurgery = radiosurgery ? "" : 'Radiosurgery'
-			}
-			if (!!endovascular !== isEndovascular(treatment)) {
-				endoDiff[qn] = this.endovascular = endovascular ? "" : "Endovascular"
-			}
+		if (!!operated !== isOperation(treatment)) {
+			opDiff[qn] = this.operated = operated ? "" : "Operation"
+		}
+		if (!!radiosurgery !== isRadiosurgery(treatment)) {
+			radioDiff[qn] = this.radiosurgery = radiosurgery ? "" : "Radiosurgery"
+		}
+		if (!!endovascular !== isEndovascular(treatment)) {
+			endoDiff[qn] = this.endovascular = endovascular ? "" : "Endovascular"
 		}
 	})
 	
 	updateDiff(opDiff, radioDiff, endoDiff, fromDate, toDate)
 
-	$servicetbl.find('tr').slice(1).remove()
+	$servicetbl.find("tr").slice(1).remove()
 	$servicetbl.show()
 
 	$.each( gv.STAFF, function() {
 		var staffname = this.staffname
-		$servicecells.find('tr').clone()
-			.appendTo($servicetbl.find('tbody'))
+		$servicecells.find("tr").clone()
+			.appendTo($servicetbl.find("tbody"))
 				.children("td").eq(OPDATE)
 					.prop("colSpan", 9)
 						.addClass("serviceStaff")
@@ -149,20 +150,20 @@ function showService(fromDate, toDate)
 			if (this.staffname === staffname) {
 				classname = countService(this, fromDate, toDate)
 				scase++
-				$servicecells.find('tr').clone()
-					.appendTo($servicetbl.find('tbody'))
+				$servicecells.find("tr").clone()
+					.appendTo($servicetbl.find("tbody"))
 						.filldataService(this, scase, classname)
 			}
 		});
 	})
 
-	var $monthpicker = $('#monthpicker'),
+	var $monthpicker = $("#monthpicker"),
 		editable = fromDate >= getStart(),
-		$dialogService = $('#dialogService'),
+		$dialogService = $("#dialogService"),
 		$divRecord = $("#divRecord")
 
 	$monthpicker.hide()
-	$('#servicehead').show()
+	$("#servicehead").show()
 	$dialogService.dialog({
 		hide: 200,
 		width: window.innerWidth * 95 / 100,
@@ -189,7 +190,7 @@ function showService(fromDate, toDate)
 		var	target = event.target
 
 		if ($divRecord.is(":visible")) {
-			if (!$(target).closest('#divRecord').length) {
+			if (!$(target).closest("#divRecord").length) {
 				$divRecord.hide();
 			}
 		}
@@ -249,7 +250,7 @@ function updateCase(diff, column, manner, doneby, scale)
 
 function resizeDialog()
 {
-	var	$dialogService = $('#dialogService')
+	var	$dialogService = $("#dialogService")
 	$dialogService.dialog({
 		width: window.innerWidth * 95 / 100,
 		height: window.innerHeight * 95 / 100
@@ -263,7 +264,7 @@ function refillService(fromDate, toDate)
 	$.each( gv.STAFF, function() {
 		var staffname = this.staffname
 		i++
-		var $staff = $('#servicetbl tr').eq(i).children("td").eq(CASENUMSV)
+		var $staff = $("#servicetbl tr").eq(i).children("td").eq(CASENUMSV)
 		if ($staff.prop("colSpan") === 1) {
 			$staff.prop("colSpan", 9)
 				.addClass("serviceStaff")
@@ -277,18 +278,18 @@ function refillService(fromDate, toDate)
 				var classes = countService(this, fromDate, toDate)
 				i++
 				scase++
-				var $cells = $('#servicetbl tr').eq(i).children("td")
+				var $cells = $("#servicetbl tr").eq(i).children("td")
 				if ($cells.eq(CASENUMSV).prop("colSpan") > 1) {
 					$cells.eq(CASENUMSV).prop("colSpan", 1)
 						.nextUntil($cells.eq(QNSV)).show()
 				}
-				$('#servicetbl tr').eq(i)
+				$("#servicetbl tr").eq(i)
 						.filldataService(this, scase, classes)
 			}
 		});
 	})
-	if (i < ($('#servicetbl tr').length - 1)) {
-		$('#servicetbl tr').slice(i+1).remove()
+	if (i < ($("#servicetbl tr").length - 1)) {
+		$("#servicetbl tr").slice(i+1).remove()
 	}
 	countAllServices()
 }
@@ -433,7 +434,7 @@ function fillAdmitDischargeDate()
 		$.each( gv.SERVICE, function() {
 			if (this.staffname === staffname) {
 				i++
-				var $thisRow = $('#servicetbl tr').eq(i),
+				var $thisRow = $("#servicetbl tr").eq(i),
 					$cells = $thisRow.children("td")
 
 				if (this.admit && 
@@ -463,7 +464,7 @@ function clickservice(evt, clickedCell, editable)
 function Skeyin(event, keycode, pointing)
 {
 	var SEDITABLE	= [DIAGNOSISSV, TREATMENTSV, ADMISSIONSV, FINALSV],
-		fromDate = $('#monthstart').val(),
+		fromDate = $("#monthstart").val(),
 		start = getStart(),
 		editable = (fromDate >= start),
 		thiscell
@@ -548,11 +549,11 @@ function savePreviousCellService()
 //column matches column name in MYSQL
 function saveContentService(pointed, column, content)
 {
-	var qn = $(pointed).closest('tr').find('td').eq(QNSV).html()
+	var qn = $(pointed).closest("tr").find("td").eq(QNSV).html()
 
 	// Not refillService because it may make next cell back to old value
 	// when fast entry, due to slow return from Ajax of previous input
-	pointed.innerHTML = content? content : ''
+	pointed.innerHTML = content? content : ""
 
 	//take care of white space, double qoute, single qoute, and back slash
 	if (/\W/.test(content)) {
@@ -582,11 +583,11 @@ function updateOperated(qn, content)
 		oper = radi = endo = null
 
 	if (bookq.operated && !operated) { oper = "" }
-	if (!bookq.operated && operated) { oper = 'Operation' }
+	if (!bookq.operated && operated) { oper = "Operation" }
 	if (bookq.radiosurgery && !radiosurgery) { radi = "" }
-	if (!bookq.radiosurgery && radiosurgery) { radi = 'Radiosurgery' }
+	if (!bookq.radiosurgery && radiosurgery) { radi = "Radiosurgery" }
 	if (bookq.endovascular && !endovascular) { endo = "" }
-	if (!bookq.endovascular && endovascular) { endo = 'Endovascular' }
+	if (!bookq.endovascular && endovascular) { endo = "Endovascular" }
 
 	if (oper !== null) { sql += "operated='" + oper + "'," }
 	if (radi !== null) { sql += "radiosurgery='" + radi + "'," }
@@ -604,12 +605,12 @@ function updateOperated(qn, content)
 
 function saveService(pointed, sql)
 {
-	var $row = $(pointed).closest('tr'),
+	var $row = $(pointed).closest("tr"),
 		rowi = $row[0],
 		qn = rowi.cells[QNSV].innerHTML,
 		oldcontent = $("#editcell").data("oldcontent"),
-		fromDate = $('#monthstart').val(),
-		toDate = $('#monthpicker').val()
+		fromDate = $("#monthstart").val(),
+		toDate = $("#monthpicker").val()
 
 	sql	+= sqlOneMonth(fromDate, toDate)
 
@@ -698,7 +699,7 @@ function getHNSV(evt, pointing)
 
 function getNAMESV(evt, pointing)
 {
-	var hn = $(pointing).closest('tr').children("td").eq(HNSV).html()
+	var hn = $(pointing).closest("tr").children("td").eq(HNSV).html()
 	var patient = pointing.innerHTML
 
 	clearEditcell()
@@ -719,9 +720,12 @@ function getTREATMENTSV(evt, pointing, editable)
 			// click toggle Operation, Reoperation
 			if (/\bReoperation/.test(pointing.className)) {
 				operated = "Operation"
-			} else if (/\bOperation/.test(pointing.className)) {
+			}
+			else if (/\bOperation/.test(pointing.className)) {
 				operated = "Reoperation"
 			}
+		}
+		if (operated) {
 			sql = sqlColumn(pointing, "operated", operated)
 			saveService(pointing, sql)
 		} else {
@@ -767,7 +771,7 @@ function getFINALSV(evt, pointing, editable)
 // and not sticky to pointing while scrolling
 function showRecord(pointing, editable)
 {
-	$('#doneday').datepicker({
+	$("#doneday").datepicker({
 		dateFormat: "yy-mm-dd"
 	})
 	var $pointing = $(pointing),
@@ -802,11 +806,11 @@ function showRecord(pointing, editable)
 	menustyle($divRecord, $pointing)
 
 	if (editable) {
-		$divRecord.find('input').off("click", returnFalse)
-		$divRecord.find('input[type=text]').prop('disabled', false)
+		$divRecord.find("input").off("click", returnFalse)
+		$divRecord.find("input[type=text]").prop("disabled", false)
 	} else {
-		$divRecord.find('input').on("click", returnFalse)
-		$divRecord.find('input[type=text]').prop('disabled', true)
+		$divRecord.find("input").on("click", returnFalse)
+		$divRecord.find("input[type=text]").prop("disabled", true)
 	}
 }
 
@@ -818,13 +822,13 @@ function setRecord($pointing)
 		bookq = getBOOKrowByQN(gv.SERVICE, qn),
 		$divRecord = $("#divRecord")
 
-	$divRecord.find('input[type=text]').val('')
-	$divRecord.find('input').prop('checked', false)
+	$divRecord.find("input[type=text]").val("")
+	$divRecord.find("input").prop("checked", false)
 
 	document.getElementsByName("doneday")[0].value = bookq.doneday
 													? bookq.doneday
 													: bookq.opdate
-	$divRecord.find('input').each(function() {
+	$divRecord.find("input").each(function() {
 		this.checked = this.title === bookq[this.name]
 	})
 }
@@ -1061,7 +1065,7 @@ function countAllServices()
 {
 	resetcountService()
 
-	$.each( $('#servicetbl tr'), function() {
+	$.each( $("#servicetbl tr"), function() {
 		var counter = this.className.split(" ")
 		$.each(counter, function() {
 			if (document.getElementById(this)) {
