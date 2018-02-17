@@ -161,6 +161,33 @@ td.Operation.Radiosurgery {
 td.Operation.Endovascular {
 	background-image: url("pic/Operation.png"), url("pic/Endovascular.png");
 }
+td.Operation2.Radiosurgery.Endovascular {
+	background-image: url("pic/Operation2.png"), url("pic/Radiosurgery.png"), url("pic/Endovascular.png");
+}
+td.Operation2.Radiosurgery {
+	background-image: url("pic/Operation2.png"), url("pic/Radiosurgery.png");
+}
+td.Operation2.Endovascular {
+	background-image: url("pic/Operation2.png"), url("pic/Endovascular.png");
+}
+td.Reoperation.Radiosurgery.Endovascular {
+	background-image: url("pic/Reoperation.png"), url("pic/Radiosurgery.png"), url("pic/Endovascular.png");
+}
+td.Reoperation.Radiosurgery {
+	background-image: url("pic/Reoperation.png"), url("pic/Radiosurgery.png");
+}
+td.Reoperation.Endovascular {
+	background-image: url("pic/Reoperation.png"), url("pic/Endovascular.png");
+}
+td.Reoperation2.Radiosurgery.Endovascular {
+	background-image: url("pic/Reoperation2.png"), url("pic/Radiosurgery.png"), url("pic/Endovascular.png");
+}
+td.Reoperation2.Radiosurgery {
+	background-image: url("pic/Reoperation2.png"), url("pic/Radiosurgery.png");
+}
+td.Reoperation2.Endovascular {
+	background-image: url("pic/Reoperation2.png"), url("pic/Endovascular.png");
+}
 td.Radiosurgery.Endovascular {
 	background-image: url("pic/Radiosurgery.png"), url("pic/Endovascular.png");
 }
