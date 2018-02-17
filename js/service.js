@@ -781,11 +781,7 @@ function getFINALSV(evt, pointing, editable)
 // and not sticky to pointing while scrolling
 function showRecord(pointing, editable)
 {
-<<<<<<< HEAD
-	$('#donedate').datepicker({
-=======
 	$("#doneday").datepicker({
->>>>>>> origin/master
 		dateFormat: "yy-mm-dd"
 	})
 	var $pointing = $(pointing),
