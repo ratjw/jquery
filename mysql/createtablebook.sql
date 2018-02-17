@@ -21,7 +21,7 @@
   `discharge` date DEFAULT NULL,
   `admitted` varchar(30) NOT NULL DEFAULT '',
   `operated` varchar(30) NOT NULL DEFAULT '',
-  `doneday` date DEFAULT NULL,
+  `donedate` date DEFAULT NULL,
   `doneby` varchar(30) NOT NULL DEFAULT '',
   `manner` varchar(30) NOT NULL DEFAULT '',
   `scale` varchar(30) NOT NULL DEFAULT '',

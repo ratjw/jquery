@@ -297,7 +297,7 @@ jQuery.fn.extend({
 	filldataService : function(bookq, scase, classes) {
 		var cells = this[0].cells
 		if (bookq.hn && gv.isPACS) { cells[HNSV].className = "pacs" }
-		cells[NAMESV].className = "camera"
+		if (bookq.hn) { cells[NAMESV].className = "camera" }
 		cells[TREATMENTSV].className = putReoperate(classes)
 		cells[ADMISSIONSV].className = putReadmit(classes)
 		cells[FINALSV].className = "record"
@@ -319,16 +319,22 @@ jQuery.fn.extend({
 // Simulate hover on icon by changing background pics
 function hoverService(editable)
 {
+	var	tdClass = "td.pacs, td.camera, td.record"
+				+ (editable
+				? ", td.Operation, td.Admission, td.Reoperation, td.Readmission"
+				: "")
+
+	hoverCell(tdClass)
+}
+
+function hoverCell(tdClass)
+{
 	var	paleClasses = ["pacs", "camera", "record", "Operation",
 						"Admission", "Reoperation", "Readmission"
 		],
 		boldClasses = ["pacs2", "camera2", "record2", "Operation2",
 						"Admission2", "Reoperation2", "Readmission2"
-		],
-		tdClass = "td.pacs, td.camera, td.record"
-				+ (editable
-				? ", td.Operation, td.Admission, td.Reoperation, td.Readmission"
-				: "")
+		]
 
 	$(tdClass)
 	.mousemove(function(event) {
@@ -390,15 +396,19 @@ function updateRowClasses($this, classname)
 
 	if (/Readmission/.test(classname)) {
 		$admit.addClass("Readmission")
+		hoverCell("td.Readmission")
 	}
 	else if (/Admission/.test(classname)) {
 		$admit.addClass("Admission")
+		hoverCell("td.Readmission")
 	}
 	if (/Reoperation/.test(classname)) {
 		$treat.addClass("Reoperation")
+		hoverCell("td.Reoperation")
 	}
 	else if (/Operation/.test(classname)) {
 		$treat.addClass("Operation")
+		hoverCell("td.Operation")
 	}
 	if (/Radiosurgery/.test(classname)) {
 		$treat.addClass("Radiosurgery")
@@ -767,7 +777,7 @@ function getFINALSV(evt, pointing, editable)
 // and not sticky to pointing while scrolling
 function showRecord(pointing, editable)
 {
-	$('#doneday').datepicker({
+	$('#donedate').datepicker({
 		dateFormat: "yy-mm-dd"
 	})
 	var $pointing = $(pointing),
@@ -821,8 +831,8 @@ function setRecord($pointing)
 	$divRecord.find('input[type=text]').val('')
 	$divRecord.find('input').prop('checked', false)
 
-	document.getElementsByName("doneday")[0].value = bookq.doneday
-													? bookq.doneday
+	document.getElementsByName("donedate")[0].value = bookq.donedate
+													? bookq.donedate
 													: bookq.opdate
 	$divRecord.find('input').each(function() {
 		this.checked = this.title === bookq[this.name]
@@ -833,7 +843,7 @@ function getRecord()
 {
 	var	record = {}
 
-	record.doneday = document.getElementsByName("doneday")[0].value
+	record.donedate = document.getElementsByName("donedate")[0].value
 	$("#divRecord input").each(function() {
 		if (this.type === "checkbox" && !this.checked) {
 			record[this.name] = ""
@@ -914,9 +924,9 @@ function showReportToDept(title)
 		})
 	})
 	$.each(gv.SERVICE, function() {
-		countCase(this, this.disease)
-		countCase(this, this.radiosurgery)
-		countCase(this, this.endovascular)
+		countOpCase(this, this.disease)
+		countNonOpCase(this, this.radiosurgery)
+		countNonOpCase(this, this.endovascular)
 	})
 	$("#reviewtbl tr:not('th, .notcount')").each(function(i) {
 		$.each($(this).find("td:not(:first-child)"), function(j) {
@@ -932,12 +942,22 @@ function showReportToDept(title)
 	})
 }
 
-function countCase(thisrow, thisitem)
+function countOpCase(thisrow, thisitem)
 {
 	var row = ROWREPORT[thisitem],
 		column = COLUMNREPORT[thisrow.doneby]
 			   + COLUMNREPORT[thisrow.scale]
 			   + COLUMNREPORT[thisrow.manner]
+
+	if (row && column) {
+		$("#reviewtbl tr")[row].cells[column].innerHTML++
+	}
+}
+
+function countNonOpCase(thisrow, thisitem)
+{
+	var row = ROWREPORT[thisitem],
+		column = 1 + COLUMNREPORT[thisrow.manner]
 
 	if (row && column) {
 		$("#reviewtbl tr")[row].cells[column].innerHTML++
