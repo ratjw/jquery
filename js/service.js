@@ -1,7 +1,6 @@
 
 function serviceReview()
 {
-	resetcountService()
 	$("#servicehead").hide()
 	$("#servicetbl").hide()
 	$("#exportService").hide()
@@ -108,6 +107,9 @@ function showService(fromDate, toDate)
 		endoDiff = {},
 		radioDiff = {}
 
+	$("#monthpicker").hide()
+	$("#servicehead").show()
+
 	// TREATMENTSV is linked to 3 Mysql columns
 	// 1. operated : "", Operation, Reoperation
 	// 2. radiosurgery : "", Radiosurgery
@@ -157,13 +159,10 @@ function showService(fromDate, toDate)
 		});
 	})
 
-	var $monthpicker = $("#monthpicker"),
-		editable = fromDate >= getStart(),
+	var	editable = fromDate >= getStart(),
 		$dialogService = $("#dialogService"),
 		$divRecord = $("#divRecord")
 
-	$monthpicker.hide()
-	$("#servicehead").show()
 	$dialogService.dialog({
 		hide: 200,
 		width: window.innerWidth * 95 / 100,
@@ -178,6 +177,7 @@ function showService(fromDate, toDate)
 			$divRecord.hide()
 		}
 	})
+	resetcountService()
 	getAdmitDischargeDate(fromDate, toDate)
 	countAllServices()
 	$servicetbl.fixMe($dialogService)
