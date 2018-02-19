@@ -11,4 +11,4 @@ ALTER TABLE bookhistory
 	ENGINE = INNODB,
 	ADD action VARCHAR(8) DEFAULT 'update' FIRST, 
 	ADD editdatetime DATETIME NOT NULL AFTER action,
-	ADD PRIMARY KEY (qn);
+	ADD KEY (qn);

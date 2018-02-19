@@ -781,7 +781,7 @@ function getFINALSV(evt, pointing, editable)
 // and not sticky to pointing while scrolling
 function showRecord(pointing, editable)
 {
-	$("#doneday").datepicker({
+	$("#donedate").datepicker({
 		dateFormat: "yy-mm-dd"
 	})
 	var $pointing = $(pointing),
@@ -835,9 +835,9 @@ function setRecord($pointing)
 	$divRecord.find("input[type=text]").val("")
 	$divRecord.find("input").prop("checked", false)
 
-	document.getElementsByName("donedate")[0].value = bookq.donedate
-													? bookq.donedate
-													: bookq.opdate
+	document.getElementById("donedate").value = bookq.donedate
+												? bookq.donedate
+												: bookq.opdate
 	$divRecord.find("input").each(function() {
 		this.checked = this.title === bookq[this.name]
 	})
@@ -847,7 +847,7 @@ function getRecord()
 {
 	var	record = {}
 
-	record.donedate = document.getElementsByName("donedate")[0].value
+	record.donedate = document.getElementById("donedate").value
 	$("#divRecord input").each(function() {
 		if (this.type === "checkbox" && !this.checked) {
 			record[this.name] = ""
@@ -928,9 +928,9 @@ function showReportToDept(title)
 		})
 	})
 	$.each(gv.SERVICE, function() {
-		countOpCase(this, this.disease)
-		countNonOpCase(this, this.radiosurgery)
-		countNonOpCase(this, this.endovascular)
+		if (this.disease) { countOpCase(this, this.disease) }
+		if (this.radiosurgery) { countNonOpCase(this, this.radiosurgery) }
+		if (this.endovascular) { countNonOpCase(this, this.endovascular) }
 	})
 	$("#reviewtbl tr:not('th, .notcount')").each(function(i) {
 		$.each($(this).find("td:not(:first-child)"), function(j) {
@@ -980,79 +980,6 @@ function resetcountService()
 	document.getElementById("Dead").innerHTML = 0
 }
 
-function isOperation(treatment)
-{
-	var Operation = false,
-		Neurosurgery = [
-			/ACDF/, /ALIF/, /[Aa]nast/, /[Aa]pproa/, /[Aa]spirat/, /[Aa]dvance/,
-			/[Bb]iop/, /[Bb]lock/, /[Bb]urr/, /[Bb]x/, /[Bb]ypass/, /[Bb]alloon/,
-			/[Cc]lip/, 
-			/[Dd]ecom/, /DBS/, /[Dd]rain/, /[Dd]isconnect/,
-			/ECOG/, /[Ee]ctom/, /[Ee]ndoscop/, /ESI/, /ETS/, /ETV/, /EVD/, /[Ee]xcis/,
-			/[Ff]ix/, /[Ff]usion/,
-			/[Gg]rid/,
-			/[Ii]nsert/,
-			/[Ll]esion/, /[Ll]ysis/, 
-			/MIDLIF/, /MVD/,
-			/[Nn]eurot/, /Navigator/,
-			/OLIF/, /[Oo]cclu/, /[Oo]perat/, /ostom/, /otom/,
-			/plast/, /PLF/, /PLIF/,
-			/[Rr]econs/, /[Rr]edo/, /[Rr]emov/, /[Rr]epa/, /[Rr]evis/, /[Rr]obot/,
-			/scope/, /[Ss]crew/, /[Ss]hunt/, /[Ss]tim/, /SNRB/, /[Ss]uture/,
-			/TSP/, /TSS/, /TLIF/, /[Tt]rans/,
-			/[Uu]ntether/,
-			/VNS/
-		],
-		NotNeurosurgery = [
-			/[Aa]djust/, /[Cc]onservative/, /[Oo]bserve/,
-			/[Tt]ransart/, /[Tt]ransven/
-		]
-
-	$.each( NotNeurosurgery, function() {
-		return !(Operation = this.test(treatment))
-	})
-	// NotNeurosurgery takes priority
-	if (Operation) {
-		return false
-	}
-
-	$.each( Neurosurgery, function() {
-		return !(Operation = this.test(treatment))
-	})
-	return Operation
-}
-
-function isRadiosurgery(treatment)
-{
-	var Operation = false,
-		Radiosurgery = [
-			/conformal radiotherapy/i, /CRT/, /CyberKnife/i,
-			/Gamma [Kk]nife/, /GKS/, /Linac/i,
-			/[Rr]adiosurgery/, /RS/,
-			/SRS/, /SRT/, /[Ss]tereotactic radiotherapy/,
-			/Tomotherapy/
-		]
-
-	$.each( Radiosurgery, function() {
-		return !(Operation = this.test(treatment))
-	})
-	return Operation
-}
-
-function isEndovascular(treatment)
-{
-	var Operation = false,
-		Endovascular = [
-			/[Bb]alloon/, /[Cc]oil/, /[Ee]mboli[zs]/, /[Ee]ndovasc/, /[Ii]ntervention/,
-			/[Ss]tent/, /[Tt]ransart/, /[Tt]ransven/
-		]
-
-	$.each( Endovascular, function() {
-		return !(Operation = this.test(treatment))
-	})
-	return Operation
-}
-
 // Service Review of one case
 function countService(thiscase, fromDate, toDate)
 {
@@ -1093,4 +1020,105 @@ function countAllServices()
 			}
 		})
 	})
+}
+
+function isTumor(diagnosis)
+{
+	var Tumor = false
+
+	$.each( NOTTUMOR, function() {
+		return !(Tumor = this.test(diagnosis))
+	})
+	// NOTTUMOR takes priority
+	if (Tumor) { return false }
+	$.each( TUMOR, function() {
+		return !(Tumor = this.test(diagnosis))
+	})
+	return Tumor
+}
+
+function isVascular(diagnosis)
+{
+	var Vascular = false
+
+	$.each( VASCULAR, function() {
+		return !(Vascular = this.test(diagnosis))
+	})
+	return Vascular
+}
+
+function isCSF(diagnosis)
+{
+	var csf = false
+
+	$.each( CSF, function() {
+		return !(csf = this.test(diagnosis))
+	})
+	return csf
+}
+
+function isTrauma(diagnosis)
+{
+	var Trauma = false
+
+	$.each( TRAUMA, function() {
+		return !(Trauma = this.test(diagnosis))
+	})
+	return Trauma
+}
+
+function isSpine(diagnosis)
+{
+	var Spine = false
+
+	$.each( SPINE, function() {
+		return !(Spine = this.test(diagnosis))
+	})
+	return Spine
+}
+
+function isEtc(diagnosis)
+{
+	var Etc = false
+
+	$.each( ETC, function() {
+		return !(Etc = this.test(diagnosis))
+	})
+	return Etc
+}
+
+function isOperation(treatment)
+{
+	var Operation = false
+
+	$.each( NOTNEUROSURGERY, function() {
+		return !(Operation = this.test(treatment))
+	})
+	// NOTNEUROSURGERY takes priority
+	if (Operation) { return false }
+
+	$.each( NEUROSURGERY, function() {
+		return !(Operation = this.test(treatment))
+	})
+	return Operation
+}
+
+function isRadiosurgery(treatment)
+{
+	var Radiosurgery = false
+
+	$.each( RADIOSURGERY, function() {
+		return !(Radiosurgery = this.test(treatment))
+	})
+	return Radiosurgery
+}
+
+function isEndovascular(treatment)
+{
+	var Endovascular = false
+
+	$.each( ENDOVASCULAR, function() {
+		return !(Endovascular = this.test(treatment))
+	})
+	return Endovascular
 }

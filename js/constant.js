@@ -53,6 +53,67 @@ var NAMEOFDAYFULL	= ["sunday", "monday", "tuesday", "wednesday", "thursday", "fr
 var THAIMONTH		= ["มค.", "กพ.", "มีค.", "เมย.", "พค.", "มิย.", "กค.", "สค.", "กย.", "ตค.", "พย.", "ธค."];
 var LARGESTDATE		= "9999-12-31";
 
+var	BRAIN = [
+	/[Cc]erebell/, /[Cc]onvexity/, /[Ff]ront/, /[Pp]ituitary/, /[Oo]ccipit/, /[Pp]etro/, 
+	/[Ss]phenoid/,
+	/[Tt]empor/, /[Tt]entori/, /[Tt]onsil/
+]
+var	NOTTUMOR = [
+	/[Cc]avernoma/
+var	TUMOR = [
+	/[Aa]denoma/, /\bCA\b/, /oma/, /NFP?A/, /PA/
+]
+var	VASCULAR = [
+	/[Cc]avernoma/, /ICH/, /SDH/
+]
+var	CSF = [
+	/[Hh]ydrocephalus/, //, //
+]
+var	TRAUMA = [
+	//, /[Cc]/, //
+]
+var	SPINE = [
+	//, /[CTLS][\d]/, //
+]
+var	ETC = [
+	//, //, //
+]
+var	NEUROSURGERY = [
+	/ACDF/, /ALIF/, /[Aa]nast/, /[Aa]pproa/, /[Aa]spirat/, /[Aa]dvance/,
+	/[Bb]iop/, /[Bb]lock/, /[Bb]urr/, /[Bb]x/, /[Bb]ypass/, /[Bb]alloon/,
+	/[Cc]lip/, 
+	/[Dd]ecom/, /DBS/, /[Dd]rain/, /[Dd]isconnect/,
+	/ECOG/, /[Ee]ctom/, /[Ee]ndoscop/, /ESI/, /ETS/, /ETV/, /EVD/, /[Ee]xcis/,
+	/[Ff]ix/, /[Ff]usion/,
+	/[Gg]rid/,
+	/[Ii]nsert/,
+	/[Ll]esion/, /[Ll]ysis/, 
+	/MIDLIF/, /MVD/,
+	/[Nn]eurot/, /Navigator/,
+	/OLIF/, /[Oo]cclu/, /[Oo]perat/, /ostom/, /otom/,
+	/plast/, /PLF/, /PLIF/,
+	/[Rr]econs/, /[Rr]edo/, /[Rr]emov/, /[Rr]epa/, /[Rr]evis/, /[Rr]obot/,
+	/scope/, /[Ss]crew/, /[Ss]hunt/, /[Ss]tim/, /SNRB/, /[Ss]uture/,
+	/TSP/, /TSS/, /TLIF/, /[Tt]ranforam/, /[Tt]ransnasal/,
+	/[Tt]ransoral/, /[Tt]ransphenoid/, /[Tt]ranstent/,
+	/[Uu]ntether/,
+	/VNS/
+]
+var	NOTNEUROSURGERY = [
+	/[Aa]djust/, /[Cc]onservative/, /[Oo]bserve/
+]
+var	RADIOSURGERY = [
+	/conformal radiotherapy/i, /CRT/, /CyberKnife/i,
+	/Gamma [Kk]nife/, /GKS/, /Linac/i,
+	/[Rr]adiosurgery/, /RS/,
+	/SRS/, /SRT/, /[Ss]tereotactic radiotherapy/,
+	/Tomotherapy/
+]
+var	ENDOVASCULAR = [
+	/[Bb]alloon/, /[Cc]oil/, /[Ee]mboli[zs]/, /[Ee]ndovasc/, /[Ii]ntervention/,
+	/[Ss]tent/, /[Tt]ransart/, /[Tt]ransvenous/
+]
+
 //====================================================================================================
 
 var gv = {
