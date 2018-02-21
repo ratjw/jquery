@@ -65,9 +65,12 @@ String.prototype.thDate = function ()
 	if ((date.length === 1) || (date[0] < "1900")) {
 		return false
 	}
-	var yyyy = Number(date[0]) + 543;
-	var mm = THAIMONTH[Number(date[1]) - 1];
-	return (date[2] +' '+ mm + yyyy);
+
+	return [
+		date[2],
+		THAIMONTH[Number(date[1]) - 1],
+		Number(date[0]) + 543
+	].join(" ")
 } 
 
 String.prototype.numDate = function () 
@@ -76,11 +79,13 @@ String.prototype.numDate = function ()
 	if ((date.length === 1) || parseInt(date[1])) {
 		return ""
 	}
-	var thmonth = date[1].slice(0, -4);
-	var mm = THAIMONTH.indexOf(thmonth) + 1
-	mm = (mm < 10? '0' : '') + mm
-    var yyyy = Number(date[1].slice(-4)) - 543;
-    return yyyy +"-"+ mm +"-"+ date[0];
+	var mm = THAIMONTH.indexOf(date[1]) + 1
+
+    return [
+		Number(date[2]) - 543,
+		(mm < 10 ? '0' : '') + mm,
+		date[0]
+	].join("-")
 } 
 
 String.prototype.getAge = function (toDate)

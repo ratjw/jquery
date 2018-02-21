@@ -17,15 +17,16 @@ var QN			= 9;
 
 //servicetbl
 var CASENUMSV	= 0;
-var HNSV		= 1;
-var NAMESV		= 2;
-var DIAGNOSISSV	= 3;
-var TREATMENTSV	= 4;
-var ADMISSIONSV	= 5;
-var FINALSV		= 6;
-var ADMITSV		= 7;
-var DISCHARGESV	= 8;
-var QNSV		= 9;
+var OPDATESV	= 1;
+var HNSV		= 2;
+var NAMESV		= 3;
+var DIAGNOSISSV	= 4;
+var TREATMENTSV	= 5;
+var ADMISSIONSV	= 6;
+var FINALSV		= 7;
+var ADMITSV		= 8;
+var DISCHARGESV	= 9;
+var QNSV		= 10;
 
 var ROWREPORT = {
 	"Brain Tumor": 3,
@@ -33,9 +34,10 @@ var ROWREPORT = {
 	"CSF related": 5,
 	"Trauma": 6,
 	"Spine": 7,
-	"etc.": 8,
+	"etc": 8,
 	"Radiosurgery": 10,
-	"Endovascular": 11
+	"Endovascular": 11,
+	"Conservative": 12
 }
 var COLUMNREPORT = {
 	"Staff": 1,
@@ -52,33 +54,78 @@ var NAMEOFDAYABBR	= ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
 var NAMEOFDAYFULL	= ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
 var THAIMONTH		= ["มค.", "กพ.", "มีค.", "เมย.", "พค.", "มิย.", "กค.", "สค.", "กย.", "ตค.", "พย.", "ธค."];
 var LARGESTDATE		= "9999-12-31";
+/*
+var	BRAINDX = [
+	/[Bb]rain/, /[Cc]avernous/, /[Cc]erebell/, /[Cc]ranio/, /CNS/,
+	/[Cc]onvexity/, /CPA?/, /[Cc]liv[aou]/,
+	/[Ff]acial/, /[Ff]ront/, /[Ff]al[cx]/, /\bF-?P\b/, /[Jj]ugular/, /mass/,
+	/planum/, /[Pp]itui/, /[Pp]etro/, 
+	/[Oo]ccipit/, /sella/, /[Ss]phenoid/, /[Ss]agittal/, /SSS/,
+	/[Tt]empor/, /[Tt]entori/, /[Tt]halam/, /[Tt]onsil/, /[Tt]uberculum/,
+	/[Vv]estibul/
+]
+var	TUMORDX = [
+	/^((?!cavernoma).)*oma$/, /\bCA\b/, /CPA/, /Cushing/, /[Cc]yst/,
+	/DNET/, /GBM/, /[Mm]ass/, /[Mm]etas/, /\bNFP?A\b/,
+	/\bPA\b/, /[Pp]ituitary apoplexy/,
+	/[Tt]umou?r/
+]
+var	VASCULARDX = [
+	/[Aa]neurysm/, /AVM/, /AVF/, /[Cc]avernoma/,
+	/[Ee]mboli/, /[Hh]a?emorrh/,
+	/ICH/, /[Ii]nfarct/, /ICA|MCA|VBA.*stenosis/,
+	/M1|M2|MCA occlusion/, /[Mm]oya [Mm]oya/,
+	/SAH/
+]
+var	CSFDX = [
+	/HCP/, /[Hh]ydrocephalus/, /\bNPH\b/,
+	/[Ss]hunt [Oo]bstruct/, /[Ss]hunt [Mm]alfunction/
+]
+var	TRAUMADX = [
+	/[Aa]ssult/, /EDH/, /[Cc]ontusion/, /[Ii]njury/,
+	/Fx|[Ff]racture/, /[Ll]acerat/,
+	/SDH/, /[Ss]ubdural [Hh]a?ematoma/, /[Tt]rauma/
+]
+var	SPINEDX = [
+	/[Cc]ervical/, /\bCSM\b/, /\b[CTLS] ?[\d]/, /HNP/, /[Ll]umb[ao]/, /myel/,
+	/[Ss]acr[ao]/, /scoliosis/, /[Ss]pin/, /[Ss]pondylo/, /[Tt]hora/
+]
+var	ETCDX = [
+	/[Aa]bscess/, /[Cc]hiari/, /[Cc]onvulsi/, /\bCTS\b/, /cubital/,
+	/[Dd]ecompress/, /[Dd]ysplasia/,
+	/[Ee]pilepsy/, /[Hh]emifacial/,
+	/MTS/, /ocele/, /[Pp]arkinson/,
+	/[Ss]kull [Dd]efect/, /[Ss]clerosis/, /[Ss]eizure/, /[Ss]ural/,
+	/TG?N/, /[Tt]rigemin/, /[Tt]unnel/
+]
+*/
+var	TUMORRX = [
+	/[Cc]rani[oe].*[Tt]umou?r/, /[Cc]rani[oe].*[Bb]iopsy/,
+	/[Pp]etro/, /TSS/i,
+	/[Tt]umou?r [Bb]iopsy|[Bb]iopsy.*[Tt]umou?r/,
+	/[Tt]umou?r [Rr]emov/
+]
+var	VASCULARRX = [
+	/bypass/, /[Cc]lip/, /[Ee]xcision.*AVM|AVM.*[Ee]xcision/
+]
+var	CSFRX = [
+	/EVD/, /[Ll]umbar [Dd]rain/, /OMMAYA/i,
+	/[Tt]ap [Tt]est/, /VP|LP|periton.*[Ss]hunt/
+]
+var	TRAUMARX = [
+	/[Dd]ebridement/, /(clot|hematoma).*(removal|irrigation|evacuation)/
+]
+var	SPINERX = [
+	/[Cc]ervical/, /\b[CTLS][\d]/, /[Ll]amin[eo]/,
+	/[Ss]acr[ao]/, /[Ss]pin/, /[Tt]hora/
+]
+var ETCRX = [
+	/[Cc/hange [Bb]attery/, /[Cc]ranioplast/, /DBS/, /grid/, /MVD/,
+	/[Ll]esionectomy/, /[Ll]obectomy/, /rhizotomy/,
+	/[Tt]racheos/, /VNS/
+]
 
-var	BRAIN = [
-	/[Cc]erebell/, /[Cc]onvexity/, /[Ff]ront/, /[Pp]ituitary/, /[Oo]ccipit/, /[Pp]etro/, 
-	/[Ss]phenoid/,
-	/[Tt]empor/, /[Tt]entori/, /[Tt]onsil/
-]
-var	NOTTUMOR = [
-	/[Cc]avernoma/
-var	TUMOR = [
-	/[Aa]denoma/, /\bCA\b/, /oma/, /NFP?A/, /PA/
-]
-var	VASCULAR = [
-	/[Cc]avernoma/, /ICH/, /SDH/
-]
-var	CSF = [
-	/[Hh]ydrocephalus/, //, //
-]
-var	TRAUMA = [
-	//, /[Cc]/, //
-]
-var	SPINE = [
-	//, /[CTLS][\d]/, //
-]
-var	ETC = [
-	//, //, //
-]
-var	NEUROSURGERY = [
+var	OPERATION = [
 	/ACDF/, /ALIF/, /[Aa]nast/, /[Aa]pproa/, /[Aa]spirat/, /[Aa]dvance/,
 	/[Bb]iop/, /[Bb]lock/, /[Bb]urr/, /[Bb]x/, /[Bb]ypass/, /[Bb]alloon/,
 	/[Cc]lip/, 
@@ -99,7 +146,7 @@ var	NEUROSURGERY = [
 	/[Uu]ntether/,
 	/VNS/
 ]
-var	NOTNEUROSURGERY = [
+var	NOTOPERATION = [
 	/[Aa]djust/, /[Cc]onservative/, /[Oo]bserve/
 ]
 var	RADIOSURGERY = [

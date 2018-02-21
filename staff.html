@@ -91,8 +91,9 @@
   <table id="servicetbl">
    <thead>
     <tr>
-     <th style="width:2%">№</th>
-     <th style="width:3%">HN</th>
+     <th style="width:1%">№</th>
+     <th style="width:2%">Date</th>
+     <th style="width:2%">HN</th>
      <th style="width:10%">Patient</th>
      <th style="width:15%">Diagnosis</th>
      <th style="width:15%">Treatment</th>
@@ -110,11 +111,23 @@
   <!--  name is the column in Mysql
 		title is the value -->
   <div id="divRecord" class="dialogBox" style="display:none">
-	<div style="height:30px">
-	  <span id="cancelRecord" class="ui-icon ui-icon-closethick" style="width:18px"></span>
-	</div> 
-	<span class="itemheader">วันที่ผ่าตัด:</span>
+	<div class="iconcontainer">
+	  <span id="checkRecord" class="ui-icon ui-icon-check icon"></span>
+	  <span id="cancelRecord" class="ui-icon ui-icon-closethick icon"></span>
+	</div>
+	<br>
+	<!-- span class="itemheader">วันที่ผ่าตัด:</span>
 	<input type="text" id="donedate" name="donedate" tabindex="-1">
+	<br -->
+	<span class="itemheader">ผ่าตัดโดย:</span>
+	<span>
+		<input type="radio" id="Staff" name="doneby" title="Staff">
+		<label for="Staff">Staff</label>
+	</span>
+	<span>
+		<input type="radio" id="Resident" name="doneby" title="Resident">
+		<label for="Resident">Resident</label>
+	</span>
 	<br>
 	<span class="itemheader">Set แบบ:</span>
 	<span>
@@ -124,16 +137,6 @@
 	<span>
 		<input type="radio" id="Emergency" name="manner" title="Emergency">
 		<label for="Emergency">Emergency</label>
-	</span>
-	<br>
-	<span class="itemheader">ผ่าตัดโดย:</span>
-	<span>
-		<input type="radio" id="Staff" name="doneby" title="Staff">
-		<label for="Staff">Staff</label>
-	</span>
-	<span>
-		<input type="radio" id="Resident" name="doneby" title="Resident">
-		<label for="Resident">Resident</label>
 	</span>
 	<br>
 	<span class="itemheader">ขนาดการผ่าตัด:</span>
@@ -146,7 +149,7 @@
 		<label for="Minor">Minor</label>
 	</span>
 	<br>
-	<span class="itemheader">ประเภทโรค:</span>
+	<span class="itemheader">เป้าหมายการผ่าตัด:</span>
 	<span>
 		<input type="radio" id="BrainTumor" name="disease" title="Brain Tumor">
 		<label for="BrainTumor">Brain Tumor</label>
@@ -171,12 +174,12 @@
 		<label for="Spine">Spine++</label>
 	</span>
 	<span>
-		<input type="radio" id="etc" name="disease" title="etc.">
+		<input type="radio" id="etc" name="disease" title="etc">
 		<label for="etc">etc.</label>
 	</span>
 	<br>
 	<span class="itemheader">Complications:</span>
-	<!-- ids "Infection", "Morbidity", "Dead" had been used by countService header -->
+	<!-- id's "Infection", "Morbidity", "Dead" had been used by countService header -->
 	<span>
 		<input type="checkbox" id="infect" name="infection" title="Infection">
 		<label for="infect">Infection</label>
@@ -189,7 +192,7 @@
 		<input type="checkbox" id="mortal" name="dead" title="Dead">
 		<label for="mortal">Dead</label>
 	</span>
-	<button id="closeRecord">OK</button>
+	<!-- button id="closeRecord">OK</button -->
   </div>
 </div>
 <!-- dialogService ends here -->
@@ -199,6 +202,7 @@
   <tbody>
    <tr>
     <td data-title="№"></td>
+    <td data-title="Date"></td>
     <td data-title="HN"></td>
     <td data-title="Patient"></td>
     <td data-title="Diagnosis"></td>
@@ -273,8 +277,12 @@
      <td>Endovascular</td>
      <td></td><td></td>
    </tr>
+   <tr class="notcount nonsurgical">
+     <td>Conservative</td>
+     <td></td><td></td>
+   </tr>
    <tr id="Total" class="notcount">
-     <td>Total</td>
+     <td>Total Operation</td>
      <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
    </tr>
    <tr id="Grand" class="notcount">

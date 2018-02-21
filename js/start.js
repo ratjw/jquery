@@ -46,6 +46,9 @@ function start(userid)
 				event.preventDefault();
 				return false;
 			}
+		} else {
+			event.preventDefault()
+			return false
 		}
 	});
 
