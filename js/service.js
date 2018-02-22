@@ -96,10 +96,11 @@ function sqlOneMonth(fromDate, toDate)
 		  + "ORDER BY opdate, oproom, casenum, waitnum;";
 }
 
-// Every value is calculated at run time and update the blank values.
+// Every value is calculated at run time and updated to DB
+// override DB values : operated, radiosurgery, endovascular
+// not override the use-defined values : doneby, manner, scale, disease
 // Operation is determined by isOperation() in JS
 // admit is updated by getAdmitDischargeDate in PHP
-// Non-blank values in DB aren't overrided by this calculation
 // admitted : "", "Admission", "Readmission"
 // operated : "", "Operation", "Reoperation"
 // doneby : "", "Staff", "Resident"
@@ -217,20 +218,21 @@ function calcDiff()
 		if (!this.disease && opfor) {
 			this.disease = diffRx.disease = opfor
 		}
+		// used for non-surgical cases counting
+		if (!this.manner) { this.manner = diffRx.manner = "Elective" }
 
-		if (!this.operated && isOperation(treatment)) {
-			this.operated = diffRx.operated = "Operation"
-
-			// set related defaults
+		// set operated and related defaults
+		if (isOperation(treatment) !== !!this.operated) {
+			if (this.operated !== "Reoperation") { this.operated = diffRx.operated = "Operation" }
+			else { this.operated = diffRx.operated = "Operation" }
 			if (!this.doneby) { this.doneby = diffRx.doneby = "Staff" }
-			if (!this.manner) { this.manner = diffRx.manner = "Elective" }
 			if (!this.scale) { this.scale = diffRx.scale = "Major" }
 		}
-		if (!this.radiosurgery && isRadiosurgery(treatment)) { 
-			this.radiosurgery =  diffRx.radiosurgery = "Radiosurgery"
+		if (isRadiosurgery(treatment)) { 
+			if (!this.radiosurgery) { this.radiosurgery =  diffRx.radiosurgery = "Radiosurgery" }
 		}
-		if (!this.endovascular && isEndovascular(treatment)) { 
-			this.endovascular = diffRx.endovascular = "Endovascular"
+		if (isEndovascular(treatment)) { 
+			if (!this.endovascular) { this.endovascular = diffRx.endovascular = "Endovascular" }
 		}
 
 		if (Object.keys(diffRx).length) { diffQN[this.qn] = diffRx }
@@ -286,7 +288,7 @@ function resizeDialog()
 		width: window.innerWidth * 95 / 100,
 		height: window.innerHeight * 95 / 100
 	})
-	winResizeFix($servicetbl, $dialogService)
+	winResizeFix($("#servicetbl"), $dialogService)
 }
 
 function refillService(fromDate, toDate)
@@ -514,7 +516,7 @@ function Skeyin(event, keycode, pointing)
 	if (keycode === 27) {
 		pointing.innerHTML = $("#editcell").data("oldcontent")
 		clearEditcell()
-		window.focus()
+		$("#dialogService").focus()
 		event.preventDefault()
 		return false
 	}
@@ -601,8 +603,8 @@ function saveContentService(pointed, column, content)
 	if (/\W/.test(content)) {
 		content = URIcomponent(content)
 	}
-	// after edit, treatment keyword may be changed from non-operation
-	// to operation || radiosurgery || endovascular
+	// after edit, treatment keyword may be changed
+	// from non-operation <-> operation <-> radiosurgery <-> endovascular
 	if (column === "treatment") {
 		var updateOp = updateOperated(qn, content)
 	}
@@ -860,6 +862,7 @@ function showRecord(pointing, editable)
 	{
 		$divRecord.hide()
 		$divRecord.off("keydown", keyRecord)
+		$("#dialogService").focus()
 	}
 }
 
@@ -967,13 +970,12 @@ function showReportToDept(title)
 		})
 	})
 	$.each(gv.SERVICE, function() {
-		if (this.operated) {
-			countOpCase(this, this.disease)
-		} else {
-			countNonOpCase(this, "Conservative")
-		}
+		if (this.operated) { countOpCase(this, this.disease) }
 		if (this.radiosurgery) { countNonOpCase(this, this.radiosurgery) }
 		if (this.endovascular) { countNonOpCase(this, this.endovascular) }
+		if (!this.operated && !this.radiosurgery && !this.endovascular) {
+			countNonOpCase(this, "Conservative")
+		}
 	})
 	$("#reviewtbl tr:not('th, .notcount')").each(function(i) {
 		$.each($(this).find("td:not(:first-child)"), function(j) {
@@ -1035,8 +1037,8 @@ function countService(thiscase, fromDate, toDate)
 		}
 	})
 	// Assume consult cases (waitnum < 0) are admitted in another service ???
-	if (/*(thiscase.waitnum > 0)
-		&&*/ (thiscase.admit >= fromDate)
+	if ((thiscase.waitnum > 0)
+		&& (thiscase.admit >= fromDate)
 		&& (thiscase.admit <= toDate)) {
 		if (!/Admission/.test(classname)) {
 			classname += "Admission "

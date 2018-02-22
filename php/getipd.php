@@ -2,9 +2,9 @@
 include "connect.php";
 require_once "book.php";
 
-	if (strpos($_SERVER["SERVER_NAME"], "surgery.rama") === false) {
-		return;
-	}
+//	if (strpos($_SERVER["SERVER_NAME"], "surgery.rama") === false) {
+//		return;
+//	}
 
 	$from = $_POST["from"];
 	$to = $_POST["to"];

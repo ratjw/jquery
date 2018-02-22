@@ -54,7 +54,7 @@ var NAMEOFDAYABBR	= ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
 var NAMEOFDAYFULL	= ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
 var THAIMONTH		= ["มค.", "กพ.", "มีค.", "เมย.", "พค.", "มิย.", "กค.", "สค.", "กย.", "ตค.", "พย.", "ธค."];
 var LARGESTDATE		= "9999-12-31";
-/*
+
 var	BRAINDX = [
 	/[Bb]rain/, /[Cc]avernous/, /[Cc]erebell/, /[Cc]ranio/, /CNS/,
 	/[Cc]onvexity/, /CPA?/, /[Cc]liv[aou]/,
@@ -98,67 +98,67 @@ var	ETCDX = [
 	/[Ss]kull [Dd]efect/, /[Ss]clerosis/, /[Ss]eizure/, /[Ss]ural/,
 	/TG?N/, /[Tt]rigemin/, /[Tt]unnel/
 ]
-*/
+
 var	TUMORRX = [
-	/[Cc]rani[oe].*[Tt]umou?r/, /[Cc]rani[oe].*[Bb]iopsy/,
-	/[Pp]etro/, /TSS/i,
-	/[Tt]umou?r [Bb]iopsy|[Bb]iopsy.*[Tt]umou?r/,
-	/[Tt]umou?r [Rr]emov/
+	/crani[oe].*tumou?r/i, /crani[oe].*biopsy/i,
+	/petro/i, /TSS/,
+	/tumou?r biopsy|biopsy.*tumou?r/i,
+	/tumou?r remov/i
 ]
 var	VASCULARRX = [
-	/bypass/, /[Cc]lip/, /[Ee]xcision.*AVM|AVM.*[Ee]xcision/
+	/bypass/i, /clip/i, /excision.*AVM|AVM.*excision/i
 ]
 var	CSFRX = [
-	/EVD/, /[Ll]umbar [Dd]rain/, /OMMAYA/i,
-	/[Tt]ap [Tt]est/, /VP|LP|periton.*[Ss]hunt/
+	/EVD/, /lumbar drain/i, /OMMAYA/i,
+	/tap test/i, /VP|LP|periton.*shunt/i
 ]
 var	TRAUMARX = [
-	/[Dd]ebridement/, /(clot|hematoma).*(removal|irrigation|evacuation)/
+	/debridement/i, /(clot|hematoma).*(removal|irrigation|evacuation)/i
 ]
 var	SPINERX = [
-	/[Cc]ervical/, /\b[CTLS][\d]/, /[Ll]amin[eo]/,
-	/[Ss]acr[ao]/, /[Ss]pin/, /[Tt]hora/
+	/cervical/i, /\b[CTLS][\d]/i, /lamin[eo]/i,
+	/sacr[ao]/i, /thora/i
 ]
 var ETCRX = [
-	/[Cc/hange [Bb]attery/, /[Cc]ranioplast/, /DBS/, /grid/, /MVD/,
-	/[Ll]esionectomy/, /[Ll]obectomy/, /rhizotomy/,
-	/[Tt]racheos/, /VNS/
+	/change battery/i, /cranioplast/i, /DBS/, /grid/i, /MVD/,
+	/lesionectomy/i, /lobectomy/i, /rhizotomy/i,
+	/tracheos/i, /VNS/
 ]
 
 var	OPERATION = [
-	/ACDF/, /ALIF/, /[Aa]nast/, /[Aa]pproa/, /[Aa]spirat/, /[Aa]dvance/,
-	/[Bb]iop/, /[Bb]lock/, /[Bb]urr/, /[Bb]x/, /[Bb]ypass/, /[Bb]alloon/,
-	/[Cc]lip/, 
-	/[Dd]ecom/, /DBS/, /[Dd]rain/, /[Dd]isconnect/,
-	/ECOG/, /[Ee]ctom/, /[Ee]ndoscop/, /ESI/, /ETS/, /ETV/, /EVD/, /[Ee]xcis/,
-	/[Ff]ix/, /[Ff]usion/,
-	/[Gg]rid/,
-	/[Ii]nsert/,
-	/[Ll]esion/, /[Ll]ysis/, 
-	/MIDLIF/, /MVD/,
-	/[Nn]eurot/, /Navigator/,
-	/OLIF/, /[Oo]cclu/, /[Oo]perat/, /ostom/, /otom/,
-	/plast/, /PLF/, /PLIF/,
-	/[Rr]econs/, /[Rr]edo/, /[Rr]emov/, /[Rr]epa/, /[Rr]evis/, /[Rr]obot/,
-	/scope/, /[Ss]crew/, /[Ss]hunt/, /[Ss]tim/, /SNRB/, /[Ss]uture/,
-	/TSP/, /TSS/, /TLIF/, /[Tt]ranforam/, /[Tt]ransnasal/,
-	/[Tt]ransoral/, /[Tt]ransphenoid/, /[Tt]ranstent/,
-	/[Uu]ntether/,
-	/VNS/
+	/ACDF/i, /ALIF/i, /anast/i, /approa/i, /aspirat/i, /advance/i,
+	/biop/i, /block/i, /burr/i, /bx/i, /bypass/i, /balloon/i,
+	/clip/i, 
+	/decom/i, /DBS/, /drain/i, /disconnect/i,
+	/ECOG/i, /ectom/i, /endoscop/i, /ESI/, /ETS/, /ETV/, /EVD/, /excis/i,
+	/fix/i, /fusion/i,
+	/grid/i,
+	/insert/i,
+	/lesion/i, /lysis/i, 
+	/MIDLIF/i, /MVD/,
+	/neurot/i, /Navigator/i,
+	/OLIF/i, /occlu/i, /operat/i, /ostom/i, /otom/i,
+	/plast/i, /PLF/i, /PLIF/i,
+	/recons/i, /redo/i, /remov/i, /repa/i, /revis/i, /robot/i,
+	/scope/i, /screw/i, /shunt/i, /stim/i, /SNRB/i, /suture/i,
+	/TSP/i, /TSS/i, /TLIF/i, /[Tt]ranforam/i, /[Tt]ransnasal/i,
+	/transoral/i, /transphenoid/i, /transtent/i,
+	/untether/i,
+	/VNS/i
 ]
 var	NOTOPERATION = [
-	/[Aa]djust/, /[Cc]onservative/, /[Oo]bserve/
+	/adjust/i, /conservative/i, /observe/i
 ]
 var	RADIOSURGERY = [
 	/conformal radiotherapy/i, /CRT/, /CyberKnife/i,
-	/Gamma [Kk]nife/, /GKS/, /Linac/i,
-	/[Rr]adiosurgery/, /RS/,
-	/SRS/, /SRT/, /[Ss]tereotactic radiotherapy/,
-	/Tomotherapy/
+	/Gamma knife/i, /GKS/, /Linac/i,
+	/radiosurgery/i, /RS/,
+	/SRS/, /SRT/, /stereotactic radiotherapy/i,
+	/Tomotherapy/i
 ]
 var	ENDOVASCULAR = [
-	/[Bb]alloon/, /[Cc]oil/, /[Ee]mboli[zs]/, /[Ee]ndovasc/, /[Ii]ntervention/,
-	/[Ss]tent/, /[Tt]ransart/, /[Tt]ransvenous/
+	/balloon/i, /coil/i, /emboli[zs]/i, /endovasc/i, /intervention/i,
+	/stent/i, /transart/i, /transvenous/i
 ]
 
 //====================================================================================================

@@ -46,17 +46,15 @@ function start(userid)
 				event.preventDefault();
 				return false;
 			}
-		} else {
-			event.preventDefault()
-			return false
 		}
 	});
 
-	$("#editcell").on("keydown", function (event) {
+	var $editcell = $("#editcell")
+	$editcell.on("keydown", function (event) {
 		resetTimer();
 		gv.idleCounter = 0
 		var keycode = event.which || window.event.keyCode
-		var pointing = $("#editcell").data("pointing")
+		var pointing = $editcell.data("pointing")
 		if ($('#dialogService').is(':visible')) {
 			Skeyin(event, keycode, pointing)
 		} else {
@@ -65,14 +63,13 @@ function start(userid)
 	})
 
 	// for resizing the editing cell
-	$("#editcell").on("keyup", function (event) {
-		var $editcell = $("#editcell")
+	$editcell.on("keyup", function (event) {
 		var keycode = event.which || window.event.keyCode
 
 		$editcell.height($editcell[0].scrollHeight)
 	})
 
-	$("#editcell").on("click", function (event) {
+	$editcell.on("click", function (event) {
 		event.stopPropagation()
 		return
 	})
