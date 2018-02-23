@@ -50,7 +50,7 @@ function resizeFixed($fix, $this)
 
 function winResizeFix($this, $container)
 {
-	var $fix = $(".fixed"),
+	var $fix = $container.find(".fixed"),
 		hide = $fix.css("display") === "none",
 		pad = $container.css("paddingLeft")
 

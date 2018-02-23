@@ -56,9 +56,6 @@ function namesix()
 				$resultx = $client->Get_staff_detail($userid, $password);
 				$resulty = simplexml_load_string($resultx);
 				$resultz = (string)$resulty->children()->children()->role;
-			}
-			elseif ($userid === "002717") {
-				$resultz = "N";
 			} else {
 				$resultz = "S";
 			}
@@ -71,7 +68,8 @@ function namesix()
 		elseif ($resultz === "N" || preg_match('/^\d{1,2}$/', $userid)) {
 			include ("nurse.html");
 		}
-		// can't use localStorage, not supported in old browsers
+
+		// can't use localStorage, old browsers do not support
 		echo "<SCRIPT>start('$userid')</SCRIPT>";
 	}
 ?>

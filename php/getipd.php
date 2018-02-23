@@ -2,9 +2,10 @@
 include "connect.php";
 require_once "book.php";
 
-//	if (strpos($_SERVER["SERVER_NAME"], "surgery.rama") === false) {
-//		return;
-//	}
+	$ipserver = gethostbyname($_SERVER['SERVER_NAME']);
+	if (strpos($ipserver, "10.6") === false) {
+		return;
+	}
 
 	$from = $_POST["from"];
 	$to = $_POST["to"];

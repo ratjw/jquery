@@ -17,14 +17,14 @@ var QN			= 9;
 
 //servicetbl
 var CASENUMSV	= 0;
-var OPDATESV	= 1;
-var HNSV		= 2;
-var NAMESV		= 3;
-var DIAGNOSISSV	= 4;
-var TREATMENTSV	= 5;
-var ADMISSIONSV	= 6;
-var FINALSV		= 7;
-var ADMITSV		= 8;
+var HNSV		= 1;
+var NAMESV		= 2;
+var DIAGNOSISSV	= 3;
+var TREATMENTSV	= 4;
+var ADMISSIONSV	= 5;
+var FINALSV		= 6;
+var ADMITSV		= 7;
+var OPDATESV	= 8;
 var DISCHARGESV	= 9;
 var QNSV		= 10;
 
@@ -167,6 +167,7 @@ var gv = {
 	BOOK: [],
 	CONSULT: [],
 	SERVICE: [],
+	SERVE: [],
 	STAFF: [],
 	user: "",
 	timestamp: "",

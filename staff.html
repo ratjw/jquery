@@ -92,15 +92,15 @@
    <thead>
     <tr>
      <th style="width:1%">№</th>
-     <th style="width:2%">Date</th>
-     <th style="width:2%">HN</th>
+     <th style="width:3%">HN</th>
      <th style="width:10%">Patient</th>
      <th style="width:15%">Diagnosis</th>
      <th style="width:15%">Treatment</th>
      <th style="width:30%">Admission Status</th>
-     <th style="width:15%">Final Status</th>
-     <th style="width:5%">Admit</th>
-     <th style="width:5%">D/C</th>
+     <th style="width:20%">Final Status</th>
+     <th style="width:2%">Admit</th>
+     <th style="width:2%">Date</th>
+     <th style="width:2%">D/C</th>
      <th style="display:none"></th>
     </tr>
    </thead>
@@ -178,7 +178,17 @@
 		<label for="etc">etc.</label>
 	</span>
 	<br>
-	<span class="itemheader">Complications:</span>
+	<span class="itemheader">Non-Surgical:</span>
+	<span>
+		<input type="checkbox" id="Radiosurgery" name="radiosurgery" title="Radiosurgery">
+		<label for="Radiosurgery">Radiosurgery</label>
+	</span>
+	<span>
+		<input type="checkbox" id="Endovascular" name="endovascular" title="Endovascular">
+		<label for="Endovascular">Endovascular</label>
+	</span>
+	<br>
+	<span class="itemheader">Complication:</span>
 	<!-- id's "Infection", "Morbidity", "Dead" had been used by countService header -->
 	<span>
 		<input type="checkbox" id="infect" name="infection" title="Infection">
@@ -202,7 +212,6 @@
   <tbody>
    <tr>
     <td data-title="№"></td>
-    <td data-title="Date"></td>
     <td data-title="HN"></td>
     <td data-title="Patient"></td>
     <td data-title="Diagnosis"></td>
@@ -210,6 +219,7 @@
     <td data-title="Admission Status"></td>
     <td data-title="Final Status"></td>
     <td data-title="Admit"></td>
+    <td data-title="Date"></td>
     <td data-title="D/C"></td>
     <td style="display:none"></td>
    </tr>
