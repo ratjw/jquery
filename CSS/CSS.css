@@ -518,10 +518,6 @@ input[type=submit] {
 	background-color: Turquoise;
 }
 
-#find input {
-	width: 150px;
-}
-
 #dialogReadme {
 	display: none;
 	line-height: 150%;
