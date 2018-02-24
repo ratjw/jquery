@@ -94,7 +94,7 @@ function sqlOneMonth(fromDate, toDate)
 		  + "WHERE opdate BETWEEN '" + fromDate + "' AND '" + toDate
 		  + "' AND deleted=0 "
 		  + "AND waitnum<>0 "
-		  + "ORDER BY s.number, opdate, oproom, casenum, waitnum;";
+		  + "ORDER BY s.number,opdate,oproom,casenum,waitnum;";
 }
 
 // Principle : gv.SERVE are implicitly in diagnosis, treatment, admit
@@ -126,32 +126,7 @@ function showService(fromDate, toDate)
 
 	$servicetbl.find("tr").slice(1).remove()
 	$servicetbl.show()
-/*
-	//	if (Object.keys(serve).length) {
-//		updateDiff(serve, fromDate, toDate)
-//	}
 
-	$.each( gv.STAFF, function() {
-		var staffname = this.staffname
-		$servicecells.find("tr").clone()
-			.appendTo($servicetbl.find("tbody"))
-				.children("td").eq(OPDATE)
-					.prop("colSpan", 10)
-						.addClass("serviceStaff")
-							.html(staffname)
-								.siblings().hide()
-		var scase = 0, classname
-		$.each( gv.SERVICE, function() {
-			if (this.staffname === staffname) {
-				classname = countService(this, fromDate, toDate)
-				scase++
-				$servicecells.find("tr").clone()
-					.appendTo($servicetbl.find("tbody"))
-						.filldataService(this, scase, classname)
-			}
-		});
-	})
-*/
 	var staffname = "",
 		scase = 0,
 		classname = ""
@@ -167,13 +142,12 @@ function showService(fromDate, toDate)
 							.addClass("serviceStaff")
 								.html(staffname)
 									.siblings().hide()
-		} else {
-			classname = countService(this, fromDate, toDate)
-			scase++
-			$servicecells.find("tr").clone()
-				.appendTo($servicetbl.find("tbody"))
-					.filldataService(this, scase, classname)
 		}
+		classname = countService(this, fromDate, toDate)
+		scase++
+		$servicecells.find("tr").clone()
+			.appendTo($servicetbl.find("tbody"))
+				.filldataService(this, scase, classname)
 	});
 
 	var	editable = fromDate >= getStart(),
@@ -271,103 +245,7 @@ function operationFor(treatment, diagnosis)
 
 	return opfor
 }
-/*
-function calcSERVEx()
-{
-	var	serve = []
 
-	$.each(gv.SERVICE, function() {
-
-	var	treatment = this.treatment,
-			opfor = operationFor(treatment, this.diagnosis),
-			operate = isOperation(treatment),
-			diffRx = {}
-
-		// if don't know for what but it is an operation, default to etc
-		if (!opfor && operate) { opfor = "etc" }
-
-		if (opfor && !this.disease) {
-			this.disease = diffRx.disease = opfor
-		}
-		else if (!opfor && this.disease) {
-			this.disease = diffRx.disease = ""
-		}
-
-		if (operate && !this.operated) {
-			this.operated = diffRx.operated = "Operation"
-			if (!this.doneby) { this.doneby = diffRx.doneby = "Staff" }
-			if (!this.scale) { this.scale = diffRx.scale = "Major" }
-			if (!this.manner) { this.manner = diffRx.manner = "Elective" }
-		}
-		else if (!operate && this.operated) {
-			this.operated = diffRx.operated = ""
-			this.doneby = diffRx.doneby = ""
-			this.scale = diffRx.scale = ""
-			this.manner = diffRx.manner = ""
-		}
-
-		if (isRadiosurgery(treatment) && !this.radiosurgery) {
-			this.radiosurgery =  diffRx.radiosurgery = "Radiosurgery"
-		}
-		else if (!isRadiosurgery(treatment) && this.radiosurgery) {
-			this.radiosurgery =  diffRx.radiosurgery = ""
-		}
-
-		if (isEndovascular(treatment) && !this.endovascular) {
-			this.endovascular = diffRx.endovascular = "Endovascular"
-		}
-		else if (!isEndovascular(treatment) && this.endovascular) {
-			this.endovascular = diffRx.endovascular = ""
-		}
-
-		if (Object.keys(diffRx).length) {
-			serve[this.qn] = diffRx
-		}
-	})
-
-	return serve
-}
-
-function updateDiff(serve, fromDate, toDate)
-{
-	var sql = ""
-
-	$.each(serve, function(qn, row) {
-		sql += "UPDATE book SET "
-		$.each(row, function(key, val) {
-			sql += key + "='" + val + "',"
-		})
-		sql += "editor='updateDiff' "
-			+ "WHERE qn=" + qn + ";"
-	})
-
-	sql = "sqlReturnData=" + sql + sqlOneMonth(fromDate, toDate)
-
-	Ajax(MYSQLIPHP, sql, callbackupdateDiff)
-
-	function callbackupdateDiff(response)
-	{
-		if (/dob/.test(response)) {
-			gv.SERVICE = JSON.parse(response)
-		} else {
-			Alert("updateDiff", response)
-		}
-	}
-}
-
-function updateCase(qn, diff)
-{
-	var sql = "UPDATE book SET "
-
-	$.each(diff, function(key, val) {
-		sql += key + "='" + val + "',"
-	})
-	sql += "editor='updateDiff' "
-		+ "WHERE qn=" + qn + ";"
-
-	return sql
-}
-*/
 function resizeDialog()
 {
 	var	$dialogService = $("#dialogService")
@@ -551,7 +429,6 @@ function getAdmitDischargeDate(fromDate, toDate)
 	{
 		if (/BOOK/.test(response)) {
 			updateBOOK(response)
-			gv.SERVE = calcSERVE()
 			fillAdmitDischargeDate()
 		}
 	}

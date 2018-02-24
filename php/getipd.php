@@ -10,7 +10,7 @@ require_once "book.php";
 	$from = $_POST["from"];
 	$to = $_POST["to"];
 
-	$result = $mysqli->query ("SELECT opdate, hn, admit, discharge, admitted, qn
+	$result = $mysqli->query ("SELECT opdate, hn, admit, discharge, qn
 		FROM book
 		WHERE opdate BETWEEN '$from' AND '$to';");
 
@@ -49,37 +49,16 @@ require_once "book.php";
 			$newDischarge = $DateTime->format('Y-m-d');
 		}
 
-		if (!$oldAdmit) {
-			if (!$oldDischarge && $newDischarge) {
-				if ($newAdmit) {
-					$mysqli->query ("UPDATE book
-									SET admit = '$newAdmit',
-										admitted = 'Admission',
-										discharge = '$newDischarge',
-										editor = 'getipd'
-									WHERE qn = $qn;");
-				}
-			} else {
-				if ($newAdmit) {
-					$mysqli->query ("UPDATE book
-									SET admit = '$newAdmit',
-										admitted = 'Admission',
-										editor = 'getipd'
-									WHERE qn = $qn;");
-				}
-			}
-		} else {
-			if (!$oldDischarge && $newDischarge) {
-				$mysqli->query ("UPDATE book
-								SET discharge = '$newDischarge',
-									admitted = CASE WHEN admitted = ''
-												   THEN admitted = 'Admission'
-												   ELSE admitted
-											  END,
-									editor = 'getipd'
-								WHERE qn = $qn;");
-			}
+		$admit = "";
+		$discharge = "";
+		if ($oldAdmit !== $newAdmit) {
+			$admit = "admit='$newAdmit',";
 		}
+		if (!$oldDischarge !== $newDischarge) {
+				$discharge = "discharge='$newDischarge',";
+		}
+		$mysqli->query ("UPDATE book SET .$admit.$discharge.editor='getipd'
+						 WHERE qn=$qn;");
 	}
 
  	echo json_encode(book($mysqli));
