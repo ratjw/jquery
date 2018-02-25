@@ -35,14 +35,8 @@
 
 function resizeFixed($fix, $this)
 {
-	var over = 0
 	$fix.find("th").each(function(index) {
 		var wide = $this.find("th").eq(index).width()
-		over += (wide - Math.round(wide))
-		if (Math.round(over)) {
-			wide += 1
-			over = 0
-		}
 
 		$(this).css("width", wide + "px")
 	});

@@ -259,6 +259,7 @@ function updating()
 			}
 			// idling (59+1)*10 = 10 minutes, logout
 			else if (gv.idleCounter > 59) {
+				$(".ui-dialog:visible").find(".ui-dialog-content").dialog("close")
 				window.location = window.location.href
 				gv.idleCounter = 0
 				// may not successfully access the url address

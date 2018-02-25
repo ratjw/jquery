@@ -71,8 +71,10 @@ var	TUMORDX = [
 	/[Tt]umou?r/
 ]
 var	VASCULARDX = [
-	/[Aa]neurysm/, /AVM/, /AVF/, /[Cc]avernoma/,
-	/[Ee]mboli/, /[Hh]a?emorrh/,
+	/[Aa]neurysm/, /AVM/, /AVF/,
+	/basal ganglion hemorrhage/i,
+	/[Cc]avernoma/,
+	/[Ee]mboli/, /[Hh]a?emorrh/, /HT?ICH/,
 	/ICH/, /[Ii]nfarct/, /ICA|MCA|VBA.*stenosis/,
 	/M1|M2|MCA occlusion/, /[Mm]oya [Mm]oya/,
 	/SAH/
@@ -101,7 +103,8 @@ var	ETCDX = [
 
 var	TUMORRX = [
 	/crani[oe].*tumou?r/i, /crani[oe].*biopsy/i,
-	/petro/i, /TSS/,
+	/petro/i,
+	/TSP/i, /TSS/i, /[Tt]ransnasal/i,
 	/tumou?r biopsy|biopsy.*tumou?r/i,
 	/tumou?r remov/i
 ]
@@ -109,45 +112,41 @@ var	VASCULARRX = [
 	/bypass/i, /clip/i, /excision.*AVM|AVM.*excision/i
 ]
 var	CSFRX = [
-	/EVD/, /lumbar drain/i, /OMMAYA/i,
-	/tap test/i, /VP|LP|periton.*shunt/i
+	/ETV/, /EVD/, /lumbar drain/i, /OMMAYA/i,
+	/tap test/i, /VP|LP|periton.*shunt/i,
+	/Pudenz/i, /pressure.*valve/i, /Programmable/i
 ]
 var	TRAUMARX = [
 	/debridement/i, /(clot|hematoma).*(removal|irrigation|evacuation)/i
 ]
 var	SPINERX = [
-	/cervical/i, /\b[CTLS][\d]/i, /lamin[eo]/i,
-	/sacr[ao]/i, /thora/i
+	/ACDF/i, /ALIF/i, 
+	/cervical/i, /\b[CTLS][\d]/i, /lamin[eo]/i, /MIDLIF/i, /OLIF/i, 
+	/PLF/i, /PLIF/i, /sacr[ao]/i, /thora/i, /TLIF/i, /[Tt]ranforam/i
 ]
 var ETCRX = [
 	/change battery/i, /cranioplast/i, /DBS/, /grid/i, /MVD/,
 	/lesionectomy/i, /lobectomy/i, /rhizotomy/i,
-	/tracheos/i, /VNS/
-]
-
-var	OPERATION = [
-	/ACDF/i, /ALIF/i, /anast/i, /approa/i, /aspirat/i, /advance/i,
-	/biop/i, /block/i, /burr/i, /bx/i, /bypass/i, /balloon/i,
-	/clip/i, 
+	/tracheos/i,
+	/anast/i, /approa/i, /aspirat/i, /advance/i,
+	/biop/i, /block/i, /burr/i, /bx/i, /balloon/i,
 	/decom/i, /DBS/, /drain/i, /disconnect/i,
-	/ECOG/i, /ectom/i, /endoscop/i, /ESI/, /ETS/, /ETV/, /EVD/, /excis/i,
+	/ECOG/i, /ectom/i, /endoscop/i, /ESI/, /ETS/, /excis/i,
 	/fix/i, /fusion/i,
 	/grid/i,
 	/insert/i,
 	/lesion/i, /lysis/i, 
-	/MIDLIF/i, /MVD/,
 	/neurot/i, /Navigator/i,
-	/OLIF/i, /occlu/i, /operat/i, /ostom/i, /otom/i,
-	/plast/i, /PLF/i, /PLIF/i,
-	/recons/i, /redo/i, /remov/i, /repa/i, /revis/i, /robot/i,
+	/occlu/i, /operat/i, /ostom/i, /otom/i,
+	/plast/i, 
+	/recons/i, /redo/i, /remov/i, /repa/i, /revis/i, /\bRF/i, /robot/i,
 	/scope/i, /screw/i, /shunt/i, /stim/i, /SNRB/i, /suture/i,
-	/TSP/i, /TSS/i, /TLIF/i, /[Tt]ranforam/i, /[Tt]ransnasal/i,
 	/transoral/i, /transphenoid/i, /transtent/i,
 	/untether/i,
 	/VNS/i
 ]
 var	NOTOPERATION = [
-	/adjust/i, /conservative/i, /observe/i
+	/adjust/i, /advice/i, /conservative/i, /observe/i, /[Oo]ff OR/
 ]
 var	RADIOSURGERY = [
 	/conformal radiotherapy/i, /CRT/, /CyberKnife/i,
@@ -175,7 +174,8 @@ var gv = {
 	timer: {},
 	idleCounter: 0,
 	mobile: false,
-	isPACS: true
+	isPACS: true,
+	editableSV: true
 }
 
 if (/Android|webOS|iPhone|iPad|BlackBerry|IEMobile/i.test(navigator.userAgent)) {

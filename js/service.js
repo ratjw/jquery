@@ -100,18 +100,18 @@ function sqlOneMonth(fromDate, toDate)
 // Principle : gv.SERVE are implicitly in diagnosis, treatment, admit
 // Some values in gv.SERVE are calculated at run time
 // All service values are stored in the corresponding table row : $row.data()
-// Operation is determined by isOperation() in JS
+// Operation is determined by operationFor() in JS
 // Admission is updated by getAdmitDischargeDate in PHP
 // Values in DB are use-defined to override runtime-calc values
-// admitted : "", "Readmission"					<- admit
-// operated : "", "Reoperation"					<- treatment
+// admitted : "", "No", "Readmission"					<- admit
+// operated : "", "No", "Reoperation"					<- treatment
 // doneby : "", "Staff", "Resident"				<- defaulted by treatment
 // manner : "", "Elective", "Emergency"			<- defaulted by treatment
 // scale : "", "Major", "Minor"					<- defaulted by treatment
 // disease : "", "Brain Tumor", "Brain Vascular",
 //		"CSF related", "Trauma", "Spine", "etc" <- treatment + diagnosis
-// radiosurgery : "", "Radiosurgery"			<- treatment
-// endovascular : "", "Endovascular"			<- treatment
+// radiosurgery : "", "No", "Radiosurgery"			<- treatment
+// endovascular : "", "No", "Endovascular"			<- treatment
 // infection : "", "Infection"					<- use-defined only
 // morbid : "", "Morbidity"						<- use-defined only
 // dead : "", "Dead"							<- use-defined only
@@ -126,6 +126,8 @@ function showService(fromDate, toDate)
 
 	$servicetbl.find("tr").slice(1).remove()
 	$servicetbl.show()
+	gv.editableSV = fromDate >= getStart()
+		
 
 	var staffname = "",
 		scase = 0,
@@ -150,8 +152,7 @@ function showService(fromDate, toDate)
 				.filldataService(this, scase, classname)
 	});
 
-	var	editable = fromDate >= getStart(),
-		$dialogService = $("#dialogService"),
+	var	$dialogService = $("#dialogService"),
 		$divRecord = $("#divRecord")
 
 	$dialogService.dialog({
@@ -165,6 +166,7 @@ function showService(fromDate, toDate)
 			$(".ui-dialog:visible").find(".ui-dialog-content").dialog("close");
 			$(".fixed").remove()
 			$(window).off("resize", resizeDialog)
+			$dialogService.off("click", clickDialogService)
 			$divRecord.hide()
 		}
 	})
@@ -172,9 +174,15 @@ function showService(fromDate, toDate)
 	getAdmitDischargeDate(fromDate, toDate)
 	countAllServices()
 	$servicetbl.fixMe($dialogService)
-	hoverService(editable)
+	hoverService()
 
-	$dialogService.off("click").on("click", function (event) {
+	$dialogService.on("click", clickDialogService)
+
+	//for resizing dialogs in landscape / portrait view
+	$(window).on("resize", resizeDialog)
+
+	function clickDialogService(event)
+	{
 		resetTimer();
 		gv.idleCounter = 0
 		event.stopPropagation()
@@ -188,12 +196,18 @@ function showService(fromDate, toDate)
 		if (target.nodeName !== "TD" || target.colSpan > 1) {
 			clearEditcell()
 		} else {
-			clickservice(event, target, editable)
+			clickservice(event, target)
 		}
-	})
+	}
 
-	//for resizing dialogs in landscape / portrait view
-	$(window).on("resize", resizeDialog)
+	function resizeDialog()
+	{
+		$dialogService.dialog({
+			width: window.innerWidth * 95 / 100,
+			height: window.innerHeight * 95 / 100
+		})
+		winResizeFix($servicetbl, $dialogService)
+	}
 }
 
 function calcSERVE()
@@ -202,22 +216,16 @@ function calcSERVE()
 
 	$.each(gvserve, function() {
 
-		var	treatment = this.treatment,
-			operate = isOperation(treatment)
+		var	treatment = this.treatment
 
 		// If DB value is blank, calc the value
-		// if don't know opfor what, but it is an operation, then default to etc
-		if (!this.disease) {
-			var	opfor = operationFor(treatment, this.diagnosis)
-			if (!opfor && operate) { opfor = "etc" }
-			if (opfor) { this.disease = opfor }
-		}
+		this.disease = this.disease || operationFor(treatment, this.diagnosis)
 
-		if (!this.operated && operate) {
-			this.operated = "Operation"
-			this.doneby = "Staff"
-			this.scale = "Major"
-			this.manner = "Elective"
+		if (this.disease !== "No") {
+			if (!this.operated) { this.operated = "Operation" }
+			if (!this.doneby) { this.doneby = "Staff" }
+			if (!this.scale) { this.scale = "Major" }
+			if (!this.manner) { this.manner = "Elective" }
 		}
 
 		if (!this.radiosurgery && isRadiosurgery(treatment)) {
@@ -236,58 +244,62 @@ function operationFor(treatment, diagnosis)
 {
 	var opfor = ""
 
+	if (isNoOperation(treatment)) { return "No" }
 	opfor = isEtcRx(treatment) ? "etc" : opfor
 	opfor = isCSFRx(treatment) ? "CSF related" : opfor
-	opfor = isSpineRx(treatment) ? "Spine" : opfor
-	opfor = isTraumaRx(treatment, diagnosis) ? "Trauma" : opfor
-	opfor = isVascularRx(treatment) ? "Brain Vascular" : opfor
-	opfor = isTumorRx(treatment) ? "Brain Tumor" : opfor
+	opfor = isSpineRx(treatment)
+			? "Spine"
+			: isVascularRx(treatment, diagnosis)
+				? "Brain Vascular"
+				: isTumorRx(treatment)
+					? "Brain Tumor"
+					: isTraumaRx(treatment, diagnosis)
+						? "Trauma"
+						: opfor
 
-	return opfor
-}
-
-function resizeDialog()
-{
-	var	$dialogService = $("#dialogService")
-	$dialogService.dialog({
-		width: window.innerWidth * 95 / 100,
-		height: window.innerHeight * 95 / 100
-	})
-	winResizeFix($("#servicetbl"), $dialogService)
+	return opfor || "No"
 }
 
 function refillService(fromDate, toDate)
 {
-	var i = 0
-	$.each( gv.STAFF, function() {
-		var staffname = this.staffname
-		i++
-		var $staff = $("#servicetbl tr").eq(i).children("td").eq(CASENUMSV)
-		if ($staff.prop("colSpan") === 1) {
-			$staff.prop("colSpan", 10)
-				.addClass("serviceStaff")
-					.siblings().hide()
-		}
-		$staff.html(staffname)
+	var i = 0,
+		staffname = "",
+		scase = 0,
+		classes = "",
+		scase = 0,
+		$rows = $("#servicetbl tr"),
+		len = $rows.length,
+		$rowi = $cells = $staff = {}
 
-		var scase = 0
-		$.each( gv.SERVE, function() {
-			if (this.staffname === staffname) {
-				var classes = countService(this, fromDate, toDate)
-				i++
-				scase++
-				var $cells = $("#servicetbl tr").eq(i).children("td")
-				if ($cells.eq(CASENUMSV).prop("colSpan") > 1) {
-					$cells.eq(CASENUMSV).prop("colSpan", 1)
-						.nextUntil($cells.eq(QNSV)).show()
-				}
-				$("#servicetbl tr").eq(i)
-						.filldataService(this, scase, classes)
+	$.each( gv.SERVE, function() {
+		if (this.staffname !== staffname) {
+			i++
+			$staff = $rows.eq(i).children("td").eq(CASENUMSV)
+			if ($staff.prop("colSpan") === 1) {
+				$staff.prop("colSpan", 10)
+					.addClass("serviceStaff")
+						.siblings().hide()
 			}
-		});
-	})
-	if (i < ($("#servicetbl tr").length - 1)) {
-		$("#servicetbl tr").slice(i+1).remove()
+			$staff.html(staffname)
+		}
+		i++
+		scase++
+		if (i === len) {
+			$("#servicecells").find("tr").clone()
+				.appendTo($("#servicetbl").find("tbody"))
+			len++
+		}
+		classes = countService(this, fromDate, toDate)
+		$rowi = $rows.eq(i)
+		$cells = $rowi.children("td")
+		if ($cells.eq(CASENUMSV).prop("colSpan") > 1) {
+			$cells.eq(CASENUMSV).prop("colSpan", 1)
+				.nextUntil($cells.eq(QNSV)).show()
+		}
+		$rowi.filldataService(this, scase, classes)
+	});
+	if (i < (len - 1)) {
+		$rows.slice(i+1).remove()
 	}
 	countAllServices()
 }
@@ -317,10 +329,10 @@ jQuery.fn.extend({
 })
 
 // Simulate hover on icon by changing background pics
-function hoverService(editable)
+function hoverService()
 {
 	var	tdClass = "td.pacs, td.camera, td.record"
-				+ (editable
+				+ (gv.editableSV
 				? ", td.Operation, td.Admission, td.Reoperation, td.Readmission"
 				: "")
 
@@ -396,19 +408,19 @@ function updateRowClasses($this, classname)
 
 	if (/Readmission/.test(classname)) {
 		$admit.addClass("Readmission")
-		hoverCell("td.Readmission")
+		gv.editableSV && hoverCell("td.Readmission")
 	}
 	else if (/Admission/.test(classname)) {
 		$admit.addClass("Admission")
-		hoverCell("td.Readmission")
+		gv.editableSV && hoverCell("td.Readmission")
 	}
 	if (/Reoperation/.test(classname)) {
 		$treat.addClass("Reoperation")
-		hoverCell("td.Reoperation")
+		gv.editableSV && hoverCell("td.Reoperation")
 	}
 	else if (/Operation/.test(classname)) {
 		$treat.addClass("Operation")
-		hoverCell("td.Operation")
+		gv.editableSV && hoverCell("td.Operation")
 	}
 	if (/Radiosurgery/.test(classname)) {
 		$treat.addClass("Radiosurgery")
@@ -437,42 +449,40 @@ function getAdmitDischargeDate(fromDate, toDate)
 function fillAdmitDischargeDate()
 {
 	var i = 0
-	$.each( gv.STAFF, function() {
-		var staffname = this.staffname
-		i++
-		$.each( gv.SERVE, function() {
-			if (this.staffname === staffname) {
-				i++
-				var $thisRow = $("#servicetbl tr").eq(i),
-					$cells = $thisRow.children("td")
+	var staffname = ""
 
-				if (this.admit &&  this.admit !== $cells.eq(ADMITSV).html()) {
-					$cells.eq(ADMITSV).html(this.admit)
-					if (!/Admission/.test($cells.eq(ADMISSIONSV).className)) {
-						$cells.eq(ADMISSIONSV).addClass("Admission")
-						// for background pics
-					}
-					if (!/Admission|Readmission/.test($thisRow.className)) {
-						$thisRow.addClass("Admission")
-						// for counting
-					}
+	$.each( gv.SERVE, function() {
+		if (this.staffname !== staffname) {
+			i++
+			var $thisRow = $("#servicetbl tr").eq(i),
+				$cells = $thisRow.children("td")
+
+			if (this.admit &&  this.admit !== $cells.eq(ADMITSV).html()) {
+				$cells.eq(ADMITSV).html(this.admit)
+				if (!/Admission/.test($cells.eq(ADMISSIONSV).className)) {
+					$cells.eq(ADMISSIONSV).addClass("Admission")
+					// for background pics
 				}
-				if (this.discharge && this.discharge !== $cells.eq(DISCHARGESV).html()) {
-					$cells.eq(DISCHARGESV).html(this.discharge)
-					if (!/Discharge/.test($thisRow.className)) {
-						$thisRow.addClass("Discharge")
-						// for counting
-					}
+				if (!/Admission|Readmission/.test($thisRow.className)) {
+					$thisRow.addClass("Admission")
+					// for counting
 				}
 			}
-		});
-	})
+			if (this.discharge && this.discharge !== $cells.eq(DISCHARGESV).html()) {
+				$cells.eq(DISCHARGESV).html(this.discharge)
+				if (!/Discharge/.test($thisRow.className)) {
+					$thisRow.addClass("Discharge")
+					// for counting
+				}
+			}
+		}
+	});
 }
 
-function clickservice(evt, clickedCell, editable)
+function clickservice(evt, clickedCell)
 {
 	savePreviousCellService()
-	storePresentCellService(evt, clickedCell, editable)
+	storePresentCellService(evt, clickedCell)
 }
 
 function Skeyin(event, keycode, pointing)
@@ -480,7 +490,6 @@ function Skeyin(event, keycode, pointing)
 	var SEDITABLE	= [DIAGNOSISSV, TREATMENTSV, ADMISSIONSV, FINALSV],
 		fromDate = $("#monthstart").val(),
 		start = getStart(),
-		editable = (fromDate >= start),
 		thiscell
 
 	if (keycode === 27) {
@@ -500,7 +509,7 @@ function Skeyin(event, keycode, pointing)
 		else
 			thiscell = findNextcell(event, SEDITABLE, pointing)
 		if (thiscell) {
-			storePresentCellService(event, thiscell, editable)
+			storePresentCellService(event, thiscell)
 		} else {
 			clearEditcell()
 			window.focus()
@@ -515,7 +524,7 @@ function Skeyin(event, keycode, pointing)
 		savePreviousCellService()
 		thiscell = findNextRow(event, SEDITABLE, pointing)
 		if (thiscell) {
-			storePresentCellService(event, thiscell, editable)
+			storePresentCellService(event, thiscell)
 		} else {
 			clearEditcell()
 			window.focus()
@@ -590,14 +599,14 @@ function saveContentService(pointed, column, content)
 function updateOperated(qn, content)
 {
 	var	bookq = getBOOKrowByQN(gv.SERVE, qn),
-		operated = isOperation(content),
+		operation = operationFor(content, bookq.diagnosis),
 		radiosurgery = isRadiosurgery(content),
 		endovascular = isEndovascular(content),
 		sql = "",
 		oper = radi = endo = null
 
-	if (bookq.operated && !operated) { oper = "" }
-	if (!bookq.operated && operated) { oper = "Operation" }
+	if (bookq.operated && !operation) { oper = "" }
+	if (!bookq.operated && operation) { oper = "Operation" }
 	if (bookq.radiosurgery && !radiosurgery) { radi = "" }
 	if (!bookq.radiosurgery && radiosurgery) { radi = "Radiosurgery" }
 	if (bookq.endovascular && !endovascular) { endo = "" }
@@ -634,7 +643,13 @@ function saveService(pointed, sql)
 	{
 		if (/BOOK/.test(response)) {
 			updateBOOK(response)
+
+			// other user may add a row
+			var servelen = gv.SERVE.length
 			gv.SERVE = calcSERVE()
+			if (gv.SERVE.length !== servelen) {
+				refillService(fromDate, toDate)
+			}
 
 			// Calc countService of this case only
 			var oldclass = rowi.className
@@ -669,7 +684,7 @@ function updateCounter(classArray, one)
 	})
 }
 
-function storePresentCellService(evt, pointing, editable)
+function storePresentCellService(evt, pointing)
 {
 	var cindex = pointing.cellIndex
 
@@ -684,16 +699,16 @@ function storePresentCellService(evt, pointing, editable)
 			getNAMESV(evt, pointing)
 			break
 		case DIAGNOSISSV:
-			editable && createEditcell(pointing)
+			gv.editableSV && createEditcell(pointing)
 			break
 		case TREATMENTSV:
-			getTREATMENTSV(evt, pointing, editable)
+			getTREATMENTSV(evt, pointing)
 			break
 		case ADMISSIONSV:
-			getADMISSIONSV(evt, pointing, editable)
+			getADMISSIONSV(evt, pointing)
 			break
 		case FINALSV:
-			getFINALSV(evt, pointing, editable)
+			getFINALSV(evt, pointing)
 			break
 		case ADMITSV:
 		case DISCHARGESV:
@@ -723,18 +738,18 @@ function getNAMESV(evt, pointing)
 	}
 }
 
-// operated has 3 possibility : "", Operation, Reoperation
-// Operation is determined by keywords in isOperation()
-function getTREATMENTSV(evt, pointing, editable)
+// operated has 2 possibilities : "", Reoperation
+// Operation is determined by keywords in operationFor()
+function getTREATMENTSV(evt, pointing)
 {
-	if (editable) {
+	if (gv.editableSV) {
 		var operated = sql = ""
 
 		if (inPicArea(evt, pointing) && pointing.className) {
 			clearEditcell()
 			// click toggle Operation, Reoperation
 			if (/\bReoperation/.test(pointing.className)) {
-				operated = "Operation"
+				operated = ""
 			}
 			else if (/\bOperation/.test(pointing.className)) {
 				operated = "Reoperation"
@@ -749,18 +764,18 @@ function getTREATMENTSV(evt, pointing, editable)
 	}
 }
 
-// admitted has 3 possibility : "", Admission, Readmission
+// admitted has 2 possibilities : "", Readmission
 // Admission depends on hospital IT
-function getADMISSIONSV(evt, pointing, editable)
+function getADMISSIONSV(evt, pointing)
 {
-	if (editable) {
+	if (gv.editableSV) {
 		var admitted = sql = ""
 
 		if (inPicArea(evt, pointing) && pointing.className) {
 			clearEditcell()
 			// click toggle Admission, Readmission
 			if (/\bReadmission/.test(pointing.className)) {
-				admitted = "Admission"
+				admitted = ""
 			} else if (/\bAdmission/.test(pointing.className)) {
 				admitted = "Readmission"
 			}
@@ -772,47 +787,44 @@ function getADMISSIONSV(evt, pointing, editable)
 	}
 }
 
-function getFINALSV(evt, pointing, editable)
+function getFINALSV(evt, pointing)
 {
 	if (inPicArea(evt, pointing)) {
 		clearEditcell()
-		showRecord(pointing, editable)
+		showRecord(pointing)
 	} else {
-		if (editable) { createEditcell(pointing) }
+		if (gv.editableSV) { createEditcell(pointing) }
 	}
 }
 
 // can't use dialog, it will be hijacked to document body
 // and not sticky to pointing while scrolling
-function showRecord(pointing, editable)
+function showRecord(pointing)
 {
-//	$("#donedate").datepicker({
-//		dateFormat: "yy-mm-dd"
-//	})
 	var $pointing = $(pointing),
 		$divRecord = $("#divRecord"),
+		$checkRecord = $("#checkRecord"),
+		$cancelRecord = $("#cancelRecord"),
+		$dialogService = $("#dialogService"),
 		oldRecord,
 		keycode
 
 	setRecord($pointing)
 	oldRecord = getRecord()
 
-	// Enter key = OK
-	$divRecord.on("keydown", keyRecord)
-
-	$("#checkRecord").on("click", checkRecord)
-	$("#cancelRecord").on("click", closeDivRecord)
-
-	reposition($divRecord, "right top", "right bottom", $pointing, $("#dialogService"))
-	menustyle($divRecord, $pointing)
-
-	if (editable) {
-		$divRecord.find("input").off("click", returnFalse)
-		$divRecord.find("input[type=text]").prop("disabled", false)
+	// off all previous listeners
+	// Enter key = click checkRecord
+	$divRecord.off("keydown").on("keydown", keyRecord)
+	$checkRecord.off("click").on("click", checkRecord)
+	$cancelRecord.off("click").on("click", closeDivRecord)
+	if (gv.editableSV) {
+		enableInput()
 	} else {
-		$divRecord.find("input").on("click", returnFalse)
-		$divRecord.find("input[type=text]").prop("disabled", true)
+		disableInput()
 	}
+
+	reposition($divRecord, "right top", "right bottom", $pointing, $dialogService)
+	menustyle($divRecord, $pointing)
 	$divRecord.find("input").focus()
 
 	function keyRecord(event)
@@ -825,20 +837,31 @@ function showRecord(pointing, editable)
 
 	function checkRecord()
 	{
-		if (editable) { saveRecord($pointing, oldRecord) }
+		if (gv.editableSV) { saveRecord($pointing, oldRecord) }
 		closeDivRecord()
 	}
 
 	function closeDivRecord()
 	{
 		$divRecord.hide()
-		$divRecord.off("keydown", keyRecord)
-		$("#dialogService").focus()
+		$dialogService.focus()
+	}
+
+	function enableInput()
+	{
+		$divRecord.find("input").off("click", returnFalse)
+		$divRecord.find("input[type=text]").prop("disabled", false)
+	}
+
+	function disableInput()
+	{
+		$divRecord.find("input").on("click", returnFalse)
+		$divRecord.find("input[type=text]").prop("disabled", true)
 	}
 }
 
 // this.name === column in Mysql
-// this.title === possible value
+// this.title === possible values
 function setRecord($pointing)
 {
 	var	qn = $pointing.closest("tr").find("td").eq(QNSV).html(),
@@ -848,9 +871,6 @@ function setRecord($pointing)
 	$divRecord.find("input[type=text]").val("")
 	$divRecord.find("input").prop("checked", false)
 
-//	document.getElementById("donedate").value = bookq.donedate
-//												? bookq.donedate
-//												: bookq.opdate
 	$divRecord.find("input").each(function() {
 		this.checked = this.title === bookq[this.name]
 	})
@@ -860,7 +880,6 @@ function getRecord()
 {
 	var	record = {}
 
-//	record.donedate = document.getElementById("donedate").value
 	$("#divRecord input").each(function() {
 		if (this.type === "checkbox" && !this.checked) {
 			record[this.name] = ""
@@ -896,6 +915,13 @@ function sqlRecord($pointing, newrecord)
 		sql = "sqlReturnService="
 
 	$.each(newrecord, function(column, content) {
+		if ((column === "radiosurgery" && content === "") ||
+			(column === "endovascular" && content === "")) {
+			content = "No"
+		}
+		if (column === "disease" && content === "No") {
+			sql += sqlDefaults(qn)			
+		}
 		sql += sqlItem(column, content, qn)
 	})
 
@@ -907,6 +933,17 @@ function sqlColumn(pointing, column, content)
 	var qn = $(pointing).closest("tr").find("td").eq(QNSV).html()
 
 	return "sqlReturnService=" + sqlItem(column, content, qn)
+}
+
+function sqlDefaults(qn)
+{
+	return "UPDATE book SET "
+		+ "operated='',"
+		+ "doneby='',"
+		+ "scale='',"
+		+ "manner='',"
+		+ "editor='" + gv.user
+		+ "' WHERE qn=" + qn + ";"
 }
 
 function sqlItem(column, content, qn)
@@ -965,9 +1002,9 @@ function showReportToDept(title)
 function countOpCase(thisrow, thisitem)
 {
 	var row = ROWREPORT[thisitem],
-		doneby = thisrow.doneby ? thisrow.doneby : "Staff"
-		scale = thisrow.scale ? thisrow.scale : "Major"
-		manner = thisrow.manner ? thisrow.manner : "Elective"
+		doneby = thisrow.doneby ? thisrow.doneby : "Staff",
+		scale = thisrow.scale ? thisrow.scale : "Major",
+		manner = thisrow.manner ? thisrow.manner : "Elective",
 		column = COLUMNREPORT[doneby]
 			   + COLUMNREPORT[scale]
 			   + COLUMNREPORT[manner]
@@ -980,7 +1017,7 @@ function countOpCase(thisrow, thisitem)
 function countNonOpCase(thisrow, thisitem)
 {
 	var row = ROWREPORT[thisitem],
-		manner = thisrow.manner ? thisrow.manner : "Elective"
+		manner = thisrow.manner ? thisrow.manner : "Elective",
 		column = 1 + COLUMNREPORT[manner]
 
 	if (row && column) {
@@ -1052,23 +1089,18 @@ function isTumorRx(treatment)
 {
 	var TumorRx = false
 
-//	$.each( NOTTUMOR, function() {
-//		return !(Tumor = this.test(treatment))
-//	})
-	// NOTTUMOR takes priority
-//	if (TumorRx) { return false }
 	$.each( TUMORRX, function() {
 		return !(TumorRx = this.test(treatment))
 	})
 	return TumorRx
 }
 
-function isVascularRx(treatment)
+function isVascularRx(treatment, diagnosis)
 {
 	var VascularRx = false
 
-	$.each( VASCULARRX, function() {
-		return !(VascularRx = this.test(treatment))
+	$.each( VASCULARRX.concat(VASCULARDX), function() {
+		return !(VascularRx = this.test(treatment + diagnosis))
 	})
 	return VascularRx
 }
@@ -1116,20 +1148,15 @@ function isEtcRx(treatment)
 	return EtcRx
 }
 
-function isOperation(treatment)
+function isNoOperation(treatment)
 {
-	var Operation = false
+	var NoOperation = false
 
 	$.each( NOTOPERATION, function() {
-		return !(Operation = this.test(treatment))
+		return !(NoOperation = this.test(treatment))
 	})
-	// NOTOPERATION takes priority
-	if (Operation) { return false }
 
-	$.each( OPERATION, function() {
-		return !(Operation = this.test(treatment))
-	})
-	return Operation
+	return NoOperation
 }
 
 function isRadiosurgery(treatment)

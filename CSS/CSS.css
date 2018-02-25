@@ -449,7 +449,7 @@ input[type=submit] {
 
 #divRecord {
 	width: 550px;
-	height: 175px;
+	height: 200px;
 	font-size: 14px;
 	background-color: snow;
 	padding-left: 25px;
@@ -471,10 +471,6 @@ input[type=submit] {
 	margin: 10px;
 }
 
-#divRecord button:hover {
-	background-color: lightgrey;
-}
-*/
 #divRecord label {
 	display: inline-block;
 	width: 100px;

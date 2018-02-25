@@ -178,6 +178,13 @@
 		<label for="etc">etc.</label>
 	</span>
 	<br>
+	<span>
+	</span>
+	<span>
+		<input type="radio" id="NoOperation" name="disease" title="No">
+		<label for="NoOperation">No Operation</label>
+	</span>
+	<br>
 	<span class="itemheader">Non-Surgical:</span>
 	<span>
 		<input type="checkbox" id="Radiosurgery" name="radiosurgery" title="Radiosurgery">
@@ -288,7 +295,7 @@
      <td></td><td></td>
    </tr>
    <tr class="notcount nonsurgical">
-     <td>Conservative</td>
+     <td>No Operation</td>
      <td></td><td></td>
    </tr>
    <tr id="Total" class="notcount">
@@ -470,10 +477,16 @@
   </ul></li>
   <li><div>คิวของอาจารย์</div><ul id="staffmenu"></ul></li>
   <li id="service"><div>Service Review</div></li>
-  <li><div>All Cases</div><ul id="allcases">
-    <li id="deleted"><div>All Deleted Cases</div></li>
-    <li id="notdeleted"><div>All Saved Cases</div></li>
-  </ul></li>
+  <li><div>All Cases</div>
+  <ul id="allcases">
+    <li id="deleted">
+		<div>All<span style="background-color:pink"> Deleted </span>Cases</div>
+	</li>
+    <li id="notdeleted">
+		<div>All<span style="background-color:skyblue"> Saved </span>Cases</div>
+	</li>
+  </ul>
+  </li>
   <li id="search"><div>Find</div></li>
   <li id="readme"><div>Readme</div></li>
 </ul>
