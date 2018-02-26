@@ -217,7 +217,8 @@ function calcSERVE()
 	$.each(gvserve, function() {
 
 		var	treatment = this.treatment
-
+if (this.hn==="5383382") {
+treatment = this.treatment }
 		// If DB value is blank, calc the value
 		this.disease = this.disease || operationFor(treatment, this.diagnosis)
 
@@ -242,22 +243,121 @@ function calcSERVE()
 
 function operationFor(treatment, diagnosis)
 {
-	var opfor = ""
+	var opfor = [],
+//		isBrain = isOperation(BRAINDX, diagnosis),
+		opwhat
 
-	if (isNoOperation(treatment)) { return "No" }
-	opfor = isEtcRx(treatment) ? "etc" : opfor
-	opfor = isCSFRx(treatment) ? "CSF related" : opfor
-	opfor = isSpineRx(treatment)
-			? "Spine"
-			: isVascularRx(treatment, diagnosis)
-				? "Brain Vascular"
-				: isTumorRx(treatment)
-					? "Brain Tumor"
-					: isTraumaRx(treatment, diagnosis)
-						? "Trauma"
-						: opfor
+	// "No" from DB
+	if (isOperation(NOOPERATION, treatment)) { return "No" }
+	if (isOperation(SPINERX, treatment)) {
+//		if (isOperation(SPINEDX, diagnosis)) {
+			opfor.push("Spine")
+//		} else {
+//			opfor.push("etc")
+//		}
+	}
+	if (isOperation(TUMORRX, treatment)) {
+//		if (isBrain && isOperation(TUMORDX, diagnosis)) {
+			opfor.push("Brain Tumor")
+//		} else {
+//			opfor.push("etc")
+//		}
+	}
+	if (isOperation(VASCULARRX, treatment)) {
+//		if (isBrain && isOperation(VASCULARDX, diagnosis)) {
+			opfor.push("Brain Vascular")
+//		} else {
+//			opfor.push("etc")
+//		}
+	}
+	if (isOperation(CSFRX, treatment)) {
+//		if (isOperation(CSFDX, diagnosis)) {
+			opfor.push("CSF related")
+//		} else {
+//			opfor.push("etc")
+//		}
+	}
+	if (isOperation(TRAUMARX, treatment)) {
+//		if (isOperation(TRAUMADX, diagnosis)) {
+			opfor.push("Trauma")
+//		} else {
+//			opfor.push("etc")
+//		}
+	}
+	if (!opfor.length && isOperation(ETCRX, treatment)) {
+//		if (isOperation(ETCDX, diagnosis)) {
+			opfor.push("etc")
+//		}
+	}
 
-	return opfor || "No"
+	// "No" from no match
+	if (opfor.length === 0) { opwhat = "No" }
+	else if (opfor.length === 1) { opwhat = opfor[0] }
+	else {
+		opfor = opfor.filter(function (item) {
+			return item !== "etc"
+		})
+		if (opfor.length === 0) { opwhat = "No" }
+		else if (opfor.length === 1) { opwhat = opfor[0] }
+		else {
+			var diagtreat =  diagnosis + treatment
+			$.each(opfor, function(i, item) {
+				if (item === "Spine") {
+					if (!isOperation(SPINEDX, diagnosis)) {
+						opfor = opfor.filter(function(e) { return e !== "Spine" })
+					}
+				}
+				if (item === "Brain Tumor") {
+					if (!isOperation(BRAINDX, diagtreat)) {
+						opfor = opfor.filter(function(e) { return e !== "Brain Tumor" })
+					}
+				}
+				if (item === "Brain Vascular") {
+					if (!isOperation(BRAINDX, diagtreat)) {
+						opfor = opfor.filter(function(e) { return e !== "Brain Vascular" })
+					}
+				}
+				if (item === "CSF related") {
+					if (!isOperation(CSFDX, diagtreat)) {
+						opfor = opfor.filter(function(e) { return e !== "CSF related" })
+					}
+				}
+				if (item === "Trauma") {
+					if (!isOperation(TRAUMADX, diagtreat)) {
+						opfor = opfor.filter(function(e) { return e !== "Trauma" })
+					}
+				}
+	//			if (item === "etc") {
+	//				if (!isOperation(ETCDX, diagtreat)) {
+	//					opfor = opfor.filter(function(e) { return e !== "etc" })
+	//				}
+	//			}
+			})
+			if (opfor.length === 0) { opwhat = "etc" }
+			else if (opfor.length === 1) { opwhat = opfor[0] }
+			else {
+				if ((opfor.indexOf("Brain Tumor")+1) && (opfor.indexOf("Brain Vascular")+1)) {
+					if (isOperation(TUMORDX, diagnosis)) {
+						opwhat = "Brain Tumor"
+					}
+					if (isOperation(VASCULARDX, diagnosis)) {
+						opwhat = "Brain Vascular"
+					}
+				} else {
+					opwhat = opfor[0]
+				}
+			}
+		}
+	}
+//	else {
+//		opx = opfor.filter(function(el) {
+//			return el !== "etc"
+//		})
+//	}
+//	if (opx.length === 0) { opwhat = "etc" }
+//	else { opwhat = opx[0] }
+
+	return opwhat
 }
 
 function refillService(fromDate, toDate)
@@ -1085,22 +1185,22 @@ function countAllServices()
 	})
 }
 
-function isTumorRx(treatment)
+function isOperation(keyword, diagtreat)
 {
-	var TumorRx = false
+	var test = false
 
-	$.each( TUMORRX, function() {
-		return !(TumorRx = this.test(treatment))
+	$.each( keyword, function() {
+		return !(test = this.test(diagtreat))
 	})
-	return TumorRx
+	return test
 }
 
-function isVascularRx(treatment, diagnosis)
+function isVascularRx(treatment)
 {
 	var VascularRx = false
 
-	$.each( VASCULARRX.concat(VASCULARDX), function() {
-		return !(VascularRx = this.test(treatment + diagnosis))
+	$.each( VASCULARRX, function() {
+		return !(VascularRx = this.test(treatment))
 	})
 	return VascularRx
 }
@@ -1115,13 +1215,10 @@ function isCSFRx(treatment)
 	return csfRx
 }
 
-function isTraumaRx(treatment, diagnosis)
+function isTraumaRx(treatment)
 {
 	var TraumaRx = false
 
-	if (/chronic|csdh/i.test(diagnosis)) {
-		return false
-	}
 	$.each( TRAUMARX, function() {
 		return !(TraumaRx = this.test(treatment))
 	})
