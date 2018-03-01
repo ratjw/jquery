@@ -216,11 +216,9 @@ function calcSERVE()
 
 	$.each(gvserve, function() {
 
-		var	treatment = this.treatment
-if (this.hn==="5361899") {
-//
-treatment = this.treatment }
-		// If DB value is blank, calc the value
+	var	treatment = this.treatment
+
+	// If DB value is blank, calc the value
 		this.disease = this.disease || operationFor(treatment, this.diagnosis)
 
 		if (this.disease !== "No") {
@@ -346,7 +344,7 @@ function notThisDiagnosis(item, diagnosis)
 		"Brain Vascular": BRAINVASCULARDXNO,
 		"CSF related": CSFDXNO,
 		"Trauma": TRAUMADXNO,
-		"Spine": SPINEDXNO + BRAINDX,
+		"Spine": SPINEDXNO.concat(BRAINDX),
 		"etc": ETCDXNO
 	}
 
@@ -1186,67 +1184,6 @@ function isOperation(keyword, diagtreat)
 		return !(test = this.test(diagtreat))
 	})
 	return test
-}
-
-function isVascularRx(treatment)
-{
-	var VascularRx = false
-
-	$.each( BRAINVASCULARRX, function() {
-		return !(VascularRx = this.test(treatment))
-	})
-	return VascularRx
-}
-
-function isCSFRx(treatment)
-{
-	var csfRx = false
-
-	$.each( CSFRX, function() {
-		return !(csfRx = this.test(treatment))
-	})
-	return csfRx
-}
-
-function isTraumaRx(treatment)
-{
-	var TraumaRx = false
-
-	$.each( TRAUMARX, function() {
-		return !(TraumaRx = this.test(treatment))
-	})
-	return TraumaRx
-}
-
-function isSpineRx(treatment)
-{
-	var SpineRx = false
-
-	$.each( SPINERX, function() {
-		return !(SpineRx = this.test(treatment))
-	})
-	return SpineRx
-}
-
-function isEtcRx(treatment)
-{
-	var EtcRx = false
-
-	$.each( ETCRX, function() {
-		return !(EtcRx = this.test(treatment))
-	})
-	return EtcRx
-}
-
-function isNoOperation(treatment)
-{
-	var NoOperation = false
-
-	$.each( NOTOPERATION, function() {
-		return !(NoOperation = this.test(treatment))
-	})
-
-	return NoOperation
 }
 
 function isRadiosurgery(treatment)

@@ -209,7 +209,7 @@ var	SPINEDXNO = [
 	/M1|M2|MCA occlusion/i, /moya moya/i,
 
 	/\bHCP\b/i, /hydrocephalus/i, /\bNPH\b/i,
-	 /(VP|LP|periton|subgaleal).*shunt/i,
+	/(VP|LP|periton|subgaleal).*shunt/i,
 	/shunt obstruct/i, /shunt malfunction/i,
 
 	/convulsi/i, /\bCTS\b/i, /cubital/i,
@@ -243,8 +243,7 @@ var	BRAINVASCULARRX = [
 ]
 var	CSFRX = [
 	/ETV/i, /EVD/i, /lumbar drain/i, /OMMAYA/i,
-	/Pudenz/i, /pressure.*valve/i, /Programmable/i, /shunt/i,
-	/tap test/i
+	/Pudenz/i, /pressure.*valve/i, /Programmable/i, /shunt/i
 ]
 var	TRAUMARX = [
 	/debridement/i, /(clot|hematoma).*(removal|irrigation|evacuation)/i
