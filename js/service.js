@@ -215,18 +215,10 @@ function calcSERVE()
 	var gvserve = gv.SERVICE.slice()
 
 	$.each(gvserve, function() {
-
-	var	treatment = this.treatment
-
-	// If DB value is blank, calc the value
-		this.disease = this.disease || operationFor(treatment, this.diagnosis)
-
-		if (this.disease !== "No") {
-			if (!this.operated) { this.operated = "Operation" }
-			if (!this.doneby) { this.doneby = "Staff" }
-			if (!this.scale) { this.scale = "Major" }
-			if (!this.manner) { this.manner = "Elective" }
-		}
+//if (this.hn==="5104784")
+//{ this.hn==="5104784" }
+		var	treatment = this.treatment,
+			opwhat
 
 		if (!this.radiosurgery && isRadiosurgery(treatment)) {
 			this.radiosurgery = "Radiosurgery"
@@ -235,6 +227,23 @@ function calcSERVE()
 		if (!this.endovascular && isEndovascular(treatment)) {
 			this.endovascular = "Endovascular"
 		}
+
+		// If DB value is blank, calc the value
+		if (!this.disease) {
+			opwhat = operationFor(treatment, this.diagnosis)
+			if (opwhat === "Spine") {
+				console.log(this.hn)//opwhat = ""
+			}
+			this.disease = opwhat
+		}
+
+		// "No" from DB or no matched
+		if (this.disease !== "No") {
+			if (!this.operated) { this.operated = "Operation" }
+			if (!this.doneby) { this.doneby = "Staff" }
+			if (!this.scale) { this.scale = "Major" }
+			if (!this.manner) { this.manner = "Elective" }
+		}
 	})
 
 	return gvserve
@@ -242,53 +251,62 @@ function calcSERVE()
 
 function operationFor(treatment, diagnosis)
 {
-	var opfor = [],
+	var opfor = [
+			"Brain Tumor",
+			"Brain Vascular",
+			"CSF related",
+			"Trauma",
+			"Spine",
+			"etc"
+		],
 		opwhat
-
-	// "No" from DB
+	// "No" from match NOOPERATION
 	if (isOperation(NOOPERATION, treatment)) { return "No" }
 
-	var opfor = isThisOperation(treatment)
+	opfor = isNotThisOp(opfor, isThisOperation, treatment)
 
 	// "No" from no match
 	if (opfor.length === 0) { opwhat = "No" }
 	else if (opfor.length === 1) { opwhat = opfor[0] }
 	else {
-		for (var i=opfor.length-1; i>=0; i--) {
-			if (notThisOperation(opfor[i], treatment)) {
-				opfor.splice(i, 1)
-			}
-		}
+		opfor = isNotThisOp(opfor, notThisOperation, treatment)
 		if (opfor.length === 0) { opwhat = "etc" }
 		else if (opfor.length === 1) { opwhat = opfor[0] }
 		else {
-			for (var i=opfor.length-1; i>=0; i--) {
-				if (!isThisDiagnosis(opfor[i], diagnosis)) {
-					opfor.splice(i, 1)
-				}
-			}
+			opfor = isNotThisOp(opfor, isThisDiagnosis, diagnosis)
 			if (opfor.length === 0) { opwhat = "etc" }
 			else if (opfor.length === 1) { opwhat = opfor[0] }
 			else {
-				for (var i=opfor.length-1; i>=0; i--) {
-					if (notThisDiagnosis(opfor[i], diagnosis)) {
-						opfor.splice(i, 1)
-					}
-				}
+				opwhat = opfor[0]
+				opfor = isNotThisOp(opfor, notThisDiagnosis, diagnosis)
+				if (opfor.length > 0) { opwhat = opfor[0] }
 			}
 		}
-
-		if (opfor.length === 0) {
-			opwhat = "etc"
-		} else {
-			opwhat = opfor[0]
-		}
 	}
-
 	return opwhat
 }
 
-function isThisOperation(treatment)
+function isOperation(keyword, diagtreat)
+{
+	var test = false
+
+	$.each( keyword, function() {
+		return !(test = this.test(diagtreat))
+	})
+	return test
+}
+
+function isNotThisOp(opfor, func, diagRx)
+{
+	for (var i=opfor.length-1; i>=0; i--) {
+		if (func(opfor[i], diagRx)) {
+			opfor.splice(i, 1)
+		}
+	}
+	return opfor
+}
+
+function isThisOperation(item, treatment)
 {
 	var	thisOp = {
 		"Brain Tumor": BRAINTUMORRX,
@@ -297,16 +315,9 @@ function isThisOperation(treatment)
 		"Trauma": TRAUMARX,
 		"Spine": SPINERX,
 		"etc": ETCRX
-	},
-	opfor = []
+	}
 
-	$.each(thisOp, function(key, val) {
-		if (isOperation(val, treatment)) {
-			opfor.push(key)
-		}
-	})
-
-	return opfor
+	return !isOperation(thisOp[item], treatment)
 }
 
 function notThisOperation(item, treatment)
@@ -334,7 +345,7 @@ function isThisDiagnosis(item, diagnosis)
 		"etc": ETCDX
 	}
 
-	return isOperation(thisDiag[item], diagnosis)
+	return !isOperation(thisDiag[item], diagnosis)
 }
 
 function notThisDiagnosis(item, diagnosis)
@@ -349,6 +360,26 @@ function notThisDiagnosis(item, diagnosis)
 	}
 
 	return isOperation(notDiag[item], diagnosis)
+}
+
+function isRadiosurgery(treatment)
+{
+	var Radiosurgery = false
+
+	$.each( RADIOSURGERY, function() {
+		return !(Radiosurgery = this.test(treatment))
+	})
+	return Radiosurgery
+}
+
+function isEndovascular(treatment)
+{
+	var Endovascular = false
+
+	$.each( ENDOVASCULAR, function() {
+		return !(Endovascular = this.test(treatment))
+	})
+	return Endovascular
 }
 
 function refillService(fromDate, toDate)
@@ -1174,34 +1205,4 @@ function countAllServices()
 			}
 		})
 	})
-}
-
-function isOperation(keyword, diagtreat)
-{
-	var test = false
-
-	$.each( keyword, function() {
-		return !(test = this.test(diagtreat))
-	})
-	return test
-}
-
-function isRadiosurgery(treatment)
-{
-	var Radiosurgery = false
-
-	$.each( RADIOSURGERY, function() {
-		return !(Radiosurgery = this.test(treatment))
-	})
-	return Radiosurgery
-}
-
-function isEndovascular(treatment)
-{
-	var Endovascular = false
-
-	$.each( ENDOVASCULAR, function() {
-		return !(Endovascular = this.test(treatment))
-	})
-	return Endovascular
 }

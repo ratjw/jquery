@@ -82,8 +82,8 @@ var	CSFDX = [
 	/shunt obstruct/i, /shunt malfunction/i
 ]
 var	TRAUMADX = [
-	/assault/i, /\bEDH\b/i, /contusion/i, /injury/i,
-	/Fx|fracture/i, /lacerat/i,
+	/accident/i, /assault/i, /concussion/i, /contusion/i, /\bEDH\b/i,
+	/fall/i, /Fx|fracture/i, /injury/i, /lacerat/i,
 	/\bSDH\b/i, /subdural ha?ematoma/i, /trauma/i
 ]
 var	SPINEDX = [
@@ -233,7 +233,7 @@ var	ETCDXNO = [
 ]
 
 var	BRAINTUMORRX = [
-	/approa/i, /biopsy/i, /bx/i, /crani[oe]c?tomy/i, /\bETS\b/i, /otom/i, /trans.*remov/i,
+	/approa/i, /biopsy/i, /\bbx\b/i, /crani[oe]c?tomy/i, /\bETS\b/i, /otom/i, /trans.*remov/i,
 	/TSP/i, /TSS/i, /transnasal/i, /transsphenoid/i, /transventric/i, /tumou?r/i
 ]
 var	BRAINVASCULARRX = [
@@ -249,14 +249,17 @@ var	TRAUMARX = [
 	/debridement/i, /(clot|hematoma).*(removal|irrigation|evacuation)/i
 ]
 var	SPINERX = [
-	/ACDF/i, /ALIF/i, /cervical/i, /^((?!mri|MRI?).)*[CTLS][\d]/, /decompress/i, 
-	/fixation/i, /\bfusion/i, /lamin[eo]/i, /MIDLIF/i, /OLIF/i, 
-	/PLF/i, /PLIF/i, /sacr[ao]/i, /screw/i, /SNRB/i,
-	/thora/i, /TLIF/i, /transoral/i, /transforam/i, /tumou?r/i, /untether/i
+	/ACDF/i, /ALIF/i, /cervical/i, /^((?!mri|MRI?).)*[CTLS][\d]/,
+	/decompress/i, /Discectomy/i,
+	/\bESI\b/i, /fixation/i, /foraminotomy/i, /\bfusion/i, /kyphoplasty/i,
+	/lamin[eo]/i, /MIDLIF/i, /OLIF/i, 
+	/PDS/i, /PLF/i, /PLIF/i, /sacr[ao]/i, /screw/i, /SNRB/i,
+	/thora/i, /TLIF/i, /transoral/i, /transforam/i, /tumou?r/i,
+	/vertebr/i, /untether/i
 ]
 var ETCRX = [
 	/anast/i, /aspirat/i, /advance/i,
-	/biop/i, /block/i, /burr/i, /bx/i, /balloon/i, /cranioplasty/i,
+	/biop/i, /block/i, /burr/i, /\bbx\b/i, /balloon/i, /cranioplasty/i,
 	/change battery/i, /DBS/i, /grid/i, /MVD/i,
 	/decom/i, /DBS/i, /drain/i, /disconnect/i,
 	/ECOG/i, /ectom/i, /endoscop/i, /\bESI\b/i, /excis/i,
@@ -270,24 +273,24 @@ var ETCRX = [
 	/tracheos/i, /VNS/i
 ]
 var	NOOPERATION = [
-	/adjust.*pressure/i, /advice.*surgery/i, /conservative/i, /observe/i, /\boff OR/
+	/adjust.*pressure/i, /advice.*surg[ery|ical]/i, /conservative/i, /observe/i, /\boff OR/
 ]
 var BRAINTUMORRXNO = [
 	/(clot|hematoma).*(removal|irrigation|evacuation)/i,
 	/clip/i, /EDAS/i, /EDAMS/i, /excision.*AVM|AVM.*excision/i,
 
-	/ETV/i, /EVD/i,
+	/ETV/i,
 
 	/ACDF/i, /ALIF/i, /^((?!mri|MRI?).)*[CTLS][\d]/,
-	/lamin[eo]/i, /MIDLIF/i, /OLIF/i, 
+	/cervical/i, /lamin[eo]/i, /lumbar/i, /MIDLIF/i, /OLIF/i, 
 	/PLF/i, /PLIF/i, /sacr[ao]/i, /SNRB/i,
 	/thora/i, /TLIF/i,
 
 	/change battery/i, /DBS/i, /grid/i, /MVD/i,
-	/tracheos/i, /untether/i, /VNS/i
+	/untether/i, /VNS/i
 ]
 var BRAINVASCULARRXNO = [
-	/biopsy/i, /bx/i, /tumou?r/i,
+	/biopsy/i, /\bbx\b/i, /tumou?r/i,
 	/TSP/i, /TSS/i, /transnasal/i, /transsphenoid/i, /transventric/i,
 
 	/ETV/i, /OMMAYA/i, /(LP|VP) shunt/i,
@@ -298,10 +301,10 @@ var BRAINVASCULARRXNO = [
 	/thora/i, /TLIF/i,
 
 	/change battery/i, /DBS/i, /grid/i, /MVD/i, /cranioplasty/i,
-	/tracheos/i, /untether/i, /VNS/i
+	/untether/i, /VNS/i
 ]
 var CSFRXNO = [
-	/biopsy/i, /bx/i, /tumou?r/i,
+	/biopsy/i, /\bbx\b/i, /tumou?r/i,
 	/TSP/i, /TSS/i, /transnasal/i, /transsphenoid/i, /transventric/i,
 
 	/(clot|hematoma).*(removal|irrigation|evacuation)/i,
@@ -313,23 +316,23 @@ var CSFRXNO = [
 	/thora/i, /TLIF/i,
 
 	/change battery/i, /DBS/i, /grid/i, /MVD/i, /cranioplasty/i,
-	/tracheos/i, /untether/i, /VNS/i
+	/untether/i, /VNS/i
 ]
 var TRAUMARXNO = [
-	/biopsy/i, /bx/i, /tumou?r/i,
+	/biopsy/i, /\bbx\b/i, /tumou?r/i,
 	/TSP/i, /TSS/i, /transnasal/i, /transsphenoid/i, /transventric/i,
 
 	/EDAS/i, /EDAMS/i, /excision.*AVM|AVM.*excision/i,
 
-	/ETV/i, /EVD/i, /OMMAYA/i, /(LP|VP) shunt/i,
+	/ETV/i, /OMMAYA/i, /(LP|VP) shunt/i,
 
-	/ACDF/i, /ALIF/i, /^((?!mri|MRI?).)*[CTLS][\d]/,
+	/ACDF/i, /ALIF/i,
 	/lamin[eo]/i, /lumbar drain/i, /MIDLIF/i, /OLIF/i, 
 	/PLF/i, /PLIF/i, /sacr[ao]/i, /SNRB/i,
 	/thora/i, /TLIF/i,
 
 	/change battery/i, /DBS/i, /grid/i, /MVD/i,
-	/tracheos/i, /untether/i, /VNS/i
+	/untether/i, /VNS/i
 ]
 var SPINERXNO = [
 	/crani[oe]/i, /\bETS\b/i,
@@ -340,15 +343,15 @@ var SPINERXNO = [
 	/ETV/i, /EVD/i, /OMMAYA/i, /(LP|VP) shunt/i, /lumbar drain/i,
 
 	/change battery/i, /DBS/i, /grid/i, /MVD/i, /cranioplasty/i,
-	/tracheos/i, /VNS/i
+	/VNS/i
 ]
 var ETCRXNO = [
-	/tumou?r.*(biopsy|bx|remov)/i, /craniot.*tumou?r|clot removal/i,
+	/tumou?r.*(biopsy|\bbx\b|remov)/i, /craniot.*tumou?r|clot removal/i,
 	/TSP/i, /TSS/i, /transnasal/i, /transsphenoid/i, /transventric/i,
 
 	/clip/i, /EDAS/i, /EDAMS/i, /excision.*AVM|AVM.*excision/i,
 
-	/ETV/i, /EVD/i, /OMMAYA/i, /(LP|VP) shunt/i,
+	/ETV/i, /OMMAYA/i, /(LP|VP) shunt/i,
 
 	/ACDF/i, /ALIF/i, /^((?!mri|mri|mri|MRI?).)*[CTLS][\d]/,
 	/lamin[eo]/i, /lumbar drain/i, /MIDLIF/i, /OLIF/i, 
@@ -364,7 +367,7 @@ var	RADIOSURGERY = [
 	/Tomotherapy/i
 ]
 var	ENDOVASCULAR = [
-	/\bballoon/i, /\bcoil/i, /emboli[zs]/i, /\bendovasc/i, /\bintervention/i,
+	/\bcoil/i, /emboli[zs]/i, /\bendovasc/i, /\bintervention/i,
 	/\bstent/i, /\btransart/i, /\btransvenous/i
 ]
 
