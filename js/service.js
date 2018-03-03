@@ -218,7 +218,7 @@ function calcSERVE()
 //if (this.hn==="5104784")
 //{ this.hn==="5104784" }
 		var	treatment = this.treatment,
-			opwhat
+			opfor
 
 		if (!this.radiosurgery && isRadiosurgery(treatment)) {
 			this.radiosurgery = "Radiosurgery"
@@ -230,11 +230,13 @@ function calcSERVE()
 
 		// If DB value is blank, calc the value
 		if (!this.disease) {
-			opwhat = operationFor(treatment, this.diagnosis)
-			if (opwhat === "Spine") {
-				console.log(this.hn)//opwhat = ""
+			opfor = operationFor(treatment, this.diagnosis)
+
+			// in case no operation but matched CTLS
+			if (opfor === "Spine" && this.endovascular === "Endovascular") {
+				opfor = ""
 			}
-			this.disease = opwhat
+			this.disease = opfor
 		}
 
 		// "No" from DB or no matched
@@ -263,9 +265,8 @@ function operationFor(treatment, diagnosis)
 	// "No" from match NOOPERATION
 	if (isOperation(NOOPERATION, treatment)) { return "No" }
 
-	opfor = isNotThisOp(opfor, isThisOperation, treatment)
-
 	// "No" from no match
+	opfor = isNotThisOp(opfor, isThisOperation, treatment)
 	if (opfor.length === 0) { opwhat = "No" }
 	else if (opfor.length === 1) { opwhat = opfor[0] }
 	else {
@@ -277,6 +278,7 @@ function operationFor(treatment, diagnosis)
 			if (opfor.length === 0) { opwhat = "etc" }
 			else if (opfor.length === 1) { opwhat = opfor[0] }
 			else {
+				// in case all cancelled each other out
 				opwhat = opfor[0]
 				opfor = isNotThisOp(opfor, notThisDiagnosis, diagnosis)
 				if (opfor.length > 0) { opwhat = opfor[0] }
