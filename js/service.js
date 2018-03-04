@@ -215,10 +215,7 @@ function calcSERVE()
 	var gvserve = gv.SERVICE.slice()
 
 	$.each(gvserve, function() {
-//if (this.hn==="5104784")
-//{ this.hn==="5104784" }
-		var	treatment = this.treatment,
-			opfor
+		var	treatment = this.treatment
 
 		if (!this.radiosurgery && isRadiosurgery(treatment)) {
 			this.radiosurgery = "Radiosurgery"
@@ -229,15 +226,7 @@ function calcSERVE()
 		}
 
 		// If DB value is blank, calc the value
-		if (!this.disease) {
-			opfor = operationFor(treatment, this.diagnosis)
-
-			// in case no operation but matched CTLS
-			if (opfor === "Spine" && this.endovascular === "Endovascular") {
-				opfor = ""
-			}
-			this.disease = opfor
-		}
+		this.disease = this.disease || operationFor(treatment, this.diagnosis)
 
 		// "No" from DB or no matched
 		if (this.disease !== "No") {
