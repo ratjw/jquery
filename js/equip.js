@@ -6,8 +6,8 @@ function fillEquipTable(book, $row, qn)
 	var JsonEquip = bookqEquip? JSON.parse(bookqEquip) : {}
 	var $dialogEquip = $('#dialogEquip')
 	var height = window.innerHeight
-	if (height > 800) {
-		height = 800
+	if (height > 1000) {
+		height = 1000
 	}
 
 	document.getElementById("oproom").innerHTML = bookq.oproom || ""

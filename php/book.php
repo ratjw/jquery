@@ -22,7 +22,8 @@ function book($mysqli)
 			FROM book 
 			WHERE opdate >= DATE_FORMAT(CURDATE()-INTERVAL 1 MONTH,'%Y-%m-01')
 				AND deleted = 0 AND waitnum > 0
-			ORDER BY opdate,theatre,oproom,casenum,optime,waitnum;";
+			ORDER BY opdate,theatre,oproom is null,oproom,casenum,optime,waitnum;";
+			// no oproom will be the last, as sorted by ASC
 
 	if (!$result = $mysqli->query ($sql)) {
 		return $mysqli->error;
