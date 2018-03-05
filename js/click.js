@@ -771,9 +771,9 @@ function getNAME(evt, pointing)
 	var patient = pointing.innerHTML
 
 	if (inPicArea(evt, pointing)) {
-		clearEditcell()
 		showUpload(hn, patient)
 	}
+	clearEditcell()
 }
 
 function getEquip(evt, pointing)

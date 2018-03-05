@@ -79,7 +79,7 @@ function getOpdate(date)	//change Thai date from table to ISO date
 	return date.numDate()
 }
 
-function putOpdate(date)	//change date in book to show on table
+function putThdate(date)	//change date in book to show on table
 {
 	if (!date) { return date }
 	if (date === LARGESTDATE) {

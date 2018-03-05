@@ -73,7 +73,7 @@ jQuery.fn.extend({
 		: (q.action === 'undelete') && this.css("background-color", "#CCFFCC")
 
 		cells[0].innerHTML = q.editdatetime
-		cells[1].innerHTML = putOpdate(q.opdate)
+		cells[1].innerHTML = putThdate(q.opdate)
 		cells[2].innerHTML = q.oproom
 		cells[3].innerHTML = putCasenumTime(q)
 		cells[4].innerHTML = q.staffname
@@ -181,7 +181,7 @@ jQuery.fn.extend({
 
 		cells[0].className = "undelete"
 		cells[0].innerHTML = q.editdatetime
-		cells[1].innerHTML = putOpdate(q.opdate)
+		cells[1].innerHTML = putThdate(q.opdate)
 		cells[2].innerHTML = q.staffname
 		cells[3].innerHTML = q.hn
 		cells[4].innerHTML = q.patient
@@ -620,7 +620,7 @@ jQuery.fn.extend({
 		q.hn && gv.isPACS && (cells[2].className = "pacs")
 		q.patient && (cells[3].className = "camera")
 
-		cells[0].innerHTML = putOpdate(q.opdate)
+		cells[0].innerHTML = putThdate(q.opdate)
 		cells[1].innerHTML = q.staffname
 		cells[2].innerHTML = q.hn
 		cells[3].innerHTML = q.patient

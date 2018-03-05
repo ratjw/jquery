@@ -117,21 +117,19 @@ function sqlOneMonth(fromDate, toDate)
 // dead : "", "Dead"							<- use-defined only
 function showService(fromDate, toDate)
 {
-	//delete previous servicetbl lest it accumulates
 	var $servicetbl = $("#servicetbl"),
-		$servicecells = $("#servicecells")
+		$servicecells = $("#servicecells"),
+		staffname = "",
+		scase = 0,
+		classname = ""
 
 	$("#monthpicker").hide()
 	$("#servicehead").show()
 
+	//delete previous servicetbl lest it accumulates
 	$servicetbl.find("tr").slice(1).remove()
 	$servicetbl.show()
 	gv.editableSV = fromDate >= getStart()
-		
-
-	var staffname = "",
-		scase = 0,
-		classname = ""
 
 	$.each( gv.SERVE, function() {
 		if (this.staffname !== staffname) {
@@ -139,7 +137,7 @@ function showService(fromDate, toDate)
 			scase = 0
 			$servicecells.find("tr").clone()
 				.appendTo($servicetbl.find("tbody"))
-					.children("td").eq(OPDATE)
+					.children("td").eq(CASENUMSV)
 						.prop("colSpan", 10)
 							.addClass("serviceStaff")
 								.html(staffname)
@@ -226,7 +224,7 @@ function calcSERVE()
 		}
 
 		// If DB value is blank, calc the value
-		this.disease = this.disease || operationFor(treatment, this.diagnosis)
+		this.disease = this.disease || operationFor(this)
 
 		// "No" from DB or no matched
 		if (this.disease !== "No") {
@@ -240,7 +238,7 @@ function calcSERVE()
 	return gvserve
 }
 
-function operationFor(treatment, diagnosis)
+function operationFor(thisrow)
 {
 	var opfor = [
 			"Brain Tumor",
@@ -250,6 +248,9 @@ function operationFor(treatment, diagnosis)
 			"Spine",
 			"etc"
 		],
+		diagnosis = thisrow.diagnosis,
+		treatment = thisrow.treatment,
+		endovascular = thisrow.endovascular === "Endovascular",
 		opwhat
 	// "No" from match NOOPERATION
 	if (isOperation(NOOPERATION, treatment)) { return "No" }
@@ -273,6 +274,9 @@ function operationFor(treatment, diagnosis)
 				if (opfor.length > 0) { opwhat = opfor[0] }
 			}
 		}
+	}
+	if (opwhat === "Spine" && endovascular && !isOperation(SPINEOP, treatment)) {
+		opwhat = "No"
 	}
 	return opwhat
 }
@@ -375,17 +379,18 @@ function isEndovascular(treatment)
 
 function refillService(fromDate, toDate)
 {
-	var i = 0,
+	var $servicetbl = $("#servicetbl"),
+		$rows = $servicetbl.find("tr"),
+		$servicecells = $("#servicecells"),
+		len = $rows.length
 		staffname = "",
-		scase = 0,
-		classes = "",
-		scase = 0,
-		$rows = $("#servicetbl tr"),
-		len = $rows.length,
-		$rowi = $cells = $staff = {}
+		i = scase = 0,
+		classname = ""
 
 	$.each( gv.SERVE, function() {
 		if (this.staffname !== staffname) {
+			staffname = this.staffname
+			scase = 0
 			i++
 			$staff = $rows.eq(i).children("td").eq(CASENUMSV)
 			if ($staff.prop("colSpan") === 1) {
@@ -402,14 +407,14 @@ function refillService(fromDate, toDate)
 				.appendTo($("#servicetbl").find("tbody"))
 			len++
 		}
-		classes = countService(this, fromDate, toDate)
+		classname = countService(this, fromDate, toDate)
 		$rowi = $rows.eq(i)
 		$cells = $rowi.children("td")
 		if ($cells.eq(CASENUMSV).prop("colSpan") > 1) {
 			$cells.eq(CASENUMSV).prop("colSpan", 1)
 				.nextUntil($cells.eq(QNSV)).show()
 		}
-		$rowi.filldataService(this, scase, classes)
+		$rowi.filldataService(this, scase, classname)
 	});
 	if (i < (len - 1)) {
 		$rows.slice(i+1).remove()
@@ -434,9 +439,9 @@ jQuery.fn.extend({
 		cells[TREATMENTSV].innerHTML = bookq.treatment
 		cells[ADMISSIONSV].innerHTML = bookq.admission
 		cells[FINALSV].innerHTML = bookq.final
-		cells[ADMITSV].innerHTML = putOpdate(bookq.admit)
-		cells[OPDATESV].innerHTML = putOpdate(bookq.opdate)
-		cells[DISCHARGESV].innerHTML = putOpdate(bookq.discharge)
+		cells[ADMITSV].innerHTML = putThdate(bookq.admit)
+		cells[OPDATESV].innerHTML = putThdate(bookq.opdate)
+		cells[DISCHARGESV].innerHTML = putThdate(bookq.discharge)
 		cells[QNSV].innerHTML = bookq.qn
 	}
 })
@@ -571,7 +576,7 @@ function fillAdmitDischargeDate()
 				$cells = $thisRow.children("td")
 
 			if (this.admit &&  this.admit !== $cells.eq(ADMITSV).html()) {
-				$cells.eq(ADMITSV).html(this.admit)
+				$cells.eq(ADMITSV).html(putThdate(this.admit))
 				if (!/Admission/.test($cells.eq(ADMISSIONSV).className)) {
 					$cells.eq(ADMISSIONSV).addClass("Admission")
 					// for background pics
@@ -582,7 +587,7 @@ function fillAdmitDischargeDate()
 				}
 			}
 			if (this.discharge && this.discharge !== $cells.eq(DISCHARGESV).html()) {
-				$cells.eq(DISCHARGESV).html(this.discharge)
+				$cells.eq(DISCHARGESV).html(putThdate(this.discharge))
 				if (!/Discharge/.test($thisRow.className)) {
 					$thisRow.addClass("Discharge")
 					// for counting
@@ -1188,10 +1193,10 @@ function countAllServices()
 			if (document.getElementById(this)) {
 				document.getElementById(this).innerHTML++
 			}
-			if (this === "Readmission") {
+			if (String(this) === "Readmission") {
 				document.getElementById("Admission").innerHTML++
 			}
-			if (this === "Reoperation") {
+			if (String(this) === "Reoperation") {
 				document.getElementById("Operation").innerHTML++
 			}
 		})

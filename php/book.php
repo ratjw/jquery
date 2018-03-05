@@ -37,7 +37,7 @@ function book($mysqli)
 			FROM book 
 			WHERE opdate >= DATE_FORMAT(CURDATE()-INTERVAL 1 MONTH,'%Y-%m-01')
 				AND deleted = 0 AND waitnum < 0
-			ORDER BY opdate,oproom,casenum,optime,waitnum DESC;";
+			ORDER BY opdate,oproom is null,oproom,casenum,optime,waitnum DESC;";
 			// Consult cases have negative waitnum.
 			// Greater waitnum (less negative) are placed first
 

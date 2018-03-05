@@ -14,7 +14,7 @@ function fillEquipTable(book, $row, qn)
 	document.getElementById("casenum").innerHTML = bookq.casenum || ""
 	document.getElementById("optime").innerHTML = bookq.optime
 	document.getElementById("opday").innerHTML = NAMEOFDAYTHAI[(new Date(bookq.opdate)).getDay()]
-	document.getElementById("opdate").innerHTML = putOpdate(bookq.opdate)
+	document.getElementById("opdate").innerHTML = putThdate(bookq.opdate)
 	document.getElementById("staffname").innerHTML = bookq.staffname
 	document.getElementById("hn").innerHTML = bookq.hn
 	document.getElementById("patientname").innerHTML = bookq.patient

@@ -148,7 +148,7 @@ function getOpdate(date)
 }
 
 //change date in book to show on table
-function putOpdate(date)
+function putThdate(date)
 {
 	if (!date) { return date }
 	if (date === LARGESTDATE) {

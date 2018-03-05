@@ -283,7 +283,11 @@ function updating()
 // There is some changes in database from other users
 function getUpdate()
 {
-	Ajax(MYSQLIPHP, "nosqlReturnbook=''", callbackGetUpdate);
+	var fromDate = $('#monthstart').val(),
+		toDate = $('#monthpicker').val(),
+		sql = "sqlReturnService=" + sqlOneMonth(fromDate, toDate)
+
+	Ajax(MYSQLIPHP, sql, callbackGetUpdate);
 
 	function callbackGetUpdate(response)
 	{
@@ -291,9 +295,6 @@ function getUpdate()
 			updateBOOK(response)
 			if ($("#dialogService").hasClass('ui-dialog-content')
 				&& $("#dialogService").dialog('isOpen')) {
-				var fromDate = $('#monthstart').val()
-				var toDate = $('#monthpicker').val()
-
 				refillService(fromDate, toDate)
 			}
 			refillall()

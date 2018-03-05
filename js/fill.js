@@ -188,7 +188,7 @@ function refillOneDay(opdate)
 {
 	if (opdate === LARGESTDATE) { return }
 	var book = gv.BOOK,
-		opdateth = putOpdate(opdate),
+		opdateth = putThdate(opdate),
 		opdateBOOKrows = getBOOKrowsByDate(book, opdate),
 		$opdateTblRows = getTableRowsByDate(opdateth),
 		bookRows = opdateBOOKrows.length,
@@ -408,7 +408,7 @@ jQuery.fn.extend({
 		cells[HN].className = (bookq.hn && gv.isPACS)? "pacs" : ""
 		cells[NAME].className = bookq.patient? "camera" : ""
 
-		cells[OPDATE].innerHTML = putOpdate(bookq.opdate)
+		cells[OPDATE].innerHTML = putThdate(bookq.opdate)
 		cells[ROOM].innerHTML = bookq.oproom || ""
 		cells[CASENUM].innerHTML = putCasenumTime(bookq)
 		cells[STAFFNAME].innerHTML = bookq.staffname
