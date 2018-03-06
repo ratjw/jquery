@@ -108,7 +108,7 @@ function sqlOneMonth(fromDate, toDate)
 // doneby : "", "Staff", "Resident"				<- defaulted by treatment
 // manner : "", "Elective", "Emergency"			<- defaulted by treatment
 // scale : "", "Major", "Minor"					<- defaulted by treatment
-// disease : "", "Brain Tumor", "Brain Vascular",
+// disease : "", "No", "Brain Tumor", "Brain Vascular",
 //		"CSF related", "Trauma", "Spine", "etc" <- treatment + diagnosis
 // radiosurgery : "", "No", "Radiosurgery"			<- treatment
 // endovascular : "", "No", "Endovascular"			<- treatment
@@ -168,7 +168,6 @@ function showService(fromDate, toDate)
 			$divRecord.hide()
 		}
 	})
-	resetcountService()
 	getAdmitDischargeDate(fromDate, toDate)
 	countAllServices()
 	$servicetbl.fixMe($dialogService)
@@ -553,7 +552,11 @@ function updateRowClasses($this, classname)
 
 function getAdmitDischargeDate(fromDate, toDate)
 {
-	Ajax(GETIPD, "from=" + fromDate + "&to=" + toDate, callbackgetipd)
+	var sql = "from=" + fromDate
+			+ "&to=" + toDate
+			+ "&sql=" + sqlOneMonth(fromDate, toDate)
+
+	Ajax(GETIPD, sql, callbackgetipd)
 
 	function callbackgetipd(response)
 	{

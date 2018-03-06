@@ -1,6 +1,7 @@
 <?php
 include "connect.php";
 require_once "book.php";
+require_once "mysqli.php";
 
 	$ipserver = gethostbyname($_SERVER['SERVER_NAME']);
 	if (strpos($ipserver, "10.6") === false) {
@@ -9,6 +10,7 @@ require_once "book.php";
 
 	$from = $_POST["from"];
 	$to = $_POST["to"];
+	$sql = $_POST["sql"];
 
 	$result = $mysqli->query ("SELECT opdate, hn, admit, discharge, qn
 		FROM book
@@ -61,7 +63,7 @@ require_once "book.php";
 						 WHERE qn=$qn;");
 	}
 
- 	echo json_encode(book($mysqli));
+ 	echo returnService($mysqli, $sql);
 
 //use json encode-decode to convert XML to assoc array
 function getipd($hn)

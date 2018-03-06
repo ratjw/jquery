@@ -38,7 +38,7 @@ table {
 	/*make cell width = first row specified*/
 	table-layout: fixed;
 	border-right: solid 1px gray;
-	width: auto;
+	width: 100%;
 	border-collapse: collapse;
 }
 
@@ -78,6 +78,14 @@ td {
 #tbl td:nth-child(2),
 #tbl td:nth-child(3) {
 	text-align: center;
+}
+
+#tbl td:nth-child(3),
+#tbl td:nth-child(4),
+#tbl td:nth-child(5),
+#tbl td:nth-child(6) {
+	font-size: 12px;
+	width: 50px;
 }
 
 .bottom-right {

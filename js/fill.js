@@ -465,7 +465,8 @@ function checkMatch(classes, oldClasses)
 
 function putCasenumTime(bookq)
 {
-	return (bookq.casenum || "") + (bookq.optime? ("<br>" + bookq.optime) : "")
+	return (bookq.casenum || "")
+		+ (bookq.optime ? ("<br>" + bookq.optime) : "")
 }
 
 function putNameAge(bookq)

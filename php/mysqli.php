@@ -3,21 +3,8 @@ include "connect.php";
 require_once "book.php";
 
 	// start.js (start)
-	if (isset($_POST['start']))
-	{
-		$sql = "UPDATE staff,(SELECT MAX(dateoncall) AS max FROM staff) as oncall
-					SET staffoncall=staffname,
-						dateoncall=DATE_ADD(oncall.max,INTERVAL 1 WEEK)
-				WHERE dateoncall<=CURDATE();
-				SELECT * FROM staff ORDER BY number;";
-		$return = multiquery($mysqli, $sql);
-		if (gettype($return) === "string") {
-			echo $return;
-		} else {
-			$data = book($mysqli);
-			$data["STAFF"] = $return;
-			echo json_encode($data);
-		}
+	if (isset($_POST['start'])) {
+		echo start($mysqli, $_POST['start']);
 	}
 	// start.js (getUpdate)
 	else if (isset($_POST['nosqlReturnbook']))
@@ -29,27 +16,14 @@ require_once "book.php";
 	// equip.js (Checklistequip)
 	// menu.js (changeDate - $datepicker, changeDate - $trNOth, deleteCase)
 	// sortable.js (sortable)
-	else if (isset($_POST['sqlReturnbook']))
-	{
-		$return = multiquery($mysqli, $_POST['sqlReturnbook']);
-		if (gettype($return) === "string") {
-			echo $return;
-		} else {
-			echo json_encode(book($mysqli));
-		}
+	else if (isset($_POST['sqlReturnbook'])) {
+		echo returnbook($mysqli, $_POST['sqlReturnbook']);
 	}
 
 	// service.js (saveScontent)
 	// This also gets BOOK
 	else if (isset($_POST['sqlReturnService'])) {
-		$return = multiquery($mysqli, $_POST['sqlReturnService']);
-		if (gettype($return) === "string") {
-			echo $return;
-		} else {
-			$data = book($mysqli);
-			$data["SERVICE"] = $return;
-			echo json_encode($data);
-		}
+		echo returnService($mysqli, $_POST['sqlReturnService']);
 	}
 
 	// click.js (changeOncall)
@@ -58,20 +32,57 @@ require_once "book.php";
 	// service.js (getServiceOneMonth, updateDiff)
 	// start.js (updating)
 	else if (isset($_POST['sqlReturnData'])) {
-		$return = multiquery($mysqli, $_POST['sqlReturnData']);
-		if (gettype($return) === "string") {
-			echo $return;
-		} else {
-			echo json_encode($return);
-		}
+		echo returnData($mysqli, $_POST['sqlReturnData']);
 	}
 
-	else if (isset($_POST['sqlnoReturn'])) {
-		$return = multiquery($mysqli, $_POST['sqlnoReturn']);
-		if (gettype($return) === "string") {
-			echo $return;
-		}
+function start($mysqli, $sql)
+{
+	$sql = "UPDATE staff,(SELECT MAX(dateoncall) AS max FROM staff) as oncall
+				SET staffoncall=staffname,
+					dateoncall=DATE_ADD(oncall.max,INTERVAL 1 WEEK)
+				WHERE dateoncall<=CURDATE();
+			SELECT * FROM staff ORDER BY number;";
+	$return = multiquery($mysqli, $sql);
+	if (gettype($return) === "string") {
+		return $return;
+	} else {
+		$data = book($mysqli);
+		$data["STAFF"] = $return;
+		return json_encode($data);
 	}
+}
+
+function returnbook($mysqli, $sql)
+{
+	$return = multiquery($mysqli, $sql);
+	if (gettype($return) === "string") {
+		return $return;
+	} else {
+		return json_encode(book($mysqli));
+	}
+}
+
+function returnService($mysqli, $sql)
+{
+	$return = multiquery($mysqli, $sql);
+	if (gettype($return) === "string") {
+		return $return;
+	} else {
+		$data = book($mysqli);
+		$data["SERVICE"] = $return;
+		return json_encode($data);
+	}
+}
+
+function returnData($mysqli, $sql)
+{
+	$return = multiquery($mysqli, $sql);
+	if (gettype($return) === "string") {
+		return $return;
+	} else {
+		return json_encode($return);
+	}
+}
 
 function multiquery($mysqli, $sql)
 {
