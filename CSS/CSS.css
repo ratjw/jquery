@@ -38,7 +38,7 @@ table {
 	/*make cell width = first row specified*/
 	table-layout: fixed;
 	border-right: solid 1px gray;
-	width: 100%;
+	width: auto;
 	border-collapse: collapse;
 }
 
@@ -64,45 +64,142 @@ td {
 	background-position: right bottom;
 }
 
+#tbl td:first-child,
+#tbl td:nth-child(2),
+#tbl td:nth-child(3),
+#tbl td:nth-child(4),
+#tbl td:nth-child(5),
+#tbl td:nth-child(6),
+#queuetbl td:first-child,
+#queuetbl td:nth-child(4),
+#queuetbl td:nth-child(5),
+#queuetbl td:nth-child(6),
 #alltbl td {
 	font-size: 12px;
 }
 
 #tbl td:first-child,
 #queuetbl td:first-child {
-	font-size: 12px;
-/*	background-image: url("pic/menu.png");
-	background-position: right center;*/
+	min-width: 40px;
+	max-width: 60px;
 }
 
 #tbl td:nth-child(2),
 #tbl td:nth-child(3) {
 	text-align: center;
+	min-width: 30px;
+	max-width: 30px;
 }
 
-#tbl td:nth-child(3),
 #tbl td:nth-child(4),
-#tbl td:nth-child(5),
-#tbl td:nth-child(6) {
-	font-size: 12px;
-	width: 50px;
+#queuetbl td:nth-child(4) {
+	min-width: 30px;
+	max-width: 50px;
 }
+
+#tbl td:nth-child(5),
+#queuetbl td:nth-child(5) {
+	min-width: 50px;
+	max-width: 50px;
+}
+
+#tbl td:nth-child(6),
+#queuetbl td:nth-child(6) {
+	min-width: 70px;
+	max-width: 100px;
+}
+
+#tbl td:nth-child(7) { width: 25%; }
+
+#tbl td:nth-child(8),
+#tbl td:nth-child(9) { width: 30%; }
+
+#servicetbl td:nth-child(1) { width: 1%; }
+#servicetbl td:nth-child(2) { width: 3%; }
+#servicetbl td:nth-child(3) { width: 10%; }
+#servicetbl td:nth-child(4),
+#servicetbl td:nth-child(5) { width: 15%; }
+#servicetbl td:nth-child(6) { width: 30%; }
+#servicetbl td:nth-child(7),
+#servicetbl td:nth-child(8),
+#servicetbl td:nth-child(9) { width: 2%; }
+
+#historytbl td:nth-child(1) { width: 5%; }
+#historytbl td:nth-child(2),
+#historytbl td:nth-child(3) { width: 1%; }
+#historytbl td:nth-child(4) { width: 3%; }
+#historytbl td:nth-child(5),
+#historytbl td:nth-child(6) { width: 10%; }
+#historytbl td:nth-child(7),
+#historytbl td:nth-child(8),
+#historytbl td:nth-child(9),
+#historytbl td:nth-child(10) { width: 15%; }
+#historytbl td:nth-child(11),
+#historytbl td:nth-child(12) { width: 5%; }
+
+#deletedtbl td:nth-child(1) { width: 5%; }
+#deletedtbl td:nth-child(2) { width: 5%; }
+#deletedtbl td:nth-child(3) { width: 5%; }
+#deletedtbl td:nth-child(4) { width: 10%; }
+#deletedtbl td:nth-child(5) { width: 20%; }
+#deletedtbl td:nth-child(6) { width: 20%; }
+#deletedtbl td:nth-child(7) { width: 20%; }
+#deletedtbl td:nth-child(8) { width: 5%; }
+#deletedtbl td:nth-child(9) { width: 10%; }
+
+#findtbl td:nth-child(1) { width: 4%; }
+#findtbl td:nth-child(2) { width: 3%; }
+#findtbl td:nth-child(3) { width: 3%; }
+#findtbl td:nth-child(4) { width: 10%; }
+#findtbl td:nth-child(5) { width: 20%; }
+#findtbl td:nth-child(6) { width: 15%; }
+#findtbl td:nth-child(7) { width: 20%; }
+#findtbl td:nth-child(8) { width: 15%; }
+#findtbl td:nth-child(9) { width: 10%; }
+
+#wrapper,
+#queuewrapper,
+#tblcells,
+#queuetbl th:nth-child(2), #queuetbl td:nth-child(2),
+#queuetbl th:nth-child(3), #queuetbl td:nth-child(3),
+#alltbl th:nth-child(2), #alltbl td:nth-child(2),
+#alltbl th:nth-child(3), #alltbl td:nth-child(3),
+#tbl th:nth-child(10), #tbl td:nth-child(10),
+#queuetbl th:nth-child(10), #queuetbl td:nth-child(10),
+#servicetbl th:nth-child(10), #servicetbl td:nth-child(10),
+#alltbl th:nth-child(10), #alltbl td:nth-child(10),
+#deletedtbl th:nth-child(10), #deletedtbl td:nth-child(10),
+#dialogService, #servicecells,
+#monthpicker button.ui-datepicker-current,
+#monthpicker .ui-datepicker-calendar,
+#monthstart,
+#divRecord,
+#dialogEquip,
+#dialogDeleted, #deletedcells,
+#dialogHistory, #historycells,
+#dialogInput,
+#dialogFind, #findcells,
+#dialogReadme,
+#menu,
+#stafflist,
+#editcell,
+#undelete,
+#txtArea1 {
+	display: none;
+}
+
+#dialogInput span { width:90px }
+
+#deleted div span { background-color:pink }
+#notdeleted div span { background-color:skyblue }
+
+#reviewtbl tbody tr:nth-child(6) td { font-weight:normal }
+#reviewtbl tbody tr:nth-child(7) th { text-align:left; padding-left:20px }
 
 .bottom-right {
     position: absolute;
     bottom: 0;
     right: 0;
-}
-
-#queuetbl th:nth-child(2),
-#queuetbl th:nth-child(3),
-#alltbl th:nth-child(2),
-#alltbl th:nth-child(3),
-#queuetbl td:nth-child(2),
-#queuetbl td:nth-child(3),
-#alltbl td:nth-child(2),
-#alltbl td:nth-child(3)  {
-	display: none;
 }
 
 tr.bordergroove {
@@ -260,6 +357,8 @@ td.Radiosurgery.Endovascular {
 	padding-left: 10px;
 }
 
+#monthpicker { margin-left:5px }
+
 .fixed{
 	top: 0;
 	position: fixed;
@@ -319,6 +418,13 @@ td.Radiosurgery.Endovascular {
 	margin: 0 30px 0 0;
 }
 
+.dialogBox span {
+	display:inline-block;
+	padding: 0px;
+	margin: 0px;
+	border: 0px;
+}
+
 #login {
 	width: 300px; 
 	margin-top: 0px;
@@ -341,7 +447,6 @@ input[type=submit] {
 }
 
 #editcell { 
-	display: none;
 	text-align: left; 
 	overflow: hidden;
 	padding-left: 3px;
@@ -388,7 +493,6 @@ input[type=submit] {
 }
 
 #undelete { 
-	display: none;
 	width: 125px;
 }
 
@@ -404,28 +508,17 @@ input[type=submit] {
 	line-height: 25px;
 }
 
-#monthpicker button.ui-datepicker-current {
-	display: none;
-}
-
-#monthpicker .ui-datepicker-calendar {
-	display: none;
-}
-
 #dialogEquip {
-	display: none;
 	font-size: 14px;
 	color: black;
 	background-color: white;
 }
 
-#dialogEquip div,
-#dialogEquip span {
-	display: inline-block;
-	padding: 0px;
-	margin: 0px;
-	border: 0px;
-}
+#oproom,
+#casenum,
+#optime,
+#opdate,
+#staffname { font-size: 16px; font-weight: bold; }
 
 #dialogEquip input[type=radio] + label,
 #dialogEquip input[type=checkbox] + label {
@@ -469,7 +562,6 @@ input[type=submit] {
 }
 
 #divRecord span {
-	display: inline-block;
 	width: 130px;
 }
 
@@ -523,7 +615,6 @@ input[type=submit] {
 }
 
 #dialogReadme {
-	display: none;
 	line-height: 150%;
 	font-size: 14px;
 	color: black;
@@ -550,10 +641,6 @@ input[type=submit] {
 	font-size: 14px;
 	padding: 0px 0px 0px 3px;
 	margin: 0px;
-}
-
-.dialogBox span {
-	display:inline-block;
 }
 
 @media only screen and (max-width: 640px) {
