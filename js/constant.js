@@ -58,8 +58,8 @@ var LARGESTDATE		= "9999-12-31";
 var	BRAINDX = [
 	/\bbrain\b/i, /basal ganglion/i, /basal.*gg/i, /bgg/i, /cavernous/i, /cerebell/i, 
 	/cranio/i, /\bCNS\b/i, /convexity/i, /\bCPA?\b/i, /cliv[aou]/i,
-	/facial/i, /front/i, /fal[cx]/i, /\bF-?P\b/i, /jugular/i,
-	/planum/i, /pitui/i, /pineal/i, /petro/i, 
+	/facial/i, /front/i, /fal[cx]/i, /\bF\-?P\b/i, /jugular/i,
+	/pariet/i, /planum/i, /pitui/i, /pineal/i, /petro/i, 
 	/occipit/i, /sella/i, /sphenoid/i, /sagittal/i, /\bSSS\b/i,
 	/tempor/i, /tentori/i, /thalam/i, /tonsil/i,
 	/transnasal/i, /transsphenoid/i, /transtent/i, /transventric/i, 
@@ -73,8 +73,8 @@ var	BRAINTUMORDX = [
 var	BRAINVASCULARDX = [
 	/aneurysm/i, /AVM/i, /AVF/i, /basal ganglion|\bbg|cerebellar hemorrhage/i,
 	/cavernoma/i, /emboli/i, /ha?emorrh/i, /HT?ICH/i,
-	/ICH/i, /infarct/i, /(ICA|MCA|VBA).*stenosis/i,
-	/M1|M2|MCA occlusion/i, /moya moya/i, /\bSAH\b/i
+	/\bICH\b/i, /infarct/i, /(\bICA\b|MCA|VBA).*stenosis/i,
+	/\bM1\b|\bM2\b|MCA/i, /moya moya/i, /\bSAH\b/i
 ]
 var	CSFDX = [
 	/\bHCP\b/i, /hydrocephalus/i, /\bNPH\b/i,
@@ -103,7 +103,7 @@ var	ETCDX = [
 var	BRAINTUMORDXNO = [
 	/aneurysm/i, /AVM/i, /AVF/i, /basal ganglion|\bbg|cerebellar hemorrhage/i,
 	/cavernoma/i, /emboli/i, /ha?emorrh/i, /HT?ICH/i,
-	/ICH/i, /infarct/i, /(ICA|MCA|VBA).*stenosis/i,
+	/\bICH\b/i, /infarct/i, /(ICA|MCA|VBA).*stenosis/i,
 	/M1|M2|MCA occlusion/i, /moya moya/i, /\bSAH\b/i,
 
 	/\bHCP\b/i, /hydrocephalus/i, /\bNPH\b/i,
@@ -156,7 +156,7 @@ var	CSFDXNO = [
 
 	/aneurysm/i, /AVM/i, /AVF/i, /basal ganglion|\bbg|cerebellar hemorrhage/i,
 	/cavernoma/i, /emboli/i, /ha?emorrh/i, /HT?ICH/i,
-	/ICH/i, /infarct/i, /(ICA|MCA|VBA).*stenosis/i,
+	/\bICH\b/i, /infarct/i, /(ICA|MCA|VBA).*stenosis/i,
 	/M1|M2|MCA occlusion/i, /moya moya/i, /\bSAH\b/i,
 
 	/assault/i, /\bEDH\b/i, /contusion/i, /injury/i,
@@ -174,13 +174,13 @@ var	CSFDXNO = [
 	/\bTG?N\b/i, /tunnel/i
 ]
 var	TRAUMADXNO = [
-	/^((?!cavernoma|osteo).)*oma/i, /\bCA\b/i, /CPA/i, /crani[oe]/i, /Cushing/i, /cyst\b/i,
+	/^((?!cavernoma|osteo).)*oma/i, /\bCA\b/i, /CPA/i, /Cushing/i, /cyst\b/i,
 	/DNET/i, /GBM/i, /mass/i, /metas/i, /\bNFP?A\b/i,
 	/\bPA\b/i, /pituitary apoplexy/i, /tumou?r/i,
 
 	/aneurysm/i, /AVM/i, /AVF/i, /basal ganglion|\bbg|cerebellar hemorrhage/i,
 	/cavernoma/i, /emboli/i, /ha?emorrh/i, /HT?ICH/i,
-	/ICH/i, /infarct/i, /(ICA|MCA|VBA).*stenosis/i,
+	/\bICH\b/i, /infarct/i, /(ICA|MCA|VBA).*stenosis/i,
 	/M1|M2|MCA occlusion/i, /moya moya/i, /\bSAH\b/i,
 
 	/\bHCP\b/i, /hydrocephalus/i, /\bNPH\b/i,
@@ -204,7 +204,7 @@ var	SPINEDXNO = [
 	/\bPA\b/i, /pituitary apoplexy/i,
 
 	/basal ganglion|\bbg|cerebellar hemorrhage/i,
-	/HT?ICH/i, /ICH/i, /infarct/i, /(ICA|MCA|VBA).*stenosis/i,
+	/HT?ICH/i, /\bICH\b/i, /infarct/i, /(ICA|MCA|VBA).*stenosis/i,
 	/M1|M2|MCA occlusion/i, /moya moya/i,
 
 	/\bHCP\b/i, /hydrocephalus/i, /\bNPH\b/i,

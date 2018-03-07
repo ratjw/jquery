@@ -193,7 +193,7 @@ td {
 #deleted div span { background-color:pink }
 #notdeleted div span { background-color:skyblue }
 
-#reviewtbl tbody tr:nth-child(6) td { font-weight:normal }
+#reviewtbl tbody tr:nth-child(6) td:first-child { font-weight:normal }
 #reviewtbl tbody tr:nth-child(7) th { text-align:left; padding-left:20px }
 
 .bottom-right {

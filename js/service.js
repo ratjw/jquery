@@ -252,7 +252,7 @@ function operationFor(thisrow)
 		endovascular = thisrow.endovascular === "Endovascular",
 		opwhat
 	// "No" from match NOOPERATION
-	if (isOperation(NOOPERATION, treatment)) { return "No" }
+	if (isMatched(NOOPERATION, treatment)) { return "No" }
 
 	// "No" from no match
 	opfor = isNotThisOp(opfor, isThisOperation, treatment)
@@ -274,13 +274,13 @@ function operationFor(thisrow)
 			}
 		}
 	}
-	if (opwhat === "Spine" && endovascular && !isOperation(SPINEOP, treatment)) {
+	if (opwhat === "Spine" && endovascular && !isMatched(SPINEOP, treatment)) {
 		opwhat = "No"
 	}
 	return opwhat
 }
 
-function isOperation(keyword, diagtreat)
+function isMatched(keyword, diagtreat)
 {
 	var test = false
 
@@ -311,7 +311,7 @@ function isThisOperation(item, treatment)
 		"etc": ETCRX
 	}
 
-	return !isOperation(thisOp[item], treatment)
+	return !isMatched(thisOp[item], treatment)
 }
 
 function notThisOperation(item, treatment)
@@ -325,7 +325,7 @@ function notThisOperation(item, treatment)
 		"etc": ETCRXNO
 	}
 
-	return isOperation(notThisOp[item], treatment)
+	return isMatched(notThisOp[item], treatment)
 }
 
 function isThisDiagnosis(item, diagnosis)
@@ -339,7 +339,7 @@ function isThisDiagnosis(item, diagnosis)
 		"etc": ETCDX
 	}
 
-	return !isOperation(thisDiag[item], diagnosis)
+	return !isMatched(thisDiag[item], diagnosis)
 }
 
 function notThisDiagnosis(item, diagnosis)
@@ -353,7 +353,7 @@ function notThisDiagnosis(item, diagnosis)
 		"etc": ETCDXNO
 	}
 
-	return isOperation(notDiag[item], diagnosis)
+	return isMatched(notDiag[item], diagnosis)
 }
 
 function isRadiosurgery(treatment)
