@@ -119,10 +119,11 @@ td {
 #servicetbl td:nth-child(3) { width: 10%; }
 #servicetbl td:nth-child(4),
 #servicetbl td:nth-child(5) { width: 15%; }
-#servicetbl td:nth-child(6) { width: 30%; }
-#servicetbl td:nth-child(7),
+#servicetbl td:nth-child(6),
+#servicetbl td:nth-child(7) { width: 25%; }
 #servicetbl td:nth-child(8),
-#servicetbl td:nth-child(9) { width: 2%; }
+#servicetbl td:nth-child(9),
+#servicetbl td:nth-child(10) { width: 2%; }
 
 #historytbl td:nth-child(1) { width: 5%; }
 #historytbl td:nth-child(2),
@@ -166,7 +167,7 @@ td {
 #alltbl th:nth-child(3), #alltbl td:nth-child(3),
 #tbl th:nth-child(10), #tbl td:nth-child(10),
 #queuetbl th:nth-child(10), #queuetbl td:nth-child(10),
-#servicetbl th:nth-child(10), #servicetbl td:nth-child(10),
+#servicetbl th:nth-child(11), #servicetbl td:nth-child(11),
 #alltbl th:nth-child(10), #alltbl td:nth-child(10),
 #deletedtbl th:nth-child(10), #deletedtbl td:nth-child(10),
 #dialogService, #servicecells,

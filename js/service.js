@@ -242,9 +242,9 @@ function operationFor(thisrow)
 	var opfor = [
 			"Brain Tumor",
 			"Brain Vascular",
-			"CSF related",
 			"Trauma",
 			"Spine",
+			"CSF related",
 			"etc"
 		],
 		diagnosis = thisrow.diagnosis,
@@ -259,10 +259,10 @@ function operationFor(thisrow)
 	if (opfor.length === 0) { opwhat = "No" }
 	else if (opfor.length === 1) { opwhat = opfor[0] }
 	else {
+		opwhat = opfor[0]
 		opfor = isNotThisOp(opfor, notThisOperation, treatment)
-		if (opfor.length === 0) { opwhat = "etc" }
-		else if (opfor.length === 1) { opwhat = opfor[0] }
-		else {
+		if (opfor.length === 1) { opwhat = opfor[0] }
+		else if (opfor.length > 1) {
 			opfor = isNotThisOp(opfor, isThisDiagnosis, diagnosis)
 			if (opfor.length === 0) { opwhat = "etc" }
 			else if (opfor.length === 1) { opwhat = opfor[0] }
@@ -836,6 +836,7 @@ function storePresentCellService(evt, pointing)
 			getFINALSV(evt, pointing)
 			break
 		case ADMITSV:
+		case OPDATESV:
 		case DISCHARGESV:
 			clearEditcell()
 			break

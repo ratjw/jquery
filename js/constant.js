@@ -232,7 +232,7 @@ var	ETCDXNO = [
 ]
 
 var	BRAINTUMORRX = [
-	/approa/i, /biopsy/i, /\bbx\b/i, /crani[oe]c?tomy/i, /\bETS\b/i, /otom/i, /trans.*remov/i,
+	/approa/i, /biopsy/i, /\bbx\b/i, /crani[oe]c?tomy/i, /\bETS\b/i, /trans.*remov/i,
 	/TSP/i, /TSS/i, /transnasal/i, /transsphenoid/i, /transventric/i, /tumou?r/i
 ]
 var	BRAINVASCULARRX = [
@@ -295,7 +295,7 @@ var BRAINTUMORRXNO = [
 	/PLF/i, /PLIF/i, /sacr[ao]/i, /SNRB/i,
 	/thora/i, /TLIF/i,
 
-	/change battery/i, /DBS/i, /grid/i, /MVD/i,
+	/change battery/i, /DBS/i, /grid/i, /lesionectomy/i, /MVD/i,
 	/untether/i, /VNS/i
 ]
 var BRAINVASCULARRXNO = [
@@ -338,9 +338,9 @@ var TRAUMARXNO = [
 	/(\bVP|\bLP|periton|subgaleal).*shunt/i,
 
 	/ACDF/i, /ALIF/i,
-	/lamin[eo]/i, /lumbar drain/i, /MIDLIF/i, /OLIF/i, 
-	/PLF/i, /PLIF/i, /sacr[ao]/i, /SNRB/i,
-	/thora/i, /TLIF/i,
+	/lumbar drain/i, /MIDLIF/i, /OLIF/i, 
+	/PLF/i, /PLIF/i, /SNRB/i,
+	/TLIF/i,
 
 	/change battery/i, /DBS/i, /grid/i, /MVD/i,
 	/untether/i, /VNS/i
@@ -359,7 +359,7 @@ var SPINERXNO = [
 	/VNS/i
 ]
 var ETCRXNO = [
-	/tumou?r.*(biopsy|\bbx\b|remov)/i, /craniot.*tumou?r|clot remov/i,
+	/tumou?r.*(biopsy|\bbx\b|remov)/i,
 	/TSP/i, /TSS/i, /transnasal/i, /transsphenoid/i, /transventric/i,
 
 	/clip/i, /EDAS/i, /EDAMS/i, /excision.*AVM|AVM.*excision/i,
