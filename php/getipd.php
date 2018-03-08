@@ -59,8 +59,7 @@ require_once "mysqli.php";
 		if (!$oldDischarge !== $newDischarge) {
 				$discharge = "discharge='$newDischarge',";
 		}
-		$mysqli->query ("UPDATE book SET .$admit.$discharge.editor='getipd'
-						 WHERE qn=$qn;");
+		$mysqli->query ("UPDATE book SET .$admit.$discharge.editor='getipd' WHERE qn=$qn;");
 	}
 
  	echo returnService($mysqli, $sql);
