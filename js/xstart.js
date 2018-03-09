@@ -106,7 +106,8 @@ function fillForRoom()
 			}
 		])
 	} else {
-		Alert("dialogEquip", "<br><br>No Case")
+		confirm("No Case")
+		history.back()
 	}
 }
 
