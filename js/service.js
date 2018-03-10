@@ -255,21 +255,21 @@ function operationFor(thisrow)
 	if (isMatched(NOOPERATION, treatment)) { return "No" }
 
 	// "No" from no match
-	opfor = isOpforOrNot(opfor, isThisOperation, treatment)
+	opfor = isOpforOrNot(opfor, "Rx", treatment)
 	if (opfor.length === 0) { opwhat = "No" }
 	else if (opfor.length === 1) { opwhat = opfor[0] }
 	else {
 		opwhat = opfor[0]
-		opfor = isOpforOrNot(opfor, notThisOperation, treatment)
+		opfor = isOpforOrNot(opfor, "RxNo", treatment)
 		if (opfor.length === 1) { opwhat = opfor[0] }
 		else if (opfor.length > 1) {
-			opfor = isOpforOrNot(opfor, isThisDiagnosis, diagnosis)
+			opfor = isOpforOrNot(opfor, "Dx", diagnosis)
 			if (opfor.length === 0) { opwhat = "etc" }
 			else if (opfor.length === 1) { opwhat = opfor[0] }
 			else {
 				// in case all cancelled each other out
 				opwhat = opfor[0]
-				opfor = isOpforOrNot(opfor, notThisDiagnosis, diagnosis)
+				opfor = isOpforOrNot(opfor, "DxNo", diagnosis)
 				if (opfor.length > 0) { opwhat = opfor[0] }
 			}
 		}
@@ -290,10 +290,10 @@ function isMatched(keyword, diagtreat)
 	return test
 }
 
-function isOpforOrNot(opfor, func, diagRx)
+function isOpforOrNot(opfor, RxDx, diagRx, logic)
 {
 	for (var i=opfor.length-1; i>=0; i--) {
-		if (func(opfor[i], diagRx)) {
+		if (isMatched(KEYWORDS[opfor[i]][RxDx], diagRx) === logic) {
 			opfor.splice(i, 1)
 		}
 	}
@@ -302,58 +302,22 @@ function isOpforOrNot(opfor, func, diagRx)
 
 function isThisOperation(item, treatment)
 {
-	var	thisOp = {
-		"Brain Tumor": BRAINTUMORRX,
-		"Brain Vascular": BRAINVASCULARRX,
-		"CSF related": CSFRX,
-		"Trauma": TRAUMARX,
-		"Spine": SPINERX,
-		"etc": ETCRX
-	}
-
-	return !isMatched(thisOp[item], treatment)
+	return !isMatched(KEYWORDS[item][Rx], treatment)
 }
 
 function notThisOperation(item, treatment)
 {
-	var	notThisOp = {
-		"Brain Tumor": BRAINTUMORRXNO,
-		"Brain Vascular": BRAINVASCULARRXNO,
-		"CSF related": CSFRXNO,
-		"Trauma": TRAUMARXNO,
-		"Spine": SPINERXNO,
-		"etc": ETCRXNO
-	}
-
-	return isMatched(notThisOp[item], treatment)
+	return isMatched(KEYWORDS[item][RxNo], treatment)
 }
 
 function isThisDiagnosis(item, diagnosis)
 {
-	var	thisDiag = {
-		"Brain Tumor": BRAINTUMORDX,
-		"Brain Vascular": BRAINVASCULARDX,
-		"CSF related": CSFDX,
-		"Trauma": TRAUMADX,
-		"Spine": SPINEDX,
-		"etc": ETCDX
-	}
-
-	return !isMatched(thisDiag[item], diagnosis)
+	return !isMatched(KEYWORDS[item][Dx], diagnosis)
 }
 
 function notThisDiagnosis(item, diagnosis)
 {
-	var	notDiag = {
-		"Brain Tumor": BRAINTUMORDXNO,
-		"Brain Vascular": BRAINVASCULARDXNO,
-		"CSF related": CSFDXNO,
-		"Trauma": TRAUMADXNO,
-		"Spine": SPINEDXNO.concat(BRAINDX),
-		"etc": ETCDXNO
-	}
-
-	return isMatched(notDiag[item], diagnosis)
+	return isMatched(KEYWORDS[item][DxNo], diagnosis)
 }
 
 function refillService(fromDate, toDate)

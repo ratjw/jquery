@@ -93,8 +93,8 @@ td {
 
 #tbl td:nth-child(4),
 #queuetbl td:nth-child(4) {
-	min-width: 30px;
-	max-width: 50px;
+	min-width: 50px;
+	width: 5%;
 }
 
 #tbl td:nth-child(5),
@@ -106,7 +106,7 @@ td {
 #tbl td:nth-child(6),
 #queuetbl td:nth-child(6) {
 	min-width: 70px;
-	max-width: 100px;
+	width: 10%;
 }
 
 #tbl td:nth-child(7) { width: 25%; }
@@ -175,6 +175,7 @@ td {
 #monthpicker .ui-datepicker-calendar,
 #monthstart,
 #divRecord,
+#dialogReview,
 #dialogEquip,
 #dialogDeleted, #deletedcells,
 #dialogHistory, #historycells,

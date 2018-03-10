@@ -385,6 +385,45 @@ var	ENDOVASCULAR = [
 	/\bstent/i, /\btransart/i, /\btransvenous/i
 ]
 
+var	KEYWORDS = {
+	"Brain Tumor": {
+		"Rx": BRAINTUMORRX,
+		"RxNo": BRAINTUMORRXNO,
+		"Dx": BRAINTUMORDX,
+		"DxNo": BRAINTUMORDXNO
+	},
+	"Brain Vascular": {
+		"Rx": BRAINVASCULARRX,
+		"RxNo": BRAINVASCULARRXNO,
+		"Dx": BRAINVASCULARDX,
+		"DxNo": BRAINVASCULARDXNO
+	},
+	"CSF related": {
+		"Rx": CSFRX,
+		"RxNo": CSFRXNO,
+		"Dx": CSFDX,
+		"DxNo": CSFDXNO
+	},
+	"Trauma": {
+		"Rx": TRAUMARX,
+		"RxNo": TRAUMARXNO,
+		"Dx": TRAUMADX,
+		"DxNo": TRAUMADXNO
+	},
+	"Spine": {
+		"Rx": SPINERX,
+		"RxNo": SPINERXNO,
+		"Dx": SPINEDX,
+		"DxNo": SPINEDXNO.concat(BRAINDX)
+	},
+	"etc": {
+		"Rx": ETCRX,
+		"RxNo": ETCRXNO,
+		"Dx": ETCDX,
+		"DxNo": ETCDXNO
+	}
+}
+
 //====================================================================================================
 
 var gv = {
