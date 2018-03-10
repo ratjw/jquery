@@ -255,21 +255,21 @@ function operationFor(thisrow)
 	if (isMatched(NOOPERATION, treatment)) { return "No" }
 
 	// "No" from no match
-	opfor = isOpforOrNot(opfor, "Rx", treatment)
+	opfor = isOpfor(opfor, "Rx", treatment)
 	if (opfor.length === 0) { opwhat = "No" }
 	else if (opfor.length === 1) { opwhat = opfor[0] }
 	else {
 		opwhat = opfor[0]
-		opfor = isOpforOrNot(opfor, "RxNo", treatment)
+		opfor = isNotOpfor(opfor, "RxNo", treatment)
 		if (opfor.length === 1) { opwhat = opfor[0] }
 		else if (opfor.length > 1) {
-			opfor = isOpforOrNot(opfor, "Dx", diagnosis)
+			opfor = isOpfor(opfor, "Dx", diagnosis)
 			if (opfor.length === 0) { opwhat = "etc" }
 			else if (opfor.length === 1) { opwhat = opfor[0] }
 			else {
 				// in case all cancelled each other out
 				opwhat = opfor[0]
-				opfor = isOpforOrNot(opfor, "DxNo", diagnosis)
+				opfor = isNotOpfor(opfor, "DxNo", diagnosis)
 				if (opfor.length > 0) { opwhat = opfor[0] }
 			}
 		}
@@ -290,10 +290,20 @@ function isMatched(keyword, diagtreat)
 	return test
 }
 
-function isOpforOrNot(opfor, RxDx, diagRx, logic)
+function isOpfor(opfor, RxDx, diagRx)
 {
 	for (var i=opfor.length-1; i>=0; i--) {
-		if (isMatched(KEYWORDS[opfor[i]][RxDx], diagRx) === logic) {
+		if (!isMatched(KEYWORDS[opfor[i]][RxDx], diagRx)) {
+			opfor.splice(i, 1)
+		}
+	}
+	return opfor
+}
+
+function isNotOpfor(opfor, RxDx, diagRx)
+{
+	for (var i=opfor.length-1; i>=0; i--) {
+		if (isMatched(KEYWORDS[opfor[i]][RxDx], diagRx)) {
 			opfor.splice(i, 1)
 		}
 	}

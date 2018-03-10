@@ -66,8 +66,8 @@ var	BRAINDX = [
 	/tuberculum/i, /vestibul/i
 ]
 var	BRAINTUMORDX = [
-	/^((?!cavernoma|osteo).)*oma/i, /\bCA\b/i, /CPA/i, /crani[oe]/i, /Cushing/i, /cyst\b/i,
-	/DNET/i, /GBM/i, /mass/i, /metas/i, /\bNFP?A\b/i,
+	/^((?!cavernoma|osteo|zyg).)*oma/i, /\bCA\b/i, /CPA/i, /crani[oe]/i, /Cushing/i, /cyst\b/i,
+	/DNET/i, /GBM/i, /lesion/i, /mass/i, /metas/i, /\bNFP?A\b/i,
 	/\bPA\b/i, /pituitary apoplexy/i, /tumou?r/i
 ]
 var	BRAINVASCULARDX = [
@@ -126,7 +126,7 @@ var	BRAINTUMORDXNO = [
 	/tunnel/i
 ]
 var	BRAINVASCULARDXNO = [
-	/^((?!cavernoma|osteo).)*oma/i, /\bCA\b/i, /CPA/i, /Cushing/i, /cyst\b/i,
+	/^((?!cavernoma|osteo|zyg).)*oma/i, /\bCA\b/i, /CPA/i, /Cushing/i, /cyst\b/i,
 	/DNET/i, /GBM/i, /mass/i, /metas/i, /\bNFP?A\b/i,
 	/pituitary apoplexy/i, /tumou?r/i,
 
@@ -150,7 +150,7 @@ var	BRAINVASCULARDXNO = [
 	/\bTG?N\b/i, /trigemin/i, /tunnel/i
 ]
 var	CSFDXNO = [
-	/^((?!cavernoma|osteo).)*oma/i, /\bCA\b/i, /CPA/i, /crani[oe]/i, /Cushing/i,
+	/^((?!cavernoma|osteo|zyg).)*oma/i, /\bCA\b/i, /CPA/i, /crani[oe]/i, /Cushing/i,
 	/DNET/i, /GBM/i, /mass/i, /metas/i, /\bNFP?A\b/i,
 	/\bPA\b/i, /pituitary apoplexy/i, /tumou?r/i,
 
@@ -174,7 +174,7 @@ var	CSFDXNO = [
 	/\bTG?N\b/i, /tunnel/i
 ]
 var	TRAUMADXNO = [
-	/^((?!cavernoma|osteo).)*oma/i, /\bCA\b/i, /CPA/i, /Cushing/i, /cyst\b/i,
+	/^((?!cavernoma|osteo|zyg).)*oma/i, /\bCA\b/i, /CPA/i, /Cushing/i, /cyst\b/i,
 	/DNET/i, /GBM/i, /mass/i, /metas/i, /\bNFP?A\b/i,
 	/\bPA\b/i, /pituitary apoplexy/i, /tumou?r/i,
 
@@ -290,8 +290,7 @@ var BRAINTUMORRXNO = [
 
 	/ETV/i,
 
-	/ACDF/i, /ALIF/i, /^((?!mri|MRI?).)*[CTLS][\d]/,
-	/cervical/i, /lamin[eo]/i, /lumbar/i, /MIDLIF/i, /OLIF/i, 
+	/ACDF/i, /ALIF/i, /MIDLIF/i, /OLIF/i, 
 	/PLF/i, /PLIF/i, /sacr[ao]/i, /SNRB/i,
 	/thora/i, /TLIF/i,
 
@@ -303,14 +302,12 @@ var BRAINVASCULARRXNO = [
 	/TSP/i, /TSS/i, /transnasal/i, /transsphenoid/i, /transventric/i,
 
 	/ETV/i, /OMMAYA/i,
-	/(\bVP|\bLP|periton|subgaleal).*shunt/i,
 
-	/ACDF/i, /ALIF/i, /^((?!mri|MRI?).)*[CTLS][\d]/,
-	/lamin[eo]/i, /lumbar drain/i, /MIDLIF/i, /OLIF/i, 
+	/ACDF/i, /ALIF/i, /MIDLIF/i, /OLIF/i, 
 	/PLF/i, /PLIF/i, /sacr[ao]/i, /SNRB/i,
 	/thora/i, /TLIF/i,
 
-	/change battery/i, /DBS/i, /grid/i, /MVD/i, /cranioplasty/i,
+	/change battery/i, /DBS/i, /grid/i, /MVD/i,
 	/untether/i, /VNS/i
 ]
 var CSFRXNO = [
@@ -325,7 +322,7 @@ var CSFRXNO = [
 	/PLF/i, /PLIF/i, /sacr[ao]/i, /SNRB/i,
 	/thora/i, /TLIF/i,
 
-	/change battery/i, /DBS/i, /grid/i, /MVD/i, /cranioplasty/i,
+	/change battery/i, /cranioplasty/i, /DBS/i, /grid/i, /lobectomy/i, /MVD/i,
 	/untether/i, /VNS/i
 ]
 var TRAUMARXNO = [
@@ -368,7 +365,7 @@ var ETCRXNO = [
 	/(\bVP|\bLP|periton|subgaleal).*shunt/i,
 
 	/ACDF/i, /ALIF/i, /^((?!mri|mri|mri|MRI?).)*[CTLS][\d]/,
-	/lamin[eo]/i, /lumbar drain/i, /MIDLIF/i, /OLIF/i, 
+	/lamin[eo]/i, /MIDLIF/i, /OLIF/i, 
 	/PLF/i, /PLIF/i, /sacr[ao]/i, /SNRB/i,
 	/thora/i, /TLIF/i
 ]

@@ -21,6 +21,7 @@ require_once "book.php";
 	}
 
 	// service.js (saveScontent)
+	// start.js (getUpdate)
 	// This also gets BOOK
 	else if (isset($_POST['sqlReturnService'])) {
 		echo returnService($mysqli, $_POST['sqlReturnService']);
@@ -29,7 +30,7 @@ require_once "book.php";
 	// click.js (changeOncall)
 	// equip.js (fillEquipTable)
 	// history.js (editHistory, deletedCases, allCases, sqlFind)
-	// service.js (getServiceOneMonth, updateDiff)
+	// service.js (getServiceOneMonth)
 	// start.js (updating)
 	else if (isset($_POST['sqlReturnData'])) {
 		echo returnData($mysqli, $_POST['sqlReturnData']);
