@@ -239,14 +239,45 @@ function calcSERVE()
 
 function operationFor(thisrow)
 {
-	var opfor = [
-			"Brain Tumor",
-			"Brain Vascular",
-			"Trauma",
-			"Spine",
-			"CSF related",
-			"etc"
-		],
+	var	KEYWORDS = {
+			"Brain Tumor": {
+				"Rx": BRAINTUMORRX,
+				"RxNo": BRAINTUMORRXNO,
+				"Dx": BRAINTUMORDX,
+				"DxNo": BRAINTUMORDXNO
+			},
+			"Brain Vascular": {
+				"Rx": BRAINVASCULARRX,
+				"RxNo": BRAINVASCULARRXNO,
+				"Dx": BRAINVASCULARDX,
+				"DxNo": BRAINVASCULARDXNO
+			},
+			"Trauma": {
+				"Rx": TRAUMARX,
+				"RxNo": TRAUMARXNO,
+				"Dx": TRAUMADX,
+				"DxNo": TRAUMADXNO
+			},
+			"Spine": {
+				"Rx": SPINERX,
+				"RxNo": SPINERXNO,
+				"Dx": SPINEDX,
+				"DxNo": SPINEDXNO.concat(BRAINDX)
+			},
+			"CSF related": {
+				"Rx": CSFRX,
+				"RxNo": CSFRXNO,
+				"Dx": CSFDX,
+				"DxNo": CSFDXNO
+			},
+			"etc": {
+				"Rx": ETCRX,
+				"RxNo": ETCRXNO,
+				"Dx": ETCDX,
+				"DxNo": ETCDXNO
+			}
+		},
+		opfor = Object.keys(KEYWORDS),
 		diagnosis = thisrow.diagnosis,
 		treatment = thisrow.treatment,
 		endovascular = thisrow.endovascular === "Endovascular",
@@ -254,22 +285,24 @@ function operationFor(thisrow)
 	// "No" from match NOOPERATION
 	if (isMatched(NOOPERATION, treatment)) { return "No" }
 
+if (thisrow.hn==="2296302")
+{x=0}
 	// "No" from no match
-	opfor = isOpfor(opfor, "Rx", treatment)
+	opfor = isOpfor(KEYWORDS, opfor, "Rx", treatment)
 	if (opfor.length === 0) { opwhat = "No" }
 	else if (opfor.length === 1) { opwhat = opfor[0] }
 	else {
 		opwhat = opfor[0]
-		opfor = isNotOpfor(opfor, "RxNo", treatment)
+		opfor = isNotOpfor(KEYWORDS, opfor, "RxNo", treatment)
 		if (opfor.length === 1) { opwhat = opfor[0] }
 		else if (opfor.length > 1) {
-			opfor = isOpfor(opfor, "Dx", diagnosis)
+			opfor = isOpfor(KEYWORDS, opfor, "Dx", diagnosis)
 			if (opfor.length === 0) { opwhat = "etc" }
 			else if (opfor.length === 1) { opwhat = opfor[0] }
 			else {
 				// in case all cancelled each other out
 				opwhat = opfor[0]
-				opfor = isNotOpfor(opfor, "DxNo", diagnosis)
+				opfor = isNotOpfor(KEYWORDS, opfor, "DxNo", diagnosis)
 				if (opfor.length > 0) { opwhat = opfor[0] }
 			}
 		}
@@ -290,44 +323,24 @@ function isMatched(keyword, diagtreat)
 	return test
 }
 
-function isOpfor(opfor, RxDx, diagRx)
+function isOpfor(keyword, opfor, RxDx, diagRx)
 {
 	for (var i=opfor.length-1; i>=0; i--) {
-		if (!isMatched(KEYWORDS[opfor[i]][RxDx], diagRx)) {
+		if (!isMatched(keyword[opfor[i]][RxDx], diagRx)) {
 			opfor.splice(i, 1)
 		}
 	}
 	return opfor
 }
 
-function isNotOpfor(opfor, RxDx, diagRx)
+function isNotOpfor(keyword, opfor, RxDx, diagRx)
 {
 	for (var i=opfor.length-1; i>=0; i--) {
-		if (isMatched(KEYWORDS[opfor[i]][RxDx], diagRx)) {
+		if (isMatched(keyword[opfor[i]][RxDx], diagRx)) {
 			opfor.splice(i, 1)
 		}
 	}
 	return opfor
-}
-
-function isThisOperation(item, treatment)
-{
-	return !isMatched(KEYWORDS[item][Rx], treatment)
-}
-
-function notThisOperation(item, treatment)
-{
-	return isMatched(KEYWORDS[item][RxNo], treatment)
-}
-
-function isThisDiagnosis(item, diagnosis)
-{
-	return !isMatched(KEYWORDS[item][Dx], diagnosis)
-}
-
-function notThisDiagnosis(item, diagnosis)
-{
-	return isMatched(KEYWORDS[item][DxNo], diagnosis)
 }
 
 function refillService(fromDate, toDate)
@@ -1112,16 +1125,20 @@ function countAllServices()
 	resetcountService()
 
 	$.each( $("#servicetbl tr"), function() {
-		var counter = this.className.split(" ")
+		var counter = this.className.split(" "),
+			id
+
 		$.each(counter, function() {
-			if (document.getElementById(this)) {
-				document.getElementById(this).innerHTML++
-			}
-			if (String(this) === "Readmission") {
-				document.getElementById("Admission").innerHTML++
-			}
-			if (String(this) === "Reoperation") {
-				document.getElementById("Operation").innerHTML++
+			if (id = String(this)) {
+				if (document.getElementById(id)) {
+					document.getElementById(id).innerHTML++
+				}
+				if (id === "Readmission") {
+					document.getElementById("Admission").innerHTML++
+				}
+				if (id === "Reoperation") {
+					document.getElementById("Operation").innerHTML++
+				}
 			}
 		})
 	})

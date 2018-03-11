@@ -66,15 +66,15 @@ var	BRAINDX = [
 	/tuberculum/i, /vestibul/i
 ]
 var	BRAINTUMORDX = [
-	/^((?!cavernoma|osteo|zyg).)*oma/i, /\bCA\b/i, /CPA/i, /crani[oe]/i, /Cushing/i, /cyst\b/i,
+	/^((?!cavernoma|hematoma|osteo|zyg).)*oma/i, /\bCA\b/i, /CPA/i, /crani[oe]/i, /Cushing/i, /cyst\b/i,
 	/DNET/i, /GBM/i, /lesion/i, /mass/i, /metas/i, /\bNFP?A\b/i,
 	/\bPA\b/i, /pituitary apoplexy/i, /tumou?r/i
 ]
 var	BRAINVASCULARDX = [
 	/aneurysm/i, /AVM/i, /AVF/i, /basal ganglion|\bbg|cerebellar hemorrhage/i,
-	/cavernoma/i, /emboli/i, /ha?emorrh/i, /HT?ICH/i,
-	/\bICH\b/i, /infarct/i, /(\bICA\b|MCA|VBA).*stenosis/i,
-	/\bM1\b|\bM2\b|MCA/i, /moya moya/i, /\bSAH\b/i
+	/cavernoma/i, /emboli/i, /ha?ematoma/i, /ha?emorrh/i, /HT?ICH/i,
+	/\bICH\b/i, /infarct/i, /ischemi/i, /(\bICA\b|MCA|VBA).*stenosis/i,
+	/\bM1\b|\bM2\b|MCA/i, /moya moya/i, /\bSAH\b/i, /stroke/i,
 ]
 var	CSFDX = [
 	/\bHCP\b/i, /hydrocephalus/i, /\bNPH\b/i,
@@ -89,7 +89,8 @@ var	TRAUMADX = [
 var	SPINEDX = [
 	/cervical/i, /cord/i, /\bCSM\b/i, /^((?!mri|mri|MRI?).)*[CTLS] ?[\d]/,
 	/degenerat/i, /dislocat/i,
-	/HNP/i, /lamin[eo]/i, /listhesis/i, /lumb[ao]/i, /myel/i,
+	/HNP/i, /lamin[eo]/i, /listhesis/i, /lumb[ao]/i,/lesion/i,
+	/mass/i, /metas/i,  /myel/i,
 	/odontoid/i, /sacr[ao]/i, /scoliosis/i, /spin[aeo]/i, /spondylo/i, /thora/i
 ]
 var	ETCDX = [
@@ -102,9 +103,9 @@ var	ETCDX = [
 
 var	BRAINTUMORDXNO = [
 	/aneurysm/i, /AVM/i, /AVF/i, /basal ganglion|\bbg|cerebellar hemorrhage/i,
-	/cavernoma/i, /emboli/i, /ha?emorrh/i, /HT?ICH/i,
-	/\bICH\b/i, /infarct/i, /(ICA|MCA|VBA).*stenosis/i,
-	/M1|M2|MCA occlusion/i, /moya moya/i, /\bSAH\b/i,
+	/cavernoma/i, /emboli/i, /ha?ematoma/i, /HT?ICH/i,
+	/\bICH\b/i, /infarct/i, /ischemi/i, /(ICA|MCA|VBA).*stenosis/i,
+	/M1|M2|MCA occlusion/i, /moya moya/i, /\bSAH\b/i, /stroke/i,
 
 	/\bHCP\b/i, /hydrocephalus/i, /\bNPH\b/i,
 	/(\bVP|\bLP|periton|subgaleal).*shunt/i,
@@ -112,10 +113,10 @@ var	BRAINTUMORDXNO = [
 
 	/assault/i, /\bEDH\b/i, /contusion/i, /injury/i,
 	/Fx|fracture/i, /lacerat/i,
-	/\bC?SDH\b/i, /subdural ha?ematoma/i, /trauma/i,
+	/\bC?SDH\b/i, /trauma/i,
 
 	/cervical/i, /cord/i, /\bCSM\b/i, /^((?!mri|mri|MRI?).)*[CTLS] ?[\d]/,
-	/dislocat/i,
+	/dislocat/i, /neck/i,
 	/HNP/i, /lamin[eo]/i, /listhesis/i, /lumb[ao]/i, /myel/i,
 	/odontoid/i, /sacr[ao]/i, /scoliosis/i, /spin[aeo]/i, /spondylo/i, /thora/i,
 
@@ -126,7 +127,7 @@ var	BRAINTUMORDXNO = [
 	/tunnel/i
 ]
 var	BRAINVASCULARDXNO = [
-	/^((?!cavernoma|osteo|zyg).)*oma/i, /\bCA\b/i, /CPA/i, /Cushing/i, /cyst\b/i,
+	/^((?!cavernoma|hematoma|osteo|zyg).)*oma/i, /\bCA\b/i, /CPA/i, /Cushing/i, /cyst\b/i,
 	/DNET/i, /GBM/i, /mass/i, /metas/i, /\bNFP?A\b/i,
 	/pituitary apoplexy/i, /tumou?r/i,
 
@@ -150,14 +151,9 @@ var	BRAINVASCULARDXNO = [
 	/\bTG?N\b/i, /trigemin/i, /tunnel/i
 ]
 var	CSFDXNO = [
-	/^((?!cavernoma|osteo|zyg).)*oma/i, /\bCA\b/i, /CPA/i, /crani[oe]/i, /Cushing/i,
-	/DNET/i, /GBM/i, /mass/i, /metas/i, /\bNFP?A\b/i,
-	/\bPA\b/i, /pituitary apoplexy/i, /tumou?r/i,
-
-	/aneurysm/i, /AVM/i, /AVF/i, /basal ganglion|\bbg|cerebellar hemorrhage/i,
 	/cavernoma/i, /emboli/i, /ha?emorrh/i, /HT?ICH/i,
-	/\bICH\b/i, /infarct/i, /(ICA|MCA|VBA).*stenosis/i,
-	/M1|M2|MCA occlusion/i, /moya moya/i, /\bSAH\b/i,
+	/\bICH\b/i, /infarct/i, /ischemi/i, /(ICA|MCA|VBA).*stenosis/i,
+	/M1|M2|MCA occlusion/i, /moya moya/i, /\bSAH\b/i, /stroke/i,
 
 	/assault/i, /\bEDH\b/i, /contusion/i, /injury/i,
 	/Fx|fracture/i, /lacerat/i, /trauma/i,
@@ -167,35 +163,36 @@ var	CSFDXNO = [
 	/HNP/i, /lamin[eo]/i, /listhesis/i, /lumb[ao]/i,
 	/odontoid/i, /sacr[ao]/i, /scoliosis/i, /spin[aeo]/i, /spondylo/i, /thora/i,
 
-	/abscess/i, /chiari/i, /convulsi/i, /\bCTS\b/i, /cubital/i,
-	/dysplasia/i, /epilepsy/i, /hemifacial/i,
+	/abscess/i, /\bCTS\b/i, /cubital/i,
+	/dysplasia/i, /hemifacial/i,
 	/\bMTS\b/i,
-	/sclerosis/i, /seizure/i, /sural/i,
+	/sclerosis/i, /sural/i,
 	/\bTG?N\b/i, /tunnel/i
 ]
 var	TRAUMADXNO = [
-	/^((?!cavernoma|osteo|zyg).)*oma/i, /\bCA\b/i, /CPA/i, /Cushing/i, /cyst\b/i,
+	/^((?!cavernoma|hematoma|osteoma|zygoma).)*oma/i, /\bCA\b/i,
+	/CPA/i, /Cushing/i, /cyst\b/i,
 	/DNET/i, /GBM/i, /mass/i, /metas/i, /\bNFP?A\b/i,
 	/\bPA\b/i, /pituitary apoplexy/i, /tumou?r/i,
 
-	/aneurysm/i, /AVM/i, /AVF/i, /basal ganglion|\bbg|cerebellar hemorrhage/i,
+	/^((?!pseudo?).)*aneurysm/i, /AVM/i, /AVF/i,
+	/basal ganglion|\bbg|cerebellar hemorrhage/i,
 	/cavernoma/i, /emboli/i, /ha?emorrh/i, /HT?ICH/i,
-	/\bICH\b/i, /infarct/i, /(ICA|MCA|VBA).*stenosis/i,
-	/M1|M2|MCA occlusion/i, /moya moya/i, /\bSAH\b/i,
+	/\bICH\b/i, /infarct/i, /ischemi/i, /(ICA|MCA|VBA).*stenosis/i,
+	/M1|M2|MCA occlusion/i, /moya moya/i, /\bSAH\b/i, /stroke/i,
 
 	/\bHCP\b/i, /hydrocephalus/i, /\bNPH\b/i,
 	/(\bVP|\bLP|periton|subgaleal).*shunt/i,
 	/shunt obstruct/i, /shunt malfunction/i,
 
-	/cervical/i, /cord/i, /\bCSM\b/i, /^((?!mri|mri|MRI?).)*[CTLS] ?[\d]/,
+	/\bCSM\b/i,
 	/degenerat/i, /dislocat/i,
-	/HNP/i, /lamin[eo]/i, /listhesis/i, /lumb[ao]/i, /myel/i,
-	/odontoid/i, /sacr[ao]/i, /scoliosis/i, /spin[aeo]/i, /spondylo/i, /thora/i,
+	/HNP/i, /myel/i,
+	/odontoid/i, /scoliosis/i,
 
-	/abscess/i, /chiari/i, /convulsi/i, /\bCTS\b/i, /cubital/i,
-	/dysplasia/i, /epilepsy/i, /hemifacial/i,
-	/\bMTS\b/i, /ocele/i, /parkinson/i,
-	/skull defect/i, /sclerosis/i, /seizure/i, /sural/i,
+	/abscess/i, /chiari/i, /\bCTS\b/i, /cubital/i,
+	/dysplasia/i, /hemifacial/i,
+	/\bMTS\b/i, /ocele/i, /sural/i,
 	/\bTG?N\b/i, /trigemin/i, /tunnel/i
 ]
 var	SPINEDXNO = [
@@ -203,18 +200,17 @@ var	SPINEDXNO = [
 	/GBM/i, /\bNFP?A\b/i,
 	/\bPA\b/i, /pituitary apoplexy/i,
 
-	/basal ganglion|\bbg|cerebellar hemorrhage/i,
-	/HT?ICH/i, /\bICH\b/i, /infarct/i, /(ICA|MCA|VBA).*stenosis/i,
-	/M1|M2|MCA occlusion/i, /moya moya/i,
+	/basal ganglion|\bbg|cerebellar hemorrhage/i, /HT?ICH/i,
+	/\bICH\b/i, /infarct/i, /ischemi/i, /(ICA|MCA|VBA).*stenosis/i,
+	/M1|M2|MCA occlusion/i, /moya moya/i, /\bSAH\b/i, /stroke/i,
 
 	/\bHCP\b/i, /hydrocephalus/i, /\bNPH\b/i,
 	/(\bVP|\bLP|periton|subgaleal).*shunt/i,
 	/shunt obstruct/i, /shunt malfunction/i,
 
-	/convulsi/i, /\bCTS\b/i, /cubital/i,
-	/epilepsy/i, /hemifacial/i,
-	/\bMTS\b/i, /parkinson/i,
-	/skull defect/i, /seizure/i, /sural/i,
+	/\bCTS\b/i, /cubital/i,
+	/hemifacial/i,
+	/\bMTS\b/i, /sural/i,
 	/\bTG?N\b/i, /trigemin/i
 ]
 var	ETCDXNO = [
@@ -237,16 +233,17 @@ var	BRAINTUMORRX = [
 ]
 var	BRAINVASCULARRX = [
 	/anast/i, /bypass/i, /(clot|hematoma).*(remov|irrigat|evacuat)/i,
-	/clip/i, /crani[oe]c?tomy/i, /EDAS/i, /EDAMS/i, /excision.*AVM|AVM.*excision/i,
-	/occlu/i
+	/clamp/i, /clip/i, /crani[oe]c?tomy/i,
+	/EDAS/i, /EDAMS/i, /excision.*AVM|AVM.*excision/i,
+	/occlu/i, /thromb.*ectomy/i
 ]
 var	CSFRX = [
 	/ETV/i, /EVD/i, /lumbar drain/i, /OMMAYA/i,
 	/Pudenz/i, /pressure.*valve/i, /Programmable/i,
-	/(\bVP|\bLP|periton|subgaleal).*shunt/i,
+	/(\bV\-?P|\bL\-?P|periton|subgaleal).*shunt/i,
 ]
 var	TRAUMARX = [
-	/debridement/i, /(clot|hematoma).*(remov|irrigat|evacuat)/i
+	/debridement/i, /(clot|hematoma).*(remov|irrigat|evacuat)/i, /trauma/i
 ]
 var	SPINERX = [
 	/ACDF/i, /ALIF/i, /biopsy/i, /\bbx\b/i, /cervical/i, /^((?!mri|MRI?).)*[CTLS][\d]/,
@@ -269,7 +266,7 @@ var	SPINEOP = [
 var ETCRX = [
 	/anast/i, /aspirat/i, /advance/i,
 	/biop/i, /block/i, /burr/i, /\bbx\b/i, /balloon/i, /cranioplasty/i,
-	/change battery/i, /DBS/i, /grid/i, /MVD/i,
+	/battery/i, /DBS/i, /grid/i, /MVD/i,
 	/decom/i, /DBS/i, /drain/i, /disconnect/i,
 	/ECOG/i, /ectom/i, /endoscop/i, /\bESI\b/i, /excis/i,
 	/grid/i, /insert/i,
@@ -290,11 +287,18 @@ var BRAINTUMORRXNO = [
 
 	/ETV/i,
 
-	/ACDF/i, /ALIF/i, /MIDLIF/i, /OLIF/i, 
-	/PLF/i, /PLIF/i, /sacr[ao]/i, /SNRB/i,
+	/trauma/i,
+	
+	/ACDF/i, /ALIF/i,
+	/corpectomy/i, /discectomy/i, /disc.*fx/i,
+	/\bfusion/i, /kyphoplasty/i,
+	/lamin[eo]/i, /MIDLIF/i, /OLIF/i, 
+	/PDS/i, /PLF/i, /PLIF/i, /sacr[ao]/i, /screw/i, /SNRB/i,
 	/thora/i, /TLIF/i,
+	/vertebr(oplasty|ectomy)\b/i, /untether/i,
 
-	/change battery/i, /DBS/i, /grid/i, /lesionectomy/i, /MVD/i,
+	/change battery/i, /DBS/i, /decompressive.*craniectomy/i,
+	/grid/i, /irrigate/i, /lesionectomy/i, /MVD/i,
 	/untether/i, /VNS/i
 ]
 var BRAINVASCULARRXNO = [
@@ -303,11 +307,18 @@ var BRAINVASCULARRXNO = [
 
 	/ETV/i, /OMMAYA/i,
 
-	/ACDF/i, /ALIF/i, /MIDLIF/i, /OLIF/i, 
-	/PLF/i, /PLIF/i, /sacr[ao]/i, /SNRB/i,
-	/thora/i, /TLIF/i,
+	/trauma/i,
 
-	/change battery/i, /DBS/i, /grid/i, /MVD/i,
+	/ACDF/i, /ALIF/i,
+	/corpectomy/i, /discectomy/i, /disc.*fx/i,
+	/\bfusion/i, /kyphoplasty/i,
+	/lamin[eo]/i, /MIDLIF/i, /OLIF/i, 
+	/PDS/i, /PLF/i, /PLIF/i, /sacr[ao]/i, /screw/i, /SNRB/i,
+	/thora/i, /TLIF/i,
+	/vertebr(oplasty|ectomy)\b/i, /untether/i,
+
+	/change battery/i, /DBS/i,
+	/grid/i, /irrigate/i, /MVD/i,
 	/untether/i, /VNS/i
 ]
 var CSFRXNO = [
@@ -317,12 +328,15 @@ var CSFRXNO = [
 	/(clot|hematoma).*(remov|irrigat|evacuat)/i,
 	/clip/i, /EDAS/i, /EDAMS/i, /excision.*AVM|AVM.*excision/i,
 
+	/trauma/i,
+
 	/ACDF/i, /ALIF/i, /^((?!mri|MRI?).)*[CTLS][\d]/,
 	/lamin[eo]/i, /MIDLIF/i, /OLIF/i, 
 	/PLF/i, /PLIF/i, /sacr[ao]/i, /SNRB/i,
 	/thora/i, /TLIF/i,
 
-	/change battery/i, /cranioplasty/i, /DBS/i, /grid/i, /lobectomy/i, /MVD/i,
+	/change battery/i, /DBS/i, /decompressive.*craniectomy/i, 
+	/grid/i, /irrigate/i, /lobectomy/i, /MVD/i,
 	/untether/i, /VNS/i
 ]
 var TRAUMARXNO = [
@@ -339,7 +353,7 @@ var TRAUMARXNO = [
 	/PLF/i, /PLIF/i, /SNRB/i,
 	/TLIF/i,
 
-	/change battery/i, /DBS/i, /grid/i, /MVD/i,
+	/change battery/i, /DBS/i, /grid/i, /irrigate/i, /MVD/i,
 	/untether/i, /VNS/i
 ]
 var SPINERXNO = [
@@ -352,7 +366,8 @@ var SPINERXNO = [
 	/(\bVP|\bLP|periton|subgaleal).*shunt/i,
 	/lumbar drain/i,
 
-	/change battery/i, /DBS/i, /grid/i, /MVD/i, /cranioplasty/i,
+	/change battery/i, /DBS/i, /decompressive.*craniectomy/i, 
+	/grid/i, /MVD/i, /cranioplasty/i,
 	/VNS/i
 ]
 var ETCRXNO = [
@@ -361,8 +376,9 @@ var ETCRXNO = [
 
 	/clip/i, /EDAS/i, /EDAMS/i, /excision.*AVM|AVM.*excision/i,
 
+	/trauma/i,
+
 	/ETV/i, /OMMAYA/i,
-	/(\bVP|\bLP|periton|subgaleal).*shunt/i,
 
 	/ACDF/i, /ALIF/i, /^((?!mri|mri|mri|MRI?).)*[CTLS][\d]/,
 	/lamin[eo]/i, /MIDLIF/i, /OLIF/i, 
@@ -371,7 +387,7 @@ var ETCRXNO = [
 ]
 
 var	RADIOSURGERY = [
-	/conformal radiotherapy/i, /CRT/i, /CyberKnife/i,
+	/conformal radiotherapy/i, /CRT/i, /Cyber ?Knife/i,
 	/Gamma knife/i, /GKS/i, /Linac/i,
 	/radiosurgery/i, /\bRS\b/i,
 	/\bSRS\b/i, /\bSRT\b/i, /stereotactic radiotherapy/i,
@@ -381,45 +397,6 @@ var	ENDOVASCULAR = [
 	/\bcoil/i, /emboli[zs]/i, /\bendovasc/i, /\bintervention/i,
 	/\bstent/i, /\btransart/i, /\btransvenous/i
 ]
-
-var	KEYWORDS = {
-	"Brain Tumor": {
-		"Rx": BRAINTUMORRX,
-		"RxNo": BRAINTUMORRXNO,
-		"Dx": BRAINTUMORDX,
-		"DxNo": BRAINTUMORDXNO
-	},
-	"Brain Vascular": {
-		"Rx": BRAINVASCULARRX,
-		"RxNo": BRAINVASCULARRXNO,
-		"Dx": BRAINVASCULARDX,
-		"DxNo": BRAINVASCULARDXNO
-	},
-	"CSF related": {
-		"Rx": CSFRX,
-		"RxNo": CSFRXNO,
-		"Dx": CSFDX,
-		"DxNo": CSFDXNO
-	},
-	"Trauma": {
-		"Rx": TRAUMARX,
-		"RxNo": TRAUMARXNO,
-		"Dx": TRAUMADX,
-		"DxNo": TRAUMADXNO
-	},
-	"Spine": {
-		"Rx": SPINERX,
-		"RxNo": SPINERXNO,
-		"Dx": SPINEDX,
-		"DxNo": SPINEDXNO.concat(BRAINDX)
-	},
-	"etc": {
-		"Rx": ETCRX,
-		"RxNo": ETCRXNO,
-		"Dx": ETCDX,
-		"DxNo": ETCDXNO
-	}
-}
 
 //====================================================================================================
 
