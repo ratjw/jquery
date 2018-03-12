@@ -21,8 +21,6 @@ function fillEquipTable(book, $row, qn)
 	// mark table row
 	// clear all previous dialog values
 	$row.addClass("bordergroove")
-	$dialogEquip.dialog()
-	$dialogEquip.dialog('close')
 	$dialogEquip.show()
 	$dialogEquip.find('input').val('')
 	$dialogEquip.find('textarea').val('')
@@ -74,6 +72,9 @@ function fillEquipTable(book, $row, qn)
 		},
 		close: function(event, ui) {
 			$row.removeClass("bordergroove")
+			if (/^\d{1,2}$/.test(gv.user)) {
+				history.back()
+			}
 		}
 	})
 }

@@ -2,6 +2,8 @@
  Byte-order mark (or BOM) causes white space at the top of the page. 
  Notepad++ can save "UTF-8" (without BOM) in "Encoding" menu. -->
 
+<link href="css/XCSS.css" rel="stylesheet">
+
 <script src="js/xconstant.js"></script>
 <script src="js/xequip.js"></script>
 <script src="js/xfill.js"></script>
@@ -9,7 +11,7 @@
 <script src="js/xstart.js"></script>
 
 <div id="wrapper">
- <div id="tblwrapper" style="display:none">
+ <div id="tblwrapper">
   <div id="tblcontainer">
    <table id="tbl">
     <tbody>
@@ -23,14 +25,14 @@
      <th style="width:30%">Diagnosis</th>
      <th style="width:30%">Treatment</th>
      <th style="display:none">Contact</th>
-     <th style="display:none"></th>
+     <th></th>
 	 </tr>
     </tbody>
    </table>
   </div>
  </div>
 
- <div id="queuewrapper" style="display:none">
+ <div id="queuewrapper">
   <div id="titlebar">
 	<span id="titlename"></span>
 	<span class="ui-icon ui-icon-closethick" onclick="closequeue()">
@@ -43,7 +45,7 @@
 
 <div id="dialogAlert"></div>
 
-<table id="tblcells" style="display:none">	<!-- Used as cells template -->
+<table id="tblcells">	<!-- Used as cells template -->
   <tbody>
    <tr>
     <td data-title="Date"></td>
@@ -55,7 +57,7 @@
     <td data-title="Diagnosis"></td>
     <td data-title="Treatment"></td>
     <td style="display:none"></td>
-    <td style="display:none"></td>
+    <td></td>
    </tr>
   </tbody>
 </table>

@@ -427,27 +427,6 @@ td.Radiosurgery.Endovascular {
 	border: 0px;
 }
 
-#login {
-	width: 300px; 
-	margin-top: 0px;
-	margin-left: auto; 
-	margin-right: auto; 
-	text-align: center;
-	color: white;
-	background: #306ab5;
-	background: radial-gradient(at bottom left, #152f51, #1b3b65, #25528d, #306ab5, #ebf1fa);
-	border-radius: 10px;
-	box-shadow: -20px 30px 40px slategray;
-}
-
-input[type=submit] {
-	background: #c4445C;
-	background: linear-gradient(#f8d3e4, #AC1B5C, #580e2f);
-	border-radius: 5px;
-	color: white;
-	height: 30px;
-}
-
 #editcell { 
 	text-align: left; 
 	overflow: hidden;

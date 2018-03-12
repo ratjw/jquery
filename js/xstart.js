@@ -48,7 +48,8 @@ function loading(response)
 		if (/^\d{6}$/.test(gv.user)) {
 			$("#login").remove()
 			$("#logo").remove()
-			$("#tblwrapper").show()
+			$("#wrapper").show()
+			$("#tblhead").show()
 			fillupstart();
 			fillConsults()
 		}
