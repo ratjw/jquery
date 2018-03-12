@@ -573,7 +573,7 @@ function makeDialogFound(found, search)
 			$(".fixed").remove()
 		}
 	})
-//	$findtbl.fixMe($dialogFind);
+	$findtbl.fixMe($dialogFind);
 
 	//for resizing dialogs in landscape / portrait view
 	$(window).on("resize", resizeFind )

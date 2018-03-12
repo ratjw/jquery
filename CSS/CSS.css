@@ -35,8 +35,8 @@
 }
 
 table {
-	/*make cell width = first row specified*/
-	table-layout: fixed;
+	/*make cell width = first row specified
+	table-layout: fixed;*/
 	border-right: solid 1px gray;
 	width: auto;
 	border-collapse: collapse;
@@ -83,59 +83,53 @@ td {
 	min-width: 40px;
 	max-width: 60px;
 }
-
 #tbl td:nth-child(2),
 #tbl td:nth-child(3) {
 	text-align: center;
 	min-width: 30px;
 	max-width: 30px;
 }
-
 #tbl td:nth-child(4),
 #queuetbl td:nth-child(4) {
 	min-width: 50px;
 	width: 5%;
 }
-
 #tbl td:nth-child(5),
 #queuetbl td:nth-child(5) {
 	min-width: 50px;
 	max-width: 50px;
 }
-
 #tbl td:nth-child(6),
 #queuetbl td:nth-child(6) {
 	min-width: 70px;
 	width: 10%;
 }
-
 #tbl td:nth-child(7) { width: 25%; }
-
-#tbl td:nth-child(8),
+#tbl td:nth-child(8) { width: 30%; }
 #tbl td:nth-child(9) { width: 30%; }
 
 #servicetbl td:nth-child(1) { width: 1%; }
 #servicetbl td:nth-child(2) { width: 3%; }
 #servicetbl td:nth-child(3) { width: 10%; }
-#servicetbl td:nth-child(4),
+#servicetbl td:nth-child(4) { width: 15%; }
 #servicetbl td:nth-child(5) { width: 15%; }
-#servicetbl td:nth-child(6),
+#servicetbl td:nth-child(6) { width: 25%; }
 #servicetbl td:nth-child(7) { width: 25%; }
-#servicetbl td:nth-child(8),
-#servicetbl td:nth-child(9),
+#servicetbl td:nth-child(8) { width: 2%; }
+#servicetbl td:nth-child(9) { width: 2%; }
 #servicetbl td:nth-child(10) { width: 2%; }
 
 #historytbl td:nth-child(1) { width: 5%; }
-#historytbl td:nth-child(2),
+#historytbl td:nth-child(2) { width: 1%; }
 #historytbl td:nth-child(3) { width: 1%; }
 #historytbl td:nth-child(4) { width: 3%; }
-#historytbl td:nth-child(5),
+#historytbl td:nth-child(5) { width: 10%; }
 #historytbl td:nth-child(6) { width: 10%; }
-#historytbl td:nth-child(7),
-#historytbl td:nth-child(8),
-#historytbl td:nth-child(9),
+#historytbl td:nth-child(7) { width: 15%; }
+#historytbl td:nth-child(8) { width: 15%; }
+#historytbl td:nth-child(9) { width: 15%; }
 #historytbl td:nth-child(10) { width: 15%; }
-#historytbl td:nth-child(11),
+#historytbl td:nth-child(11) { width: 5%; }
 #historytbl td:nth-child(12) { width: 5%; }
 
 #deletedtbl td:nth-child(1) { width: 5%; }
@@ -153,9 +147,9 @@ td {
 #findtbl td:nth-child(3) { width: 3%; }
 #findtbl td:nth-child(4) { width: 10%; }
 #findtbl td:nth-child(5) { width: 20%; }
-#findtbl td:nth-child(6) { width: 15%; }
+#findtbl td:nth-child(6) { width: 20%; }
 #findtbl td:nth-child(7) { width: 20%; }
-#findtbl td:nth-child(8) { width: 15%; }
+#findtbl td:nth-child(8) { width: 10%; }
 #findtbl td:nth-child(9) { width: 10%; }
 
 #wrapper,
