@@ -186,8 +186,31 @@ td {
 
 #dialogInput span { width:90px }
 
-#deleted div span { background-color:pink }
-#notdeleted div span { background-color:skyblue }
+.deleted { background-color:pink }
+
+.undelete { background-color:skyblue }
+
+#deleted,
+#notdeleted {
+	height:30px;
+	width:140px;
+}
+
+#undelete { 
+	width: 125px;
+}
+
+#undel { 
+	display: inline-block;
+	text-align: center; 
+	height: 25px;
+	width: 100px;
+	font-size: 14px;
+	color: black;
+	background-color: white;
+	border: 2px solid slategray;
+	line-height: 25px;
+}
 
 #reviewtbl tbody tr:nth-child(6) td:first-child { font-weight:normal }
 #reviewtbl tbody tr:nth-child(7) th { text-align:left; padding-left:20px }
@@ -459,28 +482,6 @@ td.Radiosurgery.Endovascular {
 
 #staffmenu {
 	width: 100px;
-}
-
-#deleted,
-#notdeleted {
-	height:30px;
-	width:140px;
-}
-
-#undelete { 
-	width: 125px;
-}
-
-#undel { 
-	display: inline-block;
-	text-align: center; 
-	height: 25px;
-	width: 100px;
-	font-size: 14px;
-	color: black;
-	background-color: white;
-	border: 2px solid slategray;
-	line-height: 25px;
 }
 
 #dialogEquip {

@@ -69,8 +69,8 @@ jQuery.fn.extend({
 
 		// Define colors for deleted and undeleted rows
 		q.action === 'delete'
-		? this.css("background-color", "#FFCCCC")
-		: (q.action === 'undelete') && this.css("background-color", "#CCFFCC")
+		? this.addClass("deleted")
+		: (q.action === 'undelete') && this.addClass("undelete")
 
 		cells[0].innerHTML = putThdate(q.opdate)
 		cells[1].innerHTML = q.oproom
@@ -544,22 +544,13 @@ function makeDialogFound(found, search)
 
 	var $dialogFind = $("#dialogFind"),
 		$findtbl = $("#findtbl")
-
-	// delete previous table lest it accumulates
-	$findtbl.find('tr').slice(1).remove()
-
-	$.each( found, function() {	// each === this
-		$('#findcells tr').clone()
-			.appendTo($findtbl.find('tbody'))
-				.filldataFind(this)
-	});
 	
 	$dialogFind.dialog({
 		title: "Find: " + search,
 		closeOnEscape: true,
 		modal: true,
-		width: window.innerWidth,
-		height: window.innerHeight,
+		width: window.innerWidth*95/100,
+		height: window.innerHeight*95/100,
 		buttons: [
 			{
 				text: "Export to xls",
@@ -573,6 +564,15 @@ function makeDialogFound(found, search)
 			$(".fixed").remove()
 		}
 	})
+
+	// delete previous table lest it accumulates
+	$findtbl.find('tr').slice(1).remove()
+
+	$.each( found, function() {	// each === this
+		$('#findcells tr').clone()
+			.appendTo($findtbl.find('tbody'))
+				.filldataFind(this)
+	});
 	$findtbl.fixMe($dialogFind);
 
 	//for resizing dialogs in landscape / portrait view
@@ -616,7 +616,7 @@ jQuery.fn.extend({
 	filldataFind : function(q) {
 		var cells = this[0].cells
 
-		Number(q.deleted) && this.css("background-color", "#FFCCCC")
+		Number(q.deleted) && this.addClass("deleted")
 		q.hn && gv.isPACS && (cells[2].className = "pacs")
 		q.patient && (cells[3].className = "camera")
 
