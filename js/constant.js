@@ -352,7 +352,7 @@ var TRAUMARXNO = [
 	/PLF/i, /PLIF/i, /SNRB/i,
 	/TLIF/i,
 
-	/battery/i, /DBS/i, /grid/i, /irrigate/i, /MVD/i,
+	/battery/i, /DBS/i, /grid/i, /MVD/i,
 	/untether/i, /VNS/i
 ]
 var SPINERXNO = [

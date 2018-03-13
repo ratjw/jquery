@@ -240,43 +240,14 @@ function calcSERVE()
 function operationFor(thisrow)
 {
 	var	KEYWORDS = {
-			"Brain Tumor": {
-				"Rx": BRAINTUMORRX,
-				"RxNo": BRAINTUMORRXNO,
-				"Dx": BRAINTUMORDX,
-				"DxNo": BRAINTUMORDXNO
-			},
-			"Brain Vascular": {
-				"Rx": BRAINVASCULARRX,
-				"RxNo": BRAINVASCULARRXNO,
-				"Dx": BRAINVASCULARDX,
-				"DxNo": BRAINVASCULARDXNO
-			},
-			"Trauma": {
-				"Rx": TRAUMARX,
-				"RxNo": TRAUMARXNO,
-				"Dx": TRAUMADX,
-				"DxNo": TRAUMADXNO
-			},
-			"Spine": {
-				"Rx": SPINERX,
-				"RxNo": SPINERXNO,
-				"Dx": SPINEDX,
-				"DxNo": SPINEDXNO.concat(BRAINDX)
-			},
-			"CSF related": {
-				"Rx": CSFRX,
-				"RxNo": CSFRXNO,
-				"Dx": CSFDX,
-				"DxNo": CSFDXNO
-			},
-			"etc": {
-				"Rx": ETCRX,
-				"RxNo": ETCRXNO,
-				"Dx": ETCDX,
-				"DxNo": ETCDXNO
-			}
+			"Brain Tumor": [ BRAINTUMORRX, BRAINTUMORRXNO, BRAINTUMORDX, BRAINTUMORDXNO ],
+			"Brain Vascular": [ BRAINVASCULARRX, BRAINVASCULARRXNO, BRAINVASCULARDX, BRAINVASCULARDXNO ],
+			"Trauma": [ TRAUMARX, TRAUMARXNO, TRAUMADX, TRAUMADXNO ],
+			"Spine": [ SPINERX, SPINERXNO, SPINEDX, SPINEDXNO.concat(BRAINDX) ],
+			"CSF related": [ CSFRX, CSFRXNO, CSFDX, CSFDXNO ],
+			"etc": [ ETCRX, ETCRXNO, ETCDX, ETCDXNO ]
 		},
+		Rx = 0, RxNo = 1, Dx = 2, DxNo = 3, 
 		opfor = Object.keys(KEYWORDS),
 		diagnosis = thisrow.diagnosis,
 		treatment = thisrow.treatment,
@@ -285,24 +256,21 @@ function operationFor(thisrow)
 	// "No" from match NOOPERATION
 	if (isMatched(NOOPERATION, treatment)) { return "No" }
 
-if (thisrow.hn==="2296302")
-{x=0}
 	// "No" from no match
-	opfor = isOpfor(KEYWORDS, opfor, "Rx", treatment)
+	opfor = isOpfor(KEYWORDS, opfor, Rx, treatment)
 	if (opfor.length === 0) { opwhat = "No" }
 	else if (opfor.length === 1) { opwhat = opfor[0] }
 	else {
-		opwhat = opfor[0]
-		opfor = isNotOpfor(KEYWORDS, opfor, "RxNo", treatment)
+		opfor = isNotOpfor(KEYWORDS, opfor, RxNo, treatment)
 		if (opfor.length === 1) { opwhat = opfor[0] }
-		else if (opfor.length > 1) {
-			opfor = isOpfor(KEYWORDS, opfor, "Dx", diagnosis)
+		else {
+			opfor = isOpfor(KEYWORDS, opfor, Dx, diagnosis)
 			if (opfor.length === 0) { opwhat = "etc" }
 			else if (opfor.length === 1) { opwhat = opfor[0] }
 			else {
 				// in case all cancelled each other out
 				opwhat = opfor[0]
-				opfor = isNotOpfor(KEYWORDS, opfor, "DxNo", diagnosis)
+				opfor = isNotOpfor(KEYWORDS, opfor, DxNo, diagnosis)
 				if (opfor.length > 0) { opwhat = opfor[0] }
 			}
 		}
