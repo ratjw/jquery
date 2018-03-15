@@ -83,7 +83,6 @@ function namesix()
 				$resulty = simplexml_load_string($resultx);
 				$resultz = (string)$resulty->children()->children()->role;
 			} else {
-				if ($userid === "002717") $resultz = "N"; else 
 				$resultz = "S";
 			}
 		}
