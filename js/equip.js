@@ -1,34 +1,40 @@
 function fillEquipTable(book, $row, qn)
 {
-	var NAMEOFDAYTHAI	= ["อาทิตย์", "จันทร์", "อังคาร", "พุธ", "พฤหัส", "ศุกร์", "เสาร์"];
-	var bookq = getBOOKrowByQN(book, qn)
-	var bookqEquip = bookq.equipment
-	var JsonEquip = bookqEquip? JSON.parse(bookqEquip) : {}
-	var $dialogEquip = $('#dialogEquip')
-	var height = window.innerHeight
+	var NAMEOFDAYTHAI	= ["อาทิตย์", "จันทร์", "อังคาร", "พุธ", "พฤหัส", "ศุกร์", "เสาร์"],
+		bookq = getBOOKrowByQN(book, qn),
+		bookqEquip = bookq.equipment,
+		JsonEquip = bookqEquip? JSON.parse(bookqEquip) : {},
+		$dialogEquip = $('#dialogEquip'),
+		height = window.innerHeight,
+		profile = {
+			"oproom": bookq.oproom || "",
+			"casenum": bookq.casenum || "",
+			"optime": bookq.optime,
+			"opday": NAMEOFDAYTHAI[(new Date(bookq.opdate)).getDay()],
+			"opdate": putThdate(bookq.opdate),
+			"staffname": bookq.staffname,
+			"hn": bookq.hn,
+			"patientname": bookq.patient,
+			"age": putAgeOpdate(bookq.dob, bookq.opdate),
+			"diagnosis": bookq.diagnosis,
+			"treatment": bookq.treatment
+		}
+
 	if (height > 1000) {
 		height = 1000
 	}
 
-	document.getElementById("oproom").innerHTML = bookq.oproom || ""
-	document.getElementById("casenum").innerHTML = bookq.casenum || ""
-	document.getElementById("optime").innerHTML = bookq.optime
-	document.getElementById("opday").innerHTML = NAMEOFDAYTHAI[(new Date(bookq.opdate)).getDay()]
-	document.getElementById("opdate").innerHTML = putThdate(bookq.opdate)
-	document.getElementById("staffname").innerHTML = bookq.staffname
-	document.getElementById("hn").innerHTML = bookq.hn
-	document.getElementById("patientname").innerHTML = bookq.patient
-	document.getElementById("age").innerHTML = putAgeOpdate(bookq.dob, bookq.opdate)
-	document.getElementById("diagnosis").innerHTML = bookq.diagnosis
-	document.getElementById("treatment").innerHTML = bookq.treatment
+	$.each(profile, function(key, val) {
+		document.getElementById(key).innerHTML = val
+	})
 
 	// mark table row
 	// clear all previous dialog values
 	$row.addClass("bordergroove")
 	$dialogEquip.show()
-	$dialogEquip.find('input[type=text]').val('')
+	$dialogEquip.find('input').val('')
 	$dialogEquip.find('textarea').val('')
-	$dialogEquip.find('input[type=checkbox]').prop('checked', false)
+	$dialogEquip.find('input').prop('checked', false)
 	$dialogEquip.dialog({
 		title: "เครื่องมือผ่าตัด",
 		closeOnEscape: true,
@@ -179,8 +185,10 @@ function Checklistequip()
 		qn = $('#dialogEquip').data("qn"),
 		equipment = {}
 
-	$( "#dialogEquip input, #dialogEquip textarea" ).each( function() {
+	$( "#dialogEquip input" ).each( function() {
 		this.checked && (equipment[this.id] = "checked")
+	})
+	$( "#dialogEquip input[type=text], #dialogEquip textarea" ).each( function() {
 		this.value && (equipment[this.id] = this.value)
 	})
 	equipment = JSON.stringify(equipment)

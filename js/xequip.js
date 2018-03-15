@@ -1,22 +1,32 @@
-function fillEquipTable(book, $row, qn)
+function fillEquipTable(book, $row, qn, blankcase)
 {
 	var NAMEOFDAYTHAI	= ["อาทิตย์", "จันทร์", "อังคาร", "พุธ", "พฤหัส", "ศุกร์", "เสาร์"],
-		bookq = getBOOKrowByQN(book, qn),
+		bookq = qn ? getBOOKrowByQN(book, qn) : blankcase,
 		bookqEquip = bookq.equipment,
 		JsonEquip = bookqEquip? JSON.parse(bookqEquip) : {},
-		$dialogEquip = $("#dialogEquip")
+		$dialogEquip = $("#dialogEquip"),
+		height = window.innerHeight,
+		profile = {
+			"oproom": bookq.oproom || "",
+			"casenum": bookq.casenum || "",
+			"optime": bookq.optime,
+			"opday": NAMEOFDAYTHAI[(new Date(bookq.opdate)).getDay()],
+			"opdate": putThdate(bookq.opdate),
+			"staffname": bookq.staffname,
+			"hn": bookq.hn,
+			"patientname": bookq.patient,
+			"age": putAgeOpdate(bookq.dob, bookq.opdate),
+			"diagnosis": bookq.diagnosis,
+			"treatment": bookq.treatment
+		}
 
-	document.getElementById("oproom").innerHTML = bookq.oproom || ""
-	document.getElementById("casenum").innerHTML = bookq.casenum || ""
-	document.getElementById("optime").innerHTML = bookq.optime
-	document.getElementById("opday").innerHTML = NAMEOFDAYTHAI[(new Date(bookq.opdate)).getDay()]
-	document.getElementById("opdate").innerHTML = putThdate(bookq.opdate)
-	document.getElementById("staffname").innerHTML = bookq.staffname
-	document.getElementById("hn").innerHTML = bookq.hn
-	document.getElementById("patientname").innerHTML = bookq.patient
-	document.getElementById("age").innerHTML = putAgeOpdate(bookq.dob, bookq.opdate)
-	document.getElementById("diagnosis").innerHTML = bookq.diagnosis
-	document.getElementById("treatment").innerHTML = bookq.treatment
+	if (height > 1000) {
+		height = 1000
+	}
+
+	$.each(profile, function(key, val) {
+		document.getElementById(key).innerHTML = val
+	})
 
 	// mark table row
 	// clear all previous dialog values
@@ -25,6 +35,23 @@ function fillEquipTable(book, $row, qn)
 	$dialogEquip.find('input').val('')
 	$dialogEquip.find('textarea').val('')
 	$dialogEquip.find('input').prop('checked', false)
+	$dialogEquip.dialog({
+		title: "เครื่องมือผ่าตัด",
+		closeOnEscape: true,
+		modal: true,
+		width: 750,
+		height: height,
+		open: function(event, ui) {
+			//disable default autofocus on text input
+			$("input").blur()
+		},
+		close: function(event, ui) {
+			$row.removeClass("bordergroove")
+			if (/^\d{1,2}$/.test(gv.user)) {
+				history.back()
+			}
+		}
+	})
 
 	// If ever filled, show checked equips & texts
 	// .prop("checked", true) : radio and checkbox
@@ -54,29 +81,6 @@ function fillEquipTable(book, $row, qn)
 	if ($dialogEquip.find("textarea").val()) {
 		$dialogEquip.find("textarea").closest("div").css("display", "block")
 	}
-
-
-	var height = window.innerHeight
-	if (height > 1000) {
-		height = 1000
-	}
-	$dialogEquip.dialog({
-		title: "เครื่องมือผ่าตัด",
-		closeOnEscape: true,
-		modal: true,
-		width: 750,
-		height: height,
-		open: function(event, ui) {
-			//disable default autofocus on text input
-			$("input").blur()
-		},
-		close: function(event, ui) {
-			$row.removeClass("bordergroove")
-			if (/^\d{1,2}$/.test(gv.user)) {
-				history.back()
-			}
-		}
-	})
 }
 
 function showNonEditableEquip()

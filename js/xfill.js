@@ -147,10 +147,6 @@ function filldata(bookq, rowi)
 	var cells = rowi.cells
 
 	rowi.title = bookq.waitnum
-	if (bookq.hn && gv.isPACS) {
-		cells[HN].className = "pacs"
-	}
-	cells[NAME].className = bookq.patient? "camera" : ""
 
 	cells[ROOM].innerHTML = bookq.oproom || ""
 	cells[CASENUM].innerHTML = putCasenumTime(bookq)

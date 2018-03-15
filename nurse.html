@@ -62,24 +62,14 @@
   </tbody>
 </table>
 
-<div id="dialogEquip">
-  <span style="width:100px;">
-	ห้อง <span id="oproom" style="font-size: 16px; font-weight: bold;"></span>
-  </span>
-  <span style="width:80px;">
-	Case <span id="casenum" style="font-size: 16px; font-weight: bold;"></span>
-  </span>
-  <span style="width:120px;">
-	เวลา <span id="optime" style="font-size: 16px; font-weight: bold;"></span>
-  </span>
-  <span style="width:200px;">วัน<span id="opday"></span>ที่
-	<span id="opdate" style="font-size: 16px; font-weight: bold;"></span>
-  </span>
-  <span style="width:150px;">
-	Surgeon <span id="staffname" style="font-size: 16px; font-weight: bold;"></span>
-  </span>
-  <br>
-  <br>
+<div id="dialogEquip" class="dialogBox">
+  <span style="width:100px;">ห้อง <span id="oproom"></span></span>
+  <span style="width:80px;">Case <span id="casenum"></span></span>
+  <span style="width:120px;">เวลา <span id="optime"></span></span>
+  <span style="width:200px;">วัน<span id="opday"></span>ที่ <span id="opdate"></span></span>
+  <span style="width:150px;">Surgeon <span id="staffname"></span></span>
+ <br>
+ <br>
   <span style="width:110px;">ชื่อ-นามสกุล </span><span id="patientname"></span>
   <span style="width:20px;"></span>อายุ <span id="age"></span>
   <span style="width:20px;"></span>HN <span id="hn"></span>
@@ -89,8 +79,8 @@
   <br>
   <span style="width:110px;float:left;">Operation</span>
   <span style="width:540px;" id="treatment"></span>
-  <br>
-  <br>
+ <br>
+ <br>
  <div title="ส่วนเกิน">
   <span style="width:110px;"></span>
   <span style="width:500px;">
@@ -99,18 +89,17 @@
 	<input type="text" style="width:70px;text-align:center" id="copay"> บาท
 	<span style="color:red;"> ***</span>
   </span>
-  <br>
-  <br>
  </div>
+ <br>
  <div title="Position">
   <span id="clearPosition" style="width:110px;">Position <small>(คลิกลบ)</small></span>
-  <span style="width:230px;">
+  <span style="width:215px;">
 	<input type="radio" name="pose" id="leftSupine">
-	<label for="leftSupine">หงาย ซ้ายขึ้น หันหน้าไปทางขวา</label>
+	<label for="leftSupine">หงาย ซ้ายขึ้น หันหน้าไปขวา</label>
   </span>
-  <span style="width:230px;">
+  <span style="width:215px;">
 	<input type="radio" name="pose" id="rightSupine">
-	<label for="rightSupine">หงาย ขวาขึ้น หันหน้าไปทางซ้าย</label>
+	<label for="rightSupine">หงาย ขวาขึ้น หันหน้าไปซ้าย</label>
   </span>
   <span style="width:90px;">
 	<input type="radio" name="pose" id="supine">
@@ -155,9 +144,8 @@
   <br>
   <span style="width:120px;"></span>
   <input type="text" style="width:500px;" id="position">
-  <br>
-  <br>
  </div>
+ <br>
  <div title="Imaging">
   <span style="width:110px;">Imaging</span>
   <span style="width:120px;">
@@ -187,9 +175,8 @@
   <br>
   <span style="width:120px;"></span>
   <input type="text" style="width:500px;" id="Imaging">
-  <br>
-  <br>
  </div>
+ <br>
  <div title="อุปกรณ์ยึดศีรษะ">
   <span style="width:110px;">อุปกรณ์ยึดศีรษะ</span>
   <span style="width:150px;">
@@ -207,9 +194,8 @@
   <br>
   <span style="width:120px;"></span>
   <input type="text" style="width:500px;" id="headHolder">
-  <br>
-  <br>
  </div>
+ <br>
  <div title="เครื่องตัดกระดูก">
   <span style="width:110px;">เครื่องตัดกระดูก</span>
   <span style="width:150px;">
@@ -227,9 +213,8 @@
   <br>
   <span style="width:120px;"></span>
   <input type="text" style="width:500px;" id="Craniotome">
-  <br>
-  <br>
  </div>
+ <br>
  <div title="กล้อง">
   <span style="width:110px;">กล้อง</span>
   <span style="width:150px;">
@@ -246,10 +231,9 @@
   </span>
   <br>
   <span style="width:120px;"></span>
-  <input type="text" style="width:500px;" id="scope">
-  <br>
-  <br>
+  <input type="text" placeholder="ระบุยี่ห้อ" style="width:500px;" id="scope">
  </div>
+ <br>
  <div title="Retractor">
   <span style="width:110px;">Retractor</span>
   <span style="width:150px;">
@@ -267,9 +251,8 @@
   <br>
   <span style="width:120px;"></span>
   <input type="text" style="width:500px;" id="Retractor">
-  <br>
-  <br>
  </div>
+ <br>
  <div title="CUSA">
   <span style="width:110px;">CUSA</span>
   <span style="width:150px;">
@@ -287,9 +270,8 @@
   <br>
   <span style="width:120px;"></span>
   <input type="text" style="width:500px;" id="CUSA">
-  <br>
-  <br>
  </div>
+ <br>
  <div title="U/S">
   <span style="width:110px;">U/S</span>
   <span style="width:150px;">
@@ -307,9 +289,8 @@
   <br>
   <span style="width:120px;"></span>
   <input type="text" style="width:500px;" id="US">
-  <br>
-  <br>
  </div>
+ <br>
  <div title="Shunt">
   <span id="clearShunt" style="width:110px;">Shunt <small>(คลิกลบ)</small></span>
   <span style="width:70px;">Pudenz</span>
@@ -353,9 +334,8 @@
   <br>
   <span style="width:120px;"></span>
   <input type="text" style="width:500px;" id="Shunt">
-  <br>
-  <br>
  </div>
+ <br>
  <div title="เครื่องมือบริษัท">
   <span style="width:110px;">เครื่องมือบริษัท </span>
   <span style="width:150px;">เวลาส่งเครื่อง 
@@ -363,10 +343,9 @@
   </span>
   <br>
   <span style="width:120px;"></span>
-  <input type="text" style="width:500px;" id="company">
-  <br>
-  <br>
+  <input type="text" placeholder="ชื่อบริษัท ชื่อเครื่องมือ" style="width:500px;" id="company">
  </div>
+ <br>
  <div title="อุปกรณ์อื่นๆ">
   <span style="width:110px;">อุปกรณ์อื่นๆ</span>
   <span style="width:150px;">
@@ -380,9 +359,8 @@
   <br>
   <span style="width:120px;"></span>
   <input type="text" style="width:500px;" id="other">
-  <br>
-  <br>
  </div>
+ <br>
  <div title="Monitor">
   <span style="width:110px;">Monitor</span>
   <span style="width:73px;"><input type="checkbox" id="CN5"><label for="CN5">CN5</label></span>
@@ -394,23 +372,18 @@
   <span style="width:65px;"><input type="checkbox" id="MEP"><label for="MEP">MEP</label></span>
   <br>
   <span style="width:120px;"></span>
-  <input type="text" style="width:500px;" id="Monitor">
-  <br>
-  <br>
+  <input type="text" placeholder="อื่นๆ" style="width:500px;" id="Monitor">
  </div>
+ <br>
  <div title="Notice">
   <span style="width:110px;float:left">Notice</span>
   <span> <textarea placeholder="เครื่องมือพิเศษอื่นๆ" id="Notice"></textarea></span>
-  <br>
-  <br>
  </div>
- <span>
-  <br>
-  <br>
+ <br>
+ <div>
   <span style="width:350px;"></span>
   <span style="width:70px;"> Edited by </span>
   <span style="position:absolute" id="editedby"></span>
-  <br>
-  <br>
- </span>
+ </div>
+ <br>
 </div>
