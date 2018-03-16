@@ -182,6 +182,9 @@ td.equip2 { background-image: url("pic/equip2.png"); }
 
 .silver { background-color: silver; }
 
+.left { float: left;}
+.right { float: right; }
+
 #dialogEquip {
 	font-size: 14px;
 	color: black;

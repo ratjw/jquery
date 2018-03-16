@@ -102,7 +102,7 @@ function fillForRoom(opdate)
 		{
 			text: "<< Previous Date",
 			width: "150",
-			class: "silver",
+			class: "silver left",
 			click: function () {
 				fillForRoom(opdate.nextdays(-1))
 			}
@@ -110,6 +110,7 @@ function fillForRoom(opdate)
 		{
 			text: "< Previous Case",
 			width: "150",
+			class: "left",
 			click: function () {
 				if (i > 0) {
 					i = i-1

@@ -776,8 +776,6 @@ function getTREATMENTSV(evt, pointing)
 			else if (/\bOperation/.test(pointing.className)) {
 				operated = "Reoperation"
 			}
-		}
-		if (operated) {
 			sql = sqlColumn(pointing, "operated", operated)
 			saveService(pointing, sql)
 		} else {

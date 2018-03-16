@@ -159,8 +159,8 @@ function makedeletedCases(response)
 	var $undelete = $("#undelete")
 	$undelete.hide()
 	$undelete.off("click").on("click", function () { closeUndel() }).hide()
-	$(".undelete").off("click").on("click", function () {
-		undelete(this, deleted)
+	$(".toUndelete").off("click").on("click", function () {
+		toUndelete(this, deleted)
 	})
 
 	//for resizing dialogs in landscape / portrait view
@@ -179,7 +179,7 @@ jQuery.fn.extend({
 	filldataDeleted : function(q) {
 		let cells = this[0].cells
 
-		cells[0].className = "undelete"
+		cells[0].className = "toUndelete"
 		cells[0].innerHTML = putThdate(q.opdate)
 		cells[1].innerHTML = q.staffname
 		cells[2].innerHTML = q.hn
@@ -193,7 +193,7 @@ jQuery.fn.extend({
 	}
 })
 
-function undelete(thisWhen, deleted) 
+function toUndelete(thisWhen, deleted) 
 {
 //	var UNDELEDITDATETIME	= 0;
 	var UNDELOPDATE			= 1;
@@ -202,7 +202,7 @@ function undelete(thisWhen, deleted)
 //	var UNDELPATIENT		= 4;
 //	var UNDELDIAGNOSIS		= 5;
 //	var UNDELTREATMENT		= 6;
-//	var UNDELCONTACT			= 7;
+//	var UNDELCONTACT		= 7;
 //	var UNDELEDITOR			= 8;
 	var UNDELQN				= 9;
 	var $thisWhen			= $(thisWhen)
@@ -239,11 +239,11 @@ function undelete(thisWhen, deleted)
 			}
 		}
 
-		Ajax(MYSQLIPHP, sql, callbackUndelete);
+		Ajax(MYSQLIPHP, sql, callbacktoUndelete);
 
 		$('#dialogDeleted').dialog("close")
 
-		function callbackUndelete(response)
+		function callbacktoUndelete(response)
 		{
 			if (/BOOK/.test(response)) {
 				updateBOOK(response);
@@ -254,7 +254,7 @@ function undelete(thisWhen, deleted)
 				}
 				scrolltoThisCase(qn)
 			} else {
-				Alert("undelete", response)
+				Alert("toUndelete", response)
 			}
 		}
 		
@@ -382,7 +382,9 @@ function PACS(hn)
 function find()
 {
 	var $dialogInput = $("#dialogInput"),
-		$instanceInput = $dialogInput.dialog({
+		$stafflist = $('#stafflist')
+
+	$dialogInput.dialog({
 		title: "Find",
 		closeOnEscape: true,
 		modal: true,
@@ -390,51 +392,56 @@ function find()
 		height: 400,
 		buttons: [
 			{
-				text: "OK",
-				click: function() {
-					var args = {
-						hn: $('input[name="hn"]').val(),
-						patient: $('input[name="patient"]').val(),
-						staffname: $('input[name="staffname"]').val(),
-						diagnosis: $('input[name="diagnosis"]').val(),
-						treatment: $('input[name="treatment"]').val(),
-						contact: $('input[name="contact"]').val()
-					}
-					
-					var search = ""
-					$.each(args, function(key, val) { search += val })
-					if (search) {
-						sqlFind(args)
-					}
-					$( this ).dialog( "close" );
-				}
+				text: "All Deleted Cases",
+				class: "deleted leftButton",
+				width: "130",
+				click: function () { deletedCases() }
+			},
+			{
+				text: "All Saved Cases",
+				class: "undelete",
+				width: "130",
+				click: function () { allCases() }
 			}
 		],
 		close: function() {
-			$('#stafflist').hide()
+			$stafflist.hide()
 		}
 	})
+
+	$dialogInput.find("img").on("click", function(event) { searchDB() })
 	$dialogInput.on("keydown", function(event) {
 		var keycode = event.which || window.event.keyCode
-		if (keycode === 13) {
-			var buttons = $instanceInput.dialog('option', 'buttons')
-			buttons[0].click.apply($instanceInput)
-		}
-	})
-	$('input[name="staffname"]').on("click", function(event) {
-		getSaffName(this)
-		event.stopPropagation()
+		if (keycode === 13) { searchDB() }
 	})
 	$dialogInput.on("click", function(event) {
-		var target = event.target,
-			$stafflist = $('#stafflist')
+		var target = event.target
 
 		if ($stafflist.is(":visible")) {
-			if (!$(target).closest('#stafflist').length) {
-				$stafflist.hide();
+			$stafflist.hide();
+		} else {
+			if ($(target).closest('input[name="staffname"]').length) {
+				getSaffName(target)
 			}
 		}
 	})
+}
+
+function searchDB()
+{
+	var args = {
+			hn: $('input[name="hn"]').val(),
+			staffname: $('input[name="staffname"]').val(),
+			others: $('input[name="others"]').val()
+		},
+		$dialogInput = $("#dialogInput"),
+		search = ""
+
+	$.each(args, function(key, val) { search += val })
+	if (search) { sqlFind(args) }
+	if ($dialogInput.hasClass('ui-dialog-content')) {
+		$dialogInput.dialog("close")
+	}
 }
 
 function getSaffName(pointing)
@@ -451,7 +458,7 @@ function getSaffName(pointing)
 		}
 	})
 
-	reposition($stafflist, "left center", "right center", $pointing)
+	reposition($stafflist, "left top", "left bottom", $pointing)
 	menustyle($stafflist, $pointing)
 }
 
@@ -462,12 +469,17 @@ function sqlFind(args)
 	$.each(args, function(key, val) {
 		if (val) {
 			if (sql) { sql += " AND " }
-			// '%51' will be changed to 'Q' (by PHP?)
-			if (parseInt(val)) {
-				sql += (key + " like '" + val + "%' ")
+
+			if (key === "hn" || key === "staffname") {
+				sql += key + "='" + val + "'"
 			} else {
-				sql += (key + " like '%" + val + "%' ")
+				sql += "diagnosis like '%" + val + "%'"
+					+ " OR treatment like '%" + val + "%'"
+					+ " OR admission like '%" + val + "%'"
+					+ " OR final like '%" + val + "%'"
+					+ " OR contact like '%" + val + "%'"
 			}
+			// for dialog title
 			if (search) { search += ", " }
 			search += val
 		}
@@ -475,7 +487,7 @@ function sqlFind(args)
 
 	sql = "sqlReturnData=SELECT * FROM book WHERE "
 		+ sql
-		+ "ORDER BY opdate;"
+		+ " ORDER BY opdate;"
 
 	Ajax(MYSQLIPHP, sql, callbackfind)
 
