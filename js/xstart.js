@@ -101,14 +101,15 @@ function fillForRoom(opdate)
 	$('#dialogEquip').dialog("option", "buttons", [
 		{
 			text: "<< Previous Date",
-			width: "120",
+			width: "150",
+			class: "silver",
 			click: function () {
 				fillForRoom(opdate.nextdays(-1))
 			}
 		},
 		{
 			text: "< Previous Case",
-			width: "120",
+			width: "150",
 			click: function () {
 				if (i > 0) {
 					i = i-1
@@ -118,7 +119,7 @@ function fillForRoom(opdate)
 		},
 		{
 			text: "Next Case >",
-			width: "120",
+			width: "150",
 			click: function () {
 				if (i < slen-1) {
 					i = i+1
@@ -128,7 +129,8 @@ function fillForRoom(opdate)
 		},
 		{
 			text: "Next Date >>",
-			width: "120",
+			width: "150",
+			class: "silver",
 			click: function () {
 				fillForRoom(opdate.nextdays(+1))
 			}

@@ -20,10 +20,6 @@ function fillEquipTable(book, $row, qn)
 			"treatment": bookq.treatment
 		}
 
-	if (height > 1000) {
-		height = 1000
-	}
-
 	$.each(profile, function(key, val) {
 		document.getElementById(key).innerHTML = val
 	})
@@ -40,7 +36,7 @@ function fillEquipTable(book, $row, qn)
 		closeOnEscape: true,
 		modal: true,
 		width: 750,
-		height: height,
+		height: height > 1500 ? 1500 : height,
 		open: function(event, ui) {
 			//disable default autofocus on text input
 			$("input").blur()

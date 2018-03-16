@@ -180,6 +180,8 @@ td.equip2 { background-image: url("pic/equip2.png"); }
 	border: 0px;
 }
 
+.silver { background-color: silver; }
+
 #dialogEquip {
 	font-size: 14px;
 	color: black;
