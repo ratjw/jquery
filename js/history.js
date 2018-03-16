@@ -389,7 +389,7 @@ function find()
 		closeOnEscape: true,
 		modal: true,
 		width: 450,
-		height: 400,
+		height: 350,
 		buttons: [
 			{
 				text: "All Deleted Cases",
@@ -464,20 +464,36 @@ function getSaffName(pointing)
 
 function sqlFind(args)
 {
-	var sql = search = ""
+	var sql = sqlx = search = word = "",
+		findArr = wordAarr = [],
+		len = 0
 
 	$.each(args, function(key, val) {
 		if (val) {
 			if (sql) { sql += " AND " }
-
 			if (key === "hn" || key === "staffname") {
 				sql += key + "='" + val + "'"
 			} else {
-				sql += "diagnosis like '%" + val + "%'"
-					+ " OR treatment like '%" + val + "%'"
-					+ " OR admission like '%" + val + "%'"
-					+ " OR final like '%" + val + "%'"
-					+ " OR contact like '%" + val + "%'"
+				wordArr = val.split(" ")
+				len = wordArr.length
+				for (var i=len; i>0; i--) {
+					for (var j=0; j<len-i; j++) {
+						
+					}
+				}
+					findArr.push(val)
+				$.each(findArr, function () {
+					if (sqlx) { sqlx += " OR " }
+					sqlx += findDB(this)
+				})
+function findDB(val)
+{
+	sql += "diagnosis like '%" + val + "%'"
+		+ " OR treatment like '%" + val + "%'"
+		+ " OR admission like '%" + val + "%'"
+		+ " OR final like '%" + val + "%'"
+		+ " OR contact like '%" + val + "%'"
+}
 			}
 			// for dialog title
 			if (search) { search += ", " }
