@@ -591,7 +591,7 @@ function exportFindToExcel(search)
 			</tr>\
 			<tr></tr>\
 		  </table>'
-	var filename = 'Find ' + search + '.xls'
+	var filename = 'Search ' + search + '.xls'
 
 	exportToExcel("findtbl", data_type, title, style, head, filename)	  
 }

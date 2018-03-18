@@ -183,15 +183,17 @@ td {
 }
 
 
-#dialogInput { overflow: hidden; }
+#dialogInput { font-size: 14px; overflow: hidden; }
 #dialogInput span { width:50px }
 #dialogInput input[name=others] { width:400px }
-
-img {
+#dialogInput img {
 	float: right;
-	width: 30px;
+	width: 150px;
 	border: 1px solid skyblue;
 	margin-right: 20px;
+}
+#dialogInput img:hover {
+	border: 1px outset blue;
 }
 
 #deleted,

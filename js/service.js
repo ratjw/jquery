@@ -318,7 +318,7 @@ function refillService(fromDate, toDate)
 		$servicecells = $("#servicecells"),
 		len = $rows.length
 		staffname = "",
-		i = scase = 0,
+		i = 0, scase = 0,
 		classname = ""
 
 	$.each( gv.SERVE, function() {
@@ -764,7 +764,7 @@ function getNAMESV(evt, pointing)
 function getTREATMENTSV(evt, pointing)
 {
 	if (gv.editableSV) {
-		var operated = sql = ""
+		var operated = "", sql = ""
 
 		if (inPicArea(evt, pointing) && pointing.className) {
 			clearEditcell()
@@ -789,7 +789,7 @@ function getTREATMENTSV(evt, pointing)
 function getADMISSIONSV(evt, pointing)
 {
 	if (gv.editableSV) {
-		var admitted = sql = ""
+		var admitted = "", sql = ""
 
 		if (inPicArea(evt, pointing) && pointing.className) {
 			clearEditcell()

@@ -2,6 +2,7 @@
 var GETIPD		= "php/getipd.php";
 var GETNAMEHN	= "php/getnamehn.php";
 var MYSQLIPHP	= "php/mysqli.php";
+var SEARCH		= "php/search.php"
 
 //tbl, queuetbl
 var OPDATE		= 0;

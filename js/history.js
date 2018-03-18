@@ -115,8 +115,6 @@ function deletedCases()
 
 	Ajax(MYSQLIPHP, sql, callbackdeletedCases)
 
-	clearEditcell()
-
 	function callbackdeletedCases(response)
 	{
 		if (/editdatetime/.test(response)) {
@@ -152,6 +150,7 @@ function makedeletedCases(response)
 		close: function() {
 			$(window).off("resize", resizeDeleted )
 			$(".fixed").remove()
+			$("#dialogInput").dialog("close")
 		}
 	})
 	$deletedtbl.fixMe($dialogDeleted);
@@ -278,8 +277,6 @@ function allCases()
 
 	Ajax(MYSQLIPHP, sql, callbackAllCases)
 
-	clearEditcell()
-
 	function callbackAllCases(response)
 	{
 		if (/dob/.test(response)) {
@@ -319,6 +316,7 @@ function makeAllCases(response)
 		close: function() {
 			$(window).off("resize", resizeAll )
 			$(".fixed").remove()
+			$("#dialogInput").dialog("close")
 		}
 	})
 
@@ -356,52 +354,29 @@ function makeAllCases(response)
 	})
 }
 
-function PACS(hn)
-{ 
-	var pacs = 'http://synapse/explore.asp?path=/All Patients/InternalPatientUID='+hn
-	var sql = 'PAC=http://synapse/explore.asp'
-	var ua = window.navigator.userAgent;
-	var msie = ua.indexOf("MSIE")
-	var edge = ua.indexOf("Edge")
-	var IE = !!navigator.userAgent.match(/Trident.*rv\:11\./)
-	var data_type = 'data:application/vnd.ms-internet explorer'
-
-	if (msie > 0 || edge > 0 || IE) { // If Internet Explorer
-		open(pacs);
-	} else {
-		var html = '<!DOCTYPE html><HTML><HEAD><script>function opener(){window.open("'
-		html += pacs + '", "_self")}</script><body onload="opener()"></body></HEAD></HTML>'
-		var a = document.createElement('a');
-		document.body.appendChild(a);  // You need to add this line in FF
-		a.href = data_type + ', ' + encodeURIComponent(html);
-		a.download = "index.html"
-		a.click();		//to test with Chrome and FF
-	}
-}
-
-function find()
+function search()
 {
 	var $dialogInput = $("#dialogInput"),
 		$stafflist = $('#stafflist')
 
 	$dialogInput.dialog({
-		title: "Find",
+		title: "Search",
 		closeOnEscape: true,
 		modal: true,
 		width: 450,
 		height: 350,
 		buttons: [
 			{
-				text: "All Deleted Cases",
-				class: "deleted leftButton",
-				width: "130",
-				click: function () { deletedCases() }
+				text: "All Saved Cases",
+				class: "undelete leftButton",
+				width: "150",
+				click: function () { allCases() }
 			},
 			{
-				text: "All Saved Cases",
-				class: "undelete",
-				width: "130",
-				click: function () { allCases() }
+				text: "All Deleted Cases",
+				class: "deleted",
+				width: "150",
+				click: function () { deletedCases() }
 			}
 		],
 		close: function() {
@@ -409,12 +384,7 @@ function find()
 		}
 	})
 
-	$dialogInput.find("img").on("click", function(event) { searchDB() })
-	$dialogInput.on("keydown", function(event) {
-		var keycode = event.which || window.event.keyCode
-		if (keycode === 13) { searchDB() }
-	})
-	$dialogInput.on("click", function(event) {
+	$dialogInput.off("click").on("click", function(event) {
 		var target = event.target
 
 		if ($stafflist.is(":visible")) {
@@ -425,23 +395,11 @@ function find()
 			}
 		}
 	})
-}
-
-function searchDB()
-{
-	var args = {
-			hn: $('input[name="hn"]').val(),
-			staffname: $('input[name="staffname"]').val(),
-			others: $('input[name="others"]').val()
-		},
-		$dialogInput = $("#dialogInput"),
-		search = ""
-
-	$.each(args, function(key, val) { search += val })
-	if (search) { sqlFind(args) }
-	if ($dialogInput.hasClass('ui-dialog-content')) {
-		$dialogInput.dialog("close")
-	}
+	.off("keydown").on("keydown", function(event) {
+		var keycode = event.which || window.event.keyCode
+		if (keycode === 13) { searchDB() }
+	})
+	.find("img").off("click").on("click", function(event) { searchDB() })
 }
 
 function getSaffName(pointing)
@@ -462,59 +420,35 @@ function getSaffName(pointing)
 	menustyle($stafflist, $pointing)
 }
 
-function sqlFind(args)
+function searchDB()
 {
-	var sql = sqlx = search = word = "",
-		findArr = wordAarr = [],
-		len = 0
+	var hn = $('input[name="hn"]').val(),
+		staffname = $('input[name="staffname"]').val(),
+		others = $('input[name="others"]').val(),
+		$dialogInput = $("#dialogInput"),
+		sql = "", search = ""
 
-	$.each(args, function(key, val) {
-		if (val) {
-			if (sql) { sql += " AND " }
-			if (key === "hn" || key === "staffname") {
-				sql += key + "='" + val + "'"
-			} else {
-				wordArr = val.split(" ")
-				len = wordArr.length
-				for (var i=len; i>0; i--) {
-					for (var j=0; j<len-i; j++) {
-						
-					}
-				}
-					findArr.push(val)
-				$.each(findArr, function () {
-					if (sqlx) { sqlx += " OR " }
-					sqlx += findDB(this)
-				})
-function findDB(val)
-{
-	sql += "diagnosis like '%" + val + "%'"
-		+ " OR treatment like '%" + val + "%'"
-		+ " OR admission like '%" + val + "%'"
-		+ " OR final like '%" + val + "%'"
-		+ " OR contact like '%" + val + "%'"
-}
-			}
-			// for dialog title
-			if (search) { search += ", " }
-			search += val
-		}
-	})
+	// for dialog title
+	search += hn
+	search += (search && staffname ? ", " : "") + staffname
+	search += (search && others ? ", " : "") + others
+	if (search) {
+		sql = "hn=" + hn
+			+ "&staffname=" + staffname
+			+ "&others=" + others
 
-	sql = "sqlReturnData=SELECT * FROM book WHERE "
-		+ sql
-		+ " ORDER BY opdate;"
+		Ajax(SEARCH, sql, callbackfind)
 
-	Ajax(MYSQLIPHP, sql, callbackfind)
-
-	clearEditcell()
+	} else {
+		Alert("Search: ''", "<br><br>No Result")
+	}
 
 	function callbackfind(response)
 	{
 		if (/dob/.test(response)) {
 			makeFind(response, search)
 		} else {
-			Alert("Find: " + search, response)
+			Alert("Search: " + search, response)
 		}
 	}
 }
@@ -574,7 +508,7 @@ function makeDialogFound(found, search)
 		$findtbl = $("#findtbl")
 	
 	$dialogFind.dialog({
-		title: "Find: " + search,
+		title: "Search: " + search,
 		closeOnEscape: true,
 		modal: true,
 		width: window.innerWidth*95/100,
@@ -590,6 +524,8 @@ function makeDialogFound(found, search)
 		close: function() {
 			$(window).off("resize", resizeFind )
 			$(".fixed").remove()
+			$("#dialogInput").dialog("close")
+			$(".bordergroove").removeClass("bordergroove")
 		}
 	})
 
@@ -659,6 +595,29 @@ jQuery.fn.extend({
 		cells[8].innerHTML = q.contact
 	}
 })
+
+function PACS(hn)
+{ 
+	var pacs = 'http://synapse/explore.asp?path=/All Patients/InternalPatientUID='+hn
+	var sql = 'PAC=http://synapse/explore.asp'
+	var ua = window.navigator.userAgent;
+	var msie = ua.indexOf("MSIE")
+	var edge = ua.indexOf("Edge")
+	var IE = !!navigator.userAgent.match(/Trident.*rv\:11\./)
+	var data_type = 'data:application/vnd.ms-internet explorer'
+
+	if (msie > 0 || edge > 0 || IE) { // If Internet Explorer
+		open(pacs);
+	} else {
+		var html = '<!DOCTYPE html><HTML><HEAD><script>function opener(){window.open("'
+		html += pacs + '", "_self")}</script><body onload="opener()"></body></HEAD></HTML>'
+		var a = document.createElement('a');
+		document.body.appendChild(a);  // You need to add this line in FF
+		a.href = data_type + ', ' + encodeURIComponent(html);
+		a.download = "index.html"
+		a.click();		//to test with Chrome and FF
+	}
+}
 
 function showUpload(hn, patient)
 {
