@@ -16,7 +16,7 @@ require_once "mysqli.php";
 		$sql .= "staffname='$staffname'";
 	}
 	if ($others) {
-		$data = getData($mysqli, $others);
+		$data = getData($mysqli, $sql, $others);
 	} else {
 		if ($sql) {
 			$data = search($mysqli, $sql);
@@ -25,17 +25,19 @@ require_once "mysqli.php";
 //var_dump($data);
 	echo $data;
 
-function getData($mysqli, $others)
+function getData($mysqli, $sql, $others)
 {
-	$column = array("diagnosis","treatment","admission","final","contact");
+	$column = array("diagnosis","treatment","admission","final");
 	$data = array();
 	$wordArr = explode(" ", $others);
 
 	// Create array for the names that are close to or match the search term
 	$qns = array();
 
-	if (!$result = $mysqli->query ("SELECT diagnosis,treatment,admission,final,contact,qn
-								FROM book;")) {
+	$sqlx = "SELECT diagnosis,treatment,admission,final,qn FROM book";
+	$sqlx .= ($sql ? " WHERE $sql;" : ";");
+
+	if (!$result = $mysqli->query ($sqlx)) {
 		return $mysqli->error;
 	}
 
@@ -69,7 +71,7 @@ function getData($mysqli, $others)
 			array_push($qns, $col[qn]);
 		}
 	}
-//return $qns;
+	// don't know why many " OR " phrases cause error (PHP to Mysql)
 	$sql = "";
 	foreach($qns as $qn) {
 		$sql .= "SELECT * FROM book where qn=$qn;";
