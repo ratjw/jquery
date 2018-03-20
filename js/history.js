@@ -363,7 +363,7 @@ function search()
 		title: "Search",
 		closeOnEscape: true,
 		modal: true,
-		width: 450,
+		width: 500,
 		height: 350,
 		buttons: [
 			{
