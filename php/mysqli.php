@@ -3,10 +3,11 @@ include "connect.php";
 require_once "book.php";
 
 	// start.js (start)
+	// xstart.js (start)
 	if (isset($_POST['start'])) {
 		echo start($mysqli, $_POST['start']);
 	}
-	// start.js (getUpdate)
+	// xstart.js (getUpdate)
 	else if (isset($_POST['nosqlReturnbook']))
 	{
 		echo json_encode(book($mysqli));
@@ -28,10 +29,12 @@ require_once "book.php";
 	}
 
 	// click.js (changeOncall)
-	// equip.js (fillEquipTable)
+	// equip.js (getEditedBy)
 	// history.js (editHistory, deletedCases, allCases, sqlFind)
 	// service.js (getServiceOneMonth)
 	// start.js (updating)
+	// xequip.js (getEditedBy)
+	// xstart.js (updating)
 	else if (isset($_POST['sqlReturnData'])) {
 		echo returnData($mysqli, $_POST['sqlReturnData']);
 	}
