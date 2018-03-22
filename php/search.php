@@ -4,10 +4,11 @@ require_once "mysqli.php";
 
 //$hn = "";
 //$staffname = "";
-//$others = "menigioma craniotomy";
+//$others = "menigioma crani inoi";
 
 	extract($_POST);
 
+	$sql = "";
 	if ($hn) {
 		$sql .= "hn='$hn'";
 	}
@@ -45,30 +46,41 @@ function getData($mysqli, $sql, $others)
 		$data[] = $rowi;
 	}
 
-	foreach($data as $col) {
+	foreach($data as $row) {
+			$match = false;
 		$allcols = "";
-		// Add together
+
+		// Add 4 columns together
 		foreach($column as $key) {
-			$allcols .= $col[$key]." ";
+			$allcols .= $row[$key]." ";
 		}
 
+		// use non-alphanumeric characters as separators
 		$allcols = preg_replace("/[^A-Za-z0-9 ']/", ' ', $allcols);
 		$allcols = preg_replace('/\s\s+/', ' ', $allcols);
 		$alldata = explode(" ", $allcols);
 
 		foreach ($findArr as $find) {
 			$match = false;
-			foreach ($alldata as $onedata) {
-				$leven = levenshtein($find, $onedata);
-				if ($leven >= 0 && $leven <= 2) {
-					$match = true;
-					break;
+			if (strpos($allcols, $find) === false) {
+				foreach ($alldata as $onedata) {
+					$leven = levenshtein($find, $onedata);
+					if ($leven >= 0 && $leven < 4) {
+						similar_text($find, $onedata, $percent);
+						if ($percent > 70) {
+							$match = true;
+							break;
+						}
+					}
 				}
+			} else {
+				$match = true;
 			}
-			if ($match) { break; }
+			// must found every $find, if one $find is not found => no match
+			if (!$match) { break; }
 		}
 		if ($match === true) {
-			array_push($qns, $col[qn]);
+			array_push($qns, $row["qn"]);
 		}
 	}
 
