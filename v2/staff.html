@@ -2,6 +2,8 @@
  Byte-order mark (or BOM) causes white space at the top of the page. 
  Notepad++ can save "UTF-8" (without BOM) in "Encoding" menu. -->
 
+<link href="css/CSS.css" rel="stylesheet">
+
 <script src="js/click.js"></script>
 <script src="js/constant.js"></script>
 <script src="js/equip.js"></script>
@@ -13,7 +15,7 @@
 <script src="js/sortable.js"></script>
 <script src="js/start.js"></script>
 
-<div id="wrapper" style="display:none">
+<div id="wrapper">
  <div id="tblwrapper">
   <div id="tblcontainer">
    <table id="tbl">
@@ -21,21 +23,21 @@
 	 <tr>
      <th>Date</th>
      <th>ห้อง</th>
-     <th>Case</th>
+     <th>เคส</th>
      <th>Staff</th>
      <th>HN</th>
      <th>Patient</th>
      <th>Diagnosis</th>
      <th>Treatment</th>
      <th>Contact</th>
-     <th style="display:none"></th>
+     <th></th>
 	 </tr>
     </tbody>
    </table>
   </div>
  </div>
 
- <div id="queuewrapper" style="display:none">
+ <div id="queuewrapper">
   <div id="titlebar">
 	<span id="titlename"></span>
 	<span class="ui-icon ui-icon-closethick" onclick="closequeue()"></span>
@@ -50,7 +52,7 @@
 </div>
 
 <!-- Used as cells template -->
-<table id="tblcells" style="display:none">
+<table id="tblcells">
  <tbody>
   <tr>
 	<td data-title="Date"></td>
@@ -62,12 +64,12 @@
 	<td data-title="Diagnosis"></td>
 	<td data-title="Treatment"></td>
 	<td data-title="Contact"></td>
-	<td style="display:none"></td>
+	<td></td>
   </tr>
  </tbody>
 </table>
 
-<div id="dialogService" style="display:none">
+<div id="dialogService">
   <div id="servicehead">
     <div>
 	  <span class="item">Admission : <span id="Admission"></span></span>
@@ -86,22 +88,22 @@
   <button id="exportService">Export to xls</button>
   <button id="reportService">Report to Dept.</button>
   <br>
-  <div id="monthpicker" style="margin-left:5px"></div>
-  <div id="monthstart" style="display:none"></div>
+  <div id="monthpicker"></div>
+  <div id="monthstart"></div>
   <table id="servicetbl">
    <thead>
     <tr>
-     <th style="width:1%">№</th>
-     <th style="width:3%">HN</th>
-     <th style="width:10%">Patient</th>
-     <th style="width:15%">Diagnosis</th>
-     <th style="width:15%">Treatment</th>
-     <th style="width:30%">Admission Status</th>
-     <th style="width:20%">Final Status</th>
-     <th style="width:2%">Admit</th>
-     <th style="width:2%">Date</th>
-     <th style="width:2%">D/C</th>
-     <th style="display:none"></th>
+     <th>№</th>
+     <th>HN</th>
+     <th>Patient</th>
+     <th>Diagnosis</th>
+     <th>Treatment</th>
+     <th>Admission Status</th>
+     <th>Final Status</th>
+     <th>Admit</th>
+     <th>Date</th>
+     <th>D/C</th>
+     <th></th>
     </tr>
    </thead>
    <tbody>
@@ -110,7 +112,7 @@
 
   <!--  name is the column in Mysql
 		title is the value -->
-  <div id="divRecord" class="dialogBox" style="display:none">
+  <div id="divRecord" class="dialogBox">
 	<div class="iconcontainer">
 	  <span id="checkRecord" class="ui-icon ui-icon-check icon"></span>
 	  <span id="cancelRecord" class="ui-icon ui-icon-closethick icon"></span>
@@ -215,7 +217,7 @@
 <!-- dialogService ends here -->
 
 <!--template for "servicetbl"-->
-<table id="servicecells" style="display:none">
+<table id="servicecells">
   <tbody>
    <tr>
     <td data-title="№"></td>
@@ -228,7 +230,7 @@
     <td data-title="Admit"></td>
     <td data-title="Date"></td>
     <td data-title="D/C"></td>
-    <td style="display:none"></td>
+    <td></td>
    </tr>
   </tbody>
 </table>
@@ -276,13 +278,13 @@
      <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
    </tr>
    <tr>
-     <td style="font-weight:normal"><b>etc.</b>
+     <td><b>etc.</b>
 		<small>(Lesionectomy, Tracheostomy, MVD, Change Batt., Sural n. Bx)</small>
 	 </td>
      <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
    </tr>
-    <tr class="notcount">
-     <th colspan="9" style="text-align:left;padding-left:20px">
+   <tr class="notcount">
+	 <th colspan="9">
 		Non-surgical <small>(not included in total operation)</small>
 	 </th>
    </tr>
@@ -310,22 +312,22 @@
  </table>
 </div>
 
-<div id="dialogHistory" style="display:none">
+<div id="dialogHistory">
  <table id="historytbl">
   <thead>
    <tr>
-	<th style="width:2%">Date</th>
-	<th style="width:2%">Room</th>
-	<th style="width:2%">Case</th>
-	<th style="width:2%">Staff</th>
-	<th style="width:15%">Diagnosis</th>
-	<th style="width:15%">Treatment</th>
-	<th style="width:15%">Admission Status</th>
-	<th style="width:15%">Final Status</th>
-	<th style="width:15%">Equipment</th>
-	<th style="width:15%">Contact</th>
-	<th style="width:2%">Editor</th>
-	<th style="width:2%">Edited When</th>
+	<th>Date</th>
+	<th>Rm</th>
+	<th>№</th>
+	<th>Staff</th>
+	<th>Diagnosis</th>
+	<th>Treatment</th>
+	<th>Admission Status</th>
+	<th>Final Status</th>
+	<th>Equipment</th>
+	<th>Contact</th>
+	<th>Editor</th>
+	<th>Edited When</th>
    </tr>
   </thead>
   <tbody>
@@ -333,7 +335,7 @@
  </table>
 </div>
 
-<table id="historycells" style="display:none">
+<table id="historycells">
   <tbody>
    <tr>
     <td data-title="Date"></td>
@@ -352,20 +354,20 @@
   </tbody>
 </table>
 
-<div id="dialogDeleted" style="display:none">
+<div id="dialogDeleted">
  <table id="deletedtbl">
   <thead>
    <tr>
-	<th style="width:5%">Date</th>
-	<th style="width:5%">Staff</th>
-	<th style="width:5%">HN</th>
-	<th style="width:10%">Patient</th>
-	<th style="width:20%">Diagnosis</th>
-	<th style="width:20%">Treatment</th>
-	<th style="width:20%">Contact</th>
-	<th style="width:5%">Editor</th>
-	<th style="width:10%">Edited When</th>
-	<th style="display:none"></th>
+	<th>Date</th>
+	<th>Staff</th>
+	<th>HN</th>
+	<th>Patient</th>
+	<th>Diagnosis</th>
+	<th>Treatment</th>
+	<th>Contact</th>
+	<th>Editor</th>
+	<th>Edited When</th>
+	<th></th>
    </tr>
   </thead>
   <tbody>
@@ -377,7 +379,7 @@
  </div>
 </div>
 
-<table id="deletedcells" style="display:none">
+<table id="deletedcells">
   <tbody>
    <tr>
 	<td data-title="Date"></td>
@@ -389,56 +391,78 @@
 	<td data-title="Contact"></td>
 	<td data-title="Editor"></td>
 	<td data-title="Edited When"></td>
-	<td style="display:none"></td>
+	<td></td>
    </tr>
   </tbody>
 </table>
 
 <div id="dialogAll">
-  <table id="alltbl">
-	<tbody>
-	</tbody>
-  </table>
+ <table id="alltbl">
+  <thead>
+   <tr>
+	<th>Date</th>
+	<th>Staff</th>
+	<th>HN</th>
+	<th>Patient</th>
+	<th>Diagnosis</th>
+	<th>Treatment</th>
+	<th>Admission Status</th>
+	<th>Final Status</th>
+	<th>Contact</th>
+   </tr>
+  </thead>
+  <tbody>
+  </tbody>
+ </table>
 </div>
 
-<div id="dialogInput" class="dialogBox" style="display:none">
-	<span style="width:90px;">HN:</span>
+<table id="allcells">
+  <tbody>
+   <tr>
+    <td data-title="Date"></td>
+    <td data-title="Staff"></td>
+    <td data-title="HN"></td>
+    <td data-title="Patient"></td>
+    <td data-title="Diagnosis"></td>
+    <td data-title="Treatment"></td>
+    <td data-title="Admission Status"></td>
+    <td data-title="Final Status"></td>
+    <td data-title="Contact"></td>
+   </tr>
+  </tbody>
+</table>
+
+<div id="dialogInput" class="dialogBox">
+	<span>HN:</span>
 	<input type="text" name="hn" maxlength="7">
 	<br>
 	<br>
-	<span style="width:90px;">Patient:</span>
-	<input type="text" name="patient">
-	<br>
-	<br>
-	<span style="width:90px;">Staff:</span>
+	<span>Staff:</span>
 	<input type="text" name="staffname">
 	<br>
 	<br>
-	<span style="width:90px;">Diagnosis:</span>
-	<input type="text" name="diagnosis">
+	<span>Others:</span>
+	<br>
+	<input type="text" name="others"
+		placeholder="Dx, Rx, Adm & Final Status">
 	<br>
 	<br>
-	<span style="width:90px;">Treatment:</span>
-	<input type="text" name="treatment">
-	<br>
-	<br>
-	<span style="width:90px;">Contact:</span>
-	<input type="text" name="contact">
+	<img src="css/pic/find.png">
 </div>
 
-<div id="dialogFind" style="display:none">
+<div id="dialogFind">
   <table id="findtbl">
   <thead>
    <tr>
-	<th style="width:4%">Date</th>
-	<th style="width:3%">Staff</th>
-	<th style="width:3%">HN</th>
-	<th style="width:10%">Patient</th>
-	<th style="width:20%">Diagnosis</th>
-	<th style="width:15%">Treatment</th>
-	<th style="width:20%">Admission Status</th>
-	<th style="width:15%">Final Status</th>
-	<th style="width:10%">Contact</th>
+	<th>Date</th>
+	<th>Staff</th>
+	<th>HN</th>
+	<th>Patient</th>
+	<th>Diagnosis</th>
+	<th>Treatment</th>
+	<th>Admission Status</th>
+	<th>Final Status</th>
+	<th>Contact</th>
    </tr>
   </thead>
   <tbody>
@@ -446,7 +470,7 @@
   </table>
 </div>
 
-<table id="findcells" style="display:none">
+<table id="findcells">
   <tbody>
    <tr>
     <td data-title="Date"></td>
@@ -464,307 +488,279 @@
 
 <div id="dialogAlert"></div>
 
-<ul id="menu" style="display:none">
+<ul id="menu">
   <li id="addrow"><div>Add a Row</div></li>
   <li id="itempost"><div>เลื่อนไป ไม่กำหนดวัน</div><ul>
     <li id="postpone"><div></div></li>
   </ul></li>
-  <li id="changedate"><div>เปลี่ยนวัน / เปลี่ยนลำดับ</div></li>
-  <li id="equip"><div>Equipment</div></li>
+  <li id="changedate"><div>เปลี่ยนย้าย วัน/ลำดับ</div></li>
   <li id="history"><div>ประวัติการแก้ไข</div></li>
   <li id="itemdel"><div>Delete</div><ul>
     <li id="del"><div></div></li>
   </ul></li>
   <li><div>คิวของอาจารย์</div><ul id="staffmenu"></ul></li>
   <li id="service"><div>Service Review</div></li>
-  <li><div>All Cases</div>
-  <ul id="allcases">
-    <li id="deleted">
-		<div>All<span style="background-color:pink"> Deleted </span>Cases</div>
-	</li>
-    <li id="notdeleted">
-		<div>All<span style="background-color:skyblue"> Saved </span>Cases</div>
-	</li>
-  </ul>
-  </li>
-  <li id="search"><div>Find</div></li>
+  <li id="search"><div>Search</div></li>
   <li id="readme"><div>Readme</div></li>
 </ul>
 
-<ul id="stafflist" style="display:none"></ul>
+<ul id="stafflist"></ul>
 
 <div id="editcell" contenteditable="true"></div>
 
-<div id="dialogEquip">
-  <span style="width:100px;">
-	ห้อง <span id="oproom" style="font-size: 16px; font-weight: bold;"></span>
-  </span>
-  <span style="width:80px;">
-	Case <span id="casenum" style="font-size: 16px; font-weight: bold;"></span>
-  </span>
-  <span style="width:120px;">
-	เวลา <span id="optime" style="font-size: 16px; font-weight: bold;"></span>
-  </span>
-  <span style="width:200px;">วัน<span id="opday"></span>ที่
-	<span id="opdate" style="font-size: 16px; font-weight: bold;"></span>
-  </span>
-  <span style="width:150px;">
-	Surgeon <span id="staffname" style="font-size: 16px; font-weight: bold;"></span>
-  </span>
-  <br>
-  <br>
-  <span style="width:110px;">ชื่อ-นามสกุล </span><span id="patientname"></span>
-  <span style="width:20px;"></span>อายุ <span id="age"></span>
-  <span style="width:20px;"></span>HN <span id="hn"></span>
-  <br>
-  <span style="width:110px;float:left;">Diagnosis</span>
-  <span style="width:540px;" id="diagnosis"></span>
-  <br>
-  <span style="width:110px;float:left;">Operation</span>
-  <span style="width:540px;" id="treatment"></span>
-  <br>
-  <br>
- <div title="ส่วนเกิน">
-  <span style="width:110px;"></span>
-  <span style="width:500px;">
-	<span style="color:red;"> ***</span>
-	<i>ผู้ป่วยและญาติสามารถ<b><u>จ่ายส่วนเกินได้ </u></b></i> 
-	<input type="text" style="width:70px;text-align:center" id="copay"> บาท
-	<span style="color:red;"> ***</span>
-  </span>
-  <br>
-  <br>
+<div id="dialogEquip" class="dialogBox">
+ <div>
+  <span class="w100">ห้อง <span id="oproom"></span></span>
+  <span class="w80">Case <span id="casenum"></span></span>
+  <span class="w120">เวลา <span id="optime"></span></span>
+  <span class="w200">วัน<span id="opday"></span>ที่ <span id="opdate"></span></span>
+  <span class="w150">Surgeon <span id="staffname"></span></span>
  </div>
+ <br>
+ <div>
+  <span class="w110">ชื่อ-นามสกุล </span><span id="patientname"></span>
+  <span class="w20"></span>อายุ <span id="age"></span>
+  <span class="w20"></span>HN <span id="hn"></span>
+  <br>
+  <span class="w110 floatleft">Diagnosis</span>
+  <span class="w540" id="diagnosis"></span>
+  <br>
+  <span class="w110 floatleft">Operation</span>
+  <span class="w540" id="treatment"></span>
+ </div>
+ <br>
+ <div title="ส่วนเกิน">
+  <span class="w110"></span>
+  <span class="w500">
+	<span class="red"> ***</span>
+	<i>ผู้ป่วยและญาติสามารถ<b><u>จ่ายส่วนเกินได้ </u></b></i> 
+	<input type="text" class="w70 textcenter" id="copay"> บาท
+	<span class="red"> ***</span>
+  </span>
+ </div>
+ <br>
  <div title="Position">
-  <span id="clearPosition" style="width:110px;">Position <small>(คลิกลบ)</small></span>
-  <span style="width:230px;">
+  <span id="clearPosition" class="w110">Position <small>(คลิกลบ)</small></span>
+  <span class="w215">
 	<input type="radio" name="pose" id="leftSupine">
-	<label for="leftSupine">หงาย ซ้ายขึ้น หันหน้าไปทางขวา</label>
+	<label for="leftSupine">หงาย ซ้ายขึ้น หันหน้าไปขวา</label>
   </span>
-  <span style="width:230px;">
+  <span class="w215">
 	<input type="radio" name="pose" id="rightSupine">
-	<label for="rightSupine">หงาย ขวาขึ้น หันหน้าไปทางซ้าย</label>
+	<label for="rightSupine">หงาย ขวาขึ้น หันหน้าไปซ้าย</label>
   </span>
-  <span style="width:90px;">
+  <span class="w90">
 	<input type="radio" name="pose" id="supine">
 	<label for="supine">หงายตรง</label>
   </span>
   <br>
-  <span style="width:110px;"></span>
-  <span style="width:150px;">
+  <span class="w110"></span>
+  <span class="w150">
 	<input type="radio" name="pose" id="rightParkbench">
 	<label for="rightParkbench">Parkbench ขวาลง</label>
   </span>
-  <span style="width:140px;">
+  <span class="w140">
 	<input type="radio" name="pose" id="rightLateral">
 	<label for="rightLateral">Lateral ขวาลง</label>
   </span>
-  <span style="width:140px;">
+  <span class="w140">
 	<input type="radio" name="pose" id="right3quarter">
 	<label for="right3quarter">3/4 ขวาลง</label>
   </span>
-  <span style="width:100px;">
+  <span class="w100">
 	<input type="radio" name="pose" id="Concorde">
 	<label for="Concorde">Concorde</label>
   </span>
   <br>
-  <span style="width:110px;"></span>
-  <span style="width:150px;">
+  <span class="w110"></span>
+  <span class="w150">
 	<input type="radio" name="pose" id="leftParkbench">
 	<label for="leftParkbench">Parkbench ซ้ายลง</label>
   </span>
-  <span style="width:140px;">
+  <span class="w140">
 	<input type="radio" name="pose" id="leftLateral">
 	<label for="leftLateral">Lateral ซ้ายลง</label>
   </span>
-  <span style="width:140px;">
+  <span class="w140">
 	<input type="radio" name="pose" id="left3quarter">
 	<label for="left3quarter">3/4 ซ้ายลง</label>
   </span>
-  <span style="width:70px;">
+  <span class="w70">
 	<input type="radio" name="pose" id="prone">
 	<label for="prone">คว่ำ</label>
   </span>
   <br>
-  <span style="width:120px;"></span>
-  <input type="text" style="width:500px;" id="position">
-  <br>
-  <br>
+  <span class="w120"></span>
+  <input type="text" id="position">
  </div>
+ <br>
  <div title="Imaging">
-  <span style="width:110px;">Imaging</span>
-  <span style="width:120px;">
+  <span class="w110">Imaging</span>
+  <span class="w120">
 	<input type="checkbox" id="Fluoroscope">
 	<label for="Fluoroscope">Fluoroscope</label>
   </span>
-  <span style="width:100px;">
+  <span class="w100">
 	<input type="checkbox" id="Navigator">
 	<label for="Navigator">Navigator</label>
   </span>
-  <span style="width:70px;">
+  <span class="w70">
 	<input type="checkbox" id="iMRI">
 	<label for="iMRI">iMRI</label>
   </span>
-  <span style="width:70px;">
+  <span class="w70">
 	<input type="checkbox" id="iCT">
 	<label for="iCT">iCT</label>
   </span>
-  <span style="width:90px;">
+  <span class="w90">
 	<input type="checkbox" id="Robotic">
 	<label for="Robotic">Robotic</label>
   </span>
-  <span style="width:70px;">
+  <span class="w70">
 	<input type="checkbox" id="OArm">
 	<label for="OArm">O-Arm</label>
   </span>
   <br>
-  <span style="width:120px;"></span>
-  <input type="text" style="width:500px;" id="Imaging">
-  <br>
-  <br>
+  <span class="w120"></span>
+  <input type="text" id="Imaging">
  </div>
+ <br>
  <div title="อุปกรณ์ยึดศีรษะ">
-  <span style="width:110px;">อุปกรณ์ยึดศีรษะ</span>
-  <span style="width:150px;">
+  <span class="w110">อุปกรณ์ยึดศีรษะ</span>
+  <span class="w150">
 	<input type="checkbox" id="Mayfield">
 	<label for="Mayfield">Mayfield</label>
   </span>
-  <span style="width:140px;">
+  <span class="w140">
 	<input type="checkbox" id="GelHeadRing">
 	<label for="GelHeadRing">Gel Head Ring</label>
   </span>
-  <span style="width:110px;">
+  <span class="w110">
 	<input type="checkbox" id="Horseshoe">
 	<label for="Horseshoe">Horseshoe</label>
   </span>
   <br>
-  <span style="width:120px;"></span>
-  <input type="text" style="width:500px;" id="headHolder">
-  <br>
-  <br>
+  <span class="w120"></span>
+  <input type="text" class="w500" id="headHolder">
  </div>
+ <br>
  <div title="เครื่องตัดกระดูก">
-  <span style="width:110px;">เครื่องตัดกระดูก</span>
-  <span style="width:150px;">
+  <span class="w110">เครื่องตัดกระดูก</span>
+  <span class="w150">
 	<input type="checkbox" id="HighSpeedDrill">
 	<label for="HighSpeedDrill">High Speed Drill</label>
   </span>
-  <span style="width:140px;">
+  <span class="w140">
 	<input type="checkbox" id="SagittalSaw">
 	<label for="SagittalSaw">Sagittal Saw</label>
   </span>
-  <span style="width:110px;">
+  <span class="w110">
 	<input type="checkbox" id="Osteotome">
 	<label for="Osteotome">Osteotome</label>
   </span>
   <br>
-  <span style="width:120px;"></span>
-  <input type="text" style="width:500px;" id="Craniotome">
-  <br>
-  <br>
+  <span class="w120"></span>
+  <input type="text" class="w500" id="Craniotome">
  </div>
+ <br>
  <div title="กล้อง">
-  <span style="width:110px;">กล้อง</span>
-  <span style="width:150px;">
+  <span class="w110">กล้อง</span>
+  <span class="w150">
 	<input type="checkbox" id="Microscope">
 	<label for="Microscope">Microscope</label>
   </span>
-  <span style="width:140px;">
+  <span class="w140">
 	<input type="checkbox" id="ICG">
 	<label for="ICG">ICG</label>
   </span>
-  <span style="width:110px;">
+  <span class="w110">
 	<input type="checkbox" id="Endoscope">
 	<label for="Endoscope">Endoscope</label>
   </span>
   <br>
-  <span style="width:120px;"></span>
-  <input type="text" placeholder="ระบุยี่ห้อ" style="width:500px;" id="scope">
-  <br>
-  <br>
+  <span class="w120"></span>
+  <input type="text" placeholder="ระบุยี่ห้อ" class="w500" id="scope">
  </div>
+ <br>
  <div title="Retractor">
-  <span style="width:110px;">Retractor</span>
-  <span style="width:150px;">
+  <span class="w110">Retractor</span>
+  <span class="w150">
 	<input type="checkbox" id="Leylar">
 	<label for="Leylar">Leylar</label>
   </span>
-  <span style="width:140px;">
+  <span class="w140">
 	<input type="checkbox" id="Halo">
 	<label for="Halo">Halo</label>
   </span>
-  <span style="width:110px;">
+  <span class="w110">
 	<input type="checkbox" id="Greenberg">
 	<label for="Greenberg">Greenberg</label>
   </span>
   <br>
-  <span style="width:120px;"></span>
-  <input type="text" style="width:500px;" id="Retractor">
-  <br>
-  <br>
+  <span class="w120"></span>
+  <input type="text" class="w500" id="Retractor">
  </div>
+ <br>
  <div title="CUSA">
-  <span style="width:110px;">CUSA</span>
-  <span style="width:150px;">
+  <span class="w110">CUSA</span>
+  <span class="w150">
 	<input type="checkbox" id="Excell">
 	<label for="Excell">Excell</label>
   </span>
-  <span style="width:140px;">
+  <span class="w140">
 	<input type="checkbox" id="Soring">
 	<label for="Soring">Soring</label>
   </span>
-  <span style="width:110px;">
+  <span class="w110">
 	<input type="checkbox" id="Sonar">
 	<label for="Sonar">Sonar</label>
   </span>
   <br>
-  <span style="width:120px;"></span>
-  <input type="text" style="width:500px;" id="CUSA">
-  <br>
-  <br>
+  <span class="w120"></span>
+  <input type="text" class="w500" id="CUSA">
  </div>
+ <br>
  <div title="U/S">
-  <span style="width:110px;">U/S</span>
-  <span style="width:150px;">
+  <span class="w110">U/S</span>
+  <span class="w150">
 	<input type="checkbox" id="ultrasound">
 	<label for="ultrasound">Ultrasound</label>
   </span>
-  <span style="width:140px;">
+  <span class="w140">
 	<input type="checkbox" id="Doppler">
 	<label for="Doppler">Doppler</label>
   </span>
-  <span style="width:110px;">
+  <span class="w110">
 	<input type="checkbox" id="Duplex">
 	<label for="Duplex">Duplex</label>
   </span>
   <br>
-  <span style="width:120px;"></span>
-  <input type="text" style="width:500px;" id="US">
-  <br>
-  <br>
+  <span class="w120"></span>
+  <input type="text" class="w500" id="US">
  </div>
+ <br>
  <div title="Shunt">
-  <span id="clearShunt" style="width:110px;">Shunt <small>(คลิกลบ)</small></span>
-  <span style="width:70px;">Pudenz</span>
-  <span style="width:22px;">หัว</span>
-  <span style="width:50px;">
+  <span id="clearShunt" class="w110">Shunt <small>(คลิกลบ)</small></span>
+  <span class="w70">Pudenz</span>
+  <span class="w22">หัว</span>
+  <span class="w50">
 	<input type="radio" name="head" id="proximalLow">
 	<label for="proximalLow">low</label>
   </span>
-  <span style="width:55px;">
+  <span class="w55">
 	<input type="radio" name="head" id="proximalMedium">
 	<label for="proximalMedium">med</label>
   </span>
-  <span style="width:85px;">
+  <span class="w85">
 	<input type="radio" name="head" id="proximalHigh">
 	<label for="proximalHigh">high</label>
   </span>
-  <span style="width:30px;">ท้อง</span>
-  <span style="width:50px;">
+  <span class="w30">ท้อง</span>
+  <span class="w50">
 	<input type="radio" name="peritoneum" id="distalLow">
 	<label for="distalLow">low</label>
   </span>
-  <span style="width:55px;">
+  <span class="w55">
 	<input type="radio" name="peritoneum" id="distalMedium">
 	<label for="distalMedium">med</label>
   </span>
@@ -773,110 +769,104 @@
 	<label for="distalHigh">high</label>
   </span>
   <br>
-  <span style="width:110px;"></span>
-  <span style="width:150px;">Programmable</span>
-  <span style="width:140px;">
+  <span class="w110"></span>
+  <span class="w150">Programmable</span>
+  <span class="w140">
 	<input type="radio" name="program" id="shuntMedtronic">
 	<label for="shuntMedtronic">Medtronic</label>
   </span>
-  <span style="width:110px;">
+  <span class="w110">
 	<input type="radio" name="program" id="shuntCodman">
 	<label for="shuntCodman">Codman</label>
   </span>
   <br>
-  <span style="width:120px;"></span>
-  <input type="text" style="width:500px;" id="Shunt">
-  <br>
-  <br>
+  <span class="w120"></span>
+  <input type="text" id="Shunt">
  </div>
+ <br>
  <div title="เครื่องมือบริษัท">
-  <span style="width:110px;">เครื่องมือบริษัท </span>
-  <span style="width:150px;">เวลาส่งเครื่อง 
-	<input type="text" style="width:40px;text-align:right" id="equiptime"> น. 
+  <span class="w110">เครื่องมือบริษัท </span>
+  <span class="w150">เวลาส่งเครื่อง 
+	<input type="text" class="w40  textcenter" id="equiptime"> น. 
   </span>
   <br>
-  <span style="width:120px;"></span>
-  <input type="text" placeholder="ชื่อบริษัท ชื่อเครื่องมือ" style="width:500px;" id="company">
-  <br>
-  <br>
+  <span class="w120"></span>
+  <input type="text" placeholder="ชื่อบริษัท ชื่อเครื่องมือ" class="w500" id="company">
  </div>
+ <br>
  <div title="อุปกรณ์อื่นๆ">
-  <span style="width:110px;">อุปกรณ์อื่นๆ</span>
-  <span style="width:150px;">
+  <span class="w110">อุปกรณ์อื่นๆ</span>
+  <span class="w150">
 	<input type="checkbox" id="cranioCement">
 	<label for="cranioCement">Cranio cement</label>
   </span>
-  <span style="width:120px;">
+  <span class="w120">
 	<input type="checkbox" id="MTECSkull">
 	<label for="MTECSkull">MTEC skull</label>
   </span>
   <br>
-  <span style="width:120px;"></span>
-  <input type="text" style="width:500px;" id="other">
-  <br>
-  <br>
+  <span class="w120"></span>
+  <input type="text" class="w500" id="other">
  </div>
+ <br>
  <div title="Monitor">
-  <span style="width:110px;">Monitor</span>
-  <span style="width:73px;"><input type="checkbox" id="CN5"><label for="CN5">CN5</label></span>
-  <span style="width:73px;"><input type="checkbox" id="CN6"><label for="CN6">CN6</label></span>
-  <span style="width:70px;"><input type="checkbox" id="CN7"><label for="CN7">CN7</label></span>
-  <span style="width:70px;"><input type="checkbox" id="CN8"><label for="CN8">CN8</label></span>
-  <span style="width:70px;"><input type="checkbox" id="SSEP"><label for="SSEP">SSEP</label></span>
-  <span style="width:65px;"><input type="checkbox" id="EMG"><label for="EMG">EMG</label></span>
-  <span style="width:65px;"><input type="checkbox" id="MEP"><label for="MEP">MEP</label></span>
+  <span class="w110">Monitor</span>
+  <span class="w73"><input type="checkbox" id="CN5"><label for="CN5">CN5</label></span>
+  <span class="w73"><input type="checkbox" id="CN6"><label for="CN6">CN6</label></span>
+  <span class="w70"><input type="checkbox" id="CN7"><label for="CN7">CN7</label></span>
+  <span class="w70"><input type="checkbox" id="CN8"><label for="CN8">CN8</label></span>
+  <span class="w70"><input type="checkbox" id="SSEP"><label for="SSEP">SSEP</label></span>
+  <span class="w65"><input type="checkbox" id="EMG"><label for="EMG">EMG</label></span>
+  <span class="w65"><input type="checkbox" id="MEP"><label for="MEP">MEP</label></span>
   <br>
-  <span style="width:120px;"></span>
-  <input type="text" placeholder="อื่นๆ" style="width:500px;" id="Monitor">
-  <br>
-  <br>
+  <span class="w120"></span>
+  <input type="text" placeholder="อื่นๆ" class="w500" id="Monitor">
  </div>
+ <br>
  <div title="Notice">
-  <span style="width:110px;float:left">Notice</span>
+  <span class="w110 floatleft">Notice</span>
   <span> <textarea placeholder="เครื่องมือพิเศษอื่นๆ" id="Notice"></textarea></span>
-  <br>
-  <br>
  </div>
- <span>
-  <span style="width:350px;"></span>
-  <span style="width:70px;"> Edited by </span>
-  <span style="position:absolute" id="editedby"></span>
-  <br>
-  <br>
- </span>
+ <br>
+ <div>
+  <span class="w350"></span>
+  <span class="w70"> Edited by </span>
+  <span id="editedby"></span>
+ </div>
+ <br>
 </div>
 
 <div id="dialogReadme" class="dialogBox">
-  <h3 style="text-align: center;">Neurosurgery Service</h3>
-  <p style="margin:0px;"><span class="ui-icon ui-icon-info"></span>
+  <h3 class="textcenter">Neurosurgery Service</h3>
+  <p class="margin0"><span class="ui-icon ui-icon-info"></span>
   Login ID, Password ของโรงพยาบาล</p>
 	<dd>: เฉพาะห้องผ่าตัด ใช้ LoginID:เบอร์ห้อง ไม่มี password</dd>
-  <p style="margin:0px;">
+  <p class="margin0">
     <span class="ui-icon ui-icon-info"></span> การเปลี่ยนวันผ่าตัด (Date)
   </p>
-	  <ol style="margin:0px;">
+	  <ol class="margin0">
 		<li>ใช้ Drag & Drop สามารถลากข้ามตารางได้</li>
 		<li>ใช้ Menu เปลี่ยนวันที่ (ดูหัวข้อ Menu)</li>
 	  </ol>
-  <p style="margin:0px;"><span class="ui-icon ui-icon-info"></span>
+  <p class="margin0"><span class="ui-icon ui-icon-info"></span>
        บันทึกข้อมูลที่ใส่ตามช่อง (cell)  โดย
-	<br><span style="width:30px;"></span>
+	<br><span class="w30"></span>
 	1. คลิกช่องอื่น
-	<br><span style="width:30px;"></span>
+	<br><span class="w30"></span>
 	2. กด Tab (ช่องต่อไป) 
-	<br><span style="width:30px;"></span>
+	<br><span class="w30"></span>
 	3. กด Shift+Tab (ช่องย้อนหลัง)
-	<br><span style="width:30px;"></span>
+	<br><span class="w30"></span>
 	4. กด Enter</p>
-  <ul style="margin:0px;">
+  <ul class="margin0">
     <li>Enter ขึ้นบรรทัดใหม่บนตาราง</li>
     <li>Shift+Enter ขึ้นบรรทัดใหม่ภายในช่องนั้น</li>
   </ul>
-  <p style="margin-top:0px;"><span class="ui-icon ui-icon-info"></span>
+  <p class="margintop0"><span class="ui-icon ui-icon-info"></span>
        ยกเลิก กด Esc</p>
 
   <h3>ตาราง</h3>
-  <ul style="margin-top:0px;">
+  <ul class="margintop0">
 	<li>คอลัมน์ <b>Date</b></li>
 	<dt>: คลิกช่องนี้ จะปรากฏ Popup Menu</dt>
 	<dt>: วันผ่าตัด หรือ วันที่รับ consult ไม่ใช่วันนัดมา admit</dt>
@@ -903,7 +893,7 @@
   </ul>
 
   <h3>Menu</h3>
-  <ul style="margin-top:0px;">
+  <ul class="margintop0">
 	<li><b>เพิ่ม case</b></li>
 	<dt>: มีวันเดียวกันกับเคสที่คลิก</dt>
 	<li><b>เลื่อนไป ไม่กำหนดวัน</b> -> Confirm</li>
@@ -933,7 +923,7 @@
 	  <dt><b>- All Saved Cases</b></dt>
 	  <dt>: เหมือนตารางรวม ย้อนหลังไปทุกเคส</dt>
 	</li>
-	<li><b>Find</b></li>
+	<li><b>Search</b></li>
 	  <dt>: หาผู้ป่วย ด้วย HN หรือคำใดๆ ตามช่องที่ต้องการ</dt>
 	  <dt>: เป็นการหาผู้ป่วยทั้งหมด รวมทั้งที่ไม่ปรากฏในตาราง</dt>
 	  <dt>: ถ้าใช้ Ctrl-F เป็นการหาคำ เฉพาะที่ปรากฏในตาราง</dt>
@@ -941,7 +931,7 @@
   </ul>
 
   <h3>Equipment</h3>
-  <ul style="margin-top:0px;">
+  <ul class="margintop0">
 	<li>แบบฟอร์มที่เคยใส่ข้อมูลแล้ว</li>
 	<dt>: ต้องคลิก <button>แก้ไข</button></dt>
 	<li>ยกเลิกเลือกปุ่มการจัดท่า</b></li>
@@ -956,7 +946,7 @@
   </ul>
 
   <h3>Service Review</h3>
-  <ul style="margin-top:0px;">
+  <ul class="margintop0">
 	<li>ต้องการเปลี่ยนเดือน</li>
 	<dt>: คลิกหัวลูกศร ซ้าย ขวา</dt>
 	<li>เข้าดู Service Review</li>
@@ -987,6 +977,6 @@
 </div>
 
 <!-- For IE that not support <a download>, used in Export to Excel -->
-<iframe id="txtArea1" style="display:none"></iframe>
+<iframe id="txtArea1"></iframe>
 
 <div id="images_preview"></div>

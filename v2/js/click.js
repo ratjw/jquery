@@ -174,7 +174,7 @@ function saveRoom(pointed, newcontent)
 			if (isSplited() && (isStaffname(staffname) || isConsults())) {
 				refillstaffqueue()
 			}
-			scrolltoThisCase(qn)
+//			scrolltoThisCase(qn)
 			// re-render editcell for keyin cell only
 			var newpoint = $('#editcell').data("pointing")
 			if (newpoint.cellIndex > NAME) {

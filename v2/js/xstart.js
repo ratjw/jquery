@@ -48,12 +48,13 @@ function loading(response)
 		if (/^\d{6}$/.test(gv.user)) {
 			$("#login").remove()
 			$("#logo").remove()
-			$("#tblwrapper").show()
+			$("#wrapper").show()
+			$("#tblhead").show()
 			fillupstart();
 			fillConsults()
 		}
 		else if (/^\d{1,2}$/.test(gv.user)) {
-			fillForRoom()
+			fillForRoom(new Date().ISOdate())
 		}
 	} else {
 		response = localStorage.getItem('ALLBOOK')
@@ -69,45 +70,73 @@ function loading(response)
 	}
 }
 
-// gv.user is room number
-function fillForRoom()
+function fillForRoom(opdate)
 {
-	var today = new Date().ISOdate(),
-		book = gv.BOOK,
-		sameDateRoom = sameDateRoomBookQN(book, today, gv.user),
+	var book = gv.BOOK,
+		room = gv.user,
+		sameDateRoom = sameDateRoomBookQN(book, opdate, room),
 		slen = sameDateRoom.length,
 		i = 0,
 		showCase = function() {
 			fillEquipTable(book, $(), sameDateRoom[i])
+		},
+		blank = {
+			casenum: "",
+			diagnosis: "",
+			equipment: "",
+			hn: "",
+			opdate: opdate,
+			oproom: room,
+			optime: "",
+			patient: "",
+			staffname: "",
+			treatment: ""
 		}
 
 	if (slen) {
 		showCase()
-		$('#dialogEquip').dialog("option", "buttons", [
-			{
-				text: "Previous",
-				width: "100",
-				click: function () {
-					if (i > 0) {
-						i = i-1
-						showCase()
-					}
-				}
-			},
-			{
-				text: "Next",
-				width: "100",
-				click: function () {
-					if (i < slen-1) {
-						i = i+1
-						showCase()
-					}
+	} else {
+		fillEquipTable(book, $(), null, blank)
+	}
+	$('#dialogEquip').dialog("option", "buttons", [
+		{
+			text: "<< Previous Date",
+			width: "150",
+			class: "silver floatleft",
+			click: function () {
+				fillForRoom(opdate.nextdays(-1))
+			}
+		},
+		{
+			text: "< Previous Case",
+			width: "150",
+			class: "floatleft",
+			click: function () {
+				if (i > 0) {
+					i = i-1
+					showCase()
 				}
 			}
-		])
-	} else {
-		Alert("dialogEquip", "<br><br>No Case")
-	}
+		},
+		{
+			text: "Next Case >",
+			width: "150",
+			click: function () {
+				if (i < slen-1) {
+					i = i+1
+					showCase()
+				}
+			}
+		},
+		{
+			text: "Next Date >>",
+			width: "150",
+			class: "silver",
+			click: function () {
+				fillForRoom(opdate.nextdays(+1))
+			}
+		}
+	])
 }
 
 function updateBOOK(response)

@@ -16,9 +16,7 @@ require_once "mysqli.php";
 		FROM book
 		WHERE opdate BETWEEN '$from' AND '$to';");
 
-	if (!$result) {
-		return;
-	}
+	if (!$result) { return; }
 
 	while ($rowi = $result->fetch_assoc()) {
 		$case[] = $rowi;
@@ -33,9 +31,6 @@ require_once "mysqli.php";
 			continue;
 		}
 
-		$opdate = $case[$i]["opdate"];
-		$hn = $case[$i]["hn"];
-		$qn = $case[$i]["qn"];
 		$ipd = getipd($hn);
 
 		if (empty($ipd[effectivestartdate])) {
@@ -59,11 +54,16 @@ require_once "mysqli.php";
 		if (!$oldDischarge !== $newDischarge) {
 				$discharge = "discharge='$newDischarge',";
 		}
-		$mysqli->query ("UPDATE book SET .$admit.$discharge.editor='getipd'
-						 WHERE qn=$qn;");
+		if ($admit || $discharge) {
+			$mysqli->query ("UPDATE book SET .$admit.$discharge.editor='getipd'
+										 WHERE qn=$qn;");
+			$update = true;
+		}
 	}
 
- 	echo returnService($mysqli, $sql);
+ 	if ($update) {
+		echo returnService($mysqli, $sql);
+	}
 
 //use json encode-decode to convert XML to assoc array
 function getipd($hn)

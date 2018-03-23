@@ -69,8 +69,8 @@ jQuery.fn.extend({
 
 		// Define colors for deleted and undeleted rows
 		q.action === 'delete'
-		? this.css("background-color", "#FFCCCC")
-		: (q.action === 'undelete') && this.css("background-color", "#CCFFCC")
+		? this.addClass("deleted")
+		: (q.action === 'undelete') && this.addClass("undelete")
 
 		cells[0].innerHTML = putThdate(q.opdate)
 		cells[1].innerHTML = q.oproom
@@ -115,8 +115,6 @@ function deletedCases()
 
 	Ajax(MYSQLIPHP, sql, callbackdeletedCases)
 
-	clearEditcell()
-
 	function callbackdeletedCases(response)
 	{
 		if (/editdatetime/.test(response)) {
@@ -152,6 +150,7 @@ function makedeletedCases(response)
 		close: function() {
 			$(window).off("resize", resizeDeleted )
 			$(".fixed").remove()
+			$("#dialogInput").dialog("close")
 		}
 	})
 	$deletedtbl.fixMe($dialogDeleted);
@@ -159,8 +158,8 @@ function makedeletedCases(response)
 	var $undelete = $("#undelete")
 	$undelete.hide()
 	$undelete.off("click").on("click", function () { closeUndel() }).hide()
-	$(".undelete").off("click").on("click", function () {
-		undelete(this, deleted)
+	$(".toUndelete").off("click").on("click", function () {
+		toUndelete(this, deleted)
 	})
 
 	//for resizing dialogs in landscape / portrait view
@@ -179,7 +178,7 @@ jQuery.fn.extend({
 	filldataDeleted : function(q) {
 		let cells = this[0].cells
 
-		cells[0].className = "undelete"
+		cells[0].className = "toUndelete"
 		cells[0].innerHTML = putThdate(q.opdate)
 		cells[1].innerHTML = q.staffname
 		cells[2].innerHTML = q.hn
@@ -193,7 +192,7 @@ jQuery.fn.extend({
 	}
 })
 
-function undelete(thisWhen, deleted) 
+function toUndelete(thisWhen, deleted) 
 {
 //	var UNDELEDITDATETIME	= 0;
 	var UNDELOPDATE			= 1;
@@ -202,7 +201,7 @@ function undelete(thisWhen, deleted)
 //	var UNDELPATIENT		= 4;
 //	var UNDELDIAGNOSIS		= 5;
 //	var UNDELTREATMENT		= 6;
-//	var UNDELCONTACT			= 7;
+//	var UNDELCONTACT		= 7;
 //	var UNDELEDITOR			= 8;
 	var UNDELQN				= 9;
 	var $thisWhen			= $(thisWhen)
@@ -239,11 +238,11 @@ function undelete(thisWhen, deleted)
 			}
 		}
 
-		Ajax(MYSQLIPHP, sql, callbackUndelete);
+		Ajax(MYSQLIPHP, sql, callbacktoUndelete);
 
 		$('#dialogDeleted').dialog("close")
 
-		function callbackUndelete(response)
+		function callbacktoUndelete(response)
 		{
 			if (/BOOK/.test(response)) {
 				updateBOOK(response);
@@ -254,7 +253,7 @@ function undelete(thisWhen, deleted)
 				}
 				scrolltoThisCase(qn)
 			} else {
-				Alert("undelete", response)
+				Alert("toUndelete", response)
 			}
 		}
 		
@@ -266,19 +265,12 @@ function closeUndel()
 	$('#undelete').hide()
 }
 
-// All cases (include consult caes, exclude deleted ones)
+// All cases (include consult cases, exclude deleted ones)
 function allCases()
 {
-	var sql = "sqlReturnData=SELECT waitnum,opdate,oproom,optime,"
-			+ "casenum,theatre,staffname,hn,patient,dob,diagnosis,"
-			+ "treatment,contact,qn,editor "
-			+ "FROM book "
-			+ "WHERE waitnum <> 0 "
-			+ "ORDER BY opdate;"
+	var sql = "sqlReturnData=SELECT * FROM book WHERE deleted=0 ORDER BY opdate;"
 
 	Ajax(MYSQLIPHP, sql, callbackAllCases)
-
-	clearEditcell()
 
 	function callbackAllCases(response)
 	{
@@ -307,7 +299,7 @@ function makeAllCases(response)
 
 	$alltbl.find("tbody").html($("#tbl tbody tr:first").clone())
 
-	fillall(book, alltbl, start, until)
+//	fillall(book, alltbl, start, until)
 
 	$dialogAll.dialog({
 		title: "All Cases",
@@ -319,7 +311,67 @@ function makeAllCases(response)
 		close: function() {
 			$(window).off("resize", resizeAll )
 			$(".fixed").remove()
-		}
+			$("#dialogInput").dialog("close")
+		},
+		buttons: [
+			{
+				text: "<<< Prev Year",
+				width: "120",
+				class: "Aqua",
+				click: function () {
+					fillForRoom(opdate.nextdays(-1))
+				}
+			},
+			{
+				text: "<< Prev Month",
+				width: "120",
+				class: "lightAqua",
+				click: function () {
+					fillForRoom(opdate.nextdays(-1))
+				}
+			},
+			{
+				text: "< Prev Week",
+				width: "120",
+				class: "marginright",
+				click: function () {
+					if (i > 0) {
+						i = i-1
+						showCase()
+					}
+				}
+			},
+			{
+				width: "50",
+				click: function () { return }
+			},
+			{
+				text: "Next Week >",
+				width: "120",
+				click: function () {
+					if (i < slen-1) {
+						i = i+1
+						showCase()
+					}
+				}
+			},
+			{
+				text: "Next Month >>",
+				width: "120",
+				class: "lightAqua",
+				click: function () {
+					fillForRoom(opdate.nextdays(-1))
+				}
+			},
+			{
+				text: "Next Year >>>",
+				width: "120",
+				class: "Aqua",
+				click: function () {
+					fillForRoom(opdate.nextdays(+1))
+				}
+			}
+		]
 	})
 
 	//for resizing dialogs in landscape / portrait view
@@ -356,85 +408,52 @@ function makeAllCases(response)
 	})
 }
 
-function PACS(hn)
-{ 
-	var pacs = 'http://synapse/explore.asp?path=/All Patients/InternalPatientUID='+hn
-	var sql = 'PAC=http://synapse/explore.asp'
-	var ua = window.navigator.userAgent;
-	var msie = ua.indexOf("MSIE")
-	var edge = ua.indexOf("Edge")
-	var IE = !!navigator.userAgent.match(/Trident.*rv\:11\./)
-	var data_type = 'data:application/vnd.ms-internet explorer'
-
-	if (msie > 0 || edge > 0 || IE) { // If Internet Explorer
-		open(pacs);
-	} else {
-		var html = '<!DOCTYPE html><HTML><HEAD><script>function opener(){window.open("'
-		html += pacs + '", "_self")}</script><body onload="opener()"></body></HEAD></HTML>'
-		var a = document.createElement('a');
-		document.body.appendChild(a);  // You need to add this line in FF
-		a.href = data_type + ', ' + encodeURIComponent(html);
-		a.download = "index.html"
-		a.click();		//to test with Chrome and FF
-	}
-}
-
-function find()
+function search()
 {
 	var $dialogInput = $("#dialogInput"),
-		$instanceInput = $dialogInput.dialog({
-		title: "Find",
+		$stafflist = $('#stafflist')
+
+	$dialogInput.dialog({
+		title: "Search",
 		closeOnEscape: true,
 		modal: true,
-		width: 450,
-		height: 400,
+		width: 500,
+		height: 350,
 		buttons: [
 			{
-				text: "OK",
-				click: function() {
-					var args = {
-						hn: $('input[name="hn"]').val(),
-						patient: $('input[name="patient"]').val(),
-						staffname: $('input[name="staffname"]').val(),
-						diagnosis: $('input[name="diagnosis"]').val(),
-						treatment: $('input[name="treatment"]').val(),
-						contact: $('input[name="contact"]').val()
-					}
-					
-					var search = ""
-					$.each(args, function(key, val) { search += val })
-					if (search) {
-						sqlFind(args)
-					}
-					$( this ).dialog( "close" );
-				}
+				text: "All Saved Cases",
+				class: "undelete leftButton",
+				width: "150",
+				click: function () { allCases() }
+			},
+			{
+				text: "All Deleted Cases",
+				class: "deleted",
+				width: "150",
+				click: function () { deletedCases() }
 			}
 		],
 		close: function() {
-			$('#stafflist').hide()
+			$stafflist.hide()
 		}
 	})
-	$dialogInput.on("keydown", function(event) {
-		var keycode = event.which || window.event.keyCode
-		if (keycode === 13) {
-			var buttons = $instanceInput.dialog('option', 'buttons')
-			buttons[0].click.apply($instanceInput)
-		}
-	})
-	$('input[name="staffname"]').on("click", function(event) {
-		getSaffName(this)
-		event.stopPropagation()
-	})
-	$dialogInput.on("click", function(event) {
-		var target = event.target,
-			$stafflist = $('#stafflist')
+
+	$dialogInput.off("click").on("click", function(event) {
+		var target = event.target
 
 		if ($stafflist.is(":visible")) {
-			if (!$(target).closest('#stafflist').length) {
-				$stafflist.hide();
+			$stafflist.hide();
+		} else {
+			if ($(target).closest('input[name="staffname"]').length) {
+				getSaffName(target)
 			}
 		}
 	})
+	.off("keydown").on("keydown", function(event) {
+		var keycode = event.which || window.event.keyCode
+		if (keycode === 13) { searchDB() }
+	})
+	.find("img").off("click").on("click", function(event) { searchDB() })
 }
 
 function getSaffName(pointing)
@@ -451,42 +470,39 @@ function getSaffName(pointing)
 		}
 	})
 
-	reposition($stafflist, "left center", "right center", $pointing)
+	reposition($stafflist, "left top", "left bottom", $pointing)
 	menustyle($stafflist, $pointing)
 }
 
-function sqlFind(args)
+function searchDB()
 {
-	var sql = search = ""
+	var hn = $('input[name="hn"]').val(),
+		staffname = $('input[name="staffname"]').val(),
+		others = $('input[name="others"]').val(),
+		$dialogInput = $("#dialogInput"),
+		sql = "", search = ""
 
-	$.each(args, function(key, val) {
-		if (val) {
-			if (sql) { sql += " AND " }
-			// '%51' will be changed to 'Q' (by PHP?)
-			if (parseInt(val)) {
-				sql += (key + " like '" + val + "%' ")
-			} else {
-				sql += (key + " like '%" + val + "%' ")
-			}
-			if (search) { search += ", " }
-			search += val
-		}
-	})
+	// for dialog title
+	search += hn
+	search += (search && staffname ? ", " : "") + staffname
+	search += (search && others ? ", " : "") + others
+	if (search) {
+		sql = "hn=" + hn
+			+ "&staffname=" + staffname
+			+ "&others=" + others
 
-	sql = "sqlReturnData=SELECT * FROM book WHERE "
-		+ sql
-		+ "ORDER BY opdate;"
+		Ajax(SEARCH, sql, callbackfind)
 
-	Ajax(MYSQLIPHP, sql, callbackfind)
-
-	clearEditcell()
+	} else {
+		Alert("Search: ''", "<br><br>No Result")
+	}
 
 	function callbackfind(response)
 	{
 		if (/dob/.test(response)) {
 			makeFind(response, search)
 		} else {
-			Alert("Find: " + search, response)
+			Alert("Search: " + search, response)
 		}
 	}
 }
@@ -544,22 +560,13 @@ function makeDialogFound(found, search)
 
 	var $dialogFind = $("#dialogFind"),
 		$findtbl = $("#findtbl")
-
-	// delete previous table lest it accumulates
-	$findtbl.find('tr').slice(1).remove()
-
-	$.each( found, function() {	// each === this
-		$('#findcells tr').clone()
-			.appendTo($findtbl.find('tbody'))
-				.filldataFind(this)
-	});
 	
 	$dialogFind.dialog({
-		title: "Find: " + search,
+		title: "Search: " + search,
 		closeOnEscape: true,
 		modal: true,
-		width: window.innerWidth,
-		height: window.innerHeight,
+		width: window.innerWidth*95/100,
+		height: window.innerHeight*95/100,
 		buttons: [
 			{
 				text: "Export to xls",
@@ -571,9 +578,20 @@ function makeDialogFound(found, search)
 		close: function() {
 			$(window).off("resize", resizeFind )
 			$(".fixed").remove()
+			$("#dialogInput").dialog("close")
+			$(".bordergroove").removeClass("bordergroove")
 		}
 	})
-//	$findtbl.fixMe($dialogFind);
+
+	// delete previous table lest it accumulates
+	$findtbl.find('tr').slice(1).remove()
+
+	$.each( found, function() {	// each === this
+		$('#findcells tr').clone()
+			.appendTo($findtbl.find('tbody'))
+				.filldataFind(this)
+	});
+	$findtbl.fixMe($dialogFind);
 
 	//for resizing dialogs in landscape / portrait view
 	$(window).on("resize", resizeFind )
@@ -616,7 +634,7 @@ jQuery.fn.extend({
 	filldataFind : function(q) {
 		var cells = this[0].cells
 
-		Number(q.deleted) && this.css("background-color", "#FFCCCC")
+		Number(q.deleted) && this.addClass("deleted")
 		q.hn && gv.isPACS && (cells[2].className = "pacs")
 		q.patient && (cells[3].className = "camera")
 
@@ -631,6 +649,29 @@ jQuery.fn.extend({
 		cells[8].innerHTML = q.contact
 	}
 })
+
+function PACS(hn)
+{ 
+	var pacs = 'http://synapse/explore.asp?path=/All Patients/InternalPatientUID='+hn
+	var sql = 'PAC=http://synapse/explore.asp'
+	var ua = window.navigator.userAgent;
+	var msie = ua.indexOf("MSIE")
+	var edge = ua.indexOf("Edge")
+	var IE = !!navigator.userAgent.match(/Trident.*rv\:11\./)
+	var data_type = 'data:application/vnd.ms-internet explorer'
+
+	if (msie > 0 || edge > 0 || IE) { // If Internet Explorer
+		open(pacs);
+	} else {
+		var html = '<!DOCTYPE html><HTML><HEAD><script>function opener(){window.open("'
+		html += pacs + '", "_self")}</script><body onload="opener()"></body></HEAD></HTML>'
+		var a = document.createElement('a');
+		document.body.appendChild(a);  // You need to add this line in FF
+		a.href = data_type + ', ' + encodeURIComponent(html);
+		a.download = "index.html"
+		a.click();		//to test with Chrome and FF
+	}
+}
 
 function showUpload(hn, patient)
 {

@@ -238,7 +238,7 @@ tr.bordergroove {
 }
 
 tr.changeDate {
-	background-color: lightgray !important;
+	border: dashed 3px skyblue !important;
 }
 
 tr.pasteDate {
@@ -334,62 +334,6 @@ td.Radiosurgery.Endovascular {
 .Morbidity { background-color: #AAAACC !important; }
 .Dead { background-color: #AAAAAA !important; }
 
-#titlebar {
-	height: 40px;
-	background-color: #7799AA;
-}
-
-#titlename {
-	font-size: 20px;
-	font-weight: bold;
-	color: white;
-	width: 100px;
-	line-height: 35px;
-	margin-left: 25px;
-}
-
-#queuetbl {
-	margin-bottom: 100px;
-}
-
-#queuetbl tr.odd {
-    background-color: #EEEEFF;
-}
-
-#servicetbl tr:nth-child(odd),
-#historytbl tr:nth-child(odd), 
-#deletedtbl tr:nth-child(odd),
-#findtbl tr:nth-child(odd), 
-#latesttbl tr:nth-child(odd) { 
-    background-color: #E0FFE0;
-}
-
-#servicetbl td:first-child {
-	text-align: center;
-}
-
-#servicehead {
-	width: auto;
-	text-align: center;
-}
-
-#servicehead span.item {
-	display: inline-block; 
-	border: solid 1px white;
-	width: 170px;
-	padding: 2px 10px;
-}
-
-#servicetbl td.serviceStaff {
-	height: 40px;
-	font-weight: bold;
-	font-size: 16px;
-	text-align: left;
-	padding-left: 10px;
-}
-
-#monthpicker { margin-left:5px }
-
 .fixed{
 	top: 0;
 	position: fixed;
@@ -461,8 +405,6 @@ td.Radiosurgery.Endovascular {
 .textleft { text-align: left;}
 .textright { text-align: right; }
 .textcenter { text-align: center; }
-.red { color:red; }
-.silver { background-color: silver; }
 .w20 { width:20px; }
 .w22 { width:22px; }
 .w30 { width:30px; }
@@ -487,6 +429,70 @@ td.Radiosurgery.Endovascular {
 .w540 { width:540px; }
 .margin0 { margin: 0px; }
 .margintop0 { margin-top: 0px; }
+.marginright { margin-right: 100px; }
+.red { color:red; }
+.Aqua { background-color: #00FFFF; }
+.lightAqua { background-color: #AAFFFF; }
+
+
+#titlebar {
+	height: 40px;
+	background-color: #7799AA;
+}
+
+#titlename {
+	font-size: 20px;
+	font-weight: bold;
+	color: white;
+	width: 100px;
+	line-height: 35px;
+	margin-left: 25px;
+}
+
+#queuetbl {
+	margin-bottom: 100px;
+}
+
+#queuetbl tr.odd {
+    background-color: #EEEEFF;
+}
+
+#servicetbl tr:nth-child(odd),
+#historytbl tr:nth-child(odd), 
+#findtbl tr:nth-child(odd), 
+#latesttbl tr:nth-child(odd) { 
+    background-color: #E0FFE0;
+}
+
+#deletedtbl tr:nth-child(odd) {
+    background-color: #FFF3F9;
+}
+
+#servicetbl td:first-child {
+	text-align: center;
+}
+
+#servicehead {
+	width: auto;
+	text-align: center;
+}
+
+#servicehead span.item {
+	display: inline-block; 
+	border: solid 1px white;
+	width: 170px;
+	padding: 2px 10px;
+}
+
+#servicetbl td.serviceStaff {
+	height: 40px;
+	font-weight: bold;
+	font-size: 16px;
+	text-align: left;
+	padding-left: 10px;
+}
+
+#monthpicker { margin-left:5px }
 
 #editcell { 
 	text-align: left; 

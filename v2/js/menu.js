@@ -9,12 +9,11 @@ function mainMenu(pointing)
 		opdate = getOpdate(opdateth),
 		staffname = $cell.eq(STAFFNAME).html(),
 		qn = $cell.eq(QN).html(),
-		book = ConsultsTbl(tableID)? gv.CONSULT : gv.BOOK,
 		notLARGE = (opdate !== LARGESTDATE)
 
 	disable(qn, "#addrow")
 
-	var itempost = !!(qn && staffname && notLARGE)
+	var itempost = qn && staffname && notLARGE
 	if (itempost) {
 		itemtext("#postpone", "<b>Confirm เลื่อน ไม่กำหนดวัน  </b>", $cell)
 	}
@@ -23,12 +22,9 @@ function mainMenu(pointing)
 
 	disable(qn, "#changedate")
 
-	disable(qn, "#equip")
-
 	disable(qn, "#history")
 
-	var unuse = !!checkblank(book, opdate, qn),
-		del = !!(qn || unuse)
+	var del = !!qn || checkblank($row, opdate)
 	if (del) {
 		itemtext("#del", "<b>Confirm Delete </b>", $cell)
 	}
@@ -52,14 +48,11 @@ function mainMenu(pointing)
 				case "changedate":
 					changeDate($row, opdateth, opdate, staffname, qn)
 					break
-				case "equip":
-					fillEquipTable(book, $row, qn)
-					break
 				case "history":
 					editHistory($row[0], qn)
 					break
 				case "del":
-					delCase(unuse, tableID, $row, opdateth, opdate, staffname, qn)
+					delCase(tableID, $row, opdateth, opdate, staffname, qn)
 					break
 				case "staffqueue":
 					staffqueue(ui.item.text())
@@ -67,14 +60,8 @@ function mainMenu(pointing)
 				case "service":
 					serviceReview()
 					break
-				case "deleted":
-					deletedCases()
-					break
-				case "notdeleted":
-					allCases()
-					break
 				case "search":
-					find()
+					search()
 					break
 				case "readme":
 					readme()
@@ -125,29 +112,10 @@ function menustyle($me, $target)
 	})
 }
 
-// Is this a blank row?
-// If blank, is there a case(s) in this date? 
-function checkblank(book, opdate, qn)
-{	var q = 0
-
-	// No, this is not a blank row
-	if (qn) {
-		return false
-	}
-	// the following is a blank row
-	// find this opdate in book
-	while (opdate > book[q].opdate)
-	{
-		q++
-		if (q >= book.length) {
-			// beyond book, do not delete blank row
-			return false
-		}
-	}
-	// found
-	// if there is a case(s) in this opdate, can delete blank row
-	// if no case in this opdate, do not delete blank row
-	if (opdate === book[q].opdate) {
+// blank row: a row with no case, and is not the only row of this date
+function checkblank($row, opdate)
+{
+	if ($row.prev().find("td").eq(OPDATE).html().numDate() === opdate) {
 		return true
 	} else {
 		return false
@@ -337,18 +305,13 @@ function clearMouseoverTR()
 	$(document).off("keydown", clearOnEscape)
 }
 
-function delCase(unuse, tableID, $row, opdateth, opdate, staffname, qn)
+function delCase(tableID, $row, opdateth, opdate, staffname, qn)
 {
-	// blank from add new row
-	if (unuse) {
+	if (!qn) {
 		$row.remove()
-	} else {
-		deleteCase(tableID, $row, opdateth, opdate, staffname, qn)
+		return
 	}
-}
 
-function deleteCase(tableID, $row, opdateth, opdate, staffname, qn)
-{
 	var oproom = $row.find("td").eq(ROOM).html(),
 		allCases, index,
 
@@ -389,7 +352,7 @@ function deleteCase(tableID, $row, opdateth, opdate, staffname, qn)
 				refillOneDay(opdate)
 			}
 		} else {
-			Alert ("deleteCase", response)
+			Alert ("delCase", response)
 		}
 	}
 }

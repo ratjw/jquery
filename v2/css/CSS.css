@@ -1,7 +1,6 @@
 #wrapper {
 	height: 100%;
 	width: 100%;
-/*	font-size: 0;*/
 	overflow: hidden;
 	font-family: sans-serif;
 }
@@ -10,7 +9,6 @@
 	float: left;
 	height: 100%;
 	width: 100%;
-/*	font-size: 0;*/
 }
 
 #tblcontainer {
@@ -35,10 +33,10 @@
 }
 
 table {
-	/*make cell width = first row specified*/
-	table-layout: fixed;
+	/*make cell width = first row specified
+	table-layout: fixed;*/
 	border-right: solid 1px gray;
-	width: auto;
+	width: 100%;
 	border-collapse: collapse;
 }
 
@@ -64,71 +62,170 @@ td {
 	background-position: right bottom;
 }
 
+#tbl td:first-child,
+#tbl td:nth-child(2),
+#tbl td:nth-child(3),
+#tbl td:nth-child(4),
+#tbl td:nth-child(5),
+#tbl td:nth-child(6),
+#queuetbl td:first-child,
+#queuetbl td:nth-child(4),
+#queuetbl td:nth-child(5),
+#queuetbl td:nth-child(6),
 #alltbl td {
 	font-size: 12px;
 }
 
 #tbl td:first-child,
 #queuetbl td:first-child {
-	font-size: 12px;
 	min-width: 40px;
 	max-width: 60px;
-/*	background-image: url("pic/menu.png");
-	background-position: right center;*/
 }
-
 #tbl td:nth-child(2),
 #tbl td:nth-child(3) {
 	text-align: center;
 	min-width: 30px;
 	max-width: 30px;
 }
-
-#tbl th:nth-child(3),
-#tbl td:nth-child(3) {
-	font-size: 12px;
+#tbl td:nth-child(4),
+#queuetbl td:nth-child(4) {
+	min-width: 50px;
+	width: 5%;
 }
-
-#queuetbl td:nth-child(4),
-#tbl td:nth-child(4) {
-	font-size: 12px;
-	min-width: 40px;
-	max-width: 60px;
-}
-
-#queuetbl td:nth-child(5),
-#tbl td:nth-child(5) {
-	font-size: 12px;
+#tbl td:nth-child(5),
+#queuetbl td:nth-child(5) {
 	min-width: 50px;
 	max-width: 50px;
 }
-
-#queuetbl td:nth-child(6),
-#tbl td:nth-child(6) {
-	font-size: 12px;
+#tbl td:nth-child(6),
+#queuetbl td:nth-child(6) {
 	min-width: 70px;
-	max-width: 100px;
+	width: 10%;
 }
+#tbl td:nth-child(7) { width: 25%; }
+#tbl td:nth-child(8) { width: 30%; }
+#tbl td:nth-child(9) { width: 30%; }
 
-#tbl td:nth-child(7) {
-	width: 25%;
-}
+#servicetbl td:nth-child(1) { width: 1%; }
+#servicetbl td:nth-child(2) { width: 3%; }
+#servicetbl td:nth-child(3) { width: 10%; }
+#servicetbl td:nth-child(4) { width: 15%; }
+#servicetbl td:nth-child(5) { width: 15%; }
+#servicetbl td:nth-child(6) { width: 25%; }
+#servicetbl td:nth-child(7) { width: 25%; }
+#servicetbl td:nth-child(8) { width: 2%; }
+#servicetbl td:nth-child(9) { width: 2%; }
+#servicetbl td:nth-child(10) { width: 2%; }
 
-#tbl td:nth-child(8),
-#tbl td:nth-child(9) {
-	width: 30%;
-}
+#historytbl td:nth-child(1) { width: 5%; }
+#historytbl td:nth-child(2) { width: 1%; }
+#historytbl td:nth-child(3) { width: 1%; }
+#historytbl td:nth-child(4) { width: 3%; }
+#historytbl td:nth-child(5) { width: 10%; }
+#historytbl td:nth-child(6) { width: 10%; }
+#historytbl td:nth-child(7) { width: 15%; }
+#historytbl td:nth-child(8) { width: 15%; }
+#historytbl td:nth-child(9) { width: 15%; }
+#historytbl td:nth-child(10) { width: 15%; }
+#historytbl td:nth-child(11) { width: 5%; }
+#historytbl td:nth-child(12) { width: 5%; }
 
-#queuetbl th:nth-child(2),
-#queuetbl th:nth-child(3),
-#alltbl th:nth-child(2),
-#alltbl th:nth-child(3),
-#queuetbl td:nth-child(2),
-#queuetbl td:nth-child(3),
-#alltbl td:nth-child(2),
-#alltbl td:nth-child(3)  {
+#deletedtbl td:nth-child(1) { width: 5%; }
+#deletedtbl td:nth-child(2) { width: 5%; }
+#deletedtbl td:nth-child(3) { width: 5%; }
+#deletedtbl td:nth-child(4) { width: 10%; }
+#deletedtbl td:nth-child(5) { width: 20%; }
+#deletedtbl td:nth-child(6) { width: 20%; }
+#deletedtbl td:nth-child(7) { width: 20%; }
+#deletedtbl td:nth-child(8) { width: 5%; }
+#deletedtbl td:nth-child(9) { width: 10%; }
+
+#findtbl td:nth-child(1) { width: 4%; }
+#findtbl td:nth-child(2) { width: 3%; }
+#findtbl td:nth-child(3) { width: 3%; }
+#findtbl td:nth-child(4) { width: 10%; }
+#findtbl td:nth-child(5) { width: 20%; }
+#findtbl td:nth-child(6) { width: 20%; }
+#findtbl td:nth-child(7) { width: 20%; }
+#findtbl td:nth-child(8) { width: 10%; }
+#findtbl td:nth-child(9) { width: 10%; }
+
+#wrapper,
+#queuewrapper,
+#tblcells,
+#queuetbl th:nth-child(2), #queuetbl td:nth-child(2),
+#queuetbl th:nth-child(3), #queuetbl td:nth-child(3),
+#alltbl th:nth-child(2), #alltbl td:nth-child(2),
+#alltbl th:nth-child(3), #alltbl td:nth-child(3),
+#tbl th:nth-child(10), #tbl td:nth-child(10),
+#queuetbl th:nth-child(10), #queuetbl td:nth-child(10),
+#servicetbl th:nth-child(11), #servicetbl td:nth-child(11),
+#alltbl th:nth-child(10), #alltbl td:nth-child(10),
+#deletedtbl th:nth-child(10), #deletedtbl td:nth-child(10),
+#dialogService, #servicecells,
+#monthpicker button.ui-datepicker-current,
+#monthpicker .ui-datepicker-calendar,
+#monthstart,
+#divRecord,
+#dialogReview,
+#dialogEquip,
+#dialogDeleted, #deletedcells,
+#dialogHistory, #historycells,
+#dialogInput,
+#dialogFind, #findcells,
+#dialogReadme,
+#menu,
+#stafflist,
+#editcell,
+#undelete,
+#txtArea1 {
 	display: none;
 }
+
+
+#dialogInput { font-size: 14px; overflow: hidden; }
+#dialogInput span { width:50px }
+#dialogInput input[name=others] { width:450px }
+#dialogInput img {
+	float: right;
+	width: 150px;
+	border: 1px solid skyblue;
+	margin-right: 20px;
+}
+#dialogInput img:hover {
+	border: 1px outset blue;
+}
+
+#deleted,
+#notdeleted {
+	height:30px;
+	width:140px;
+}
+
+#undelete { 
+	width: 125px;
+}
+
+#undel { 
+	display: inline-block;
+	text-align: center; 
+	height: 25px;
+	width: 100px;
+	font-size: 14px;
+	color: black;
+	background-color: white;
+	border: 2px solid slategray;
+	line-height: 25px;
+}
+
+#reviewtbl tbody tr:nth-child(6) td:first-child { font-weight:normal }
+#reviewtbl tbody tr:nth-child(7) th { text-align:left; padding-left:20px }
+
+.leftButton { margin-right: 80px !important; }
+
+.deleted { background-color:pink }
+
+.undelete { background-color:skyblue }
 
 .bottom-right {
     position: absolute;
@@ -141,7 +238,7 @@ tr.bordergroove {
 }
 
 tr.changeDate {
-	background-color: lightgray !important;
+	border: dashed 3px skyblue !important;
 }
 
 tr.pasteDate {
@@ -172,63 +269,63 @@ td.thu:before { content: "พฤหัส "; }
 td.fri:before { content: "ศุกร์ "; }
 td.sat:before { content: "เสาร์ "; }
 
-td.pacs { background-image: url("pic/pacs.png"); }
-td.pacs2 { background-image: url("pic/pacs2.png"); }
-td.camera { background-image: url("pic/camera.png"); }
-td.camera2 { background-image: url("pic/camera2.png"); }
-td.equip { background-image: url("pic/equip.png"); }
-td.equip2 { background-image: url("pic/equip2.png"); }
-td.Endovascular { background-image: url("pic/Endovascular.png"); }
-td.Radiosurgery { background-image: url("pic/Radiosurgery.png"); }
-td.Operation { background-image: url("pic/Operation.png"); }
-td.Operation2 { background-image: url("pic/Operation2.png"); }
-td.Reoperation { background-image: url("pic/Reoperation.png"); }
-td.Reoperation2 { background-image: url("pic/Reoperation2.png"); }
-td.Admission { background-image: url("pic/Admission.png"); }
-td.Admission2 { background-image: url("pic/Admission2.png"); }
-td.Readmission { background-image: url("pic/Readmission.png"); }
-td.Readmission2 { background-image: url("pic/Readmission2.png"); }
-td.record { background-image: url("pic/record.png"); }
-td.record2 { background-image: url("pic/record2.png"); }
+td.pacs { background-image: url(pic/pacs.png); }
+td.pacs2 { background-image: url(pic/pacs2.png); }
+td.camera { background-image: url(pic/camera.png); }
+td.camera2 { background-image: url(pic/camera2.png); }
+td.equip { background-image: url(pic/equip.png); }
+td.equip2 { background-image: url(pic/equip2.png); }
+td.Endovascular { background-image: url(pic/Endovascular.png); }
+td.Radiosurgery { background-image: url(pic/Radiosurgery.png); }
+td.Operation { background-image: url(pic/Operation.png); }
+td.Operation2 { background-image: url(pic/Operation2.png); }
+td.Reoperation { background-image: url(pic/Reoperation.png); }
+td.Reoperation2 { background-image: url(pic/Reoperation2.png); }
+td.Admission { background-image: url(pic/Admission.png); }
+td.Admission2 { background-image: url(pic/Admission2.png); }
+td.Readmission { background-image: url(pic/Readmission.png); }
+td.Readmission2 { background-image: url(pic/Readmission2.png); }
+td.record { background-image: url(pic/record.png); }
+td.record2 { background-image: url(pic/record2.png); }
 
 td.Operation.Radiosurgery.Endovascular {
-	background-image: url("pic/Operation.png"), url("pic/Radiosurgery.png"), url("pic/Endovascular.png");
+	background-image: url(pic/Operation.png), url(pic/Radiosurgery.png), url(pic/Endovascular.png);
 }
 td.Operation.Radiosurgery {
-	background-image: url("pic/Operation.png"), url("pic/Radiosurgery.png");
+	background-image: url(pic/Operation.png), url(pic/Radiosurgery.png);
 }
 td.Operation.Endovascular {
-	background-image: url("pic/Operation.png"), url("pic/Endovascular.png");
+	background-image: url(pic/Operation.png), url(pic/Endovascular.png);
 }
 td.Operation2.Radiosurgery.Endovascular {
-	background-image: url("pic/Operation2.png"), url("pic/Radiosurgery.png"), url("pic/Endovascular.png");
+	background-image: url(pic/Operation2.png), url(pic/Radiosurgery.png), url(pic/Endovascular.png);
 }
 td.Operation2.Radiosurgery {
-	background-image: url("pic/Operation2.png"), url("pic/Radiosurgery.png");
+	background-image: url(pic/Operation2.png), url(pic/Radiosurgery.png);
 }
 td.Operation2.Endovascular {
-	background-image: url("pic/Operation2.png"), url("pic/Endovascular.png");
+	background-image: url(pic/Operation2.png), url(pic/Endovascular.png);
 }
 td.Reoperation.Radiosurgery.Endovascular {
-	background-image: url("pic/Reoperation.png"), url("pic/Radiosurgery.png"), url("pic/Endovascular.png");
+	background-image: url(pic/Reoperation.png), url(pic/Radiosurgery.png), url(pic/Endovascular.png);
 }
 td.Reoperation.Radiosurgery {
-	background-image: url("pic/Reoperation.png"), url("pic/Radiosurgery.png");
+	background-image: url(pic/Reoperation.png), url(pic/Radiosurgery.png);
 }
 td.Reoperation.Endovascular {
-	background-image: url("pic/Reoperation.png"), url("pic/Endovascular.png");
+	background-image: url(pic/Reoperation.png), url(pic/Endovascular.png);
 }
 td.Reoperation2.Radiosurgery.Endovascular {
-	background-image: url("pic/Reoperation2.png"), url("pic/Radiosurgery.png"), url("pic/Endovascular.png");
+	background-image: url(pic/Reoperation2.png), url(pic/Radiosurgery.png), url(pic/Endovascular.png);
 }
 td.Reoperation2.Radiosurgery {
-	background-image: url("pic/Reoperation2.png"), url("pic/Radiosurgery.png");
+	background-image: url(pic/Reoperation2.png), url(pic/Radiosurgery.png);
 }
 td.Reoperation2.Endovascular {
-	background-image: url("pic/Reoperation2.png"), url("pic/Endovascular.png");
+	background-image: url(pic/Reoperation2.png), url(pic/Endovascular.png);
 }
 td.Radiosurgery.Endovascular {
-	background-image: url("pic/Radiosurgery.png"), url("pic/Endovascular.png");
+	background-image: url(pic/Radiosurgery.png), url(pic/Endovascular.png);
 }
 
 .Reoperation { background-color: #CCCCAA !important; }
@@ -236,60 +333,6 @@ td.Radiosurgery.Endovascular {
 .Infection { background-color: #CCAAAA !important; }
 .Morbidity { background-color: #AAAACC !important; }
 .Dead { background-color: #AAAAAA !important; }
-
-#titlebar {
-	height: 40px;
-	background-color: #7799AA;
-}
-
-#titlename {
-	font-size: 20px;
-	font-weight: bold;
-	color: white;
-	width: 100px;
-	line-height: 35px;
-	margin-left: 25px;
-}
-
-#queuetbl {
-	margin-bottom: 100px;
-}
-
-#queuetbl tr.odd {
-    background-color: #EEEEFF;
-}
-
-#servicetbl tr:nth-child(odd),
-#historytbl tr:nth-child(odd), 
-#deletedtbl tr:nth-child(odd),
-#findtbl tr:nth-child(odd), 
-#latesttbl tr:nth-child(odd) { 
-    background-color: #E0FFE0;
-}
-
-#servicetbl td:first-child {
-	text-align: center;
-}
-
-#servicehead {
-	width: auto;
-	text-align: center;
-}
-
-#servicehead span.item {
-	display: inline-block; 
-	border: solid 1px white;
-	width: 170px;
-	padding: 2px 10px;
-}
-
-#servicetbl td.serviceStaff {
-	height: 40px;
-	font-weight: bold;
-	font-size: 16px;
-	text-align: left;
-	padding-left: 10px;
-}
 
 .fixed{
 	top: 0;
@@ -350,29 +393,108 @@ td.Radiosurgery.Endovascular {
 	margin: 0 30px 0 0;
 }
 
-#login {
-	width: 300px; 
-	margin-top: 0px;
-	margin-left: auto; 
-	margin-right: auto; 
-	text-align: center;
-	color: white;
-	background: #306ab5;
-	background: radial-gradient(at bottom left, #152f51, #1b3b65, #25528d, #306ab5, #ebf1fa);
-	border-radius: 10px;
-	box-shadow: -20px 30px 40px slategray;
+.dialogBox span {
+	display:inline-block;
+	padding: 0px;
+	margin: 0px;
+	border: 0px;
 }
 
-input[type=submit] {
-	background: #c4445C;
-	background: linear-gradient(#f8d3e4, #AC1B5C, #580e2f);
-	border-radius: 5px;
-	color: white;
-	height: 30px;
+.floatleft { float: left;}
+.floatright { float: right; }
+.textleft { text-align: left;}
+.textright { text-align: right; }
+.textcenter { text-align: center; }
+.w20 { width:20px; }
+.w22 { width:22px; }
+.w30 { width:30px; }
+.w40 { width:40px; }
+.w50 { width:50px; }
+.w55 { width:55px; }
+.w65 { width:65px; }
+.w70 { width:70px; }
+.w73 { width:73px; }
+.w80 { width:80px; }
+.w85 { width:85px; }
+.w90 { width:90px; }
+.w100 { width:100px; }
+.w110 { width:110px; }
+.w120 { width:120px; }
+.w140 { width:140px; }
+.w150 { width:150px; }
+.w200 { width:200px; }
+.w215 { width:215px; }
+.w350 { width:350px; }
+.w500 { width:500px; }
+.w540 { width:540px; }
+.margin0 { margin: 0px; }
+.margintop0 { margin-top: 0px; }
+.marginright { margin-right: 100px; }
+.red { color:red; }
+.Aqua { background-color: #00FFFF; }
+.lightAqua { background-color: #AAFFFF; }
+
+
+#titlebar {
+	height: 40px;
+	background-color: #7799AA;
 }
+
+#titlename {
+	font-size: 20px;
+	font-weight: bold;
+	color: white;
+	width: 100px;
+	line-height: 35px;
+	margin-left: 25px;
+}
+
+#queuetbl {
+	margin-bottom: 100px;
+}
+
+#queuetbl tr.odd {
+    background-color: #EEEEFF;
+}
+
+#servicetbl tr:nth-child(odd),
+#historytbl tr:nth-child(odd), 
+#findtbl tr:nth-child(odd), 
+#latesttbl tr:nth-child(odd) { 
+    background-color: #E0FFE0;
+}
+
+#deletedtbl tr:nth-child(odd) {
+    background-color: #FFF3F9;
+}
+
+#servicetbl td:first-child {
+	text-align: center;
+}
+
+#servicehead {
+	width: auto;
+	text-align: center;
+}
+
+#servicehead span.item {
+	display: inline-block; 
+	border: solid 1px white;
+	width: 170px;
+	padding: 2px 10px;
+}
+
+#servicetbl td.serviceStaff {
+	height: 40px;
+	font-weight: bold;
+	font-size: 16px;
+	text-align: left;
+	padding-left: 10px;
+}
+
+#monthpicker { margin-left:5px }
 
 #editcell { 
-	display: none;
 	text-align: left; 
 	overflow: hidden;
 	padding-left: 3px;
@@ -412,63 +534,27 @@ input[type=submit] {
 	width: 100px;
 }
 
-#deleted,
-#notdeleted {
-	height:30px;
-	width:140px;
-}
-
-#undelete { 
-	display: none;
-	width: 125px;
-}
-
-#undel { 
-	display: inline-block;
-	text-align: center; 
-	height: 25px;
-	width: 100px;
-	font-size: 14px;
-	color: black;
-	background-color: white;
-	border: 2px solid slategray;
-	line-height: 25px;
-}
-
-#monthpicker button.ui-datepicker-current {
-	display: none;
-}
-
-#monthpicker .ui-datepicker-calendar {
-	display: none;
-}
-
 #dialogEquip {
-	display: none;
 	font-size: 14px;
 	color: black;
 	background-color: white;
 }
 
-#dialogEquip div,
-#dialogEquip span {
-	display: inline-block;
-	padding: 0px;
-	margin: 0px;
-	border: 0px;
-}
+#oproom,
+#casenum,
+#optime,
+#opdate,
+#staffname { font-size: 16px; font-weight: bold; }
 
 #dialogEquip input[type=radio] + label,
 #dialogEquip input[type=checkbox] + label {
 	color: #999999;
 }
- 
 #dialogEquip input[type=radio]:checked + label,
 #dialogEquip input[type=checkbox]:checked + label {
 	color: black;
 	font-weight: bold;
 }
-
 #dialogEquip input[type=text] {
 	border: 0;
 	outline: 0;
@@ -477,7 +563,6 @@ input[type=submit] {
 	color: blue;
 	font-weight: bold;
 }
-
 #dialogEquip textarea {
 	width: 500px;
 	height: 55px;
@@ -500,7 +585,6 @@ input[type=submit] {
 }
 
 #divRecord span {
-	display: inline-block;
 	width: 130px;
 }
 
@@ -554,7 +638,6 @@ input[type=submit] {
 }
 
 #dialogReadme {
-	display: none;
 	line-height: 150%;
 	font-size: 14px;
 	color: black;
@@ -581,10 +664,6 @@ input[type=submit] {
 	font-size: 14px;
 	padding: 0px 0px 0px 3px;
 	margin: 0px;
-}
-
-.dialogBox span {
-	display:inline-block;
 }
 
 @media only screen and (max-width: 640px) {

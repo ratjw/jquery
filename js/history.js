@@ -265,15 +265,10 @@ function closeUndel()
 	$('#undelete').hide()
 }
 
-// All cases (include consult caes, exclude deleted ones)
+// All cases (include consult cases, exclude deleted ones)
 function allCases()
 {
-	var sql = "sqlReturnData=SELECT waitnum,opdate,oproom,optime,"
-			+ "casenum,theatre,staffname,hn,patient,dob,diagnosis,"
-			+ "treatment,contact,qn,editor "
-			+ "FROM book "
-			+ "WHERE waitnum <> 0 "
-			+ "ORDER BY opdate;"
+	var sql = "sqlReturnData=SELECT * FROM book WHERE deleted=0 ORDER BY opdate;"
 
 	Ajax(MYSQLIPHP, sql, callbackAllCases)
 
@@ -300,11 +295,11 @@ function makeAllCases(response)
 		$alltbl = $("#alltbl"),
 		alltbl = $alltbl[0]
 
-	if (book.length === 0) { book.push({"opdate" : today.ISOdate()}) }
+//	if (book.length === 0) { book.push({"opdate" : today.ISOdate()}) }
 
-	$alltbl.find("tbody").html($("#tbl tbody tr:first").clone())
+//	$alltbl.find("tbody").html($("#tbl tbody tr:first").clone())
 
-	fillall(book, alltbl, start, until)
+//	fillall(book, alltbl, start, until)
 
 	$dialogAll.dialog({
 		title: "All Cases",
@@ -317,8 +312,77 @@ function makeAllCases(response)
 			$(window).off("resize", resizeAll )
 			$(".fixed").remove()
 			$("#dialogInput").dialog("close")
-		}
+		},
+		buttons: [
+			{
+				text: "<<< Prev Year",
+				width: "120",
+				class: "Aqua",
+				click: function () {
+					fillForRoom(opdate.nextdays(-1))
+				}
+			},
+			{
+				text: "<< Prev Month",
+				width: "120",
+				class: "lightAqua",
+				click: function () {
+					fillForRoom(opdate.nextdays(-1))
+				}
+			},
+			{
+				text: "< Prev Week",
+				width: "120",
+				class: "marginright",
+				click: function () {
+					if (i > 0) {
+						i = i-1
+						showCase()
+					}
+				}
+			},
+			{
+				width: "50",
+				click: function () { return }
+			},
+			{
+				text: "Next Week >",
+				width: "120",
+				click: function () {
+					if (i < slen-1) {
+						i = i+1
+						showCase()
+					}
+				}
+			},
+			{
+				text: "Next Month >>",
+				width: "120",
+				class: "lightAqua",
+				click: function () {
+					fillForRoom(opdate.nextdays(-1))
+				}
+			},
+			{
+				text: "Next Year >>>",
+				width: "120",
+				class: "Aqua",
+				click: function () {
+					fillForRoom(opdate.nextdays(+1))
+				}
+			}
+		]
 	})
+
+	// delete previous table lest it accumulates
+	$alltbl.find('tr').slice(1).remove()
+
+	$.each( book, function() {	// each === this
+		$('#allcells tr').clone()
+			.appendTo($alltbl.find('tbody'))
+				.filldataAllcases(this)
+	});
+	$alltbl.fixMe($dialogAll);
 
 	//for resizing dialogs in landscape / portrait view
 	$(window).on("resize", resizeAll )
@@ -353,6 +417,22 @@ function makeAllCases(response)
 		showUpload(hn, patient)
 	})
 }
+
+jQuery.fn.extend({
+	filldataAllcases : function(q) {
+		var cells = this[0].cells
+
+		cells[0].innerHTML = putThdate(q.opdate)
+		cells[1].innerHTML = q.staffname
+		cells[2].innerHTML = q.hn
+		cells[3].innerHTML = q.patient
+		cells[4].innerHTML = q.diagnosis
+		cells[5].innerHTML = q.treatment
+		cells[6].innerHTML = q.admission
+		cells[7].innerHTML = q.final
+		cells[8].innerHTML = q.contact
+	}
+})
 
 function search()
 {

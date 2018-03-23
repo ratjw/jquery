@@ -397,11 +397,40 @@
 </table>
 
 <div id="dialogAll">
-  <table id="alltbl">
-	<tbody>
-	</tbody>
-  </table>
+ <table id="alltbl">
+  <thead>
+   <tr>
+	<th>Date</th>
+	<th>Staff</th>
+	<th>HN</th>
+	<th>Patient</th>
+	<th>Diagnosis</th>
+	<th>Treatment</th>
+	<th>Admission Status</th>
+	<th>Final Status</th>
+	<th>Contact</th>
+   </tr>
+  </thead>
+  <tbody>
+  </tbody>
+ </table>
 </div>
+
+<table id="allcells">
+  <tbody>
+   <tr>
+    <td data-title="Date"></td>
+    <td data-title="Staff"></td>
+    <td data-title="HN"></td>
+    <td data-title="Patient"></td>
+    <td data-title="Diagnosis"></td>
+    <td data-title="Treatment"></td>
+    <td data-title="Admission Status"></td>
+    <td data-title="Final Status"></td>
+    <td data-title="Contact"></td>
+   </tr>
+  </tbody>
+</table>
 
 <div id="dialogInput" class="dialogBox">
 	<span>HN:</span>
@@ -464,7 +493,7 @@
   <li id="itempost"><div>เลื่อนไป ไม่กำหนดวัน</div><ul>
     <li id="postpone"><div></div></li>
   </ul></li>
-  <li id="changedate"><div>เปลี่ยนวัน / เปลี่ยนลำดับ</div></li>
+  <li id="changedate"><div>เปลี่ยนย้าย วัน/ลำดับ</div></li>
   <li id="history"><div>ประวัติการแก้ไข</div></li>
   <li id="itemdel"><div>Delete</div><ul>
     <li id="del"><div></div></li>

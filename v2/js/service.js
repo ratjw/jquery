@@ -214,11 +214,11 @@ function calcSERVE()
 	$.each(gvserve, function() {
 		var	treatment = this.treatment
 
-		if (!this.radiosurgery && isRadiosurgery(treatment)) {
+		if (!this.radiosurgery && isMatched(RADIOSURGERY, treatment)) {
 			this.radiosurgery = "Radiosurgery"
 		}
 
-		if (!this.endovascular && isEndovascular(treatment)) {
+		if (!this.endovascular && isMatched(ENDOVASCULAR, treatment)) {
 			this.endovascular = "Endovascular"
 		}
 
@@ -239,48 +239,49 @@ function calcSERVE()
 
 function operationFor(thisrow)
 {
-	var opfor = [
-			"Brain Tumor",
-			"Brain Vascular",
-			"CSF related",
-			"Trauma",
-			"Spine",
-			"etc"
-		],
+	var	KEYWORDS = {
+			"Brain Tumor": [ BRAINTUMORRX, BRAINTUMORRXNO, BRAINTUMORDX, BRAINTUMORDXNO ],
+			"Brain Vascular": [ BRAINVASCULARRX, BRAINVASCULARRXNO, BRAINVASCULARDX, BRAINVASCULARDXNO ],
+			"Trauma": [ TRAUMARX, TRAUMARXNO, TRAUMADX, TRAUMADXNO ],
+			"Spine": [ SPINERX, SPINERXNO, SPINEDX, SPINEDXNO.concat(BRAINDX) ],
+			"CSF related": [ CSFRX, CSFRXNO, CSFDX, CSFDXNO ],
+			"etc": [ ETCRX, ETCRXNO, ETCDX, ETCDXNO ]
+		},
+		Rx = 0, RxNo = 1, Dx = 2, DxNo = 3, 
+		opfor = Object.keys(KEYWORDS),
 		diagnosis = thisrow.diagnosis,
 		treatment = thisrow.treatment,
 		endovascular = thisrow.endovascular === "Endovascular",
 		opwhat
 	// "No" from match NOOPERATION
-	if (isOperation(NOOPERATION, treatment)) { return "No" }
+	if (isMatched(NOOPERATION, treatment)) { return "No" }
 
 	// "No" from no match
-	opfor = isNotThisOp(opfor, isThisOperation, treatment)
+	opfor = isOpfor(KEYWORDS, opfor, Rx, treatment)
 	if (opfor.length === 0) { opwhat = "No" }
 	else if (opfor.length === 1) { opwhat = opfor[0] }
 	else {
-		opfor = isNotThisOp(opfor, notThisOperation, treatment)
-		if (opfor.length === 0) { opwhat = "etc" }
-		else if (opfor.length === 1) { opwhat = opfor[0] }
+		opfor = isNotOpfor(KEYWORDS, opfor, RxNo, treatment)
+		if (opfor.length === 1) { opwhat = opfor[0] }
 		else {
-			opfor = isNotThisOp(opfor, isThisDiagnosis, diagnosis)
+			opfor = isOpfor(KEYWORDS, opfor, Dx, diagnosis)
 			if (opfor.length === 0) { opwhat = "etc" }
 			else if (opfor.length === 1) { opwhat = opfor[0] }
 			else {
 				// in case all cancelled each other out
 				opwhat = opfor[0]
-				opfor = isNotThisOp(opfor, notThisDiagnosis, diagnosis)
+				opfor = isNotOpfor(KEYWORDS, opfor, DxNo, diagnosis)
 				if (opfor.length > 0) { opwhat = opfor[0] }
 			}
 		}
 	}
-	if (opwhat === "Spine" && endovascular && !isOperation(SPINEOP, treatment)) {
+	if (opwhat === "Spine" && endovascular && !isMatched(SPINEOP, treatment)) {
 		opwhat = "No"
 	}
 	return opwhat
 }
 
-function isOperation(keyword, diagtreat)
+function isMatched(keyword, diagtreat)
 {
 	var test = false
 
@@ -290,90 +291,24 @@ function isOperation(keyword, diagtreat)
 	return test
 }
 
-function isNotThisOp(opfor, func, diagRx)
+function isOpfor(keyword, opfor, RxDx, diagRx)
 {
 	for (var i=opfor.length-1; i>=0; i--) {
-		if (func(opfor[i], diagRx)) {
+		if (!isMatched(keyword[opfor[i]][RxDx], diagRx)) {
 			opfor.splice(i, 1)
 		}
 	}
 	return opfor
 }
 
-function isThisOperation(item, treatment)
+function isNotOpfor(keyword, opfor, RxDx, diagRx)
 {
-	var	thisOp = {
-		"Brain Tumor": BRAINTUMORRX,
-		"Brain Vascular": BRAINVASCULARRX,
-		"CSF related": CSFRX,
-		"Trauma": TRAUMARX,
-		"Spine": SPINERX,
-		"etc": ETCRX
+	for (var i=opfor.length-1; i>=0; i--) {
+		if (isMatched(keyword[opfor[i]][RxDx], diagRx)) {
+			opfor.splice(i, 1)
+		}
 	}
-
-	return !isOperation(thisOp[item], treatment)
-}
-
-function notThisOperation(item, treatment)
-{
-	var	notThisOp = {
-		"Brain Tumor": BRAINTUMORRXNO,
-		"Brain Vascular": BRAINVASCULARRXNO,
-		"CSF related": CSFRXNO,
-		"Trauma": TRAUMARXNO,
-		"Spine": SPINERXNO,
-		"etc": ETCRXNO
-	}
-
-	return isOperation(notThisOp[item], treatment)
-}
-
-function isThisDiagnosis(item, diagnosis)
-{
-	var	thisDiag = {
-		"Brain Tumor": BRAINTUMORDX,
-		"Brain Vascular": BRAINVASCULARDX,
-		"CSF related": CSFDX,
-		"Trauma": TRAUMADX,
-		"Spine": SPINEDX,
-		"etc": ETCDX
-	}
-
-	return !isOperation(thisDiag[item], diagnosis)
-}
-
-function notThisDiagnosis(item, diagnosis)
-{
-	var	notDiag = {
-		"Brain Tumor": BRAINTUMORDXNO,
-		"Brain Vascular": BRAINVASCULARDXNO,
-		"CSF related": CSFDXNO,
-		"Trauma": TRAUMADXNO,
-		"Spine": SPINEDXNO.concat(BRAINDX),
-		"etc": ETCDXNO
-	}
-
-	return isOperation(notDiag[item], diagnosis)
-}
-
-function isRadiosurgery(treatment)
-{
-	var Radiosurgery = false
-
-	$.each( RADIOSURGERY, function() {
-		return !(Radiosurgery = this.test(treatment))
-	})
-	return Radiosurgery
-}
-
-function isEndovascular(treatment)
-{
-	var Endovascular = false
-
-	$.each( ENDOVASCULAR, function() {
-		return !(Endovascular = this.test(treatment))
-	})
-	return Endovascular
+	return opfor
 }
 
 function refillService(fromDate, toDate)
@@ -383,7 +318,7 @@ function refillService(fromDate, toDate)
 		$servicecells = $("#servicecells"),
 		len = $rows.length
 		staffname = "",
-		i = scase = 0,
+		i = 0, scase = 0,
 		classname = ""
 
 	$.each( gv.SERVE, function() {
@@ -697,8 +632,6 @@ function savePreviousCellService()
 //column matches column name in MYSQL
 function saveContentService(pointed, column, content)
 {
-	var qn = $(pointed).closest("tr").find("td").eq(QNSV).html()
-
 	// Not refillService because it may make next cell back to old value
 	// when fast entry, due to slow return from Ajax of previous input
 	pointed.innerHTML = content? content : ""
@@ -707,48 +640,10 @@ function saveContentService(pointed, column, content)
 	if (/\W/.test(content)) {
 		content = URIcomponent(content)
 	}
-	// after edit, treatment keyword may be changed
-	// from non-operation <-> operation <-> radiosurgery <-> endovascular
-	if (column === "treatment") {
-		var updateOp = updateOperated(qn, content)
-	}
-	var sql = "sqlReturnService=UPDATE book SET "
-			+ column + "='" + content
-			+ "', editor='" + gv.user
-			+ "' WHERE qn=" + qn + ";"
-	if (updateOp) { sql = sql + updateOp }
+
+	var sql = sqlColumn(pointed, column, content)
 
 	saveService(pointed, sql)
-}
-
-function updateOperated(qn, content)
-{
-	var	bookq = getBOOKrowByQN(gv.SERVE, qn),
-		operation = operationFor(content, bookq.diagnosis),
-		radiosurgery = isRadiosurgery(content),
-		endovascular = isEndovascular(content),
-		sql = "",
-		oper = radi = endo = null
-
-	if (bookq.operated && !operation) { oper = "" }
-	if (!bookq.operated && operation) { oper = "Operation" }
-	if (bookq.radiosurgery && !radiosurgery) { radi = "" }
-	if (!bookq.radiosurgery && radiosurgery) { radi = "Radiosurgery" }
-	if (bookq.endovascular && !endovascular) { endo = "" }
-	if (!bookq.endovascular && endovascular) { endo = "Endovascular" }
-
-	if (oper !== null) { sql += "operated='" + oper + "'," }
-	if (radi !== null) { sql += "radiosurgery='" + radi + "'," }
-	if (endo !== null) { sql += "endovascular='" + endo + "'," }
-
-	if (sql) {
-		sql = "UPDATE book SET "
-			+ sql
-			+ "editor='updateOper' "
-			+ "WHERE qn=" + qn + ";"
-	}
-
-	return sql
 }
 
 function saveService(pointed, sql)
@@ -791,7 +686,7 @@ function saveService(pointed, sql)
 				updateRowClasses($row, newclass)
 			}
 		} else {
-			Alert("saveContentService", response)
+			Alert("saveService", response)
 			pointed.innerHTML = oldcontent
 			//return to previous content
 		}
@@ -836,6 +731,7 @@ function storePresentCellService(evt, pointing)
 			getFINALSV(evt, pointing)
 			break
 		case ADMITSV:
+		case OPDATESV:
 		case DISCHARGESV:
 			clearEditcell()
 			break
@@ -868,19 +764,18 @@ function getNAMESV(evt, pointing)
 function getTREATMENTSV(evt, pointing)
 {
 	if (gv.editableSV) {
-		var operated = sql = ""
+		var operated = "", sql = ""
 
 		if (inPicArea(evt, pointing) && pointing.className) {
 			clearEditcell()
 			// click toggle Operation, Reoperation
+			// Operation is not saved in DB. Use runtime operationFor
 			if (/\bReoperation/.test(pointing.className)) {
 				operated = ""
 			}
 			else if (/\bOperation/.test(pointing.className)) {
 				operated = "Reoperation"
 			}
-		}
-		if (operated) {
 			sql = sqlColumn(pointing, "operated", operated)
 			saveService(pointing, sql)
 		} else {
@@ -894,11 +789,12 @@ function getTREATMENTSV(evt, pointing)
 function getADMISSIONSV(evt, pointing)
 {
 	if (gv.editableSV) {
-		var admitted = sql = ""
+		var admitted = "", sql = ""
 
 		if (inPicArea(evt, pointing) && pointing.className) {
 			clearEditcell()
 			// click toggle Admission, Readmission
+			// Admission is not saved in DB. Use Admit column values
 			if (/\bReadmission/.test(pointing.className)) {
 				admitted = ""
 			} else if (/\bAdmission/.test(pointing.className)) {
@@ -1195,16 +1091,20 @@ function countAllServices()
 	resetcountService()
 
 	$.each( $("#servicetbl tr"), function() {
-		var counter = this.className.split(" ")
+		var counter = this.className.split(" "),
+			id
+
 		$.each(counter, function() {
-			if (document.getElementById(this)) {
-				document.getElementById(this).innerHTML++
-			}
-			if (String(this) === "Readmission") {
-				document.getElementById("Admission").innerHTML++
-			}
-			if (String(this) === "Reoperation") {
-				document.getElementById("Operation").innerHTML++
+			if (id = String(this)) {
+				if (document.getElementById(id)) {
+					document.getElementById(id).innerHTML++
+				}
+				if (id === "Readmission") {
+					document.getElementById("Admission").innerHTML++
+				}
+				if (id === "Reoperation") {
+					document.getElementById("Operation").innerHTML++
+				}
 			}
 		})
 	})
