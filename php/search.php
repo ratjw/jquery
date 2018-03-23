@@ -35,10 +35,10 @@ function getData($mysqli, $sql, $others)
 	// Create array for the names that are close to or match the search term
 	$qns = array();
 
-	$sqlx = "SELECT diagnosis,treatment,admission,final,qn FROM book";
-	$sqlx .= ($sql ? " WHERE $sql;" : ";");
+	$sql = $sql ? " WHERE $sql;" : ";";
+	$sql = "SELECT * FROM book$sql";
 
-	if (!$result = $mysqli->query ($sqlx)) {
+	if (!$result = $mysqli->query ($sql)) {
 		return $mysqli->error;
 	}
 
@@ -47,7 +47,7 @@ function getData($mysqli, $sql, $others)
 	}
 
 	foreach($data as $row) {
-			$match = false;
+		$match = false;
 		$allcols = "";
 
 		// Add 4 columns together
@@ -80,27 +80,11 @@ function getData($mysqli, $sql, $others)
 			if (!$match) { break; }
 		}
 		if ($match === true) {
-			array_push($qns, $row["qn"]);
+			array_push($qns, $row);
 		}
 	}
 
-	$sql = "";
-	$data = array();
-	foreach($qns as $qn) {
-		if ($sql) $sql .= " OR ";
-		$sql .= "qn=$qn";
-	}
-	$sql = "SELECT * FROM book where $sql;";
-
-	if (!$result = $mysqli->query ($sql)) {
-		return $mysqli->error;
-	}
-
-	while ($rowi = $result->fetch_assoc()) {
-		$data[] = $rowi;
-	}
-
-	return $data;
+	return $qns;
 }
 
 function search($mysqli, $sql)
