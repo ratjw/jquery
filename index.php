@@ -96,7 +96,7 @@ function namesix()
 		}
 
 		// can't use localStorage, old browsers do not support
-		echo "<SCRIPT>start('$userid')</SCRIPT>";
+		echo "<SCRIPT>Start('$userid')</SCRIPT>";
 	}
 ?>
 

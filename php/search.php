@@ -35,8 +35,8 @@ function getData($mysqli, $sql, $others)
 	// Create array for the names that are close to or match the search term
 	$qns = array();
 
-	$sql = $sql ? " WHERE $sql;" : ";";
-	$sql = "SELECT * FROM book$sql";
+	$sql = $sql ? " WHERE $sql" : "";
+	$sql = "SELECT * FROM book$sql ORDER BY opdate;";
 
 	if (!$result = $mysqli->query ($sql)) {
 		return $mysqli->error;
@@ -91,7 +91,7 @@ function search($mysqli, $sql)
 {
 	$data = array();
 
-	if (!$result = $mysqli->query ("SELECT * FROM book WHERE $sql;")) {
+	if (!$result = $mysqli->query ("SELECT * FROM book WHERE $sql ORDER BY opdate;")) {
 		return $mysqli->error;
 	}
 

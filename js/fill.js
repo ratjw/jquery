@@ -248,10 +248,10 @@ function makenextrow(table, date)
 	var row = tblcells.rows[0].cloneNode(true)
 	var rowi = tbody.appendChild(row)
 
+	rowi.className = dayName(NAMEOFDAYFULL, date)
 	rowi.cells[OPDATE].innerHTML = date.thDate()
 	rowi.cells[OPDATE].className = dayName(NAMEOFDAYABBR, date)
 	rowi.cells[DIAGNOSIS].style.backgroundImage = holiday(date)
-	rowi.className = dayName(NAMEOFDAYFULL, date)
 }
 
 //renew and decorate existing row
@@ -264,15 +264,13 @@ function fillrowdate(rowi, date)
 		rowi.parentNode.replaceChild(row, rowi)
 		rowi = row
 	}
-	rowi.className = dayName(NAMEOFDAYFULL, date)
-	rowi.cells[OPDATE].innerHTML = date.thDate()
-	rowi.cells[OPDATE].className = dayName(NAMEOFDAYABBR, date)
-	rowi.cells[DIAGNOSIS].style.backgroundImage = holiday(date)
 }
 
 function dayName(DAYNAME, date)
 {
-	return DAYNAME[(new Date(date)).getDay()]
+	return date === LARGESTDATE
+		? ""
+		: DAYNAME[(new Date(date)).getDay()]
 }
 
 function fillblank(rowi)
@@ -400,11 +398,7 @@ jQuery.fn.extend({
 		var cells = this[0].cells
 		this[0].title = bookq.waitnum
 		addColor(this, bookq.opdate)
-		if  (bookq.opdate === LARGESTDATE) {
-			cells[OPDATE].className = ""
-		} else {
-			cells[OPDATE].className = dayName(NAMEOFDAYABBR, bookq.opdate)
-		}
+		cells[OPDATE].className = dayName(NAMEOFDAYABBR, bookq.opdate)
 		cells[HN].className = (bookq.hn && gv.isPACS)? "pacs" : ""
 		cells[NAME].className = bookq.patient? "camera" : ""
 
@@ -508,15 +502,6 @@ String.prototype.nextdays = function (days)
 	return morrow.ISOdate();
 }
 
-function findStartRowInBOOK(book, opdate)
-{
-	var q = 0
-	while ((q < book.length) && (book[q].opdate < opdate)) {
-		q++
-	}
-	return (q < book.length)? q : -1
-}
-
 function holiday(date)
 {
 	var HOLIDAY = {
@@ -539,6 +524,7 @@ function holiday(date)
 	var Tue = (dayofweek === 2)
 	var Wed = (dayofweek === 3)
 
+	if (date === LARGESTDATE) { return }
 	for (var key in HOLIDAY) 
 	{
 		if (key === date)

@@ -1,5 +1,5 @@
 
-function start(userid)
+function Start(userid)
 {
 	var sql = "UPDATE staff,(SELECT MAX(dateoncall) AS max FROM staff) as oncall "
 			+	"SET staffoncall=staffname,"

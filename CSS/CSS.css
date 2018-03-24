@@ -140,27 +140,33 @@ td {
 #deletedtbl td:nth-child(8) { width: 5%; }
 #deletedtbl td:nth-child(9) { width: 10%; }
 
-#findtbl td:nth-child(1) { width: 4%; }
-#findtbl td:nth-child(2) { width: 3%; }
-#findtbl td:nth-child(3) { width: 3%; }
-#findtbl td:nth-child(4) { width: 10%; }
-#findtbl td:nth-child(5) { width: 20%; }
-#findtbl td:nth-child(6) { width: 20%; }
-#findtbl td:nth-child(7) { width: 20%; }
-#findtbl td:nth-child(8) { width: 10%; }
-#findtbl td:nth-child(9) { width: 10%; }
+#alltbl td:nth-child(1),
+#findtbl td:nth-child(1) { width: 4% !important; }
+#alltbl td:nth-child(2),
+#findtbl td:nth-child(2) { width: 3% !important; }
+#alltbl td:nth-child(3),
+#findtbl td:nth-child(3) { width: 3% !important; }
+#alltbl td:nth-child(4),
+#findtbl td:nth-child(4) { width: 10% !important; }
+#alltbl td:nth-child(5),
+#findtbl td:nth-child(5) { width: 20% !important; }
+#alltbl td:nth-child(6),
+#findtbl td:nth-child(6) { width: 20% !important; }
+#alltbl td:nth-child(7),
+#findtbl td:nth-child(7) { width: 20% !important; }
+#alltbl td:nth-child(8),
+#findtbl td:nth-child(8) { width: 10% !important; }
+#alltbl td:nth-child(9),
+#findtbl td:nth-child(9) { width: 10% !important; }
 
 #wrapper,
 #queuewrapper,
 #tblcells,
 #queuetbl th:nth-child(2), #queuetbl td:nth-child(2),
 #queuetbl th:nth-child(3), #queuetbl td:nth-child(3),
-#alltbl th:nth-child(2), #alltbl td:nth-child(2),
-#alltbl th:nth-child(3), #alltbl td:nth-child(3),
 #tbl th:nth-child(10), #tbl td:nth-child(10),
 #queuetbl th:nth-child(10), #queuetbl td:nth-child(10),
 #servicetbl th:nth-child(11), #servicetbl td:nth-child(11),
-#alltbl th:nth-child(10), #alltbl td:nth-child(10),
 #deletedtbl th:nth-child(10), #deletedtbl td:nth-child(10),
 #dialogService, #servicecells,
 #monthpicker button.ui-datepicker-current,
@@ -169,10 +175,11 @@ td {
 #divRecord,
 #dialogReview,
 #dialogEquip,
+#dialogAll, #allcells,
 #dialogDeleted, #deletedcells,
 #dialogHistory, #historycells,
-#dialogInput,
 #dialogFind, #findcells,
+#dialogInput,
 #dialogReadme,
 #menu,
 #stafflist,
@@ -218,14 +225,14 @@ td {
 	line-height: 25px;
 }
 
-#reviewtbl tbody tr:nth-child(6) td:first-child { font-weight:normal }
-#reviewtbl tbody tr:nth-child(7) th { text-align:left; padding-left:20px }
+#reviewtbl tbody tr:nth-child(6) td:first-child { font-weight: normal }
+#reviewtbl tbody tr:nth-child(7) th { text-align: left; padding-left: 20px }
 
 .leftButton { margin-right: 80px !important; }
 
-.deleted { background-color:pink }
+.deleted { background-color: pink }
 
-.undelete { background-color:skyblue }
+.undelete { background-color: skyblue }
 
 .bottom-right {
     position: absolute;
@@ -453,6 +460,7 @@ td.Radiosurgery.Endovascular {
 	margin-bottom: 100px;
 }
 
+#alltbl tr.odd,
 #queuetbl tr.odd {
     background-color: #EEEEFF;
 }

@@ -401,6 +401,13 @@ jQuery.fn.extend({
 	}
 })
 
+function getSunday()	//get previous Sunday
+{
+	var today = new Date();
+	today.setDate(today.getDate() - today.getDay());
+	return today.ISOdate();
+}
+
 function putRoomTime(bookq)
 {
 	return (bookq.oproom? bookq.oproom : "")
