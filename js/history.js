@@ -287,7 +287,8 @@ function makeAllCases(response)
 {
 	var	$dialogAll = $("#dialogAll"),
 		$alltbl = $("#alltbl"),
-		book = JSON.parse(response)
+		book = JSON.parse(response),
+		title = "All Saved Cases"
 		
 
 	// get rid of cases with unspecified opdate
@@ -296,14 +297,10 @@ function makeAllCases(response)
 //		book = book.slice(0, k)
 //	}
 
-	$dialogAll.dialog({
-		title: "All Saved Cases"
-	})
-
-	pagination($dialogAll, $alltbl, book, $("#dialogInput"))
+	pagination($dialogAll, $alltbl, book, $("#dialogInput"), title)
 }
 
-function pagination($dialog, $tbl, book, $close)
+function pagination($dialog, $tbl, book, $close, search)
 {
 	var	beginday = book[0].opdate,
 		lastday = findLastDateInBOOK(book),
@@ -312,6 +309,7 @@ function pagination($dialog, $tbl, book, $close)
 		firstday = getSunday()
 
 	$dialog.dialog({
+		title: search,
 		closeOnEscape: true,
 		modal: true,
 		hide: 200,
@@ -627,7 +625,7 @@ function makeFind(response, search)
 	var show = scrolltoThisCase(found[flen-1].qn)
 	if (!show || (flen > 1)) {
 		if (flen > 100) {
-			pagination($dialogFind, $findtbl, found, $("#dialogInput"))
+			pagination($dialogFind, $findtbl, found, $("#dialogInput"), search)
 		} else {
 			makeDialogFound($dialogFind, $findtbl, found, search)
 		}
