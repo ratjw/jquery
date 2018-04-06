@@ -101,7 +101,7 @@ function savePreviousCell()
 		case STAFFNAME:
 			return false
 		case HN:
-			return saveHN(pointed, "hn", newcontent)
+			return saveHN(pointed, newcontent)
 		case NAME:
 			return false
 		case DIAGNOSIS:
@@ -294,9 +294,9 @@ function saveContentQN(pointed, column, content)
 	var titlename = $('#titlename').html()
 
 	var sql = "sqlReturnbook=UPDATE book SET "
-	sql += column + "='" + content
-	sql += "',editor='"+ gv.user
-	sql += "' WHERE qn="+ qn +";"
+		+ column + "='" + content
+		+ "',editor='"+ gv.user
+		+ "' WHERE qn="+ qn +";"
 
 	Ajax(MYSQLIPHP, sql, callbacksaveContentQN);
 
@@ -375,14 +375,14 @@ function saveContentNoQN(pointed, column, content)
 
 	if ((tableID === "queuetbl") && (column !== "staffname")) {
 		var sql = "sqlReturnbook=INSERT INTO book ("
-		sql += "waitnum, opdate, oproom, casenum, staffname, "+ column +", editor) VALUES ("
-		sql += waitnum + ", '" + opdate +"', " + oproom +"," + casenum + ", '"
-		sql += staffname + "', '"+ content +"', '"+ gv.user +"');"
+			+ "waitnum, opdate, oproom, casenum, staffname, "+ column +", editor) VALUES ("
+			+ waitnum + ", '" + opdate +"', " + oproom +"," + casenum + ", '"
+			+ staffname + "', '"+ content +"', '"+ gv.user +"');"
 	} else {
 		var sql = "sqlReturnbook=INSERT INTO book ("
-		sql += "waitnum, opdate, oproom, casenum, "+ column +", editor) VALUES ("
-		sql += waitnum + ", '" + opdate +"'," + oproom +"," + casenum
-		sql += ", '"+ content +"', '"+ gv.user +"');"
+			+ "waitnum, opdate, oproom, casenum, "+ column +", editor) VALUES ("
+			+ waitnum + ", '" + opdate +"'," + oproom +"," + casenum
+			+ ", '"+ content +"', '"+ gv.user +"');"
 	}
 
 	Ajax(MYSQLIPHP, sql, callbacksaveContentNoQN);
@@ -428,7 +428,24 @@ function saveContentNoQN(pointed, column, content)
 	}
 }
 
-function saveHN(pointed, hn, content)
+function saveHN(pointed, content)
+{
+//	pointed.innerHTML = content
+	if (!/^\d{7}$/.test(content)) {
+		pointed.innerHTML = ""
+		return false
+	}
+
+	var	waiting = findWaitingListByHN(content)[0]
+
+	if (waiting) {
+		moveCaseByHN(pointed, waiting)
+	} else {
+		getNameHN(pointed, content)
+	}
+}
+
+function moveCaseByHN(pointed, waiting)
 {
 	var tableID = $(pointed).closest("table").attr("id"),
 		$row = $(pointed).closest('tr'),
@@ -436,18 +453,51 @@ function saveHN(pointed, hn, content)
 		cellindex = pointed.cellIndex,
 		opdateth = $cells.eq(OPDATE).html(),
 		opdate = getOpdate(opdateth),
-		oproom = $cells.eq(ROOM).html(),
-		casenum = $cells.eq(CASENUM).html(),
 		staffname = $cells.eq(STAFFNAME).html(),
 		qn = $cells.eq(QN).html(),
 		oldcontent = $("#editcell").data("oldcontent"),
-		waitnum, sql
+		waitnum = 0,
+		sql = "",
+		$dialogMoveCase = $("dialogMoveCase"),
+		$movetbl = $("movetbl"),
+		$findcells = $("#findcells")
 
-	if (content.length !== 7) {
-		pointed.innerHTML = ""
-		return false
-	} else {
-		pointed.innerHTML = content
+	// delete previous table lest it accumulates
+	$movetbl.find('tr').remove()
+	$('#findcells tr').clone()
+		.appendTo($movetbl.find('tbody'))
+			.filldataMoveCase(waiting)
+
+	$dialogMoveCase.dialog({
+		title: "Move a Case",
+		closeOnEscape: true,
+		modal: true,
+		hide: 200,
+		width: window.innerWidth * 95 / 100,
+		height: 300,
+		close: function() {
+			$(window).off("resize", resizeMove )
+			$(".fixed").remove()
+		}
+	})
+	$movetbl.fixMe($dialogMoveCase);
+
+	var $undelete = $("#undelete")
+	$undelete.hide()
+	$undelete.off("click").on("click", function () { closeUndel() }).hide()
+	$(".toUndelete").off("click").on("click", function () {
+		toUndelete(this, deleted)
+	})
+
+	//for resizing dialogs in landscape / portrait view
+	$(window).on("resize", resizeMove )
+
+	function resizeMove() {
+		$dialogMoveCase.dialog({
+			width: window.innerWidth * 95 / 100,
+			height: window.innerHeight * 95 / 100
+		})
+		winResizeFix($movetbl, $dialogMoveCase)
 	}
 
 	// if new case, calculate waitnum
@@ -456,21 +506,72 @@ function saveHN(pointed, hn, content)
 		waitnum = calcWaitnum(opdateth, $row.prev(), $row.next())
 		$row[0].title = waitnum	
 		sql = "hn=" + content
-		sql += "&waitnum="+ waitnum
-		sql += "&opdate="+ opdate
-		sql += "&oproom="+ oproom
-		sql += "&casenum="+ casenum
+			+ "&waitnum="+ waitnum
+			+ "&opdate="+ opdate
 		if (tableID === "queuetbl") {
 			sql += "&staffname="+ staffname
 		}
 		sql += "&qn="+ qn
-		sql += "&editor="+ gv.user
+			+ "&editor="+ gv.user
 	} else {
 		sql = "hn=" + content
-		sql += "&opdate="+ opdate
-		sql += "&qn="+ qn
-		sql += "&editor="+ gv.user
+			+ "&opdate="+ opdate
+			+ "&qn="+ qn
+			+ "&editor="+ gv.user
 	}
+}
+
+jQuery.fn.extend({
+	filldataMoveCase : function(q) {
+		let cells = this[0].cells
+
+		cells[0].className = "toUndelete"
+		cells[0].innerHTML = putThdate(q.opdate)
+		cells[1].innerHTML = q.staffname
+		cells[2].innerHTML = q.hn
+		cells[3].innerHTML = q.patient
+		cells[4].innerHTML = q.diagnosis
+		cells[5].innerHTML = q.treatment
+		cells[6].innerHTML = q.contact
+		cells[7].innerHTML = q.editor
+		cells[8].innerHTML = q.editdatetime
+		cells[9].innerHTML = q.qn
+	}
+})
+
+function getNameHN(pointed, content)
+{
+	var tableID = $(pointed).closest("table").attr("id"),
+		$row = $(pointed).closest('tr'),
+		$cells = $row.children("td"),
+		cellindex = pointed.cellIndex,
+		opdateth = $cells.eq(OPDATE).html(),
+		opdate = getOpdate(opdateth),
+		staffname = $cells.eq(STAFFNAME).html(),
+		diagnosis = $cells.eq(DIAGNOSIS).html(),
+		treatment = $cells.eq(TREATMENT).html(),
+		contact = $cells.eq(CONTACT).html(),
+		qn = $cells.eq(QN).html(),
+		noqn = !qn,
+		oldcontent = $("#editcell").data("oldcontent"),
+		waitnum = 0,
+		sql = ""
+
+	// if new case, calculate waitnum
+	// store waitnum in row title
+	if (noqn) {
+		waitnum = calcWaitnum(opdateth, $row.prev(), $row.next())
+		$row[0].title = waitnum	
+	}
+	sql = "hn=" + content
+		+ "&waitnum="+ waitnum
+		+ "&opdate="+ opdate
+		+ "&staffname=" + staffname
+		+ "&diagnosis=" + diagnosis
+		+ "&treatment=" + treatment
+		+ "&contact=" + contact
+		+ "&qn=" + qn
+		+ "&editor=" + gv.user
 
 	Ajax(GETNAMEHN, sql, callbackgetByHN)
 
@@ -481,24 +582,24 @@ function saveHN(pointed, hn, content)
 		if (/BOOK/.test(response)) {
 			updateBOOK(response)
 
-			var book = (ConsultsTbl(tableID))? gv.CONSULT : gv.BOOK
+			var book = (ConsultsTbl(tableID)) ? gv.CONSULT : gv.BOOK
 
 			// New case input
-			if (!qn) {
+			if (noqn) {
 				qn = getMaxQN(book)
 				$cells.eq(QN).html(qn)
 			}
 
 			var bookq = getBOOKrowByQN(book, qn)
-			if (gv.isPACS) {
-				$cells.eq(HN).addClass("pacs")
-			}
+
+			if (gv.isPACS) { $cells.eq(HN).addClass("pacs") }
 			$cells.eq(NAME).addClass("camera")
 
-			// old case patient
+			// prevent showing null
 			$cells.eq(ROOM).html(bookq.oproom || "")
 			$cells.eq(CASENUM).html(putCasenumTime(bookq))
 			$cells.eq(STAFFNAME).html(bookq.staffname)
+			$cells.eq(HN).html(bookq.hn)
 			$cells.eq(NAME).html(putNameAge(bookq))
 			$cells.eq(DIAGNOSIS).html(bookq.diagnosis)
 			$cells.eq(TREATMENT).html(bookq.treatment)
@@ -513,7 +614,11 @@ function saveHN(pointed, hn, content)
 				}
 			} else {
 				if (!isConsults()) {
-					refillAnotherTableCell('tbl', cellindex, qn)
+					if (noqn) {
+						refillall()
+					} else {
+						refillAnotherTableCell('tbl', cellindex, qn)
+					}
 				}
 			}
 			// re-render editcell for keyin cell only
@@ -527,6 +632,16 @@ function saveHN(pointed, hn, content)
 			// unsuccessful entry
 		}
 	}
+}
+
+function findWaitingListByHN(hn)
+{
+	var todate = new Date().ISOdate(),
+		book = gv.BOOK
+
+	return $.grep(book, function(bookq) {
+		return bookq.opdate > todate && bookq.hn === hn
+	})
 }
 
 function refillAnotherTableCell(tableID, cellindex, qn)

@@ -3,24 +3,18 @@ include "connect.php";
 require_once "book.php";
 
 	$hn = "5232323";
-	$initial_name = "";
-	$first_name = "";
-	$last_name = "";
-	$dob = "";
-	$gender = "";
-	$staffname = "";
-	$qn = "";
-	$editor = "";
-	$oproom = "";
-	$casenum = "";
-	$diagnosis = "";
-	$treatment = "";
-	$contact = "";
-
 	$initial_name = "Mr.";
 	$first_name = "Name";
 	$last_name = "Surname";
 	$dob = "1954-03-02";
+	$gender = "M";
+
+	$staffname = "";
+	$qn = "";
+	$editor = "";
+	$diagnosis = "";
+	$treatment = "";
+	$contact = "";
 
 	extract($_POST);
 
@@ -63,21 +57,21 @@ require_once "book.php";
 			$query = $mysqli->query ($sql);
 			if ($query) {
 				$oldpatient = $query->fetch_assoc();
-				$oldstaffname = $oldpatient["staffname"];
-				$diagnosis = $oldpatient["diagnosis"];
-				$treatment = $oldpatient["treatment"];
-				$contact = $oldpatient["contact"];
+				$staffname = $staffname ? $staffname : $oldpatient["staffname"];
+				$diagnosis = $diagnosis ? $diagnosis : $oldpatient["diagnosis"];
+				$treatment = $treatment ? $treatment : $oldpatient["treatment"];
+				$contact = $contact ? $contact : $oldpatient["contact"];
 			}
 		}
-	}
-	if ($staffname === "") {
-		$staffname = $oldstaffname;
 	}
 
 	if ($qn) {
 		//existing row, ignore waitnum
 		$sql = "UPDATE book 
-				SET staffname = CASE WHEN staffname = '' THEN '$staffname' ELSE staffname END,
+				SET staffname = CASE WHEN staffname = ''
+									 THEN '$staffname'
+									 ELSE staffname
+								END,
 					hn = '$hn', 
 					patient = '$initial_name$first_name $last_name',
 					dob = CASE WHEN $dob <> '' THEN '$dob' ELSE dob END,

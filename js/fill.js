@@ -29,13 +29,13 @@ function fillupstart()
 
 function fillall(book, table, start, until)
 {
-	var tbody = table.getElementsByTagName("tbody")[0]
-	var rows = table.rows
-	var head = table.rows[0]
-	var date = start
-	var madedate
-	var q = findStartRowInBOOK(book, start)
-	var k = findStartRowInBOOK(book, LARGESTDATE)
+	var tbody = table.getElementsByTagName("tbody")[0],
+		rows = table.rows,
+		head = table.rows[0],
+		date = start,
+		madedate,
+		q = findStartRowInBOOK(book, start),
+		k = findStartRowInBOOK(book, LARGESTDATE)
 
 	// get rid of cases with unspecified opdate
 	// Consult cases and new start have no LARGESTDATE, so k = -1
@@ -95,91 +95,15 @@ function fillall(book, table, start, until)
 
 function refillall()
 {
-	var book = gv.BOOK
-	var table = document.getElementById("tbl")
-	var tbody = table.getElementsByTagName("tbody")[0]
-	var rows = table.rows
-	var tlen = rows.length
-	var head = rows[0]
-	var start = $('#tbl tr:has("td"):first td').eq(OPDATE).html().numDate()
-	var date = start
-	var madedate
-	var q = findStartRowInBOOK(book, start)			//Start row in BOOK
-	var k = findStartRowInBOOK(book, LARGESTDATE)	//Stop row in BOOK
+	var book = gv.BOOK,
+		table = document.getElementById("tbl"),
+		$tbody = $("#tbl tbody"),
+		start = $('#tbl tr:has("td"):first td').eq(OPDATE).html().numDate(),
+		until = $('#tbl tr:has("td"):last td').eq(OPDATE).html().numDate()
 
-	book = book.slice(0, k)
-
-	//i for rows in table (with head as the first row)
-	var i = 1
-	var blen = book.length
-	while (i < tlen)		//make blank rows till the end of existing table
-	{
-		if (q < blen) {
-			//step over each day that is not in book
-			while (date < book[q].opdate)
-			{
-				if (date !== madedate)
-				{
-					fillrowdate(rows[i], date)	//existing row
-					fillblank(rows[i])	//clear a row for the day not in book
-					i++
-					if (i >= tlen) {
-						return
-					}
-					
-					madedate = date
-				}
-				date = date.nextdays(1)
-				//make table head row before every Monday
-				if ((new Date(date).getDay())%7 === 1)
-				{
-					if (rows[i].cells[OPDATE].nodeName !== "TH") {
-						var rowh = head.cloneNode(true)
-						tbody.replaceChild(rowh, rows[i])
-					}
-
-					i++
-					if (i >= tlen) {
-						return
-					}
-				}
-			}
-			fillrowdate(rows[i], date)	//existing row
-			filldata(book[q], rows[i])	//fill a row for the day in book
-			madedate = date
-			i++
-			if (i >= tlen) {
-				return
-			}
-			q++
-		}
-		else
-		{
-			date = date.nextdays(1)
-
-			//make table head row before every Monday
-			if (((new Date(date)).getDay())%7 === 1)
-			{
-				if (rows[i].cells[OPDATE].nodeName !== "TH") {
-					var rowh = head.cloneNode(true)
-					tbody.replaceChild(rowh, rows[i])
-				}
-
-				i++
-				if (i >= tlen) {
-					return
-				}
-			}
-
-			//make a blank row
-			fillrowdate(rows[i], date)	//existing row
-			fillblank(rows[i])
-			i++
-			if (i >= tlen) {
-				return
-			}
-		}
-	}
+	$tbody.html($tbody.find("tr:first").clone())
+	fillall(book, table, start, until)
+	hoverMain()
 }
 
 // main table (#tbl) only
