@@ -105,22 +105,6 @@ function makenextrow(table, date)
 	rowi.className = dayName(NAMEOFDAYFULL, date)
 }
 
-//renew and decorate existing row
-function fillrowdate(rowi, date)
-{
-	var tblcells = document.getElementById("tblcells")
-
-	if (rowi.cells[OPDATE].nodeName !== "TD") {
-		var row = tblcells.rows[0].cloneNode(true)
-		rowi.parentNode.replaceChild(row, rowi)
-		rowi = row
-	}
-	rowi.className = dayName(NAMEOFDAYFULL, date)
-	rowi.cells[OPDATE].innerHTML = date.thDate()
-	rowi.cells[OPDATE].className = dayName(NAMEOFDAYABBR, date)
-	rowi.cells[DIAGNOSIS].style.backgroundImage = holiday(date)
-}
-
 function dayName(DAYNAME, date)
 {
 	return DAYNAME[(new Date(date)).getDay()]

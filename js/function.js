@@ -434,6 +434,16 @@ function dataforEachCell(cells, data)
 	})
 }
 
+function rowDecoration(row, date)
+{
+	var	cells = row.cells
+
+	row.className = dayName(NAMEOFDAYFULL, date) || "nodate"
+	cells[OPDATE].innerHTML = putThdate(date)
+	cells[OPDATE].className = dayName(NAMEOFDAYABBR, date)
+	cells[DIAGNOSIS].style.backgroundImage = holiday(date)
+}
+
 function findPrevcell(event, editable, pointing) 
 {
 	var $prevcell = $(pointing)
