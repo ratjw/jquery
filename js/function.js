@@ -240,11 +240,30 @@ function getTableRowByQN(tableID, qn)
 	return row
 }
 
+function getWaitingBOOKrowByHN(hn)
+{  
+	var	todate = new Date().ISOdate()
+
+	return $.grep(gv.BOOK, function(bookq) {
+		return bookq.opdate > todate && bookq.hn === hn
+	})
+}
+
+function getWaitingTableRowByHN(hn)
+{
+	var	todate = new Date().ISOdate()
+
+	return $("#tbl tr:has(td)").filter(function() {
+		return $(this).find("td").eq(OPDATE).html().numDate() > todate
+				&& $(this).find("td").eq(HN).html() === hn
+	})
+}
+
 // main table (#tbl) only
 function getTableRowsByDate(opdateth)
 {
 	if (!opdateth) { return [] }
-	return $('#tbl tr').filter(function() {
+	return $("#tbl tr").filter(function() {
 		return $(this).find("td").eq(OPDATE).html() === opdateth;
 	})
 }
@@ -406,6 +425,13 @@ function picArea(pointing) {
 		left: left,
 		right: right
 	}
+}
+
+function dataforEachCell(cells, data)
+{
+	data.forEach(function(item, i) {
+		cells[i].innerHTML = item
+	})
 }
 
 function findPrevcell(event, editable, pointing) 

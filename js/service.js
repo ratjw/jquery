@@ -359,6 +359,7 @@ function refillService(fromDate, toDate)
 jQuery.fn.extend({
 	filldataService : function(bookq, scase, classes) {
 		var cells = this[0].cells
+
 		if (bookq.hn && gv.isPACS) { cells[HNSV].className = "pacs" }
 		if (bookq.hn) { cells[NAMESV].className = "camera" }
 		cells[TREATMENTSV].className = putReoperate(classes)

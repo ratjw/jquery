@@ -48,8 +48,8 @@ require_once "book.php";
 	$sql = "SELECT MAX(qn) FROM book WHERE hn = '$hn' AND deleted=0;";
 	$query = $mysqli->query ($sql);
 	if ($query) {
-		$oldqn = $query->fetch_row();
-		$oldqn = $oldqn[0];
+		$getqn = $query->fetch_row();
+		$oldqn = $getqn[0];
 		if ($oldqn) {
 			$sql = "SELECT staffname,diagnosis,treatment,contact 
 					FROM book 

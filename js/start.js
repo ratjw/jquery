@@ -81,7 +81,7 @@ function Start(userid)
 	})
 
 	// click on parent of submenu
-	$('#menu li > div').on("click", function(event){
+	$('#menu li:not(#search) > div').on("click", function(event){
 		if ($(this).siblings('ul').length > 0){
 			event.preventDefault()
 			event.stopPropagation()

@@ -167,15 +167,16 @@ function refillOneDay(opdate)
 //create and decorate new row
 function makenextrow(table, date)
 {
-	var tbody = table.getElementsByTagName("tbody")[0]
-	var tblcells = document.getElementById("tblcells")
-	var row = tblcells.rows[0].cloneNode(true)
-	var rowi = tbody.appendChild(row)
+	var	tbody = table.getElementsByTagName("tbody")[0],
+		tblcells = document.getElementById("tblcells"),
+		row = tblcells.rows[0].cloneNode(true),
+		rowi = tbody.appendChild(row),
+		cells = rowi.cells
 
 	rowi.className = dayName(NAMEOFDAYFULL, date)
-	rowi.cells[OPDATE].innerHTML = date.thDate()
-	rowi.cells[OPDATE].className = dayName(NAMEOFDAYABBR, date)
-	rowi.cells[DIAGNOSIS].style.backgroundImage = holiday(date)
+	cells[OPDATE].innerHTML = date.thDate()
+	cells[OPDATE].className = dayName(NAMEOFDAYABBR, date)
+	cells[DIAGNOSIS].style.backgroundImage = holiday(date)
 }
 
 //renew and decorate existing row
@@ -183,11 +184,13 @@ function fillrowdate(rowi, date)
 {
 	var tblcells = document.getElementById("tblcells")
 
+	// Change TH to TD
 	if (rowi.cells[OPDATE].nodeName !== "TD") {
 		var row = tblcells.rows[0].cloneNode(true)
 		rowi.parentNode.replaceChild(row, rowi)
 		rowi = row
 	}
+	rowDecoration(rowi, date)
 }
 
 function dayName(DAYNAME, date)

@@ -63,6 +63,12 @@ function mainMenu(pointing)
 				case "search":
 					search()
 					break
+				case "allsaved":
+					allCases()
+					break
+				case "alldeleted":
+					deletedCases()
+					break
 				case "readme":
 					readme()
 					break

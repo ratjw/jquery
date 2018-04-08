@@ -65,25 +65,28 @@ function makehistory(row, response)
 
 jQuery.fn.extend({
 	filldataHistory : function(q) {
-		var cells = this[0].cells
+		var	cells = this[0].cells,
+			data = [
+				putThdate(q.opdate),
+				q.oproom,
+				putCasenumTime(q),
+				q.staffname,
+				q.diagnosis,
+				q.treatment,
+				q.admission,
+				q.final,
+				showEquip(q.equipment),
+				q.contact,
+				q.editor,
+				q.editdatetime
+			]
 
 		// Define colors for deleted and undeleted rows
 		q.action === 'delete'
 		? this.addClass("deleted")
 		: (q.action === 'undelete') && this.addClass("undelete")
 
-		cells[0].innerHTML = putThdate(q.opdate)
-		cells[1].innerHTML = q.oproom
-		cells[2].innerHTML = putCasenumTime(q)
-		cells[3].innerHTML = q.staffname
-		cells[4].innerHTML = q.diagnosis
-		cells[5].innerHTML = q.treatment
-		cells[6].innerHTML = q.admission
-		cells[7].innerHTML = q.final
-		cells[8].innerHTML = showEquip(q.equipment)
-		cells[9].innerHTML = q.contact
-		cells[10].innerHTML = q.editor
-		cells[11].innerHTML = q.editdatetime
+		dataforEachCell(cells, data)
 	}
 })
 
@@ -150,7 +153,6 @@ function makedeletedCases(response)
 		close: function() {
 			$(window).off("resize", resizeDeleted )
 			$(".fixed").remove()
-			$("#dialogInput").dialog("close")
 		}
 	})
 	$deletedtbl.fixMe($dialogDeleted);
@@ -176,33 +178,37 @@ function makedeletedCases(response)
 
 jQuery.fn.extend({
 	filldataDeleted : function(q) {
-		let cells = this[0].cells
+		var	cells = this[0].cells,
+			data = [
+				putThdate(q.opdate),
+				q.staffname,
+				q.hn,
+				q.patient,
+				q.diagnosis,
+				q.treatment,
+				q.contact,
+				q.editor,
+				q.editdatetime,
+				q.qn
+			]
 
 		cells[0].className = "toUndelete"
-		cells[0].innerHTML = putThdate(q.opdate)
-		cells[1].innerHTML = q.staffname
-		cells[2].innerHTML = q.hn
-		cells[3].innerHTML = q.patient
-		cells[4].innerHTML = q.diagnosis
-		cells[5].innerHTML = q.treatment
-		cells[6].innerHTML = q.contact
-		cells[7].innerHTML = q.editor
-		cells[8].innerHTML = q.editdatetime
-		cells[9].innerHTML = q.qn
+		rowDecoration(this[0], q.opdate)
+		dataforEachCell(cells, data)
 	}
 })
 
 function toUndelete(thisWhen, deleted) 
 {
-//	var UNDELEDITDATETIME	= 0;
-	var UNDELOPDATE			= 1;
-	var UNDELSTAFFNAME		= 2;
-//	var UNDELHN				= 3;
-//	var UNDELPATIENT		= 4;
-//	var UNDELDIAGNOSIS		= 5;
-//	var UNDELTREATMENT		= 6;
-//	var UNDELCONTACT		= 7;
-//	var UNDELEDITOR			= 8;
+	var UNDELOPDATE			= 0;
+	var UNDELSTAFFNAME		= 1;
+//	var UNDELHN				= 2;
+//	var UNDELPATIENT		= 3;
+//	var UNDELDIAGNOSIS		= 4;
+//	var UNDELTREATMENT		= 5;
+//	var UNDELCONTACT		= 6;
+//	var UNDELEDITOR			= 7;
+//	var UNDELEDITDATETIME	= 8;
 	var UNDELQN				= 9;
 	var $thisWhen			= $(thisWhen)
 
@@ -275,32 +281,20 @@ function allCases()
 	function callbackAllCases(response)
 	{
 		if (/dob/.test(response)) {
-			makeAllCases(response)
+			// Make paginated dialog box containing alltbl
+			pagination(
+				$("#dialogAll"),
+				$("#alltbl"),
+				JSON.parse(response),
+				"All Saved Cases"
+			)
 		} else {
 			Alert("allCases", response)
 		}
 	}
 }
 
-// Make box dialog dialogAll containing alltbl
-function makeAllCases(response)
-{
-	var	$dialogAll = $("#dialogAll"),
-		$alltbl = $("#alltbl"),
-		book = JSON.parse(response),
-		title = "All Saved Cases"
-		
-
-	// get rid of cases with unspecified opdate
-	// Consult cases and new start have no LARGESTDATE, so k = -1
-//	if (k >= 0) {
-//		book = book.slice(0, k)
-//	}
-
-	pagination($dialogAll, $alltbl, book, $("#dialogInput"), title)
-}
-
-function pagination($dialog, $tbl, book, $close, search)
+function pagination($dialog, $tbl, book, search)
 {
 	var	beginday = book[0].opdate,
 		lastday = findLastDateInBOOK(book),
@@ -318,12 +312,10 @@ function pagination($dialog, $tbl, book, $close, search)
 		close: function() {
 			$(window).off("resize", resizeDialog )
 			$(".fixed").remove()
-			$close.dialog("close")
 		},
 		buttons: [
 			{
 				text: "<<< Year",
-				width: width / 9,
 				class: "Aqua",
 				click: function () {
 					showOneWeek(book, firstday, -364)
@@ -331,7 +323,6 @@ function pagination($dialog, $tbl, book, $close, search)
 			},
 			{
 				text: "<< Month",
-				width: width / 9,
 				class: "lightAqua",
 				click: function () {
 					offset = firstday.slice(-2) > 28 ? -35 : -28
@@ -340,26 +331,22 @@ function pagination($dialog, $tbl, book, $close, search)
 			},
 			{
 				text: "< Week",
-				width: width / 9,
 				class: "marginright",
 				click: function () {
 					showOneWeek(book, firstday, -7)
 				}
 			},
 			{
-				width: width / 30,
 				click: function () { return }
 			},
 			{
 				text: "Week >",
-				width: width / 9,
 				click: function () {
 					showOneWeek(book, firstday, 7)
 				}
 			},
 			{
 				text: "Month >>",
-				width: width / 9,
 				class: "lightAqua",
 				click: function () {
 					offset = firstday.slice(-2) > 28 ? 35 : 28
@@ -368,7 +355,6 @@ function pagination($dialog, $tbl, book, $close, search)
 			},
 			{
 				text: "Year >>>",
-				width: width / 9,
 				class: "Aqua",
 				click: function () {
 					showOneWeek(book, firstday, 364)
@@ -452,7 +438,7 @@ function pagination($dialog, $tbl, book, $close, search)
 						$row = $('#allcells tr').clone().appendTo($tbl.find('tbody'))
 						rowi = $row[0]
 						cells = rowi.cells
-						rowDecoration(rowi, cells, date)
+						rowDecoration(rowi, date)
 					}
 					date = date.nextdays(1)
 					nocase = true
@@ -467,7 +453,7 @@ function pagination($dialog, $tbl, book, $close, search)
 				$row = $('#allcells tr').clone().appendTo($tbl.find('tbody'))
 				rowi = $row[0]
 				cells = rowi.cells
-				rowDecoration(rowi, cells, date)
+				rowDecoration(rowi, date)
 				date = date.nextdays(1)
 			}
 		} else {
@@ -492,25 +478,29 @@ jQuery.fn.extend({
 	filldataAllcases : function(q) {
 		var rowi = this[0],
 			cells = rowi.cells,
-			date = q.opdate
+			date = q.opdate,
+			data = [
+				putThdate(date),
+				q.staffname,
+				q.hn,
+				q.patient,
+				q.diagnosis,
+				q.treatment,
+				q.admission,
+				q.final,
+				q.contact
+			]
 
-		rowDecoration(rowi, cells, date)
-
-		cells[0].innerHTML = putThdate(date)
-		cells[1].innerHTML = q.staffname
-		cells[2].innerHTML = q.hn
-		cells[3].innerHTML = q.patient
-		cells[4].innerHTML = q.diagnosis
-		cells[5].innerHTML = q.treatment
-		cells[6].innerHTML = q.admission
-		cells[7].innerHTML = q.final
-		cells[8].innerHTML = q.contact
+		rowDecoration(rowi, date)
+		dataforEachCell(cells, data)
 	}
 })
 
-function rowDecoration(rowi, cells, date)
+function rowDecoration(row, date)
 {
-	rowi.className = dayName(NAMEOFDAYFULL, date) || (rowi.rowIndex % 2 ? "odd" : "")
+	var	cells = row.cells
+
+	row.className = dayName(NAMEOFDAYFULL, date) || "nodate"
 	cells[OPDATE].innerHTML = putThdate(date)
 	cells[OPDATE].className = dayName(NAMEOFDAYABBR, date)
 	cells[DIAGNOSIS].style.backgroundImage = holiday(date)
@@ -526,21 +516,7 @@ function search()
 		closeOnEscape: true,
 		modal: true,
 		width: 500,
-		height: 350,
-		buttons: [
-			{
-				text: "All Saved Cases",
-				class: "undelete leftButton",
-				width: "150",
-				click: function () { allCases() }
-			},
-			{
-				text: "All Deleted Cases",
-				class: "deleted",
-				width: "150",
-				click: function () { deletedCases() }
-			}
-		],
+		height: 250,
 		close: function() {
 			$stafflist.hide()
 		}
@@ -587,7 +563,6 @@ function searchDB()
 	var hn = $('input[name="hn"]').val(),
 		staffname = $('input[name="staffname"]').val(),
 		others = $('input[name="others"]').val(),
-		$dialogInput = $("#dialogInput"),
 		sql = "", search = ""
 
 	// for dialog title
@@ -604,6 +579,7 @@ function searchDB()
 	} else {
 		Alert("Search: ''", "<br><br>No Result")
 	}
+	$("#dialogInput").dialog("close")
 
 	function callbackfind(response)
 	{
@@ -620,12 +596,12 @@ function makeFind(response, search)
 	var found = JSON.parse(response),
 		flen = found.length,
 		$dialogFind = $("#dialogFind"),
-		$findtbl = $("#findtbl")
+		$findtbl = $("#findtbl"),
+		show = scrolltoThisCase(found[flen-1].qn)
 
-	var show = scrolltoThisCase(found[flen-1].qn)
 	if (!show || (flen > 1)) {
 		if (flen > 100) {
-			pagination($dialogFind, $findtbl, found, $("#dialogInput"), search)
+			pagination($dialogFind, $findtbl, found, search)
 		} else {
 			makeDialogFound($dialogFind, $findtbl, found, search)
 		}
@@ -743,21 +719,29 @@ function makeDialogFound($dialogFind, $findtbl, found, search)
 
 jQuery.fn.extend({
 	filldataFind : function(q) {
-		var cells = this[0].cells
+		var	row = this[0],
+			cells = row.cells,
+			data = [
+				putThdate(q.opdate),
+				q.staffname,
+				q.hn,
+				q.patient,
+				q.diagnosis,
+				q.treatment,
+				q.admission,
+				q.final,
+				q.contact
+			]
 
-		Number(q.deleted) && this.addClass("deleted")
+		if (Number(q.deleted)) {
+			this.addClass("deleted")
+		} else {
+			rowDecoration(row, q.opdate)
+		}
 		q.hn && gv.isPACS && (cells[2].className = "pacs")
 		q.patient && (cells[3].className = "camera")
 
-		cells[0].innerHTML = putThdate(q.opdate)
-		cells[1].innerHTML = q.staffname
-		cells[2].innerHTML = q.hn
-		cells[3].innerHTML = q.patient
-		cells[4].innerHTML = q.diagnosis
-		cells[5].innerHTML = q.treatment
-		cells[6].innerHTML = q.admission
-		cells[7].innerHTML = q.final
-		cells[8].innerHTML = q.contact
+		dataforEachCell(cells, data)
 	}
 })
 
