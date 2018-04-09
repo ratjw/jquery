@@ -415,6 +415,7 @@ function holiday(date)
 {
 	var HOLIDAY = {
 		"2018-03-01" : "url('css/pic/Magha.png')",
+		"2018-04-12" : "url('css/pic/Songkransub.png')",
 		"2018-05-09" : "url('css/pic/Ploughing.png')",
 		"2018-05-29" : "url('css/pic/Vesak.png')",
 		"2018-07-27" : "url('css/pic/Asalha.png')",
@@ -472,8 +473,11 @@ function holiday(date)
 		holidayname = "url('css/pic/Songkran.png')"
 		break
 	case "04-16":
+		if (Mon || Tue)
+			holidayname = "url('css/pic/Songkransub.png')"
+		break
 	case "04-17":
-		if (Mon || Tue || Wed)
+		if (Mon || Wed)
 			holidayname = "url('css/pic/Songkransub.png')"
 		break
 	case "07-28":

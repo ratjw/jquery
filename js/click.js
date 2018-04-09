@@ -81,7 +81,16 @@ function savePreviousCell()
 	}
 	if (column === CASENUM) {
 		var num = $("#spin").val(),
-			time = $("#time").val()
+			time = $("#time").val(),
+			dec = Number(time)
+
+		if (dec === 0) { time = "" }
+		else if (isNaN(dec) || dec < 0 || dec > 24) {
+			Alert("เวลาผ่าตัด", "<br>รูปแบบเวลา ไม่ถูกต้อง<br><br>ใช้<br><br>ตั้งแต่ 00.00 - 08.30 - 09.00 ถึง 24.00")
+			time = ""
+		} else {
+			time = decimalToTime(time)
+		}
 
 		newcontent = num + (time ? ("<br>" + time) : "")
 	}
@@ -226,7 +235,7 @@ function saveCaseNum(pointed, oldcontent, num, time)
 	}
 	if (oldtime !== time) {
 		sql += "UPDATE book SET "
-			+  "optime='" + ((time === "00.00") ? "" : time)
+			+  "optime='" + time
 			+  "',editor='" + gv.user
 			+  "' WHERE qn="+ qn + ";"		
 	}
@@ -907,11 +916,6 @@ function getCASENUM(pointing)
 		step: 0.5,
 		create: function( event, ui ) {
 			$time.val(time)
-		},
-		start: function( event, ui ) {
-			if (!$time.val()) {
-				$time.val(9.5)
-			}
 		},
 		spin: function( event, ui ) {
 			ortime = decimalToTime(ui.value)

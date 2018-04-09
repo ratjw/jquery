@@ -392,8 +392,13 @@ function decimalToTime(dec)
 		decimal = dec - integer,
 		time0 = "" + integer
 
-	time[0] = (integer < 10)? "0" + time0 : time0
-	time[1] = decimal? String(decimal * 60) : "00"
+	time[0] = (integer < 10) ? "0" + time0 : time0
+	if (/\.\d\d/.test(dec)) {
+		time[1] = dec.slice(-2)
+	} else {
+		time[1] = Math.round(decimal * 60)
+		time[1] = time[1]< 10 ? "0" + time[1] : String(time[1])
+	}
 	return time.join(".")
 }
 
