@@ -183,7 +183,6 @@ function saveRoom(pointed, newcontent)
 			if (isSplited() && (isStaffname(staffname) || isConsults())) {
 				refillstaffqueue()
 			}
-//			scrolltoThisCase(qn)
 			// re-render editcell for keyin cell only
 			var newpoint = $('#editcell').data("pointing")
 			if (newpoint.cellIndex > NAME) {
@@ -252,8 +251,6 @@ function saveCaseNum(pointed, oldcontent, num, time)
 			if (isSplited() && (isStaffname(staffname) || isConsults())) {
 				refillstaffqueue()
 			}
-			// in case it jumped out of field
-			scrolltoThisCase(qn)
 			// re-render editcell for keyin cell only
 			var newpoint = $('#editcell').data("pointing")
 			if (newpoint.cellIndex > NAME) {
