@@ -49,7 +49,7 @@ function mainMenu(pointing)
 					changeDate($row, opdateth, opdate, staffname, qn)
 					break
 				case "history":
-					editHistory($row[0], qn)
+					editHistory($row)
 					break
 				case "del":
 					delCase(tableID, $row, opdateth, opdate, staffname, qn)

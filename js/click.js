@@ -526,7 +526,8 @@ function getCaseHN(pointed, waiting)
 
 	function moveCaseHN()
 	{
-		sql += "UPDATE book SET deleted=1 WHERE qn=" + waiting.qn +";"
+		sql += "UPDATE book SET deleted=1 WHERE qn=" + waiting.qn
+			+ ",editor='moveCaseHN';"
 			+ sqlCaseHN()
 
 		Ajax(MYSQLIPHP, sql, callbackmoveCaseHN)

@@ -1,8 +1,10 @@
 
-function editHistory(row, qn)
+function editHistory($row)
 {
-	var sql = "sqlReturnData=SELECT * FROM bookhistory "
-			+ "WHERE qn="+ qn +" ORDER BY editdatetime DESC;"
+	var	hn = $row.find("td")[HN].innerHTML,
+		sql = "sqlReturnData=SELECT * FROM bookhistory "
+			+ "WHERE qn in (select qn from book where hn='" + hn + "') "
+			+ "ORDER BY editdatetime DESC;"
 
 	Ajax(MYSQLIPHP, sql, callbackeditHistory)
 
@@ -11,19 +13,18 @@ function editHistory(row, qn)
 	function callbackeditHistory(response)
 	{
 		if (/dob/.test(response)) {
-			makehistory(row, response)
+			makehistory($row, hn, response)
 		} else {
 			Alert("editHistory", response)
 		}
 	}
 }
 
-function makehistory(row, response)
+function makehistory($row, hn, response)
 {
 	var tracing	= JSON.parse(response),
 		$historytbl = $('#historytbl'),
-		hn = row.cells[HN].innerHTML,
-		nam = row.cells[NAME].innerHTML,
+		nam = $row.find("td")[NAME].innerHTML,
 		name = nam && nam.replace('<br>', ' '),
 		$dialogHistory = $("#dialogHistory")
 	
@@ -67,8 +68,8 @@ jQuery.fn.extend({
 	filldataHistory : function(q) {
 		var	cells = this[0].cells,
 			data = [
-				putThdate(q.opdate),
-				q.oproom,
+				putThdate(q.opdate) || "",
+				q.oproom || "",
 				putCasenumTime(q),
 				q.staffname,
 				q.diagnosis,

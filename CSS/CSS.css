@@ -153,7 +153,7 @@ table#queuetbl {
 #historytbl th:nth-child(9) { width: 10%; }
 #historytbl th:nth-child(10) { width: 10%; }
 #historytbl th:nth-child(11) { width: 30px; }
-#historytbl th:nth-child(12) { width: 40px; }
+#historytbl th:nth-child(12) { min-width:50px; width: 50px; max-width:50px }
 
 #deletedtbl th:nth-child(1) { width: 5%; }
 #deletedtbl th:nth-child(2) { width: 5%; }
@@ -163,7 +163,7 @@ table#queuetbl {
 #deletedtbl th:nth-child(6) { width: 20%; }
 #deletedtbl th:nth-child(7) { width: 20%; }
 #deletedtbl th:nth-child(8) { width: 40px; }
-#deletedtbl th:nth-child(9) { width: 10%; }
+#deletedtbl th:nth-child(9) { min-width:70px; width: 70px; max-width:70px }
 
 #alltbl th:nth-child(1),
 #findtbl th:nth-child(1) { width: 30px; }
