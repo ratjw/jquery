@@ -5,7 +5,7 @@ CREATE TRIGGER bookai AFTER INSERT ON book FOR EACH ROW
 	INSERT INTO bookhistory 
 			(action, editdatetime, deleted, waitnum, opdate, oproom, casenum, 
 			theatre, staffname, hn, patient, diagnosis, treatment, admission, final, 
-			equipment, contact, admit, discharge, qn, editor)
+			equipment, contact, qn, editor)
 	VALUES ('insert', NOW(), 
 			NEW.deleted,
 			NEW.waitnum,
@@ -22,7 +22,5 @@ CREATE TRIGGER bookai AFTER INSERT ON book FOR EACH ROW
 			NEW.final,
 			NEW.equipment,
 			NEW.contact,
-			NEW.admit,
-			NEW.discharge,
 			NEW.qn,
 			NEW.editor);

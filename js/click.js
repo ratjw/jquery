@@ -84,12 +84,13 @@ function savePreviousCell()
 			time = $("#time").val(),
 			dec = Number(time)
 
-		if (dec === 0) { time = "" }
-		else if (isNaN(dec) || dec < 0 || dec > 24) {
-			Alert("เวลาผ่าตัด", "<br>รูปแบบเวลา ไม่ถูกต้อง<br><br>ใช้<br><br>ตั้งแต่ 00.00 - 08.30 - 09.00 ถึง 24.00")
-			time = ""
-		} else {
-			time = decimalToTime(time)
+		if (time){
+			if (isNaN(dec) || dec < 0 || dec > 24) {
+				Alert("เวลาผ่าตัด", "<br>รูปแบบเวลา ไม่ถูกต้อง<br><br>ใช้<br><br>ตั้งแต่ 00.00 - 08.30 - 09.00 ถึง 24.00")
+				time = ""
+			} else {
+				time = decimalToTime(time)
+			}
 		}
 
 		newcontent = num + (time ? ("<br>" + time) : "")
@@ -526,8 +527,9 @@ function getCaseHN(pointed, waiting)
 
 	function moveCaseHN()
 	{
-		sql += "UPDATE book SET deleted=1 WHERE qn=" + waiting.qn
-			+ ",editor='moveCaseHN';"
+		sql += "UPDATE book SET deleted=1 WHERE "
+			+ "qn=" + waiting.qn
+			+ ",editor='" + gv.user + "';"
 			+ sqlCaseHN()
 
 		Ajax(MYSQLIPHP, sql, callbackmoveCaseHN)
@@ -852,7 +854,8 @@ function getROOM(pointing)
 	var ORROOM = "4",
 		val = pointing.innerHTML || ORROOM,
 		$editcell = $("#editcell"),
-		html = '<input id="spin">'
+		room = "",
+		html = '<input id="spin" readonly>'
 
 	// no case
 	if ( !$(pointing).siblings(":last").html() ) { return }
@@ -864,11 +867,19 @@ function getROOM(pointing)
 	$editcell.css("width", 55)
 	$editcell.html(html)
 
-	$("#spin").val(val)
-	$("#spin").spinner({
+	var	$spin = $("#spin")
+	$spin.val(val)
+	$spin.spinner({
 		min: 0,
 		max: 99,
-		step: 1
+		step: 1,
+		spin: function( event, ui ) {
+			room = ui.value || ""
+		},
+		stop: function( event, ui ) {
+			$spin.val(room)
+			room = ""	
+		}
 	});
 	clearTimeout(gv.timer)
 }
@@ -882,7 +893,7 @@ function getCASENUM(pointing)
 		time = numtime[1],
 		ortime = "",
 		$editcell = $("#editcell"),
-		html = '<input id="spin"><input id="time">'
+		html = '<input id="spin" readonly><input id="time" readonly>'
 
 	if ( !$(pointing).prev().html() ) { return }
 
@@ -898,7 +909,7 @@ function getCASENUM(pointing)
 	$editcell.css("width", 70)
 	$editcell.html(html)
 
-	$spin = $("#spin")
+	var	$spin = $("#spin")
 	$spin.val(num)
 	$spin.spinner({
 		min: 1,
@@ -919,10 +930,8 @@ function getCASENUM(pointing)
 			ortime = decimalToTime(ui.value)
 		},
 		stop: function( event, ui ) {
-			if (ortime) {
-				$time.val(ortime)
-				ortime = ""	
-			}
+			$time.val(ortime)
+			ortime = ""	
 		}
 	})
 	clearTimeout(gv.timer)

@@ -392,6 +392,7 @@ function decimalToTime(dec)
 		decimal = dec - integer,
 		time0 = "" + integer
 
+	if (Number(dec) === 0) { return "" }
 	time[0] = (integer < 10) ? "0" + time0 : time0
 	if (/\.\d\d/.test(dec)) {
 		time[1] = dec.slice(-2)

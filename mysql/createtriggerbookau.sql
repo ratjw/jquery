@@ -5,7 +5,7 @@ CREATE TRIGGER bookau AFTER UPDATE ON book FOR EACH ROW
 	INSERT INTO bookhistory 
 			(action, editdatetime, deleted, waitnum, opdate, oproom, casenum, 
 			theatre, staffname, hn, patient, diagnosis, treatment, admission, final, 
-			equipment, contact, admit, discharge, qn, editor)
+			equipment, contact, qn, editor)
 	VALUES (
 			IF (OLD.deleted>0, IF (NEW.deleted>0, 'update', 'undelete'),
 								IF (NEW.deleted>0, 'delete', 'update')),
@@ -25,7 +25,5 @@ CREATE TRIGGER bookau AFTER UPDATE ON book FOR EACH ROW
 			IF (OLD.final=NEW.final, '', NEW.final),
 			IF (OLD.equipment=NEW.equipment, '', NEW.equipment),
 			IF (OLD.contact=NEW.contact, '', NEW.contact),
-			IF (OLD.admit=NEW.admit, NULL, NEW.admit),
-			IF (OLD.discharge=NEW.discharge, NULL, NEW.discharge),
 			NEW.qn,
 			NEW.editor);
