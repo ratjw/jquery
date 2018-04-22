@@ -81,6 +81,23 @@ String.prototype.numDate = function ()
 		date[0]
 	].join("-")
 } 
+ 
+Date.prototype.ISOdate = function () 
+{	// Javascript Date Object to MySQL date (2014-05-11)
+    var yyyy = this.getFullYear();
+    var mm = this.getMonth()+1;
+	mm = (mm < 10)? "0"+mm : ""+mm;
+    var dd = this.getDate();
+	dd = (dd < 10)? "0"+dd : ""+dd;
+    return yyyy + "-" + mm + "-" + dd;
+} 
+
+String.prototype.nextdays = function (days)
+{	// ISOdate to be added or substract by days
+	var morrow = new Date(this);
+	morrow.setDate(morrow.getDate()+days);
+	return morrow.ISOdate();
+}
 
 String.prototype.getAge = function (toDate)
 {	//Calculate age at (toDate) (iso format) from birth date
@@ -401,6 +418,15 @@ function decimalToTime(dec)
 		time[1] = time[1]< 10 ? "0" + time[1] : String(time[1])
 	}
 	return time.join(".")
+}
+
+function getNextDayOfWeek(date, dayOfWeek)
+{
+	var resultDate = new Date(date.getTime());
+
+	resultDate.setDate(date.getDate() + (7 + dayOfWeek - date.getDay()) % 7);
+
+	return resultDate;
 }
 
 function inPicArea(evt, pointing) {

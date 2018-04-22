@@ -393,23 +393,6 @@ function addColor($this, bookqOpdate)
 	// In LARGESTDATE, prevdate = "" but bookqOpdate = LARGESTDATE
 	// So LARGESTDATE cases are !samePrevDate, thus has alternate colors
 }
- 
-Date.prototype.ISOdate = function () 
-{	// Javascript Date Object to MySQL date (2014-05-11)
-    var yyyy = this.getFullYear();
-    var mm = this.getMonth()+1;
-	mm = (mm < 10)? "0"+mm : ""+mm;
-    var dd = this.getDate();
-	dd = (dd < 10)? "0"+dd : ""+dd;
-    return yyyy + "-" + mm + "-" + dd;
-} 
-
-String.prototype.nextdays = function (days)
-{	// ISOdate to be added or substract by days
-	var morrow = new Date(this);
-	morrow.setDate(morrow.getDate()+days);
-	return morrow.ISOdate();
-}
 
 function holiday(date)
 {

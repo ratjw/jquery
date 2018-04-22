@@ -16,7 +16,50 @@ function Start(userid)
 	$("#logo").remove()
 	$("#wrapper").show()
 	$("#tblhead").show()
+}
+	
+function loading(response)
+{
+	if (/BOOK/.test(response)) {
+		localStorage.setItem('ALLBOOK', response)
+		updateBOOK(response)
+		startEditable()
+		fillupstart()
+		setStafflist()
+		setConsultant()
+		fillConsults()
+	} else {
+		response = localStorage.getItem('ALLBOOK')
+		var error = "<br><br>Response from server has no data."
+		if (/BOOK/.test(response)) {
+			Alert("Server Error",
+					error
+					+ "<br><br>Use localStorage instead."
+					+ "<br><br><h3>Read Only, not editable.</h3>");
+			updateBOOK(response)
+			fillupstart();
+			setStafflist()
+			fillConsults()
+		} else {
+			Alert("Server Error", error + "<br><br>No localStorage backup");
+		}
+	}
+}
 
+function updateBOOK(response)
+{
+	var temp = JSON.parse(response)
+
+	if (temp.BOOK) { gv.BOOK = temp.BOOK }
+	if (temp.CONSULT) { gv.CONSULT = temp.CONSULT }
+	if (temp.SERVICE) { gv.SERVICE = temp.SERVICE }
+	if (temp.STAFF) { gv.STAFF = temp.STAFF }
+	if (temp.QTIME) { gv.timestamp = temp.QTIME }
+	// datetime of last fetching from server: $mysqli->query ("SELECT now();")
+}
+
+function startEditable()
+{
 	// call sortable before render, otherwise, it renders very slowly
 	sortable()
 
@@ -129,44 +172,6 @@ function Start(userid)
 		margin: "0px"
 	})
 }
-		
-function loading(response)
-{
-	if (/BOOK/.test(response)) {
-		localStorage.setItem('ALLBOOK', response)
-		updateBOOK(response)
-		fillupstart();
-		setStafflist()
-		fillConsults()
-	} else {
-		response = localStorage.getItem('ALLBOOK')
-		var error = "<br><br>Response from server has no data."
-		if (/BOOK/.test(response)) {
-			Alert("Server Error",
-					error
-					+ "<br><br>Use localStorage instead."
-					+ "<br><br>Read Only. Not editable.");
-			updateBOOK(response)
-			fillupstart();
-			setStafflist()
-			fillConsults()
-		} else {
-			Alert("Server Error", error + "<br><br>No localStorage backup");
-		}
-	}
-}
-
-function updateBOOK(response)
-{
-	var temp = JSON.parse(response)
-
-	if (temp.BOOK) { gv.BOOK = temp.BOOK }
-	if (temp.CONSULT) { gv.CONSULT = temp.CONSULT }
-	if (temp.SERVICE) { gv.SERVICE = temp.SERVICE }
-	if (temp.STAFF) { gv.STAFF = temp.STAFF }
-	if (temp.QTIME) { gv.timestamp = temp.QTIME }
-	// datetime of last fetching from server: $mysqli->query ("SELECT now();")
-}
 
 // stafflist: menu of Staff column
 // staffmenu: submenu of Date column
@@ -186,6 +191,81 @@ function setStafflist()
 	staffmenu += '<li id="staffqueue"><div>Consults</div></li>'
 	document.getElementById("stafflist").innerHTML = stafflist
 	document.getElementById("staffmenu").innerHTML = staffmenu
+}
+
+function setConsultant()
+{
+	if (gv.STAFF[0].dateoncall === null) {
+		setNewOncall()
+	} else {
+		setNextOncall()
+	}
+}
+
+function setNewOncall()
+{
+	var	sql = sqlNewOncall()
+
+	
+}
+
+function sqlNewOncall()
+{
+	var	nextSat = getNextDayOfWeek(new Date(), 6).ISOdate(),
+		sql = ""
+
+	gv.STAFF.forEach(function(staff, i) {
+		if (staff.active) {
+			sql += "UPDATE staff SET "
+				+ "dateoncall='" + nextSat.nextdays(7*(staff.number-1))
+				+ "' WHERE number=" + staff.number
+		}
+	})
+
+	return sql
+}
+
+function setNextOncall()
+{
+	var	todate = new Date().ISOdate(),
+		totalStaff = countActive(),
+		oncallStaff = getStaffOncall(),
+		oncallDate = getDateOncall()
+
+	
+}
+
+function countActive()
+{
+	var n = 0
+
+	gv.STAFF.forEach(function(staff, i) {
+		n += Number(staff.active)
+	})
+
+	return n
+}
+
+function getStaffOncall()
+{
+	var a = []
+
+	gv.STAFF.forEach(function(staff, i) {
+		a.push(staff.staffname)
+	})
+
+	return a
+}
+
+function getDateOncall()
+{
+	var a = []
+
+	gv.STAFF.forEach(function(staff, i) {
+		a.push(staff.dateoncall)
+	})
+
+	return a
 }
 
 // Only on main table
