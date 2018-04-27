@@ -128,11 +128,11 @@ function saveRoom(pointed, newcontent)
 	var tableID = $(pointed).closest("table").attr("id"),
 		$row = $(pointed).closest("tr"),
 		$cell = $row.find("td"),
-		opdateth = $cell.eq(OPDATE).html(),
+		opdateth = $cell[OPDATE].innerHTML,
 		opdate = getOpdate(opdateth),
-		oproom = $cell.eq(ROOM).html(),
-		casenum = $cell.eq(CASENUM).html(),
-		qn = $cell.eq(QN).html(),
+		oproom = $cell[ROOM].innerHTML,
+		casenum = $cell[CASENUM].innerHTML,
+		qn = $cell[QN].innerHTML,
 		allSameDate = allOldCases = allNewCases = [],
 		index,
 		sql = ""
@@ -208,10 +208,10 @@ function sqlNewRoom(oproom, casenum, qn)
 function saveCaseNum(pointed, oldcontent, num, time)
 {
 	var $cells = $(pointed).closest("tr").find("td"),
-		opdateth = $cells.eq(OPDATE).html(),
+		opdateth = $cells[OPDATE].innerHTML,
 		opdate = getOpdate(opdateth),
-		oproom = $cells.eq(ROOM).html(),
-		qn = $cells.eq(QN).html(),
+		oproom = $cells[ROOM].innerHTML,
+		qn = $cells[QN].innerHTML,
 		numtime = oldcontent.split("<br>"),
 		oldnum = numtime[0],
 		oldtime = numtime[1],
@@ -287,20 +287,20 @@ function saveContent(pointed, column, content)
 
 function saveContentQN(pointed, column, content)
 {
-	var cellindex = pointed.cellIndex
-	var tableID = $(pointed).closest("table").attr("id")
-	var $row = $(pointed).closest('tr')
-	var $cells = $row.children("td")
-	var opdateth = $cells.eq(OPDATE).html()
-	var opdate = getOpdate(opdateth)
-	var oproom = $cells.eq(ROOM).html()
-	var casenum = $cells.eq(CASENUM).html()
-	var staffname = $cells.eq(STAFFNAME).html()
-	var qn = $cells.eq(QN).html()
-	var oldcontent = $("#editcell").data("oldcontent")
-	var titlename = $('#titlename').html()
+	var	cellindex = pointed.cellIndex,
+		tableID = $(pointed).closest("table").attr("id"),
+		$row = $(pointed).closest('tr'),
+		$cells = $row.children("td"),
+		opdateth = $cells[OPDATE].innerHTML,
+		opdate = getOpdate(opdateth),
+		oproom = $cells[ROOM].innerHTML,
+		casenum = $cells[CASENUM].innerHTML,
+		staffname = $cells[STAFFNAME].innerHTML,
+		qn = $cells[QN].innerHTML,
+		oldcontent = $("#editcell").data("oldcontent"),
+		titlename = $('#titlename').html(),
 
-	var sql = "sqlReturnbook=UPDATE book SET "
+		sql = "sqlReturnbook=UPDATE book SET "
 		+ column + "='" + content
 		+ "',editor='"+ gv.user
 		+ "' WHERE qn="+ qn +";"
@@ -362,34 +362,37 @@ function saveContentQN(pointed, column, content)
 
 function saveContentNoQN(pointed, column, content)
 {
-	var cellindex = pointed.cellIndex
-	var tableID = $(pointed).closest("table").attr("id")
-	var $row = $(pointed).closest('tr')
-	var $cells = $row.children("td")
-	var opdateth = $cells.eq(OPDATE).html()
-	var opdate = getOpdate(opdateth)
-	var oproom = $cells.eq(ROOM).html() || null
-	var casenum = $cells.eq(CASENUM).html() || null
-	var staffname = $cells.eq(STAFFNAME).html()
-	var qn = $cells.eq(QN).html()
-	var oldcontent = $("#editcell").data("oldcontent")
-	var titlename = $('#titlename').html()
+	var	cellindex = pointed.cellIndex,
+		tableID = $(pointed).closest("table").attr("id"),
+		$row = $(pointed).closest('tr'),
+		$cells = $row.children("td"),
+		opdateth = $cells[OPDATE].innerHTML,
+		opdate = getOpdate(opdateth),
+		oproom = $cells[ROOM].innerHTML || null,
+		casenum = $cells[CASENUM].innerHTML || null,
+		staffname = $cells[STAFFNAME].innerHTML,
+		qn = $cells[QN].innerHTML,
+		oldcontent = $("#editcell").data("oldcontent"),
+		titlename = $('#titlename').html(),
+		sql,
 
-	// new case, calculate waitnum
-	var waitnum = calcWaitnum(opdateth, $row.prev(), $row.next())
+		// new case, calculate waitnum
+		waitnum = calcWaitnum(opdateth, $row.prev(), $row.next())
 	// store waitnum in row title
 	$row[0].title = waitnum
 
-	if ((tableID === "queuetbl") && (column !== "staffname")) {
-		var sql = "sqlReturnbook=INSERT INTO book ("
-			+ "waitnum, opdate, oproom, casenum, staffname, "+ column +", editor) VALUES ("
-			+ waitnum + ", '" + opdate +"', " + oproom +"," + casenum + ", '"
-			+ staffname + "', '"+ content +"', '"+ gv.user +"');"
+	if (tableID === "queuetbl") {
+		if (column !== "staffname") {
+			sql = "sqlReturnbook=INSERT INTO book ("
+				+ "waitnum, opdate, oproom, casenum, staffname, "+ column +", editor) VALUES ("
+				+ waitnum + ",'" + opdate +"', " + oproom +"," + casenum + ",'"
+				+ staffname + "','"+ content +"','"+ gv.user + "');"
+		}
 	} else {
-		var sql = "sqlReturnbook=INSERT INTO book ("
+		sql = "sqlReturnbook=INSERT INTO book ("
 			+ "waitnum, opdate, oproom, casenum, "+ column +", editor) VALUES ("
-			+ waitnum + ", '" + opdate +"'," + oproom +"," + casenum
-			+ ", '"+ content +"', '"+ gv.user +"');"
+			+ waitnum + ",'" + opdate +"'," + oproom +"," + casenum
+			+ ",'"+ content +"','"+ gv.user + "');"
 	}
 
 	Ajax(MYSQLIPHP, sql, callbacksaveContentNoQN);
@@ -404,9 +407,11 @@ function saveContentNoQN(pointed, column, content)
 			var qn = Math.max.apply(Math, $.map(book, function(bookq, i){
 						return bookq.qn
 					}))
-			$cells.eq(QN).html(qn)
+			$cells[QN].innerHTML = qn
 
 			if (tableID === 'tbl') {
+				// delete staffoncall
+				if (/(<([^>]+)>)/i.test(staffname)) { $cells[STAFFNAME].innerHTML = "" }
 				// Remote effect from editing on tbl to queuetbl if Staffqueue is showing
 				// Create new case of staffname that match titlename -> refill queuetbl
 				if (isSplited()) {
@@ -437,7 +442,6 @@ function saveContentNoQN(pointed, column, content)
 
 function saveHN(pointed, content)
 {
-//	pointed.innerHTML = content
 	if (!/^\d{7}$/.test(content)) {
 		pointed.innerHTML = ""
 		return false
@@ -445,6 +449,7 @@ function saveHN(pointed, content)
 
 	var	waiting = getWaitingBOOKrowByHN(content)[0]
 
+//	pointed.innerHTML = content
 	if (waiting) {
 		getCaseHN(pointed, waiting)
 	} else {
@@ -458,13 +463,13 @@ function getCaseHN(pointed, waiting)
 		tableID = $(pointed).closest("table").attr("id"),
 		$row = $(pointed).closest('tr'),
 		$cells = $row.children("td"),
-		opdateth = $cells.eq(OPDATE).html(),
+		opdateth = $cells[OPDATE].innerHTML,
 		opdate = getOpdate(opdateth),
-		staffname = $cells.eq(STAFFNAME).html(),
-		diagnosis = $cells.eq(DIAGNOSIS).html(),
-		treatment = $cells.eq(TREATMENT).html(),
-		contact = $cells.eq(CONTACT).html(),
-		qn = $cells.eq(QN).html(),
+		staffname = $cells[STAFFNAME].innerHTML,
+		diagnosis = $cells[DIAGNOSIS].innerHTML,
+		treatment = $cells[TREATMENT].innerHTML,
+		contact = $cells[CONTACT].innerHTML,
+		qn = $cells[QN].innerHTML,
 		noqn = !qn,
 
 		hn = waiting.hn,
@@ -480,13 +485,15 @@ function getCaseHN(pointed, waiting)
 		$moveto = $("#moveto").next(),
 		tblcells = $("#tblcells tr").html()
 
+	// not use staffoncall in patient's data
+	if (/(<([^>]+)>)/i.test(staffname)) { staffname = "" }
 	wanting.opdate = opdate
-	wanting.staffname = staffname || waiting.staffname
 	wanting.patient = patient
 	wanting.dob = dob
-	wanting.diagnosis = diagnosis || waiting.diagnosis
-	wanting.treatment = treatment || waiting.treatment
-	wanting.contact = contact || waiting.contact
+	if (staffname) { wanting.staffname = staffname }
+	if (diagnosis) { wanting.diagnosis = diagnosis }
+	if (treatment) { wanting.treatment = treatment }
+	if (contact) { wanting.contact = contact }
 
 	$movefrom.html(tblcells).filldataWaiting(waiting)
 	$moveto.html(tblcells).filldataWaiting(wanting)
@@ -495,7 +502,8 @@ function getCaseHN(pointed, waiting)
 		title: "เคสซ้ำ",
 		closeOnEscape: true,
 		modal: true,
-		autoResize:true,
+		autoResize: true,
+		show: 200,
 		hide: 200,
 		width: window.innerWidth * 95 / 100,
 		buttons: [
@@ -527,9 +535,9 @@ function getCaseHN(pointed, waiting)
 
 	function moveCaseHN()
 	{
-		sql += "UPDATE book SET deleted=1 WHERE "
-			+ "qn=" + waiting.qn
-			+ ",editor='" + gv.user + "';"
+		sql += "UPDATE book SET deleted=1"
+			+ ",editor='" + gv.user
+			+ "' WHERE qn=" + waiting.qn + ";"
 			+ sqlCaseHN()
 
 		Ajax(MYSQLIPHP, sql, callbackmoveCaseHN)
@@ -635,44 +643,44 @@ function getCaseHN(pointed, waiting)
 
 function fillCellsHN(tableID, qn, $cells)
 {
-	var book = (ConsultsTbl(tableID)) ? gv.CONSULT : gv.BOOK
+	var	book = (ConsultsTbl(tableID)) ? gv.CONSULT : gv.BOOK,
+		bookq
 
 	// New case input
 	if (noqn) {
 		qn = getMaxQN(book)
-		$cells.eq(QN).html(qn)
+		$cells[QN].innerHTML = qn
 	}
 
-	var bookq = getBOOKrowByQN(book, qn)
+	bookq = getBOOKrowByQN(book, qn)
 
-	if (gv.isPACS) { $cells.eq(HN).addClass("pacs") }
-	$cells.eq(NAME).addClass("camera")
+	if (gv.isPACS) { $cells[HN].className = "pacs" }
+	$cells[NAME].className = "camera"
+	if (bookq.treatment) { $cells[TREATMENT].className = "equip" }
 
-	// prevent showing null
-	$cells.eq(STAFFNAME).html(bookq.staffname)
-	$cells.eq(HN).html(bookq.hn)
-	$cells.eq(NAME).html(putNameAge(bookq))
-	$cells.eq(DIAGNOSIS).html(bookq.diagnosis)
-	$cells.eq(TREATMENT).html(bookq.treatment)
-	$cells.eq(CONTACT).html(bookq.contact)
+	$cells[STAFFNAME].innerHTML = bookq.staffname
+	$cells[HN].innerHTML = bookq.hn
+	$cells[NAME].innerHTML = putNameAge(bookq)
+	$cells[DIAGNOSIS].innerHTML = bookq.diagnosis
+	$cells[TREATMENT].innerHTML = bookq.treatment
+	$cells[CONTACT].innerHTML = bookq.contact
 }
 
 jQuery.fn.extend({
 	filldataWaiting : function(bookq) {
-		var	row = this[0]
-			cells = row.cells
+		var	$cells = this.find("td")
 
-		row.className = dayName(NAMEOFDAYFULL, bookq.opdate) || "lightAqua"
-		cells[OPDATE].className = dayName(NAMEOFDAYABBR, bookq.opdate)
+		this[0].className = dayName(NAMEOFDAYFULL, bookq.opdate) || "lightAqua"
+		$cells[OPDATE].className = dayName(NAMEOFDAYABBR, bookq.opdate)
 
-		cells[OPDATE].innerHTML = putThdate(bookq.opdate)
-		cells[STAFFNAME].innerHTML = bookq.staffname
-		cells[HN].innerHTML = bookq.hn
-		cells[NAME].innerHTML = putNameAge(bookq)
-		cells[DIAGNOSIS].innerHTML = bookq.diagnosis
-		cells[TREATMENT].innerHTML = bookq.treatment
-		cells[CONTACT].innerHTML = bookq.contact
-		cells[QN].innerHTML = bookq.qn
+		$cells[OPDATE].innerHTML = putThdate(bookq.opdate)
+		$cells[STAFFNAME].innerHTML = bookq.staffname
+		$cells[HN].innerHTML = bookq.hn
+		$cells[NAME].innerHTML = putNameAge(bookq)
+		$cells[DIAGNOSIS].innerHTML = bookq.diagnosis
+		$cells[TREATMENT].innerHTML = bookq.treatment
+		$cells[CONTACT].innerHTML = bookq.contact
+		$cells[QN].innerHTML = bookq.qn
 	}
 })
 
@@ -682,13 +690,13 @@ function getNameHN(pointed, content)
 		$row = $(pointed).closest('tr'),
 		$cells = $row.children("td"),
 		cellindex = pointed.cellIndex,
-		opdateth = $cells.eq(OPDATE).html(),
+		opdateth = $cells[OPDATE].innerHTML,
 		opdate = getOpdate(opdateth),
-		staffname = $cells.eq(STAFFNAME).html(),
-		diagnosis = $cells.eq(DIAGNOSIS).html(),
-		treatment = $cells.eq(TREATMENT).html(),
-		contact = $cells.eq(CONTACT).html(),
-		qn = $cells.eq(QN).html(),
+		staffname = $cells[STAFFNAME].innerHTML,
+		diagnosis = $cells[DIAGNOSIS].innerHTML,
+		treatment = $cells[TREATMENT].innerHTML,
+		contact = $cells[CONTACT].innerHTML,
+		qn = $cells[QN].innerHTML,
 		noqn = !qn,
 		oldcontent = $("#editcell").data("oldcontent"),
 		waitnum = 0,
@@ -724,21 +732,21 @@ function getNameHN(pointed, content)
 			// New case input
 			if (noqn) {
 				qn = getMaxQN(book)
-				$cells.eq(QN).html(qn)
+				$cells[QN].innerHTML = qn
 			}
 
 			var bookq = getBOOKrowByQN(book, qn)
 
-			if (gv.isPACS) { $cells.eq(HN).addClass("pacs") }
-			$cells.eq(NAME).addClass("camera")
+			if (gv.isPACS) { $cells[HN].className = "pacs" }
+			$cells[NAME].className = "camera"
 
 			// prevent showing null
-			$cells.eq(STAFFNAME).html(bookq.staffname)
-			$cells.eq(HN).html(bookq.hn)
-			$cells.eq(NAME).html(putNameAge(bookq))
-			$cells.eq(DIAGNOSIS).html(bookq.diagnosis)
-			$cells.eq(TREATMENT).html(bookq.treatment)
-			$cells.eq(CONTACT).html(bookq.contact)
+			$cells[STAFFNAME].innerHTML = bookq.staffname
+			$cells[HN].innerHTML = bookq.hn
+			$cells[NAME].innerHTML = putNameAge(bookq)
+			$cells[DIAGNOSIS].innerHTML = bookq.diagnosis
+			$cells[TREATMENT].innerHTML = bookq.treatment
+			$cells[CONTACT].innerHTML = bookq.contact
 
 			// Both cases remote effect -> refill corresponding cell
 			// no need to refillall main table because new case row was already there
@@ -947,19 +955,7 @@ function getSTAFFNAME(pointing)
 
 	$stafflist.menu({
 		select: function( event, ui ) {
-			var staffname = ui.item.text()
-			var tableID = $pointing.closest("table").attr("id")
-			var $row = $pointing.closest('tr')
-			var $cells = $row.children("td")
-			var opdate = getOpdate($cells.eq(OPDATE).html())
-			var qn = $cells.eq(QN).html()
-
-			// change staff oncall when there is no case
-			if (pointing.innerHTML && !qn) {
-				changeOncall(pointing, opdate, staffname)
-			} else {
-				saveContent(pointing, "staffname", staffname)
-			}
+			saveContent(pointing, "staffname", ui.item.text())
 			clearEditcell()
 			$stafflist.hide()
 			event.stopPropagation()
@@ -972,26 +968,6 @@ function getSTAFFNAME(pointing)
 
 	// repeat to make it show on first click in queuetbl
 	reposition($stafflist, "left top", "left bottom", $pointing)
-}
-
-function changeOncall(pointing, opdate, staffname)
-{
-	var sql = "sqlReturnData=UPDATE staff SET "
-			+ "staffoncall= '" + staffname
-			+ "' WHERE dateoncall='" + opdate
-			+ "';SELECT * FROM staff ORDER BY number;"
-
-	Ajax(MYSQLIPHP, sql, callbackchangeOncall);
-
-	function callbackchangeOncall(response)
-	{
-		if (/neurosurgery/.test(response)) {
-			pointing.innerHTML = htmlwrap(staffname)
-			gv.STAFF = JSON.parse(response)
-		} else {
-			Alert("changeOncall", response)
-		}
-	}
 }
 
 function getHN(evt, pointing)
@@ -1010,7 +986,7 @@ function getHN(evt, pointing)
 
 function getNAME(evt, pointing)
 {
-	var hn = $(pointing).closest('tr').children("td").eq(HN).html()
+	var hn = $(pointing).closest('tr').children("td")[HN].innerHTML
 	var patient = pointing.innerHTML
 
 	if (inPicArea(evt, pointing)) {
@@ -1025,7 +1001,7 @@ function getEquip(evt, pointing)
 		var tableID = $(pointing).closest('table').attr('id'),
 			book = ConsultsTbl(tableID)? gv.CONSULT : gv.BOOK,
 			$row = $(pointing).closest('tr'),
-			qn = $row.find("td").eq(QN).html()
+			qn = $row.find("td")[QN].innerHTML
 		fillEquipTable(book, $row, qn)
 	} else {
 		createEditcell(pointing)

@@ -138,6 +138,7 @@ function refillOneDay(opdate)
 		$cells.eq(STAFFNAME).html(showStaffOnCall(opdate))
 		$cells.eq(HN).removeClass("pacs")
 		$cells.eq(NAME).removeClass("camera")
+		$cells.eq(TREATMENT).removeClass("equip")
 		$cells.eq(DIAGNOSIS).css("backgroundImage", holiday(opdate))
 	} else {
 		if (tblRows > bookRows) {
@@ -203,11 +204,9 @@ function filldata(bookq, row)
 	var cells = row.cells
 
 	row.title = bookq.waitnum
-	if (bookq.hn && gv.isPACS) {
-		cells[HN].className = "pacs"
-	}
-	cells[NAME].className = bookq.patient? "camera" : ""
-	cells[TREATMENT].className = bookq.treatment? "equip" : ""
+	if (bookq.hn && gv.isPACS) { cells[HN].className = "pacs" }
+	if (bookq.patient) { cells[NAME].className = "camera" }
+	if (bookq.treatment) { cells[TREATMENT].className = "equip" }
 
 	cells[ROOM].innerHTML = bookq.oproom || ""
 	cells[CASENUM].innerHTML = putCasenumTime(bookq)
@@ -304,23 +303,24 @@ function refillstaffqueue()
 
 jQuery.fn.extend({
 	filldataQueue : function(bookq) {
-		var cells = this[0].cells
+		var	$cells = this.find("td")
+
 		this[0].title = bookq.waitnum
 		addColor(this, bookq.opdate)
-		cells[OPDATE].className = dayName(NAMEOFDAYABBR, bookq.opdate)
-		cells[HN].className = (bookq.hn && gv.isPACS)? "pacs" : ""
-		cells[NAME].className = bookq.patient? "camera" : ""
+		$cells[OPDATE].className = dayName(NAMEOFDAYABBR, bookq.opdate)
+		$cells[HN].className = (bookq.hn && gv.isPACS)? "pacs" : ""
+		$cells[NAME].className = bookq.patient? "camera" : ""
 
-		cells[OPDATE].innerHTML = putThdate(bookq.opdate)
-		cells[ROOM].innerHTML = bookq.oproom || ""
-		cells[CASENUM].innerHTML = putCasenumTime(bookq)
-		cells[STAFFNAME].innerHTML = bookq.staffname
-		cells[HN].innerHTML = bookq.hn
-		cells[NAME].innerHTML = putNameAge(bookq)
-		cells[DIAGNOSIS].innerHTML = bookq.diagnosis
-		cells[TREATMENT].innerHTML = bookq.treatment
-		cells[CONTACT].innerHTML = bookq.contact
-		cells[QN].innerHTML = bookq.qn
+		$cells[OPDATE].innerHTML = putThdate(bookq.opdate)
+		$cells[ROOM].innerHTML = bookq.oproom || ""
+		$cells[CASENUM].innerHTML = putCasenumTime(bookq)
+		$cells[STAFFNAME].innerHTML = bookq.staffname
+		$cells[HN].innerHTML = bookq.hn
+		$cells[NAME].innerHTML = putNameAge(bookq)
+		$cells[DIAGNOSIS].innerHTML = bookq.diagnosis
+		$cells[TREATMENT].innerHTML = bookq.treatment
+		$cells[CONTACT].innerHTML = bookq.contact
+		$cells[QN].innerHTML = bookq.qn
 	}
 })
 

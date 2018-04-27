@@ -313,6 +313,48 @@ function showStaffOnCall(opdate)
 	}
 }
 
+function changeOncall(pointing, opdate, staffname)
+{
+/*
+	$stafflist.menu({
+		select: function( event, ui ) {
+			var	staffname = ui.item.text(),
+				tableID = $pointing.closest("table").attr("id"),
+				$row = $pointing.closest('tr'),
+				$cells = $row.children("td"),
+				opdate = getOpdate($cells.eq(OPDATE).html()),
+				qn = $cells.eq(QN).html()
+
+			// change staff oncall when there is no case
+			if (pointing.innerHTML && !qn) {
+				changeOncall(pointing, opdate, staffname)
+			} else {
+				saveContent(pointing, "staffname", staffname)
+			}
+			clearEditcell()
+			$stafflist.hide()
+			event.stopPropagation()
+		}
+	});
+*/
+	var sql = "sqlReturnData=UPDATE staff SET "
+			+ "staffoncall= '" + staffname
+			+ "' WHERE dateoncall='" + opdate
+			+ "';SELECT * FROM staff ORDER BY number;"
+
+	Ajax(MYSQLIPHP, sql, callbackchangeOncall);
+
+	function callbackchangeOncall(response)
+	{
+		if (/neurosurgery/.test(response)) {
+			pointing.innerHTML = htmlwrap(staffname)
+			gv.STAFF = JSON.parse(response)
+		} else {
+			Alert("changeOncall", response)
+		}
+	}
+}
+
 function resetTimer()
 {
 	// gv.timer is just an id, not the clock
