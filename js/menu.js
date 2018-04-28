@@ -128,6 +128,8 @@ function checkblank($row, opdate)
 	}
 }
 
+// $row is the pointing (clicked) row
+// queuetbl has no equip icon
 function addnewrow(tableID, $row)
 {
 	if (tableID === "tbl") {

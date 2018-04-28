@@ -64,7 +64,13 @@ function startEditable()
 	sortable()
 
 	$(document).contextmenu( function (event) {
-		event.preventDefault();
+		event.preventDefault()
+		var	target = event.target,
+			oncall = /<p[^>]*>([^<]*)<\/p>/.test(target.outerHTML)
+
+		if (oncall) {
+			setOncall(target)
+		}
 	})
 
 	// Prevent the backspace key from navigating back.
@@ -313,30 +319,30 @@ function showStaffOnCall(opdate)
 	}
 }
 
-function changeOncall(pointing, opdate, staffname)
+function setOncall(pointing)
 {
-/*
+	var $stafflist = $("#stafflist"),
+		$pointing = $(pointing)
+
 	$stafflist.menu({
 		select: function( event, ui ) {
 			var	staffname = ui.item.text(),
-				tableID = $pointing.closest("table").attr("id"),
-				$row = $pointing.closest('tr'),
-				$cells = $row.children("td"),
-				opdate = getOpdate($cells.eq(OPDATE).html()),
-				qn = $cells.eq(QN).html()
+				opdateth = $pointing.closest('tr').find("td")[OPDATE].innerHTML,
+				opdate = getOpdate(opdateth)
 
-			// change staff oncall when there is no case
-			if (pointing.innerHTML && !qn) {
-				changeOncall(pointing, opdate, staffname)
-			} else {
-				saveContent(pointing, "staffname", staffname)
-			}
-			clearEditcell()
+			changeOncall(pointing, opdate, staffname)
 			$stafflist.hide()
-			event.stopPropagation()
 		}
-	});
-*/
+	})
+
+	// reposition from main menu to determine shadow
+	reposition($stafflist, "left top", "left bottom", $pointing)
+	menustyle($stafflist, $pointing)
+	clearEditcell()
+}
+
+function changeOncall(pointing, opdate, staffname)
+{
 	var sql = "sqlReturnData=UPDATE staff SET "
 			+ "staffoncall= '" + staffname
 			+ "' WHERE dateoncall='" + opdate
@@ -347,7 +353,7 @@ function changeOncall(pointing, opdate, staffname)
 	function callbackchangeOncall(response)
 	{
 		if (/neurosurgery/.test(response)) {
-			pointing.innerHTML = htmlwrap(staffname)
+			pointing.innerHTML = staffname
 			gv.STAFF = JSON.parse(response)
 		} else {
 			Alert("changeOncall", response)
