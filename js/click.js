@@ -318,8 +318,7 @@ function saveContentQN(pointed, column, content)
 			}
 			if (tableID === 'tbl') {
 				// Remote effect from editing on main table to queuetbl
-				// If Staffqueue is showing, 
-				// 1. if staffname that match titlename was changed to another staff
+				// 1. if staffname that match titlename gets involved
 				//    (either change to or from this staffname)
 				//    -> refill queuetbl
 				// 2. make change to the row which match titlename
@@ -368,12 +367,12 @@ function saveContentNoQN(pointed, column, content)
 		$cells = $row.children("td"),
 		opdateth = $cells[OPDATE].innerHTML,
 		opdate = getOpdate(opdateth),
-		oproom = $cells[ROOM].innerHTML || null,
-		casenum = $cells[CASENUM].innerHTML || null,
 		staffname = $cells[STAFFNAME].innerHTML,
 		qn = $cells[QN].innerHTML,
 		oldcontent = $("#editcell").data("oldcontent"),
 		titlename = $('#titlename').html(),
+		sql1 = "",
+		sql2 = "",
 		sql,
 
 		// new case, calculate waitnum
@@ -381,19 +380,15 @@ function saveContentNoQN(pointed, column, content)
 	// store waitnum in row title
 	$row[0].title = waitnum
 
-	if (tableID === "queuetbl") {
-		if (column !== "staffname") {
-			sql = "sqlReturnbook=INSERT INTO book ("
-				+ "waitnum, opdate, oproom, casenum, staffname, "+ column +", editor) VALUES ("
-				+ waitnum + ",'" + opdate +"', " + oproom +"," + casenum + ",'"
-				+ staffname + "','"+ content +"','"+ gv.user + "');"
-		}
-	} else {
-		sql = "sqlReturnbook=INSERT INTO book ("
-			+ "waitnum, opdate, oproom, casenum, "+ column +", editor) VALUES ("
-			+ waitnum + ",'" + opdate +"'," + oproom +"," + casenum
-			+ ",'"+ content +"','"+ gv.user + "');"
+	if ((tableID === "queuetbl") && (column !== "staffname")) {
+		sql1 = "staffname, "
+		sql2 = staffname + "','"
 	}
+
+	sql = "sqlReturnbook=INSERT INTO book ("
+			+ "waitnum, opdate, " + sql1 + column + ", editor) VALUES ("
+			+ waitnum + ",'" + opdate +"','"
+			+ sql2 + content +"','"+ gv.user + "');"
 
 	Ajax(MYSQLIPHP, sql, callbacksaveContentNoQN);
 
