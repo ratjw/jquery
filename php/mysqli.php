@@ -39,6 +39,11 @@ require_once "book.php";
 		echo returnData($mysqli, $_POST['sqlReturnData']);
 	}
 
+	// start.js (doadddata)
+	else if (isset($_POST['sqlReturnStaff'])) {
+		echo returnStaff($mysqli, $_POST['sqlReturnStaff']);
+	}
+
 function start($mysqli, $sql)
 {
 	$return = multiquery($mysqli, $sql);
@@ -69,6 +74,17 @@ function returnService($mysqli, $sql)
 	} else {
 		$data = book($mysqli);
 		$data["SERVICE"] = $return;
+		return json_encode($data);
+	}
+}
+
+function returnStaff($mysqli, $sql)
+{
+	$return = multiquery($mysqli, $sql);
+	if (gettype($return) === "string") {
+		return $return;
+	} else {
+		$data["STAFF"] = $return;
 		return json_encode($data);
 	}
 }
@@ -106,4 +122,49 @@ function multiquery($mysqli, $sql)
 	if ($mysqli->errno) {
 		return 'DBfailed first query ' . $sql . " \n" . $mysqli->error;
 	}
+}
+/*
+function setConsultant()
+{
+	var	todate = new Date().ISOdate(),
+
+	
+}
+
+function sqlNextOncall()
+{
+	var	nextSat = getNextDayOfWeek(new Date(), 6).ISOdate(),
+		sql = ""
+
+	gv.STAFF.forEach(function(staff, i) {
+		if (staff.active) {
+			sql += "UPDATE staff SET "
+				+ "dateoncall='" + nextSat.nextdays(7*(staff.number-1))
+				+ "' WHERE number=" + staff.number
+		}
+	})
+
+	return sql
+}
+
+function getStaffOncall()
+{
+	var a = []
+
+	gv.STAFF.forEach(function(staff, i) {
+		a.push(staff.staffname)
+	})
+
+	return a
+}
+
+function getDateOncall()
+{
+	var a = []
+
+	gv.STAFF.forEach(function(staff, i) {
+		a.push(staff.dateoncall)
+	})
+
+	return a
 }

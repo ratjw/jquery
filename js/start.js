@@ -21,12 +21,11 @@ function Start(userid)
 function loading(response)
 {
 	if (/BOOK/.test(response)) {
+		startEditable()
 		localStorage.setItem('ALLBOOK', response)
 		updateBOOK(response)
-		startEditable()
 		fillupstart()
 		setStafflist()
-		setConsultant()
 		fillConsults()
 	} else {
 		response = localStorage.getItem('ALLBOOK')
@@ -69,13 +68,14 @@ function startEditable()
 			oncall = /<p[^>]*>([^<]*)<\/p>/.test(target.outerHTML)
 
 		if (oncall) {
-			setOncall(target)
+			addStaff(target)
+//			setOncall(target)
 		}
 	})
 
 	// Prevent the backspace key from navigating back.
 	$(document).off('keydown').on('keydown', function (event) {
-		if (event.keyCode === 8) {
+		if (event.keydate === 8) {
 			var doPrevent = true;
 			var types = ["text", "password", "file", "search", "email", "number",
 						"date", "color", "datetime", "datetime-local", "month", "range",
@@ -108,18 +108,18 @@ function startEditable()
 	$editcell.on("keydown", function (event) {
 		resetTimer();
 		gv.idleCounter = 0
-		var keycode = event.which || window.event.keyCode
+		var keydate = event.which || window.event.keydate
 		var pointing = $editcell.data("pointing")
 		if ($('#dialogService').is(':visible')) {
-			Skeyin(event, keycode, pointing)
+			Skeyin(event, keydate, pointing)
 		} else {
-			keyin(event, keycode, pointing)
+			keyin(event, keydate, pointing)
 		}
 	})
 
 	// for resizing the editing cell
 	$editcell.on("keyup", function (event) {
-		var keycode = event.which || window.event.keyCode
+		var keydate = event.which || window.event.keydate
 
 		$editcell.height($editcell[0].scrollHeight)
 	})
@@ -199,81 +199,6 @@ function setStafflist()
 	document.getElementById("staffmenu").innerHTML = staffmenu
 }
 
-function setConsultant()
-{
-	if (gv.STAFF[0].dateoncall === null) {
-		setNewOncall()
-	} else {
-		setNextOncall()
-	}
-}
-
-function setNewOncall()
-{
-	var	sql = sqlNewOncall()
-
-	
-}
-
-function sqlNewOncall()
-{
-	var	nextSat = getNextDayOfWeek(new Date(), 6).ISOdate(),
-		sql = ""
-
-	gv.STAFF.forEach(function(staff, i) {
-		if (staff.active) {
-			sql += "UPDATE staff SET "
-				+ "dateoncall='" + nextSat.nextdays(7*(staff.number-1))
-				+ "' WHERE number=" + staff.number
-		}
-	})
-
-	return sql
-}
-
-function setNextOncall()
-{
-	var	todate = new Date().ISOdate(),
-		totalStaff = countActive(),
-		oncallStaff = getStaffOncall(),
-		oncallDate = getDateOncall()
-
-	
-}
-
-function countActive()
-{
-	var n = 0
-
-	gv.STAFF.forEach(function(staff, i) {
-		n += Number(staff.active)
-	})
-
-	return n
-}
-
-function getStaffOncall()
-{
-	var a = []
-
-	gv.STAFF.forEach(function(staff, i) {
-		a.push(staff.staffname)
-	})
-
-	return a
-}
-
-function getDateOncall()
-{
-	var a = []
-
-	gv.STAFF.forEach(function(staff, i) {
-		a.push(staff.dateoncall)
-	})
-
-	return a
-}
-
 // Only on main table
 function fillConsults()
 {
@@ -293,7 +218,6 @@ function fillConsults()
 
 function findOncallRow(rows, tlen, dateoncall)
 {
-	
 	var opdateth = dateoncall && dateoncall.thDate()
 
 	for (var i = 1; i < tlen; i++) {
@@ -455,4 +379,152 @@ function onChange()
 		}
 	}
 	return false
+}
+
+function addStaff(pointing)
+{
+	var	$AddStaff = $("#AddStaff"),
+		$pointing = $(pointing),
+		AddStaff = document.getElementById("AddStaff")
+
+   	AddStaff.style.display = "block";
+	var txt = "<table><tr><td>Date Oncall : " ;
+	txt += "<input type='text' id='sdate' name='date' size='10'</td>";
+	txt += "<td>Name : <input type='text' id='sname' name='name' size='10'></td>";
+	txt += "<td>Specialty : <select id='scbb' onchange=getCombo1(this)>";
+	for (var each=0; each<SPECIALTY.length; each++)
+	{
+		txt += "<option value="+SPECIALTY[each]+">"+SPECIALTY[each]+"</option> ";
+	}
+	txt += "</select></td></tr><br/><hr>";
+	txt += "<tr><td><button onClick=doadddata()>AddStaff</button></td>";
+	txt += "<td><button onClick=doupdatedata>UpdateStaff</button></td>";
+	txt += "<td><button onClick=dodeletedata>DeleteStaff</button>";
+	txt += "<button style='float: right' onClick=hideAddStaff()>Close</button></td>";
+	txt += "<input id='shidden' name='shidden' type='hidden' value='' </tr> <hr>";
+	txt += "<tr><th>Date Oncall</th> <th>Name</th> <th>Specialty</th></tr>";
+
+	for (each=0; each<gv.STAFF.length; each++)
+	{
+		getvalue = 'javascript:getval('+each+')';
+		txt += "<tr><td><a href='"+ getvalue +"'>"+gv.STAFF[each].dateoncall+"</a></td> <td>"
+			+ gv.STAFF[each].staffname +"</td> <td>"+ gv.STAFF[each].specialty +"</td></tr>";
+	}
+	txt += "</table>";
+	AddStaff.innerHTML = txt;
+	reposition($AddStaff, "left top", "left bottom", $pointing)
+	menustyle($AddStaff, $pointing)
+	clearEditcell()
+}
+
+function getCombo1(sel) {
+	var valuecbb = sel.options[sel.selectedIndex].value; 
+}  
+
+function getval(each){	
+	document.getElementById("sdate").value = gv.STAFF[each].dateoncall; 
+	document.getElementById("shidden").value = gv.STAFF[each].number;
+	document.getElementById("sname").value = gv.STAFF[each].staffname;
+	document.getElementById("scbb").value = gv.STAFF[each].specialty;
+}
+
+function doadddata()
+{
+	var sql = "",
+		vnum = Math.max.apply(gv.STAFF),
+		vdate = document.getElementById("sdate").value,
+		vname = document.getElementById("sname").value,
+		vspecialty = document.getElementById("scbb").value,
+		sql = "sqlReturnStaff="
+			+ "INSERT INTO staff (number,dateoncall,staffname,specialty) VALUES('"
+			+ vnum + "','"vdate + "','"+ vname  +"','"+ vspecialty
+			+ "');SELECT * FROM staff ORDER BY number;",
+
+		callbackdodata = function (response)
+		{
+			if (!response || response.indexOf("failed") !== -1){
+				alert("Failed! update database \n\n Restore previous value\n\n" + response)
+			}else{
+				alert("'"+ vdate.value +"' is added")
+				LoadLists();
+				hideAddStaff()
+			}
+		}
+
+	Ajax(MYSQLIPHP, sql, true, callbackdodata);
+}
+
+function doupdatedata()
+{
+	var r = confirm("ต้องการแก้ไขข้อมูลนี้หรือไม่");
+	if (r === true)
+	  {
+		var	vdate = document.getElementById("sdate"), 
+			vname = document.getElementById("sname"),
+			vspecialty = document.getElementById("scbb"),
+			vshidden = document.getElementById("shidden"),
+			flagstate = chkvalue(dbtable,vdate,vname,vspecialty),
+			sql = "sqlReturnSEOU=UPDATE "+ dbtable
+					  + " SET dateoncall='"+ vdate.value
+					  + "', name='"+ vname.value
+					  + "', specialty='" +vspecialty.value
+					  + "', editor="+ gv.user
+					  + "' WHERE dateoncall='"+ vshidden.value  +"' ;"
+
+		if (vshidden.value !== "") {
+			var callbackdodata = function (response) {
+				if (!response || response.indexOf("failed") !== -1){
+					alert("Failed! update database \n\n Restore previous value\n\n" + response)
+				}else{
+				//	alert("Success Insert Data")
+					LoadLists();
+					hideAddStaff()
+				}
+			}
+			Ajax(MYSQLIPHP, sql, true, callbackdodata);
+		 }///  if((flagstate==true)&&(vshidden.value!="")){
+		 else
+		 {
+			alert("ไม่ได้เลือกรายการที่ต้องการแก้ไข");
+		 }		
+	}else{
+		return false;
+	}//// end of alert confirm box
+} // end of function doupdatedata
+
+function dodeletedata()
+{
+	var r = confirm("ต้องการลบข้อมูลนี้หรือไม่");
+	if (r === true)
+	  {
+		if(dbtable === 'staff'){
+			vdate = document.getElementById("sdate"); 
+			vshidden = document.getElementById("shidden");
+			var sql ="sqlReturnSEOU=DELETE FROM "+ dbtable +" WHERE date='"+ vshidden.value  +"' ;"
+			sql += "&username="+ gv.user;
+		}
+		if(vshidden.value !== ""){	
+			var callbackdodata = function (response)
+			{
+				if (!response || response.indexOf("failed") !== -1){
+					alert("Failed! update database \n\n Restore previous value\n\n" + response)
+				}else{
+				//	alert("Success Insert Data")
+					LoadLists();
+					hideAddStaff()
+				}
+			}
+			Ajax(MYSQLIPHP, sql, true, callbackdodata);
+		}///  if((flagstate==true)&&(vshidden.value!="")){
+		else
+		{
+			alert("ไม่ได้เลือกรายการที่ต้องการลบ");
+		}
+	}else{
+	  return false;
+	}
+}
+
+function hideAddStaff() {
+	document.getElementById("AddStaff").style.display = "none"
 }

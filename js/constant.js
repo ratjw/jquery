@@ -1,35 +1,35 @@
 //Actually these are constants but older browsers do not support const
-var GETIPD		= "php/getipd.php";
-var GETNAMEHN	= "php/getnamehn.php";
-var MYSQLIPHP	= "php/mysqli.php";
-var SEARCH		= "php/search.php"
+var GETIPD	= "php/getipd.php",
+GETNAMEHN	= "php/getnamehn.php",
+MYSQLIPHP	= "php/mysqli.php",
+SEARCH		= "php/search.php",
 
 //tbl, queuetbl
-var OPDATE		= 0;
-var ROOM		= 1;
-var CASENUM		= 2;
-var STAFFNAME	= 3;
-var HN			= 4;
-var NAME		= 5;
-var DIAGNOSIS	= 6;
-var TREATMENT	= 7;
-var CONTACT		= 8;
-var QN			= 9;
+OPDATE		= 0,
+ROOM		= 1,
+CASENUM		= 2,
+STAFFNAME	= 3,
+HN			= 4,
+NAME		= 5,
+DIAGNOSIS	= 6,
+TREATMENT	= 7,
+CONTACT		= 8,
+QN			= 9,
 
 //servicetbl
-var CASENUMSV	= 0;
-var HNSV		= 1;
-var NAMESV		= 2;
-var DIAGNOSISSV	= 3;
-var TREATMENTSV	= 4;
-var ADMISSIONSV	= 5;
-var FINALSV		= 6;
-var ADMITSV		= 7;
-var OPDATESV	= 8;
-var DISCHARGESV	= 9;
-var QNSV		= 10;
+CASENUMSV	= 0,
+HNSV		= 1,
+NAMESV		= 2,
+DIAGNOSISSV	= 3,
+TREATMENTSV	= 4,
+ADMISSIONSV	= 5,
+FINALSV		= 6,
+ADMITSV		= 7,
+OPDATESV	= 8,
+DISCHARGESV	= 9,
+QNSV		= 10,
 
-var ROWREPORT = {
+ROWREPORT = {
 	"Brain Tumor": 3,
 	"Brain Vascular": 4,
 	"CSF related": 5,
@@ -39,24 +39,36 @@ var ROWREPORT = {
 	"Radiosurgery": 10,
 	"Endovascular": 11,
 	"Conservative": 12
-}
-var COLUMNREPORT = {
+},
+COLUMNREPORT = {
 	"Staff": 1,
 	"Resident": 5,
 	"Major": 0,
 	"Minor": 2,
 	"Elective": 0,
 	"Emergency": 1
-}
+},
+SPECIALTY = [
+	"breast",
+	"cvt",
+	"general",
+	"hepatobiliary",
+	"neurosurgery",
+	"pediatrics",
+	"plastic",
+	"trauma",
+	"urology",
+	"vascular"
+],
 
 // NAMEOFDAYABBR for row color
 // NAMEOFDAYFULL for 1st column color
-var NAMEOFDAYABBR	= ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
-var NAMEOFDAYFULL	= ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
-var THAIMONTH		= ["มค.", "กพ.", "มีค.", "เมย.", "พค.", "มิย.", "กค.", "สค.", "กย.", "ตค.", "พย.", "ธค."];
-var LARGESTDATE		= "9999-12-31";
+NAMEOFDAYABBR	= ["sun", "mon", "tue", "wed", "thu", "fri", "sat"],
+NAMEOFDAYFULL	= ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"],
+THAIMONTH		= ["มค.", "กพ.", "มีค.", "เมย.", "พค.", "มิย.", "กค.", "สค.", "กย.", "ตค.", "พย.", "ธค."],
+LARGESTDATE		= "9999-12-31",
 
-var	BRAINDX = [
+BRAINDX = [
 	/\bbrain\b/i, /basal ganglion/i, /basal.*gg/i, /bgg/i, /cavernous/i, /cerebell/i, 
 	/cranio/i, /\bCNS\b/i, /convexity/i, /\bCPA?\b/i, /cliv[aou]/i,
 	/facial/i, /front/i, /fal[cx]/i, /\bF\-?P\b/i, /jugular/i,
@@ -65,45 +77,45 @@ var	BRAINDX = [
 	/tempor/i, /tentori/i, /thalam/i, /tonsil/i,
 	/transnasal/i, /transsphenoid/i, /transtent/i, /transventric/i, 
 	/tuberculum/i, /vestibul/i
-]
-var	BRAINTUMORDX = [
+],
+BRAINTUMORDX = [
 	/^((?!cavernoma|hematoma|osteo|zyg).)*oma/i, /\bCA\b/i, /CPA/i, /crani[oe]/i,
 	/Cushing/i, /cyst\b/i,
 	/DNET/i, /GBM/i, /lesion/i, /mass/i, /metas/i, /\bNFP?A\b/i,
 	/\bPA\b/i, /pituitary apoplexy/i, /tumou?r/i
-]
-var	BRAINVASCULARDX = [
+],
+BRAINVASCULARDX = [
 	/aneurysm/i, /AVM/i, /AVF/i, /basal ganglion|\bbg|cerebellar hemorrhage/i,
 	/cavernoma/i, /emboli/i, /ha?ematoma/i, /ha?emorrh/i, /HT?ICH/i,
 	/\bICH\b/i, /infarct/i, /ischemi/i, /(\bICA\b|MCA|VBA).*stenosis/i,
 	/\bM1\b|\bM2\b|MCA/i, /moya moya/i, /\bSAH\b/i, /stroke/i,
-]
-var	CSFDX = [
+],
+CSFDX = [
 	/\bHCP\b/i, /hydrocephalus/i, /\bNPH\b/i,
 	/(\bVP|\bLP|periton|subgaleal).*shunt/i,
 	/shunt obstruct/i, /shunt malfunction/i
-]
-var	TRAUMADX = [
+],
+TRAUMADX = [
 	/accident/i, /assault/i, /concussion/i, /contusion/i, /\bEDH\b/i,
 	/fall/i, /Fx|fracture/i, /injury/i, /lacerat/i,
 	/\bSDH\b/i, /subdural ha?ematoma/i, /trauma/i
-]
-var	SPINEDX = [
+],
+SPINEDX = [
 	/cervical/i, /cord/i, /\bCSM\b/i, /^((?!mri|mri|MRI?).)*[CTLS] ?[\d]/,
 	/degenerat/i, /dislocat/i,
 	/HNP/i, /lamin[eo]/i, /listhesis/i, /lumb[ao]/i,/lesion/i,
 	/mass/i, /metas/i,  /myel/i,
 	/odontoid/i, /sacr[ao]/i, /scoliosis/i, /spin[aeo]/i, /spondylo/i, /thora/i
-]
-var	ETCDX = [
+],
+ETCDX = [
 	/abscess/i, /chiari/i, /convulsi/i, /\bCTS\b/i, /cubital/i,
 	/dysplasia/i, /epilepsy/i, /hemifacial/i,
 	/\bMTS\b/i, /ocele/i, /parkinson/i,
 	/skull defect/i, /sclerosis/i, /seizure/i, /sural/i,
 	/\bTG?N\b/i, /trigemin/i, /tunnel/i
-]
+],
 
-var	BRAINTUMORDXNO = [
+BRAINTUMORDXNO = [
 	/aneurysm/i, /AVM/i, /AVF/i, /basal ganglion|\bbg|cerebellar hemorrhage/i,
 	/cavernoma/i, /emboli/i, /ha?ematoma/i, /HT?ICH/i,
 	/\bICH\b/i, /infarct/i, /ischemi/i, /(ICA|MCA|VBA).*stenosis/i,
@@ -127,8 +139,8 @@ var	BRAINTUMORDXNO = [
 	/\bMTS\b/i, /ocele/i, /parkinson/i,
 	/skull defect/i, /sclerosis/i, /sural/i,
 	/tunnel/i
-]
-var	BRAINVASCULARDXNO = [
+],
+BRAINVASCULARDXNO = [
 	/^((?!cavernoma|hematoma|osteo|zyg).)*oma/i, /\bCA\b/i, /CPA/i, /Cushing/i, /cyst\b/i,
 	/DNET/i, /GBM/i, /mass/i, /metas/i, /\bNFP?A\b/i,
 	/pituitary apoplexy/i, /tumou?r/i,
@@ -151,8 +163,8 @@ var	BRAINVASCULARDXNO = [
 	/\bMTS\b/i, /ocele/i, /parkinson/i,
 	/skull defect/i, /sclerosis/i, /seizure/i, /sural/i,
 	/\bTG?N\b/i, /trigemin/i, /tunnel/i
-]
-var	CSFDXNO = [
+],
+CSFDXNO = [
 	/cavernoma/i, /emboli/i, /ha?emorrh/i, /HT?ICH/i,
 	/\bICH\b/i, /infarct/i, /ischemi/i, /(ICA|MCA|VBA).*stenosis/i,
 	/M1|M2|MCA occlusion/i, /moya moya/i, /\bSAH\b/i, /stroke/i,
@@ -170,8 +182,8 @@ var	CSFDXNO = [
 	/\bMTS\b/i,
 	/sclerosis/i, /sural/i,
 	/\bTG?N\b/i, /tunnel/i
-]
-var	TRAUMADXNO = [
+],
+TRAUMADXNO = [
 	/^((?!cavernoma|hematoma|osteoma|zygoma).)*oma/i, /\bCA\b/i,
 	/CPA/i, /Cushing/i, /cyst\b/i,
 	/DNET/i, /GBM/i, /mass/i, /metas/i, /\bNFP?A\b/i,
@@ -196,8 +208,8 @@ var	TRAUMADXNO = [
 	/dysplasia/i, /hemifacial/i,
 	/\bMTS\b/i, /ocele/i, /sural/i,
 	/\bTG?N\b/i, /trigemin/i, /tunnel/i
-]
-var	SPINEDXNO = [
+],
+SPINEDXNO = [
 	/CPA/i, /crani[oe]/i, /Cushing/i,
 	/GBM/i, /\bNFP?A\b/i,
 	/\bPA\b/i, /pituitary apoplexy/i,
@@ -214,8 +226,8 @@ var	SPINEDXNO = [
 	/hemifacial/i,
 	/\bMTS\b/i, /sural/i,
 	/\bTG?N\b/i, /trigemin/i
-]
-var	ETCDXNO = [
+],
+ETCDXNO = [
 	/DNET/i, /GBM/i, /mass/i, /metas/i, /\bNFP?A\b/i,
 	/\bPA\b/i, /pituitary apoplexy/i, /tumou?r/i,
 
@@ -227,27 +239,27 @@ var	ETCDXNO = [
 
 	/HNP/i, /lamin[eo]/i, /listhesis/i, /lumb[ao]/i, /myel/i,
 	/odontoid/i, /sacr[ao]/i, /scoliosis/i, /spin[aeo]/i, /spondylo/i, /thora/i
-]
+],
 
-var	BRAINTUMORRX = [
+BRAINTUMORRX = [
 	/approa/i, /biopsy/i, /\bbx\b/i, /crani[oe]c?tomy/i, /\bETS\b/i, /trans.*remov/i,
 	/TSP/i, /TSS/i, /transnasal/i, /transsphenoid/i, /transventric/i, /tumou?r/i
-]
-var	BRAINVASCULARRX = [
+],
+BRAINVASCULARRX = [
 	/anast/i, /bypass/i, /(clot|hematoma).*(remov|irrigat|evacuat)/i,
 	/clamp/i, /clip/i, /crani[oe]c?tomy/i,
 	/EDAS/i, /EDAMS/i, /excision.*AVM|AVM.*excision/i,
 	/occlu/i, /thromb.*ectomy/i
-]
-var	CSFRX = [
+],
+CSFRX = [
 	/ETV/i, /EVD/i, /lumbar drain/i, /OMMAYA/i,
 	/Pudenz/i, /pressure.*valve/i, /Programmable/i,
 	/(\bV\-?P|\bL\-?P|periton|subgaleal).*shunt/i,
-]
-var	TRAUMARX = [
+],
+TRAUMARX = [
 	/debridement/i, /(clot|hematoma).*(remov|irrigat|evacuat)/i, /trauma/i
-]
-var	SPINERX = [
+],
+SPINERX = [
 	/ACDF/i, /ALIF/i, /biopsy/i, /\bbx\b/i, /cervical/i, /^((?!mri|MRI?).)*[CTLS][\d]/,
 	/corpectomy/i, /decompress/i, /Discectomy/i,
 	/\bESI\b/i, /fixation/i, /foraminotomy/i, /\bfusion/i, /kyphoplasty/i,
@@ -255,8 +267,8 @@ var	SPINERX = [
 	/PDS/i, /PLF/i, /PLIF/i, /remov/i, /sacr[ao]/i, /screw/i, /SNRB/i,
 	/thora/i, /TLIF/i, /transoral/i, /transforam/i, /tumou?r/i,
 	/vertebr/i, /untether/i
-]
-var	SPINEOP = [
+],
+SPINEOP = [
 	/ACDF/i, /ALIF/i, /biopsy/i, /\bbx\b/i, /block/i,
 	/corpectomy/i, /decompress/i, /Discectomy/i, /disc.*fx/i, /ectomy/,
 	/\bESI\b/i, /fixation/i, /foraminotomy/i, /\bfusion/i, /kyphoplasty/i,
@@ -264,8 +276,8 @@ var	SPINEOP = [
 	/PDS/i, /PLF/i, /PLIF/i, /remov/i, /sacr[ao]/i, /screw/i, /SNRB/i,
 	/TLIF/i, /transoral/i, /transforam/i,
 	/vertebr(oplasty|ectomy)\b/i, /untether/i
-]
-var ETCRX = [
+],
+ETCRX = [
 	/anast/i, /aspirat/i, /advance/i,
 	/biop/i, /block/i, /burr/i, /\bbx\b/i, /balloon/i, /cranioplasty/i,
 	/battery/i, /DBS/i, /grid/i, /MVD/i,
@@ -279,11 +291,11 @@ var ETCRX = [
 	/recons/i, /redo/i, /remov/i, /repa/i, /revis/i, /\bRF/i, /robot/i,
 	/scope/i, /stim/i, /suture/i,
 	/tracheos/i, /VNS/i
-]
-var	NOOPERATION = [
+],
+NOOPERATION = [
 	/adjust.*pressure/i, /advice.*surg[ery|ical]/i, /conservative/i, /observe/i, /\boff OR/
-]
-var BRAINTUMORRXNO = [
+],
+BRAINTUMORRXNO = [
 	/(clot|hematoma).*(remov|irrigat|evacuat)/i,
 	/clip/i, /EDAS/i, /EDAMS/i, /excision.*AVM|AVM.*excision/i,
 
@@ -302,8 +314,8 @@ var BRAINTUMORRXNO = [
 	/battery/i, /DBS/i, /decompressive.*craniectomy/i,
 	/grid/i, /irrigate/i, /lesionectomy/i, /MVD/i,
 	/untether/i, /VNS/i
-]
-var BRAINVASCULARRXNO = [
+],
+BRAINVASCULARRXNO = [
 	/biopsy/i, /\bbx\b/i, /tumou?r/i,
 	/TSP/i, /TSS/i, /transnasal/i, /transsphenoid/i, /transventric/i,
 
@@ -322,8 +334,8 @@ var BRAINVASCULARRXNO = [
 	/battery/i, /DBS/i,
 	/grid/i, /irrigate/i, /MVD/i,
 	/untether/i, /VNS/i
-]
-var CSFRXNO = [
+],
+CSFRXNO = [
 	/biopsy/i, /\bbx\b/i, /tumou?r.*remov/i,
 	/TSP/i, /TSS/i, /transnasal/i, /transsphenoid/i, /transventric/i,
 
@@ -338,8 +350,8 @@ var CSFRXNO = [
 	/battery/i, /DBS/i, /decompressive.*craniectomy/i, 
 	/grid/i, /irrigate/i, /lobectomy/i, /MVD/i,
 	/untether/i, /VNS/i
-]
-var TRAUMARXNO = [
+],
+TRAUMARXNO = [
 	/biopsy/i, /\bbx\b/i, /tumou?r/i,
 	/TSP/i, /TSS/i, /transnasal/i, /transsphenoid/i, /transventric/i,
 
@@ -355,8 +367,8 @@ var TRAUMARXNO = [
 
 	/battery/i, /DBS/i, /grid/i, /MVD/i,
 	/untether/i, /VNS/i
-]
-var SPINERXNO = [
+],
+SPINERXNO = [
 	/crani[oe]/i, /\bETS\b/i,
 	/TSP/i, /TSS/i, /transnasal/i, /transsphenoid/i, /transventric/i,
 
@@ -369,8 +381,8 @@ var SPINERXNO = [
 	/battery/i, /DBS/i, /decompressive.*craniectomy/i, 
 	/grid/i, /MVD/i, /cranioplasty/i,
 	/VNS/i
-]
-var ETCRXNO = [
+],
+ETCRXNO = [
 	/tumou?r.*(biopsy|\bbx\b|remov)/i, /craniot.*tumou?r|clot remov/i,
 	/TSP/i, /TSS/i, /transnasal/i, /transsphenoid/i, /transventric/i,
 
@@ -385,23 +397,23 @@ var ETCRXNO = [
 	/lamin[eo]/i, /lumbar drain/i, /MIDLIF/i, /OLIF/i, 
 	/PLF/i, /PLIF/i, /sacr[ao]/i, /SNRB/i,
 	/thora/i, /TLIF/i
-]
+],
 
-var	RADIOSURGERY = [
+RADIOSURGERY = [
 	/conformal radiotherapy/i, /CRT/i, /Cyber ?Knife/i,
 	/Gamma knife/i, /GKS/i, /Linac/i,
 	/radiosurgery/i, /\bRS\b/i,
 	/\bSRS\b/i, /\bSRT\b/i, /stereotactic radiotherapy/i,
 	/Tomotherapy/i
-]
-var	ENDOVASCULAR = [
+],
+ENDOVASCULAR = [
 	/\bcoil/i, /emboli[zs]/i, /\bendovasc/i, /\bintervention/i,
 	/\bstent/i, /\btransart/i, /\btransvenous/i
-]
+],
 
 //====================================================================================================
 
-var gv = {
+gv = {
 	BOOK: [],
 	CONSULT: [],
 	SERVICE: [],
