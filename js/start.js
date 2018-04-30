@@ -229,7 +229,7 @@ function findOncallRow(rows, tlen, dateoncall)
 
 function htmlwrap(staffname)
 {
-	return '<p style="color:#999999;font-size:14px">' + staffname + '</p>'
+	return '<p style="color:#999999;font-size:14px">Consult<br>' + staffname + '</p>'
 }
 
 function showStaffOnCall(opdate)

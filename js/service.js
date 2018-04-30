@@ -94,6 +94,7 @@ function sqlOneMonth(fromDate, toDate)
 		  + "WHERE opdate BETWEEN '" + fromDate + "' AND '" + toDate
 		  + "' AND deleted=0 "
 		  + "AND waitnum<>0 "
+		  + "AND hn "
 		  + "ORDER BY s.number,opdate,oproom,casenum,waitnum;";
 }
 
