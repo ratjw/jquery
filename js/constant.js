@@ -419,6 +419,7 @@ gv = {
 	SERVICE: [],
 	SERVE: [],
 	STAFF: [],
+	ONCALL: [],
 	user: "",
 	timestamp: "",
 	uploadWindow: null,

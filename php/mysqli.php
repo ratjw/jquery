@@ -46,20 +46,21 @@ require_once "book.php";
 
 function start($mysqli, $sql)
 {
+	$data = array();
 	$return = multiquery($mysqli, $sql);
-	if (gettype($return) === "string") {
+	if (is_string($return)) {
 		return $return;
 	} else {
 		$data = book($mysqli);
 		$data["STAFF"] = $return;
-		return json_encode($data);
+		return json_encode(getOncall($mysqli, $data));
 	}
 }
 
 function returnbook($mysqli, $sql)
 {
 	$return = multiquery($mysqli, $sql);
-	if (gettype($return) === "string") {
+	if (is_string($return)) {
 		return $return;
 	} else {
 		return json_encode(book($mysqli));
@@ -68,8 +69,9 @@ function returnbook($mysqli, $sql)
 
 function returnService($mysqli, $sql)
 {
+	$data = array();
 	$return = multiquery($mysqli, $sql);
-	if (gettype($return) === "string") {
+	if (is_string($return)) {
 		return $return;
 	} else {
 		$data = book($mysqli);
@@ -80,23 +82,44 @@ function returnService($mysqli, $sql)
 
 function returnStaff($mysqli, $sql)
 {
+	$data = array();
 	$return = multiquery($mysqli, $sql);
-	if (gettype($return) === "string") {
+	if (is_string($return)) {
 		return $return;
 	} else {
 		$data["STAFF"] = $return;
-		return json_encode($data);
+		return json_encode(getOncall($mysqli, $data));
 	}
 }
 
 function returnData($mysqli, $sql)
 {
 	$return = multiquery($mysqli, $sql);
-	if (gettype($return) === "string") {
+	if (is_string($return)) {
 		return $return;
 	} else {
 		return json_encode($return);
 	}
+}
+
+function getOncall($mysqli, $data)
+{
+//	$sql = "SELECT * FROM oncall WHERE dateoncall > CURDATE() ORDER BY dateoncall;";
+	$sql = "SELECT o.*
+			FROM oncall o
+			INNER JOIN
+				(SELECT dateoncall, MAX(edittime) AS MaxEditTime
+				FROM oncall
+				GROUP BY dateoncall) groupOncall 
+			ON o.dateoncall = groupOncall.dateoncall 
+			AND o.edittime = groupOncall.MaxEditTime
+			WHERE o.dateoncall > CURDATE()
+			ORDER BY o.dateoncall;"
+	$return = multiquery($mysqli, $sql);
+	if (is_array($return)) {
+		$data["ONCALL"] = $return;
+	}
+	return $data;
 }
 
 function multiquery($mysqli, $sql)
@@ -122,49 +145,4 @@ function multiquery($mysqli, $sql)
 	if ($mysqli->errno) {
 		return 'DBfailed first query ' . $sql . " \n" . $mysqli->error;
 	}
-}
-/*
-function setConsultant()
-{
-	var	todate = new Date().ISOdate(),
-
-	
-}
-
-function sqlNextOncall()
-{
-	var	nextSat = getNextDayOfWeek(new Date(), 6).ISOdate(),
-		sql = ""
-
-	gv.STAFF.forEach(function(staff, i) {
-		if (staff.active) {
-			sql += "UPDATE staff SET "
-				+ "dateoncall='" + nextSat.nextdays(7*(staff.number-1))
-				+ "' WHERE number=" + staff.number
-		}
-	})
-
-	return sql
-}
-
-function getStaffOncall()
-{
-	var a = []
-
-	gv.STAFF.forEach(function(staff, i) {
-		a.push(staff.staffname)
-	})
-
-	return a
-}
-
-function getDateOncall()
-{
-	var a = []
-
-	gv.STAFF.forEach(function(staff, i) {
-		a.push(staff.dateoncall)
-	})
-
-	return a
 }
