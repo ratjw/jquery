@@ -65,7 +65,7 @@ function startEditable()
 			oncall = /<p[^>]*>.*<\/p>/.test(target.outerHTML)
 
 		if (oncall) {
-			if (window.event.ctrlKey) {
+			if (event.ctrlKey) {
 				exchangeOncall(target)
 			} else {
 				addStaff(target)
@@ -129,7 +129,8 @@ function startEditable()
 		return
 	})
 
-	// click on parent of submenu
+	// click on parent of submenu = no action
+	// except click on #search => search()
 	$('#menu li:not(#search) > div').on("click", function(event){
 		if ($(this).siblings('ul').length > 0){
 			event.preventDefault()
@@ -211,16 +212,11 @@ function fillConsults()
 		slen = staffoncall.length,
 		nextrow = 1,
 		index = 0,
-//		startoncall = staffoncall.map(function(staff) {
-//			return staff.startoncall
-//		}).filter(Boolean).reduce(function(a, b) {
-//			return a > b ? a : b
-//		}),
 		start = staffoncall.filter(function(staff) {
 			return staff.startoncall
 		}).reduce(function(a, b) {
 			return a.startoncall > b.startoncall ? a : b
-		}),
+		}, 0),
 		dateoncall = start.startoncall,
 		staffstart = start.staffname,
 		oncallRow = {}
@@ -242,8 +238,8 @@ function fillConsults()
 		if (oncallRow && !oncallRow.cells[QN].innerHTML) {
 			oncallRow.cells[STAFFNAME].innerHTML = htmlwrap(staffoncall[index].staffname)
 		}
-		dateoncall = dateoncall.nextdays(7)
 		nextrow = oncallRow.rowIndex + 1
+		dateoncall = dateoncall.nextdays(7)
 		index = (index + 1) % slen
 	}
 
@@ -278,12 +274,8 @@ function htmlwrap(staffname)
 
 function showStaffOnCall(opdate)
 {
-	var i = gv.STAFF.length
-
-	while (i--) {
-		if (gv.STAFF[i].dateoncall === opdate) {
-			return htmlwrap(gv.STAFF[i].staffname)
-		}
+	if (new Date(opdate).getDay() === 6) {
+		fillConsults()
 	}
 }
 
@@ -312,17 +304,17 @@ function exchangeOncall(pointing)
 function changeOncall(pointing, opdate, staffname)
 {
 	var sql = "sqlReturnStaff=INSERT INTO oncall "
-			+ "(dateoncall, staffname) "
+			+ "(dateoncall, staffname, edittime) "
 			+ "VALUES ('" + opdate
 			+ "','" + staffname
-			+ "');"
+			+ "',NOW());SELECT * FROM staff ORDER BY number;"
 
 	Ajax(MYSQLIPHP, sql, callbackchangeOncall);
 
 	function callbackchangeOncall(response)
 	{
-		if (/อ./.test(response)) {
-			pointing.innerHTML = staffname
+		if (/ONCALL/.test(response)) {
+			pointing.innerHTML = htmlwrap(staffname)
 			gv.ONCALL = JSON.parse(response)
 		} else {
 			Alert("changeOncall", response)
@@ -439,6 +431,58 @@ function addStaff(pointing)
 	clearEditcell()
 }
 
+function addStaffTable()
+{
+	var	getvalue = "",
+		txt = "<table>"
+			+ "<tr>"
+			+ "<td colspan='3' style='padding:8px;text-align:right'>"
+			+ "<button onClick=hideAddStaff()>Close</button></td>"
+			+ "</tr>"
+			+ "<tr>"
+			+ "<td>Name : <input type='text' id='sname' name='name' size='10'></td>"
+			+ "<td>Specialty : <select id='scbb'><option style='display:none'></option>"
+
+	for (var each=0; each<SPECIALTY.length; each++)
+	{
+		txt += "<option value=" + SPECIALTY[each] + ">" + SPECIALTY[each] + "</option>"
+	}
+		txt += "</select></td>"
+			+ "<td>Date Oncall : <input type='text' id='sdate' name='date' size='10'</td>"
+			+ "</tr>"
+			+ "<tr>"
+			+ "<td><button onClick=doadddata()>AddStaff</button></td>"
+			+ "<td><button onClick=doupdatedata()>UpdateStaff</button></td>"
+			+ "<td><button onClick=dodeletedata()>DeleteStaff</button></td>"
+			+ "<input id='shidden' name='shidden' type='hidden' value=''"
+			+ "</tr>"
+			+ "<tr>"
+			+ "<th>Name</th> <th>Specialty</th> <th>Date Oncall</th>"
+			+ "</tr>"
+
+	for (var each=0; each<gv.STAFF.length; each++)
+	{
+		getvalue = 'javascript:getval('+each+')'
+		txt += "<tr><td>"
+			+ "<a href='"+ getvalue +"'>"
+			+ gv.STAFF[each].staffname
+			+ "</a></td> <td>"
+			+ gv.STAFF[each].specialty
+			+ "</td> <td>"
+			+ (gv.STAFF[each].startoncall || "")
+			+ "</td></tr>"
+	}
+
+	return	txt + "</table>"
+}	
+
+function getval(each){	
+	document.getElementById("sdate").value = gv.STAFF[each].startoncall; 
+	document.getElementById("shidden").value = gv.STAFF[each].number;
+	document.getElementById("sname").value = gv.STAFF[each].staffname;
+	document.getElementById("scbb").value = gv.STAFF[each].specialty;
+}
+
 function doadddata()
 {
 	var	vnum = Math.max.apply(Math, gv.STAFF.map(function(staff) { return staff.number })) + 1,
@@ -446,9 +490,8 @@ function doadddata()
 		vname = document.getElementById("sname").value,
 		vspecialty = document.getElementById("scbb").value,
 		sql = "sqlReturnStaff="
-			+ "INSERT INTO staff (number,dateoncall,staffname,specialty) VALUES("
-			+ vnum + "," + (vdate ? ("'" + vdate + "'") : null )
-			+ ",'"+ vname  +"','"+ vspecialty
+			+ "INSERT INTO staff (number,staffname,specialty) VALUES("
+			+ vnum + ",'"+ vname  +"','"+ vspecialty
 			+ "');SELECT * FROM staff ORDER BY number;"
 
 	Ajax(MYSQLIPHP, sql, callbackdodata);
@@ -462,7 +505,6 @@ function doupdatedata()
 			vspecialty = document.getElementById("scbb").value,
 			vshidden = document.getElementById("shidden").value,
 			sql = "sqlReturnStaff=UPDATE staff SET "
-				+ "dateoncall=" + (vdate ? ("'" + vdate + "'") : null )
 				+ ", staffname='" + vname
 				+ "', specialty='" + vspecialty
 				+ "' WHERE number=" + vshidden
@@ -483,50 +525,12 @@ function dodeletedata()
 	}
 }
 
-function addStaffTable()
-{
-	var	getvalue = "",
-		txt = "<table><tr><td>Date Oncall : "
-			+ "<input type='text' id='sdate' name='date' size='10'</td>"
-			+ "<td>Name : <input type='text' id='sname' name='name' size='10'></td>"
-			+ "<td>Specialty : <select id='scbb'>"
-			+ "<option style='display:none'></option>"
-
-	for (var each=0; each<SPECIALTY.length; each++)
-	{
-		txt += "<option value=" + SPECIALTY[each] + ">" + SPECIALTY[each] + "</option>"
-	}
-		txt += "</select></td></tr><br/><hr>"
-			+ "<tr><td><button onClick=doadddata()>AddStaff</button></td>"
-			+ "<td><button onClick=doupdatedata()>UpdateStaff</button></td>"
-			+ "<td><button onClick=dodeletedata()>DeleteStaff</button>"
-			+ "<button style='float: right' onClick=hideAddStaff()>Close</button></td>"
-			+ "<input id='shidden' name='shidden' type='hidden' value='' </tr> <hr>"
-			+ "<tr><th>Date Oncall</th> <th>Name</th> <th>Specialty</th></tr>"
-
-	for (var each=0; each<gv.STAFF.length; each++)
-	{
-		getvalue = 'javascript:getval('+each+')'
-		txt += "<tr><td><a href='"+ getvalue +"'>"+gv.STAFF[each].dateoncall+"</a></td> <td>"
-			+ gv.STAFF[each].staffname +"</td> <td>"+ gv.STAFF[each].specialty +"</td></tr>"
-	}
-
-	return	txt + "</table>"
-}	
-
-function getval(each){	
-	document.getElementById("sdate").value = gv.STAFF[each].dateoncall; 
-	document.getElementById("shidden").value = gv.STAFF[each].number;
-	document.getElementById("sname").value = gv.STAFF[each].staffname;
-	document.getElementById("scbb").value = gv.STAFF[each].specialty;
-}
-
 function callbackdodata(response)
 {
 	if (/STAFF/.test(response)) {
 		showAddStaff(response)
 	} else {
-		alert("Failed! update database \n\n" + response)
+		alert(response)
 	}
 }
 
@@ -541,49 +545,3 @@ function showAddStaff(response)
 function hideAddStaff() {
 	document.getElementById("AddStaff").style.display = "none"
 }
-/*
-function setConsultant()
-{
-	var	todate = new Date().ISOdate(),
-
-	
-}
-
-function sqlNextOncall()
-{
-	var	nextSat = getNextDayOfWeek(new Date(), 6).ISOdate(),
-		sql = ""
-
-	gv.STAFF.forEach(function(staff, i) {
-		if (staff.active) {
-			sql += "UPDATE staff SET "
-				+ "dateoncall='" + nextSat.nextdays(7*(staff.number-1))
-				+ "' WHERE number=" + staff.number
-		}
-	})
-
-	return sql
-}
-
-function getStaffOncall()
-{
-	var a = []
-
-	gv.STAFF.forEach(function(staff, i) {
-		a.push(staff.staffname)
-	})
-
-	return a
-}
-
-function getDateOncall()
-{
-	var a = []
-
-	gv.STAFF.forEach(function(staff, i) {
-		a.push(staff.dateoncall)
-	})
-
-	return a
-}
-*/

@@ -104,7 +104,6 @@ function returnData($mysqli, $sql)
 
 function getOncall($mysqli, $data)
 {
-//	$sql = "SELECT * FROM oncall WHERE dateoncall > CURDATE() ORDER BY dateoncall;";
 	$sql = "SELECT o.*
 			FROM oncall o
 			INNER JOIN
@@ -114,7 +113,7 @@ function getOncall($mysqli, $data)
 			ON o.dateoncall = groupOncall.dateoncall 
 			AND o.edittime = groupOncall.MaxEditTime
 			WHERE o.dateoncall > CURDATE()
-			ORDER BY o.dateoncall;"
+			ORDER BY o.dateoncall;";
 	$return = multiquery($mysqli, $sql);
 	if (is_array($return)) {
 		$data["ONCALL"] = $return;
