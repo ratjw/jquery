@@ -215,7 +215,11 @@ table#queuetbl {
 #editcell,
 #undelete,
 #txtArea1,
-#AddStaff {
+#dialogStaff,
+#staffcells,
+#dialogHoliday,
+#holidaycells,
+#holidayinput {
 	display: none;
 }
 
@@ -268,8 +272,14 @@ tr#moveto td {
 	border-left: 0px;
 }
 
+#setstaff,
 #allsaved { width: 140px; background-color: skyblue; }
+
+#setholiday,
 #alldeleted { background-color: pink; }
+
+#addholiday,
+.delholiday { float: right; }
 
 .leftButton { margin-right: 80px !important; }
 .deleted,
@@ -618,19 +628,6 @@ td.Radiosurgery.Endovascular {
 	color: blue;
 	font-weight: bold;
 }
-
-#AddStaff {
-	width: 600px;
-	height: 400px;
-	font-size: 16px;
-	background-color: snow;
-	padding-left: 25px;
-	border: 1px solid skyblue;
-	overflow-Y: scroll;
-}
-
-#AddStaff th,
-#AddStaff td { font-size: 16px; }
 
 #divRecord {
 	width: 550px;

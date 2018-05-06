@@ -394,6 +394,145 @@ function addColor($this, bookqOpdate)
 	// So LARGESTDATE cases are !samePrevDate, thus has alternate colors
 }
 
+function setHoliday()
+{
+	var $dialogHoliday = $("#dialogHoliday"),
+		$holidaytbl = $("#holidaytbl")
+
+	$holidaytbl.find('tr').slice(1).remove()
+
+	$.each( gv.HOLIDAY, function(i) {
+		$('#holidaycells tr').clone()
+			.appendTo($holidaytbl.find('tbody'))
+				.filldataHoliday(this)
+		$holidaytbl.find("tbody tr:last td:last")
+				.append($(".delholiday").eq(0).clone())
+	});
+	$dialogHoliday.dialog({
+		title: "Holiday",
+		closeOnEscape: true,
+		modal: true,
+		show: 200,
+		hide: 200,
+		width: 500,
+		height: 600,
+		buttons: [{
+			text: "Save",
+			click: function () {
+				saveHoliday()
+				$dialogHoliday.dialog("close")
+			}
+		}],
+		close: function() {
+			if ($holidaytbl.find("tr:has('input')").length) {
+				holidayInputBack()
+			}
+		}
+	})
+}
+
+jQuery.fn.extend({
+	filldataHoliday : function(q) {
+		var	cells = this[0].cells,
+			data = [
+				putThdate(q.holiday),
+				q.dayname
+			]
+
+		dataforEachCell(cells, data)
+	}
+})
+
+jQuery.fn.extend({
+	fillblankHoliday : function() {
+		var	cells = this[0].cells,
+			data = [
+				"",
+				""
+			]
+
+		dataforEachCell(cells, data)
+	}
+})
+
+function addHoliday(that)
+{
+	var	$inputRow = $("#holidaytbl tr")
+
+	if ($inputRow.find("input").length) { return }
+
+	$(that).closest("table").find("tbody")
+		.append($("#holidayinput tr"))
+}
+
+function saveHoliday()
+{
+	var	vdateth = document.getElementById("holidaydate").value,
+		vdate = vdateth.numDate(),
+		vname = document.getElementById("holidayname").value,
+		rows = getTableRowsByDate(vdateth),
+
+		sql = "sqlReturnData="
+			+ "INSERT INTO holiday (holiday,dayname) VALUES('"
+			+ vdate + "','"+ vname.replace(/\s+$/,'')
+			+ "');SELECT * FROM holiday ORDER BY holiday;"
+
+	Ajax(MYSQLIPHP, sql, callbackHoliday);
+
+	function callbackHoliday(response)
+	{
+		if (/\[{/.test(response)) {
+			gv.HOLIDAY = JSON.parse(response)
+			$(rows).each(function() {
+				this.cells[DIAGNOSIS].style.backgroundImage = holiday(vdate)
+			})
+		} else {
+			alert(response)
+		}
+	}
+}
+
+function delHoliday(that)
+{
+	if ($("#holidaytbl tr:has('input')").length) {
+		holidayInputBack()
+	} else {
+		var	$row = $(that).closest("tr"),
+			$cell = $row.find("td"),
+			vdateth = $cell[0].innerHTML,
+			vdate = vdateth.numDate(),
+			vname = $cell[1].innerHTML.replace(/<button.*$/, ""),
+			rows = getTableRowsByDate(vdateth),
+
+			sql = "sqlReturnData=DELETE FROM holiday WHERE "
+				+ "holiday='" + vdate
+				+ "' AND dayname='" + vname
+				+ "';SELECT * FROM holiday ORDER BY holiday;"
+
+		Ajax(MYSQLIPHP, sql, callbackHoliday);
+
+		function callbackHoliday(response)
+		{
+			if (/\[{/.test(response)) {
+				gv.HOLIDAY = JSON.parse(response)
+				$(rows).each(function() {
+					this.cells[DIAGNOSIS].style.backgroundImage = ""
+				})
+				$row.remove()
+			} else {
+				alert(response)
+			}
+		}
+	}
+}
+
+function holidayInputBack()
+{
+	$("#holidaydate").val("")
+	$("#holidayname").val("")
+	$('#holidayinput tbody').append($inputRow)
+}
+
 function holiday(date)
 {
 	var HOLIDAY = {
@@ -410,22 +549,21 @@ function holiday(date)
 		"2019-07-16" : "url('css/pic/Asalha.png')",		//วันอาสาฬหบูชา
 		"2019-07-17" : "url('css/pic/Vassa.png')"		//วันเข้าพรรษา
 		}
-	var monthdate = date.substring(5)
-	var dayofweek = (new Date(date)).getDay()
-	var holidayname = ""
-	var Mon = (dayofweek === 1)
-	var Tue = (dayofweek === 2)
-	var Wed = (dayofweek === 3)
+	var	monthdate = date.substring(5),
+		dayofweek = (new Date(date)).getDay(),
+		holidayname = "",
+		Mon = (dayofweek === 1),
+		Tue = (dayofweek === 2),
+		Wed = (dayofweek === 3),
+		holiday = gv.HOLIDAY.find(function(day) {
+			return day.holiday === date
+		})
 
 	if (date === LARGESTDATE) { return }
-	for (var key in HOLIDAY) 
-	{
-		if (key === date)
-			return HOLIDAY[key]
-		if (key > date)
-			//Not a listed holiday. Neither a fixed nor a compensation holiday
-			break
+	if (holiday) {
+		return "url('css/pic/" + HOLIDAYPIC[holiday.dayname] + "')"
 	}
+
 	switch (monthdate)
 	{
 	case "12-31":

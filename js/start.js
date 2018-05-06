@@ -1,7 +1,7 @@
 
 function Start(userid)
 {
-	var sql = "start=SELECT * FROM staff ORDER BY number;"
+	var sql = "start="
 
 	Ajax(MYSQLIPHP, sql, loading);
 
@@ -50,6 +50,7 @@ function updateBOOK(response)
 	if (temp.SERVICE) { gv.SERVICE = temp.SERVICE }
 	if (temp.STAFF) { gv.STAFF = temp.STAFF }
 	if (temp.ONCALL) { gv.ONCALL = temp.ONCALL }
+	if (temp.HOLIDAY) { gv.HOLIDAY = temp.HOLIDAY }
 	if (temp.QTIME) { gv.timestamp = temp.QTIME }
 	// datetime of last fetching from server: $mysqli->query ("SELECT now();")
 }
@@ -60,16 +61,17 @@ function startEditable()
 	sortable()
 
 	$(document).contextmenu( function (event) {
-		event.preventDefault()
 		var	target = event.target,
 			oncall = /<p[^>]*>.*<\/p>/.test(target.outerHTML)
 
 		if (oncall) {
 			if (event.ctrlKey) {
 				exchangeOncall(target)
-			} else {
+			}
+			else if (event.altKey) {
 				addStaff(target)
 			}
+			event.preventDefault()
 		}
 	})
 
@@ -307,7 +309,7 @@ function changeOncall(pointing, opdate, staffname)
 			+ "(dateoncall, staffname, edittime) "
 			+ "VALUES ('" + opdate
 			+ "','" + staffname
-			+ "',NOW());SELECT * FROM staff ORDER BY number;"
+			+ "',NOW());"
 
 	Ajax(MYSQLIPHP, sql, callbackchangeOncall);
 
@@ -418,81 +420,77 @@ function onChange()
 	return false
 }
 
-function addStaff(pointing)
+function addStaff()
 {
-	var	$AddStaff = $("#AddStaff"),
-		$pointing = $(pointing),
-		AddStaff = document.getElementById("AddStaff")
+	var	scbb = document.getElementById("scbb"),
+		$dialogStaff = $("#dialogStaff"),
+		$stafftbl = $("#stafftbl")
 
-	AddStaff.innerHTML = addStaffTable()
-   	AddStaff.style.display = "block"
-	reposition($AddStaff, "left top", "left bottom", $pointing)
-	menustyle($AddStaff, $pointing)
-	clearEditcell()
+	for (var each=0; each<SPECIALTY.length; each++) {
+		scbb.innerHTML += "<option value=" + SPECIALTY[each]+ ">"
+						+ SPECIALTY[each] + "</option>"
+	}
+
+	clearval()
+	$stafftbl.find('tr').slice(3).remove()
+
+	$.each( gv.STAFF, function(i, item) {
+		$('#staffcells tr').clone()
+			.appendTo($stafftbl.find('tbody'))
+				.filldataStaff(i, item)
+	});
+
+	$dialogStaff.dialog({
+		title: "Subspecialty Staff",
+		closeOnEscape: true,
+		modal: true,
+		show: 200,
+		hide: 200,
+		width: 600,
+		height: 400
+	})
 }
 
-function addStaffTable()
-{
-	var	getvalue = "",
-		txt = "<table>"
-			+ "<tr>"
-			+ "<td colspan='3' style='padding:8px;text-align:right'>"
-			+ "<button onClick=hideAddStaff()>Close</button></td>"
-			+ "</tr>"
-			+ "<tr>"
-			+ "<td>Name : <input type='text' id='sname' name='name' size='10'></td>"
-			+ "<td>Specialty : <select id='scbb'><option style='display:none'></option>"
+jQuery.fn.extend({
+	filldataStaff : function(i, q) {
+		var	cells = this[0].cells,
+			data = [
+				"<a href=\"javascript:getval('" + i + "')\">"
+				+ q.staffname + "</a>",
+				q.specialty,
+				q.startoncall
+			]
 
-	for (var each=0; each<SPECIALTY.length; each++)
-	{
-		txt += "<option value=" + SPECIALTY[each] + ">" + SPECIALTY[each] + "</option>"
+		dataforEachCell(cells, data)
 	}
-		txt += "</select></td>"
-			+ "<td>Date Oncall : <input type='text' id='sdate' name='date' size='10'</td>"
-			+ "</tr>"
-			+ "<tr>"
-			+ "<td><button onClick=doadddata()>AddStaff</button></td>"
-			+ "<td><button onClick=doupdatedata()>UpdateStaff</button></td>"
-			+ "<td><button onClick=dodeletedata()>DeleteStaff</button></td>"
-			+ "<input id='shidden' name='shidden' type='hidden' value=''"
-			+ "</tr>"
-			+ "<tr>"
-			+ "<th>Name</th> <th>Specialty</th> <th>Date Oncall</th>"
-			+ "</tr>"
+})
 
-	for (var each=0; each<gv.STAFF.length; each++)
-	{
-		getvalue = 'javascript:getval('+each+')'
-		txt += "<tr><td>"
-			+ "<a href='"+ getvalue +"'>"
-			+ gv.STAFF[each].staffname
-			+ "</a></td> <td>"
-			+ gv.STAFF[each].specialty
-			+ "</td> <td>"
-			+ (gv.STAFF[each].startoncall || "")
-			+ "</td></tr>"
-	}
-
-	return	txt + "</table>"
-}	
-
-function getval(each){	
-	document.getElementById("sdate").value = gv.STAFF[each].startoncall; 
-	document.getElementById("shidden").value = gv.STAFF[each].number;
+function getval(each)
+{	
 	document.getElementById("sname").value = gv.STAFF[each].staffname;
 	document.getElementById("scbb").value = gv.STAFF[each].specialty;
+	document.getElementById("sdate").value = gv.STAFF[each].startoncall; 
+	document.getElementById("shidden").value = gv.STAFF[each].number;
+}
+
+function clearval()
+{	
+	document.getElementById("sname").value = ""
+	document.getElementById("scbb").value = ""
+	document.getElementById("sdate").value = ""
+	document.getElementById("shidden").value = ""
 }
 
 function doadddata()
 {
-	var	vnum = Math.max.apply(Math, gv.STAFF.map(function(staff) { return staff.number })) + 1,
-		vdate = document.getElementById("sdate").value,
-		vname = document.getElementById("sname").value,
+	var	vname = document.getElementById("sname").value,
 		vspecialty = document.getElementById("scbb").value,
+		vdate = document.getElementById("sdate").value,
+		vnum = Math.max.apply(Math, gv.STAFF.map(function(staff) { return staff.number })) + 1,
 		sql = "sqlReturnStaff="
 			+ "INSERT INTO staff (number,staffname,specialty) VALUES("
 			+ vnum + ",'"+ vname  +"','"+ vspecialty
-			+ "');SELECT * FROM staff ORDER BY number;"
+			+ "');"
 
 	Ajax(MYSQLIPHP, sql, callbackdodata);
 }
@@ -500,15 +498,15 @@ function doadddata()
 function doupdatedata()
 {
 	if (confirm("ต้องการแก้ไขข้อมูลนี้หรือไม่")) {
-		var	vdate = document.getElementById("sdate").value, 
-			vname = document.getElementById("sname").value,
+		var	vname = document.getElementById("sname").value,
 			vspecialty = document.getElementById("scbb").value,
+			vdate = document.getElementById("sdate").value, 
 			vshidden = document.getElementById("shidden").value,
 			sql = "sqlReturnStaff=UPDATE staff SET "
 				+ ", staffname='" + vname
 				+ "', specialty='" + vspecialty
 				+ "' WHERE number=" + vshidden
-				+ ";SELECT * FROM staff ORDER BY number;"
+				+ ";"
 
 		Ajax(MYSQLIPHP, sql, callbackdodata);
 	}
@@ -518,8 +516,7 @@ function dodeletedata()
 {
 	if (confirm("ต้องการลบข้อมูลนี้หรือไม่")) {
 		var	vshidden = document.getElementById("shidden").value,
-			sql = "sqlReturnStaff=DELETE FROM staff WHERE number=" + vshidden
-				+ ";SELECT * FROM staff ORDER BY number;"
+			sql = "sqlReturnStaff=DELETE FROM staff WHERE number=" + vshidden + ";"
 
 		Ajax(MYSQLIPHP, sql, callbackdodata);
 	}
@@ -539,9 +536,5 @@ function showAddStaff(response)
 	gv.STAFF = JSON.parse(response).STAFF
 	setStafflist()
 	fillConsults()
-	$("#AddStaff").html(addStaffTable())
-}
-
-function hideAddStaff() {
-	document.getElementById("AddStaff").style.display = "none"
+	addStaff()
 }

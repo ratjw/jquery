@@ -68,6 +68,19 @@ NAMEOFDAYFULL	= ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday
 THAIMONTH		= ["มค.", "กพ.", "มีค.", "เมย.", "พค.", "มิย.", "กค.", "สค.", "กย.", "ตค.", "พย.", "ธค."],
 LARGESTDATE		= "9999-12-31",
 
+HOLIDAYPIC = {
+	วันมาฆบูชา: "Magha.png",
+	ชดเชยวันมาฆบูชา: "Maghasub.png",
+	วันพืชมงคล: "Ploughing.png",
+	ชดเชยวันพืชมงคล: "Ploughingsub.png",
+	วันวิสาขบูชา: "Vesak.png",
+	ชดเชยวันวิสาขบูชา: "Vesaksub.png",
+	วันอาสาฬหบูชา: "Asalha.png",
+	ชดเชยวันอาสาฬหบูชา: "Asalhasub.png",
+	วันเข้าพรรษา: "Vassa.png",
+	ชดเชยวันเข้าพรรษา: "Vassasub.png"
+},
+
 BRAINDX = [
 	/\bbrain\b/i, /basal ganglion/i, /basal.*gg/i, /bgg/i, /cavernous/i, /cerebell/i, 
 	/cranio/i, /\bCNS\b/i, /convexity/i, /\bCPA?\b/i, /cliv[aou]/i,
@@ -420,6 +433,7 @@ gv = {
 	SERVE: [],
 	STAFF: [],
 	ONCALL: [],
+	HOLIDAY: [],
 	user: "",
 	timestamp: "",
 	uploadWindow: null,

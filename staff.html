@@ -486,6 +486,82 @@
   </tbody>
 </table>
 
+<div id="dialogStaff">
+  <table id="stafftbl">
+  <thead>
+	<tr>
+	 <td>Name : <input type="text" id="sname" size="10">
+	 </td>
+	 <td>Specialty : <select id="scbb"><option style="display:none"></option>
+		</select>
+	 </td>
+	 <td>Date Oncall : <input type="text" id="sdate" size="10">
+	 </td>
+	 <input id="shidden" type="hidden">
+	</tr>
+	<tr>
+	<td><button onClick=doadddata()>AddStaff</button></td>
+	<td><button onClick=doupdatedata()>UpdateStaff</button></td>
+	<td><button onClick=dodeletedata()>DeleteStaff</button></td>
+	</tr>
+   <tr>
+	<th>Staff</th>
+	<th>Specialty</th>
+	<th>Start Date Oncall</th>
+   </tr>
+  </thead>
+  <tbody>
+  </tbody>
+  </table>
+</div>
+
+<table id="staffcells">
+  <tbody>
+   <tr>
+    <td data-title="Staff"></td>
+    <td data-title="Specialty"></td>
+    <td data-title="Start Date Oncall"></td>
+   </tr>
+  </tbody>
+</table>
+
+<div id="dialogHoliday">
+  <table id="holidaytbl">
+  <thead>
+   <tr>
+	<th>Date</th>
+	<th>Holiday Name
+	 <button id="addholiday" onClick=addHoliday(this)>+</button>
+	</th>
+   </tr>
+  </thead>
+  <tbody>
+  </tbody>
+  </table>
+</div>
+
+<table id="holidaycells">
+  <tbody>
+	<tr>
+	 <td data-title="Date"></td>
+	 <td data-title="Holiday Name"></td>
+	</tr>
+	<button class="delholiday" onClick=delHoliday(this)>-</button>
+  </tbody>
+</table>
+
+<table id="holidayinput">
+  <tbody>
+	<tr>
+	 <td><input type="text" id="holidaydate"></td>
+	 <td>
+	  <input type="text" id="holidayname">
+	  <button class="delholiday" onClick=delHoliday(this)>-</button>
+	 </td>
+	</tr>
+  </tbody>
+</table>
+
 <div id="dialogMoveCase">
   <table id="movetbl">
   <tbody>
@@ -506,7 +582,7 @@
     <li id="postpone"><div></div></li>
    </ul>
   </li>
-  <li id="changedate"><div>เปลี่ยนย้าย วัน/ลำดับ</div></li>
+  <li id="changedate"><div>Move</div></li>
   <li id="history"><div>ประวัติการแก้ไข</div></li>
   <li id="itemdel"><div>Delete</div>
    <ul>
@@ -522,11 +598,16 @@
    </ul>
   </li>
   <li id="readme"><div>Readme</div></li>
+  <li id="setting"><div>Setting</div>
+   <ul>
+    <li id="setstaff"><div>Staff Setting</div></li>
+    <li id="setholiday"><div>Holiday Setting</div></li>
+   </ul>
+  </li>
 </ul>
 
 <ul id="stafflist"></ul>
 <ul id="oncallList"></ul>
-<div id="AddStaff"></div>
 
 <div id="editcell" contenteditable="true"></div>
 

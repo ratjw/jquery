@@ -69,6 +69,12 @@ function mainMenu(pointing)
 				case "alldeleted":
 					deletedCases()
 					break
+				case "setstaff":
+					addStaff(pointing)
+					break
+				case "setholiday":
+					setHoliday()
+					break
 				case "readme":
 					readme()
 					break

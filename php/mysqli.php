@@ -47,14 +47,11 @@ require_once "book.php";
 function start($mysqli, $sql)
 {
 	$data = array();
-	$return = multiquery($mysqli, $sql);
-	if (is_string($return)) {
-		return $return;
-	} else {
-		$data = book($mysqli);
-		$data["STAFF"] = $return;
-		return json_encode(getOncall($mysqli, $data));
-	}
+	$data = book($mysqli);
+	$data["STAFF"] = getStaff($mysqli);
+	$data["ONCALL"] = getOncall($mysqli);
+	$data["HOLIDAY"] = getHoliday($mysqli);
+	return json_encode($data);
 }
 
 function returnbook($mysqli, $sql)
@@ -87,8 +84,9 @@ function returnStaff($mysqli, $sql)
 	if (is_string($return)) {
 		return $return;
 	} else {
-		$data["STAFF"] = $return;
-		return json_encode(getOncall($mysqli, $data));
+		$data["STAFF"] = getStaff($mysqli);
+		$data["ONCALL"] = getOncall($mysqli);
+		return json_encode($data);
 	}
 }
 
@@ -102,7 +100,13 @@ function returnData($mysqli, $sql)
 	}
 }
 
-function getOncall($mysqli, $data)
+function getStaff($mysqli)
+{
+	$sql = "SELECT * FROM staff ORDER BY number;";
+	return multiquery($mysqli, $sql);
+}
+
+function getOncall($mysqli)
 {
 	$sql = "SELECT o.*
 			FROM oncall o
@@ -114,11 +118,13 @@ function getOncall($mysqli, $data)
 			AND o.edittime = groupOncall.MaxEditTime
 			WHERE o.dateoncall > CURDATE()
 			ORDER BY o.dateoncall;";
-	$return = multiquery($mysqli, $sql);
-	if (is_array($return)) {
-		$data["ONCALL"] = $return;
-	}
-	return $data;
+	return multiquery($mysqli, $sql);
+}
+
+function getHoliday($mysqli)
+{
+	$sql = "SELECT * FROM holiday ORDER BY holiday;";
+	return multiquery($mysqli, $sql);
 }
 
 function multiquery($mysqli, $sql)
@@ -127,7 +133,7 @@ function multiquery($mysqli, $sql)
 	$data = array();
 	if ($mysqli->multi_query(urldecode($sql))) {
 		do {
-			// This will be skipped when no result, but no error (success query INSERT, UPDATE)
+			// This will be skipped when no result, but no error (success INSERT, UPDATE)
 			if ($result = $mysqli->store_result()) {
 				while ($rowi = $result->fetch_assoc()) {
 					$data[] = $rowi;
