@@ -396,8 +396,11 @@ function addColor($this, bookqOpdate)
 
 function setHoliday()
 {
-	var $dialogHoliday = $("#dialogHoliday"),
-		$holidaytbl = $("#holidaytbl")
+	var	$dialogHoliday = $("#dialogHoliday"),
+		$holidaytbl = $("#holidaytbl"),
+		thisyear = new Date().getFullYear(),
+		selectedYear = thisyear,
+		BuddhistYear = Number(selectedYear) + 543
 
 	$holidaytbl.find('tr').slice(1).remove()
 
@@ -424,10 +427,41 @@ function setHoliday()
 			}
 		}],
 		close: function() {
-			if ($holidaytbl.find("tr:has('input')").length) {
-				holidayInputBack()
+			var	$inputRow = $("#holidaytbl tr:has('input')")
+
+			if ($inputRow.length) {
+				holidayInputBack($inputRow)
 			}
 		}
+	})
+	$("#holidaydate").datepicker({
+		altField: $("#holidaydateth"),
+		altFormat: "yy-mm-dd",
+		autoSize: true,
+		dateFormat: "dd MM yy",
+		monthNames: [ "มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", 
+					  "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม" ],
+		beforeShow: function (input, inst) {
+			console.log(input)
+			console.log(inst)
+			inst.drawYear = 1
+		}//,
+//		yearSuffix: "<span class='ui-datepicker-year custom-datepicker-year'>"
+//					+ BuddhistYear + "</span>",
+//		onChangeMonthYear: function (year, month, inst) {
+//			selectedYear = year,
+//			BuddhistYear = Number(selectedYear) + 543
+//			inst.settings.yearSuffix = "<span class='custom-datepicker-year'>" + BuddhistYear + "</span>"
+//		}
+	})
+	$("#holidaydate").change(function() {
+		this.value = this.value.slice(0, -4) + BuddhistYear
+//		var	date = this.value.slice(0, -4),
+//			year = Number(this.value.slice(-4))
+
+//		if (year - thisyear < 100) {
+//			this.value = this.value.slice(0, -4) + (year + 543)
+//		}
 	})
 }
 
@@ -443,23 +477,12 @@ jQuery.fn.extend({
 	}
 })
 
-jQuery.fn.extend({
-	fillblankHoliday : function() {
-		var	cells = this[0].cells,
-			data = [
-				"",
-				""
-			]
-
-		dataforEachCell(cells, data)
-	}
-})
-
 function addHoliday(that)
 {
-	var	$inputRow = $("#holidaytbl tr")
+	var	$row = $("#holidaytbl tr")
 
-	if ($inputRow.find("input").length) { return }
+	// already has an <input> row
+	if ($row.find("input").length) { return }
 
 	$(that).closest("table").find("tbody")
 		.append($("#holidayinput tr"))
@@ -494,11 +517,12 @@ function saveHoliday()
 
 function delHoliday(that)
 {
-	if ($("#holidaytbl tr:has('input')").length) {
-		holidayInputBack()
+	var	$row = $(that).closest("tr")
+
+	if ($row.find("input").length) {
+		holidayInputBack($row)
 	} else {
-		var	$row = $(that).closest("tr"),
-			$cell = $row.find("td"),
+		var	$cell = $row.find("td"),
 			vdateth = $cell[0].innerHTML,
 			vdate = vdateth.numDate(),
 			vname = $cell[1].innerHTML.replace(/<button.*$/, ""),
@@ -526,7 +550,7 @@ function delHoliday(that)
 	}
 }
 
-function holidayInputBack()
+function holidayInputBack($inputRow)
 {
 	$("#holidaydate").val("")
 	$("#holidayname").val("")
