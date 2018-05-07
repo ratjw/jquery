@@ -224,7 +224,7 @@ function fillConsults()
 		oncallRow = {}
 
 	// find staff to start
-	while ((staffoncall[index].staffname !== staffstart) && (index < slen)) {
+	while ((index < slen) && (staffoncall[index].staffname !== staffstart)) {
 		index++
 	}
 
@@ -237,7 +237,7 @@ function fillConsults()
 	index = index % slen
 	while (dateoncall <= lastopdate) {
 		oncallRow = findOncallRow(rows, nextrow, tlen, dateoncall)
-		if (oncallRow && !oncallRow.cells[QN].innerHTML) {
+		if (oncallRow && !oncallRow.cells[HN].innerHTML) {
 			oncallRow.cells[STAFFNAME].innerHTML = htmlwrap(staffoncall[index].staffname)
 		}
 		nextrow = oncallRow.rowIndex + 1
@@ -250,7 +250,7 @@ function fillConsults()
 		dateoncall = oncall.dateoncall
 		if (dateoncall > today) {
 			oncallRow = findOncallRow(rows, nextrow, tlen, dateoncall)
-			if (oncallRow && !oncallRow.cells[QN].innerHTML) {
+			if (oncallRow && !oncallRow.cells[HN].innerHTML) {
 				oncallRow.cells[STAFFNAME].innerHTML = htmlwrap(oncall.staffname)
 			}
 			nextrow = oncallRow.rowIndex + 1

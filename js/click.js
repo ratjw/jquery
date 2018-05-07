@@ -1025,7 +1025,7 @@ function createEditcell(pointing)
 	var $pointing = $(pointing)
 	var height = $pointing.height() + "px"
 	var width = $pointing.width() + "px"
-	var context = getText($pointing)
+	var context = getText($pointing).replace(/Consult.*$/, "")
 
 	editcellData($editcell, pointing, context)
 	$editcell.html(context)
