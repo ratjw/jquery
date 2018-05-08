@@ -1,11 +1,17 @@
 
 function serviceReview()
 {
+	var	$dialogService = $("#dialogService"),
+		$monthpicker = $("#monthpicker"),
+		$monthstart = $("#monthstart"),
+		selectedYear = new Date().getFullYear(),
+		BuddhistYear = Number(selectedYear) + 543
+
 	$("#servicehead").hide()
 	$("#servicetbl").hide()
 	$("#exportService").hide()
 	$("#reportService").hide()
-	$("#dialogService").dialog({
+	$dialogService.dialog({
 		title: "Service Neurosurgery",
 		closeOnEscape: true,
 		modal: true,
@@ -13,24 +19,26 @@ function serviceReview()
 		height: window.innerHeight * 95 / 100
 	})
 
-	$("#monthpicker").show()
-	$("#monthpicker").datepicker( {
-		altField: $("#monthstart"),
+	$monthpicker.show()
+	$monthpicker.datepicker({
+		altField: $monthstart,
 		altFormat: "yy-mm-dd",
 		autoSize: true,
 		dateFormat: "MM yy",
 		monthNames: [ "มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", 
 					  "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม" ],
+		yearSuffix: new Date().getFullYear() +  543,
 		onChangeMonthYear: function (year, month, inst) {
 			$(this).datepicker("setDate", new Date(inst.selectedYear, inst.selectedMonth, 1))
+			inst.settings.yearSuffix = inst.selectedYear + 543
 		},
 		beforeShow: function (input, obj) {
 			$(".ui-datepicker-calendar").hide()
 		}
 	}).datepicker("setDate", new Date(new Date().getFullYear(), new Date().getMonth(), 1))
 
-	$("#dialogService").off("click").on("click", ".ui-datepicker-title", function() {
-		entireMonth($("#monthstart").val())
+	$dialogService.off("click").on("click", ".ui-datepicker-title", function() {
+		entireMonth($monthstart.val())
 	})
 }
 
@@ -41,7 +49,9 @@ function entireMonth(fromDate)
 		$monthpicker = $("#monthpicker"),
 		$exportService = $("#exportService"),
 		$reportService = $("#reportService"),
-		title = "Service Neurosurgery เดือน " + $monthpicker.val()
+		inputval = $monthpicker.val(),
+		titledate = inputval.slice(0, -4) + (Number(inputval.slice(-4)) + 543),
+		title = "Service Neurosurgery เดือน " + titledate
 
 	// show month name before change $monthpicker.val to last date of this month
 	$("#dialogService").dialog({

@@ -220,13 +220,11 @@ table#queuetbl {
 #dialogHoliday,
 #holidaycells,
 #holidayinput,
-#holidaydateth {
+#holidaydateth,
+.ui-datepicker-year {
 	display: none;
 }
 
-.ui-datepicker-year:not(.custom-datepicker-year) {
-    display:none;
-}
 #dialogInput { font-size: 14px; overflow: hidden; }
 #dialogInput span { width:50px }
 #dialogInput input[name=others] { width:450px }

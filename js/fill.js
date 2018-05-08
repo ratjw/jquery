@@ -397,10 +397,7 @@ function addColor($this, bookqOpdate)
 function setHoliday()
 {
 	var	$dialogHoliday = $("#dialogHoliday"),
-		$holidaytbl = $("#holidaytbl"),
-		thisyear = new Date().getFullYear(),
-		selectedYear = thisyear,
-		BuddhistYear = Number(selectedYear) + 543
+		$holidaytbl = $("#holidaytbl")
 
 	$holidaytbl.find('tr').slice(1).remove()
 
@@ -441,27 +438,22 @@ function setHoliday()
 		dateFormat: "dd MM yy",
 		monthNames: [ "มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", 
 					  "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม" ],
+		yearSuffix: new Date().getFullYear() +  543,
 		beforeShow: function (input, inst) {
-			console.log(input)
-			console.log(inst)
-			inst.drawYear = 1
-		}//,
-//		yearSuffix: "<span class='ui-datepicker-year custom-datepicker-year'>"
-//					+ BuddhistYear + "</span>",
-//		onChangeMonthYear: function (year, month, inst) {
-//			selectedYear = year,
-//			BuddhistYear = Number(selectedYear) + 543
-//			inst.settings.yearSuffix = "<span class='custom-datepicker-year'>" + BuddhistYear + "</span>"
-//		}
-	})
-	$("#holidaydate").change(function() {
-		this.value = this.value.slice(0, -4) + BuddhistYear
-//		var	date = this.value.slice(0, -4),
-//			year = Number(this.value.slice(-4))
-
-//		if (year - thisyear < 100) {
-//			this.value = this.value.slice(0, -4) + (year + 543)
-//		}
+			if (inst.selectedYear) {
+				$(this).datepicker("setDate",
+					new Date(inst.currentYear, inst.currentMonth, inst.currentDay))
+			}
+		},
+		onChangeMonthYear: function (year, month, inst) {
+			$(this).datepicker("setDate",
+				new Date(inst.selectedYear, inst.selectedMonth, inst.selectedDay))
+			inst.settings.yearSuffix = inst.selectedYear + 543
+			$("#holidaydate").val(input.slice(0, -4) + (inst.selectedYear + 543))
+		},
+		onSelect: function (input, inst) {
+			$("#holidaydate").val(input.slice(0, -4) + (inst.selectedYear + 543))
+		}
 	})
 }
 
