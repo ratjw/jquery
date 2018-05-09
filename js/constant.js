@@ -68,17 +68,17 @@ NAMEOFDAYFULL	= ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday
 THAIMONTH		= ["มค.", "กพ.", "มีค.", "เมย.", "พค.", "มิย.", "กค.", "สค.", "กย.", "ตค.", "พย.", "ธค."],
 LARGESTDATE		= "9999-12-31",
 
-HOLIDAYPIC = {
-	วันมาฆบูชา: "Magha.png",
-	ชดเชยวันมาฆบูชา: "Maghasub.png",
-	วันพืชมงคล: "Ploughing.png",
-	ชดเชยวันพืชมงคล: "Ploughingsub.png",
-	วันวิสาขบูชา: "Vesak.png",
-	ชดเชยวันวิสาขบูชา: "Vesaksub.png",
-	วันอาสาฬหบูชา: "Asalha.png",
-	ชดเชยวันอาสาฬหบูชา: "Asalhasub.png",
-	วันเข้าพรรษา: "Vassa.png",
-	ชดเชยวันเข้าพรรษา: "Vassasub.png"
+HOLIDAYENGTHAI = {
+	"Magha": "วันมาฆบูชา",
+	"Maghasub": "ชดเชยวันมาฆบูชา",
+	"Ploughing": "วันพืชมงคล",
+	"Ploughingsub": "ชดเชยวันพืชมงคล",
+	"Vesak": "วันวิสาขบูชา",
+	"Vesaksub": "ชดเชยวันวิสาขบูชา",
+	"Asalha": "วันอาสาฬหบูชา",
+	"Asalhasub": "ชดเชยวันอาสาฬหบูชา",
+	"Vassa": "วันเข้าพรรษา",
+	"Vassasub": "ชดเชยวันเข้าพรรษา"
 },
 
 BRAINDX = [

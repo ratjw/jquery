@@ -397,7 +397,8 @@ function addColor($this, bookqOpdate)
 function setHoliday()
 {
 	var	$dialogHoliday = $("#dialogHoliday"),
-		$holidaytbl = $("#holidaytbl")
+		$holidaytbl = $("#holidaytbl"),
+		$holidayth = $("#holidayth")
 
 	$holidaytbl.find('tr').slice(1).remove()
 
@@ -431,28 +432,37 @@ function setHoliday()
 			}
 		}
 	})
-	$("#holidaydate").datepicker({
-		altField: $("#holidaydateth"),
-		altFormat: "yy-mm-dd",
+	$holidayth.datepicker({
 		autoSize: true,
-		dateFormat: "dd MM yy",
+		dateFormat: "dd M yy",
 		monthNames: [ "มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", 
 					  "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม" ],
+		// Short names will be used in getTableRowsByDate to filter opdateth
+		monthNamesShort: THAIMONTH,
 		yearSuffix: new Date().getFullYear() +  543,
 		beforeShow: function (input, inst) {
 			if (inst.selectedYear) {
+				// prevent using Buddhist year from <input>
 				$(this).datepicker("setDate",
 					new Date(inst.currentYear, inst.currentMonth, inst.currentDay))
+			} else {
+				$(this).datepicker("setDate", new Date())
 			}
 		},
 		onChangeMonthYear: function (year, month, inst) {
 			$(this).datepicker("setDate",
 				new Date(inst.selectedYear, inst.selectedMonth, inst.selectedDay))
 			inst.settings.yearSuffix = inst.selectedYear + 543
-			$("#holidaydate").val(input.slice(0, -4) + (inst.selectedYear + 543))
+			$holidayth.val($holidayth.val().slice(0, -4) + (inst.selectedYear + 543))
 		},
 		onSelect: function (input, inst) {
-			$("#holidaydate").val(input.slice(0, -4) + (inst.selectedYear + 543))
+			$holidayth.val(input.slice(0, -4) + (inst.selectedYear + 543))
+		}
+	})
+	$holidayth.click(function() {
+		if ($holidayth.val()) {
+			$holidayth.val($holidayth.val().slice(0, -4)
+				+ (Number($holidayth.val().slice(-4)) + 543))
 		}
 	})
 }
@@ -462,7 +472,7 @@ jQuery.fn.extend({
 		var	cells = this[0].cells,
 			data = [
 				putThdate(q.holiday),
-				q.dayname
+				HOLIDAYENGTHAI[q.dayname]
 			]
 
 		dataforEachCell(cells, data)
@@ -482,14 +492,14 @@ function addHoliday(that)
 
 function saveHoliday()
 {
-	var	vdateth = document.getElementById("holidaydate").value,
+	var	vdateth = document.getElementById("holidayth").value,
 		vdate = vdateth.numDate(),
 		vname = document.getElementById("holidayname").value,
 		rows = getTableRowsByDate(vdateth),
 
 		sql = "sqlReturnData="
 			+ "INSERT INTO holiday (holiday,dayname) VALUES('"
-			+ vdate + "','"+ vname.replace(/\s+$/,'')
+			+ vdate + "','"+ vname
 			+ "');SELECT * FROM holiday ORDER BY holiday;"
 
 	Ajax(MYSQLIPHP, sql, callbackHoliday);
@@ -544,7 +554,7 @@ function delHoliday(that)
 
 function holidayInputBack($inputRow)
 {
-	$("#holidaydate").val("")
+	$("#holidayth").val("")
 	$("#holidayname").val("")
 	$('#holidayinput tbody').append($inputRow)
 }
@@ -577,7 +587,7 @@ function holiday(date)
 
 	if (date === LARGESTDATE) { return }
 	if (holiday) {
-		return "url('css/pic/" + HOLIDAYPIC[holiday.dayname] + "')"
+		return "url('css/pic/" + holiday.dayname + ".png')"
 	}
 
 	switch (monthdate)
