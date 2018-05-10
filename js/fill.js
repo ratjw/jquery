@@ -437,7 +437,7 @@ function setHoliday()
 		dateFormat: "dd M yy",
 		monthNames: [ "มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", 
 					  "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม" ],
-		// Short names will be used in getTableRowsByDate to filter opdateth
+		// use Short names to be consistent with the month converted by numDate()
 		monthNamesShort: THAIMONTH,
 		yearSuffix: new Date().getFullYear() +  543,
 		beforeShow: function (input, inst) {
@@ -448,6 +448,11 @@ function setHoliday()
 			} else {
 				$(this).datepicker("setDate", new Date())
 			}
+			$holidayth.one("click", function() {
+				if (input.value) {
+					$holidayth.val(input.value.slice(0, -4) + (inst.selectedYear + 543))
+				}
+			})
 		},
 		onChangeMonthYear: function (year, month, inst) {
 			$(this).datepicker("setDate",
@@ -459,12 +464,6 @@ function setHoliday()
 			$holidayth.val(input.slice(0, -4) + (inst.selectedYear + 543))
 		}
 	})
-	$holidayth.click(function() {
-		if ($holidayth.val()) {
-			$holidayth.val($holidayth.val().slice(0, -4)
-				+ (Number($holidayth.val().slice(-4)) + 543))
-		}
-	})
 }
 
 jQuery.fn.extend({
@@ -472,7 +471,7 @@ jQuery.fn.extend({
 		var	cells = this[0].cells,
 			data = [
 				putThdate(q.holiday),
-				HOLIDAYENGTHAI[q.dayname]
+				HOLIDAYENGTHAI[q.dayname] || ""
 			]
 
 		dataforEachCell(cells, data)
@@ -501,6 +500,8 @@ function saveHoliday()
 			+ "INSERT INTO holiday (holiday,dayname) VALUES('"
 			+ vdate + "','"+ vname
 			+ "');SELECT * FROM holiday ORDER BY holiday;"
+
+	if (!vdate || !vname) { return }
 
 	Ajax(MYSQLIPHP, sql, callbackHoliday);
 
