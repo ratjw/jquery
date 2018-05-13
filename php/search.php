@@ -35,8 +35,10 @@ function getData($mysqli, $sql, $others)
 	// Create array for the names that are close to or match the search term
 	$qns = array();
 
-	$sql = $sql ? " WHERE $sql" : "";
-	$sql = "SELECT * FROM book$sql ORDER BY opdate;";
+	$sql = $sql ? "AND $sql" : "";
+	$sql = "SELECT * FROM book
+					 WHERE deleted=0 $sql
+					 ORDER BY opdate;";
 
 	if (!$result = $mysqli->query ($sql)) {
 		return $mysqli->error;
@@ -66,6 +68,8 @@ function getData($mysqli, $sql, $others)
 				foreach ($alldata as $onedata) {
 					$leven = levenshtein($find, $onedata);
 					if ($leven >= 0 && $leven < 4) {
+						$find = strtolower($find);
+						$onedata = strtolower($onedata);
 						similar_text($find, $onedata, $percent);
 						if ($percent > 70) {
 							$match = true;
