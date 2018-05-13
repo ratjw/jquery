@@ -238,7 +238,7 @@ function fillConsults()
 	while (dateoncall <= lastopdate) {
 		oncallRow = findOncallRow(rows, nextrow, tlen, dateoncall)
 		if (oncallRow && !oncallRow.cells[HN].innerHTML) {
-			oncallRow.cells[STAFFNAME].innerHTML = htmlwrap(staffoncall[index].staffname)
+			oncallRow.cells[STAFFNAME].innerHTML += htmlwrap(staffoncall[index].staffname)
 		}
 		nextrow = oncallRow.rowIndex + 1
 		dateoncall = dateoncall.nextdays(7)
@@ -251,7 +251,7 @@ function fillConsults()
 		if (dateoncall > today) {
 			oncallRow = findOncallRow(rows, nextrow, tlen, dateoncall)
 			if (oncallRow && !oncallRow.cells[HN].innerHTML) {
-				oncallRow.cells[STAFFNAME].innerHTML = htmlwrap(oncall.staffname)
+				oncallRow.cells[STAFFNAME].innerHTML += htmlwrap(oncall.staffname)
 			}
 			nextrow = oncallRow.rowIndex + 1
 		}

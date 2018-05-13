@@ -1010,10 +1010,13 @@ function createEditcellOpdate(pointing)
 	var height = $pointing.height() + "px"
 	var width = $pointing.width() + "px"
 	var context = ""
+
 	// to show Thai name of day in editcell div
-	context = window.getComputedStyle(pointing,':before').content
-	context = context.replace(/\"/g, "")
-	context = context + pointing.innerHTML
+	if (pointing.innerHTML) {
+		context = window.getComputedStyle(pointing,':before').content
+		context = context.replace(/\"/g, "")
+		context = context + pointing.innerHTML
+	}
 	$editcell.html(context)
 	editcellData($editcell, pointing, context)
 	showEditcell($editcell, $pointing, height, width)

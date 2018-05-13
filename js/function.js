@@ -246,15 +246,9 @@ function getBOOKrowByQN(book, qn)
 
 function getTableRowByQN(tableID, qn)
 {
-	var row
-	$.each($("#" + tableID + " tr:has(td)"), function() {
-		row = this
-		return (this.cells[QN].innerHTML !== qn);
-	})
-	if (row.cells[QN].innerHTML !== qn) {
-		return null
-	}
-	return row
+	return $("#" + tableID + " tr:has(td)").filter(function() {
+		return this.cells[QN].innerHTML === qn
+	})[0]
 }
 
 function getWaitingBOOKrowByHN(hn)
@@ -271,8 +265,8 @@ function getWaitingTableRowByHN(hn)
 	var	todate = new Date().ISOdate()
 
 	return $("#tbl tr:has(td)").filter(function() {
-		return $(this).find("td").eq(OPDATE).html().numDate() > todate
-				&& $(this).find("td").eq(HN).html() === hn
+		return this.cells[OPDATE].innerHTML.numDate() > todate
+			&& this.cells[HN].innerHTML === hn
 	})
 }
 
