@@ -618,22 +618,28 @@ function showFind(containerID, tableID, qn)
 		row = getTableRowByQN(tableID, qn),
 		scrolledTop = container.scrollTop,
 		offset = row && row.offsetTop,
-		height = container.offsetHeight
+		rowHeight = row && row.offsetHeight,
+		height = container.offsetHeight,
+		bottom = scrolledTop + height - rowHeight,
+		tlen = $("#" + tableID).length,
+		$container = $("#" + containerID)
 
 	$("#" + tableID + " tr.bordergroove").removeClass("bordergroove")
 	if (row) {
 		$(row).addClass("bordergroove")
 		if (containerID === "queuecontainer") {
-			height = height - 100
+			bottom = bottom - 100
 		}
 
-		if ((offset < scrolledTop) || (offset > (scrolledTop + height))) {
-			do {
-				row = row.previousSibling
-			}
-			while ((offset - row.offsetTop) < height / 2)
-
-			fakeScrollAnimate(containerID, tableID, scrolledTop, row.offsetTop)
+		if (offset < scrolledTop) {
+			$container.animate({
+				scrollTop: row.offsetTop
+			}, 500);
+		}
+		else if (offset > bottom) {
+			$container.animate({
+				scrollTop: row.offsetTop - bottom
+			}, 500);
 		}
 		return true
 	}

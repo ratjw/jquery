@@ -275,7 +275,7 @@ function getTableRowsByDate(opdateth)
 {
 	if (!opdateth) { return [] }
 	return $("#tbl tr").filter(function() {
-		return $(this).find("td").eq(OPDATE).html() === opdateth;
+		return this.cells[OPDATE].innerHTML === opdateth;
 	})
 }
 
@@ -310,11 +310,11 @@ function sameDateRoomTableQN(opdateth, room)
 	if (!room) { return [] }
 
 	var sameRoom = $('#tbl tr').filter(function() {
-		return $(this).find("td").eq(OPDATE).html() === opdateth
-			&& $(this).find("td").eq(ROOM).html() === room;
+		return this.cells[OPDATE].innerHTML === opdateth
+			&& this.cells[ROOM].innerHTML === room;
 	})
 	$.each(sameRoom, function(i) {
-		sameRoom[i] = $(this).find("td").eq(QN).html()
+		sameRoom[i] = this.cells[QN].innerHTML
 	})
 	return $.makeArray(sameRoom)
 }
