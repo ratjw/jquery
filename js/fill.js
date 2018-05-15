@@ -158,7 +158,7 @@ function refillOneDay(opdate)
 			filldata(this, $opdateTblRows[key])
 			staff = $opdateTblRows[key].cells[STAFFNAME].innerHTML
 			// on call <p style..>staffname</p>
-			if (staff && /<p[^>]*>([^<]*)<\/p>/.test(staff)) {
+			if (staff && /<p[^>]*>.*<\/p>/.test(staff)) {
 				$opdateTblRows[key].cells[STAFFNAME].innerHTML = ""
 			}
 		})
