@@ -400,15 +400,7 @@ function setHoliday()
 		$holidaytbl = $("#holidaytbl"),
 		$holidayth = $("#holidayth")
 
-	$holidaytbl.find('tr').slice(1).remove()
-
-	$.each( gv.HOLIDAY, function(i) {
-		$('#holidaycells tr').clone()
-			.appendTo($holidaytbl.find('tbody'))
-				.filldataHoliday(this)
-		$holidaytbl.find("tbody tr:last td:last")
-				.append($(".delholiday").eq(0).clone())
-	});
+	fillHoliday($holidaytbl)
 	$dialogHoliday.dialog({
 		title: "Holiday",
 		closeOnEscape: true,
@@ -421,7 +413,6 @@ function setHoliday()
 			text: "Save",
 			click: function () {
 				saveHoliday()
-				$dialogHoliday.dialog("close")
 			}
 		}],
 		close: function() {
@@ -466,12 +457,25 @@ function setHoliday()
 	})
 }
 
+function fillHoliday($holidaytbl)
+{
+	$holidaytbl.find('tr').slice(1).remove()
+
+	$.each( gv.HOLIDAY, function(i) {
+		$('#holidaycells tr').clone()
+			.appendTo($holidaytbl.find('tbody'))
+				.filldataHoliday(this)
+		$holidaytbl.find("tbody tr:last td:last")
+				.append($(".delholiday").eq(0).clone())
+	});
+}
+
 jQuery.fn.extend({
 	filldataHoliday : function(q) {
 		var	cells = this[0].cells,
 			data = [
 				putThdate(q.holiday),
-				HOLIDAYENGTHAI[q.dayname] || ""
+				getHolidayThai(q.dayname)
 			]
 
 		dataforEachCell(cells, data)
@@ -480,13 +484,20 @@ jQuery.fn.extend({
 
 function addHoliday(that)
 {
-	var	$row = $("#holidaytbl tr")
+	var	$dialogHoliday = $("#dialogHoliday"),
+		$holidaytbl = $("#holidaytbl")
 
 	// already has an <input> row
-	if ($row.find("input").length) { return }
+	if ($holidaytbl.find("input").length) { return }
 
-	$(that).closest("table").find("tbody")
+	$holidaytbl.find("tbody")
 		.append($("#holidayinput tr"))
+
+	var	append = $holidaytbl.height(),
+		height = $dialogHoliday.height()
+	if (append > height) {
+		$dialogHoliday.scrollTop(append - height)
+	}
 }
 
 function saveHoliday()
@@ -509,6 +520,8 @@ function saveHoliday()
 	{
 		if (/\[{/.test(response)) {
 			gv.HOLIDAY = JSON.parse(response)
+			holidayInputBack($("#holidayth").closest("tr"))
+			fillHoliday($("#holidaytbl"))
 			$(rows).each(function() {
 				this.cells[DIAGNOSIS].style.backgroundImage = holiday(vdate)
 			})
@@ -530,10 +543,11 @@ function delHoliday(that)
 			vdate = vdateth.numDate(),
 			vname = $cell[1].innerHTML.replace(/<button.*$/, ""),
 			rows = getTableRowsByDate(vdateth),
+			holidayEng = getHolidayEng(vname),
 
 			sql = "sqlReturnData=DELETE FROM holiday WHERE "
 				+ "holiday='" + vdate
-				+ "' AND dayname='" + vname
+				+ "' AND dayname='" + holidayEng
 				+ "';SELECT * FROM holiday ORDER BY holiday;"
 
 		Ajax(MYSQLIPHP, sql, callbackHoliday);
@@ -553,6 +567,25 @@ function delHoliday(that)
 	}
 }
 
+function getHolidayThai(dayname)
+{
+	var $holidayoption = $("#holidayname option"),
+		holidayThai = $holidayoption.filter(function() {
+			return this.value === dayname
+		})
+
+	return holidayThai[0].innerHTML || ""
+}
+
+function getHolidayEng(vname) {
+	var $holidayoption = $("#holidayname option"),
+		holidayEng = $holidayoption.filter(function() {
+			return this.innerHTML === vname
+		})
+
+	return holidayEng[0].value || ""
+}
+
 function holidayInputBack($inputRow)
 {
 	$("#holidayth").val("")
@@ -562,20 +595,6 @@ function holidayInputBack($inputRow)
 
 function holiday(date)
 {
-	var HOLIDAY = {
-		"2018-03-01" : "url('css/pic/Magha.png')",
-		"2018-04-12" : "url('css/pic/Songkransub.png')",
-		"2018-05-14" : "url('css/pic/Ploughing.png')",
-		"2018-05-29" : "url('css/pic/Vesak.png')",
-		"2018-07-27" : "url('css/pic/Asalha.png')",
-		"2018-07-28" : "url('css/pic/Vassa.png')",
-		"2019-02-19" : "url('css/pic/Magha.png')",		//วันมาฆบูชา
-		"2019-05-13" : "url('css/pic/Ploughing.png')",	//วันพืชมงคล
-		"2019-05-18" : "url('css/pic/Vesak.png')",		//วันวิสาขบูชา
-		"2019-05-20" : "url('css/pic/Vesaksub.png')",	//หยุดชดเชยวันวิสาขบูชา
-		"2019-07-16" : "url('css/pic/Asalha.png')",		//วันอาสาฬหบูชา
-		"2019-07-17" : "url('css/pic/Vassa.png')"		//วันเข้าพรรษา
-		}
 	var	monthdate = date.substring(5),
 		dayofweek = (new Date(date)).getDay(),
 		holidayname = "",
