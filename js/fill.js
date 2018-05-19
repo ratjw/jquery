@@ -459,6 +459,15 @@ function setHoliday()
 
 function fillHoliday($holidaytbl)
 {
+	var	holidaylist = '<option style="display:none"></option>'
+
+	$.each(HOLIDAYENGTHAI, function(key, val) {
+		holidaylist += '<option value="' + key
+					+ '">' + val
+					+ '</option>'
+	})
+	document.getElementById("holidayname").innerHTML = holidaylist
+
 	$holidaytbl.find('tr').slice(1).remove()
 
 	$.each( gv.HOLIDAY, function(i) {
@@ -475,7 +484,7 @@ jQuery.fn.extend({
 		var	cells = this[0].cells,
 			data = [
 				putThdate(q.holiday),
-				getHolidayThai(q.dayname)
+				HOLIDAYENGTHAI[q.dayname]
 			]
 
 		dataforEachCell(cells, data)
@@ -567,23 +576,10 @@ function delHoliday(that)
 	}
 }
 
-function getHolidayThai(dayname)
-{
-	var $holidayoption = $("#holidayname option"),
-		holidayThai = $holidayoption.filter(function() {
-			return this.value === dayname
-		})
-
-	return holidayThai[0].innerHTML || ""
-}
-
 function getHolidayEng(vname) {
-	var $holidayoption = $("#holidayname option"),
-		holidayEng = $holidayoption.filter(function() {
-			return this.innerHTML === vname
-		})
-
-	return holidayEng[0].value || ""
+	return Object.keys(HOLIDAYENGTHAI).find(function(key) {
+		return HOLIDAYENGTHAI[key] === vname
+	})
 }
 
 function holidayInputBack($inputRow)
