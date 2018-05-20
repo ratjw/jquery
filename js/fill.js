@@ -119,6 +119,7 @@ function refillOneDay(opdate)
 		tblRows = $opdateTblRows.length,
 		$cells, staff
 
+	// Occur when dragging the only row of a date to somewhere else
 	if (!tblRows) {
 		createThisdateTableRow(opdate, opdateth)
 		$opdateTblRows = getTableRowsByDate(opdateth)

@@ -11,7 +11,6 @@ function Start(userid)
 	$("#login").remove()
 	$("#logo").remove()
 	$("#wrapper").show()
-	$("#tblhead").show()
 }
 	
 function loading(response)

@@ -39,13 +39,15 @@ function namesix()
 {
 	var userid = document.getElementById("userid").value
 	if (/^\d{6}$/.test(userid)) {
-		$("#password").focus()
+		document.getElementById("password").focus()
 	}
 }
 </script>
 </HEAD>
 <BODY>
-<p id="logo" style="text-align:center;"><img width="170" height="150" src="css/pic/logoRama.png"></p>
+<p id="logo" style="text-align:center;">
+	<img width="170" height="150" src="css/pic/logoRama.png">
+</p>
 
 <?php $userid = $password = ""; ?>
 

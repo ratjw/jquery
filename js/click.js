@@ -1080,10 +1080,10 @@ function clearEditcell()
  
 function getText($cell)
 {
-	var TRIMHTML		= /^(\s*<[^>]*>)*\s*|\s*(<[^>]*>\s*)*$/g
+	var HTMLTRIM		= /^(\s*<[^>]*>)*\s*|\s*(<[^>]*>\s*)*$/g
 	var HTMLNOTBR		= /(<((?!br)[^>]+)>)/ig
 
-	return $cell.html()
-			.replace(TRIMHTML, '')
-			.replace(HTMLNOTBR, '')
+	return $cell.length && $cell.html()
+							.replace(HTMLTRIM, '')
+							.replace(HTMLNOTBR, '')
 }

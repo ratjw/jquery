@@ -138,24 +138,15 @@ function checkblank($row, opdate)
 // queuetbl has no equip icon
 function addnewrow(tableID, $row)
 {
-	if (tableID === "tbl") {
-		$row.clone()
-			.insertAfter($row)
-				.find("td").eq(HN).removeClass("pacs")
-				.parent().find("td").eq(NAME).removeClass("camera")
-				.parent().find("td").eq(OPDATE)
-					.nextAll()
-						.html("")
-	}
-	else if (tableID === "queuetbl") {
-		$row.clone()
-			.insertAfter($row)
-				.find("td").eq(HN).removeClass("pacs")
-				.parent().find("td").eq(NAME).removeClass("camera")
-				.parent().find("td").eq(STAFFNAME)
-					.nextAll()
-						.html("")
-	}
+	var keepcell = tableID === "tbl" ? OPDATE : STAFFNAME
+
+	$row.clone()
+		.insertAfter($row)
+			.find("td").eq(HN).removeClass("pacs")
+			.parent().find("td").eq(NAME).removeClass("camera")
+			.parent().find("td").eq(keepcell)
+				.nextAll()
+					.html("")
 }
 
 function postpone(tableID, $row, opdateth, opdate, staffname, qn)
