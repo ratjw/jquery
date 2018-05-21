@@ -692,7 +692,7 @@ function makeDialogFound($dialogFind, $findtbl, found, search)
 	})
 	$dialogFind.find('.camera').on("click", function() {
 		var patient = this.innerHTML
-		var hn = this.previousSibling.innerHTML
+		var hn = $(this).prev().html()
 
 		showUpload(hn)
 	})
