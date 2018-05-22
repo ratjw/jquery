@@ -63,8 +63,9 @@ SPECIALTY = [
 
 // NAMEOFDAYABBR for row color
 // NAMEOFDAYFULL for 1st column color
-NAMEOFDAYABBR	= ["sun", "mon", "tue", "wed", "thu", "fri", "sat"],
-NAMEOFDAYFULL	= ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"],
+NAMEOFDAYABBR	= ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+NAMEOFDAYFULL	= ["Sunday", "Monday", "Tuesday", "Wednesday",
+					"Thursday", "Friday", "Saturday"],
 THAIMONTH		= ["มค.", "กพ.", "มีค.", "เมย.", "พค.", "มิย.", "กค.", "สค.", "กย.", "ตค.", "พย.", "ธค."],
 LARGESTDATE		= "9999-12-31",
 

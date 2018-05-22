@@ -152,14 +152,6 @@ function getStart()
 	return new Date(start.getFullYear(), start.getMonth()-1, 1).ISOdate()
 }
 
-//get previous Sunday
-function getSunday(date)
-{
-	var today = date? new Date(date.replace(/-/g, "/")) : new Date();
-	today.setDate(today.getDate() - today.getDay());
-	return today.ISOdate();
-}
-
 //change Thai date from table to ISO date
 function getOpdate(date)
 {

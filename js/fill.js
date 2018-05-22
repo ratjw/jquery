@@ -222,8 +222,7 @@ function filldata(bookq, row)
 
 function staffqueue(staffname)
 {
-	var today = new Date(),
-		todate = today.ISOdate(),
+	var	todate = new Date().ISOdate(),
 		book = gv.BOOK,
 		consult = gv.CONSULT,
 		$queuetbl = $('#queuetbl'),
@@ -234,10 +233,9 @@ function staffqueue(staffname)
 	$('#titlename').html(staffname)
 	
 	//delete previous queuetbl lest it accumulates
-//	$('#queuetbl tr').slice(1).remove()
+	$('#queuetbl tr').slice(1).remove()
 	$queuetbl.find("tbody").html($("#tbl tbody tr:first").clone())
 
-	//Consults cases are not in BOOK
 	if (staffname === "Consults") {
 		if (consult.length === 0)
 			consult.push({"opdate" : todate})
@@ -246,8 +244,7 @@ function staffqueue(staffname)
 
 		fillall(consult, queuetbl, start, todate)
 
-		var queueh = $queuetbl.height()
-		$("#queuecontainer").scrollTop(queueh)
+		$("#queuecontainer").scrollTop($queuetbl.height())
 	} else {
 		$.each( book, function() {
 			if (( this.staffname === staffname ) && this.opdate >= todate) {

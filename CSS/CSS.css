@@ -307,29 +307,29 @@ tr.pasteDate {
 	border-bottom: solid 3px royalblue;
 }
 
-tr.sunday { background-color: #FFDDEE; }
-tr.monday { background-color: #FFFFE0; }
-tr.tuesday { background-color: #FFF0F9; }
-tr.wednesday { background-color: #EEFFEE; }
-tr.thursday { background-color: #FFF7EE; }
-tr.friday { background-color: #E7F7FF; }
-tr.saturday { background-color: #E7E7FF; }
+tr.Sunday { background-color: #FFDDEE; }
+tr.Monday { background-color: #FFFFE0; }
+tr.Tuesday { background-color: #FFF0F9; }
+tr.Wednesday { background-color: #EEFFEE; }
+tr.Thursday { background-color: #FFF7EE; }
+tr.Friday { background-color: #E7F7FF; }
+tr.Saturday { background-color: #E7E7FF; }
 
-td.sun { background-color: #F099BB; }
-td.mon { background-color: #F0F0BB; }
-td.tue { background-color: #F0CCEE; }
-td.wed { background-color: #CCF0CC; }
-td.thu { background-color: #F0DDBB; }
-td.fri { background-color: #BBDDF0; }
-td.sat { background-color: #CCBBF0; }
+td.Sun { background-color: #F099BB; }
+td.Mon { background-color: #F0F0BB; }
+td.Tue { background-color: #F0CCEE; }
+td.Wed { background-color: #CCF0CC; }
+td.Thu { background-color: #F0DDBB; }
+td.Fri { background-color: #BBDDF0; }
+td.Sat { background-color: #CCBBF0; }
 
-td.sun:before { content: "อาทิตย์ "; }
-td.mon:before { content: "จันทร์ "; }
-td.tue:before { content: "อังคาร "; }
-td.wed:before { content: "พุธ "; }
-td.thu:before { content: "พฤหัส "; }
-td.fri:before { content: "ศุกร์ "; }
-td.sat:before { content: "เสาร์ "; }
+td.Sun:before { content: "อาทิตย์ "; }
+td.Mon:before { content: "จันทร์ "; }
+td.Tue:before { content: "อังคาร "; }
+td.Wed:before { content: "พุธ "; }
+td.Thu:before { content: "พฤหัส "; }
+td.Fri:before { content: "ศุกร์ "; }
+td.Sat:before { content: "เสาร์ "; }
 
 td.pacs { background-image: url(pic/pacs.png); }
 td.pacs2 { background-image: url(pic/pacs2.png); }
@@ -773,13 +773,13 @@ td.Radiosurgery.Endovascular {
 		content: attr(data-title);
 	}
 
-	td.sun:before { font-size: 18px; top: 2px; content: "วันอาทิตย์ "; }
-	td.mon:before { font-size: 18px; top: 2px; content: "วันจันทร์ "; }
-	td.tue:before { font-size: 18px; top: 2px; content: "วันอังคาร "; }
-	td.wed:before { font-size: 18px; top: 2px; content: "วันพุธ "; }
-	td.thu:before { font-size: 18px; top: 2px; content: "วันพฤหัส "; }
-	td.fri:before { font-size: 18px; top: 2px; content: "วันศุกร์ "; }
-	td.sat:before { font-size: 18px; top: 2px; content: "วันเสาร์ "; }
+	td.Sun:before { font-size: 18px; top: 2px; content: "วันอาทิตย์ "; }
+	td.Mon:before { font-size: 18px; top: 2px; content: "วันจันทร์ "; }
+	td.Tue:before { font-size: 18px; top: 2px; content: "วันอังคาร "; }
+	td.Wed:before { font-size: 18px; top: 2px; content: "วันพุธ "; }
+	td.Thu:before { font-size: 18px; top: 2px; content: "วันพฤหัส "; }
+	td.Fri:before { font-size: 18px; top: 2px; content: "วันศุกร์ "; }
+	td.Sat:before { font-size: 18px; top: 2px; content: "วันเสาร์ "; }
 
 	#menu, #stafflist {
 	/*	position: relative;*/
