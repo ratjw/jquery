@@ -44,7 +44,7 @@ require_once "book.php";
 		echo returnStaff($mysqli, $_POST['sqlReturnStaff']);
 	}
 
-function start($mysqli, $sql)
+function start($mysqli)
 {
 	$data = array();
 	$data = book($mysqli);

@@ -76,7 +76,7 @@ function savePreviousCell()
 		pointed = $editcell.data("pointing"),
 		column = pointed && pointed.cellIndex
 
-	if (column === ROOM) {
+	if (column === OPROOM) {
 		newcontent = newcontent + $("#spin").val()
 	}
 	if (column === CASENUM) {
@@ -94,7 +94,7 @@ function savePreviousCell()
 	{
 		case OPDATE:
 			return false
-		case ROOM:
+		case OPROOM:
 			return saveRoom(pointed, newcontent)
 		case CASENUM:
 			return saveCaseNum(pointed, oldcontent, num, time)
@@ -102,7 +102,7 @@ function savePreviousCell()
 			return false
 		case HN:
 			return saveHN(pointed, "hn", newcontent)
-		case NAME:
+		case PATIENT:
 			return false
 		case DIAGNOSIS:
 			return saveContent(pointed, "diagnosis", newcontent)
@@ -120,7 +120,7 @@ function saveRoom(pointed, newcontent)
 		$cell = $row.find("td"),
 		opdateth = $cell.eq(OPDATE).html(),
 		opdate = getOpdate(opdateth),
-		oproom = $cell.eq(ROOM).html(),
+		oproom = $cell.eq(OPROOM).html(),
 		casenum = $cell.eq(CASENUM).html(),
 		qn = $cell.eq(QN).html(),
 		allSameDate = allOldCases = allNewCases = [],
@@ -177,7 +177,7 @@ function saveRoom(pointed, newcontent)
 //			scrolltoThisCase(qn)
 			// re-render editcell for keyin cell only
 			var newpoint = $('#editcell').data("pointing")
-			if (newpoint.cellIndex > NAME) {
+			if (newpoint.cellIndex > PATIENT) {
 				createEditcell(newpoint)
 			}
 		} else {
@@ -201,7 +201,7 @@ function saveCaseNum(pointed, oldcontent, num, time)
 	var $cells = $(pointed).closest("tr").find("td"),
 		opdateth = $cells.eq(OPDATE).html(),
 		opdate = getOpdate(opdateth),
-		oproom = $cells.eq(ROOM).html(),
+		oproom = $cells.eq(OPROOM).html(),
 		qn = $cells.eq(QN).html(),
 		numtime = oldcontent.split("<br>"),
 		oldnum = numtime[0],
@@ -247,7 +247,7 @@ function saveCaseNum(pointed, oldcontent, num, time)
 			scrolltoThisCase(qn)
 			// re-render editcell for keyin cell only
 			var newpoint = $('#editcell').data("pointing")
-			if (newpoint.cellIndex > NAME) {
+			if (newpoint.cellIndex > PATIENT) {
 				createEditcell(newpoint)
 			}
 		} else {
@@ -286,7 +286,7 @@ function saveContentQN(pointed, column, content)
 	var $cells = $row.children("td")
 	var opdateth = $cells.eq(OPDATE).html()
 	var opdate = getOpdate(opdateth)
-	var oproom = $cells.eq(ROOM).html()
+	var oproom = $cells.eq(OPROOM).html()
 	var casenum = $cells.eq(CASENUM).html()
 	var staffname = $cells.eq(STAFFNAME).html()
 	var qn = $cells.eq(QN).html()
@@ -342,7 +342,7 @@ function saveContentQN(pointed, column, content)
 			}
 			// re-render editcell for keyin cell only
 			var newpoint = $('#editcell').data("pointing")
-			if (newpoint.cellIndex > NAME) {
+			if (newpoint.cellIndex > PATIENT) {
 				createEditcell(newpoint)
 			}
 		} else {
@@ -361,7 +361,7 @@ function saveContentNoQN(pointed, column, content)
 	var $cells = $row.children("td")
 	var opdateth = $cells.eq(OPDATE).html()
 	var opdate = getOpdate(opdateth)
-	var oproom = $cells.eq(ROOM).html() || null
+	var oproom = $cells.eq(OPROOM).html() || null
 	var casenum = $cells.eq(CASENUM).html() || null
 	var staffname = $cells.eq(STAFFNAME).html()
 	var qn = $cells.eq(QN).html()
@@ -436,7 +436,7 @@ function saveHN(pointed, hn, content)
 		cellindex = pointed.cellIndex,
 		opdateth = $cells.eq(OPDATE).html(),
 		opdate = getOpdate(opdateth),
-		oproom = $cells.eq(ROOM).html(),
+		oproom = $cells.eq(OPROOM).html(),
 		casenum = $cells.eq(CASENUM).html(),
 		staffname = $cells.eq(STAFFNAME).html(),
 		qn = $cells.eq(QN).html(),
@@ -493,13 +493,13 @@ function saveHN(pointed, hn, content)
 			if (gv.isPACS) {
 				$cells.eq(HN).addClass("pacs")
 			}
-			$cells.eq(NAME).addClass("camera")
+			$cells.eq(PATIENT).addClass("camera")
 
 			// old case patient
-			$cells.eq(ROOM).html(bookq.oproom || "")
+			$cells.eq(OPROOM).html(bookq.oproom || "")
 			$cells.eq(CASENUM).html(putCasenumTime(bookq))
 			$cells.eq(STAFFNAME).html(bookq.staffname)
-			$cells.eq(NAME).html(putNameAge(bookq))
+			$cells.eq(PATIENT).html(putNameAge(bookq))
 			$cells.eq(DIAGNOSIS).html(bookq.diagnosis)
 			$cells.eq(TREATMENT).html(bookq.treatment)
 			$cells.eq(CONTACT).html(bookq.contact)
@@ -518,7 +518,7 @@ function saveHN(pointed, hn, content)
 			}
 			// re-render editcell for keyin cell only
 			var newpoint = $('#editcell').data("pointing")
-			if (newpoint.cellIndex > NAME) {
+			if (newpoint.cellIndex > PATIENT) {
 				createEditcell(newpoint)
 			}
 		} else {
@@ -544,8 +544,8 @@ function refillAnotherTableCell(tableID, cellindex, qn)
 
 	switch(cellindex)
 	{
-		case ROOM:
-			cells[ROOM].innerHTML = bookq.oproom || ""
+		case OPROOM:
+			cells[OPROOM].innerHTML = bookq.oproom || ""
 			break
 		case CASENUM:
 			cells[CASENUM].innerHTML = putCasenumTime(bookq)
@@ -555,7 +555,7 @@ function refillAnotherTableCell(tableID, cellindex, qn)
 			break
 		case HN:
 			cells[HN].innerHTML = bookq.hn
-			cells[NAME].innerHTML = putNameAge(bookq)
+			cells[PATIENT].innerHTML = putNameAge(bookq)
 			break
 		case DIAGNOSIS:
 			cells[DIAGNOSIS].innerHTML = bookq.diagnosis
@@ -576,7 +576,7 @@ function storePresentCell(evt, pointing)
 		case OPDATE:
 			getOPDATE(pointing)
 			break
-		case ROOM:
+		case OPROOM:
 			getROOM(pointing)
 			break
 		case CASENUM:
@@ -588,7 +588,7 @@ function storePresentCell(evt, pointing)
 		case HN:
 			getHN(evt, pointing)
 			break
-		case NAME:
+		case PATIENT:
 			getNAME(evt, pointing)
 			break
 		case DIAGNOSIS:

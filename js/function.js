@@ -303,7 +303,7 @@ function sameDateRoomTableQN(opdateth, room)
 
 	var sameRoom = $('#tbl tr').filter(function() {
 		return this.cells[OPDATE].innerHTML === opdateth
-			&& this.cells[ROOM].innerHTML === room;
+			&& this.cells[OPROOM].innerHTML === room;
 	})
 	$.each(sameRoom, function(i) {
 		sameRoom[i] = this.cells[QN].innerHTML
@@ -390,20 +390,38 @@ function calcWaitnum(thisOpdate, $prevrow, $nextrow)
 
 function decimalToTime(dec)
 {
-	var time = [],
-		integer = Math.floor(dec),
-		decimal = dec - integer,
-		time0 = "" + integer
+	var	integer = Math.floor(dec),
+		decimal = dec - integer
 
-	if (Number(dec) === 0) { return "" }
-	time[0] = (integer < 10) ? "0" + time0 : time0
-	if (/\.\d\d/.test(dec)) {
-		time[1] = dec.slice(-2)
-	} else {
-		time[1] = Math.round(decimal * 60)
-		time[1] = time[1]< 10 ? "0" + time[1] : String(time[1])
+	if (dec === 0) { return "" }
+
+	return [
+		(integer < 10) ? "0" + integer : "" + integer,
+		decimal ? String(decimal * 60) : "00"
+	].join(".")
+}
+
+function strtoTime(value)
+{
+	var	time = value.split("."),
+		hour = time[0],
+		min = time[1] || "0",
+		val = Number(value)
+
+	if (isNaN(val) || val < 0 || val > 24) {
+		Alert("เวลาผ่าตัด", "<br>รูปแบบเวลา ไม่ถูกต้อง<br><br>ใช้<br><br>ตั้งแต่ 00.00 - 08.30 - 09.00 ถึง 24.00")
+		return false
 	}
-	return time.join(".")
+	else if (val === 0) {
+		return ""
+	}
+	else {
+		min = min.substr(0, 2)
+		return [
+			(Number(hour) < 10) ? "0" + hour : "" + hour,
+			(Number(min) < 10) ? min + "0" : "" + min
+		].join(".")
+	}
 }
 
 function getNextDayOfWeek(date, dayOfWeek)
@@ -462,7 +480,7 @@ function rowDecoration(row, date)
 	cells[DIAGNOSIS].style.backgroundImage = holiday(date)
 }
 
-function findPrevcell(event, editable, pointing) 
+function findPrevcell(editable, pointing) 
 {
 	var $prevcell = $(pointing)
 	var column = $prevcell.index()
@@ -481,19 +499,18 @@ function findPrevcell(event, editable, pointing)
 			}
 			else
 			{	//#tbl tr:1 td:1
-				event.preventDefault()
 				return false
 			}
 		}
 		while (($prevcell.get(0).nodeName === "TH")
 			|| (!$prevcell.is(':visible')))
-				//invisible due to colspan
+				//invisible due to colspan in servicetbl
 	}
 
 	return $prevcell.get(0)
 }
 
-function findNextcell(event, editable, pointing) 
+function findNextcell(editable, pointing) 
 {
 	var $nextcell = $(pointing)
 	var column = $nextcell.index()
@@ -504,22 +521,22 @@ function findNextcell(event, editable, pointing)
 	}
 	else
 	{
-		do {//go to next row first editable
-			$nextcell = $($nextcell).parent().next("tr")
+		do {
+			$nextcell = $nextcell.parent().next("tr")
 										.children().eq(editable[0])
 			if (!($nextcell.length)) {
-				event.preventDefault()
 				return false
 			}
 		}
-		while ((!$nextcell.is(':visible'))	//invisible due to colspan
+				//invisible due to colspan in servicetbl
+		while ((!$nextcell.is(':visible'))
 			|| ($nextcell.get(0).nodeName === "TH"))	//TH row
 	}
 
 	return $nextcell.get(0)
 }
 
-function findNextRow(event, editable, pointing) 
+function findNextRow(editable, pointing) 
 {
 	var $nextcell = $(pointing)
 
@@ -527,7 +544,6 @@ function findNextRow(event, editable, pointing)
 	do {
 		$nextcell = $nextcell.parent().next("tr").children().eq(editable[0])
 		if (!($nextcell.length)) {
-			event.preventDefault()
 			return false	
 		}
 	}

@@ -24,7 +24,7 @@ function makehistory($row, hn, response)
 {
 	var tracing	= JSON.parse(response),
 		$historytbl = $('#historytbl'),
-		nam = $row.find("td")[NAME].innerHTML,
+		nam = $row.find("td")[PATIENT].innerHTML,
 		name = nam && nam.replace('<br>', ' '),
 		$dialogHistory = $("#dialogHistory")
 	
@@ -71,7 +71,7 @@ jQuery.fn.extend({
 			data = [
 				putThdate(q.opdate) || "",
 				q.oproom || "",
-				putCasenumTime(q),
+				q.casenum || "",
 				q.staffname,
 				q.diagnosis,
 				q.treatment,

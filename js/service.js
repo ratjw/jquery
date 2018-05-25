@@ -577,9 +577,9 @@ function Skeyin(event, keycode, pointing)
 	if (keycode === 9) {
 		savePreviousCellService()
 		if (event.shiftKey)
-			thiscell = findPrevcell(event, SEDITABLE, pointing)
+			thiscell = findPrevcell(SEDITABLE, pointing)
 		else
-			thiscell = findNextcell(event, SEDITABLE, pointing)
+			thiscell = findNextcell(SEDITABLE, pointing)
 		if (thiscell) {
 			storePresentCellService(event, thiscell)
 		} else {
@@ -594,7 +594,7 @@ function Skeyin(event, keycode, pointing)
 			return
 		}
 		savePreviousCellService()
-		thiscell = findNextRow(event, SEDITABLE, pointing)
+		thiscell = findNextRow(SEDITABLE, pointing)
 		if (thiscell) {
 			storePresentCellService(event, thiscell)
 		} else {

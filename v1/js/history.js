@@ -126,7 +126,7 @@ function makehistory(rowi, response)
 	$dialogHistory.css("height", 0)
 	$dialogHistory.html(HTML_String)
 	$dialogHistory.dialog({
-		title: rowi.cells[HN].innerHTML +' '+ rowi.cells[NAME].innerHTML,
+		title: rowi.cells[HN].innerHTML +' '+ rowi.cells[PATIENT].innerHTML,
 		closeOnEscape: true,
 		modal: true,
 		width: window.innerWidth * 9 / 10,

@@ -97,7 +97,7 @@ function itemtext(id, item, $cell)
 {
 	var $itemdiv = $(id).find("div"),
 		itemtext = item,
-		itemname = $cell.eq(NAME).html()
+		itemname = $cell.eq(PATIENT).html()
 	$itemdiv.html(itemtext + "<br>" + itemname)
 }
 
@@ -143,7 +143,7 @@ function addnewrow(tableID, $row)
 	$row.clone()
 		.insertAfter($row)
 			.find("td").eq(HN).removeClass("pacs")
-			.parent().find("td").eq(NAME).removeClass("camera")
+			.parent().find("td").eq(PATIENT).removeClass("camera")
 			.parent().find("td").eq(keepcell)
 				.nextAll()
 					.html("")
@@ -151,7 +151,7 @@ function addnewrow(tableID, $row)
 
 function postpone(tableID, $row, opdateth, opdate, staffname, qn)
 {
-	var oproom = $row.find("td").eq(ROOM).html(),
+	var oproom = $row.find("td").eq(OPROOM).html(),
 		allCases, index,
 
 		sql = "sqlReturnbook=UPDATE book SET opdate='" + LARGESTDATE
@@ -211,13 +211,13 @@ function clickDate(event)
 		moveOpdate = args[2],
 		staffname = args[3],
 		moveQN = args[4],
-		moveroom = $moverow.find("td").eq(ROOM).html(),
+		moveroom = $moverow.find("td").eq(OPROOM).html(),
 
 		$thisrow = $(this),
 		$thiscell = $thisrow.children("td"),
 		thisOpdateth = $thiscell.eq(OPDATE).html(),
 		thisOpdate = getOpdate(thisOpdateth),
-		thisroom = $thiscell.eq(ROOM).html(),
+		thisroom = $thiscell.eq(OPROOM).html(),
 		thisqn = $thiscell.eq(QN).html(),
 		thisWaitnum = calcWaitnum(thisOpdateth, $thisrow, $thisrow.next()),
 		allSameDate,
@@ -317,7 +317,7 @@ function delCase(tableID, $row, opdateth, opdate, staffname, qn)
 		return
 	}
 
-	var oproom = $row.find("td").eq(ROOM).html(),
+	var oproom = $row.find("td").eq(OPROOM).html(),
 		allCases, index,
 
 		// not actually delete the case but set deleted = 1
@@ -377,7 +377,7 @@ function deleteRow($row, opdate)
 	} else {
 		$row.children("td").eq(OPDATE).siblings().html("")
 		$row.children("td").eq(HN).removeClass("pacs")
-		$row.children("td").eq(NAME).removeClass("camera")
+		$row.children("td").eq(PATIENT).removeClass("camera")
 		$row.children('td').eq(STAFFNAME).html(showStaffOnCall(opdate))
 	}
 }

@@ -37,7 +37,7 @@ function sortable()
 				oldwaitnum = $item[0].title,
 				oldOpdateth = $itemcell.eq(OPDATE).html(),
 				oldOpdate = getOpdate(oldOpdateth),
-				oldroom = $itemcell.eq(ROOM).html(),
+				oldroom = $itemcell.eq(OPROOM).html(),
 				staffname = $itemcell.eq(STAFFNAME).html(),
 				oldqn = $itemcell.eq(QN).html()
 
@@ -99,7 +99,7 @@ function sortable()
 			var $thiscell = $thisdrop.children("td"),
 				thisOpdateth = $thisdrop.children("td").eq(OPDATE).html(),
 				thisOpdate = getOpdate(thisOpdateth),
-				thisroom = $thiscell.eq(ROOM).html(),
+				thisroom = $thiscell.eq(OPROOM).html(),
 				thisqn = $thiscell.eq(QN).html(),
 
 				newWaitnum = calcWaitnum(thisOpdateth, $previtem, $nextitem),
@@ -112,7 +112,7 @@ function sortable()
 
 			// assimilate into receiver
 			$itemcell.eq(OPDATE).html(thisOpdateth)
-			$itemcell.eq(ROOM).html(thisroom)
+			$itemcell.eq(OPROOM).html(thisroom)
 
 			if (oldroom) {
 				allOldCases = sameDateRoomTableQN(oldOpdateth, oldroom)

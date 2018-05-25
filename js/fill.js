@@ -138,7 +138,7 @@ function refillOneDay(opdate)
 		$cells.eq(OPDATE).prop("class", dayName(NAMEOFDAYABBR, opdate))
 		$cells.eq(STAFFNAME).html(showStaffOnCall(opdate))
 		$cells.eq(HN).removeClass("pacs")
-		$cells.eq(NAME).removeClass("camera")
+		$cells.eq(PATIENT).removeClass("camera")
 		$cells.eq(TREATMENT).removeClass("equip")
 		$cells.eq(DIAGNOSIS).css("backgroundImage", holiday(opdate))
 	} else {
@@ -187,13 +187,15 @@ function dayName(DAYNAME, date)
 function fillblank(rowi)
 {
 	var cells = rowi.cells
-	cells[ROOM].innerHTML = ""
+	cells[THEATRE].innerHTML = ""
+	cells[OPROOM].innerHTML = ""
+	cells[OPTIME].innerHTML = ""
 	cells[CASENUM].innerHTML = ""
 	cells[STAFFNAME].innerHTML = ""
 	cells[HN].innerHTML = ""
 	cells[HN].className = ""
-	cells[NAME].innerHTML = ""
-	cells[NAME].className = ""
+	cells[PATIENT].innerHTML = ""
+	cells[PATIENT].className = ""
 	cells[DIAGNOSIS].innerHTML = ""
 	cells[TREATMENT].innerHTML = ""
 	cells[CONTACT].innerHTML = ""
@@ -206,14 +208,16 @@ function filldata(bookq, row)
 
 	row.title = bookq.waitnum
 	if (bookq.hn && gv.isPACS) { cells[HN].className = "pacs" }
-	if (bookq.patient) { cells[NAME].className = "camera" }
+	if (bookq.patient) { cells[PATIENT].className = "camera" }
 	if (bookq.treatment) { cells[TREATMENT].className = "equip" }
 
-	cells[ROOM].innerHTML = bookq.oproom || ""
-	cells[CASENUM].innerHTML = putCasenumTime(bookq)
+	cells[THEATRE].innerHTML = bookq.theatre || ""
+	cells[OPROOM].innerHTML = bookq.oproom || ""
+	cells[OPTIME].innerHTML = bookq.optime || ""
+	cells[CASENUM].innerHTML = bookq.casenum || ""
 	cells[STAFFNAME].innerHTML = bookq.staffname
 	cells[HN].innerHTML = bookq.hn
-	cells[NAME].innerHTML = putNameAge(bookq)
+	cells[PATIENT].innerHTML = putNameAge(bookq)
 	cells[DIAGNOSIS].innerHTML = bookq.diagnosis
 	cells[TREATMENT].innerHTML = bookq.treatment
 	cells[CONTACT].innerHTML = bookq.contact
@@ -307,14 +311,14 @@ jQuery.fn.extend({
 		addColor(this, bookq.opdate)
 		$cells[OPDATE].className = dayName(NAMEOFDAYABBR, bookq.opdate)
 		$cells[HN].className = (bookq.hn && gv.isPACS)? "pacs" : ""
-		$cells[NAME].className = bookq.patient? "camera" : ""
+		$cells[PATIENT].className = bookq.patient? "camera" : ""
 
 		$cells[OPDATE].innerHTML = putThdate(bookq.opdate)
-		$cells[ROOM].innerHTML = bookq.oproom || ""
-		$cells[CASENUM].innerHTML = putCasenumTime(bookq)
+		$cells[OPROOM].innerHTML = bookq.oproom || ""
+		$cells[CASENUM].innerHTML = bookq.casenum || ""
 		$cells[STAFFNAME].innerHTML = bookq.staffname
 		$cells[HN].innerHTML = bookq.hn
-		$cells[NAME].innerHTML = putNameAge(bookq)
+		$cells[PATIENT].innerHTML = putNameAge(bookq)
 		$cells[DIAGNOSIS].innerHTML = bookq.diagnosis
 		$cells[TREATMENT].innerHTML = bookq.treatment
 		$cells[CONTACT].innerHTML = bookq.contact
@@ -362,12 +366,6 @@ function checkMatch(classes, oldClasses)
 			}
 		}
 	}
-}
-
-function putCasenumTime(bookq)
-{
-	return (bookq.casenum || "")
-		+ (bookq.optime ? ("<br>" + bookq.optime) : "")
 }
 
 function putNameAge(bookq)

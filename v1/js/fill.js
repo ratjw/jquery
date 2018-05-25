@@ -214,7 +214,7 @@ function refillOneDay(opdate)
 		$cells.eq(OPDATE).siblings().html("")
 		$cells.eq(STAFFNAME).html(showStaffImage(opdate))
 		$cells.eq(HN).removeClass("pacs")
-		$cells.eq(NAME).removeClass("camera")
+		$cells.eq(PATIENT).removeClass("camera")
 		$opdateTblRows.attr("title", "")
 	} else {
 		if (tblRows > bookRows) {
@@ -270,8 +270,8 @@ function fillblank(rowi)
 	cells[STAFFNAME].innerHTML = ""
 	cells[HN].innerHTML = ""
 	cells[HN].className = ""
-	cells[NAME].innerHTML = ""
-	cells[NAME].className = ""
+	cells[PATIENT].innerHTML = ""
+	cells[PATIENT].className = ""
 	cells[DIAGNOSIS].innerHTML = ""
 	cells[TREATMENT].innerHTML = ""
 	cells[CONTACT].innerHTML = ""
@@ -286,12 +286,12 @@ function filldata(bookq, rowi)
 	if (bookq.hn && gv.isPACS) {
 		cells[HN].className = "pacs"
 	}
-	cells[NAME].className = bookq.patient? "camera" : ""
+	cells[PATIENT].className = bookq.patient? "camera" : ""
 
 	cells[ROOMTIME].innerHTML = putRoomTime(bookq)
 	cells[STAFFNAME].innerHTML = bookq.staffname
 	cells[HN].innerHTML = bookq.hn
-	cells[NAME].innerHTML = putNameAge(bookq)
+	cells[PATIENT].innerHTML = putNameAge(bookq)
 	cells[DIAGNOSIS].innerHTML = bookq.diagnosis
 	cells[TREATMENT].innerHTML = bookq.treatment
 	cells[CONTACT].innerHTML = bookq.contact
@@ -390,8 +390,8 @@ jQuery.fn.extend({
 		cells[STAFFNAME].innerHTML = bookq.staffname
 		cells[HN].innerHTML = bookq.hn
 		cells[HN].className = (bookq.hn && gv.isPACS)? "pacs" : ""
-		cells[NAME].innerHTML = putNameAge(bookq)
-		cells[NAME].className = bookq.patient? "camera" : ""
+		cells[PATIENT].innerHTML = putNameAge(bookq)
+		cells[PATIENT].className = bookq.patient? "camera" : ""
 		cells[DIAGNOSIS].innerHTML = bookq.diagnosis
 		cells[TREATMENT].innerHTML = bookq.treatment
 		cells[CONTACT].innerHTML = bookq.contact
