@@ -176,7 +176,6 @@ function saveOpRoom(pointed, newcontent)
 		} else {
 			Alert ("saveOpRoom", response)
 		}
-		clearEditcell()
 	}
 }
 
@@ -239,7 +238,6 @@ function saveOpTime(pointed, newcontent)
 		} else {
 			Alert ("saveCaseNum", response)
 		}
-		clearEditcell()
 	}
 }
 
@@ -890,7 +888,7 @@ function getROOMCASE(pointing, num)
 	var	oldval = pointing.innerHTML,
 		$editcell = $("#editcell"),
 		newval = "",
-		html = '<input id="spin" readonly>'
+		html = '<input id="spin">'
 
 	// no case
 	// no oproom
@@ -929,7 +927,7 @@ function getOPTIME(pointing)
 	var	oldtime = pointing.innerHTML || "09.00",
 		$editcell = $("#editcell"),
 		newtime = "",
-		html = '<input id="spin" readonly>'
+		html = '<input id="spin">'
 
 	// no case
 	if ( !$(pointing).siblings(":last").html() ) { return }
