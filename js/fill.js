@@ -211,9 +211,9 @@ function filldata(bookq, row)
 	if (bookq.patient) { cells[PATIENT].className = "camera" }
 	if (bookq.treatment) { cells[TREATMENT].className = "equip" }
 
-	cells[THEATRE].innerHTML = bookq.theatre || ""
+	cells[THEATRE].innerHTML = bookq.theatre
 	cells[OPROOM].innerHTML = bookq.oproom || ""
-	cells[OPTIME].innerHTML = bookq.optime || ""
+	cells[OPTIME].innerHTML = bookq.optime
 	cells[CASENUM].innerHTML = bookq.casenum || ""
 	cells[STAFFNAME].innerHTML = bookq.staffname
 	cells[HN].innerHTML = bookq.hn

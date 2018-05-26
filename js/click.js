@@ -87,7 +87,7 @@ function savePreviousCell()
 		case OPDATE:
 			return false
 		case THEATRE:
-			return saveContent(pointed, "theatre", newcontent)
+			return saveTheatre(pointed, newcontent)
 		case OPROOM:
 			return saveOpRoom(pointed, newcontent)
 		case OPTIME:
@@ -109,11 +109,83 @@ function savePreviousCell()
 	}
 }
 
+function saveTheatre(pointed, newcontent)
+{
+	var	$cell = $(pointed).closest("tr").find("td"),
+		opdateth = $cell[OPDATE].innerHTML,
+		opdate = getOpdate(opdateth),
+		theatre = $cell[THEATRE].innerHTML,
+		oproom = $cell[OPROOM].innerHTML,
+		casenum = $cell[CASENUM].innerHTML,
+		qn = $cell[QN].innerHTML,
+		allSameDate = allOldCases = allNewCases = [],
+		index,
+		sql = ""
+
+	allOldCases = sameDateRoomTableQN(opdateth, oproom, theatre)
+	index = allOldCases.indexOf(qn)
+	allOldCases.splice(index, 1)
+
+	for (var i=0; i<allOldCases.length; i++) {
+		sql += sqlCaseNum(i + 1, allOldCases[i])
+	}
+
+	allNewCases = sameDateRoomTableQN(opdateth, oproom, newcontent)
+	if (casenum) {
+		allNewCases.splice(casenum-1, 0, qn)
+	} else {
+		allNewCases.push(qn)
+	}
+
+	for (var i=0; i<allNewCases.length; i++) {
+		if (allNewCases[i] === qn) {
+			sql += sqlNewTheatre(newcontent, i + 1, qn)
+		} else {
+			sql += sqlCaseNum(i + 1, allNewCases[i])
+		}
+	}
+
+	if (!sql) { return false }
+	sql = "sqlReturnbook=" + sql
+
+	Ajax(MYSQLIPHP, sql, callbackSaveRoom)
+
+	return true
+
+	function callbackSaveRoom(response)
+	{
+		if (/BOOK/.test(response)) {
+			updateBOOK(response)
+			refillOneDay(opdate)
+			if (isSplited() && (isStaffname(staffname) || isConsults())) {
+				refillstaffqueue()
+			}
+			// re-render editcell for keyin cell only
+			var newpoint = $('#editcell').data("pointing")
+			if (newpoint.cellIndex > PATIENT) {
+				createEditcell(newpoint)
+			}
+		} else {
+			Alert ("saveTheatre", response)
+		}
+	}
+}
+
+function sqlNewTheatre(theatre, casenum, qn)
+{
+	return "UPDATE book SET "
+		+  "theatre='" + theatre
+		+  "',casenum=" + casenum
+		+  ",editor='" + gv.user
+		+  "' WHERE qn="+ qn + ";"
+}
+
 function saveOpRoom(pointed, newcontent)
 {
 	var	$cell = $(pointed).closest("tr").find("td"),
 		opdateth = $cell[OPDATE].innerHTML,
 		opdate = getOpdate(opdateth),
+		theatre = $cell[THEATRE].innerHTML,
 		oproom = $cell[OPROOM].innerHTML,
 		casenum = $cell[CASENUM].innerHTML,
 		qn = $cell[QN].innerHTML,
@@ -122,7 +194,7 @@ function saveOpRoom(pointed, newcontent)
 		sql = ""
 
 	if (oproom) {
-		allOldCases = sameDateRoomTableQN(opdateth, oproom)
+		allOldCases = sameDateRoomTableQN(opdateth, oproom, theatre)
 		index = allOldCases.indexOf(qn)
 		allOldCases.splice(index, 1)
 
@@ -136,7 +208,7 @@ function saveOpRoom(pointed, newcontent)
 	}
 
 	if (newcontent !== "0") {
-		allNewCases = sameDateRoomTableQN(opdateth, newcontent)
+		allNewCases = sameDateRoomTableQN(opdateth, newcontent, theatre)
 		if (casenum) {
 			allNewCases.splice(casenum-1, 0, qn)
 		} else {
@@ -152,7 +224,6 @@ function saveOpRoom(pointed, newcontent)
 		}
 	}
 
-	// no oproom, no newcontent
 	if (!sql) { return false }
 	sql = "sqlReturnbook=" + sql
 
@@ -188,71 +259,19 @@ function sqlNewRoom(oproom, casenum, qn)
 		+  "' WHERE qn="+ qn + ";"
 }
 
-function saveOpTime(pointed, newcontent)
-{
-	var	$cells = $(pointed).closest("tr").find("td"),
-		opdateth = $cells[OPDATE].innerHTML,
-		opdate = getOpdate(opdateth),
-		qn = $cells[QN].innerHTML,
-		index,
-		sql = "sqlReturnbook="
-
-	if (oldnum !== num) {
-		allCases = sameDateRoomTableQN(opdateth, oproom)
-		index = allCases.indexOf(qn)
-		allCases.splice(index, 1)
-		allCases.splice(num - 1, 0, qn)
-
-		for (var i=0; i<allCases.length; i++) {
-			if (allCases[i] === qn) {
-				sql += sqlCaseNum(num, qn)
-			} else {
-				sql += sqlCaseNum(i + 1, allCases[i])
-			}
-		}
-	}
-	if (oldtime !== time) {
-		sql += "UPDATE book SET "
-			+  "optime='" + time
-			+  "',editor='" + gv.user
-			+  "' WHERE qn="+ qn + ";"		
-	}
-
-	Ajax(MYSQLIPHP, sql, callbackCaseNum)
-
-	return true
-
-	function callbackCaseNum(response)
-	{
-		if (/BOOK/.test(response)) {
-			updateBOOK(response)
-			refillOneDay(opdate)
-			if (isSplited() && (isStaffname(staffname) || isConsults())) {
-				refillstaffqueue()
-			}
-			// re-render editcell for keyin cell only
-			var newpoint = $('#editcell').data("pointing")
-			if (newpoint.cellIndex > PATIENT) {
-				createEditcell(newpoint)
-			}
-		} else {
-			Alert ("saveCaseNum", response)
-		}
-	}
-}
-
 function saveCaseNum(pointed, newcontent)
 {
 	var $cells = $(pointed).closest("tr").find("td"),
 		opdateth = $cells[OPDATE].innerHTML,
 		opdate = getOpdate(opdateth),
+		theatre = $cell[THEATRE].innerHTML,
 		oproom = $cells[OPROOM].innerHTML,
 		qn = $cells[QN].innerHTML,
 		index,
 		sql = "sqlReturnbook="
 
 	// must have oproom, if no, can't be clicked
-	allCases = sameDateRoomTableQN(opdateth, oproom)
+	allCases = sameDateRoomTableQN(opdateth, oproom, theatre)
 	index = allCases.indexOf(qn)
 	allCases.splice(index, 1)
 	allCases.splice(newcontent - 1, 0, qn)

@@ -297,13 +297,14 @@ function findLastDateInBOOK(book)
 }
 
 // main table (#tbl) only
-function sameDateRoomTableQN(opdateth, room)
+function sameDateRoomTableQN(opdateth, room, theatre)
 {
 	if (!room) { return [] }
 
 	var sameRoom = $('#tbl tr').filter(function() {
 		return this.cells[OPDATE].innerHTML === opdateth
-			&& this.cells[OPROOM].innerHTML === room;
+			&& this.cells[THEATRE].innerHTML === theatre
+			&& this.cells[OPROOM].innerHTML === room
 	})
 	$.each(sameRoom, function(i) {
 		sameRoom[i] = this.cells[QN].innerHTML

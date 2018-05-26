@@ -37,6 +37,7 @@ function sortable()
 				oldwaitnum = $item[0].title,
 				oldOpdateth = $itemcell.eq(OPDATE).html(),
 				oldOpdate = getOpdate(oldOpdateth),
+				oldtheatre = $itemcell.eq(THEATRE).html(),
 				oldroom = $itemcell.eq(OPROOM).html(),
 				staffname = $itemcell.eq(STAFFNAME).html(),
 				oldqn = $itemcell.eq(QN).html()
@@ -99,6 +100,7 @@ function sortable()
 			var $thiscell = $thisdrop.children("td"),
 				thisOpdateth = $thisdrop.children("td").eq(OPDATE).html(),
 				thisOpdate = getOpdate(thisOpdateth),
+				thistheatre = $thiscell.eq(THEATRE).html(),
 				thisroom = $thiscell.eq(OPROOM).html(),
 				thisqn = $thiscell.eq(QN).html(),
 
@@ -115,7 +117,7 @@ function sortable()
 			$itemcell.eq(OPROOM).html(thisroom)
 
 			if (oldroom) {
-				allOldCases = sameDateRoomTableQN(oldOpdateth, oldroom)
+				allOldCases = sameDateRoomTableQN(oldOpdateth, oldroom, oldtheatre)
 				if (sender === "queuetbl") {
 					index = allOldCases.indexOf(oldqn)
 					allOldCases.splice(index, 1)
@@ -127,7 +129,7 @@ function sortable()
 			}
 
 			if (thisroom) {
-				allNewCases = sameDateRoomTableQN(thisOpdateth, thisroom)
+				allNewCases = sameDateRoomTableQN(thisOpdateth, thisroom, thistheatre)
 				if (receiver === "queuetbl") {
 					index = allNewCases.indexOf(thisqn)
 					if (before) {
