@@ -6,15 +6,17 @@ SEARCH		= "php/search.php",
 
 //tbl, queuetbl
 OPDATE		= 0,
-ROOM		= 1,
-CASENUM		= 2,
-STAFFNAME	= 3,
-HN			= 4,
-NAME		= 5,
-DIAGNOSIS	= 6,
-TREATMENT	= 7,
-CONTACT		= 8,
-QN			= 9,
+THEATRE		= 1,
+OPROOM		= 2,
+OPTIME		= 3,
+CASENUM		= 4,
+STAFFNAME	= 5,
+HN			= 6,
+PATIENT		= 7,
+DIAGNOSIS	= 8,
+TREATMENT	= 9,
+CONTACT		= 10,
+QN			= 11,
 
 //servicetbl
 CASENUMSV	= 0,
@@ -63,8 +65,9 @@ SPECIALTY = [
 
 // NAMEOFDAYABBR for row color
 // NAMEOFDAYFULL for 1st column color
-NAMEOFDAYABBR	= ["sun", "mon", "tue", "wed", "thu", "fri", "sat"],
-NAMEOFDAYFULL	= ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"],
+NAMEOFDAYABBR	= ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+NAMEOFDAYFULL	= ["Sunday", "Monday", "Tuesday", "Wednesday",
+					"Thursday", "Friday", "Saturday"],
 THAIMONTH		= ["มค.", "กพ.", "มีค.", "เมย.", "พค.", "มิย.", "กค.", "สค.", "กย.", "ตค.", "พย.", "ธค."],
 LARGESTDATE		= "9999-12-31",
 

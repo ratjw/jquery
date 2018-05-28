@@ -94,7 +94,7 @@ function savePreviousCell()
 				return true
 			}
 			return false
-		case NAME:
+		case PATIENT:
 			return false
 		case DIAGNOSIS:
 			content = getEditcellHtml()
@@ -396,8 +396,8 @@ function saveHN(pointed, hn, content)
 			if (gv.isPACS) {
 				$cells.eq(HN).addClass("pacs")
 			}
-			$cells.eq(NAME).html(putNameAge(bookq))
-			$cells.eq(NAME).addClass("camera")
+			$cells.eq(PATIENT).html(putNameAge(bookq))
+			$cells.eq(PATIENT).addClass("camera")
 			$cells.eq(DIAGNOSIS).html(bookq.diagnosis)
 			$cells.eq(TREATMENT).html(bookq.treatment)
 			$cells.eq(CONTACT).html(bookq.contact)
@@ -451,7 +451,7 @@ function refillAnotherTableCell(tableID, cellindex, qn)
 			break
 		case HN:
 			cells[HN].innerHTML = bookq.hn
-			cells[NAME].innerHTML = putNameAge(bookq)
+			cells[PATIENT].innerHTML = putNameAge(bookq)
 			break
 		case DIAGNOSIS:
 			cells[DIAGNOSIS].innerHTML = bookq.diagnosis
@@ -492,7 +492,7 @@ function storePresentCell(pointing)
 				}
 			}
 			break
-		case NAME:
+		case PATIENT:
 			var hn = $(pointing).closest('tr').children("td").eq(HN).html()
 			var patient = pointing.innerHTML
 

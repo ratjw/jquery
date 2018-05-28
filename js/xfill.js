@@ -113,13 +113,13 @@ function dayName(DAYNAME, date)
 function fillblank(rowi)
 {
 	var cells = rowi.cells
-	cells[ROOM].innerHTML = ""
+	cells[OPROOM].innerHTML = ""
 	cells[CASENUM].innerHTML = ""
 	cells[STAFFNAME].innerHTML = ""
 	cells[HN].innerHTML = ""
 	cells[HN].className = ""
-	cells[NAME].innerHTML = ""
-	cells[NAME].className = ""
+	cells[PATIENT].innerHTML = ""
+	cells[PATIENT].className = ""
 	cells[DIAGNOSIS].innerHTML = ""
 	cells[TREATMENT].innerHTML = ""
 	cells[CONTACT].innerHTML = ""
@@ -132,11 +132,11 @@ function filldata(bookq, rowi)
 
 	rowi.title = bookq.waitnum
 
-	cells[ROOM].innerHTML = bookq.oproom || ""
+	cells[OPROOM].innerHTML = bookq.oproom || ""
 	cells[CASENUM].innerHTML = putCasenumTime(bookq)
 	cells[STAFFNAME].innerHTML = bookq.staffname
 	cells[HN].innerHTML = bookq.hn
-	cells[NAME].innerHTML = putNameAge(bookq)
+	cells[PATIENT].innerHTML = putNameAge(bookq)
 	cells[DIAGNOSIS].innerHTML = bookq.diagnosis
 	cells[TREATMENT].innerHTML = bookq.treatment
 	cells[CONTACT].innerHTML = bookq.contact

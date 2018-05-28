@@ -68,10 +68,14 @@ td {
 #tbl td:nth-child(4),
 #tbl td:nth-child(5),
 #tbl td:nth-child(6),
+#tbl td:nth-child(7),
+#tbl td:nth-child(8),
 #queuetbl td:first-child,
 #queuetbl td:nth-child(4),
 #queuetbl td:nth-child(5),
 #queuetbl td:nth-child(6),
+#queuetbl td:nth-child(7),
+#queuetbl td:nth-child(8),
 #servicetbl td:nth-child(2),
 #servicetbl td:nth-child(8),
 #servicetbl td:nth-child(9),
@@ -91,45 +95,45 @@ td {
 #alltbl td {
 	font-size: 12px;
 }
-#historytbl td:nth-child(2),
-#historytbl td:nth-child(3),
-#tbl td:nth-child(2),
-#tbl td:nth-child(3) {
-	text-align: center;
-}
 
 table#tbl,
 table#queuetbl {
 	table-layout: auto;
 }
+OPDATE		= 0,
+THEATRE		= 1,
+OPROOM		= 2,
+OPTIME		= 3,
+CASENUM		= 4,
+STAFFNAME	= 5,
+
 #tbl th:first-child,
-#queuetbl th:first-child {
-	min-width: 40px;
-	max-width: 60px;
-}
+#queuetbl th:first-child { min-width: 40px; max-width: 60px; }
+
+#historytbl td:nth-child(2),
+#historytbl td:nth-child(3),
+#tbl td:nth-child(2),
+#tbl td:nth-child(3),
+#tbl td:nth-child(4),
+#tbl td:nth-child(5) { text-align: center; }
+
 #tbl th:nth-child(2),
-#tbl th:nth-child(3) {
-	min-width: 30px;
-	max-width: 30px;
-}
+#tbl th:nth-child(3),
 #tbl th:nth-child(4),
-#queuetbl th:nth-child(4) {
-	min-width: 40px;
-	max-width: 60px;
-}
-#tbl th:nth-child(5),
-#queuetbl th:nth-child(5) {
-	min-width: 50px;
-	max-width: 50px;
-}
+#tbl th:nth-child(5) { min-width: 30px; max-width: 30px; }
+
 #tbl th:nth-child(6),
-#queuetbl th:nth-child(6) {
-	min-width: 70px;
-	width: 10%;
-}
-#tbl th:nth-child(7) { width: 25%; }
-#tbl th:nth-child(8) { width: 30%; }
+#queuetbl th:nth-child(6) { min-width: 40px; max-width: 60px; }
+
+#tbl th:nth-child(7),
+#queuetbl th:nth-child(7) { min-width: 50px; max-width: 50px; }
+
+#tbl th:nth-child(8),
+#queuetbl th:nth-child(8) { min-width: 70px; width: 10%; }
+
 #tbl th:nth-child(9) { width: 30%; }
+#tbl th:nth-child(10) { width: 30%; }
+#tbl th:nth-child(11) { width: 20%; }
 
 #servicetbl th:nth-child(1) { width: 15px; }
 #servicetbl th:nth-child(2) { width: 50px; }
@@ -189,8 +193,10 @@ table#queuetbl {
 #tblcells,
 #queuetbl th:nth-child(2), #queuetbl td:nth-child(2),
 #queuetbl th:nth-child(3), #queuetbl td:nth-child(3),
-#tbl th:nth-child(10), #tbl td:nth-child(10),
-#queuetbl th:nth-child(10), #queuetbl td:nth-child(10),
+#queuetbl th:nth-child(4), #queuetbl td:nth-child(4),
+#queuetbl th:nth-child(5), #queuetbl td:nth-child(5),
+#tbl th:nth-child(12), #tbl td:nth-child(12),
+#queuetbl th:nth-child(12), #queuetbl td:nth-child(12),
 #servicetbl th:nth-child(11), #servicetbl td:nth-child(11),
 #deletedtbl th:nth-child(10), #deletedtbl td:nth-child(10),
 #dialogService, #servicecells,
@@ -307,29 +313,29 @@ tr.pasteDate {
 	border-bottom: solid 3px royalblue;
 }
 
-tr.sunday { background-color: #FFDDEE; }
-tr.monday { background-color: #FFFFE0; }
-tr.tuesday { background-color: #FFF0F9; }
-tr.wednesday { background-color: #EEFFEE; }
-tr.thursday { background-color: #FFF7EE; }
-tr.friday { background-color: #E7F7FF; }
-tr.saturday { background-color: #E7E7FF; }
+tr.Sunday { background-color: #FFDDEE; }
+tr.Monday { background-color: #FFFFE0; }
+tr.Tuesday { background-color: #FFF0F9; }
+tr.Wednesday { background-color: #EEFFEE; }
+tr.Thursday { background-color: #FFF7EE; }
+tr.Friday { background-color: #E7F7FF; }
+tr.Saturday { background-color: #E7E7FF; }
 
-td.sun { background-color: #F099BB; }
-td.mon { background-color: #F0F0BB; }
-td.tue { background-color: #F0CCEE; }
-td.wed { background-color: #CCF0CC; }
-td.thu { background-color: #F0DDBB; }
-td.fri { background-color: #BBDDF0; }
-td.sat { background-color: #CCBBF0; }
+td.Sun { background-color: #F099BB; }
+td.Mon { background-color: #F0F0BB; }
+td.Tue { background-color: #F0CCEE; }
+td.Wed { background-color: #CCF0CC; }
+td.Thu { background-color: #F0DDBB; }
+td.Fri { background-color: #BBDDF0; }
+td.Sat { background-color: #CCBBF0; }
 
-td.sun:before { content: "อาทิตย์ "; }
-td.mon:before { content: "จันทร์ "; }
-td.tue:before { content: "อังคาร "; }
-td.wed:before { content: "พุธ "; }
-td.thu:before { content: "พฤหัส "; }
-td.fri:before { content: "ศุกร์ "; }
-td.sat:before { content: "เสาร์ "; }
+td.Sun:before { content: "อาทิตย์ "; }
+td.Mon:before { content: "จันทร์ "; }
+td.Tue:before { content: "อังคาร "; }
+td.Wed:before { content: "พุธ "; }
+td.Thu:before { content: "พฤหัส "; }
+td.Fri:before { content: "ศุกร์ "; }
+td.Sat:before { content: "เสาร์ "; }
 
 td.pacs { background-image: url(pic/pacs.png); }
 td.pacs2 { background-image: url(pic/pacs2.png); }
@@ -709,18 +715,9 @@ td.Radiosurgery.Endovascular {
 }
 
 #spin {
-	height: 30px;
-	width: 50px;
-	font-size: 16px;
-	padding: 0px 0px 0px 3px;
-	margin: 0px;
-}
-
-#time {
-	height: 30px;
-	width: 65px;
+	height: 20px;
+	width: 35px;
 	font-size: 14px;
-	padding: 0px 0px 0px 3px;
 	margin: 0px;
 }
 
@@ -773,13 +770,13 @@ td.Radiosurgery.Endovascular {
 		content: attr(data-title);
 	}
 
-	td.sun:before { font-size: 18px; top: 2px; content: "วันอาทิตย์ "; }
-	td.mon:before { font-size: 18px; top: 2px; content: "วันจันทร์ "; }
-	td.tue:before { font-size: 18px; top: 2px; content: "วันอังคาร "; }
-	td.wed:before { font-size: 18px; top: 2px; content: "วันพุธ "; }
-	td.thu:before { font-size: 18px; top: 2px; content: "วันพฤหัส "; }
-	td.fri:before { font-size: 18px; top: 2px; content: "วันศุกร์ "; }
-	td.sat:before { font-size: 18px; top: 2px; content: "วันเสาร์ "; }
+	td.Sun:before { font-size: 18px; top: 2px; content: "วันอาทิตย์ "; }
+	td.Mon:before { font-size: 18px; top: 2px; content: "วันจันทร์ "; }
+	td.Tue:before { font-size: 18px; top: 2px; content: "วันอังคาร "; }
+	td.Wed:before { font-size: 18px; top: 2px; content: "วันพุธ "; }
+	td.Thu:before { font-size: 18px; top: 2px; content: "วันพฤหัส "; }
+	td.Fri:before { font-size: 18px; top: 2px; content: "วันศุกร์ "; }
+	td.Sat:before { font-size: 18px; top: 2px; content: "วันเสาร์ "; }
 
 	#menu, #stafflist {
 	/*	position: relative;*/

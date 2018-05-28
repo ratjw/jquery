@@ -255,7 +255,7 @@ function sameDateRoomTableQN(opdateth, room)
 
 	var sameRoom = $('#tbl tr').filter(function() {
 		return $(this).find("td").eq(OPDATE).html() === opdateth
-			&& $(this).find("td").eq(ROOM).html() === room;
+			&& $(this).find("td").eq(OPROOM).html() === room;
 	})
 	$.each(sameRoom, function(i) {
 		sameRoom[i] = $(this).find("td").eq(QN).html()

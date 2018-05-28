@@ -97,7 +97,7 @@ function itemtext(id, item, $cell)
 {
 	var $itemdiv = $(id).find("div"),
 		itemtext = item,
-		itemname = $cell.eq(NAME).html()
+		itemname = $cell.eq(PATIENT).html()
 	$itemdiv.html(itemtext + "<br>" + itemname)
 }
 
@@ -143,7 +143,7 @@ function addnewrow(tableID, $row)
 	$row.clone()
 		.insertAfter($row)
 			.find("td").eq(HN).removeClass("pacs")
-			.parent().find("td").eq(NAME).removeClass("camera")
+			.parent().find("td").eq(PATIENT).removeClass("camera")
 			.parent().find("td").eq(keepcell)
 				.nextAll()
 					.html("")
@@ -151,7 +151,8 @@ function addnewrow(tableID, $row)
 
 function postpone(tableID, $row, opdateth, opdate, staffname, qn)
 {
-	var oproom = $row.find("td").eq(ROOM).html(),
+	var	theatre = $row.find("td").eq(THEATRE).html(),
+		oproom = $row.find("td").eq(OPROOM).html(),
 		allCases, index,
 
 		sql = "sqlReturnbook=UPDATE book SET opdate='" + LARGESTDATE
@@ -159,7 +160,7 @@ function postpone(tableID, $row, opdateth, opdate, staffname, qn)
 			+ "' WHERE qn="+ qn + ";"
 
 	if (oproom) {
-		allCases = sameDateRoomTableQN(opdateth, oproom)
+		allCases = sameDateRoomTableQN(opdateth, oproom, theatre)
 		index = allCases.indexOf(qn)
 		allCases.splice(index, 1)
 
@@ -211,13 +212,15 @@ function clickDate(event)
 		moveOpdate = args[2],
 		staffname = args[3],
 		moveQN = args[4],
-		moveroom = $moverow.find("td").eq(ROOM).html(),
+		movetheatre = $moverow.find("td").eq(THEATRE).html(),
+		moveroom = $moverow.find("td").eq(OPROOM).html(),
 
 		$thisrow = $(this),
 		$thiscell = $thisrow.children("td"),
 		thisOpdateth = $thiscell.eq(OPDATE).html(),
 		thisOpdate = getOpdate(thisOpdateth),
-		thisroom = $thiscell.eq(ROOM).html(),
+		thistheatre = $thiscell.eq(THEATRE).html(),
+		thisroom = $thiscell.eq(OPROOM).html(),
 		thisqn = $thiscell.eq(QN).html(),
 		thisWaitnum = calcWaitnum(thisOpdateth, $thisrow, $thisrow.next()),
 		allSameDate,
@@ -225,14 +228,14 @@ function clickDate(event)
 		allNewCases, index, thisindex, casenum,
 		sql = ""
 
-	allOldCases = sameDateRoomTableQN(moveOpdateth, moveroom)
+	allOldCases = sameDateRoomTableQN(moveOpdateth, moveroom, movetheatre)
 	moveindex = allOldCases.indexOf(moveQN)
 	// remove itself from old sameDateRoom
 	if (moveindex >= 0) {
 		allOldCases.splice(moveindex, 1)
 	}
 
-	allNewCases = sameDateRoomTableQN(thisOpdateth, thisroom)
+	allNewCases = sameDateRoomTableQN(thisOpdateth, thisroom, thistheatre)
 	sameroomindex = allNewCases.indexOf(moveQN)
 	// remove itself in new sameDateRoom, in case new === old
 	if (sameroomindex >= 0) {
@@ -317,7 +320,8 @@ function delCase(tableID, $row, opdateth, opdate, staffname, qn)
 		return
 	}
 
-	var oproom = $row.find("td").eq(ROOM).html(),
+	var	theatre = $row.find("td").eq(THEATRE).html(),
+		oproom = $row.find("td").eq(OPROOM).html(),
 		allCases, index,
 
 		// not actually delete the case but set deleted = 1
@@ -327,7 +331,7 @@ function delCase(tableID, $row, opdateth, opdate, staffname, qn)
 			+ "' WHERE qn="+ qn + ";"
 
 	if (oproom) {
-		allCases = sameDateRoomTableQN(opdateth, oproom)
+		allCases = sameDateRoomTableQN(opdateth, oproom, theatre)
 		index = allCases.indexOf(qn)
 		allCases.splice(index, 1)
 
@@ -377,7 +381,7 @@ function deleteRow($row, opdate)
 	} else {
 		$row.children("td").eq(OPDATE).siblings().html("")
 		$row.children("td").eq(HN).removeClass("pacs")
-		$row.children("td").eq(NAME).removeClass("camera")
+		$row.children("td").eq(PATIENT).removeClass("camera")
 		$row.children('td').eq(STAFFNAME).html(showStaffOnCall(opdate))
 	}
 }

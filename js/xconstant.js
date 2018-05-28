@@ -5,11 +5,11 @@ var MYSQLIPHP	= "php/mysqli.php";
 
 //tbl, queuetbl
 var OPDATE		= 0;
-var ROOM		= 1;
+var OPROOM		= 1;
 var CASENUM		= 2;
 var STAFFNAME	= 3;
 var HN			= 4;
-var NAME		= 5;
+var PATIENT		= 5;
 var DIAGNOSIS	= 6;
 var TREATMENT	= 7;
 var CONTACT		= 8;

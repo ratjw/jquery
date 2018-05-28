@@ -23,7 +23,7 @@ function makehistory(row, response)
 	var tracing	= JSON.parse(response),
 		$historytbl = $('#historytbl'),
 		hn = row.cells[HN].innerHTML,
-		nam = row.cells[NAME].innerHTML,
+		nam = row.cells[PATIENT].innerHTML,
 		name = nam && nam.replace('<br>', ' '),
 		$dialogHistory = $("#dialogHistory")
 	

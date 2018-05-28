@@ -6,7 +6,7 @@ function clicktable(evt, clickedCell)
 
 function keyin(evt, keycode, pointing)
 {
-	var EDITABLE = [HN, DIAGNOSIS, TREATMENT, CONTACT];
+	var EDITABLE = [DIAGNOSIS, TREATMENT, CONTACT];
 	var thiscell
 
 	if (keycode === 27)	{
@@ -22,15 +22,9 @@ function keyin(evt, keycode, pointing)
 		$('#stafflist').hide();
 		savePreviousCell()
 		if (evt.shiftKey) {
-			thiscell = findPrevcell(evt, EDITABLE, pointing)
-			if ((thiscell.cellIndex === HN) && (thiscell.innerHTML !== "")) {
-				thiscell = findPrevcell(evt, EDITABLE, $(thiscell))
-			}
+			thiscell = findPrevcell(EDITABLE, pointing)
 		} else {
-			thiscell = findNextcell(evt, EDITABLE, pointing)
-			if ((thiscell.cellIndex === HN) && (thiscell.innerHTML !== "")) {
-				thiscell = findNextcell(evt, EDITABLE, $(thiscell))
-			}
+			thiscell = findNextcell(EDITABLE, pointing)
 		}
 		if (thiscell) {
 			storePresentCell(evt, thiscell)
@@ -48,10 +42,7 @@ function keyin(evt, keycode, pointing)
 			return
 		}
 		savePreviousCell()
-		thiscell = findNextRow(evt, EDITABLE, pointing)
-		if ((thiscell.cellIndex === HN) && (thiscell.innerHTML !== "")) {
-			thiscell = findNextcell(evt, EDITABLE, $(thiscell))
-		}
+		thiscell = findNextRow(EDITABLE, pointing)
 		if (thiscell) {
 			storePresentCell(evt, thiscell)
 		} else {
@@ -76,26 +67,17 @@ function savePreviousCell()
 		pointed = $editcell.data("pointing"),
 		column = pointed && pointed.cellIndex
 
-	if (column === ROOM) {
-		newcontent = newcontent + $("#spin").val()
+	if ($("#spin").is(":visible")) {
+		newcontent = $("#spin").val()
 	}
-	if (column === CASENUM) {
-		var num = $("#spin").val(),
-			time = $("#time").val(),
-			dec = Number(time)
-
-		if (time){
-			if (isNaN(dec) || dec < 0 || dec > 24) {
-				Alert("เวลาผ่าตัด", "<br>รูปแบบเวลา ไม่ถูกต้อง<br><br>ใช้<br><br>ตั้งแต่ 00.00 - 08.30 - 09.00 ถึง 24.00")
-				time = ""
-			} else {
-				time = decimalToTime(time)
-			}
-		}
-
-		newcontent = num + (time ? ("<br>" + time) : "")
+/*
+	if (column === OPTIME) {
+		newcontent = newcontent
+			? strtoTime(newcontent)
+			: $("#spin").val()
+		if (newcontent === false) { newcontent = oldcontent }
 	}
-
+*/
 	if (!pointed || (oldcontent === newcontent)) {
 		return false
 	}
@@ -104,15 +86,19 @@ function savePreviousCell()
 	{
 		case OPDATE:
 			return false
-		case ROOM:
-			return saveRoom(pointed, newcontent)
+		case THEATRE:
+			return saveTheatre(pointed, newcontent)
+		case OPROOM:
+			return saveOpRoom(pointed, newcontent)
+		case OPTIME:
+			return saveContent(pointed, "optime", newcontent)
 		case CASENUM:
-			return saveCaseNum(pointed, oldcontent, num, time)
+			return saveCaseNum(pointed, newcontent)
 		case STAFFNAME:
 			return false
 		case HN:
 			return saveHN(pointed, newcontent)
-		case NAME:
+		case PATIENT:
 			return false
 		case DIAGNOSIS:
 			return saveContent(pointed, "diagnosis", newcontent)
@@ -123,52 +109,42 @@ function savePreviousCell()
 	}
 }
 
-function saveRoom(pointed, newcontent)
+function saveTheatre(pointed, newcontent)
 {
-	var tableID = $(pointed).closest("table").attr("id"),
-		$row = $(pointed).closest("tr"),
-		$cell = $row.find("td"),
+	var	$cell = $(pointed).closest("tr").find("td"),
 		opdateth = $cell[OPDATE].innerHTML,
 		opdate = getOpdate(opdateth),
-		oproom = $cell[ROOM].innerHTML,
+		theatre = $cell[THEATRE].innerHTML,
+		oproom = $cell[OPROOM].innerHTML,
 		casenum = $cell[CASENUM].innerHTML,
 		qn = $cell[QN].innerHTML,
 		allSameDate = allOldCases = allNewCases = [],
 		index,
 		sql = ""
 
-	if (oproom) {
-		allOldCases = sameDateRoomTableQN(opdateth, oproom)
-		index = allOldCases.indexOf(qn)
-		allOldCases.splice(index, 1)
+	allOldCases = sameDateRoomTableQN(opdateth, oproom, theatre)
+	index = allOldCases.indexOf(qn)
+	allOldCases.splice(index, 1)
 
-		for (var i=0; i<allOldCases.length; i++) {
-			sql += sqlCaseNum(i + 1, allOldCases[i])
-		}
-
-		if (newcontent === "0") {
-			sql += sqlNewRoom(null, null, qn)
-		}
+	for (var i=0; i<allOldCases.length; i++) {
+		sql += sqlCaseNum(i + 1, allOldCases[i])
 	}
 
-	if (newcontent !== "0") {
-		allNewCases = sameDateRoomTableQN(opdateth, newcontent)
-		if (casenum) {
-			allNewCases.splice(casenum-1, 0, qn)
+	allNewCases = sameDateRoomTableQN(opdateth, oproom, newcontent)
+	if (casenum) {
+		allNewCases.splice(casenum-1, 0, qn)
+	} else {
+		allNewCases.push(qn)
+	}
+
+	for (var i=0; i<allNewCases.length; i++) {
+		if (allNewCases[i] === qn) {
+			sql += sqlNewTheatre(newcontent, i + 1, qn)
 		} else {
-			allNewCases.push(qn)
-		}
-
-		for (var i=0; i<allNewCases.length; i++) {
-			if (allNewCases[i] === qn) {
-				sql += sqlNewRoom(newcontent, i + 1, qn)
-			} else {
-				sql += sqlCaseNum(i + 1, allNewCases[i])
-			}
+			sql += sqlCaseNum(i + 1, allNewCases[i])
 		}
 	}
 
-	// no oproom, no newcontent
 	if (!sql) { return false }
 	sql = "sqlReturnbook=" + sql
 
@@ -186,13 +162,91 @@ function saveRoom(pointed, newcontent)
 			}
 			// re-render editcell for keyin cell only
 			var newpoint = $('#editcell').data("pointing")
-			if (newpoint.cellIndex > NAME) {
+			if (newpoint.cellIndex > PATIENT) {
 				createEditcell(newpoint)
 			}
 		} else {
-			Alert ("saveRoom", response)
+			Alert ("saveTheatre", response)
 		}
-		clearEditcell()
+	}
+}
+
+function sqlNewTheatre(theatre, casenum, qn)
+{
+	return "UPDATE book SET "
+		+  "theatre='" + theatre
+		+  "',casenum=" + casenum
+		+  ",editor='" + gv.user
+		+  "' WHERE qn="+ qn + ";"
+}
+
+function saveOpRoom(pointed, newcontent)
+{
+	var	$cell = $(pointed).closest("tr").find("td"),
+		opdateth = $cell[OPDATE].innerHTML,
+		opdate = getOpdate(opdateth),
+		theatre = $cell[THEATRE].innerHTML,
+		oproom = $cell[OPROOM].innerHTML,
+		casenum = $cell[CASENUM].innerHTML,
+		qn = $cell[QN].innerHTML,
+		allSameDate = allOldCases = allNewCases = [],
+		index,
+		sql = ""
+
+	if (oproom) {
+		allOldCases = sameDateRoomTableQN(opdateth, oproom, theatre)
+		index = allOldCases.indexOf(qn)
+		allOldCases.splice(index, 1)
+
+		for (var i=0; i<allOldCases.length; i++) {
+			sql += sqlCaseNum(i + 1, allOldCases[i])
+		}
+
+		if (newcontent === "0") {
+			sql += sqlNewRoom(null, null, qn)
+		}
+	}
+
+	if (newcontent !== "0") {
+		allNewCases = sameDateRoomTableQN(opdateth, newcontent, theatre)
+		if (casenum) {
+			allNewCases.splice(casenum-1, 0, qn)
+		} else {
+			allNewCases.push(qn)
+		}
+
+		for (var i=0; i<allNewCases.length; i++) {
+			if (allNewCases[i] === qn) {
+				sql += sqlNewRoom(newcontent, i + 1, qn)
+			} else {
+				sql += sqlCaseNum(i + 1, allNewCases[i])
+			}
+		}
+	}
+
+	if (!sql) { return false }
+	sql = "sqlReturnbook=" + sql
+
+	Ajax(MYSQLIPHP, sql, callbackSaveRoom)
+
+	return true
+
+	function callbackSaveRoom(response)
+	{
+		if (/BOOK/.test(response)) {
+			updateBOOK(response)
+			refillOneDay(opdate)
+			if (isSplited() && (isStaffname(staffname) || isConsults())) {
+				refillstaffqueue()
+			}
+			// re-render editcell for keyin cell only
+			var newpoint = $('#editcell').data("pointing")
+			if (newpoint.cellIndex > PATIENT) {
+				createEditcell(newpoint)
+			}
+		} else {
+			Alert ("saveOpRoom", response)
+		}
 	}
 }
 
@@ -205,39 +259,29 @@ function sqlNewRoom(oproom, casenum, qn)
 		+  "' WHERE qn="+ qn + ";"
 }
 
-function saveCaseNum(pointed, oldcontent, num, time)
+function saveCaseNum(pointed, newcontent)
 {
 	var $cells = $(pointed).closest("tr").find("td"),
 		opdateth = $cells[OPDATE].innerHTML,
 		opdate = getOpdate(opdateth),
-		oproom = $cells[ROOM].innerHTML,
+		theatre = $cell[THEATRE].innerHTML,
+		oproom = $cells[OPROOM].innerHTML,
 		qn = $cells[QN].innerHTML,
-		numtime = oldcontent.split("<br>"),
-		oldnum = numtime[0],
-		oldtime = numtime[1],
 		index,
 		sql = "sqlReturnbook="
 
-	if (oldnum !== num) {
-		// must have oproom, if no, can't be clicked
-		allCases = sameDateRoomTableQN(opdateth, oproom)
-		index = allCases.indexOf(qn)
-		allCases.splice(index, 1)
-		allCases.splice(num - 1, 0, qn)
+	// must have oproom, if no, can't be clicked
+	allCases = sameDateRoomTableQN(opdateth, oproom, theatre)
+	index = allCases.indexOf(qn)
+	allCases.splice(index, 1)
+	allCases.splice(newcontent - 1, 0, qn)
 
-		for (var i=0; i<allCases.length; i++) {
-			if (allCases[i] === qn) {
-				sql += sqlCaseNum(num, qn)
-			} else {
-				sql += sqlCaseNum(i + 1, allCases[i])
-			}
+	for (var i=0; i<allCases.length; i++) {
+		if (allCases[i] === qn) {
+			sql += sqlCaseNum(newcontent, qn)
+		} else {
+			sql += sqlCaseNum(i + 1, allCases[i])
 		}
-	}
-	if (oldtime !== time) {
-		sql += "UPDATE book SET "
-			+  "optime='" + time
-			+  "',editor='" + gv.user
-			+  "' WHERE qn="+ qn + ";"		
 	}
 
 	Ajax(MYSQLIPHP, sql, callbackCaseNum)
@@ -254,7 +298,7 @@ function saveCaseNum(pointed, oldcontent, num, time)
 			}
 			// re-render editcell for keyin cell only
 			var newpoint = $('#editcell').data("pointing")
-			if (newpoint.cellIndex > NAME) {
+			if (newpoint.cellIndex > PATIENT) {
 				createEditcell(newpoint)
 			}
 		} else {
@@ -293,7 +337,7 @@ function saveContentQN(pointed, column, content)
 		$cells = $row.children("td"),
 		opdateth = $cells[OPDATE].innerHTML,
 		opdate = getOpdate(opdateth),
-		oproom = $cells[ROOM].innerHTML,
+		oproom = $cells[OPROOM].innerHTML,
 		casenum = $cells[CASENUM].innerHTML,
 		staffname = $cells[STAFFNAME].innerHTML,
 		qn = $cells[QN].innerHTML,
@@ -348,7 +392,7 @@ function saveContentQN(pointed, column, content)
 			}
 			// re-render editcell for keyin cell only
 			var newpoint = $('#editcell').data("pointing")
-			if (newpoint.cellIndex > NAME) {
+			if (newpoint.cellIndex > PATIENT) {
 				createEditcell(newpoint)
 			}
 		} else {
@@ -650,12 +694,12 @@ function fillCellsHN(tableID, qn, $cells)
 	bookq = getBOOKrowByQN(book, qn)
 
 	if (gv.isPACS) { $cells[HN].className = "pacs" }
-	$cells[NAME].className = "camera"
+	$cells[PATIENT].className = "camera"
 	if (bookq.treatment) { $cells[TREATMENT].className = "equip" }
 
 	$cells[STAFFNAME].innerHTML = bookq.staffname
 	$cells[HN].innerHTML = bookq.hn
-	$cells[NAME].innerHTML = putNameAge(bookq)
+	$cells[PATIENT].innerHTML = putNameAge(bookq)
 	$cells[DIAGNOSIS].innerHTML = bookq.diagnosis
 	$cells[TREATMENT].innerHTML = bookq.treatment
 	$cells[CONTACT].innerHTML = bookq.contact
@@ -671,7 +715,7 @@ jQuery.fn.extend({
 		$cells[OPDATE].innerHTML = putThdate(bookq.opdate)
 		$cells[STAFFNAME].innerHTML = bookq.staffname
 		$cells[HN].innerHTML = bookq.hn
-		$cells[NAME].innerHTML = putNameAge(bookq)
+		$cells[PATIENT].innerHTML = putNameAge(bookq)
 		$cells[DIAGNOSIS].innerHTML = bookq.diagnosis
 		$cells[TREATMENT].innerHTML = bookq.treatment
 		$cells[CONTACT].innerHTML = bookq.contact
@@ -733,12 +777,12 @@ function getNameHN(pointed, content)
 			var bookq = getBOOKrowByQN(book, qn)
 
 			if (gv.isPACS) { $cells[HN].className = "pacs" }
-			$cells[NAME].className = "camera"
+			$cells[PATIENT].className = "camera"
 
 			// prevent showing null
 			$cells[STAFFNAME].innerHTML = bookq.staffname
 			$cells[HN].innerHTML = bookq.hn
-			$cells[NAME].innerHTML = putNameAge(bookq)
+			$cells[PATIENT].innerHTML = putNameAge(bookq)
 			$cells[DIAGNOSIS].innerHTML = bookq.diagnosis
 			$cells[TREATMENT].innerHTML = bookq.treatment
 			$cells[CONTACT].innerHTML = bookq.contact
@@ -761,7 +805,7 @@ function getNameHN(pointed, content)
 			}
 			// re-render editcell for keyin cell only
 			var newpoint = $('#editcell').data("pointing")
-			if (newpoint.cellIndex > NAME) {
+			if (newpoint.cellIndex > PATIENT) {
 				createEditcell(newpoint)
 			}
 		} else {
@@ -787,18 +831,18 @@ function refillAnotherTableCell(tableID, cellindex, qn)
 
 	switch(cellindex)
 	{
-		case ROOM:
-			cells[ROOM].innerHTML = bookq.oproom || ""
+		case OPROOM:
+			cells[OPROOM].innerHTML = bookq.oproom || ""
 			break
 		case CASENUM:
-			cells[CASENUM].innerHTML = putCasenumTime(bookq)
+			cells[CASENUM].innerHTML = bookq.casenum || ""
 			break
 		case STAFFNAME:
 			cells[STAFFNAME].innerHTML = bookq.staffname
 			break
 		case HN:
 			cells[HN].innerHTML = bookq.hn
-			cells[NAME].innerHTML = putNameAge(bookq)
+			cells[PATIENT].innerHTML = putNameAge(bookq)
 			break
 		case DIAGNOSIS:
 			cells[DIAGNOSIS].innerHTML = bookq.diagnosis
@@ -819,11 +863,17 @@ function storePresentCell(evt, pointing)
 		case OPDATE:
 			getOPDATE(pointing)
 			break
-		case ROOM:
-			getROOM(pointing)
+		case THEATRE:
+			createEditcell(pointing)
+			break
+		case OPROOM:
+			getROOMCASE(pointing, 0)
+			break
+		case OPTIME:
+			getOPTIME(pointing)
 			break
 		case CASENUM:
-			getCASENUM(pointing)
+			getROOMCASE(pointing, 1)
 			break
 		case STAFFNAME:
 			getSTAFFNAME(pointing)
@@ -831,7 +881,7 @@ function storePresentCell(evt, pointing)
 		case HN:
 			getHN(evt, pointing)
 			break
-		case NAME:
+		case PATIENT:
 			getNAME(evt, pointing)
 			break
 		case DIAGNOSIS:
@@ -852,89 +902,74 @@ function getOPDATE(pointing)
 	mainMenu(pointing)
 }
 
-function getROOM(pointing)
+function getROOMCASE(pointing, num)
 {
-	var ORROOM = "4",
-		val = pointing.innerHTML || ORROOM,
+	var	oldval = pointing.innerHTML,
 		$editcell = $("#editcell"),
-		room = "",
-		html = '<input id="spin" readonly>'
+		newval = "",
+		html = '<input id="spin">'
 
 	// no case
-	if ( !$(pointing).siblings(":last").html() ) { return }
+	// no oproom
+	if ( !$(pointing).siblings(":last").html() ||
+		num && !$(pointing).closest("tr").find("td").eq(OPROOM).html() ) {
+		savePreviousCell()
+		clearEditcell()
+		return
+	}
 
 	createEditcell(pointing)
-	if ($editcell.css("height") < "60px") {
-		$editcell.css("height", 60)
-	}
-	$editcell.css("width", 55)
+	$editcell.css("width", 40)
 	$editcell.html(html)
 
 	var	$spin = $("#spin")
-	$spin.val(val)
+	$spin.css("width", 35)
+	$spin.val(oldval)
 	$spin.spinner({
-		min: 0,
+		min: num,
 		max: 99,
 		step: 1,
+		// make newval 0 as blank value
 		spin: function( event, ui ) {
-			room = ui.value || ""
+			newval = ui.value || ""
 		},
 		stop: function( event, ui ) {
-			$spin.val(room)
-			room = ""	
+			$spin.val(newval)
+			newval = ""	
 		}
 	});
 	clearTimeout(gv.timer)
 }
 
-function getCASENUM(pointing)
+function getOPTIME(pointing)
 {
-	var CASENUM	= "1",
-		val = pointing.innerHTML || CASENUM,
-		numtime = val.split("<br>"),
-		num = numtime[0],
-		time = numtime[1],
-		ortime = "",
+	var	oldtime = pointing.innerHTML || "09.00",
 		$editcell = $("#editcell"),
-		html = '<input id="spin" readonly><input id="time" readonly>'
+		newtime = "",
+		html = '<input id="spin">'
 
-	if ( !$(pointing).prev().html() ) { return }
-
-	if (val.indexOf("<br>") === -1) {
-		num = val
-		time = ""
-	}
+	// no case
+	if ( !$(pointing).siblings(":last").html() ) { return }
 
 	createEditcell(pointing)
-	if ($editcell.css("height") < "65px") {
-		$editcell.css("height", 65)
-	}
-	$editcell.css("width", 70)
+	$editcell.css("width", 65)
 	$editcell.html(html)
 
-	var	$spin = $("#spin")
-	$spin.val(num)
+	$spin = $("#spin")
+	$spin.css("width", 60)
 	$spin.spinner({
-		min: 1,
-		max: 99,
-		step: 1
-	});
-
-	$time = $("#time")
-	$time.val(time)
-	$time.spinner({
 		min: 00,
 		max: 24,
 		step: 0.5,
 		create: function( event, ui ) {
-			$time.val(time)
+			$spin.val(oldtime)
 		},
 		spin: function( event, ui ) {
-			ortime = decimalToTime(ui.value)
+			newtime = decimalToTime(ui.value)
 		},
 		stop: function( event, ui ) {
-			$time.val(ortime)
-			ortime = ""	
+			$spin.val(newtime)
+			newtime = ""	
 		}
 	})
 	clearTimeout(gv.timer)
