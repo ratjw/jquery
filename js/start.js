@@ -329,6 +329,8 @@ function changeOncall(pointing, opdate, staffname)
 
 function resetTimer()
 {
+	if (gv.mobile) { return }
+
 	// gv.timer is just an id, not the clock
 	// poke server every 10 sec.
 	clearTimeout(gv.timer)

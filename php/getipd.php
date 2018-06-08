@@ -12,7 +12,7 @@ require_once "mysqli.php";
 	$to = $_POST["to"];
 	$sql = $_POST["sql"];
 
-	$result = $mysqli->query ("SELECT opdate, hn, admit, discharge, qn
+	$result = $mysqli->query ("SELECT hn, admit, discharge, qn
 		FROM book
 		WHERE opdate BETWEEN '$from' AND '$to';");
 
@@ -30,6 +30,9 @@ require_once "mysqli.php";
 		if ($oldAdmit && $oldDischarge) {
 			continue;
 		}
+
+		$hn = $case[$i]["hn"];
+		$qn = $case[$i]["qn"];
 
 		$ipd = getipd($hn);
 
@@ -55,8 +58,7 @@ require_once "mysqli.php";
 				$discharge = "discharge='$newDischarge',";
 		}
 		if ($admit || $discharge) {
-			$mysqli->query ("UPDATE book SET .$admit.$discharge.editor='getipd'
-										 WHERE qn=$qn;");
+			$mysqli->query("UPDATE book SET $admit$discharge editor='getipd' WHERE qn=$qn;");
 			$update = true;
 		}
 	}
