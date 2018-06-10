@@ -329,8 +329,6 @@ function changeOncall(pointing, opdate, staffname)
 
 function resetTimer()
 {
-	if (gv.mobile) { return }
-
 	// gv.timer is just an id, not the clock
 	// poke server every 10 sec.
 	clearTimeout(gv.timer)
@@ -360,7 +358,7 @@ function updating()
 				clearMouseoverTR()
 			}
 			// idling (59+1)*10 = 10 minutes, logout
-			else if (gv.idleCounter > 59) {
+			else if (gv.idleCounter > 59 && !gv.mobile) {
 				history.back()
 				gv.idleCounter = 0
 				// may not successfully access the history
