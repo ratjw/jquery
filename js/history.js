@@ -386,7 +386,7 @@ function pagination($dialog, $tbl, book, search)
 
 	function showOneWeek(book, Monday, offset)
 	{
-		var	bookOneWeek
+		var	bookOneWeek, Sunday
 
 		firstday = Monday.nextdays(offset)
 		if (firstday < beginday) { firstday = getPrevMonday(beginday) }
@@ -433,6 +433,12 @@ function pagination($dialog, $tbl, book, search)
 
 	function showAllCases(bookOneWeek, Monday, Sunday)
 	{
+		var	Mon = Monday && Monday.thDate() || "",
+			Sun = Sunday && Sunday.thDate() || ""
+
+		$dialog.dialog({
+			title: search + " : " + Mon + " - " + Sun
+		})
 		// delete previous table lest it accumulates
 		$tbl.find('tr').slice(1).remove()
 
