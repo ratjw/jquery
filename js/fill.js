@@ -573,9 +573,9 @@ function delHoliday(that)
 }
 
 function getHolidayEng(vname) {
-	return Object.keys(HOLIDAYENGTHAI).find(function(key) {
+	return $.grep(Object.keys(HOLIDAYENGTHAI), function(key) {
 		return HOLIDAYENGTHAI[key] === vname
-	})
+	})[0]
 }
 
 function holidayInputBack($inputRow)
