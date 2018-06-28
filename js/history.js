@@ -194,9 +194,9 @@ jQuery.fn.extend({
 				q.qn
 			]
 
-		cells[0].className = "toUndelete"
 		rowDecoration(this[0], q.opdate)
 		dataforEachCell(cells, data)
+		cells[0].className += " toUndelete"
 	}
 })
 
