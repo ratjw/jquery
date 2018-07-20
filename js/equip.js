@@ -230,6 +230,8 @@ function Checklistequip()
 //*** have to set equip padding to top:70px; bottom:70px
 function printpaper()
 {
+	var temp
+
 	if (/Edge|MS/.test(navigator.userAgent)) {
 		var orgEquip = document.getElementById('dialogEquip');
 		orgEquip.style.paddingLeft = 0 + "px"
