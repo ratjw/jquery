@@ -10,6 +10,7 @@ function Start(userid)
 
 	$("#login").remove()
 	$("#logo").remove()
+	$("head style").html($("body link"))
 	$("#wrapper").show()
 }
 	
