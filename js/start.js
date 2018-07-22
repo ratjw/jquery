@@ -78,44 +78,46 @@ function startEditable()
 	// Prevent the backspace key from navigating back.
 	$(document).off('keydown').on('keydown', function (event) {
 		if (event.keydate === 8) {
-			var doPrevent = true;
+			var doPrevent = true
 			var types = ["text", "password", "file", "search", "email", "number",
 						"date", "color", "datetime", "datetime-local", "month", "range",
-						"search", "tel", "time", "url", "week"];
-			var d = $(event.srcElement || event.target);
-			var disabled = d.prop("readonly") || d.prop("disabled");
+						"search", "tel", "time", "url", "week"]
+			var d = $(event.srcElement || event.target)
+			var disabled = d.prop("readonly") || d.prop("disabled")
 			if (!disabled) {
 				if (d[0].isContentEditable) {
-					doPrevent = false;
+					doPrevent = false
 				} else if (d.is("input")) {
-					var type = d.attr("type");
+					var type = d.attr("type")
 					if (type) {
-						type = type.toLowerCase();
+						type = type.toLowerCase()
 					}
 					if (types.indexOf(type) > -1) {
-						doPrevent = false;
+						doPrevent = false
 					}
 				} else if (d.is("textarea")) {
-					doPrevent = false;
+					doPrevent = false
 				}
 			}
 			if (doPrevent) {
-				event.preventDefault();
-				return false;
+				event.preventDefault()
+				return false
 			}
 		}
 	});
 
 	var $editcell = $("#editcell")
 	$editcell.on("keydown", function (event) {
-		resetTimer();
-		gv.idleCounter = 0
 		var keydate = event.which || window.event.keydate
 		var pointing = $editcell.data("pointing")
 		if ($('#dialogService').is(':visible')) {
 			Skeyin(event, keydate, pointing)
 		} else {
 			keyin(event, keydate, pointing)
+		}
+		if (!$("#spin").length) {
+			resetTimer()
+			gv.idleCounter = 0
 		}
 	})
 

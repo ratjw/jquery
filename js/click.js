@@ -70,14 +70,7 @@ function savePreviousCell()
 	if ($("#spin").is(":visible")) {
 		newcontent = $("#spin").val()
 	}
-/*
-	if (column === OPTIME) {
-		newcontent = newcontent
-			? strtoTime(newcontent)
-			: $("#spin").val()
-		if (newcontent === false) { newcontent = oldcontent }
-	}
-*/
+
 	if (!pointed || (oldcontent === newcontent)) {
 		return false
 	}
@@ -202,12 +195,12 @@ function saveOpRoom(pointed, newcontent)
 			sql += sqlCaseNum(i + 1, allOldCases[i])
 		}
 
-		if (newcontent === "0") {
+		if (newcontent === "") {
 			sql += sqlNewRoom(null, null, qn)
 		}
 	}
 
-	if (newcontent !== "0") {
+	if (newcontent) {
 		allNewCases = sameDateRoomTableQN(opdateth, newcontent, theatre)
 		if (casenum) {
 			allNewCases.splice(casenum-1, 0, qn)
@@ -264,7 +257,7 @@ function saveCaseNum(pointed, newcontent)
 	var $cells = $(pointed).closest("tr").find("td"),
 		opdateth = $cells[OPDATE].innerHTML,
 		opdate = getOpdate(opdateth),
-		theatre = $cell[THEATRE].innerHTML,
+		theatre = $cells[THEATRE].innerHTML,
 		oproom = $cells[OPROOM].innerHTML,
 		qn = $cells[QN].innerHTML,
 		index,
@@ -274,7 +267,11 @@ function saveCaseNum(pointed, newcontent)
 	allCases = sameDateRoomTableQN(opdateth, oproom, theatre)
 	index = allCases.indexOf(qn)
 	allCases.splice(index, 1)
-	allCases.splice(newcontent - 1, 0, qn)
+	if (newcontent === "") {
+		sql += sqlCaseNum(null, qn)
+	} else {
+		allCases.splice(newcontent - 1, 0, qn)
+	}
 
 	for (var i=0; i<allCases.length; i++) {
 		if (allCases[i] === qn) {
@@ -867,13 +864,13 @@ function storePresentCell(evt, pointing)
 			createEditcell(pointing)
 			break
 		case OPROOM:
-			getROOMCASE(pointing, 0)
+			getROOMCASE(pointing)
 			break
 		case OPTIME:
 			getOPTIME(pointing)
 			break
 		case CASENUM:
-			getROOMCASE(pointing, 1)
+			getROOMCASE(pointing)
 			break
 		case STAFFNAME:
 			getSTAFFNAME(pointing)
@@ -902,17 +899,17 @@ function getOPDATE(pointing)
 	mainMenu(pointing)
 }
 
-function getROOMCASE(pointing, num)
+function getROOMCASE(pointing)
 {
-	var	oldval = pointing.innerHTML,
+	var	noPatient = !$(pointing).siblings(":last").html(),
+		noRoom = !$(pointing).closest("tr").find("td").eq(OPROOM).html(),
+		getCasenum = pointing.cellIndex === CASENUM,
+		oldval = pointing.innerHTML,
 		$editcell = $("#editcell"),
-		newval = "",
+		newval = null,
 		html = '<input id="spin">'
 
-	// no case
-	// no oproom
-	if ( !$(pointing).siblings(":last").html() ||
-		num && !$(pointing).closest("tr").find("td").eq(OPROOM).html() ) {
+	if ( noPatient || getCasenum && noRoom ) {
 		savePreviousCell()
 		clearEditcell()
 		return
@@ -926,7 +923,7 @@ function getROOMCASE(pointing, num)
 	$spin.css("width", 35)
 	$spin.val(oldval)
 	$spin.spinner({
-		min: num,
+		min: 0,
 		max: 99,
 		step: 1,
 		// make newval 0 as blank value
@@ -934,10 +931,13 @@ function getROOMCASE(pointing, num)
 			newval = ui.value || ""
 		},
 		stop: function( event, ui ) {
-			$spin.val(newval)
-			newval = ""	
+			if (newval !== null) {
+				$spin.val(newval)
+				newval = null
+			}
 		}
-	});
+	})
+	$spin.focus()
 	clearTimeout(gv.timer)
 }
 
@@ -945,7 +945,7 @@ function getOPTIME(pointing)
 {
 	var	oldtime = pointing.innerHTML || "09.00",
 		$editcell = $("#editcell"),
-		newtime = "",
+		newtime,
 		html = '<input id="spin">'
 
 	// no case
@@ -968,10 +968,13 @@ function getOPTIME(pointing)
 			newtime = decimalToTime(ui.value)
 		},
 		stop: function( event, ui ) {
-			$spin.val(newtime)
-			newtime = ""	
+			if (newtime !== undefined) {
+				$spin.val(newtime)
+				newtime = ""
+			}
 		}
 	})
+	$spin.focus()
 	clearTimeout(gv.timer)
 }
 

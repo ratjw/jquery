@@ -230,8 +230,6 @@ function Checklistequip()
 //*** have to set equip padding to top:70px; bottom:70px
 function printpaper()
 {
-	var temp
-
 	if (/Edge|MS/.test(navigator.userAgent)) {
 		var orgEquip = document.getElementById('dialogEquip');
 		orgEquip.style.paddingLeft = 0 + "px"
@@ -240,45 +238,10 @@ function printpaper()
 		win.document.open();
 		win.document.write('<LINK type="text/css" rel="stylesheet" href="css/print.css">');
 		win.document.writeln(orgEquip.outerHTML);
-		win.document.getElementById('dialogEquip').id = "printEquip" 
 
-		var originEquip = orgEquip.getElementsByTagName("INPUT");
-		var printEquip = win.document.getElementById('printEquip').getElementsByTagName("INPUT");
-		for (var i = 0; i < originEquip.length; i++) 
-		{
-			if (originEquip[i].checked) {
-				printEquip[i].checked = originEquip[i].checked
-			}
-			else if (originEquip[i].value) {
-				printEquip[i].value = originEquip[i].value
-			}
-			else {
-				temp = printEquip[i]
-				while (temp.nodeName !== "SPAN") {
-					temp = temp.parentNode
-				}
-				temp.className = "pale"
-				//pale color for no input items
-			}
-		}
+		var dialogEquip = win.document.getElementById('dialogEquip')
 
-		var originEquip = orgEquip.getElementsByTagName("TEXTAREA");
-		var printEquip = dialogEquip.getElementsByTagName("TEXTAREA");
-
-		for (var i = 0; i < originEquip.length; i++) 
-		{
-			if (originEquip[i].value) {
-				printEquip[i].value = originEquip[i].value
-			}
-			else {
-				temp = printEquip[i]
-				while (temp.nodeName !== "SPAN") {
-					temp = temp.parentNode
-				}
-				temp.className = "pale"
-				//pale color for no input items
-			}
-		}
+		preparePrint(orgEquip, dialogEquip)
 
 		win.document.close();
 		win.focus();
@@ -292,51 +255,53 @@ function printpaper()
 		orgEquip.style.paddingLeft = 0 + "px"
 		orgEquip.style.marginLeft = 0 + "px"
 		document.body.innerHTML = orgEquip.outerHTML;
+
 		var dialogEquip = document.getElementById('dialogEquip');
 
-		var originEquip = orgEquip.getElementsByTagName("INPUT");
-		var printEquip = dialogEquip.getElementsByTagName("INPUT");
-
-		for (var i = 0; i < originEquip.length; i++) 
-		{
-			if (originEquip[i].checked) {
-				printEquip[i].checked = originEquip[i].checked
-			}
-			else if (originEquip[i].value) {
-				printEquip[i].value = originEquip[i].value
-			}
-			else {
-				temp = printEquip[i]
-				while (temp.nodeName !== "SPAN") {
-					temp = temp.parentNode
-				}
-				temp.className = "pale"
-				//pale color for no input items
-			}
-		}
-
-		var originEquip = orgEquip.getElementsByTagName("TEXTAREA");
-		var printEquip = dialogEquip.getElementsByTagName("TEXTAREA");
-
-		for (var i = 0; i < originEquip.length; i++) 
-		{
-			if (originEquip[i].value) {
-				printEquip[i].value = originEquip[i].value
-			}
-			else {
-				temp = printEquip[i]
-				while (temp.nodeName !== "SPAN") {
-					temp = temp.parentNode
-				}
-				temp.className = "pale"
-				//pale color for no input items
-			}
-		}
+		preparePrint(orgEquip, dialogEquip)
 
 		window.focus();
 		window.print();
 		document.body.innerHTML = original;
 		document.getElementById('dialogEquip').scrollIntoView(true);
 		location.reload();
+	}
+}
+
+function preparePrint(orgEquip, dialogEquip)
+{
+	var originINPUT = orgEquip.getElementsByTagName("INPUT");
+	var printINPUT = dialogEquip.getElementsByTagName("INPUT");
+	var originTEXTAREA = orgEquip.getElementsByTagName("TEXTAREA");
+	var printTEXTAREA = dialogEquip.getElementsByTagName("TEXTAREA");
+
+	for (var i = 0; i < originINPUT.length; i++) 
+	{
+		if (originINPUT[i].checked) {
+			printINPUT[i].checked = originINPUT[i].checked
+		}
+		else {
+			prepareText(originINPUT, printINPUT)
+		}
+	}
+
+	prepareText(originTEXTAREA, printTEXTAREA)
+}
+
+function prepareText(originEquip, printEquip)
+{
+	for (var i = 0; i < originEquip.length; i++) 
+	{
+		if (originEquip[i].value) {
+			printEquip[i].value = originEquip[i].value
+		}
+		else {
+			var temp = printEquip[i]
+			while (temp.nodeName !== "SPAN") {
+				temp = temp.parentNode
+			}
+			temp.className = "pale"
+			//pale color for no input items
+		}
 	}
 }

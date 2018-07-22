@@ -391,10 +391,10 @@ function calcWaitnum(thisOpdate, $prevrow, $nextrow)
 
 function decimalToTime(dec)
 {
+	if (dec === 0) { return "" }
+
 	var	integer = Math.floor(dec),
 		decimal = dec - integer
-
-	if (dec === 0) { return "" }
 
 	return [
 		(integer < 10) ? "0" + integer : "" + integer,
