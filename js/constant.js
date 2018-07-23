@@ -15,8 +15,9 @@ HN			= 6,
 PATIENT		= 7,
 DIAGNOSIS	= 8,
 TREATMENT	= 9,
-CONTACT		= 10,
-QN			= 11,
+EQUIPMENT	= 10,
+CONTACT		= 11,
+QN			= 12,
 
 //servicetbl
 CASENUMSV	= 0,

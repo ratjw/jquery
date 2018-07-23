@@ -127,7 +127,9 @@ function menustyle($me, $target)
 // blank row: a row with no case, and is not the only row of this date
 function checkblank($row, opdate)
 {
-	if ($row.prev().find("td").eq(OPDATE).html().numDate() === opdate) {
+	var	prevDate = $row.prev().find("td").eq(OPDATE).html() || ""
+
+	if (prevDate.numDate() === opdate) {
 		return true
 	} else {
 		return false
@@ -135,7 +137,6 @@ function checkblank($row, opdate)
 }
 
 // $row is the pointing (clicked) row
-// queuetbl has no equip icon
 function addnewrow(tableID, $row)
 {
 	var keepcell = tableID === "tbl" ? OPDATE : STAFFNAME

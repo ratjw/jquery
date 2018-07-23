@@ -75,9 +75,9 @@ jQuery.fn.extend({
 				q.staffname,
 				q.diagnosis,
 				q.treatment,
+				showEquip(q.equipment),
 				q.admission,
 				q.final,
-				showEquip(q.equipment),
 				q.contact,
 				q.editor,
 				q.editdatetime
@@ -91,24 +91,6 @@ jQuery.fn.extend({
 		dataforEachCell(cells, data)
 	}
 })
-
-function showEquip(equipString)
-{
-	var equip = ""
-
-	if (equipString) {
-		var equipHistory = JSON.parse(equipString)
-		$.each(equipHistory, function(key, value) {
-			if (value === "checked") {
-					var itemname = $('#' + key).closest('div').prop("title")
-				equip += (itemname + ":" + key + ", ")
-			} else {
-				equip += (key + ":" + value + ", ")
-			}
-		} )
-	}
-	return equip
-}
 
 function deletedCases()
 {
@@ -501,6 +483,7 @@ jQuery.fn.extend({
 				q.patient,
 				q.diagnosis,
 				q.treatment,
+				showEquip(q.equipment),
 				q.admission,
 				q.final,
 				q.contact
@@ -734,6 +717,7 @@ jQuery.fn.extend({
 				q.patient,
 				q.diagnosis,
 				q.treatment,
+				showEquip(q.equipment),
 				q.admission,
 				q.final,
 				q.contact

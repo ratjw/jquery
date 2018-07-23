@@ -31,6 +31,7 @@
      <th>Patient</th>
      <th>Diagnosis</th>
      <th>Treatment</th>
+     <th>Equipment</th>
      <th>Contact</th>
      <th></th>
 	 </tr>
@@ -67,6 +68,7 @@
 	<td data-title="Patient"></td>
 	<td data-title="Diagnosis"></td>
 	<td data-title="Treatment"></td>
+	<td data-title="Equipment"></td>
 	<td data-title="Contact"></td>
 	<td></td>
   </tr>
@@ -326,9 +328,9 @@
 	<th>Staff</th>
 	<th>Diagnosis</th>
 	<th>Treatment</th>
+	<th>Equipment</th>
 	<th>Admission Status</th>
 	<th>Final Status</th>
-	<th>Equipment</th>
 	<th>Contact</th>
 	<th>Editor</th>
 	<th>Edited When</th>
@@ -348,9 +350,9 @@
     <td data-title="Staff"></td>
     <td data-title="Diagnosis"></td>
     <td data-title="Treatment"></td>
+    <td data-title="Equipment"></td>
     <td data-title="Admission Status"></td>
     <td data-title="Final Status"></td>
-    <td data-title="Equipment"></td>
     <td data-title="Contact"></td>
     <td data-title="Editor"></td>
     <td data-title="Edited When"></td>
@@ -410,6 +412,7 @@
 	<th>Patient</th>
 	<th>Diagnosis</th>
 	<th>Treatment</th>
+	<th>Equipment</th>
 	<th>Admission Status</th>
 	<th>Final Status</th>
 	<th>Contact</th>
@@ -429,6 +432,7 @@
     <td data-title="Patient"></td>
     <td data-title="Diagnosis"></td>
     <td data-title="Treatment"></td>
+    <td data-title="Equipment"></td>
     <td data-title="Admission Status"></td>
     <td data-title="Final Status"></td>
     <td data-title="Contact"></td>
@@ -464,6 +468,7 @@
 	<th>Patient</th>
 	<th>Diagnosis</th>
 	<th>Treatment</th>
+	<th>Equipment</th>
 	<th>Admission Status</th>
 	<th>Final Status</th>
 	<th>Contact</th>
@@ -483,6 +488,7 @@
     <td data-title="Patient"></td>
     <td data-title="Diagnosis"></td>
     <td data-title="Treatment"></td>
+    <td data-title="Equipment"></td>
     <td data-title="Admission Status"></td>
     <td data-title="Final Status"></td>
     <td data-title="Contact"></td>
@@ -618,15 +624,13 @@
 <div id="editcell" contenteditable="true"></div>
 
 <div id="dialogEquip" class="dialogBox">
- <div>
   <span class="w100">ห้อง <span id="oproom"></span></span>
   <span class="w80">Case <span id="casenum"></span></span>
   <span class="w120">เวลา <span id="optime"></span></span>
   <span class="w200">วัน<span id="opday"></span>ที่ <span id="opdate"></span></span>
   <span class="w150">Surgeon <span id="staffname"></span></span>
- </div>
  <br>
- <div>
+ <br>
   <span class="w110">ชื่อ-นามสกุล </span><span id="patientname"></span>
   <span class="w20"></span>อายุ <span id="age"></span>
   <span class="w20"></span>HN <span id="hn"></span>
@@ -636,7 +640,7 @@
   <br>
   <span class="w110 floatleft">Operation</span>
   <span class="w540" id="treatment"></span>
- </div>
+ <br>
  <br>
  <div title="ส่วนเกิน">
   <span class="w110"></span>
@@ -649,7 +653,7 @@
  </div>
  <br>
  <div title="Position">
-  <span id="clearPosition" class="w110">Position <small>(คลิกลบ)</small></span>
+  <span class="w110" id="clearPosition">Position <small>(คลิกลบ)</small></span>
   <span class="w215">
 	<input type="radio" name="pose" id="leftSupine">
 	<label for="leftSupine">หงาย ซ้ายขึ้น หันหน้าไปขวา</label>
@@ -700,9 +704,7 @@
   </span>
   <br>
   <span class="w120"></span>
-  <span>
-    <input type="text" id="position">
-  </span>
+  <span><input type="text" class="w500" id="position"></span>
  </div>
  <br>
  <div title="Imaging">
@@ -733,9 +735,7 @@
   </span>
   <br>
   <span class="w120"></span>
-  <span>
-    <input type="text" id="Imaging">
-  </span>
+  <span><input type="text" class="w500" id="Imaging"></span>
  </div>
  <br>
  <div title="อุปกรณ์ยึดศีรษะ">
@@ -754,9 +754,7 @@
   </span>
   <br>
   <span class="w120"></span>
-  <span>
-    <input type="text" class="w500" id="headHolder">
-  </span>
+  <span><input type="text" class="w500" id="headHolder"></span>
  </div>
  <br>
  <div title="เครื่องตัดกระดูก">
@@ -775,9 +773,7 @@
   </span>
   <br>
   <span class="w120"></span>
-  <span>
-    <input type="text" class="w500" id="Craniotome">
-  </span>
+  <span><input type="text" class="w500" id="Craniotome"></span>
  </div>
  <br>
  <div title="กล้อง">
@@ -796,9 +792,7 @@
   </span>
   <br>
   <span class="w120"></span>
-  <span>
-    <input type="text" placeholder="ระบุยี่ห้อ" class="w500" id="scope">
-  </span>
+  <span><input type="text" placeholder="ระบุยี่ห้อ" class="w500" id="scope"></span>
  </div>
  <br>
  <div title="Retractor">
@@ -817,9 +811,7 @@
   </span>
   <br>
   <span class="w120"></span>
-  <span>
-    <input type="text" class="w500" id="Retractor">
-  </span>
+  <span><input type="text" class="w500" id="Retractor"></span>
  </div>
  <br>
  <div title="CUSA">
@@ -838,9 +830,7 @@
   </span>
   <br>
   <span class="w120"></span>
-  <span>
-    <input type="text" class="w500" id="CUSA">
-  </span>
+  <span><input type="text" class="w500" id="CUSA"></span>
  </div>
  <br>
  <div title="U/S">
@@ -859,13 +849,11 @@
   </span>
   <br>
   <span class="w120"></span>
-  <span>
-   <input type="text" class="w500" id="US">
-  </span>
+  <span><input type="text" class="w500" id="US"></span>
  </div>
  <br>
  <div title="Shunt">
-  <span id="clearShunt" class="w110">Shunt <small>(คลิกลบ)</small></span>
+  <span class="w110" id="clearShunt">Shunt <small>(คลิกลบ)</small></span>
   <span class="w70">Pudenz</span>
   <span class="w22">หัว</span>
   <span class="w50">
@@ -906,22 +894,17 @@
   </span>
   <br>
   <span class="w120"></span>
-  <span>
-    <input type="text" id="Shunt">
-  </span>
+  <span><input type="text" class="w500" id="Shunt"></span>
  </div>
  <br>
  <div title="เครื่องมือบริษัท">
   <span class="w110">เครื่องมือบริษัท </span>
   <span class="w150">เวลาส่งเครื่อง 
-	<input type="text" class="w40  textcenter" id="equiptime"> น. 
-  </span>
+	<input type="text" class="w40 textcenter" id="equiptime"> น. 
   </span>
   <br>
   <span class="w120"></span>
-  <span>
-    <input type="text" placeholder="ชื่อบริษัท ชื่อเครื่องมือ" class="w500" id="company">
-  </span>
+  <span><input type="text" placeholder="ชื่อบริษัท ชื่อเครื่องมือ" class="w500" id="company"></span>
  </div>
  <br>
  <div title="อุปกรณ์อื่นๆ">
@@ -936,9 +919,7 @@
   </span>
   <br>
   <span class="w120"></span>
-  <span>
-    <input type="text" class="w500" id="other">
-  </span>
+  <span><input type="text" class="w500" id="other"></span>
  </div>
  <br>
  <div title="Monitor">
@@ -952,9 +933,7 @@
   <span class="w65"><input type="checkbox" id="MEP"><label for="MEP">MEP</label></span>
   <br>
   <span class="w120"></span>
-  <span>
-    <input type="text" placeholder="อื่นๆ" class="w500" id="Monitor">
-  </span>
+  <span><input type="text" placeholder="อื่นๆ" class="w500" id="Monitor"></span>
  </div>
  <br>
  <div title="Notice">

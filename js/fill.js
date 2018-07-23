@@ -139,7 +139,6 @@ function refillOneDay(opdate)
 		$cells.eq(STAFFNAME).html(showStaffOnCall(opdate))
 		$cells.eq(HN).removeClass("pacs")
 		$cells.eq(PATIENT).removeClass("camera")
-		$cells.eq(TREATMENT).removeClass("equip")
 		$cells.eq(DIAGNOSIS).css("backgroundImage", holiday(opdate))
 	} else {
 		if (tblRows > bookRows) {
@@ -198,6 +197,7 @@ function fillblank(rowi)
 	cells[PATIENT].className = ""
 	cells[DIAGNOSIS].innerHTML = ""
 	cells[TREATMENT].innerHTML = ""
+	cells[EQUIPMENT].innerHTML = ""
 	cells[CONTACT].innerHTML = ""
 	cells[QN].innerHTML = ""
 }
@@ -209,7 +209,6 @@ function filldata(bookq, row)
 	row.title = bookq.waitnum
 	if (bookq.hn && gv.isPACS) { cells[HN].className = "pacs" }
 	if (bookq.patient) { cells[PATIENT].className = "camera" }
-	if (bookq.treatment) { cells[TREATMENT].className = "equip" }
 
 	cells[THEATRE].innerHTML = bookq.theatre
 	cells[OPROOM].innerHTML = bookq.oproom || ""
@@ -220,6 +219,7 @@ function filldata(bookq, row)
 	cells[PATIENT].innerHTML = putNameAge(bookq)
 	cells[DIAGNOSIS].innerHTML = bookq.diagnosis
 	cells[TREATMENT].innerHTML = bookq.treatment
+	cells[EQUIPMENT].innerHTML = showEquip(bookq.equipment)
 	cells[CONTACT].innerHTML = bookq.contact
 	cells[QN].innerHTML = bookq.qn
 }
@@ -321,6 +321,7 @@ jQuery.fn.extend({
 		$cells[PATIENT].innerHTML = putNameAge(bookq)
 		$cells[DIAGNOSIS].innerHTML = bookq.diagnosis
 		$cells[TREATMENT].innerHTML = bookq.treatment
+		$cells[EQUIPMENT].innerHTML = showEquip(bookq.equipment)
 		$cells[CONTACT].innerHTML = bookq.contact
 		$cells[QN].innerHTML = bookq.qn
 	}
@@ -329,10 +330,10 @@ jQuery.fn.extend({
 // hover on background pics
 function hoverMain()
 {
-	var	paleClasses = ["pacs", "camera", "equip"],
-		boldClasses = ["pacs2", "camera2", "equip2"]
+	var	paleClasses = ["pacs", "camera"],
+		boldClasses = ["pacs2", "camera2"]
 
-	$("td.pacs, td.camera, td.equip").mousemove(function(event) {
+	$("td.pacs, td.camera").mousemove(function(event) {
 		if (inPicArea(event, this)) {
 			getClass(this, paleClasses, boldClasses)
 		} else {

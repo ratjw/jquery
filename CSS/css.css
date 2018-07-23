@@ -131,9 +131,10 @@ STAFFNAME	= 5,
 #tbl th:nth-child(8),
 #queuetbl th:nth-child(8) { min-width: 70px; width: 10%; }
 
-#tbl th:nth-child(9) { width: 30%; }
-#tbl th:nth-child(10) { width: 30%; }
+#tbl th:nth-child(9) { width: 25%; }
+#tbl th:nth-child(10) { width: 25%; }
 #tbl th:nth-child(11) { width: 20%; }
+#tbl th:nth-child(12) { width: 20%; }
 
 #servicetbl th:nth-child(1) { width: 15px; }
 #servicetbl th:nth-child(2) { width: 50px; }
@@ -152,12 +153,12 @@ STAFFNAME	= 5,
 #historytbl th:nth-child(4) { width: 5%; }
 #historytbl th:nth-child(5) { width: 10%; }
 #historytbl th:nth-child(6) { width: 10%; }
-#historytbl th:nth-child(7) { width: 15%; }
+#historytbl th:nth-child(7) { width: 10%; }
 #historytbl th:nth-child(8) { width: 15%; }
-#historytbl th:nth-child(9) { width: 10%; }
+#historytbl th:nth-child(9) { width: 15%; }
 #historytbl th:nth-child(10) { width: 10%; }
 #historytbl th:nth-child(11) { width: 30px; }
-#historytbl th:nth-child(12) { min-width:50px; width: 50px; max-width:50px }
+#historytbl th:nth-child(12) { width: 50px; }
 
 #deletedtbl th:nth-child(1) { width: 5%; }
 #deletedtbl th:nth-child(2) { width: 5%; }
@@ -167,26 +168,29 @@ STAFFNAME	= 5,
 #deletedtbl th:nth-child(6) { width: 20%; }
 #deletedtbl th:nth-child(7) { width: 20%; }
 #deletedtbl th:nth-child(8) { width: 40px; }
-#deletedtbl th:nth-child(9) { min-width:70px; width: 70px; max-width:70px }
+#deletedtbl th:nth-child(9) { width: 70px; }
 
-#alltbl th:nth-child(1),
+#alltbl th:nth-child(1) { width: 30px; }
+#alltbl th:nth-child(2) { width: 50px; }
+#alltbl th:nth-child(3) { width: 50px; }
+#alltbl th:nth-child(4) { width: 10%; }
+#alltbl th:nth-child(5) { width: 12%; }
+#alltbl th:nth-child(6) { width: 12%; }
+#alltbl th:nth-child(7) { width: 12%; }
+#alltbl th:nth-child(8) { width: 12%; }
+#alltbl th:nth-child(9) { width: 12%; }
+#alltbl th:nth-child(10) { width: 12%; }
+
 #findtbl th:nth-child(1) { width: 30px; }
-#alltbl th:nth-child(2),
 #findtbl th:nth-child(2) { width: 50px; }
-#alltbl th:nth-child(3),
 #findtbl th:nth-child(3) { width: 50px; }
-#alltbl th:nth-child(4),
 #findtbl th:nth-child(4) { width: 10%; }
-#alltbl th:nth-child(5),
-#findtbl th:nth-child(5) { width: 20%; }
-#alltbl th:nth-child(6),
-#findtbl th:nth-child(6) { width: 20%; }
-#alltbl th:nth-child(7),
-#findtbl th:nth-child(7) { width: 20%; }
-#alltbl th:nth-child(8),
-#findtbl th:nth-child(8) { width: 10%; }
-#alltbl th:nth-child(9),
-#findtbl th:nth-child(9) { width: 10%; }
+#findtbl th:nth-child(5) { width: 12%; }
+#findtbl th:nth-child(6) { width: 12%; }
+#findtbl th:nth-child(7) { width: 12%; }
+#findtbl th:nth-child(8) { width: 12%; }
+#findtbl th:nth-child(9) { width: 12%; }
+#findtbl th:nth-child(10) { width: 12%; }
 
 #wrapper,
 #queuewrapper,
@@ -195,7 +199,7 @@ STAFFNAME	= 5,
 #queuetbl th:nth-child(3), #queuetbl td:nth-child(3),
 #queuetbl th:nth-child(4), #queuetbl td:nth-child(4),
 #queuetbl th:nth-child(5), #queuetbl td:nth-child(5),
-#tbl th:nth-child(12), #tbl td:nth-child(12),
+#tbl th:nth-child(13), #tbl td:nth-child(13),
 #queuetbl th:nth-child(12), #queuetbl td:nth-child(12),
 #servicetbl th:nth-child(11), #servicetbl td:nth-child(11),
 #deletedtbl th:nth-child(10), #deletedtbl td:nth-child(10),
@@ -341,8 +345,6 @@ td.pacs { background-image: url(pic/pacs.png); }
 td.pacs2 { background-image: url(pic/pacs2.png); }
 td.camera { background-image: url(pic/camera.png); }
 td.camera2 { background-image: url(pic/camera2.png); }
-td.equip { background-image: url(pic/equip.png); }
-td.equip2 { background-image: url(pic/equip2.png); }
 td.Endovascular { background-image: url(pic/Endovascular.png); }
 td.Radiosurgery { background-image: url(pic/Radiosurgery.png); }
 td.Operation { background-image: url(pic/Operation.png); }

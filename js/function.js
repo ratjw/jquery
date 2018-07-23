@@ -481,6 +481,26 @@ function rowDecoration(row, date)
 	cells[DIAGNOSIS].style.backgroundImage = holiday(date)
 }
 
+function showEquip(equipString)
+{
+	var equip = "",
+		itemname = ""
+
+	if (equipString) {
+		var equipHistory = JSON.parse(equipString)
+		$.each(equipHistory, function(key, value) {
+			if (equip) { equip += ", " }
+			if (value === "checked") {
+				itemname = $('#' + key).closest('div').prop("title")
+				equip += (itemname + ":" + key)
+			} else {
+				equip += (key + ":" + value)
+			}
+		} )
+	}
+	return equip
+}
+
 function findPrevcell(editable, pointing) 
 {
 	var $prevcell = $(pointing)

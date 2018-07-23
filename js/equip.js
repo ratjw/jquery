@@ -227,7 +227,6 @@ function Checklistequip()
 	}
 }
 
-//*** have to set equip padding to top:70px; bottom:70px
 function printpaper()
 {
 	if (/Edge|MS/.test(navigator.userAgent)) {

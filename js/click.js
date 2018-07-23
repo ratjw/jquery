@@ -692,7 +692,6 @@ function fillCellsHN(tableID, qn, $cells)
 
 	if (gv.isPACS) { $cells[HN].className = "pacs" }
 	$cells[PATIENT].className = "camera"
-	if (bookq.treatment) { $cells[TREATMENT].className = "equip" }
 
 	$cells[STAFFNAME].innerHTML = bookq.staffname
 	$cells[HN].innerHTML = bookq.hn
@@ -882,13 +881,12 @@ function storePresentCell(evt, pointing)
 			getNAME(evt, pointing)
 			break
 		case DIAGNOSIS:
-			createEditcell(pointing)
-			break
 		case TREATMENT:
-			getEquip(evt, pointing)
-			break
 		case CONTACT:
 			createEditcell(pointing)
+			break
+		case EQUIPMENT:
+			getEQUIP(pointing)
 			break
 	}
 }
@@ -1028,16 +1026,15 @@ function getNAME(evt, pointing)
 	clearEditcell()
 }
 
-function getEquip(evt, pointing)
+function getEQUIP(pointing)
 {
-	if (inPicArea(evt, pointing)) {
-		var tableID = $(pointing).closest('table').attr('id'),
-			book = ConsultsTbl(tableID)? gv.CONSULT : gv.BOOK,
-			$row = $(pointing).closest('tr'),
-			qn = $row.find("td")[QN].innerHTML
+	var tableID = $(pointing).closest('table').attr('id'),
+		book = ConsultsTbl(tableID)? gv.CONSULT : gv.BOOK,
+		$row = $(pointing).closest('tr'),
+		qn = $row.find("td")[QN].innerHTML
+
+	if (qn) {
 		fillEquipTable(book, $row, qn)
-	} else {
-		createEditcell(pointing)
 	}
 }
 
