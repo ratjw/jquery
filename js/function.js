@@ -492,13 +492,25 @@ function showEquip(equipString)
 			if (equip) { equip += ", " }
 			if (value === "checked") {
 				itemname = $('#' + key).closest('div').prop("title")
-				equip += (itemname + ":" + key)
+				equip += (key)
 			} else {
-				equip += (key + ":" + value)
+				equip += (value)
 			}
 		} )
 	}
-	return equip
+	return equip + "<br>"
+		+ '<img src="css/pic/jpg/CUSA.jpg" height="25" width="30">' + "&nbsp;&nbsp;"
+		+ '<img src="css/pic/jpg/Endoscope.jpg" height="25" width="30">' + "&nbsp;&nbsp;"
+		+ '<img src="css/pic/jpg/Fluoroscope.jpg" height="25" width="30">' + "&nbsp;&nbsp;"
+		+ '<img src="css/pic/jpg/Microscope.jpg" height="25" width="30">' + "&nbsp;&nbsp;"
+		+ '<img src="css/pic/jpg/Monitor.jpg" height="25" width="30">' + "&nbsp;&nbsp;"
+		+ '<img src="css/pic/jpg/Navigator.jpg" height="25" width="30">'
+		+ '<img src="css/pic/jpg/CUSA2.jpg" height="25" width="30">' + "&nbsp;&nbsp;"
+		+ '<img src="css/pic/jpg/Endoscope2.jpg" height="25" width="30">' + "&nbsp;&nbsp;"
+		+ '<img src="css/pic/jpg/Fluoroscope2.jpg" height="25" width="30">' + "&nbsp;&nbsp;"
+		+ '<img src="css/pic/jpg/Microscope2.jpg" height="25" width="30">' + "&nbsp;&nbsp;"
+		+ '<img src="css/pic/jpg/Monitor2.jpg" height="25" width="30">' + "&nbsp;&nbsp;"
+		+ '<img src="css/pic/jpg/Navigator2.jpg" height="25" width="30">'
 }
 
 function findPrevcell(editable, pointing) 

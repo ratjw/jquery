@@ -209,6 +209,7 @@ function filldata(bookq, row)
 	row.title = bookq.waitnum
 	if (bookq.hn && gv.isPACS) { cells[HN].className = "pacs" }
 	if (bookq.patient) { cells[PATIENT].className = "camera" }
+//	cells[EQUIPMENT].className = "cusa endoscope fluoroscope microscope monitor navigator"
 
 	cells[THEATRE].innerHTML = bookq.theatre
 	cells[OPROOM].innerHTML = bookq.oproom || ""

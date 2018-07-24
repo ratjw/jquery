@@ -398,6 +398,16 @@ td.Radiosurgery.Endovascular {
 	background-image: url(pic/Radiosurgery.png), url(pic/Endovascular.png);
 }
 
+td.cusa.endoscope.fluoroscope.microscope.monitor.navigator {
+	background-image:
+		url(pic/jpg/CUSA2.jpg),
+		url(pic/jpg/Endoscope2.jpg),
+		url(pic/jpg/Fluoroscope2.jpg),
+		url(pic/jpg/Microscope2.jpg),
+		url(pic/jpg/Monitor2.jpg),
+		url(pic/jpg/Navigator2.jpg);
+}
+
 .Reoperation { background-color: #CCCCAA !important; }
 .Readmission { background-color: #AACCCC !important; } 
 .Infection { background-color: #CCAAAA !important; }
