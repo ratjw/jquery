@@ -525,6 +525,9 @@ function showEquip(equipString)
 			}
 		})
 	}
+	equipPics = equipPics.filter(function(item, pos) {
+		return equipPics.indexOf(item) === pos;
+	})
 	return equip + "<br>" + equipImg(equipPics)
 }
 
