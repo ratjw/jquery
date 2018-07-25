@@ -511,22 +511,20 @@ function showEquip(equipString)
 	if (equipString) {
 		var equipHistory = JSON.parse(equipString)
 		$.each(equipHistory, function(key, value) {
-			if (key === "copay") {
-				equip += key + ":" + value
-			} else if (key === "Notice") {
-				equip += ", " + key + ":" + value
-			} else if (value === "checked") {
-				equip += ", " + key
+			if (equip) { equip += ", " }
+			if (value === "checked") {
+				equip += key
 				if (key in equipIcons) {
 					equipPics.push(equipIcons[key])
 				}
 			} else {
-				equip += " " + value
+				equip += key + ":" + value
 			}
 		})
 	}
-	equipPics = equipPics.filter(function(item, pos) {
-		return equipPics.indexOf(item) === pos;
+	// remove duplicated pics
+	equipPics = equipPics.filter(function(pic, pos) {
+		return equipPics.indexOf(pic) === pos;
 	})
 	return equip + "<br>" + equipImg(equipPics)
 }

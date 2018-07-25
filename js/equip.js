@@ -65,6 +65,7 @@ function fillEquipTable(book, $row, qn)
 	}
 	$dialogEquip.data("bookqEquip", bookqEquip)
 	$dialogEquip.data("JsonEquip", JsonEquip)
+	$dialogEquip.data("$row", $row)
 	$dialogEquip.data("qn", qn)
 }
 
@@ -176,22 +177,25 @@ function getEditedBy(qn)
 
 function Checklistequip() 
 {
-	var bookqEquip = $('#dialogEquip').data("bookqEquip"),
-		JsonEquip = $('#dialogEquip').data("JsonEquip"),
-		qn = $('#dialogEquip').data("qn"),
-		equipment = {}
+	var	$dialogEquip = $("#dialogEquip"),
+		bookqEquip = $dialogEquip.data("bookqEquip"),
+		JsonEquip = $dialogEquip.data("JsonEquip"),
+		$row = $dialogEquip.data("$row"),
+		qn = $dialogEquip.data("qn"),
+		equipJSON = {},
+		equipment = ""
 
 	$( "#dialogEquip input, #dialogEquip textarea" ).each( function() {
 		if (this.checked) {
-			equipment[this.id] = "checked"
+			equipJSON[this.id] = "checked"
 		} else if (this.type === "text" || this.type === "textarea") {
 			if (this.value) {
-				equipment[this.id] = this.value
+				equipJSON[this.id] = this.value
 			}
 		}
 	})
 
-	equipment = JSON.stringify(equipment)
+	equipment = JSON.stringify(equipJSON)
 	if (equipment === bookqEquip) {
 		return
 	}
@@ -210,6 +214,10 @@ function Checklistequip()
 	{
 		if (/BOOK/.test(response)) {
 			updateBOOK(response)
+			if ($row.find("td").eq(QN).html() !== qn) {
+				$row = getTableRowByQN("tbl", qn)
+			}
+			$row.find("td").eq(EQUIPMENT).html(showEquip(equipment))
 		} else {
 			// Error in update server
 			// Roll back. If old form has equips, fill checked & texts
