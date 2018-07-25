@@ -100,12 +100,6 @@ table#tbl,
 table#queuetbl {
 	table-layout: auto;
 }
-OPDATE		= 0,
-THEATRE		= 1,
-OPROOM		= 2,
-OPTIME		= 3,
-CASENUM		= 4,
-STAFFNAME	= 5,
 
 #tbl th:first-child,
 #queuetbl th:first-child { min-width: 40px; max-width: 60px; }
@@ -341,71 +335,61 @@ td.Thu:before { content: "พฤหัส "; }
 td.Fri:before { content: "ศุกร์ "; }
 td.Sat:before { content: "เสาร์ "; }
 
-td.pacs { background-image: url(pic/pacs.png); }
-td.pacs2 { background-image: url(pic/pacs2.png); }
-td.camera { background-image: url(pic/camera.png); }
-td.camera2 { background-image: url(pic/camera2.png); }
-td.Endovascular { background-image: url(pic/Endovascular.png); }
-td.Radiosurgery { background-image: url(pic/Radiosurgery.png); }
-td.Operation { background-image: url(pic/Operation.png); }
-td.Operation2 { background-image: url(pic/Operation2.png); }
-td.Reoperation { background-image: url(pic/Reoperation.png); }
-td.Reoperation2 { background-image: url(pic/Reoperation2.png); }
-td.Admission { background-image: url(pic/Admission.png); }
-td.Admission2 { background-image: url(pic/Admission2.png); }
-td.Readmission { background-image: url(pic/Readmission.png); }
-td.Readmission2 { background-image: url(pic/Readmission2.png); }
-td.record { background-image: url(pic/record.png); }
-td.record2 { background-image: url(pic/record2.png); }
+td.pacs { background-image: url(pic/general/pacs.png); }
+td.pacs2 { background-image: url(pic/general/pacs2.png); }
+td.camera { background-image: url(pic/general/camera.png); }
+td.camera2 { background-image: url(pic/general/camera2.png); }
+td.Endovascular { background-image: url(pic/service/Endovascular.png); }
+td.Radiosurgery { background-image: url(pic/service/Radiosurgery.png); }
+td.Operation { background-image: url(pic/service/Operation.png); }
+td.Operation2 { background-image: url(pic/service/Operation2.png); }
+td.Reoperation { background-image: url(pic/service/Reoperation.png); }
+td.Reoperation2 { background-image: url(pic/service/Reoperation2.png); }
+td.Admission { background-image: url(pic/service/Admission.png); }
+td.Admission2 { background-image: url(pic/service/Admission2.png); }
+td.Readmission { background-image: url(pic/service/Readmission.png); }
+td.Readmission2 { background-image: url(pic/service/Readmission2.png); }
+td.record { background-image: url(pic/service/record.png); }
+td.record2 { background-image: url(pic/service/record2.png); }
 
 td.Operation.Radiosurgery.Endovascular {
-	background-image: url(pic/Operation.png), url(pic/Radiosurgery.png), url(pic/Endovascular.png);
+	background-image: url(pic/service/Operation.png), url(pic/service/Radiosurgery.png), url(pic/service/Endovascular.png);
 }
 td.Operation.Radiosurgery {
-	background-image: url(pic/Operation.png), url(pic/Radiosurgery.png);
+	background-image: url(pic/service/Operation.png), url(pic/service/Radiosurgery.png);
 }
 td.Operation.Endovascular {
-	background-image: url(pic/Operation.png), url(pic/Endovascular.png);
+	background-image: url(pic/service/Operation.png), url(pic/service/Endovascular.png);
 }
 td.Operation2.Radiosurgery.Endovascular {
-	background-image: url(pic/Operation2.png), url(pic/Radiosurgery.png), url(pic/Endovascular.png);
+	background-image: url(pic/service/Operation2.png), url(pic/service/Radiosurgery.png), url(pic/service/Endovascular.png);
 }
 td.Operation2.Radiosurgery {
-	background-image: url(pic/Operation2.png), url(pic/Radiosurgery.png);
+	background-image: url(pic/service/Operation2.png), url(pic/service/Radiosurgery.png);
 }
 td.Operation2.Endovascular {
-	background-image: url(pic/Operation2.png), url(pic/Endovascular.png);
+	background-image: url(pic/service/Operation2.png), url(pic/service/Endovascular.png);
 }
 td.Reoperation.Radiosurgery.Endovascular {
-	background-image: url(pic/Reoperation.png), url(pic/Radiosurgery.png), url(pic/Endovascular.png);
+	background-image: url(pic/service/Reoperation.png), url(pic/service/Radiosurgery.png), url(pic/service/Endovascular.png);
 }
 td.Reoperation.Radiosurgery {
-	background-image: url(pic/Reoperation.png), url(pic/Radiosurgery.png);
+	background-image: url(pic/service/Reoperation.png), url(pic/service/Radiosurgery.png);
 }
 td.Reoperation.Endovascular {
-	background-image: url(pic/Reoperation.png), url(pic/Endovascular.png);
+	background-image: url(pic/service/Reoperation.png), url(pic/service/Endovascular.png);
 }
 td.Reoperation2.Radiosurgery.Endovascular {
-	background-image: url(pic/Reoperation2.png), url(pic/Radiosurgery.png), url(pic/Endovascular.png);
+	background-image: url(pic/service/Reoperation2.png), url(pic/service/Radiosurgery.png), url(pic/service/Endovascular.png);
 }
 td.Reoperation2.Radiosurgery {
-	background-image: url(pic/Reoperation2.png), url(pic/Radiosurgery.png);
+	background-image: url(pic/service/Reoperation2.png), url(pic/service/Radiosurgery.png);
 }
 td.Reoperation2.Endovascular {
-	background-image: url(pic/Reoperation2.png), url(pic/Endovascular.png);
+	background-image: url(pic/service/Reoperation2.png), url(pic/service/Endovascular.png);
 }
 td.Radiosurgery.Endovascular {
-	background-image: url(pic/Radiosurgery.png), url(pic/Endovascular.png);
-}
-
-td.cusa.endoscope.fluoroscope.microscope.monitor.navigator {
-	background-image:
-		url(pic/jpg/CUSA2.jpg),
-		url(pic/jpg/Endoscope2.jpg),
-		url(pic/jpg/Fluoroscope2.jpg),
-		url(pic/jpg/Microscope2.jpg),
-		url(pic/jpg/Monitor2.jpg),
-		url(pic/jpg/Navigator2.jpg);
+	background-image: url(pic/service/Radiosurgery.png), url(pic/service/Endovascular.png);
 }
 
 .Reoperation { background-color: #CCCCAA !important; }

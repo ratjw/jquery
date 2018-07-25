@@ -181,12 +181,16 @@ function Checklistequip()
 		qn = $('#dialogEquip').data("qn"),
 		equipment = {}
 
-	$( "#dialogEquip input" ).each( function() {
-		this.checked && (equipment[this.id] = "checked")
+	$( "#dialogEquip input, #dialogEquip textarea" ).each( function() {
+		if (this.checked) {
+			equipment[this.id] = "checked"
+		} else if (this.type === "text" || this.type === "textarea") {
+			if (this.value) {
+				equipment[this.id] = this.value
+			}
+		}
 	})
-	$( "#dialogEquip input[type=text], #dialogEquip textarea" ).each( function() {
-		this.value && (equipment[this.id] = this.value)
-	})
+
 	equipment = JSON.stringify(equipment)
 	if (equipment === bookqEquip) {
 		return

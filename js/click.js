@@ -1115,6 +1115,8 @@ function clearEditcell()
  
 function getText($cell)
 {
+	// TRIM excess spaces at begin, mid, end
+	// remove html tags except <br>
 	var HTMLTRIM		= /^(\s*<[^>]*>)*\s*|\s*(<[^>]*>\s*)*$/g
 	var HTMLNOTBR		= /(<((?!br)[^>]+)>)/ig
 

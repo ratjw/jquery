@@ -46,7 +46,7 @@ function namesix()
 </HEAD>
 <BODY>
 <p id="logo" style="text-align:center;">
-	<img width="170" height="150" src="css/pic/logoRama.png">
+	<img width="170" height="150" src="css/pic/general/logoRama.png">
 </p>
 
 <?php $userid = $password = ""; ?>

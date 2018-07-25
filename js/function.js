@@ -484,33 +484,59 @@ function rowDecoration(row, date)
 function showEquip(equipString)
 {
 	var equip = "",
-		itemname = ""
+		equipIcons = {
+			Fluoroscope: "Fluoroscope",
+			Navigator: "Navigator",
+			Oarm: "Oarm",
+			Robotics: "Robotics",
+			Microscope: "Microscope",
+			ICG: "Microscope",
+			Endoscope: "Endoscope",
+			Excell: "CUSA",
+			Soring: "CUSA",
+			Sonar: "CUSA",
+			ultrasound: "Ultrasound",
+			Doppler: "Ultrasound",
+			Duplex: "Ultrasound",
+			CN5: "Monitor",
+			CN6: "Monitor",
+			CN7: "Monitor",
+			CN8: "Monitor",
+			SSEP: "Monitor",
+			EMG: "Monitor",
+			MEP: "Monitor"
+		},
+		equipPics = []
 
 	if (equipString) {
 		var equipHistory = JSON.parse(equipString)
 		$.each(equipHistory, function(key, value) {
-			if (equip) { equip += ", " }
-			if (value === "checked") {
-				itemname = $('#' + key).closest('div').prop("title")
-				equip += (key)
+			if (key === "copay") {
+				equip += key + ":" + value
+			} else if (key === "Notice") {
+				equip += ", " + key + ":" + value
+			} else if (value === "checked") {
+				equip += ", " + key
+				if (key in equipIcons) {
+					equipPics.push(equipIcons[key])
+				}
 			} else {
-				equip += (value)
+				equip += " " + value
 			}
-		} )
+		})
 	}
-	return equip + "<br>"
-		+ '<img src="css/pic/jpg/CUSA.jpg" height="25" width="30">' + "&nbsp;&nbsp;"
-		+ '<img src="css/pic/jpg/Endoscope.jpg" height="25" width="30">' + "&nbsp;&nbsp;"
-		+ '<img src="css/pic/jpg/Fluoroscope.jpg" height="25" width="30">' + "&nbsp;&nbsp;"
-		+ '<img src="css/pic/jpg/Microscope.jpg" height="25" width="30">' + "&nbsp;&nbsp;"
-		+ '<img src="css/pic/jpg/Monitor.jpg" height="25" width="30">' + "&nbsp;&nbsp;"
-		+ '<img src="css/pic/jpg/Navigator.jpg" height="25" width="30">'
-		+ '<img src="css/pic/jpg/CUSA2.jpg" height="25" width="30">' + "&nbsp;&nbsp;"
-		+ '<img src="css/pic/jpg/Endoscope2.jpg" height="25" width="30">' + "&nbsp;&nbsp;"
-		+ '<img src="css/pic/jpg/Fluoroscope2.jpg" height="25" width="30">' + "&nbsp;&nbsp;"
-		+ '<img src="css/pic/jpg/Microscope2.jpg" height="25" width="30">' + "&nbsp;&nbsp;"
-		+ '<img src="css/pic/jpg/Monitor2.jpg" height="25" width="30">' + "&nbsp;&nbsp;"
-		+ '<img src="css/pic/jpg/Navigator2.jpg" height="25" width="30">'
+	return equip + "<br>" + equipImg(equipPics)
+}
+
+function equipImg(equipPics)
+{
+	var img = ""
+
+	$.each(equipPics, function() {
+		img += '<img src="css/pic/equip/' + this + '.jpg" height="24" width="30"> '
+	})
+
+	return img
 }
 
 function findPrevcell(editable, pointing) 
