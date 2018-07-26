@@ -141,40 +141,83 @@ function fillForRoom(opdate)
 
 function updateBOOK(response)
 {
-	var temp = JSON.parse(response),
-		book = temp.BOOK? temp.BOOK : [],
-		consult = temp.CONSULT? temp.CONSULT : [],
-		staff = temp.STAFF? temp.STAFF : [],
-		timestamp = temp.QTIME
-	gv.BOOK = book
-	gv.CONSULT = consult
-	if (staff.length) { gv.STAFF = staff }
-	gv.timestamp = timestamp
-	// datetime of last fetching from server: $mysqli->query ("SELECT now();")
+	var temp = JSON.parse(response)
+
+	if (temp.BOOK) { gv.BOOK = temp.BOOK }
+	if (temp.CONSULT) { gv.CONSULT = temp.CONSULT }
+	if (temp.STAFF) { gv.STAFF = temp.STAFF }
+	if (temp.ONCALL) { gv.ONCALL = temp.ONCALL }
+	if (temp.HOLIDAY) { gv.HOLIDAY = temp.HOLIDAY }
+	if (temp.QTIME) { gv.timestamp = temp.QTIME }
 }
 
 // Only on main table
 function fillConsults()
 {
-	var table = document.getElementById("tbl")
-	var rows = table.rows
-	var tlen = rows.length
-	var slen = gv.STAFF.length
-	var oncallRow = {}
+	var	table = document.getElementById("tbl"),
+		rows = table.rows,
+		tlen = rows.length,
+		today = new Date().ISOdate(),
+		lastopdate = rows[tlen-1].cells[OPDATE].innerHTML.numDate(),
+		staffoncall = gv.STAFF.filter(function(staff) {
+			return staff.oncall === "1"
+		}),
+		slen = staffoncall.length,
+		nextrow = 1,
+		index = 0,
+		start = staffoncall.filter(function(staff) {
+			return staff.startoncall
+		}).reduce(function(a, b) {
+			return a.startoncall > b.startoncall ? a : b
+		}, 0),
+		dateoncall = start.startoncall,
+		staffstart = start.staffname,
+		oncallRow = {}
 
-	for (var q = 0; q < slen; q++) {
-		oncallRow = findOncallRow(rows, tlen, gv.STAFF[q].dateoncall)
-		if (oncallRow && !oncallRow.cells[QN].innerHTML) {
-			oncallRow.cells[STAFFNAME].innerHTML = htmlwrap(gv.STAFF[q].staffoncall)
-		}
+	// find staff to start
+	while ((index < slen) && (staffoncall[index].staffname !== staffstart)) {
+		index++
 	}
+
+	// find first date to start immediately after today
+	while (dateoncall <= today) {
+		dateoncall = dateoncall.nextdays(7)
+		index++
+	}
+
+	index = index % slen
+	while (dateoncall <= lastopdate) {
+		oncallRow = findOncallRow(rows, nextrow, tlen, dateoncall)
+		if (oncallRow && !oncallRow.cells[HN].innerHTML) {
+			oncallRow.cells[STAFFNAME].innerHTML
+			= oncallRow.cells[STAFFNAME].innerHTML.replace(/<p[^>]*>.*<\/p>/, "")
+			+ htmlwrap(staffoncall[index].staffname)
+		}
+		nextrow = oncallRow.rowIndex + 1
+		dateoncall = dateoncall.nextdays(7)
+		index = (index + 1) % slen
+	}
+
+	nextrow = 1
+	gv.ONCALL.forEach(function(oncall) {
+		dateoncall = oncall.dateoncall
+		if (dateoncall > today) {
+			oncallRow = findOncallRow(rows, nextrow, tlen, dateoncall)
+			if (oncallRow && !oncallRow.cells[HN].innerHTML) {
+				oncallRow.cells[STAFFNAME].innerHTML
+				= oncallRow.cells[STAFFNAME].innerHTML.replace(/<p[^>]*>.*<\/p>/, "")
+				+ htmlwrap(oncall.staffname)
+			}
+			nextrow = oncallRow.rowIndex + 1
+		}
+	})
 }
 
-function findOncallRow(rows, tlen, dateoncall) {
-	
+function findOncallRow(rows, nextrow, tlen, dateoncall)
+{
 	var opdateth = dateoncall && dateoncall.thDate()
 
-	for (var i = 1; i < tlen; i++) {
+	for (var i = nextrow; i < tlen; i++) {
 		if (rows[i].cells[OPDATE].innerHTML === opdateth) {
 			return rows[i]
 		}
@@ -182,17 +225,7 @@ function findOncallRow(rows, tlen, dateoncall) {
 }
 
 function htmlwrap(staffname) {
-	return '<p style="color:#999999;font-size:14px">' + staffname + '</p>'
-}
-
-function showStaffOnCall(opdate) {
-	var i = gv.STAFF.length
-
-	while (i--) {
-		if (gv.STAFF[i].dateoncall === opdate) {
-			return htmlwrap(gv.STAFF[i].staffoncall)
-		}
-	}
+	return '<p style="color:#999999;font-size:14px">Consult<br>' + staffname + '</p>'
 }
 
 function resetTimer()
@@ -223,8 +256,8 @@ function updating()
 		}
 		// idle not more than 10 min.
 		gv.idleCounter += 1
-		if (gv.idleCounter > 59) {
-			window.location = window.location.href
+		if (gv.idleCounter > 59 && !gv.mobile) {
+			history.back()
 		}
 	}
 }

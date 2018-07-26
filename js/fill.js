@@ -2,15 +2,15 @@
 function fillupstart()
 {	// Display all cases in each day of 5 weeks
 	// Find the 1st of last month
-	// fill until 1 year from now
-	var today = new Date(),
+	// fill until 2 year from now
+	var	table = document.getElementById("tbl"),
+		today = new Date(),
 		start = getStart(),
 		nextyear = today.getFullYear() + 2,
 		month = today.getMonth(),
 		date = today.getDate(),
 		until = (new Date(nextyear, month, date)).ISOdate(),
 		book = gv.BOOK,
-		table = document.getElementById("tbl"),
 		todate = today.ISOdate(),
 		todateth = todate.thDate()
 
@@ -209,7 +209,6 @@ function filldata(bookq, row)
 	row.title = bookq.waitnum
 	if (bookq.hn && gv.isPACS) { cells[HN].className = "pacs" }
 	if (bookq.patient) { cells[PATIENT].className = "camera" }
-//	cells[EQUIPMENT].className = "cusa endoscope fluoroscope microscope monitor navigator"
 
 	cells[THEATRE].innerHTML = bookq.theatre
 	cells[OPROOM].innerHTML = bookq.oproom || ""

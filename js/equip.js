@@ -217,7 +217,7 @@ function Checklistequip()
 			if ($row.find("td").eq(QN).html() !== qn) {
 				$row = getTableRowByQN("tbl", qn)
 			}
-			$row.find("td").eq(EQUIPMENT).html(showEquip(equipment))
+			$row.find("td").eq(EQUIPMENT).html(makeEquip(equipJSON))
 		} else {
 			// Error in update server
 			// Roll back. If old form has equips, fill checked & texts

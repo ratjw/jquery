@@ -64,7 +64,6 @@ function fillEquipTable(book, $row, qn, blankcase)
 				$("#"+ key).val(val)
 			}
 		});
-		getEditedBy(qn)
  	} else {
 		$('#editedby').html("")
 	}
@@ -88,25 +87,4 @@ function showNonEditableEquip()
 	$('#dialogEquip input').on("click", function() { return false })
 	$('#dialogEquip input[type=text]').prop('disabled', true)
 	$('#dialogEquip textarea').prop('disabled', true)
-}
-
-function getEditedBy(qn) {
-	var sql = "sqlReturnData=SELECT editor,editdatetime FROM bookhistory "
-			+ "WHERE qn="+ qn + " AND equipment <> '' "
-			+ "ORDER BY editdatetime DESC;"
-
-	Ajax(MYSQLIPHP, sql, callbackgetEditedby)
-
-	function callbackgetEditedby(response)
-	{
-		if (/\[/.test(response)) {
-			var Editedby = ""
-			$.each(JSON.parse(response), function(key, val) {
-				Editedby += (val.editor + " : " + val.editdatetime + "<br>")
-			});
-			$('#editedby').html(Editedby)
-		} else {
-			Alert("getEditedby", response)
-		}
-	}
 }

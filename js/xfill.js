@@ -1,25 +1,25 @@
 
 function fillupstart()
 {	//Display all cases in each day of 5 weeks
-	var table = document.getElementById("tbl")
-	var today = new Date()
-
 	// Find the 1st of last month
-	var start = new Date(today.getFullYear(), today.getMonth()-1).ISOdate()
+	// fill until 2 year from now
+	var	table = document.getElementById("tbl"),
+		today = new Date(),
+		start = new Date(today.getFullYear(), today.getMonth()-1).ISOdate(),
+		nextyear = today.getFullYear() + 2,
+		month = today.getMonth(),
+		date = today.getDate(),
+		until = (new Date(nextyear, month, date)).ISOdate(),
+		book = gv.BOOK,
+		todate = today.ISOdate(),
+		todateth = todate.thDate()
 
-	//fill until 1 year from now
-	var nextyear = today.getFullYear() + 2
-	var month = today.getMonth()
-	var date = today.getDate()
-	var until = (new Date(nextyear, month, date)).ISOdate()
-	var book = gv.BOOK
-	if (book.length === 0) { book.push({"opdate" : today.ISOdate()}) }
-
+	if (book.length === 0) { book.push({"opdate" : todate}) }
+	
 	fillall(book, table, start, until)
 
-	//scroll to todate
-	var todate = today.ISOdate().thDate()
-	var thishead = $("#tbl tr:contains(" + todate + ")").eq(0)
+	//scroll to today
+	var thishead = $("#tbl tr:contains(" + todateth + ")").eq(0)
 	$('#tblcontainer').animate({
 		scrollTop: thishead.offset().top
 	}, 300);
@@ -113,7 +113,9 @@ function dayName(DAYNAME, date)
 function fillblank(rowi)
 {
 	var cells = rowi.cells
+	cells[THEATRE].innerHTML = ""
 	cells[OPROOM].innerHTML = ""
+	cells[OPTIME].innerHTML = ""
 	cells[CASENUM].innerHTML = ""
 	cells[STAFFNAME].innerHTML = ""
 	cells[HN].innerHTML = ""
@@ -122,6 +124,7 @@ function fillblank(rowi)
 	cells[PATIENT].className = ""
 	cells[DIAGNOSIS].innerHTML = ""
 	cells[TREATMENT].innerHTML = ""
+	cells[EQUIPMENT].innerHTML = ""
 	cells[CONTACT].innerHTML = ""
 	cells[QN].innerHTML = ""
 }
@@ -132,20 +135,18 @@ function filldata(bookq, rowi)
 
 	rowi.title = bookq.waitnum
 
+	cells[THEATRE].innerHTML = bookq.theatre
 	cells[OPROOM].innerHTML = bookq.oproom || ""
-	cells[CASENUM].innerHTML = putCasenumTime(bookq)
+	cells[OPTIME].innerHTML = bookq.optime
+	cells[CASENUM].innerHTML = bookq.casenum || ""
 	cells[STAFFNAME].innerHTML = bookq.staffname
 	cells[HN].innerHTML = bookq.hn
 	cells[PATIENT].innerHTML = putNameAge(bookq)
 	cells[DIAGNOSIS].innerHTML = bookq.diagnosis
 	cells[TREATMENT].innerHTML = bookq.treatment
+	cells[EQUIPMENT].innerHTML = showEquip(bookq.equipment)
 	cells[CONTACT].innerHTML = bookq.contact
 	cells[QN].innerHTML = bookq.qn
-}
-
-function putCasenumTime(bookq)
-{
-	return (bookq.casenum || "") + (bookq.optime? ("<br>" + bookq.optime) : "")
 }
 
 function putNameAge(bookq)
@@ -182,115 +183,102 @@ function findStartRowInBOOK(book, opdate)
 
 function holiday(date)
 {
-	var HOLIDAY = {
-		"2018-03-01" : "url('css/pic/Magha.png')",
-		"2018-05-09" : "url('css/pic/Ploughing.png')",
-		"2018-05-29" : "url('css/pic/Vesak.png')",
-		"2018-07-27" : "url('css/pic/Asalha.png')",
-		"2018-07-28" : "url('css/pic/Vassa.png')",
-		"2019-02-19" : "url('css/pic/Magha.png')",		//วันมาฆบูชา
-		"2019-05-13" : "url('css/pic/Ploughing.png')",	//วันพืชมงคล
-		"2019-05-18" : "url('css/pic/Vesak.png')",		//วันวิสาขบูชา
-		"2019-05-20" : "url('css/pic/Vesaksub.png')",	//หยุดชดเชยวันวิสาขบูชา
-		"2019-07-16" : "url('css/pic/Asalha.png')",		//วันอาสาฬหบูชา
-		"2019-07-17" : "url('css/pic/Vassa.png')"		//วันเข้าพรรษา
-		}
-	var monthdate = date.substring(5)
-	var dayofweek = (new Date(date)).getDay()
-	var holidayname = ""
-	var Mon = (dayofweek === 1)
-	var Tue = (dayofweek === 2)
-	var Wed = (dayofweek === 3)
+	var	monthdate = date.substring(5),
+		dayofweek = (new Date(date)).getDay(),
+		holidayname = "",
+		Mon = (dayofweek === 1),
+		Tue = (dayofweek === 2),
+		Wed = (dayofweek === 3),
+		holyday = $.grep(gv.HOLIDAY, function(day) {
+			return day.holiday === date
+		})[0]
 
-	for (var key in HOLIDAY) 
-	{
-		if (key === date)
-			return HOLIDAY[key]
-		if (key > date)
-			//Not a listed holiday. Neither a fixed nor a compensation holiday
-			break
+	if (date === LARGESTDATE) { return }
+	if (holyday) {
+		return "url('css/pic/holiday/" + holyday.dayname + ".png')"
 	}
+
 	switch (monthdate)
 	{
 	case "12-31":
-		holidayname = "url('css/pic/Yearend.png')"
+		holidayname = "url('css/pic/holiday/Yearend.png')"
 		break
 	case "01-01":
-		holidayname = "url('css/pic/Newyear.png')"
+		holidayname = "url('css/pic/holiday/Newyear.png')"
 		break
 	case "01-02":
 		if (Mon || Tue)
-			holidayname = "url('css/pic/Yearendsub.png')"
+			holidayname = "url('css/pic/holiday/Yearendsub.png')"
 		break
 	case "01-03":
 		if (Mon || Tue)
-			holidayname = "url('css/pic/Newyearsub.png')"
+			holidayname = "url('css/pic/holiday/Newyearsub.png')"
 		break
 	case "04-06":
-		holidayname = "url('css/pic/Chakri.png')"
+		holidayname = "url('css/pic/holiday/Chakri.png')"
 		break
 	case "04-07":
 	case "04-08":
 		if (Mon)
-			holidayname = "url('css/pic/Chakrisub.png')"
+			holidayname = "url('css/pic/holiday/Chakrisub.png')"
 		break
 	case "04-13":
 	case "04-14":
 	case "04-15":
-		holidayname = "url('css/pic/Songkran.png')"
+		holidayname = "url('css/pic/holiday/Songkran.png')"
 		break
 	case "04-16":
 	case "04-17":
 		if (Mon || Tue || Wed)
-			holidayname = "url('css/pic/Songkransub.png')"
+			holidayname = "url('css/pic/holiday/Songkransub.png')"
 		break
 	case "07-28":
-		holidayname = "url('css/pic/King10.png')"
+		holidayname = "url('css/pic/holiday/King10.png')"
 		break
 	case "07-29":
 	case "07-30":
 		if (Mon)
-			holidayname = "url('css/pic/King10sub.png')"
+			holidayname = "url('css/pic/holiday/King10sub.png')"
 		break
 	case "08-12":
-		holidayname = "url('css/pic/Queen.png')"
+		holidayname = "url('css/pic/holiday/Queen.png')"
 		break
 	case "08-13":
 	case "08-14":
 		if (Mon)
-			holidayname = "url('css/pic/Queensub.png')"
+			holidayname = "url('css/pic/holiday/Queensub.png')"
 		break
 	case "10-13":
-		holidayname = "url('css/pic/King09.png')"
+		holidayname = "url('css/pic/holiday/King09.png')"
 		break
 	case "10-14":
 	case "10-15":
 		if (Mon)
-			holidayname = "url('css/pic/King09sub.png')"
+			holidayname = "url('css/pic/holiday/King09sub.png')"
 		break
 	case "10-23":
-		holidayname = "url('css/pic/Piya.png')"
+		holidayname = "url('css/pic/holiday/Piya.png')"
 		break
 	case "10-24":
 	case "10-25":
 		if (Mon)
-			holidayname = "url('css/pic/Piyasub.png')"
+			holidayname = "url('css/pic/holiday/Piyasub.png')"
 		break
 	case "12-05":
-		holidayname = "url('css/pic/King9.png')"
+		holidayname = "url('css/pic/holiday/King9.png')"
 		break
 	case "12-06":
 	case "12-07":
 		if (Mon)
-			holidayname = "url('css/pic/Kingsub.png')"
+			holidayname = "url('css/pic/holiday/Kingsub.png')"
 		break
 	case "12-10":
-		holidayname = "url('css/pic/Constitution.png')"
+		holidayname = "url('css/pic/holiday/Constitution.png')"
 		break
 	case "12-11":
 	case "12-12":
 		if (Mon)
-			holidayname = "url('css/pic/Constitutionsub.png')"
+			holidayname = "url('css/pic/holiday/Constitutionsub.png')"
 		break
 	}
 	return holidayname

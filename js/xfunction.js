@@ -157,3 +157,69 @@ function Alert(title, message)
 		height: 230
 	}).fadeIn();
 }
+
+function showEquip(equipString)
+{
+	if (equipString) {
+		return makeEquip(JSON.parse(equipString))
+	} else {
+		return ""
+	}
+}
+
+function makeEquip(equipJSON)
+{
+	var equip = "",
+		equipIcons = {
+			Fluoroscope: "Fluoroscope",
+			Navigator: "Navigator",
+			Oarm: "Oarm",
+			Robotics: "Robotics",
+			Microscope: "Microscope",
+			ICG: "Microscope",
+			Endoscope: "Endoscope",
+			Excell: "CUSA",
+			Soring: "CUSA",
+			Sonar: "CUSA",
+			ultrasound: "Ultrasound",
+			Doppler: "Ultrasound",
+			Duplex: "Ultrasound",
+			CN5: "Monitor",
+			CN6: "Monitor",
+			CN7: "Monitor",
+			CN8: "Monitor",
+			SSEP: "Monitor",
+			EMG: "Monitor",
+			MEP: "Monitor"
+		},
+		equipPics = []
+
+	$.each(equipJSON, function(key, value) {
+		if (equip) { equip += ", " }
+		if (value === "checked") {
+			equip += key
+			if (key in equipIcons) {
+				equipPics.push(equipIcons[key])
+			}
+		} else {
+			equip += key + ":" + value
+		}
+	})
+	// remove duplicated pics
+	equipPics = equipPics.filter(function(pic, pos) {
+		return equipPics.indexOf(pic) === pos;
+	})
+
+	return equip + "<br>" + equipImg(equipPics)
+}
+
+function equipImg(equipPics)
+{
+	var img = ""
+
+	$.each(equipPics, function() {
+		img += '<img src="css/pic/equip/' + this + '.jpg" height="24" width="30"> '
+	})
+
+	return img
+}

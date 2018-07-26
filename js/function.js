@@ -483,6 +483,15 @@ function rowDecoration(row, date)
 
 function showEquip(equipString)
 {
+	if (equipString) {
+		return makeEquip(JSON.parse(equipString))
+	} else {
+		return ""
+	}
+}
+
+function makeEquip(equipJSON)
+{
 	var equip = "",
 		equipIcons = {
 			Fluoroscope: "Fluoroscope",
@@ -508,24 +517,22 @@ function showEquip(equipString)
 		},
 		equipPics = []
 
-	if (equipString) {
-		var equipHistory = JSON.parse(equipString)
-		$.each(equipHistory, function(key, value) {
-			if (equip) { equip += ", " }
-			if (value === "checked") {
-				equip += key
-				if (key in equipIcons) {
-					equipPics.push(equipIcons[key])
-				}
-			} else {
-				equip += key + ":" + value
+	$.each(equipJSON, function(key, value) {
+		if (equip) { equip += ", " }
+		if (value === "checked") {
+			equip += key
+			if (key in equipIcons) {
+				equipPics.push(equipIcons[key])
 			}
-		})
-	}
+		} else {
+			equip += key + ":" + value
+		}
+	})
 	// remove duplicated pics
 	equipPics = equipPics.filter(function(pic, pos) {
 		return equipPics.indexOf(pic) === pos;
 	})
+
 	return equip + "<br>" + equipImg(equipPics)
 }
 

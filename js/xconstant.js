@@ -4,33 +4,36 @@ var GETNAMEHN	= "php/getnamehn.php";
 var MYSQLIPHP	= "php/mysqli.php";
 
 //tbl, queuetbl
-var OPDATE		= 0;
-var OPROOM		= 1;
-var CASENUM		= 2;
-var STAFFNAME	= 3;
-var HN			= 4;
-var PATIENT		= 5;
-var DIAGNOSIS	= 6;
-var TREATMENT	= 7;
-var CONTACT		= 8;
-var QN			= 9;
+OPDATE		= 0,
+THEATRE		= 1,
+OPROOM		= 2,
+OPTIME		= 3,
+CASENUM		= 4,
+STAFFNAME	= 5,
+HN			= 6,
+PATIENT		= 7,
+DIAGNOSIS	= 8,
+TREATMENT	= 9,
+EQUIPMENT	= 10,
+CONTACT		= 11,
+QN			= 12,
 
 // NAMEOFDAYABBR for row color
 // NAMEOFDAYFULL for 1st column color
-var NAMEOFDAYABBR	= ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
-var NAMEOFDAYFULL	= ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
-var THAIMONTH		= ["มค.", "กพ.", "มีค.", "เมย.", "พค.", "มิย.", "กค.", "สค.", "กย.", "ตค.", "พย.", "ธค."];
-var LARGESTDATE		= "9999-12-31";
+NAMEOFDAYABBR	= ["sun", "mon", "tue", "wed", "thu", "fri", "sat"],
+NAMEOFDAYFULL	= ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"],
+THAIMONTH		= ["มค.", "กพ.", "มีค.", "เมย.", "พค.", "มิย.", "กค.", "สค.", "กย.", "ตค.", "พย.", "ธค."],
+LARGESTDATE		= "9999-12-31",
 
 //====================================================================================================
 
-var gv = {
+	gv = {
 	BOOK: [],
 	CONSULT: [],
 	STAFF: [],
+	HOLIDAY: [],
 	user: "",
 	timestamp: "",
-	uploadWindow: null,
 	timer: {},
 	idleCounter: 0,
 	mobile: false,

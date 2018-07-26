@@ -123,9 +123,9 @@ function sqlOneMonth(fromDate, toDate)
 //		"CSF related", "Trauma", "Spine", "etc" <- treatment + diagnosis
 // radiosurgery : "", "No", "Radiosurgery"			<- treatment
 // endovascular : "", "No", "Endovascular"			<- treatment
-// infection : "", "Infection"					<- use-defined only
-// morbid : "", "Morbidity"						<- use-defined only
-// dead : "", "Dead"							<- use-defined only
+// infection : "", "Infection"					<- user-defined only
+// morbid : "", "Morbidity"						<- user-defined only
+// dead : "", "Dead"							<- user-defined only
 function showService(fromDate, toDate)
 {
 	var $servicetbl = $("#servicetbl"),
