@@ -188,10 +188,8 @@ function fillConsults()
 	index = index % slen
 	while (dateoncall <= lastopdate) {
 		oncallRow = findOncallRow(rows, nextrow, tlen, dateoncall)
-		if (oncallRow && !oncallRow.cells[HN].innerHTML) {
-			oncallRow.cells[STAFFNAME].innerHTML
-			= oncallRow.cells[STAFFNAME].innerHTML.replace(/<p[^>]*>.*<\/p>/, "")
-			+ htmlwrap(staffoncall[index].staffname)
+		if (oncallRow && !oncallRow.cells[QN].innerHTML) {
+			oncallRow.cells[STAFFNAME].innerHTML = htmlwrap(staffoncall[index].staffname)
 		}
 		nextrow = oncallRow.rowIndex + 1
 		dateoncall = dateoncall.nextdays(7)
@@ -203,10 +201,8 @@ function fillConsults()
 		dateoncall = oncall.dateoncall
 		if (dateoncall > today) {
 			oncallRow = findOncallRow(rows, nextrow, tlen, dateoncall)
-			if (oncallRow && !oncallRow.cells[HN].innerHTML) {
-				oncallRow.cells[STAFFNAME].innerHTML
-				= oncallRow.cells[STAFFNAME].innerHTML.replace(/<p[^>]*>.*<\/p>/, "")
-				+ htmlwrap(oncall.staffname)
+			if (oncallRow && !oncallRow.cells[QN].innerHTML) {
+				oncallRow.cells[STAFFNAME].innerHTML = htmlwrap(staffoncall[index].staffname)
 			}
 			nextrow = oncallRow.rowIndex + 1
 		}

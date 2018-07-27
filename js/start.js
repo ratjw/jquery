@@ -227,39 +227,37 @@ function fillConsults()
 		staffstart = start.staffname,
 		oncallRow = {}
 
-	// find staff to start
+	// find staff to start using latest startoncall date
 	while ((index < slen) && (staffoncall[index].staffname !== staffstart)) {
 		index++
 	}
 
-	// find first date to start immediately after today
+	// find first date to write immediately after today
 	while (dateoncall <= today) {
 		dateoncall = dateoncall.nextdays(7)
 		index++
 	}
 
+	// write staffoncall if no patient
 	index = index % slen
 	while (dateoncall <= lastopdate) {
 		oncallRow = findOncallRow(rows, nextrow, tlen, dateoncall)
-		if (oncallRow && !oncallRow.cells[HN].innerHTML) {
-			oncallRow.cells[STAFFNAME].innerHTML
-			= oncallRow.cells[STAFFNAME].innerHTML.replace(/<p[^>]*>.*<\/p>/, "")
-			+ htmlwrap(staffoncall[index].staffname)
+		if (oncallRow && !oncallRow.cells[QN].innerHTML) {
+			oncallRow.cells[STAFFNAME].innerHTML = htmlwrap(staffoncall[index].staffname)
 		}
 		nextrow = oncallRow.rowIndex + 1
 		dateoncall = dateoncall.nextdays(7)
 		index = (index + 1) % slen
 	}
 
+	// write substitute oncall
 	nextrow = 1
 	gv.ONCALL.forEach(function(oncall) {
 		dateoncall = oncall.dateoncall
 		if (dateoncall > today) {
 			oncallRow = findOncallRow(rows, nextrow, tlen, dateoncall)
-			if (oncallRow && !oncallRow.cells[HN].innerHTML) {
-				oncallRow.cells[STAFFNAME].innerHTML
-				= oncallRow.cells[STAFFNAME].innerHTML.replace(/<p[^>]*>.*<\/p>/, "")
-				+ htmlwrap(oncall.staffname)
+			if (oncallRow && !oncallRow.cells[QN].innerHTML) {
+				oncallRow.cells[STAFFNAME].innerHTML = htmlwrap(oncall.staffname)
 			}
 			nextrow = oncallRow.rowIndex + 1
 		}
@@ -282,6 +280,7 @@ function htmlwrap(staffname)
 	return '<p style="color:#999999;font-size:14px">Consult<br>' + staffname + '</p>'
 }
 
+// refill after deleted or written over
 function showStaffOnCall(opdate)
 {
 	if (new Date(opdate).getDay() === 6) {
