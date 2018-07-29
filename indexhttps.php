@@ -7,7 +7,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <link href="css/jquery-ui.min.css" rel="stylesheet">
-<link href="manifest.json" rel="manifest">
 <style>
 #login {
 	width: 300px; 

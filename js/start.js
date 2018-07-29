@@ -1,12 +1,9 @@
 
-function Start(userid)
+function Start(userid, https)
 {
 	var sql = "start="
 
 	Ajax(MYSQLIPHP, sql, loading);
-
-	gv.user = userid
-	resetTimer()
 
 	$("#login").remove()
 	$("#logo").remove()
@@ -14,6 +11,15 @@ function Start(userid)
 	$("head style").remove()
 	$("head").append($("body link"))
 	$("#wrapper").show()
+
+	if ((location.protocol === "https"/* || location.hostname === "localhost"*/)
+		&& 'serviceWorker' in navigator) {
+
+		navigator.serviceWorker.register('./service-worker.js')
+	}
+
+	gv.user = userid
+	resetTimer()
 }
 	
 function loading(response)
