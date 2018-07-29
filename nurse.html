@@ -88,53 +88,53 @@
  <br>
  <div title="position">
   <span class="w110" id="clearPosition">Position <small>(คลิกลบ)</small></span>
-  <span class="w215">
-	<input type="radio" name="pose" id="leftSupine">
-	<label for="leftSupine">หงาย ซ้ายขึ้น หันหน้าไปขวา</label>
+  <span class="w150">
+	<input type="radio" name="pose" id="Supine_left">
+	<label for="Supine_left">Supine left</label>
   </span>
-  <span class="w215">
-	<input type="radio" name="pose" id="rightSupine">
-	<label for="rightSupine">หงาย ขวาขึ้น หันหน้าไปซ้าย</label>
+  <span class="w140">
+	<input type="radio" name="pose" id="Supine_right">
+	<label for="Supine_right">Supine right</label>
   </span>
   <span class="w90">
-	<input type="radio" name="pose" id="supine">
-	<label for="supine">หงายตรง</label>
-  </span>
-  <br>
-  <span class="w110"></span>
-  <span class="w150">
-	<input type="radio" name="pose" id="rightParkbench">
-	<label for="rightParkbench">Parkbench ขวาลง</label>
-  </span>
-  <span class="w140">
-	<input type="radio" name="pose" id="rightLateral">
-	<label for="rightLateral">Lateral ขวาลง</label>
-  </span>
-  <span class="w140">
-	<input type="radio" name="pose" id="right3quarter">
-	<label for="right3quarter">3/4 ขวาลง</label>
+	<input type="radio" name="pose" id="Supine">
+	<label for="Supine">Supine</label>
   </span>
   <span class="w100">
 	<input type="radio" name="pose" id="Concorde">
 	<label for="Concorde">Concorde</label>
   </span>
+  <span class="w70">
+	<input type="radio" name="pose" id="Prone">
+	<label for="Prone">Prone</label>
+  </span>
   <br>
   <span class="w110"></span>
   <span class="w150">
-	<input type="radio" name="pose" id="leftParkbench">
-	<label for="leftParkbench">Parkbench ซ้ายลง</label>
+	<input type="radio" name="pose" id="Parkbench_ขวาลง">
+	<label for="Parkbench_ขวาลง">Parkbench ขวาลง</label>
   </span>
   <span class="w140">
-	<input type="radio" name="pose" id="leftLateral">
-	<label for="leftLateral">Lateral ซ้ายลง</label>
+	<input type="radio" name="pose" id="Lateral_ขวาลง">
+	<label for="Lateral_ขวาลง">Lateral ขวาลง</label>
+  </span>
+  <span>
+	<input type="radio" name="pose" id="Semiprone_ขวาลง">
+	<label for="Semiprone_ขวาลง">Semiprone ขวาลง</label>
+  </span>
+  <br>
+  <span class="w110"></span>
+  <span class="w150">
+	<input type="radio" name="pose" id="Parkbench_ซ้ายลง">
+	<label for="Parkbench_ซ้ายลง">Parkbench ซ้ายลง</label>
   </span>
   <span class="w140">
-	<input type="radio" name="pose" id="left3quarter">
-	<label for="left3quarter">3/4 ซ้ายลง</label>
+	<input type="radio" name="pose" id="Lateral_ซ้ายลง">
+	<label for="Lateral_ซ้ายลง">Lateral ซ้ายลง</label>
   </span>
-  <span class="w70">
-	<input type="radio" name="pose" id="prone">
-	<label for="prone">คว่ำ</label>
+  <span>
+	<input type="radio" name="pose" id="Semiprone_ซ้ายลง">
+	<label for="Semiprone_ซ้ายลง">Semiprone ซ้ายลง</label>
   </span>
   <br>
   <span class="w120"></span>
@@ -143,37 +143,47 @@
  <br>
  <div title="Imaging">
   <span class="w110">Imaging</span>
-  <span class="w120">
+  <span class="w150">
 	<input type="checkbox" id="Fluoroscope">
 	<label for="Fluoroscope">Fluoroscope</label>
   </span>
-  <span class="w100">
-	<input type="checkbox" id="Navigator">
-	<label for="Navigator">Navigator</label>
+  <span class="w160">
+	<input type="checkbox" id="Navigator_frameless">
+	<label for="Navigator_frameless">Navigator frameless</label>
   </span>
-  <span class="w70">
-	<input type="checkbox" id="iMRI">
-	<label for="iMRI">iMRI</label>
+  <span>
+	<input type="checkbox" id="Navigator_frame-based">
+	<label for="Navigator_frame-based">Navigator frame-based</label>
   </span>
-  <span class="w70">
-	<input type="checkbox" id="iCT">
-	<label for="iCT">iCT</label>
-  </span>
+  <br>
+  <span class="w110"></span>
   <span class="w90">
 	<input type="checkbox" id="Robotics">
 	<label for="Robotics">Robotics</label>
   </span>
-  <span class="w70">
-	<input type="checkbox" id="Oarm">
-	<label for="Oarm">O-arm</label>
+  <span class="w65">
+	<input type="checkbox" id="iMRI">
+	<label for="iMRI">iMRI</label>
+  </span>
+  <span class="w65">
+	<input type="checkbox" id="iCT">
+	<label for="iCT">iCT</label>
+  </span>
+  <span class="w80">
+	<input type="checkbox" id="O-arm">
+	<label for="O-arm">O-arm</label>
+  </span>
+  <span>
+	<input type="checkbox" id="Stereotactic_frame-based">
+	<label for="Stereotactic_frame-based">Stereotactic frame-based</label>
   </span>
   <br>
   <span class="w120"></span>
   <span><input type="text" class="w500" id="Imaging"></span>
  </div>
  <br>
- <div title="headHolder">
-  <span class="w110">อุปกรณ์ยึดศีรษะ</span>
+ <div title="อุปกรณ์ยึดผู้ป่วย">
+  <span class="w110">อุปกรณ์ยึดผู้ป่วย</span>
   <span class="w150">
 	<input type="checkbox" id="Mayfield">
 	<label for="Mayfield">Mayfield</label>
@@ -188,10 +198,10 @@
   </span>
   <br>
   <span class="w120"></span>
-  <span><input type="text" class="w500" id="headHolder"></span>
+  <span><input type="text" class="w500" id="อุปกรณ์ยึดผู้ป่วย"></span>
  </div>
  <br>
- <div title="Craniotome">
+ <div title="เครื่องตัดกระดูก">
   <span class="w110">เครื่องตัดกระดูก</span>
   <span class="w150">
 	<input type="checkbox" id="HighSpeedDrill">
@@ -207,7 +217,7 @@
   </span>
   <br>
   <span class="w120"></span>
-  <span><input type="text" class="w500" id="Craniotome"></span>
+  <span><input type="text" class="w500" id="เครื่องตัดกระดูก"></span>
  </div>
  <br>
  <div title="กล้อง">
@@ -291,40 +301,44 @@
   <span class="w70">Pudenz</span>
   <span class="w22">หัว</span>
   <span class="w50">
-	<input type="radio" name="head" id="proximalLow">
-	<label for="proximalLow">low</label>
+	<input type="radio" name="head" id="Pudenz_proximalLow">
+	<label for="Pudenz_proximalLow">low</label>
   </span>
   <span class="w55">
-	<input type="radio" name="head" id="proximalMedium">
-	<label for="proximalMedium">med</label>
+	<input type="radio" name="head" id="Pudenz_proximalMedium">
+	<label for="Pudenz_proximalMedium">med</label>
   </span>
   <span class="w85">
-	<input type="radio" name="head" id="proximalHigh">
-	<label for="proximalHigh">high</label>
+	<input type="radio" name="head" id="Pudenz_proximalHigh">
+	<label for="Pudenz_proximalHigh">high</label>
   </span>
   <span class="w30">ท้อง</span>
   <span class="w50">
-	<input type="radio" name="peritoneum" id="distalLow">
-	<label for="distalLow">low</label>
+	<input type="radio" name="peritoneum" id="Pudenz_distalLow">
+	<label for="Pudenz_distalLow">low</label>
   </span>
   <span class="w55">
-	<input type="radio" name="peritoneum" id="distalMedium">
-	<label for="distalMedium">med</label>
+	<input type="radio" name="peritoneum" id="Pudenz_distalMedium">
+	<label for="Pudenz_distalMedium">med</label>
   </span>
   <span>
-	<input type="radio" name="peritoneum" id="distalHigh">
-	<label for="distalHigh">high</label>
+	<input type="radio" name="peritoneum" id="Pudenz_distalHigh">
+	<label for="Pudenz_distalHigh">high</label>
   </span>
   <br>
   <span class="w110"></span>
   <span class="w150">Programmable</span>
   <span class="w140">
-	<input type="radio" name="program" id="shuntMedtronic">
-	<label for="shuntMedtronic">Medtronic</label>
+	<input type="radio" name="program" id="shunt_Medtronic">
+	<label for="shunt_Medtronic">Medtronic</label>
   </span>
-  <span class="w110">
-	<input type="radio" name="program" id="shuntCodman">
-	<label for="shuntCodman">Codman</label>
+  <span class="w100">
+	<input type="radio" name="program" id="shunt_Codman">
+	<label for="shunt_Codman">Codman</label>
+  </span>
+  <span class="w100">
+	<input type="radio" name="program" id="shunt_proGAV">
+	<label for="shunt_proGAV">proGAV</label>
   </span>
   <br>
   <span class="w120"></span>
@@ -334,7 +348,7 @@
  <div title="เครื่องมือบริษัท">
   <span class="w110">เครื่องมือบริษัท </span>
   <span class="w150">เวลาส่งเครื่อง 
-	<input type="text" class="w40 textcenter" id="equiptime"> น. 
+	<input type="text" class="w40 textcenter" id="เวลาส่งเครื่อง"> น. 
   </span>
   <br>
   <span class="w120"></span>
@@ -343,13 +357,13 @@
  <br>
  <div title="อุปกรณ์อื่นๆ">
   <span class="w110">อุปกรณ์อื่นๆ</span>
-  <span class="w150">
-	<input type="checkbox" id="cranioCement">
-	<label for="cranioCement">Cranio cement</label>
+  <span class="w200">
+	<input type="checkbox" id="cranioplastic_Cement">
+	<label for="cranioplastic_Cement">Cranioplastic cement</label>
   </span>
   <span class="w120">
-	<input type="checkbox" id="MTECSkull">
-	<label for="MTECSkull">MTEC skull</label>
+	<input type="checkbox" id="MTEC_skull">
+	<label for="MTEC_skull">MTEC skull</label>
   </span>
   <br>
   <span class="w120"></span>
