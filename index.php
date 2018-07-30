@@ -9,6 +9,8 @@
 <link href="css/jquery-ui.min.css" rel="stylesheet">
 <link href="manifest.json" rel="manifest">
 <style>
+#logo { text-align:center; }
+
 #login {
 	width: 300px; 
 	margin-top: 0px;
@@ -46,9 +48,8 @@ function namesix()
 </script>
 </HEAD>
 <BODY>
-<p id="logo" style="text-align:center;">
-	<img width="170" height="150" src="css/pic/general/logoRama.png">
-</p>
+
+<p id="logo"><img src="css/pic/general/logoRama.png"></p>
 
 <?php $userid = $password = ""; ?>
 

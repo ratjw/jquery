@@ -495,7 +495,7 @@ function makeEquip(equipJSON)
 	var equip = "",
 		equipIcons = {
 			Fluoroscope: "Fluoroscope",
-			"Navigator_frameless": "Navigator",
+			Navigator_frameless: "Navigator",
 			"Navigator_frame-based": "Navigator",
 			Oarm: "Oarm",
 			Robotics: "Robotics",

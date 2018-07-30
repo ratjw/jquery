@@ -12,11 +12,11 @@ function Start(userid, https)
 	$("head").append($("body link"))
 	$("#wrapper").show()
 
-	if ((location.protocol === "https"/* || location.hostname === "localhost"*/)
-		&& 'serviceWorker' in navigator) {
+//	if (/*(location.protocol === "https" || location.hostname === "localhost")
+//		&& */'serviceWorker' in navigator) {
 
-		navigator.serviceWorker.register('./service-worker.js')
-	}
+//		navigator.serviceWorker.register('./service-worker.js')
+//	}
 
 	gv.user = userid
 	resetTimer()
