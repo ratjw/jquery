@@ -12,6 +12,18 @@ function Start(userid)
 	$("head").append($("body link"))
 	document.getElementById("wrapper").style.display = "block"
 
+	$("#login").remove()
+	$("#logo").remove()
+	$("head script:contains('function')").remove()
+	$("head style").remove()
+	$("head").append($("body link"))
+	$("#wrapper").show()
+
+//	if (location.protocol === "https:" || 'serviceWorker' in navigator) {
+
+//		navigator.serviceWorker.register('./service-worker.js')
+//	}
+
 	gv.user = userid
 	resetTimer()
 
@@ -230,9 +242,9 @@ function htmlwrap(staffname) {
 function resetTimer()
 {
 	// gv.timer is just an id, not the clock
-	// poke server every 10 sec.
+	// poke server every 1000 sec.
 	clearTimeout(gv.timer)
-	gv.timer = setTimeout( updating, 10000)
+	gv.timer = setTimeout( updating, 1000000)
 	gv.idleCounter = 0
 }
 
@@ -253,7 +265,7 @@ function updating()
 				getUpdate()
 			}
 		}
-		// idle not more than 10 min.
+		// idle not more than 1000 min.
 		gv.idleCounter += 1
 		if (gv.idleCounter > 59 && !gv.mobile) {
 			history.back()

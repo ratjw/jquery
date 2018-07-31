@@ -781,22 +781,16 @@ td.Radiosurgery.Endovascular {
 
 @media print { 
 	BODY {
-		padding: 0px;
-		margin-top: 50px;
 		overflow: visible;
-		padding-left: 0px;
-		margin-left: 0px;
 	}
 
 	#dialogEquip {
-		line-height:170%;
-		font-size: 14px;
+		font-size: 17px;
 		font-family: sans-serif;
 		background-color: white;
 		border: 0px;
-		margin-top: 25px;
-		padding-left: 0px;
-		margin-left: 0px;
+		margin-top: 50px;
+		margin-left: 50px;
 	}
 /*
 	.pale {
@@ -805,7 +799,6 @@ td.Radiosurgery.Endovascular {
 	}
 */
 	input, input[type=checkbox] { 
-		font-size: 14px; 
 		border: 0px; 
 	}
 

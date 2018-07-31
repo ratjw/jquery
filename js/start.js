@@ -12,8 +12,7 @@ function Start(userid)
 	$("head").append($("body link"))
 	document.getElementById("wrapper").style.display = "block"
 
-//	if (/*(location.protocol === "https" || location.hostname === "localhost")
-//		&& */'serviceWorker' in navigator) {
+//	if (location.protocol === "https:" || 'serviceWorker' in navigator) {
 
 //		navigator.serviceWorker.register('./service-worker.js')
 //	}

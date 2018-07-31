@@ -312,14 +312,13 @@ td.camera2 { background-image: url(pic/general/camera2.png); }
 	}
 
 	#dialogEquip {
-		line-height:170%;
-		font-size: 14px;
+		font-size: 17px;
 		font-family: sans-serif;
 		background-color: white;
 		border: 0px;
 		margin-top: 25px;
 		padding-left: 0px;
-		margin-left: 0px;
+		margin-left: 30px;
 	}
 /*
 	.pale {
@@ -328,7 +327,6 @@ td.camera2 { background-image: url(pic/general/camera2.png); }
 	}
 */
 	input, input[type=checkbox] { 
-		font-size: 14px; 
 		border: 0px; 
 	}
 

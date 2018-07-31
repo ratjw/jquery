@@ -20,10 +20,6 @@ function fillEquipTable(book, $row, qn, blankcase)
 			"treatment": bookq.treatment
 		}
 
-	if (height > 1000) {
-		height = 1000
-	}
-
 	$.each(profile, function(key, val) {
 		document.getElementById(key).innerHTML = val
 	})
@@ -40,7 +36,7 @@ function fillEquipTable(book, $row, qn, blankcase)
 		closeOnEscape: true,
 		modal: true,
 		width: 750,
-		height: height,
+		height: height > 1000 ? 1000 : height,
 		open: function(event, ui) {
 			//disable default autofocus on text input
 			$("input").blur()
@@ -63,9 +59,7 @@ function fillEquipTable(book, $row, qn, blankcase)
 			} else {
 				$("#"+ key).val(val)
 			}
-		});
- 	} else {
-		$('#editedby').html("")
+		})
 	}
 	showNonEditableEquip()
 
@@ -84,7 +78,91 @@ function fillEquipTable(book, $row, qn, blankcase)
 
 function showNonEditableEquip()
 {
+	$('#dialogEquip').dialog("option", "buttons", [
+		{
+			text: "Print",
+			width: "100",
+			click: function () {
+				printpaper()
+			}
+		}
+	])
+
 	$('#dialogEquip input').on("click", function() { return false })
 	$('#dialogEquip input[type=text]').prop('disabled', true)
 	$('#dialogEquip textarea').prop('disabled', true)
+}
+
+function printpaper()
+{
+	if (/Edge|MS/.test(navigator.userAgent)) {
+		var orgEquip = document.getElementById('dialogEquip');
+		orgEquip.style.paddingLeft = 0 + "px"
+		orgEquip.style.marginLeft = 0 + "px"
+		var win = window.open();
+		win.document.open();
+		win.document.write('<LINK type="text/css" rel="stylesheet" href="css/print.css">');
+		win.document.writeln(orgEquip.outerHTML);
+
+		var dialogEquip = win.document.getElementById('dialogEquip')
+
+		preparePrint(orgEquip, dialogEquip)
+
+		win.document.close();
+		win.focus();
+		win.print();
+		win.close();
+	} else {
+		var original = document.body.innerHTML;
+		var orgEquip = document.getElementById('dialogEquip');
+		document.body.innerHTML = orgEquip.outerHTML;
+
+		var dialogEquip = document.getElementById('dialogEquip');
+
+		preparePrint(orgEquip, dialogEquip)
+
+		window.focus();
+		window.print();
+		document.body.innerHTML = original;
+		document.getElementById('dialogEquip').scrollIntoView(true);
+		location.reload();
+	}
+}
+
+function preparePrint(orgEquip, dialogEquip)
+{
+	var originINPUT = orgEquip.getElementsByTagName("INPUT");
+	var printINPUT = dialogEquip.getElementsByTagName("INPUT");
+	var originTEXTAREA = orgEquip.getElementsByTagName("TEXTAREA");
+	var printTEXTAREA = dialogEquip.getElementsByTagName("TEXTAREA");
+
+	for (var i = 0; i < originINPUT.length; i++) 
+	{
+		if (originINPUT[i].checked) {
+			printINPUT[i].checked = originINPUT[i].checked
+		}
+		else {
+			prepareText(originINPUT, printINPUT)
+		}
+	}
+
+	prepareText(originTEXTAREA, printTEXTAREA)
+}
+
+function prepareText(originEquip, printEquip)
+{
+	for (var i = 0; i < originEquip.length; i++) 
+	{
+		if (originEquip[i].value) {
+			printEquip[i].value = originEquip[i].value
+		}
+		else {
+			var temp = printEquip[i]
+			while (temp.nodeName !== "SPAN") {
+				temp = temp.parentNode
+			}
+			temp.className = "pale"
+			//pale color for no input items
+		}
+	}
 }

@@ -36,7 +36,7 @@ function fillEquipTable(book, $row, qn)
 		closeOnEscape: true,
 		modal: true,
 		width: 750,
-		height: height > 1500 ? 1500 : height,
+		height: height > 1000 ? 1000 : height,
 		open: function(event, ui) {
 			//disable default autofocus on text input
 			$("input").blur()
@@ -56,7 +56,7 @@ function fillEquipTable(book, $row, qn)
 			} else {
 				$("#"+ key).val(val)
 			}
-		});
+		})
 		showNonEditableEquip()
 		getEditedBy(qn)
  	} else {
@@ -109,10 +109,10 @@ function showEditableEquip()
 			text: "Print",
 			width: "100",
 			click: function () {
-				printpaper();
+				printpaper()
 			}
 		}
-	]);
+	])
 	enableInput()
 }
 
@@ -261,10 +261,6 @@ function printpaper()
 	} else {
 		var original = document.body.innerHTML;
 		var orgEquip = document.getElementById('dialogEquip');
-		orgEquip.style.height = orgEquip.offsetHeight + 200 + "px"
-		orgEquip.style.width = orgEquip.offsetWidth + 100 + "px"
-		orgEquip.style.paddingLeft = 0 + "px"
-		orgEquip.style.marginLeft = 0 + "px"
 		document.body.innerHTML = orgEquip.outerHTML;
 
 		var dialogEquip = document.getElementById('dialogEquip');
