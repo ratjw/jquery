@@ -45,21 +45,32 @@ function namesix()
 		document.getElementById("password").focus()
 	}
 }
+
+function nurse()
+{
+	var userid = document.getElementById("userid").value
+	var nurseid = document.getElementById("nurseid")
+	if (!/^\d{1,2}$/.test(userid)) {
+		nurseid.value = 'nurse'
+	}
+	$('form').submit()
+}
 </script>
 </HEAD>
 <BODY>
 
 <p id="logo"><img src="css/pic/general/logoRama.png"></p>
 
-<?php $userid = $password = ""; ?>
+<?php $userid = $password = $nurseid = ""; ?>
 
 <div id="login">
 	<br>
 	<h3>Neurosurgery Service</h3>
 
 	<form method="post" action="">
-		Login ID: <input id="userid" type="text" maxlength="6" size="6" name="userid"
-					value="<?php echo $userid;?>" oninput="namesix()" 
+		Login ID: <input id="userid" type="text" name="userid"
+					maxlength="6" size="6" value="<?php echo $userid;?>"
+					oninput="namesix()" 
 					onpropertychange="namesix()">
 		<br>
 		<br>
@@ -68,7 +79,12 @@ function namesix()
 		<br>
 		<br>
 		<input type="submit" value="Sign in">
-		<br><br>
+		<br>
+		<br>
+		<img src="css/pic/general/nurse.jpg" width="30" height="45" onclick="nurse()">
+		<input id="nurseid" type="hidden" name="nurseid" value="<?php echo $nurseid;?>">
+		<br>
+		<br>
 	</form>
 </div>
 
@@ -76,10 +92,18 @@ function namesix()
 	if ($_SERVER["REQUEST_METHOD"] === "POST") {
 		$userid = $_POST["userid"];
 		$password = $_POST["password"];
+		$nurseid = $_POST["nurseid"];
 		$resultz = "";
 
-		// 6 digits if use username
-		if (preg_match('/^\d{6}$/', $userid)) {
+		if ($nurseid === "nurse") {
+			$userid = $nurseid;
+			include ("nurse.html");
+		}
+		else if (preg_match('/^\d{1,2}$/', $userid)) {
+			include ("nurse.html");
+		}
+		// 6 digits username
+		else if (preg_match('/^\d{6}$/', $userid)) {
 			if (strpos($_SERVER["SERVER_NAME"], "surgery.rama") !== false) {
 				$wsdl="http://appcenter/webservice/patientservice.wsdl";
 				$client = new SoapClient($wsdl);
@@ -89,14 +113,10 @@ function namesix()
 			} else {
 				$resultz = "S";
 			}
-		}
 
-		if ($resultz === "S" || $resultz === "R") {
-			include ("staff.html");
-		}
-		// 1 or 2 digits for each OR room
-		elseif ($resultz === "N" || preg_match('/^\d{1,2}$/', $userid)) {
-			include ("nurse.html");
+			if ($resultz === "S" || $resultz === "R") {
+				include ("staff.html");
+			}
 		}
 
 		// can't use localStorage, old browsers do not support
