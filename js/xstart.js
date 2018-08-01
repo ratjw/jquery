@@ -1,13 +1,16 @@
 
 function Start(userid)
 {
-	var sql = "UPDATE staff,(SELECT MAX(dateoncall) AS max FROM staff) as oncall "
-			+	"SET staffoncall=staffname,"
-			+		"dateoncall=DATE_ADD(oncall.max,INTERVAL 1 WEEK) "
-			+	"WHERE dateoncall<=CURDATE();"
-			+	"SELECT * FROM staff ORDER BY number;"
+	var sql = "start="
 
-	Ajax(MYSQLIPHP, "start=" + sql, loading);
+	Ajax(MYSQLIPHP, sql, loading);
+
+	$("#login").remove()
+	$("#logo").remove()
+	$("head script:contains('function')").remove()
+	$("head style").remove()
+	$("head").append($("body link"))
+	document.getElementById("wrapper").style.display = "block"
 
 	gv.user = userid
 	resetTimer()
@@ -45,7 +48,7 @@ function loading(response)
 	if (/BOOK/.test(response)) {
 		localStorage.setItem('ALLBOOK', response)
 		updateBOOK(response)
-		if (/^\d{6}$/.test(gv.user)) {
+		if (/nurse/.test(gv.user)) {
 			$("#login").remove()
 			$("#logo").remove()
 			$("#wrapper").show()

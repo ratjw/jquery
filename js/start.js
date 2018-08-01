@@ -1,5 +1,5 @@
 
-function Start(userid, https)
+function Start(userid)
 {
 	var sql = "start="
 
@@ -10,7 +10,7 @@ function Start(userid, https)
 	$("head script:contains('function')").remove()
 	$("head style").remove()
 	$("head").append($("body link"))
-	$("#wrapper").show()
+	document.getElementById("wrapper").style.display = "block"
 
 //	if (/*(location.protocol === "https" || location.hostname === "localhost")
 //		&& */'serviceWorker' in navigator) {
