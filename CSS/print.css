@@ -1,17 +1,16 @@
 @media print { 
 	BODY {
 		overflow: visible;
-		margin-top: 0px;
-		margin-left: 0px;
 	}
 
 	#dialogEquip {
-		font-size: 14px;
+		font-size: 16px;
 		font-family: sans-serif;
 		background-color: white;
 		border: 0px;
 		margin-top: 0px;
 		margin-left: 0px;
+		padding-left: 0px;
 	}
 
 	.pale {

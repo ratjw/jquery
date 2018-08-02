@@ -730,7 +730,7 @@ td.Radiosurgery.Endovascular {
 	tr { border: 1px solid #ccc; }
 */
 	table {
-		width: 50%;
+		width: 500px;
 	}
 	td { 
 		/* Behave  like a "row" */
@@ -785,19 +785,20 @@ td.Radiosurgery.Endovascular {
 	}
 
 	#dialogEquip {
-		font-size: 17px;
+		font-size: 16px;
 		font-family: sans-serif;
 		background-color: white;
 		border: 0px;
 		margin-top: 50px;
 		margin-left: 50px;
+		padding-left: 0px;
 	}
-/*
+
 	.pale {
 		color: #D3D3D3;
 		font-weight: 300;
 	}
-*/
+
 	input, input[type=checkbox] { 
 		border: 0px; 
 	}

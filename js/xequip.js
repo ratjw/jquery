@@ -95,10 +95,8 @@ function showNonEditableEquip()
 
 function printpaper()
 {
-	if (/Edge|MS/.test(navigator.userAgent)) {
+	if (/Edge|MS\.NET/.test(navigator.userAgent)) {
 		var orgEquip = document.getElementById('dialogEquip');
-		orgEquip.style.paddingLeft = 0 + "px"
-		orgEquip.style.marginLeft = 0 + "px"
 		var win = window.open();
 		win.document.open();
 		win.document.write('<LINK type="text/css" rel="stylesheet" href="css/print.css">');

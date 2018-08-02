@@ -171,8 +171,6 @@ td.camera2 { background-image: url(pic/general/camera2.png); }
 .textleft { text-align: left;}
 .textright { text-align: right; }
 .textcenter { text-align: center; }
-.red { color:red; }
-.silver { background-color: silver; }
 .w20 { width:20px; }
 .w22 { width:22px; }
 .w30 { width:30px; }
@@ -182,6 +180,7 @@ td.camera2 { background-image: url(pic/general/camera2.png); }
 .w65 { width:65px; }
 .w70 { width:70px; }
 .w73 { width:73px; }
+.w77 { width:77px; }
 .w80 { width:80px; }
 .w85 { width:85px; }
 .w90 { width:90px; }
@@ -197,6 +196,9 @@ td.camera2 { background-image: url(pic/general/camera2.png); }
 .w350 { width:350px; }
 .w500 { width:500px; }
 .w540 { width:540px; }
+.margin0 { margin: 0px; }
+.margintop0 { margin-top: 0px; }
+.marginright { margin-right: 100px; }
 
 #dialogEquip {
 	font-size: 14px;
@@ -304,21 +306,17 @@ td.camera2 { background-image: url(pic/general/camera2.png); }
 
 @media print { 
 	BODY {
-		padding: 0px;
-		margin-top: 50px;
 		overflow: visible;
-		padding-left: 0px;
-		margin-left: 0px;
 	}
 
 	#dialogEquip {
-		font-size: 17px;
+		font-size: 16px;
 		font-family: sans-serif;
 		background-color: white;
 		border: 0px;
-		margin-top: 25px;
+		margin-top: 50px;
+		margin-left: 50px;
 		padding-left: 0px;
-		margin-left: 30px;
 	}
 /*
 	.pale {

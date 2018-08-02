@@ -46,14 +46,16 @@ function namesix()
 	}
 }
 
-function nurse()
+function nurse(nurse)
 {
-	var userid = document.getElementById("userid").value
-	var nurseid = document.getElementById("nurseid")
-	if (!/^\d{1,2}$/.test(userid)) {
-		nurseid.value = 'nurse'
+	var userid = document.getElementById("userid")
+
+	if (/^\d{1,2}$/.test(userid.value)) {
+		nurse = userid.value
 	}
-	$('form').submit()
+
+	$("body").load("nurse.html")
+	Start(nurse)
 }
 </script>
 </HEAD>
@@ -81,8 +83,7 @@ function nurse()
 		<input type="submit" value="Sign in">
 		<br>
 		<br>
-		<img src="css/pic/general/nurse.jpg" width="30" height="45" onclick="nurse()">
-		<input id="nurseid" type="hidden" name="nurseid" value="<?php echo $nurseid;?>">
+		<img src="css/pic/general/nurse.jpg" width="30" height="45" onclick="nurse('nurse')">
 		<br>
 		<br>
 	</form>
@@ -92,18 +93,10 @@ function nurse()
 	if ($_SERVER["REQUEST_METHOD"] === "POST") {
 		$userid = $_POST["userid"];
 		$password = $_POST["password"];
-		$nurseid = $_POST["nurseid"];
 		$resultz = "";
 
-		if ($nurseid === "nurse") {
-			$userid = $nurseid;
-			include ("nurse.html");
-		}
-		else if (preg_match('/^\d{1,2}$/', $userid)) {
-			include ("nurse.html");
-		}
 		// 6 digits username
-		else if (preg_match('/^\d{6}$/', $userid)) {
+		if (preg_match('/^\d{6}$/', $userid)) {
 			if (strpos($_SERVER["SERVER_NAME"], "surgery.rama") !== false) {
 				$wsdl="http://appcenter/webservice/patientservice.wsdl";
 				$client = new SoapClient($wsdl);
@@ -116,11 +109,15 @@ function nurse()
 
 			if ($resultz === "S" || $resultz === "R") {
 				include ("staff.html");
-			}
-		}
 
-		// can't use localStorage, old browsers do not support
-		echo "<SCRIPT>Start('$userid')</SCRIPT>";
+				// can't use localStorage, old browsers do not support
+				echo "<SCRIPT>Start('$userid')</SCRIPT>";
+			} else {
+				echo "Wrong password or username";
+			}
+		} else {
+			echo "Wrong username";
+		}
 	}
 ?>
 

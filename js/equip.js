@@ -83,7 +83,7 @@ function showNonEditableEquip()
 			text: "Print",
 			width: "100",
 			click: function () {
-				printpaper();
+				printpaper()
 			}
 		}
 	])
@@ -167,7 +167,7 @@ function getEditedBy(qn)
 			var Editedby = ""
 			$.each(JSON.parse(response), function(key, val) {
 				Editedby += (val.editor + " : " + val.editdatetime + "<br>")
-			});
+			})
 			$('#editedby').html(Editedby)
 		} else {
 			Alert("getEditedby", response)
@@ -203,12 +203,12 @@ function Checklistequip()
 	//escape the \ (escape) and ' (single quote) for sql string, not for JSON
 	equipment = equipment.replace(/\\/g,"\\\\").replace(/'/g,"\\'")
 
-	var sql = "sqlReturnbook=UPDATE book SET ";
-	sql += "equipment='"+ equipment +"' ,";
-	sql += "editor='"+ gv.user +"' ";
-	sql += "WHERE qn="+ qn +";"
+	var sql = "sqlReturnbook=UPDATE book SET "
+			+ "equipment='"+ equipment +"' ,"
+			+ "editor='"+ gv.user +"' "
+			+ "WHERE qn="+ qn +";"
 
-	Ajax(MYSQLIPHP, sql, callbackEq);
+	Ajax(MYSQLIPHP, sql, callbackEq)
 
 	function callbackEq(response)
 	{
@@ -233,7 +233,7 @@ function Checklistequip()
 					} else {
 						$("#"+ key).val(val)
 					}
-				});
+				})
 			}
 		}
 	}
@@ -241,46 +241,47 @@ function Checklistequip()
 
 function printpaper()
 {
-	if (/Edge|MS/.test(navigator.userAgent)) {
-		var orgEquip = document.getElementById('dialogEquip');
-		orgEquip.style.paddingLeft = 0 + "px"
-		orgEquip.style.marginLeft = 0 + "px"
-		var win = window.open();
-		win.document.open();
-		win.document.write('<LINK type="text/css" rel="stylesheet" href="css/print.css">');
-		win.document.writeln(orgEquip.outerHTML);
+	if (/Edge|MS|\.NET/.test(navigator.userAgent)) {
+		var orgEquip = document.getElementById('dialogEquip')
+		var win = window.open()
+		win.document.open()
+		win.document.write('<LINK type="text/css" rel="stylesheet" href="css/print.css">')
+		win.document.writeln(orgEquip.outerHTML)
 
 		var dialogEquip = win.document.getElementById('dialogEquip')
 
 		preparePrint(orgEquip, dialogEquip)
 
-		win.document.close();
-		win.focus();
-		win.print();
-		win.close();
+		win.document.close()
+		win.focus()
+		win.print()
+		win.close()
 	} else {
-		var original = document.body.innerHTML;
-		var orgEquip = document.getElementById('dialogEquip');
-		document.body.innerHTML = orgEquip.outerHTML;
+		var original = document.body.innerHTML
+		var orgEquip = document.getElementById('dialogEquip')
+		var cloneEquip = $('#dialogEquip').clone()
 
-		var dialogEquip = document.getElementById('dialogEquip');
+		document.body.innerHTML = ""//orgEquip.outerHTML
+		$("body").append(cloneEquip)
+
+		var dialogEquip = document.getElementById('dialogEquip')
 
 		preparePrint(orgEquip, dialogEquip)
 
-		window.focus();
-		window.print();
-		document.body.innerHTML = original;
-		document.getElementById('dialogEquip').scrollIntoView(true);
-		location.reload();
+		window.focus()
+		window.print()
+		document.body.innerHTML = original
+		document.getElementById('dialogEquip').scrollIntoView(true)
+		location.reload()
 	}
 }
 
 function preparePrint(orgEquip, dialogEquip)
 {
-	var originINPUT = orgEquip.getElementsByTagName("INPUT");
-	var printINPUT = dialogEquip.getElementsByTagName("INPUT");
-	var originTEXTAREA = orgEquip.getElementsByTagName("TEXTAREA");
-	var printTEXTAREA = dialogEquip.getElementsByTagName("TEXTAREA");
+	var originINPUT = orgEquip.getElementsByTagName("INPUT")
+	var printINPUT = dialogEquip.getElementsByTagName("INPUT")
+	var originTEXTAREA = orgEquip.getElementsByTagName("TEXTAREA")
+	var printTEXTAREA = dialogEquip.getElementsByTagName("TEXTAREA")
 
 	for (var i = 0; i < originINPUT.length; i++) 
 	{
