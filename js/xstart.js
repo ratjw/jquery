@@ -10,13 +10,6 @@ function Start(userid)
 	$("head script:contains('function')").remove()
 	$("head style").remove()
 	$("head").append($("body link"))
-	document.getElementById("wrapper").style.display = "block"
-
-	$("#login").remove()
-	$("#logo").remove()
-	$("head script:contains('function')").remove()
-	$("head style").remove()
-	$("head").append($("body link"))
 	$("#wrapper").show()
 
 //	if (location.protocol === "https:" || 'serviceWorker' in navigator) {
@@ -60,16 +53,14 @@ function loading(response)
 	if (/BOOK/.test(response)) {
 		localStorage.setItem('ALLBOOK', response)
 		updateBOOK(response)
-		if (/nurse/.test(gv.user)) {
-			$("#login").remove()
-			$("#logo").remove()
+		if (/^\d{1,2}$/.test(gv.user)) {
+			fillForRoom(new Date().ISOdate())
+		}
+		else /*if (/nurse/.test(gv.user))*/ {
 			$("#wrapper").show()
 			$("#tblhead").show()
 			fillupstart();
 			fillConsults()
-		}
-		else if (/^\d{1,2}$/.test(gv.user)) {
-			fillForRoom(new Date().ISOdate())
 		}
 	} else {
 		response = localStorage.getItem('ALLBOOK')

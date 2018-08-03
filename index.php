@@ -87,9 +87,9 @@ function nurse()
 		<br>
 		<br>
 		<input id="nurseid" type="hidden" name="nurseid" value="">
-		<img src="css/pic/general/nurse.png" width="30" height="45" onclick="nurse()">
+		<!-- img src="css/pic/general/nurse.png" width="30" height="45" onclick="nurse()">
 		<br>
-		<br>
+		<br -->
 	</form>
 </div>
 

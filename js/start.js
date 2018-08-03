@@ -10,7 +10,7 @@ function Start(userid)
 	$("head script:contains('function')").remove()
 	$("head style").remove()
 	$("head").append($("body link"))
-	document.getElementById("wrapper").style.display = "block"
+	$("#wrapper").show()
 
 //	if (location.protocol === "https:" || 'serviceWorker' in navigator) {
 
