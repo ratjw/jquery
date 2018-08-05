@@ -12,8 +12,7 @@ function Start(userid)
 	$("head").append($("body link"))
 	$("#wrapper").show()
 
-//	if (location.protocol === "https:" || 'serviceWorker' in navigator) {
-
+//	if (/*location.protocol === "https:" && */'serviceWorker' in navigator) {
 //		navigator.serviceWorker.register('./service-worker.js')
 //	}
 
@@ -282,7 +281,7 @@ function findOncallRow(rows, nextrow, tlen, dateoncall)
 
 function htmlwrap(staffname)
 {
-	return '<p style="color:#999999;font-size:14px">Consult<br>' + staffname + '</p>'
+	return '<p style="color:#999999;font-size:12px">Consult<br>' + staffname + '</p>'
 }
 
 // refill after deleted or written over

@@ -573,8 +573,7 @@ td.Radiosurgery.Endovascular {
 
 #postpone,
 #del,
-#staffmenu,
-#allcases {
+#staffmenu {
 	box-shadow: 10px 20px 30px slategray;
 }
 
@@ -713,14 +712,14 @@ td.Radiosurgery.Endovascular {
 	margin: 0px;
 }
 
-@media only screen and (max-width: 1000px) {
+@media only screen and (max-width: 640px) {
 
-	/* Force table to not be like tables anymore 
+	/* Force table to not be like tables anymore */
 	table, thead, tbody, tr, th, td { 
-		display: block; 
+		display: block;
 	}
 
-	/* Hide table headers (but not display: none;, for accessibility)
+	/* Hide table headers (but not display: none;, for accessibility) */
 	th { 
 		position: absolute;
 		top: -9999px;
@@ -728,31 +727,41 @@ td.Radiosurgery.Endovascular {
 	}
  
 	tr { border: 1px solid #ccc; }
-*/
-	table {
-		width: 500px;
-	}
+
+	#tbl td:first-child,
+	#tbl td:nth-child(2),
+	#tbl td:nth-child(3),
+	#tbl td:nth-child(4),
+	#tbl td:nth-child(5),
+	#tbl td:nth-child(6),
+	#tbl td:nth-child(7),
+	#tbl td:nth-child(8),
+	#tbl td:nth-child(9),
+	#tbl td:nth-child(10),
+	#tbl td:nth-child(11),
+	#tbl td:nth-child(12) { width: auto; }
+
 	td { 
 		/* Behave  like a "row" */
-		height: 20px;
-		min-height: 20px;
-/*		border: none;
+		height: auto;
+		min-height: 30px;
+		border: none;
 		border-bottom: 1px solid #eee; 
 		position: relative;
 		padding-left: 40%; 
 		white-space: normal;
 		text-align: left;
-		empty-cells: show;*/
+		empty-cells: show;
 	}
-/*
+
 	td:first-child {
 		font-size: 16px;
 	}
 
 	td:before { 
-		/* Now like a table header
+		/* Now like a table header */
 		position: absolute;
-		/* Top/left values mimic padding 
+		/* Top/left values mimic padding */
 		top: 7px;
 		left: 7px;
 		width: 35%; 
@@ -761,7 +770,7 @@ td.Radiosurgery.Endovascular {
 		font-weight: bold;
 	/*
 	Label the data
-	
+	*/
 		content: attr(data-title);
 	}
 
@@ -774,9 +783,9 @@ td.Radiosurgery.Endovascular {
 	td.Sat:before { font-size: 18px; top: 2px; content: "วันเสาร์ "; }
 
 	#menu, #stafflist {
-	/*	position: relative;
+		position: relative;
 		font-size: 14px;
-	}*/
+	}
 }
 
 @media print { 
