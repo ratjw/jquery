@@ -35,7 +35,7 @@ function fillEquipTable(book, $row, qn, blankcase)
 		title: "เครื่องมือผ่าตัด",
 		closeOnEscape: true,
 		modal: true,
-		width: 750,
+		width: 770,
 		height: height > 1000 ? 1000 : height,
 		open: function(event, ui) {
 			//disable default autofocus on text input
@@ -95,7 +95,7 @@ function showNonEditableEquip()
 
 function printpaper()
 {
-	if (/Edge|MS\.NET/.test(navigator.userAgent)) {
+	if (/Edge|MS|\.NET/.test(navigator.userAgent)) {
 		var orgEquip = document.getElementById('dialogEquip');
 		var win = window.open();
 		win.document.open();

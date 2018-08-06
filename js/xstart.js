@@ -12,10 +12,9 @@ function Start(userid)
 	$("head").append($("body link"))
 	$("#wrapper").show()
 
-//	if (location.protocol === "https:" || 'serviceWorker' in navigator) {
-
-//		navigator.serviceWorker.register('./service-worker.js')
-//	}
+	if ('serviceWorker' in navigator) {
+		navigator.serviceWorker.register('./service-worker.js')
+	}
 
 	gv.user = userid
 	resetTimer()
@@ -107,7 +106,7 @@ function fillForRoom(opdate)
 	$('#dialogEquip').dialog("option", "buttons", [
 		{
 			text: "<< Previous Date",
-			width: "150",
+			width: "140",
 			class: "silver floatleft",
 			click: function () {
 				fillForRoom(opdate.nextdays(-1))
@@ -115,7 +114,7 @@ function fillForRoom(opdate)
 		},
 		{
 			text: "< Previous Case",
-			width: "150",
+			width: "140",
 			class: "floatleft",
 			click: function () {
 				if (i > 0) {
@@ -126,7 +125,7 @@ function fillForRoom(opdate)
 		},
 		{
 			text: "Next Case >",
-			width: "150",
+			width: "120",
 			click: function () {
 				if (i < slen-1) {
 					i = i+1
@@ -136,10 +135,17 @@ function fillForRoom(opdate)
 		},
 		{
 			text: "Next Date >>",
-			width: "150",
+			width: "120",
 			class: "silver",
 			click: function () {
 				fillForRoom(opdate.nextdays(+1))
+			}
+		},
+		{
+			text: "Print",
+			width: "70",
+			click: function () {
+				printpaper()
 			}
 		}
 	])
