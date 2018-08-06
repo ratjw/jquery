@@ -3,10 +3,10 @@ include "connect.php";
 require_once "book.php";
 require_once "mysqli.php";
 
-	$ipserver = gethostbyname($_SERVER['SERVER_NAME']);
-	if (strpos($ipserver, "10.6") === false) {
-		return;
-	}
+//	$ipserver = gethostbyname($_SERVER['SERVER_NAME']);
+//	if (strpos($ipserver, "10.6") === false) {
+//		return;
+//	}
 
 	$from = $_POST["from"];
 	$to = $_POST["to"];
@@ -25,36 +25,23 @@ require_once "mysqli.php";
 	$update = false;
 	for ($i = 0; $i < count($case); $i++)
 	{
-		$oldAdmit = $case[$i][admit];
-		$oldDischarge = $case[$i][discharge];
-		if ($oldAdmit && $oldDischarge) {
-			continue;
-		}
-
 		$hn = $case[$i]["hn"];
 		$qn = $case[$i]["qn"];
 
 		$ipd = getipd($hn);
 
-		if (empty($ipd[effectivestartdate])) {
-			$newAdmit = null;
-		} else {
-			$DateTime = DateTime::createFromFormat('d/m/Y H:i:s', $ipd[effectivestartdate]);
-			$newAdmit = $DateTime->format('Y-m-d');
-		}
-		if (empty($ipd[effectiveenddate])) {
-			$newDischarge = null;
-		} else {
-			$DateTime = DateTime::createFromFormat('d/m/Y H:i:s', $ipd[effectiveenddate]);
-			$newDischarge = $DateTime->format('Y-m-d');
-		}
+		$oldAdmit = $case[$i][admit];
+		$oldDischarge = $case[$i][discharge];
+
+		$newAdmit = getIPDdate($ipd[effectivestartdate]);
+		$newDischarge = getIPDdate($ipd[effectiveenddate]);
 
 		$admit = "";
 		$discharge = "";
-		if ($oldAdmit !== $newAdmit) {
+		if ($oldAdmit < $newAdmit) {
 			$admit = "admit='$newAdmit',";
 		}
-		if (!$oldDischarge !== $newDischarge) {
+		if (!$oldDischarge < $newDischarge) {
 				$discharge = "discharge='$newDischarge',";
 		}
 		if ($admit || $discharge) {
@@ -79,4 +66,14 @@ function getipd($hn)
 	$resultj = json_encode($resulty);
 
 	return json_decode($resultj,true);
+}
+
+function getIPDdate($date)
+{
+	if (empty($date)) {
+		return null;
+	} else {
+		$DateTime = DateTime::createFromFormat('d/m/Y H:i:s', $date);
+		return $DateTime->format('Y-m-d');
+	}
 }
