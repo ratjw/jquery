@@ -35,6 +35,12 @@ require_once "mysqli.php";
 
 		$newAdmit = getIPDdate($ipd[effectivestartdate]);
 		$newDischarge = getIPDdate($ipd[effectiveenddate]);
+		if ($newDischarge < $from) {
+			if ($newAdmit <= $newDischarge) {
+				$newAdmit = null;
+			}
+			$newDischarge = null;
+		}
 
 		$admit = "";
 		$discharge = "";
