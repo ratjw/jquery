@@ -40,6 +40,11 @@ function serviceReview()
 	$dialogService.off("click").on("click", ".ui-datepicker-title", function() {
 		entireMonth($monthstart.val())
 	})
+
+	document.getElementById("dialogService").addEventListener("wheel", function (event) {
+		resetTimer();
+		gv.idleCounter = 0
+	})
 }
 
 function entireMonth(fromDate)

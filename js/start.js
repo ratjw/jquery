@@ -110,6 +110,8 @@ function startEditable()
 				return false
 			}
 		}
+		resetTimer()
+		gv.idleCounter = 0
 	});
 
 	var $editcell = $("#editcell")
@@ -147,6 +149,12 @@ function startEditable()
 			event.stopPropagation()
 		}
 	});
+
+	document.getElementById("wrapper").addEventListener("wheel", function (event) {
+		resetTimer();
+		gv.idleCounter = 0
+		$(".bordergroove").removeClass("bordergroove")
+	})
 
 	$("#wrapper").on("click", function (event) {
 		resetTimer();
