@@ -155,6 +155,11 @@ function startEditable()
 		gv.idleCounter = 0
 		$(".bordergroove").removeClass("bordergroove")
 	})
+	
+	document.getElementById("wrapper").addEventListener("mousemove", function (event) {
+		resetTimer();
+		gv.idleCounter = 0
+	})
 
 	$("#wrapper").on("click", function (event) {
 		resetTimer();

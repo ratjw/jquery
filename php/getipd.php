@@ -3,11 +3,6 @@ include "connect.php";
 require_once "book.php";
 require_once "mysqli.php";
 
-//	$ipserver = gethostbyname($_SERVER['SERVER_NAME']);
-//	if (strpos($ipserver, "10.6") === false) {
-//		return;
-//	}
-
 	$from = $_POST["from"];
 	$to = $_POST["to"];
 	$sql = $_POST["sql"];

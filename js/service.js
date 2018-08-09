@@ -45,6 +45,11 @@ function serviceReview()
 		resetTimer();
 		gv.idleCounter = 0
 	})
+	
+	document.getElementById("dialogService").addEventListener("mousemove", function (event) {
+		resetTimer();
+		gv.idleCounter = 0
+	})
 }
 
 function entireMonth(fromDate)
@@ -184,7 +189,10 @@ function showService(fromDate, toDate)
 			$divRecord.hide()
 		}
 	})
-	getAdmitDischargeDate(fromDate, toDate)
+	
+	if (/surgery\.rama/.test(location.hostname)) {
+		getAdmitDischargeDate(fromDate, toDate)
+	}
 	countAllServices()
 	$servicetbl.fixMe($dialogService)
 	hoverService()
