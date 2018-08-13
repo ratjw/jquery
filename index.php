@@ -121,7 +121,6 @@ function nurse()
 				include ("staff.html");
 				echo "<SCRIPT>Start('$userid')</SCRIPT>";
 			}
-			// 1 or 2 digits for each OR room
 			else if ($resultz === "N") {
 				include ("nurse.html");
 				echo "<SCRIPT>Start('$userid')</SCRIPT>";
@@ -129,6 +128,7 @@ function nurse()
 				echo "Wrong password or username";
 			}
 		}
+		// 1 or 2 digits for each OR room
 		else if (preg_match('/^\d{1,2}$/', $userid)) {
 			include ("nurse.html");
 			echo "<SCRIPT>Start('$userid')</SCRIPT>";
