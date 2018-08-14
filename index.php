@@ -64,7 +64,7 @@ function nurse()
 </HEAD>
 <BODY>
 
-<p id="logo"><img src="css/pic/general/logoRama.png"></p>
+<p id="logo"><img src="./css/pic/general/logoRama.png"></p>
 
 <?php $userid = $password = $nurseid = ""; ?>
 
@@ -87,7 +87,7 @@ function nurse()
 		<br>
 		<br>
 		<input id="nurseid" type="hidden" name="nurseid" value="">
-		<!-- img src="css/pic/general/nurse.png" width="30" height="45" onclick="nurse()">
+		<!-- img src="./css/pic/general/nurse.png" width="30" height="45" onclick="nurse()">
 		<br>
 		<br -->
 	</form>

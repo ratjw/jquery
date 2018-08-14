@@ -1,8 +1,8 @@
 //Actually these are constants but older browsers do not support const
-var GETIPD	= "php/getipd.php",
-GETNAMEHN	= "php/getnamehn.php",
-MYSQLIPHP	= "php/mysqli.php",
-SEARCH		= "php/search.php",
+var GETIPD	= "./php/getipd.php",
+GETNAMEHN	= "./php/getnamehn.php",
+MYSQLIPHP	= "./php/mysqli.php",
+SEARCH		= "./php/search.php",
 
 //tbl, queuetbl
 OPDATE		= 0,
