@@ -50,7 +50,6 @@ function Start(userid)
 function loading(response)
 {
 	if (/BOOK/.test(response)) {
-		localStorage.setItem('ALLBOOK', response)
 		updateBOOK(response)
 		if (/^\d{1,2}$/.test(gv.user)) {
 			fillForRoom(new Date().ISOdate())
@@ -62,16 +61,7 @@ function loading(response)
 			fillConsults()
 		}
 	} else {
-		response = localStorage.getItem('ALLBOOK')
-		var error = "<br><br>Response from server has no data"
-		if (/BOOK/.test(response)) {
-			Alert("Server Error", error + "<br><br>Use localStorage instead");
-			updateBOOK(response)
-			fillupstart();
-			fillConsults()
-		} else {
-			Alert("Server Error", error + "<br><br>No localStorage backup");
-		}
+		Alert("Server Error", "<br><br>Response from server has no data")
 	}
 }
 
