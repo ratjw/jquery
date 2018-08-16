@@ -24,27 +24,14 @@ function loading(response)
 {
 	if (/BOOK/.test(response)) {
 		startEditable()
-		localStorage.setItem('ALLBOOK', response)
 		updateBOOK(response)
 		fillupstart()
 		setStafflist()
 		fillConsults()
 	} else {
-		response = localStorage.getItem('ALLBOOK')
-		var error = "<br><br>Response from server has no data."
-		if (/BOOK/.test(response)) {
-			Alert("Server Error",
-					error
-					+ "<br><br>Use localStorage instead."
-					+ "<br><br><h3>Read Only, not editable.</h3>");
-			updateBOOK(response)
-			fillupstart();
-			setStafflist()
-			fillConsults()
-		} else {
-			Alert("Server Error", error + "<br><br>No localStorage backup");
-		}
+		Alert("Server Error", "<br><br>Response from server has no data")
 	}
+	localStorage.clear()
 }
 
 function updateBOOK(response)

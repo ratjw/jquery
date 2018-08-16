@@ -12,15 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-var dataCacheName = 'Surgery Book';
-var cacheName = 'Surgery Service';
+var dataCacheName = 'book';
+var cacheName = 'jquery';
 var filesToCache = [
   './index.php',
   './nurse.html',
   './readme.pdf',
   './staff.html',
   './css/css.css',
-  './css/images/ui-icons_ffffff_256x240.png',
+  './css/images/ui-icons_555555_256x240.png',
   './css/pic/equip/CUSA.jpg',
   './css/pic/equip/Endoscope.jpg',
   './css/pic/equip/Fluoroscope.jpg',
