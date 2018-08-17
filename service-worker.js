@@ -13,13 +13,13 @@
 // limitations under the License.
 
 var dataCacheName = 'book';
-var cacheName = 'jquery';
-var filesToCache = [
-  './index.php',
-  './nurse.html',
-  './readme.pdf',
-  './staff.html',
-  './css/css.css',
+var staticCacheName = 'static';
+var dynamicCacheName = 'dynamic';
+var staticFilesToCache = [
+  './js/jquery.mousewheel.min.js',
+  './js/jquery-1.12.4.min.js',
+  './js/jquery-ui.min.js',
+  './css/jquery-ui.min.css',
   './css/images/ui-icons_555555_256x240.png',
   './css/pic/equip/CUSA.jpg',
   './css/pic/equip/Endoscope.jpg',
@@ -80,16 +80,22 @@ var filesToCache = [
   './css/pic/service/record.png',
   './css/pic/service/record2.png',
   './css/pic/service/reoperation.png',
-  './css/pic/service/reoperation2.png',
+  './css/pic/service/reoperation2.png'
+];
+var dynamicFilesToCache = [
+  './index.php',
+  './nurse.html',
+  './readme.pdf',
+  './staff.html',
+  './css/css.css',
+  './css/print.css',
+  './css/xcss.css',
   './js/click.js',
   './js/constant.js',
   './js/equip.js',
   './js/fill.js',
   './js/function.js',
   './js/history.js',
-  './js/jquery.mousewheel.min.js',
-  './js/jquery-1.12.4.min.js',
-  './js/jquery-ui.min.js',
   './js/menu.js',
   './js/service.js',
   './js/sortable.js',
@@ -98,7 +104,7 @@ var filesToCache = [
   './js/xequip.js',
   './js/xfill.js',
   './js/xfunction.js',
-  './js/xstart.js',
+  './js/xstart.js'
 ];
 
 self.addEventListener('install', function(e) {
@@ -106,7 +112,8 @@ self.addEventListener('install', function(e) {
   e.waitUntil(
     caches.open(cacheName).then(function(cache) {
       console.log('[ServiceWorker] Caching app shell');
-      return cache.addAll(filesToCache);
+      cache.addAll(staticFilesToCache);
+      cache.addAll(dynamicFilesToCache);
     })
   );
 });
@@ -116,7 +123,7 @@ self.addEventListener('activate', function(e) {
   e.waitUntil(
     caches.keys().then(function(keyList) {
       return Promise.all(keyList.map(function(key) {
-        if (key !== cacheName && key !== dataCacheName) {
+        if (key !== staticCacheName && key !== dynamicCacheName && key !== dataCacheName) {
           console.log('[ServiceWorker] Removing old cache', key);
           return caches.delete(key);
         }
@@ -138,7 +145,7 @@ self.addEventListener('activate', function(e) {
 
 self.addEventListener('fetch', function(e) {
   console.log('[Service Worker] Fetch', e.request.url);
-  var dataUrl = 'https://query.yahooapis.com/v1/public/yql';
+  var dataUrl = 'https://surgery.rama.mahidol.ac.th';
   if (e.request.url.indexOf(dataUrl) > -1) {
     /*
      * When the request URL contains dataUrl, the app is asking for fresh

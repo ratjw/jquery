@@ -14,7 +14,7 @@
 #login {
 	width: 300px; 
 	margin-top: 0px;
-	margin-left: auto; 
+	margin-left: auto;
 	margin-right: auto; 
 	text-align: center;
 	color: white;

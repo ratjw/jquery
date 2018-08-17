@@ -12,9 +12,9 @@ function Start(userid)
 	$("head").append($("body link"))
 	$("#wrapper").show()
 
-	if ('serviceWorker' in navigator) {
-		navigator.serviceWorker.register('./service-worker.js')
-	}
+//	if ('serviceWorker' in navigator) {
+//		navigator.serviceWorker.register('./service-worker.js')
+//	}
 
 	gv.user = userid
 	resetTimer()
