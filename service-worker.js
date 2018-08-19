@@ -110,11 +110,15 @@ var dynamicFilesToCache = [
 self.addEventListener('install', function(e) {
   console.log('[ServiceWorker] Install');
   e.waitUntil(
-    caches.open(cacheName).then(function(cache) {
+    caches.open(staticCacheName).then(function(cache) {
       console.log('[ServiceWorker] Caching app shell');
       cache.addAll(staticFilesToCache);
+    })
+	.caches.open(dynamicCacheName).then(function(cache) {
+      console.log('[ServiceWorker] Caching app shell');
       cache.addAll(dynamicFilesToCache);
     })
+
   );
 });
 
