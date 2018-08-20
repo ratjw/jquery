@@ -24,12 +24,15 @@
 	box-shadow: -20px 30px 40px slategray;
 }
 
+#send,
 input[type=submit] {
 	background: #c4445C;
 	background: linear-gradient(#f8d3e4, #AC1B5C, #580e2f);
 	border-radius: 5px;
 	color: white;
-	height: 30px;
+	height: 25px;
+	width: 55px; 
+	text-align: center;
 }
 </style>
 
@@ -44,6 +47,12 @@ function namesix()
 	if (/^\d{6}$/.test(userid)) {
 		document.getElementById("password").focus()
 	}
+}
+
+function signin()
+{
+	$('h4').remove()
+	$('form').submit()
 }
 
 function nurse()
@@ -83,7 +92,7 @@ function nurse()
 					maxlength="16" size="8" value="<?php echo $password;?>">
 		<br>
 		<br>
-		<input type="submit" value="Sign in">
+		<input id="send" type="text" value="Sign in" onclick="signin()">
 		<br>
 		<br>
 		<input id="nurseid" type="hidden" name="nurseid" value="">
@@ -125,7 +134,7 @@ function nurse()
 				include ("nurse.html");
 				echo "<SCRIPT>Start('$userid')</SCRIPT>";
 			} else {
-				echo "Wrong password or username";
+				echo "<h4 style='text-align:center;color:blue'>Wrong password or username</h4>";
 			}
 		}
 		// 1 or 2 digits for each OR room
@@ -134,7 +143,7 @@ function nurse()
 			echo "<SCRIPT>Start('$userid')</SCRIPT>";
 		}
 		else {
-			echo "Wrong username";
+			echo "<h4 style='text-align:center;color:blue'>Wrong username</h4>";
 		}
 	}
 ?>
