@@ -106,15 +106,24 @@ var dynamicFilesToCache = [
   './js/xfunction.js',
   './js/xstart.js'
 ];
+var cacheName = "neurosurgery"
+var filesToCache = staticFilesToCache.concat(dynamicFilesToCache)
 
 self.addEventListener('install', function(e) {
   console.log('[ServiceWorker] Install');
   e.waitUntil(
     caches.open(cacheName).then(function(cache) {
       console.log('[ServiceWorker] Caching app shell');
-      cache.addAll(staticFilesToCache);
-      cache.addAll(dynamicFilesToCache);
+      return cache.addAll(filesToCache);
     })
+//    caches.open(staticCacheName).then(function(cache) {
+//      console.log('[ServiceWorker] Caching app static');
+//      cache.addAll(staticFilesToCache);
+//    })
+//    caches.open(dynamicCacheName).then(function(cache) {
+//      console.log('[ServiceWorker] Caching app dynamic');
+//      cache.addAll(dynamicFilesToCache);
+//    })
   );
 });
 
@@ -123,7 +132,7 @@ self.addEventListener('activate', function(e) {
   e.waitUntil(
     caches.keys().then(function(keyList) {
       return Promise.all(keyList.map(function(key) {
-        if (key !== staticCacheName && key !== dynamicCacheName && key !== dataCacheName) {
+        if (key !== cacheName && key !== dataCacheName) {
           console.log('[ServiceWorker] Removing old cache', key);
           return caches.delete(key);
         }
