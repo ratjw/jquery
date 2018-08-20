@@ -107,15 +107,45 @@ var dynamicFilesToCache = [
   './js/xstart.js'
 ];
 
+let cacheNames = appCaches.map((cache) => cache.name);
+
+self.addEventListener('install', function (event) {
+  event.waitUntil(caches.keys().then(function (keys) {
+    return Promise.all(appCaches.map(function (appCache) {
+      if (keys.indexOf(appCache.name) === -1) {
+        caches.open(appCache.name).then(function (cache) {
+          console.log(`caching ${appCache.name}`);
+          return cache.addAll(appCache.urls);
+        })
+      } else {
+        console.log(`found ${appCache.name}`);
+        return Promise.resolve(true);
+      }
+    })).then(function () {
+      return this.skipWaiting();
+    });
+  }));
+});
+
+self.addEventListener('activate', function (event) {
+  event.waitUntil(
+    caches.keys().then(function (keys) {
+      return Promise.all(keys.map(function (key) {
+        if (cacheNames.indexOf(key) === -1) {
+          console.log(`deleting ${key}`);
+          return caches.delete(key);
+        }
+      }));
+    })
+  );
+});
+
 self.addEventListener('install', function(e) {
-  console.log('[ServiceWorker] Install');
   e.waitUntil(
     caches.open(staticCacheName).then(function(cache) {
-      console.log('[ServiceWorker] Caching app shell');
       cache.addAll(staticFilesToCache);
     })
 	.caches.open(dynamicCacheName).then(function(cache) {
-      console.log('[ServiceWorker] Caching app shell');
       cache.addAll(dynamicFilesToCache);
     })
 
@@ -123,12 +153,10 @@ self.addEventListener('install', function(e) {
 });
 
 self.addEventListener('activate', function(e) {
-  console.log('[ServiceWorker] Activate');
   e.waitUntil(
     caches.keys().then(function(keyList) {
       return Promise.all(keyList.map(function(key) {
         if (key !== staticCacheName && key !== dynamicCacheName && key !== dataCacheName) {
-          console.log('[ServiceWorker] Removing old cache', key);
           return caches.delete(key);
         }
       }));
