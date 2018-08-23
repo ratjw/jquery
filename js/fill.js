@@ -600,93 +600,93 @@ function holiday(date)
 
 	if (date === LARGESTDATE) { return }
 	if (holyday) {
-		return "url('./css/pic/holiday/" + holyday.dayname + ".png')"
+		return "url('css/pic/holiday/" + holyday.dayname + ".png')"
 	}
 
 	switch (monthdate)
 	{
 	case "12-31":
-		holidayname = "url('./css/pic/holiday/Yearend.png')"
+		holidayname = "url('css/pic/holiday/Yearend.png')"
 		break
 	case "01-01":
-		holidayname = "url('./css/pic/holiday/Newyear.png')"
+		holidayname = "url('css/pic/holiday/Newyear.png')"
 		break
 	case "01-02":
 		if (Mon || Tue)
-			holidayname = "url('./css/pic/holiday/Yearendsub.png')"
+			holidayname = "url('css/pic/holiday/Yearendsub.png')"
 		break
 	case "01-03":
 		if (Mon || Tue)
-			holidayname = "url('./css/pic/holiday/Newyearsub.png')"
+			holidayname = "url('css/pic/holiday/Newyearsub.png')"
 		break
 	case "04-06":
-		holidayname = "url('./css/pic/holiday/Chakri.png')"
+		holidayname = "url('css/pic/holiday/Chakri.png')"
 		break
 	case "04-07":
 	case "04-08":
 		if (Mon)
-			holidayname = "url('./css/pic/holiday/Chakrisub.png')"
+			holidayname = "url('css/pic/holiday/Chakrisub.png')"
 		break
 	case "04-13":
 	case "04-14":
 	case "04-15":
-		holidayname = "url('./css/pic/holiday/Songkran.png')"
+		holidayname = "url('css/pic/holiday/Songkran.png')"
 		break
 	case "04-16":
 		if (Mon || Tue)
-			holidayname = "url('./css/pic/holiday/Songkransub.png')"
+			holidayname = "url('css/pic/holiday/Songkransub.png')"
 		break
 	case "04-17":
 		if (Mon || Wed)
-			holidayname = "url('./css/pic/holiday/Songkransub.png')"
+			holidayname = "url('css/pic/holiday/Songkransub.png')"
 		break
 	case "07-28":
-		holidayname = "url('./css/pic/holiday/King10.png')"
+		holidayname = "url('css/pic/holiday/King10.png')"
 		break
 	case "07-29":
 	case "07-30":
 		if (Mon)
-			holidayname = "url('./css/pic/holiday/King10sub.png')"
+			holidayname = "url('css/pic/holiday/King10sub.png')"
 		break
 	case "08-12":
-		holidayname = "url('./css/pic/holiday/Queen.png')"
+		holidayname = "url('css/pic/holiday/Queen.png')"
 		break
 	case "08-13":
 	case "08-14":
 		if (Mon)
-			holidayname = "url('./css/pic/holiday/Queensub.png')"
+			holidayname = "url('css/pic/holiday/Queensub.png')"
 		break
 	case "10-13":
-		holidayname = "url('./css/pic/holiday/King09.png')"
+		holidayname = "url('css/pic/holiday/King09.png')"
 		break
 	case "10-14":
 	case "10-15":
 		if (Mon)
-			holidayname = "url('./css/pic/holiday/King09sub.png')"
+			holidayname = "url('css/pic/holiday/King09sub.png')"
 		break
 	case "10-23":
-		holidayname = "url('./css/pic/holiday/Piya.png')"
+		holidayname = "url('css/pic/holiday/Piya.png')"
 		break
 	case "10-24":
 	case "10-25":
 		if (Mon)
-			holidayname = "url('./css/pic/holiday/Piyasub.png')"
+			holidayname = "url('css/pic/holiday/Piyasub.png')"
 		break
 	case "12-05":
-		holidayname = "url('./css/pic/holiday/King9.png')"
+		holidayname = "url('css/pic/holiday/King9.png')"
 		break
 	case "12-06":
 	case "12-07":
 		if (Mon)
-			holidayname = "url('./css/pic/holiday/Kingsub.png')"
+			holidayname = "url('css/pic/holiday/Kingsub.png')"
 		break
 	case "12-10":
-		holidayname = "url('./css/pic/holiday/Constitution.png')"
+		holidayname = "url('css/pic/holiday/Constitution.png')"
 		break
 	case "12-11":
 	case "12-12":
 		if (Mon)
-			holidayname = "url('./css/pic/holiday/Constitutionsub.png')"
+			holidayname = "url('css/pic/holiday/Constitutionsub.png')"
 		break
 	}
 	return holidayname

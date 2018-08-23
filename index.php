@@ -24,15 +24,12 @@
 	box-shadow: -20px 30px 40px slategray;
 }
 
-#send,
 input[type=submit] {
 	background: #c4445C;
 	background: linear-gradient(#f8d3e4, #AC1B5C, #580e2f);
 	border-radius: 5px;
 	color: white;
-	height: 25px;
-	width: 55px; 
-	text-align: center;
+	height: 30px;
 }
 </style>
 
@@ -52,7 +49,6 @@ function namesix()
 function signin()
 {
 	$('h4').remove()
-	$('form').submit()
 }
 
 function nurse()
@@ -73,7 +69,7 @@ function nurse()
 </HEAD>
 <BODY>
 
-<p id="logo"><img src="./css/pic/general/logoRama.png"></p>
+<p id="logo"><img src="css/pic/general/logoRama.png"></p>
 
 <?php $userid = $password = $nurseid = ""; ?>
 
@@ -92,11 +88,11 @@ function nurse()
 					maxlength="16" size="8" value="<?php echo $password;?>">
 		<br>
 		<br>
-		<input id="send" type="text" value="Sign in" onclick="signin()">
+		<input type="submit" value="Sign in" onclick="signin()">
 		<br>
 		<br>
 		<input id="nurseid" type="hidden" name="nurseid" value="">
-		<!-- img src="./css/pic/general/nurse.png" width="30" height="45" onclick="nurse()">
+		<!-- img src="css/pic/general/nurse.png" width="30" height="45" onclick="nurse()">
 		<br>
 		<br -->
 	</form>

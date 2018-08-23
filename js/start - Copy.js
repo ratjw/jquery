@@ -2,39 +2,9 @@
 function Start(userid)
 {
 	var sql = "start="
-/*
-    if ('caches' in window) {
-      caches.match(window.location.href + MYSQLIPHP).then(function(response) {
-        if (response) {
-          response.json().then(function updateFromCache(json) {
-            var results = json.query.results;
-            results.timestamp = json.query.timestamp;
-            loading(results);
-          });
-        }
-      });
-    }
-*/
+
 	Ajax(MYSQLIPHP, sql, loading);
-/*
-fetch(window.location.href + MYSQLIPHP, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/x-www-form-urlencoded",//"application/json",
-        },
-        body: JSON.stringify(sql)
-})
-  .then(function(response) {
-	caches.open('book-neuro1').then(function(cache) {
-		cache.put(window.location.href + MYSQLIPHP, response);
-	});
-	loading(response);
-//    return response.json();
-  })
-//  .then(function(myJson) {
-//    console.log(JSON.stringify(myJson));
-//  })
-*/
+
 	$("#login").remove()
 	$("#logo").remove()
 	$("head script:contains('function')").remove()
@@ -42,12 +12,12 @@ fetch(window.location.href + MYSQLIPHP, {
 	$("head").append($("body link"))
 	$("#wrapper").show()
 
+	if ('serviceWorker' in navigator) {
+		navigator.serviceWorker.register('./service-worker.js')
+	}
+
 	gv.user = userid
 	resetTimer()
-
-	if ('serviceWorker' in navigator) {
-		navigator.serviceWorker.register('service-worker.js')
-	}
 }
 	
 function loading(response)
