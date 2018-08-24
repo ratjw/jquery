@@ -111,9 +111,9 @@ let appCaches = [{
   }
 ];
 
-let cacheNames = appCaches.map((cache) => cache.name);
-
-var dataCacheName = 'book-neuro1'
+let dataCacheName = 'book-neuro1'
+    cacheNames = appCaches.map((cache) => cache.name);
+    cacheNames = cacheNames.concat(dataCacheName)
 
 self.addEventListener('install', function (event) {
   event.waitUntil(caches.keys().then(function (keys) {
@@ -194,7 +194,7 @@ self.addEventListener('fetch', function(e) {
     e.respondWith(
       caches.open(dataCacheName).then(function(cache) {
         return fetch(e.request).then(function(response){
-//		  if (/BOOK/.test(response)) {
+//		  if (/BOOK/.test(response.clone())) {
             cache.put(e.request.url, response.clone());
 //		  }
           return response;
