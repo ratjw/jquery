@@ -2,7 +2,7 @@
 function Start(userid)
 {
 	var sql = "start="
-/*
+
     if ('caches' in window) {
       caches.match(window.location.href + MYSQLIPHP).then(function(response) {
         if (response) {
@@ -14,7 +14,7 @@ function Start(userid)
         }
       });
     }
-*/
+
 	Ajax(MYSQLIPHP, sql, loading);
 /*
 fetch(window.location.href + MYSQLIPHP, {
@@ -75,7 +75,7 @@ function updateBOOK(response)
 	if (temp.ONCALL) { gv.ONCALL = temp.ONCALL }
 	if (temp.HOLIDAY) { gv.HOLIDAY = temp.HOLIDAY }
 	if (temp.QTIME) { gv.timestamp = temp.QTIME }
-	// datetime of last fetching from server: $mysqli->query ("SELECT now();")
+	// QTIME = datetime of last fetching from server: $mysqli->query ("SELECT now();")
 }
 
 function startEditable()
@@ -380,8 +380,8 @@ function updating()
 	// Both ways get update from server
 	if (onChange()) {
 		gv.idleCounter = 0
-	} else {
-		var sql = "sqlReturnData=SELECT MAX(editdatetime) as timestamp from bookhistory;"
+	} else {getUpdate()}
+/*		var sql = "sqlReturnData=SELECT MAX(editdatetime) as timestamp from bookhistory;"
 
 		Ajax(MYSQLIPHP, sql, updatingback);
 
@@ -414,7 +414,7 @@ function updating()
 			}
 		}
 	}
-
+*/
 	resetTimer()
 }
 
