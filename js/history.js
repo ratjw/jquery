@@ -12,7 +12,7 @@ function editHistory($row)
 
 	function callbackeditHistory(response)
 	{
-		if (/dob/.test(response)) {
+		if (response[0].hasOwnProperty("action")) {
 			makehistory($row, hn, response)
 		} else {
 			Alert("editHistory", response)
@@ -22,8 +22,7 @@ function editHistory($row)
 
 function makehistory($row, hn, response)
 {
-	var tracing	= JSON.parse(response),
-		$historytbl = $('#historytbl'),
+	var	$historytbl = $('#historytbl'),
 		nam = $row.find("td")[PATIENT].innerHTML,
 		name = nam && nam.replace('<br>', ' '),
 		$dialogHistory = $("#dialogHistory")
@@ -31,7 +30,7 @@ function makehistory($row, hn, response)
 	// delete previous table lest it accumulates
 	$historytbl.find('tr').slice(1).remove()
 
-	$.each( tracing, function() {
+	$.each( response, function() {
 		$('#historycells tr').clone()
 			.appendTo($historytbl.find('tbody'))
 				.filldataHistory(this)

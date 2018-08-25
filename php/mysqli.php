@@ -5,7 +5,7 @@ require_once "book.php";
 	// start.js (start)
 	// xstart.js (start)
 	if (isset($_POST['start'])) {
-		echo start($mysqli, $_POST['start']);
+		echo start($mysqli);
 	}
 	// xstart.js (getUpdate)
 	else if (isset($_POST['nosqlReturnbook']))

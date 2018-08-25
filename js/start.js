@@ -1,9 +1,11 @@
 
-function Start(userid)
+function Start(userid, book)
 {
-  var sql = "start="
+//  if ('serviceWorker' in navigator) {
+//    navigator.serviceWorker.register('service-worker.js')
+//  }
 
-  if ('caches' in window) {
+/*  if ('caches' in window) {
     caches.match(window.location.href + MYSQLIPHP).then(function(response) {
       if (response) {
 		response.text().then(function updateFromCache(data) {
@@ -14,26 +16,6 @@ function Start(userid)
       }
     })
   }
-
-  Ajax(MYSQLIPHP, sql, loading);
-/*
-fetch(window.location.href + MYSQLIPHP, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/x-www-form-urlencoded",//"application/json",
-        },
-        body: JSON.stringify(sql)
-})
-  .then(function(response) {
-  caches.open('book-neuro1').then(function(cache) {
-    cache.put(window.location.href + MYSQLIPHP, response);
-  });
-  loading(response);
-//    return response.json();
-  })
-//  .then(function(myJson) {
-//    console.log(JSON.stringify(myJson));
-//  })
 */
   $("#login").remove()
   $("#logo").remove()
@@ -42,39 +24,27 @@ fetch(window.location.href + MYSQLIPHP, {
   $("head").append($("body link"))
   $("#wrapper").show()
 
+  if (!book.hasOwnProperty("BOOK")) { book = "{}" }
+  updateBOOK(book)
+  startEditable()
+  fillupstart()
+  setStafflist()
+  fillConsults()
+  localStorage.clear()
+
   gv.user = userid
   resetTimer()
-
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('service-worker.js')
-  }
 }
 
-function loading(response)
+function updateBOOK(result)
 {
-  if (/BOOK/.test(response)) {
-    startEditable()
-    updateBOOK(response)
-    fillupstart()
-    setStafflist()
-    fillConsults()
-  } else {
-    Alert("Server Error", "<br><br>Response from server has no data")
-  }
-  localStorage.clear()
-}
-
-function updateBOOK(response)
-{
-  var temp = JSON.parse(response)
-
-  if (temp.BOOK) { gv.BOOK = temp.BOOK }
-  if (temp.CONSULT) { gv.CONSULT = temp.CONSULT }
-  if (temp.SERVICE) { gv.SERVICE = temp.SERVICE }
-  if (temp.STAFF) { gv.STAFF = temp.STAFF }
-  if (temp.ONCALL) { gv.ONCALL = temp.ONCALL }
-  if (temp.HOLIDAY) { gv.HOLIDAY = temp.HOLIDAY }
-  if (temp.QTIME) { gv.timestamp = temp.QTIME }
+  if (result.BOOK) { gv.BOOK = result.BOOK }
+  if (result.CONSULT) { gv.CONSULT = result.CONSULT }
+  if (result.SERVICE) { gv.SERVICE = result.SERVICE }
+  if (result.STAFF) { gv.STAFF = result.STAFF }
+  if (result.ONCALL) { gv.ONCALL = result.ONCALL }
+  if (result.HOLIDAY) { gv.HOLIDAY = result.HOLIDAY }
+  if (result.QTIME) { gv.timestamp = result.QTIME }
   // QTIME = datetime of last fetching from server: $mysqli->query ("SELECT now();")
 }
 
@@ -359,8 +329,8 @@ function updating()
   // Both ways get update from server
   if (onChange()) {
     gv.idleCounter = 0
-  } else {getUpdate()}
-/*    var sql = "sqlReturnData=SELECT MAX(editdatetime) as timestamp from bookhistory;"
+  } else {
+    var sql = "sqlReturnData=SELECT MAX(editdatetime) as timestamp from bookhistory;"
 
     Ajax(MYSQLIPHP, sql, updatingback);
 
@@ -392,7 +362,7 @@ function updating()
       }
     }
   }
-*/
+
   resetTimer()
 }
 

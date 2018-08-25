@@ -104,10 +104,12 @@ function nurse()
 		$password = $_POST["password"];
 		$nurseid = $_POST["nurseid"];
 		$resultz = "";
+		include "/php/mysqli.php";
+		$book = start($mysqli);
 
 		if ($nurseid === "nurse" || preg_match('/^\d{1,2}$/', $nurseid)) {
 			include ("nurse.html");
-			echo "<SCRIPT>Start('$nurseid')</SCRIPT>";
+			echo "<SCRIPT>Start('$nurseid', $book)</SCRIPT>";
 		}
 
 		// 6 digits username
@@ -124,11 +126,11 @@ function nurse()
 
 			if ($resultz === "S" || $resultz === "R") {
 				include ("staff.html");
-				echo "<SCRIPT>Start('$userid')</SCRIPT>";
+				echo "<SCRIPT>Start('$userid', $book)</SCRIPT>";
 			}
 			else if ($resultz === "N") {
 				include ("nurse.html");
-				echo "<SCRIPT>Start('$userid')</SCRIPT>";
+				echo "<SCRIPT>Start('$userid', $book)</SCRIPT>";
 			} else {
 				echo "<h4 style='text-align:center;color:blue'>Wrong password or username</h4>";
 			}
@@ -136,7 +138,7 @@ function nurse()
 		// 1 or 2 digits for each OR room
 		else if (preg_match('/^\d{1,2}$/', $userid)) {
 			include ("nurse.html");
-			echo "<SCRIPT>Start('$userid')</SCRIPT>";
+			echo "<SCRIPT>Start('$userid', $book)</SCRIPT>";
 		}
 		else {
 			echo "<h4 style='text-align:center;color:blue'>Wrong username</h4>";

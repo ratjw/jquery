@@ -192,7 +192,7 @@ function Ajax(url, params, callback)
 	http.onreadystatechange = function() 
 	{
 		if (http.readyState === 4 && http.status === 200) {
-			callback(http.responseText);
+			callback(JSON.parse(http.responseText));
 		}
 		if (/404|500|503|504/.test(http.status)) {
 			callback(http.statusText);
