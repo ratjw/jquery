@@ -519,14 +519,24 @@ function makeEquip(equipJSON)
 		equipPics = []
 
 	$.each(equipJSON, function(key, value) {
+		var Monitor = /Monitor/.test(equip)
 		if (equip) { equip += ", " }
 		if (value === "checked") {
-			equip += key
 			if (key in equipIcons) {
 				equipPics.push(equipIcons[key])
+				if (!Monitor) {
+					equip += "Monitor:"
+				}
 			}
+			equip += key
 		} else {
-			equip += key + ":" + value
+			if (key === "Monitor") {
+				if (Monitor) {
+					equip += value
+				}
+			} else {
+				equip += key + ":" + value
+			}
 		}
 	})
 	// remove duplicated pics

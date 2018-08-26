@@ -1,22 +1,10 @@
 
 function Start(userid, book)
 {
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('service-worker.js')
-  }
+//  if ('serviceWorker' in navigator) {
+//    navigator.serviceWorker.register('service-worker.js')
+//  }
 
-/*  if ('caches' in window) {
-    caches.match(window.location.href + MYSQLIPHP).then(function(response) {
-      if (response) {
-		response.text().then(function updateFromCache(data) {
-          if (/BOOK/.test(data)) {
-            loading(data)
-          }
-        })
-      }
-    })
-  }
-*/
   $("#login").remove()
   $("#logo").remove()
   $("head script:contains('function')").remove()
@@ -24,13 +12,12 @@ function Start(userid, book)
   $("head").append($("body link"))
   $("#wrapper").show()
 
-  if (book.constructor !== Object) { book = "{}" }
+  if (typeof book !== "object") { book = "{}" }
   updateBOOK(book)
   startEditable()
   fillupstart()
   setStafflist()
   fillConsults()
-  localStorage.clear()
 
   gv.user = userid
   resetTimer()
@@ -319,7 +306,7 @@ function resetTimer()
   // gv.timer is just an id, not the clock
   // poke server every 10 sec.
   clearTimeout(gv.timer)
-  gv.timer = setTimeout( updating, 10000)
+  gv.timer = setTimeout( updating, 3000)
 }
 
 function updating()

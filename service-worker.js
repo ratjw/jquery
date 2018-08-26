@@ -79,12 +79,7 @@ let appCaches = [{
 	  'css/pic/service/record.png',
 	  'css/pic/service/record2.png',
 	  'css/pic/service/reoperation.png',
-	  'css/pic/service/reoperation2.png'
-    ]
-  },
-  {
-    name: 'dynamic-neuro1',
-    urls: [
+	  'css/pic/service/reoperation2.png',
 	  'index.php',
 	  'nurse.html',
 	  'readme.pdf',
@@ -101,11 +96,38 @@ let appCaches = [{
 	  'js/menu.js',
 	  'js/service.js',
 	  'js/sortable.js',
-	  'js/start.js',
+//	  'js/start.js',
 	  'js/xconstant.js',
 	  'js/xequip.js',
 	  'js/xfill.js',
-	  'js/xfunction.js',
+	  'js/xfunction.js'//,
+//	  'js/xstart.js'
+    ]
+  },
+  {
+    name: 'dynamic-neuro2',
+    urls: [
+//	  'index.php',
+//	  'nurse.html',
+//	  'readme.pdf',
+//	  'staff.html',
+//	  'css/css.css',
+//	  'css/print.css',
+//	  'css/xcss.css',
+//	  'js/click.js',
+//	  'js/constant.js',
+//	  'js/equip.js',
+//	  'js/fill.js',
+//	  'js/function.js',
+//	  'js/history.js',
+//	  'js/menu.js',
+//	  'js/service.js',
+//	  'js/sortable.js',
+	  'js/start.js',
+//	  'js/xconstant.js',
+//	  'js/xequip.js',
+//	  'js/xfill.js',
+//	  'js/xfunction.js',
 	  'js/xstart.js'
     ]
   }
@@ -145,69 +167,20 @@ self.addEventListener('activate', function (event) {
 
   return self.clients.claim();
 });
-/*
-self.addEventListener('install', function(e) {
-  console.log('[ServiceWorker] Install');
-  e.waitUntil(
-    caches.open(cacheName).then(function(cache) {
-      console.log('[ServiceWorker] Caching app shell');
-      return cache.addAll(filesToCache);
-    })
-    caches.open(staticCacheName).then(function(cache) {
-      console.log('[ServiceWorker] Caching app static');
-      cache.addAll(staticFilesToCache);
-    })
-    caches.open(dynamicCacheName).then(function(cache) {
-      console.log('[ServiceWorker] Caching app dynamic');
-      cache.addAll(dynamicFilesToCache);
-    })
-  );
-});
 
-self.addEventListener('activate', function(e) {
-  console.log('[ServiceWorker] Activate');
-  e.waitUntil(
-    caches.keys().then(function(keyList) {
-      return Promise.all(keyList.map(function(key) {
-        if (key !== cacheName && key !== dataCacheName) {
-          console.log('[ServiceWorker] Removing old cache', key);
-          return caches.delete(key);
-        }
-      }));
-    })
-  );
-
-  return self.clients.claim();
-});
-*/
 self.addEventListener('fetch', function(e) {
   console.log('[Service Worker] Fetch', e.request.url);
   var dataUrl = 'php';
   if (e.request.url.indexOf(dataUrl) > -1) {
-    /*
-     * When the request URL contains dataUrl, the app is asking for fresh
-     * weather data. In this case, the service worker always goes to the
-     * network and then caches the response. This is called the "Cache then
-     * network" strategy:
-     * https://jakearchibald.com/2014/offline-cookbook/#cache-then-network
-     */
     e.respondWith(
       caches.open(dataCacheName).then(function(cache) {
         return fetch(e.request).then(function(response){
-		  var responseClone = response.clone()
-		  if (/BOOK/.test(responseClone.text().then((data) => data ))) {
-            cache.put(e.request.url, responseClone);
-		  }
+          cache.put(e.request.url, response.clone());
           return response;
         });
       })
     );
   } else {
-    /*
-     * The app is asking for app shell files. In this scenario the app uses the
-     * "Cache, falling back to the network" offline strategy:
-     * https://jakearchibald.com/2014/offline-cookbook/#cache-falling-back-to-network
-     */
     e.respondWith(
       caches.match(e.request).then(function(response) {
         return response || fetch(e.request);
