@@ -162,7 +162,7 @@ function sortable()
 
 			function callbacksortable(response)
 			{
-				if (/BOOK/.test(response)) {
+				if (typeof response === "object") {
 					updateBOOK(response)
 					if (receiver === "tbl") {
 						if (oldOpdateth) {

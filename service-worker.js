@@ -194,8 +194,9 @@ self.addEventListener('fetch', function(e) {
     e.respondWith(
       caches.open(dataCacheName).then(function(cache) {
         return fetch(e.request).then(function(response){
-		  if (/BOOK/.test(response.text().then(function(data) { return data }))) {
-            cache.put(e.request.url, response.clone());
+		  var responseClone = response.clone()
+		  if (/BOOK/.test(responseClone.text().then((data) => data ))) {
+            cache.put(e.request.url, responseClone);
 		  }
           return response;
         });

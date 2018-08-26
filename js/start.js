@@ -1,9 +1,9 @@
 
 function Start(userid, book)
 {
-//  if ('serviceWorker' in navigator) {
-//    navigator.serviceWorker.register('service-worker.js')
-//  }
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('service-worker.js')
+  }
 
 /*  if ('caches' in window) {
     caches.match(window.location.href + MYSQLIPHP).then(function(response) {
@@ -24,7 +24,7 @@ function Start(userid, book)
   $("head").append($("body link"))
   $("#wrapper").show()
 
-  if (!book.hasOwnProperty("BOOK")) { book = "{}" }
+  if (book.constructor !== Object) { book = "{}" }
   updateBOOK(book)
   startEditable()
   fillupstart()
@@ -305,9 +305,9 @@ function changeOncall(pointing, opdate, staffname)
 
   function callbackchangeOncall(response)
   {
-    if (/ONCALL/.test(response)) {
+    if (typeof response === "object") {
       pointing.innerHTML = htmlwrap(staffname)
-      gv.ONCALL = JSON.parse(response)
+      gv.ONCALL = response
     } else {
       Alert("changeOncall", response)
     }
@@ -354,9 +354,8 @@ function updating()
 
       // gv.timestamp is this client last edit
       // timestamp is from server
-      if (/timestamp/.test(response)) {
-        var timeserver = JSON.parse(response)        var timestamp = timeserver[0].timestamp
-        if (gv.timestamp < timestamp) {
+      if (typeof response === "object") {
+        if (gv.timestamp < response[0].timestamp) {
           getUpdate()
         }
       }
@@ -375,7 +374,7 @@ function getUpdate()
 
   function callbackGetUpdate(response)
   {
-    if (/BOOK/.test(response)) {
+    if (typeof response === "object") {
       updateBOOK(response)
       if ($("#dialogService").hasClass('ui-dialog-content')
         && $("#dialogService").dialog('isOpen')) {
@@ -499,7 +498,7 @@ function dodeletedata()
 
 function callbackdodata(response)
 {
-  if (/STAFF/.test(response)) {
+  if (typeof response === "object") {
     showAddStaff(response)
   } else {
     alert(response)
@@ -508,7 +507,7 @@ function callbackdodata(response)
 
 function showAddStaff(response)
 {
-  gv.STAFF = JSON.parse(response).STAFF
+  gv.STAFF = response.STAFF
   setStafflist()
   fillConsults()
   addStaff()

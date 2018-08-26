@@ -163,9 +163,9 @@ function getEditedBy(qn)
 
 	function callbackgetEditedby(response)
 	{
-		if (/\[/.test(response)) {
+		if (typeof response === "object") {
 			var Editedby = ""
-			$.each(JSON.parse(response), function(key, val) {
+			$.each(response, function(key, val) {
 				Editedby += (val.editor + " : " + val.editdatetime + "<br>")
 			})
 			$('#editedby').html(Editedby)
@@ -212,7 +212,7 @@ function Checklistequip()
 
 	function callbackEq(response)
 	{
-		if (/BOOK/.test(response)) {
+		if (typeof response === "object") {
 			updateBOOK(response)
 			if ($row.find("td").eq(QN).html() !== qn) {
 				$row = getTableRowByQN("tbl", qn)

@@ -102,8 +102,8 @@ function getServiceOneMonth(fromDate, toDate)
 
 	function callbackGetService(response)
 	{
-		/dob/.test(response)
-			? defer.resolve( JSON.parse(response) )
+		typeof response === "object"
+			? defer.resolve( response )
 			: defer.reject("getServiceOneMonth", response)
 	}
 }
@@ -520,7 +520,7 @@ function getAdmitDischargeDate(fromDate, toDate)
 
 	function callbackgetipd(response)
 	{
-		if (/BOOK/.test(response)) {
+		if (typeof response === "object") {
 			updateBOOK(response)
 			gv.SERVE = calcSERVE()
 			fillAdmitDischargeDate()
@@ -686,7 +686,7 @@ function saveService(pointed, sql)
 
 	function callbacksaveScontent(response)
 	{
-		if (/BOOK/.test(response)) {
+		if (typeof response === "object") {
 			updateBOOK(response)
 
 			// other user may add a row

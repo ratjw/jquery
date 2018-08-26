@@ -104,7 +104,7 @@ function nurse()
 		$password = $_POST["password"];
 		$nurseid = $_POST["nurseid"];
 		$resultz = "";
-		include "/php/mysqli.php";
+		include "php/mysqli.php";
 		$book = start($mysqli);
 
 		if ($nurseid === "nurse" || preg_match('/^\d{1,2}$/', $nurseid)) {

@@ -147,7 +147,7 @@ function saveTheatre(pointed, newcontent)
 
 	function callbackSaveRoom(response)
 	{
-		if (/BOOK/.test(response)) {
+		if (typeof response === "object") {
 			updateBOOK(response)
 			refillOneDay(opdate)
 			if (isSplited() && (isStaffname(staffname) || isConsults())) {
@@ -226,7 +226,7 @@ function saveOpRoom(pointed, newcontent)
 
 	function callbackSaveRoom(response)
 	{
-		if (/BOOK/.test(response)) {
+		if (typeof response === "object") {
 			updateBOOK(response)
 			refillOneDay(opdate)
 			if (isSplited() && (isStaffname(staffname) || isConsults())) {
@@ -287,7 +287,7 @@ function saveCaseNum(pointed, newcontent)
 
 	function callbackCaseNum(response)
 	{
-		if (/BOOK/.test(response)) {
+		if (typeof response === "object") {
 			updateBOOK(response)
 			refillOneDay(opdate)
 			if (isSplited() && (isStaffname(staffname) || isConsults())) {
@@ -350,7 +350,7 @@ function saveContentQN(pointed, column, content)
 
 	function callbacksaveContentQN(response)
 	{
-		if (/BOOK/.test(response)) {
+		if (typeof response === "object") {
 			updateBOOK(response)
 			if ((column === "oproom") ||
 				(column === "casenum")) {
@@ -435,7 +435,7 @@ function saveContentNoQN(pointed, column, content)
 
 	function callbacksaveContentNoQN(response)
 	{
-		if (/BOOK/.test(response)) {
+		if (typeof response === "object") {
 			updateBOOK(response)
 
 			// find and fill qn of new case input in that row, either tbl or queuetbl
@@ -582,7 +582,7 @@ function getCaseHN(pointed, waiting)
 
 		function callbackmoveCaseHN(response)
 		{
-			if (/BOOK/.test(response)) {
+			if (typeof response === "object") {
 				updateBOOK(response)
 
 				fillCellsHN(tableID, qn, $cells)
@@ -612,7 +612,7 @@ function getCaseHN(pointed, waiting)
 
 		function callbackcopyCaseHN(response)
 		{
-			if (/BOOK/.test(response)) {
+			if (typeof response === "object") {
 				updateBOOK(response)
 
 				fillCellsHN(tableID, qn, $cells)
@@ -759,7 +759,7 @@ function getNameHN(pointed, content)
 
 	function callbackgetNameHN(response)
 	{
-		if (/BOOK/.test(response)) {
+		if (typeof response === "object") {
 			updateBOOK(response)
 
 			var book = (ConsultsTbl(tableID)) ? gv.CONSULT : gv.BOOK

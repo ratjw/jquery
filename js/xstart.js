@@ -1,9 +1,9 @@
 
-function Start(userid)
+function Start(userid, book)
 {
-	var sql = "start="
-
-	Ajax(MYSQLIPHP, sql, loading);
+//	if ('serviceWorker' in navigator) {
+//		navigator.serviceWorker.register('service-worker.js')
+//	}
 
 	$("#login").remove()
 	$("#logo").remove()
@@ -11,13 +11,19 @@ function Start(userid)
 	$("head style").remove()
 	$("head").append($("body link"))
 	$("#wrapper").show()
-
-	if ('serviceWorker' in navigator) {
-		navigator.serviceWorker.register('service-worker.js')
-	}
-
 	gv.user = userid
 	resetTimer()
+
+	if (!book.hasOwnProperty("BOOK")) { book = "{}" }
+	updateBOOK(book)
+	if (/^\d{1,2}$/.test(gv.user)) {
+		fillForRoom(new Date().ISOdate())
+	} else {
+		$("#wrapper").show()
+		$("#tblhead").show()
+		fillupstart();
+		fillConsults()
+	}
 
 	$("#wrapper").on("click", function (event) {
 		resetTimer();
@@ -45,24 +51,6 @@ function Start(userid)
 		overflow: "hidden",
 		margin: "0px"
 	})
-}
-		
-function loading(response)
-{
-	if (/BOOK/.test(response)) {
-		updateBOOK(response)
-		if (/^\d{1,2}$/.test(gv.user)) {
-			fillForRoom(new Date().ISOdate())
-		}
-		else /*if (/nurse/.test(gv.user))*/ {
-			$("#wrapper").show()
-			$("#tblhead").show()
-			fillupstart();
-			fillConsults()
-		}
-	} else {
-		Alert("Server Error", "<br><br>Response from server has no data")
-	}
 }
 
 function fillForRoom(opdate)
@@ -141,16 +129,14 @@ function fillForRoom(opdate)
 	])
 }
 
-function updateBOOK(response)
+function updateBOOK(result)
 {
-	var temp = JSON.parse(response)
-
-	if (temp.BOOK) { gv.BOOK = temp.BOOK }
-	if (temp.CONSULT) { gv.CONSULT = temp.CONSULT }
-	if (temp.STAFF) { gv.STAFF = temp.STAFF }
-	if (temp.ONCALL) { gv.ONCALL = temp.ONCALL }
-	if (temp.HOLIDAY) { gv.HOLIDAY = temp.HOLIDAY }
-	if (temp.QTIME) { gv.timestamp = temp.QTIME }
+	if (result.BOOK) { gv.BOOK = result.BOOK }
+	if (result.CONSULT) { gv.CONSULT = result.CONSULT }
+	if (result.STAFF) { gv.STAFF = result.STAFF }
+	if (result.ONCALL) { gv.ONCALL = result.ONCALL }
+	if (result.HOLIDAY) { gv.HOLIDAY = result.HOLIDAY }
+	if (result.QTIME) { gv.timestamp = result.QTIME }
 }
 
 // Only on main table
@@ -231,7 +217,7 @@ function resetTimer()
 	// gv.timer is just an id, not the clock
 	// poke server every 1000 sec.
 	clearTimeout(gv.timer)
-	gv.timer = setTimeout( updating, 1000000)
+	gv.timer = setTimeout( updating, 10000)
 	gv.idleCounter = 0
 }
 
@@ -244,17 +230,15 @@ function updating()
 	function updatingback(response)
 	{
 		// gv.timestamp is this client last edit
-		// timestamp is from server
-		if (/timestamp/.test(response)) {
-			var timeserver = JSON.parse(response),
-				timestamp = timeserver[0].timestamp
-			if (gv.timestamp < timestamp) {
+		// timestamp is from server bookhistory last editdatetime
+		if (typeof response === "object") {
+			if (gv.timestamp < response[0].timestamp) {
 				getUpdate()
 			}
 		}
 		// idle not more than 1000 min.
 		gv.idleCounter += 1
-		if (gv.idleCounter > 59 && !gv.mobile) {
+		if (gv.idleCounter > 6000 && !gv.mobile) {
 			history.back()
 		}
 	}
@@ -267,7 +251,7 @@ function getUpdate()
 
 	function callbackGetUpdate(response)
 	{
-		if (/BOOK/.test(response)) {
+		if (typeof response === "object") {
 			updateBOOK(response)
 			refillall()
 		} else {

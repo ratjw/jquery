@@ -12,7 +12,7 @@ function editHistory($row)
 
 	function callbackeditHistory(response)
 	{
-		if (response[0].hasOwnProperty("action")) {
+		if (typeof response === "object") {
 			makehistory($row, hn, response)
 		} else {
 			Alert("editHistory", response)
@@ -103,7 +103,7 @@ function deletedCases()
 
 	function callbackdeletedCases(response)
 	{
-		if (/editdatetime/.test(response)) {
+		if (typeof response === "object") {
 			makedeletedCases(response)
 		} else {
 			Alert("deletedCases", response)
@@ -111,10 +111,9 @@ function deletedCases()
 	}
 }
 
-function makedeletedCases(response)
+function makedeletedCases(deleted)
 {
-	var deleted = JSON.parse(response),
-		$deletedtbl = $('#deletedtbl')
+	var $deletedtbl = $('#deletedtbl')
 
 	// delete previous table lest it accumulates
 	$deletedtbl.find('tr').slice(1).remove()
@@ -233,7 +232,7 @@ function toUndelete(thisWhen, deleted)
 
 		function callbacktoUndelete(response)
 		{
-			if (/BOOK/.test(response)) {
+			if (typeof response === "object") {
 				updateBOOK(response);
 				refillOneDay(opdate)
 				//undelete this staff's case or a Consults case
@@ -263,12 +262,12 @@ function allCases()
 
 	function callbackAllCases(response)
 	{
-		if (/dob/.test(response)) {
+		if (typeof response === "object") {
 			// Make paginated dialog box containing alltbl
 			pagination(
 				$("#dialogAll"),
 				$("#alltbl"),
-				JSON.parse(response),
+				response,
 				"All Saved Cases"
 			)
 		} else {
@@ -570,7 +569,7 @@ function searchDB()
 
 	function callbackfind(response)
 	{
-		if (/dob/.test(response)) {
+		if (typeof response === "object") {
 			makeFind(response, search)
 		} else {
 			Alert("Search: " + search, response)
@@ -578,10 +577,9 @@ function searchDB()
 	}
 }
 
-function makeFind(response, search)
+function makeFind(found, search)
 {
-	var found = JSON.parse(response),
-		flen = found.length,
+	var flen = found.length,
 		$dialogFind = $("#dialogFind"),
 		$findtbl = $("#findtbl"),
 		show = scrolltoThisCase(found[flen-1].qn)

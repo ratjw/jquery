@@ -174,7 +174,7 @@ function postpone(tableID, $row, opdateth, opdate, staffname, qn)
 
 	function callbackpostpone(response)
 	{
-		if (/BOOK/.test(response)) {
+		if (typeof response === "object") {
 			updateBOOK(response)
 			refillOneDay(opdate)
 			if ((isSplited()) && 
@@ -271,7 +271,7 @@ function clickDate(event)
 
 	function callbackClickDate(response)
 	{
-		if (/BOOK/.test(response)) {
+		if (typeof response === "object") {
 			updateBOOK(response);
 			if (moveOpdateth) {
 				refillOneDay(moveOpdate)
@@ -345,7 +345,7 @@ function delCase(tableID, $row, opdateth, opdate, staffname, qn)
 
 	function callbackdeleterow(response)
 	{
-		if (/BOOK/.test(response)) {
+		if (typeof response === "object") {
 			updateBOOK(response)
 			if (tableID === "tbl") {
 				refillOneDay(opdate)

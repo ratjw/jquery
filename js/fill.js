@@ -524,8 +524,8 @@ function saveHoliday()
 
 	function callbackHoliday(response)
 	{
-		if (/\[{/.test(response)) {
-			gv.HOLIDAY = JSON.parse(response)
+		if (typeof response === "object") {
+			gv.HOLIDAY = response
 			holidayInputBack($("#holidayth").closest("tr"))
 			fillHoliday($("#holidaytbl"))
 			$(rows).each(function() {
@@ -560,8 +560,8 @@ function delHoliday(that)
 
 		function callbackHoliday(response)
 		{
-			if (/\[{/.test(response)) {
-				gv.HOLIDAY = JSON.parse(response)
+			if (typeof response === "object") {
+				gv.HOLIDAY = response
 				$(rows).each(function() {
 					this.cells[DIAGNOSIS].style.backgroundImage = ""
 				})
