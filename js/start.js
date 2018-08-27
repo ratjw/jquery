@@ -1,9 +1,9 @@
 
 function Start(userid, book)
 {
-//  if ('serviceWorker' in navigator) {
-//    navigator.serviceWorker.register('service-worker.js')
-//  }
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('service-worker.js')
+  }
 
   $("#login").remove()
   $("#logo").remove()
@@ -306,7 +306,7 @@ function resetTimer()
   // gv.timer is just an id, not the clock
   // poke server every 10 sec.
   clearTimeout(gv.timer)
-  gv.timer = setTimeout( updating, 3000)
+  gv.timer = setTimeout( updating, 10000)
 }
 
 function updating()

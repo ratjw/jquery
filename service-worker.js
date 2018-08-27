@@ -1,18 +1,4 @@
-// Copyright 2016 Google Inc.
-// 
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-// 
-//      http://www.apache.org/licenses/LICENSE-2.0
-// 
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
-let appCaches = [{
+var appCaches = [{
     name: 'static-neuro1',
     urls: [
 	  'js/jquery.mousewheel.min.js',
@@ -105,7 +91,7 @@ let appCaches = [{
     ]
   },
   {
-    name: 'dynamic-neuro2',
+    name: 'dynamic-neuro1',
     urls: [
 //	  'index.php',
 //	  'nurse.html',
@@ -133,9 +119,8 @@ let appCaches = [{
   }
 ];
 
-let dataCacheName = 'book-neuro1'
-    cacheNames = appCaches.map((cache) => cache.name);
-    cacheNames = cacheNames.concat(dataCacheName)
+var dataCacheName = 'book-neuro1',
+    cacheNames = appCaches.map((cache) => cache.name).concat(dataCacheName)
 
 self.addEventListener('install', function (event) {
   event.waitUntil(caches.keys().then(function (keys) {
@@ -175,7 +160,13 @@ self.addEventListener('fetch', function(e) {
     e.respondWith(
       caches.open(dataCacheName).then(function(cache) {
         return fetch(e.request).then(function(response){
-          cache.put(e.request.url, response.clone());
+		  var responseClone1 = response.clone()
+		  var responseClone2 = response.clone()
+		  responseClone1.json().then((json) => json ).then(function(json) {
+			  if (json.hasOwnProperty("BOOK")) {
+				cache.put(e.request.url, responseClone2);
+			  }
+		  })
           return response;
         });
       })
