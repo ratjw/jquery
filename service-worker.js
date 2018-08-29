@@ -105,7 +105,7 @@ let appCaches = [{
     ]
   },
   {
-    name: 'dynamic-neuro2',
+    name: 'dynamic-neuro1',
     urls: [
 //	  'index.php',
 //	  'nurse.html',
@@ -164,6 +164,12 @@ self.addEventListener('activate', function (event) {
       }));
     })
   );
+  caches.open(dataCacheName).then(function(cache) {
+	var url = location.origin + "/jquery"
+    fetch(url).then(function(response) {
+      cache.put(url, response);
+	})
+  })
 
   return self.clients.claim();
 });
@@ -174,8 +180,14 @@ self.addEventListener('fetch', function(e) {
   if (e.request.url.indexOf(dataUrl) > -1) {
     e.respondWith(
       caches.open(dataCacheName).then(function(cache) {
-        return fetch(e.request).then(function(response){
-          cache.put(e.request.url, response.clone());
+        return fetch(e.request).then(function(response) {
+		  var responseClone1 = response.clone()
+		  var responseClone2 = response.clone()
+		  responseClone1.text().then((data) => data ).then(function(responseText) {
+		    if (/BOOK/.test(responseText)) {
+				cache.put(e.request.url, responseClone2);
+			}
+		  })
           return response;
         });
       })
