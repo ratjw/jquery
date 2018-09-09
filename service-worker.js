@@ -150,7 +150,7 @@ self.addEventListener('activate', function (event) {
     })
   );
   caches.open(dataCacheName).then(function(cache) {
-	var url = location.origin + "/jquery"
+	var url = location.origin + location.pathname
     fetch(url).then(function(response) {
       cache.put(url, response);
 	})
