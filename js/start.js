@@ -137,6 +137,23 @@ function startEditable()
     gv.idleCounter = 0
     $(".bordergroove").removeClass("bordergroove")
     var target = event.target    var $menu = $('#menu')    var $stafflist = $('#stafflist')
+
+	if (target.cellIndex === 1) {
+		var	capture = document.querySelector("#capture"),
+			row = target.closest('tr').outerHTML,
+			tbl = document.querySelector("#tbl"),
+			original = tbl.innerHTML
+
+		capture.innerHTML = row
+		tbl.innerHTML = ""
+		html2canvas(capture).then(canvas => {
+//			tbl.innerHTML += original
+			tbl.insertBefore(canvas, tbl.childNodes[0])
+			canvas.id = "qbook"
+		})
+		event.stopPropagation()
+		return
+	}
     if ($menu.is(":visible")) {
       if (!$(target).closest('#menu').length) {
         $menu.hide();
@@ -170,6 +187,19 @@ function startEditable()
     overflow: "hidden",
     margin: "0px"
   })
+}
+
+function downloadImage()
+{
+	html2canvas(document.querySelector("#login")).then(canvas => {
+		a = document.createElement("a"); 
+		document.body.appendChild(a); 
+		a.style = "display: none";
+		a.download = "test.png"; 
+		a.href =  canvas.toDataURL();
+		a.click();
+		document.body.removeChild(a);
+	});	 
 }
 
 // stafflist: menu of Staff column

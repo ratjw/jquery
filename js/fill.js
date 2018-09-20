@@ -46,6 +46,7 @@ function fillall(book, table, start, until)
 	//i for rows in table (with head as the first row)
 	var i = 0
 	var blen = book.length
+
 	for (q; q < blen; q++)
 	{	
 		//step over each day that is not in QBOOK
