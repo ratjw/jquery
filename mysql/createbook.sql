@@ -1,4 +1,7 @@
-| book  | CREATE TABLE `book` (
+
+DROP TABLE IF EXISTS book;
+
+CREATE TABLE `book` (
   `deleted` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `waitnum` double DEFAULT '1',
   `opdate` date DEFAULT NULL,
@@ -36,4 +39,4 @@
   PRIMARY KEY (`qn`),
   KEY `opdate` (`opdate`),
   KEY `hn` (`hn`)
-) ENGINE=InnoDB AUTO_INCREMENT=2082 DEFAULT CHARSET=utf8 |
+) ENGINE=InnoDB AUTO_INCREMENT=2082 DEFAULT CHARSET=utf8;

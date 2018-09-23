@@ -396,7 +396,7 @@ function setHoliday()
 {
 	var	$dialogHoliday = $("#dialogHoliday"),
 		$holidaytbl = $("#holidaytbl"),
-		$holidayth = $("#holidayth")
+		$holidateth = $("#holidateth")
 
 	fillHoliday($holidaytbl)
 	$dialogHoliday.dialog({
@@ -421,7 +421,7 @@ function setHoliday()
 			}
 		}
 	})
-	$holidayth.datepicker({
+	$holidateth.datepicker({
 		autoSize: true,
 		dateFormat: "dd M yy",
 		monthNames: [ "มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", 
@@ -437,9 +437,9 @@ function setHoliday()
 			} else {
 				$(this).datepicker("setDate", new Date())
 			}
-			$holidayth.one("click", function() {
+			$holidateth.one("click", function() {
 				if (input.value) {
-					$holidayth.val(input.value.slice(0, -4) + (inst.selectedYear + 543))
+					$holidateth.val(input.value.slice(0, -4) + (inst.selectedYear + 543))
 				}
 			})
 		},
@@ -447,10 +447,10 @@ function setHoliday()
 			$(this).datepicker("setDate",
 				new Date(inst.selectedYear, inst.selectedMonth, inst.selectedDay))
 			inst.settings.yearSuffix = inst.selectedYear + 543
-			$holidayth.val($holidayth.val().slice(0, -4) + (inst.selectedYear + 543))
+			$holidateth.val($holidateth.val().slice(0, -4) + (inst.selectedYear + 543))
 		},
 		onSelect: function (input, inst) {
-			$holidayth.val(input.slice(0, -4) + (inst.selectedYear + 543))
+			$holidateth.val(input.slice(0, -4) + (inst.selectedYear + 543))
 		}
 	})
 }
@@ -481,7 +481,7 @@ jQuery.fn.extend({
 	filldataHoliday : function(q) {
 		var	cells = this[0].cells,
 			data = [
-				putThdate(q.holiday),
+				putThdate(q.holidate),
 				HOLIDAYENGTHAI[q.dayname]
 			]
 
@@ -509,15 +509,15 @@ function addHoliday(that)
 
 function saveHoliday()
 {
-	var	vdateth = document.getElementById("holidayth").value,
+	var	vdateth = document.getElementById("holidateth").value,
 		vdate = vdateth.numDate(),
 		vname = document.getElementById("holidayname").value,
 		rows = getTableRowsByDate(vdateth),
 
 		sql = "sqlReturnData="
-			+ "INSERT INTO holiday (holiday,dayname) VALUES('"
+			+ "INSERT INTO holiday (holidate,dayname) VALUES('"
 			+ vdate + "','"+ vname
-			+ "');SELECT * FROM holiday ORDER BY holiday;"
+			+ "');SELECT * FROM holiday ORDER BY holidate;"
 
 	if (!vdate || !vname) { return }
 
@@ -527,7 +527,7 @@ function saveHoliday()
 	{
 		if (typeof response === "object") {
 			gv.HOLIDAY = response
-			holidayInputBack($("#holidayth").closest("tr"))
+			holidayInputBack($("#holidateth").closest("tr"))
 			fillHoliday($("#holidaytbl"))
 			$(rows).each(function() {
 				this.cells[DIAGNOSIS].style.backgroundImage = holiday(vdate)
@@ -553,9 +553,9 @@ function delHoliday(that)
 			holidayEng = getHolidayEng(vname),
 
 			sql = "sqlReturnData=DELETE FROM holiday WHERE "
-				+ "holiday='" + vdate
+				+ "holidate='" + vdate
 				+ "' AND dayname='" + holidayEng
-				+ "';SELECT * FROM holiday ORDER BY holiday;"
+				+ "';SELECT * FROM holiday ORDER BY holidate;"
 
 		Ajax(MYSQLIPHP, sql, callbackHoliday);
 
@@ -582,7 +582,7 @@ function getHolidayEng(vname) {
 
 function holidayInputBack($inputRow)
 {
-	$("#holidayth").val("")
+	$("#holidateth").val("")
 	$("#holidayname").val("")
 	$('#holidayinput tbody').append($inputRow)
 }
@@ -595,13 +595,13 @@ function holiday(date)
 		Mon = (dayofweek === 1),
 		Tue = (dayofweek === 2),
 		Wed = (dayofweek === 3),
-		holyday = $.grep(gv.HOLIDAY, function(day) {
-			return day.holiday === date
+		holiday = $.grep(gv.HOLIDAY, function(day) {
+			return day.holidate === date
 		})[0]
 
 	if (date === LARGESTDATE) { return }
-	if (holyday) {
-		return "url('css/pic/holiday/" + holyday.dayname + ".png')"
+	if (holiday) {
+		return "url('css/pic/holiday/" + holiday.dayname + ".png')"
 	}
 
 	switch (monthdate)

@@ -14,7 +14,7 @@ function Start(userid, book)
 	gv.user = userid
 	resetTimer()
 
-	if (!book.hasOwnProperty("BOOK")) { book = "{}" }
+	if (typeof response !== "object") { book = "{}" }
 	updateBOOK(book)
 	if (/^\d{1,2}$/.test(gv.user)) {
 		fillForRoom(new Date().ISOdate())

@@ -415,12 +415,55 @@ function onChange()
   if ($("#editcell").is(":visible")) {
     var whereisEditcell = $($("#editcell").data("pointing")).closest("table").attr("id")
     if (whereisEditcell === "servicetbl") {
-      return savePreviousCellService()
+      return saveOnChangeService()
     } else {
-      return savePreviousCell()
+      return saveOnChange()
     }
   }
   return false
+}
+
+function saveOnChange()
+{
+	var $editcell = $("#editcell"),
+		content = getText($editcell),
+		pointed = $editcell.data("pointing"),
+		column = pointed && pointed.cellIndex,
+		qn = $(pointed).closest('tr').children("td")[QN].innerHTML,
+		sql = "sqlReturnbook=UPDATE book SET "
+		+ column + "='" + URIcomponent(content)
+		+ "',editor='"+ gv.user
+		+ "' WHERE qn="+ qn +";"
+
+	Ajax(MYSQLIPHP, sql, callbacksaveOnChange);
+
+	pointed.innerHTML = content
+
+}
+
+function saveOnChangeService()
+{
+	var $editcell = $("#editcell"),
+		content = getText($editcell),
+		pointed = $editcell.data("pointing"),
+		column = pointed && pointed.cellIndex,
+		sql = sqlColumn(pointed, column, URIcomponent(content)),
+		fromDate = $("#monthstart").val(),
+		toDate = $("#monthpicker").val()
+
+	sql	+= sqlOneMonth(fromDate, toDate)
+
+	Ajax(MYSQLIPHP, sql, callbacksaveOnChange);
+
+	pointed.innerHTML = content
+
+}
+
+function callbacksaveOnChange(response)
+{
+	if (typeof response === "object") {
+		updateBOOK(response)
+	}
 }
 
 function addStaff()

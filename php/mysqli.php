@@ -123,7 +123,7 @@ function getOncall($mysqli)
 
 function getHoliday($mysqli)
 {
-	$sql = "SELECT * FROM holiday ORDER BY holiday;";
+	$sql = "SELECT * FROM holiday ORDER BY holidate;";
 	return multiquery($mysqli, $sql);
 }
 
