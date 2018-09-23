@@ -189,13 +189,13 @@ function holiday(date)
 		Mon = (dayofweek === 1),
 		Tue = (dayofweek === 2),
 		Wed = (dayofweek === 3),
-		holyday = $.grep(gv.HOLIDAY, function(day) {
-			return day.holiday === date
+		holiday = $.grep(gv.HOLIDAY, function(day) {
+			return day.holidate === date
 		})[0]
 
 	if (date === LARGESTDATE) { return }
-	if (holyday) {
-		return "url('css/pic/holiday/" + holyday.dayname + ".png')"
+	if (holiday) {
+		return "url('css/pic/holiday/" + holiday.dayname + ".png')"
 	}
 
 	switch (monthdate)

@@ -5,7 +5,7 @@
 	$dbname = "neurosurgery";
 
 	$mysqli = new mysqli($servername, $username, $password, $dbname);
-	//$mysqli->query("SET CHARACTER SET utf8");
+	$mysqli->query("SET CHARACTER SET utf8");
 
 	if ($mysqli->connect_errno)
 		exit("Connect failed: %s\n". $mysqli->connect_error);
@@ -28,16 +28,16 @@
 		if (!array_filter($data))
 			continue;
 		$sql = 'INSERT INTO staff
-					(number, active, code, staffname, specialty, staffoncall, dateoncall)
+					(number, staffname, specialty, oncall, startoncall)
 				VALUES ('
 					.$data[0].',"'.$data[1]
 					.'","'.$data[2].'","'.$data[3]
-					.'","'.$data[4].'","'.$data[5]
-					.'","'.$data[6].'");';
+					.'","'.$data[4].'");';
 		$result = $mysqli->query($sql);
 		if (!$result) {
 			return $mysqli->error;
 		}
+		echo $sql."<br>";
     }
 
     print 'Wrote data from CSV-File into MySQL';

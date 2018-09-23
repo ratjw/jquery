@@ -205,18 +205,26 @@ function Ajax(url, params, callback)
 	http.send(params);
 }
 
-//necessary when post in http, not when export to excel
-function URIcomponent(qoute)
+function contentEncode()
 {
-	if (qoute) {
-		qoute = qoute.replace(/\s+$/,'')
-		qoute = qoute.replace(/\"/g, "&#34;")	// double quotes
-		qoute = qoute.replace(/\'/g, "&#39;")	// single quotes
-//		qoute = qoute.replace(/%/g, "&#37;")	// per cent, mysql: like "%...%"
-		qoute = qoute.replace(/\\/g, "\\\\")
-		qoute = encodeURIComponent(qoute)
+	if (/\W/.test(content)) {
+		content = URIcomponent(content)
 	}
-	return qoute
+}
+
+// take care of white space, double qoute, single qoute, and back slash
+// necessary when post in http, not when export to excel
+function URIcomponent(content)
+{
+	if (/\W/.test(content)) {
+		content = content.replace(/\s+$/,'')
+		content = content.replace(/\"/g, "&#34;")	// double quotes
+		content = content.replace(/\'/g, "&#39;")	// single quotes
+//		content = content.replace(/%/g, "&#37;")	// per cent, mysql: like "%...%"
+		content = content.replace(/\\/g, "\\\\")
+		content = encodeURIComponent(content)
+	}
+	return content
 }
 
 function getMaxQN(book)
