@@ -270,10 +270,9 @@ tr#moveto td {
 }
 
 #setstaff,
-#allsaved { width: 140px; background-color: skyblue; }
-
+#allsaved,
 #setholiday,
-#alldeleted { background-color: pink; }
+#alldeleted { width: 120px; }
 
 #addholiday,
 .delholiday { float: right; }
@@ -493,7 +492,6 @@ td.Radiosurgery.Endovascular {
 .red { color:red; }
 .Aqua { background-color: #00FFFF; }
 .lightAqua { background-color: #AAFFFF; }
-
 
 #titlebar {
 	height: 40px;

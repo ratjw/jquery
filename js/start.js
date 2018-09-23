@@ -200,10 +200,10 @@ function setStafflist()
 
   for (var each = 0; each < gv.STAFF.length; each++)
   {
-    stafflist += '<li><div>' + gv.STAFF[each].staffname + '</div></li>'
-    staffmenu += '<li id="staffqueue"><div>' + gv.STAFF[each].staffname + '</div></li>'
+    stafflist += '<li><span>' + gv.STAFF[each].staffname + '</span></li>'
+    staffmenu += '<li id="staffqueue"><a href="#"><span>' + gv.STAFF[each].staffname + '</span></a></li>'
   }
-  staffmenu += '<li id="staffqueue"><div>Consults</div></li>'
+  staffmenu += '<li id="staffqueue"><a href="#"><span>Consults</span></a></li>'
   document.getElementById("stafflist").innerHTML = stafflist
   document.getElementById("staffmenu").innerHTML = staffmenu
 }

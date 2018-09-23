@@ -3,6 +3,7 @@
  Notepad++ can save "UTF-8" (without BOM) in "Encoding" menu. -->
 
 <link href="css/CSS.css" rel="stylesheet">
+<link href="css/styles.css" rel="stylesheet">
 
 <script src="js/click.js"></script>
 <script src="js/constant.js"></script>
@@ -18,6 +19,41 @@
 
 <div id="wrapper">
  <div id="tblwrapper">
+  <div id='cssmenu'>
+   <ul>
+    <li class='active' id="addrow"><a href='#'><span>Add a Row</span></a></li>
+    <li class='has-sub' id="itempost"><a href='#'><span>Postpone</span></a>
+     <ul>
+      <li id="postpone"><a href='#'><span></span></a></li>
+     </ul>
+    </li>
+	<li class='active'><a href='#'><span>Move</span></a></li>
+    <li class='active'><a href='#'><span>Track Records</span></a></li>
+    <li class='has-sub'><a href='#'><span>Delete</span></a>
+     <ul>
+      <li id="del"><a href='#'><span></span></a></li>
+     </ul>
+    </li>
+    <li class='has-sub'><a href='#'><span>Staff</span></a>
+     <ul id="staffmenu">
+     </ul>
+    </li>
+    <li class='active' id="service"><a href='#'><span>Service Review</span></a></li>
+    <li class='has-sub' id="search"><a href='#'><span>Search</span></a>
+     <ul>
+      <li id="allsaved"><a href='#'><span>All Saved Cases</span></a></li>
+      <li class='last' id="alldeleted"><a href='#'><span>All Deleted Cases</span></a></li>
+     </ul>
+    </li>
+    <li class='active' id="readme"><a href='#'><span>Readme</span></a></li>
+    <li class='last has-sub' id="setting"><a href='#'><span>Setting</span></a>
+      <ul>
+      <li id="setstaff"><a href='#'><span>Staff Setting</span></a></li>
+      <li class='last' id="setholiday"><a href='#'><span>Holiday Setting</span></a></li>
+     </ul>
+	</li>
+  </ul>
+  </div>
   <div id="tblcontainer">
    <table id="tbl">
     <tbody>
@@ -587,37 +623,6 @@
   </tbody>
   </table>
 </div>
-
-<ul id="menu">
-  <li id="addrow"><div>Add a Row</div></li>
-  <li id="itempost"><div>เลื่อนไป ไม่กำหนดวัน</div>
-   <ul>
-    <li id="postpone"><div></div></li>
-   </ul>
-  </li>
-  <li id="changedate"><div>Move</div></li>
-  <li id="history"><div>ประวัติการแก้ไข</div></li>
-  <li id="itemdel"><div>Delete</div>
-   <ul>
-    <li id="del"><div></div></li>
-   </ul>
-  </li>
-  <li><div>คิวของอาจารย์</div><ul id="staffmenu"></ul></li>
-  <li id="service"><div>Service Review</div></li>
-  <li id="search"><div>Search</div>
-   <ul>
-    <li id="allsaved"><div>All Saved Cases</div></li>
-    <li id="alldeleted"><div>All Deleted Cases</div></li>
-   </ul>
-  </li>
-  <li id="readme"><div>Readme</div></li>
-  <li id="setting"><div>Setting</div>
-   <ul>
-    <li id="setstaff"><div>Staff Setting</div></li>
-    <li id="setholiday"><div>Holiday Setting</div></li>
-   </ul>
-  </li>
-</ul>
 
 <ul id="stafflist"></ul>
 <ul id="oncallList"></ul>

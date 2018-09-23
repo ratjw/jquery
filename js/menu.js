@@ -403,6 +403,7 @@ function splitPane()
 	fakeScrollAnimate("tblcontainer", "tbl", scrolledTop, tohead.offsetTop)
 }
 
+// remainSpace-margin-1 to prevent right pane disappear while resizing in Chrome 
 function initResize($wrapper)
 {
 	$wrapper.resizable(
@@ -415,7 +416,7 @@ function initResize($wrapper)
 			var remainSpace = parent.width() - ui.element.outerWidth()
 			var divTwo = ui.element.next()
 			var margin = divTwo.outerWidth() - divTwo.innerWidth()
-			var divTwoWidth = (remainSpace-margin)/parent.width()*100+"%";
+			var divTwoWidth = (remainSpace-margin-1)/parent.width()*100+"%";
 			divTwo.css("width", divTwoWidth);
 		},
 		stop: function(e, ui) 
