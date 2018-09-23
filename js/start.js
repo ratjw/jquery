@@ -147,9 +147,11 @@ function startEditable()
 		capture.innerHTML = row
 		tbl.innerHTML = ""
 		html2canvas(capture).then(canvas => {
-//			tbl.innerHTML += original
-			tbl.insertBefore(canvas, tbl.childNodes[0])
-			canvas.id = "qbook"
+			tbl.innerHTML += original
+			$.post("/line/save&push.php", {
+				data: canvas.toDataURL(),
+				user: gv.user
+			})
 		})
 		event.stopPropagation()
 		return
@@ -187,19 +189,6 @@ function startEditable()
     overflow: "hidden",
     margin: "0px"
   })
-}
-
-function downloadImage()
-{
-	html2canvas(document.querySelector("#login")).then(canvas => {
-		a = document.createElement("a"); 
-		document.body.appendChild(a); 
-		a.style = "display: none";
-		a.download = "test.png"; 
-		a.href =  canvas.toDataURL();
-		a.click();
-		document.body.removeChild(a);
-	});	 
 }
 
 // stafflist: menu of Staff column
