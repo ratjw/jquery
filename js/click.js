@@ -856,9 +856,6 @@ function storePresentCell(evt, pointing)
 {
 	switch(pointing.cellIndex)
 	{
-		case OPDATE:
-			getOPDATE(pointing)
-			break
 		case THEATRE:
 			createEditcell(pointing)
 			break
@@ -889,12 +886,6 @@ function storePresentCell(evt, pointing)
 			getEQUIP(pointing)
 			break
 	}
-}
-
-function getOPDATE(pointing)
-{
-	var $pointing = $(pointing)
-
 }
 
 function getROOMCASE(pointing)

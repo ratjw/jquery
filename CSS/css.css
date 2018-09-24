@@ -298,6 +298,14 @@ tr.pasteDate {
 	border-bottom: solid 3px royalblue;
 }
 
+tr.selected {
+	border: solid 2px #0099FF !important;
+}
+
+tr.selected td {
+	background-color: #d9f0FF;
+}
+
 tr.Sunday { background-color: #FFDDEE; }
 tr.Monday { background-color: #FFFFE0; }
 tr.Tuesday { background-color: #FFF0F9; }

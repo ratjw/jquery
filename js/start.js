@@ -11,7 +11,7 @@ function Start(userid, book)
   $("head style").remove()
   $("head").append($("body link"))
   $("#wrapper").show()
-  $("#one").hide()
+  $("#onerow").hide()
 
   if (typeof book !== "object") { book = "{}" }
   updateBOOK(book)
@@ -133,76 +133,19 @@ function startEditable()
   })
 
   $("#wrapper").on("click", function (event) {
+    var target = event.target
+    var $menu = $('#menu')
+    var $stafflist = $('#stafflist')
+
     resetTimer();
     gv.idleCounter = 0
     $(".bordergroove").removeClass("bordergroove")
-    var target = event.target    var $menu = $('#menu')    var $stafflist = $('#stafflist')
 
-/*	if (target.cellIndex === 1) {
-		var	capture = document.querySelector("#capture"),
-			row = target.closest('tr').outerHTML,
-			tbl = document.querySelector("#tbl"),
-			original = tbl.innerHTML
-
-		capture.innerHTML = row
-		tbl.innerHTML = ""
-		html2canvas(capture).then(canvas => {
-			tbl.innerHTML += original
-			$.post("/line/save&push.php", {
-				data: canvas.toDataURL(),
-				user: gv.user
-			})
-		})
-		event.stopPropagation()
-		return
+	if (target.cellIndex === 0) {
+		selectRow(event, target)
+        event.stopPropagation()
+        return
 	}
-    if (target.id = "cssmenu") {
-	  item = target.id
-	  switch(item)
-	  {
-		case "staffqueue":
-			staffqueue(target.innerHTML)
-			break
-		case "service":
-			serviceReview()
-			break
-		case "search":
-			search()
-			break
-		case "allsaved":
-			allCases()
-			break
-		case "alldeleted":
-			deletedCases()
-			break
-		case "readme":
-			readme()
-			break
-		case "setstaff":
-			addStaff(pointing)
-			break
-		case "setholiday":
-			setHoliday()
-			break
-		case "addrow":
-			addnewrow(tableID, $row, qn)
-			break
-		case "postpone":
-			postpone(tableID, $row, opdateth, opdate, staffname, qn)
-			break
-		case "changedate":
-			changeDate($row, opdateth, opdate, staffname, qn)
-			break
-		case "history":
-			editHistory($row)
-			break
-		case "del":
-			delCase(tableID, $row, opdateth, opdate, staffname, qn)
-			break
-	  }
-      event.stopPropagation()
-      return
-    }*/
     if ($menu.is(":visible")) {
       if (!$(target).closest('#menu').length) {
         $menu.hide();
@@ -236,6 +179,61 @@ function startEditable()
     overflow: "hidden",
     margin: "0px"
   })
+}
+
+function selectRow(event, target)
+{
+  var $target = $(target).closest("tr"),
+      $allTR = $(target).closest("table").find("tr")
+
+  if (event.ctrlKey) {
+    $allTR.removeClass("lastselected")
+	$target.addClass("selected lastselected")
+  } else if (event.shiftKey) {
+    $allTR.removeClass("selected")
+    $target.addClass("target")
+    shiftSelect($target)
+  } else {
+    $allTR.removeClass("selected")
+    $allTR.removeClass("lastselected")
+	$target.addClass("selected lastselected")
+  }
+}
+
+function shiftSelect($target)
+{
+  var $lastselected = $(".lastselected").closest("tr"),
+	  before = ($lastselected.index() - $target.index()) > 0,
+      $select
+
+  if (before) {
+    $select = $lastselected.prevUntil('.target')
+  } else {
+    $select = $lastselected.nextUntil('.target')
+  }
+  $select.addClass("selected")
+  $lastselected.addClass("selected")
+  $target[0].className = "selected"
+}
+
+function sendtoLINE ()
+{
+  var  capture = document.querySelector("#capture"),
+  row = target.closest('tr').outerHTML,
+  tbl = document.querySelector("#tbl"),
+  original = tbl.innerHTML
+
+  capture.innerHTML = row
+  tbl.innerHTML = ""
+  html2canvas(capture).then(canvas => {
+    tbl.innerHTML += original
+    $.post("/line/save&push.php", {
+      data: canvas.toDataURL(),
+      user: gv.user
+    })
+  })
+  event.stopPropagation()
+  return
 }
 
 // stafflist: menu of Staff column
@@ -461,45 +459,45 @@ function onChange()
 
 function saveOnChange()
 {
-	var $editcell = $("#editcell"),
-		content = getText($editcell),
-		pointed = $editcell.data("pointing"),
-		column = pointed && pointed.cellIndex,
-		qn = $(pointed).closest('tr').children("td")[QN].innerHTML,
-		sql = "sqlReturnbook=UPDATE book SET "
-		+ column + "='" + URIcomponent(content)
-		+ "',editor='"+ gv.user
-		+ "' WHERE qn="+ qn +";"
+  var $editcell = $("#editcell"),
+    content = getText($editcell),
+    pointed = $editcell.data("pointing"),
+    column = pointed && pointed.cellIndex,
+    qn = $(pointed).closest('tr').children("td")[QN].innerHTML,
+    sql = "sqlReturnbook=UPDATE book SET "
+    + column + "='" + URIcomponent(content)
+    + "',editor='"+ gv.user
+    + "' WHERE qn="+ qn +";"
 
-	Ajax(MYSQLIPHP, sql, callbacksaveOnChange);
+  Ajax(MYSQLIPHP, sql, callbacksaveOnChange);
 
-	pointed.innerHTML = content
+  pointed.innerHTML = content
 
 }
 
 function saveOnChangeService()
 {
-	var $editcell = $("#editcell"),
-		content = getText($editcell),
-		pointed = $editcell.data("pointing"),
-		column = pointed && pointed.cellIndex,
-		sql = sqlColumn(pointed, column, URIcomponent(content)),
-		fromDate = $("#monthstart").val(),
-		toDate = $("#monthpicker").val()
+  var $editcell = $("#editcell"),
+    content = getText($editcell),
+    pointed = $editcell.data("pointing"),
+    column = pointed && pointed.cellIndex,
+    sql = sqlColumn(pointed, column, URIcomponent(content)),
+    fromDate = $("#monthstart").val(),
+    toDate = $("#monthpicker").val()
 
-	sql	+= sqlOneMonth(fromDate, toDate)
+  sql  += sqlOneMonth(fromDate, toDate)
 
-	Ajax(MYSQLIPHP, sql, callbacksaveOnChange);
+  Ajax(MYSQLIPHP, sql, callbacksaveOnChange);
 
-	pointed.innerHTML = content
+  pointed.innerHTML = content
 
 }
 
 function callbacksaveOnChange(response)
 {
-	if (typeof response === "object") {
-		updateBOOK(response)
-	}
+  if (typeof response === "object") {
+    updateBOOK(response)
+  }
 }
 
 function addStaff()
