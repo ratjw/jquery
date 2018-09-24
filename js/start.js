@@ -11,6 +11,7 @@ function Start(userid, book)
   $("head style").remove()
   $("head").append($("body link"))
   $("#wrapper").show()
+  $("#one").hide()
 
   if (typeof book !== "object") { book = "{}" }
   updateBOOK(book)
@@ -84,7 +85,6 @@ function startEditable()
     resetTimer()
     gv.idleCounter = 0
   });
-
   var $editcell = $("#editcell")
   $editcell.on("keydown", function (event) {
     var keydate = event.which || window.event.keydate
@@ -138,7 +138,7 @@ function startEditable()
     $(".bordergroove").removeClass("bordergroove")
     var target = event.target    var $menu = $('#menu')    var $stafflist = $('#stafflist')
 
-	if (target.cellIndex === 1) {
+/*	if (target.cellIndex === 1) {
 		var	capture = document.querySelector("#capture"),
 			row = target.closest('tr').outerHTML,
 			tbl = document.querySelector("#tbl"),
@@ -156,6 +156,53 @@ function startEditable()
 		event.stopPropagation()
 		return
 	}
+    if (target.id = "cssmenu") {
+	  item = target.id
+	  switch(item)
+	  {
+		case "staffqueue":
+			staffqueue(target.innerHTML)
+			break
+		case "service":
+			serviceReview()
+			break
+		case "search":
+			search()
+			break
+		case "allsaved":
+			allCases()
+			break
+		case "alldeleted":
+			deletedCases()
+			break
+		case "readme":
+			readme()
+			break
+		case "setstaff":
+			addStaff(pointing)
+			break
+		case "setholiday":
+			setHoliday()
+			break
+		case "addrow":
+			addnewrow(tableID, $row, qn)
+			break
+		case "postpone":
+			postpone(tableID, $row, opdateth, opdate, staffname, qn)
+			break
+		case "changedate":
+			changeDate($row, opdateth, opdate, staffname, qn)
+			break
+		case "history":
+			editHistory($row)
+			break
+		case "del":
+			delCase(tableID, $row, opdateth, opdate, staffname, qn)
+			break
+	  }
+      event.stopPropagation()
+      return
+    }*/
     if ($menu.is(":visible")) {
       if (!$(target).closest('#menu').length) {
         $menu.hide();
@@ -201,9 +248,9 @@ function setStafflist()
   for (var each = 0; each < gv.STAFF.length; each++)
   {
     stafflist += '<li><span>' + gv.STAFF[each].staffname + '</span></li>'
-    staffmenu += '<li id="staffqueue"><a href="#"><span>' + gv.STAFF[each].staffname + '</span></a></li>'
+    staffmenu += "<li><a href=\"javascript:staffqueue('" + gv.STAFF[each].staffname + "')\"><span>" + gv.STAFF[each].staffname + '</span></a></li>'
   }
-  staffmenu += '<li id="staffqueue"><a href="#"><span>Consults</span></a></li>'
+  staffmenu += '<li><a href="javascript:staffqueue(\'Consults\')"><span>Consults</span></a></li>'
   document.getElementById("stafflist").innerHTML = stafflist
   document.getElementById("staffmenu").innerHTML = staffmenu
 }

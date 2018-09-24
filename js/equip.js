@@ -67,6 +67,7 @@ function fillEquipTable(book, $row, qn)
 	$dialogEquip.data("JsonEquip", JsonEquip)
 	$dialogEquip.data("$row", $row)
 	$dialogEquip.data("qn", qn)
+	clearEditcell()
 }
 
 function showNonEditableEquip()

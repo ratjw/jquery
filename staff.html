@@ -2,8 +2,8 @@
  Byte-order mark (or BOM) causes white space at the top of the page. 
  Notepad++ can save "UTF-8" (without BOM) in "Encoding" menu. -->
 
-<link href="css/CSS.css" rel="stylesheet">
 <link href="css/styles.css" rel="stylesheet">
+<link href="css/CSS.css" rel="stylesheet">
 
 <script src="js/click.js"></script>
 <script src="js/constant.js"></script>
@@ -21,38 +21,40 @@
  <div id="tblwrapper">
   <div id='cssmenu'>
    <ul>
-    <li class='active' id="addrow"><a href='#'><span>Add a Row</span></a></li>
-    <li class='has-sub' id="itempost"><a href='#'><span>Postpone</span></a>
-     <ul>
-      <li id="postpone"><a href='#'><span></span></a></li>
-     </ul>
-    </li>
-	<li class='active'><a href='#'><span>Move</span></a></li>
-    <li class='active'><a href='#'><span>Track Records</span></a></li>
-    <li class='has-sub'><a href='#'><span>Delete</span></a>
-     <ul>
-      <li id="del"><a href='#'><span></span></a></li>
-     </ul>
-    </li>
-    <li class='has-sub'><a href='#'><span>Staff</span></a>
+    <li class='has-sub'><a nohref><span>Staff</span></a>
      <ul id="staffmenu">
      </ul>
     </li>
-    <li class='active' id="service"><a href='#'><span>Service Review</span></a></li>
-    <li class='has-sub' id="search"><a href='#'><span>Search</span></a>
-     <ul>
-      <li id="allsaved"><a href='#'><span>All Saved Cases</span></a></li>
-      <li class='last' id="alldeleted"><a href='#'><span>All Deleted Cases</span></a></li>
+    <li class='active'><a href='javascript:serviceReview()'><span id="service">Service Review</span></a></li>
+    <li class='has-sub'><a href='javascript:search()'><span id="search">Search</span></a>
+     <ul class='issub'>
+      <li><a href='javascript:allCases()'><span id="allsaved" style="width:120px">All Saved Cases</span></a></li>
+      <li class='last'><a href='javascript:deletedCases()'><span id="alldeleted">All Deleted Cases</span></a></li>
      </ul>
     </li>
-    <li class='active' id="readme"><a href='#'><span>Readme</span></a></li>
-    <li class='last has-sub' id="setting"><a href='#'><span>Setting</span></a>
-      <ul>
-      <li id="setstaff"><a href='#'><span>Staff Setting</span></a></li>
-      <li class='last' id="setholiday"><a href='#'><span>Holiday Setting</span></a></li>
+    <li class='active'><a href='javascript:readme()'><span id="readme">Readme</span></a></li>
+    <li class='last has-sub'><a nohref><span id="setting">Setting</span></a>
+      <ul class='issub'>
+      <li><a href='javascript:addStaff(pointing)'><span id="setstaff">Staff Setting</span></a></li>
+      <li class='last'><a href='javascript:setHoliday()'><span id="setholiday">Holiday Setting</span></a></li>
      </ul>
-	</li>
-  </ul>
+    </li>
+	<span id="one">
+    <li class='active ' id="addrow"><a href='javascript:addnewrow(tableID, $row, qn)'><span>Add a Row</span></a></li>
+    <li class='has-sub' id="itempost"><a nohref><span>Postpone</span></a>
+     <ul>
+      <li id="postpone"><a href='javascript:postpone(tableID, $row, opdateth, opdate, staffname, qn)'><span></span></a></li>
+     </ul>
+    </li>
+    <li class='active' id="changedate"><a href='javascript:changeDate($row, opdateth, opdate, staffname, qn)'><span>Move</span></a></li>
+    <li class='active' id="history"><a href='javascript:editHistory($row)'><span>Track Records</span></a></li>
+    <li class='has-sub'><a nohref><span>Delete</span></a>
+     <ul>
+      <li id="del"><a href='javascript:delCase(tableID, $row, opdateth, opdate, staffname, qn)'><span></span></a></li>
+     </ul>
+    </li>
+	</span>
+    </ul>
   </div>
   <div id="tblcontainer">
    <table id="tbl">

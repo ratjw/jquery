@@ -893,8 +893,8 @@ function storePresentCell(evt, pointing)
 
 function getOPDATE(pointing)
 {
-	createEditcellOpdate(pointing)
-	mainMenu(pointing)
+	var $pointing = $(pointing)
+
 }
 
 function getROOMCASE(pointing)
@@ -1036,25 +1036,6 @@ function getEQUIP(pointing)
 	if (qn) {
 		fillEquipTable(book, $row, qn)
 	}
-}
-
-function createEditcellOpdate(pointing)
-{
-	var $editcell = $("#editcell")
-	var $pointing = $(pointing)
-	var height = $pointing.height() + "px"
-	var width = $pointing.width() + "px"
-	var context = ""
-
-	// to show Thai name of day in editcell div
-	if (pointing.innerHTML) {
-		context = window.getComputedStyle(pointing,':before').content
-		context = context.replace(/\"/g, "")
-		context = context + pointing.innerHTML
-	}
-	$editcell.html(context)
-	editcellData($editcell, pointing, context)
-	showEditcell($editcell, $pointing, height, width)
 }
 
 function createEditcell(pointing)
