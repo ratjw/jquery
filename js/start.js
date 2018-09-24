@@ -190,8 +190,6 @@ function selectRow(event, target)
     $allTR.removeClass("lastselected")
 	$target.addClass("selected lastselected")
   } else if (event.shiftKey) {
-    $allTR.removeClass("selected")
-    $target.addClass("target")
     shiftSelect($target)
   } else {
     $allTR.removeClass("selected")
@@ -202,18 +200,17 @@ function selectRow(event, target)
 
 function shiftSelect($target)
 {
-  var $lastselected = $(".lastselected").closest("tr"),
-	  before = ($lastselected.index() - $target.index()) > 0,
+  var lastIndex = $("#lastselected").index(),
+      targetIndex = $target.index(),
       $select
 
-  if (before) {
-    $select = $lastselected.prevUntil('.target')
-  } else {
-    $select = $lastselected.nextUntil('.target')
+  if (targetIndex > lastIndex) {
+    $select = $target.prevUntil('.lastselected')
+  } else if (targetIndex < lastIndex) {
+    $select = $target.nextUntil('.lastselected')
   }
   $select.addClass("selected")
-  $lastselected.addClass("selected")
-  $target[0].className = "selected"
+  $target.addClass("selected")
 }
 
 function sendtoLINE ()
