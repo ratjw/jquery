@@ -643,6 +643,46 @@ function findNextRow(editable, pointing)
 	return $nextcell.get(0)
 }
 
+function sendtoLINE ()
+{
+  var  capture = document.querySelector("#capture"),
+  row = target.closest('tr').outerHTML,
+  tbl = document.querySelector("#tbl"),
+  original = tbl.innerHTML
+
+  capture.innerHTML = row
+  tbl.innerHTML = ""
+  html2canvas(capture).then(canvas => {
+    tbl.innerHTML += original
+    $.post("/line/save&push.php", {
+      data: canvas.toDataURL(),
+      user: gv.user
+    })
+  })
+  event.stopPropagation()
+  return
+}
+
+function sendtoExcel ()
+{
+  var  capture = document.querySelector("#capture"),
+  row = target.closest('tr').outerHTML,
+  tbl = document.querySelector("#tbl"),
+  original = tbl.innerHTML
+
+  capture.innerHTML = row
+  tbl.innerHTML = ""
+  html2canvas(capture).then(canvas => {
+    tbl.innerHTML += original
+    $.post("/line/save&push.php", {
+      data: canvas.toDataURL(),
+      user: gv.user
+    })
+  })
+  event.stopPropagation()
+  return
+}
+
 function exportServiceToExcel()
 {
 	//getting data from our table

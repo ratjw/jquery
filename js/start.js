@@ -11,7 +11,6 @@ function Start(userid, book)
   $("head style").remove()
   $("head").append($("body link"))
   $("#wrapper").show()
-  $("#onerow").hide()
 
   if (typeof book !== "object") { book = "{}" }
   updateBOOK(book)
@@ -57,7 +56,7 @@ function startEditable()
 
   // Prevent the backspace key from navigating back.
   $(document).off('keydown').on('keydown', function (event) {
-    if (event.keydate === 8) {
+    if (event.keyCode === 8) {
       var doPrevent = true
       var types = ["text", "password", "file", "number", "date", "time"]
       var d = $(event.srcElement || event.target)
@@ -81,18 +80,21 @@ function startEditable()
         event.preventDefault()
         return false
       }
+    } else if (event.keyCode === 27) {
+      clearSelection()
     }
     resetTimer()
     gv.idleCounter = 0
   });
+
   var $editcell = $("#editcell")
   $editcell.on("keydown", function (event) {
-    var keydate = event.which || window.event.keydate
+    var keyCode = event.which || window.event.keyCode
     var pointing = $editcell.data("pointing")
     if ($('#dialogService').is(':visible')) {
-      Skeyin(event, keydate, pointing)
+      Skeyin(event, keyCode, pointing)
     } else {
-      keyin(event, keydate, pointing)
+      keyin(event, keyCode, pointing)
     }
     if (!$("#spin").length) {
       resetTimer()
@@ -102,8 +104,7 @@ function startEditable()
 
   // for resizing the editing cell
   $editcell.on("keyup", function (event) {
-    var keydate = event.which || window.event.keydate
-
+    var keyCode = event.which || window.event.keyCode
     $editcell.height($editcell[0].scrollHeight)
   })
 
@@ -111,15 +112,6 @@ function startEditable()
     event.stopPropagation()
     return
   })
-
-  // click on parent of submenu = no action
-  // except click on #search => search()
-  $('#menu li:not(#search) > div').on("click", function(event){
-    if ($(this).siblings('ul').length > 0){
-      event.preventDefault()
-      event.stopPropagation()
-    }
-  });
 
   document.getElementById("wrapper").addEventListener("wheel", function (event) {
     resetTimer();
@@ -141,16 +133,10 @@ function startEditable()
     gv.idleCounter = 0
     $(".bordergroove").removeClass("bordergroove")
 
-	if (target.cellIndex === 0) {
-		selectRow(event, target)
-        event.stopPropagation()
-        return
-	}
-    if ($menu.is(":visible")) {
-      if (!$(target).closest('#menu').length) {
-        $menu.hide();
-        clearEditcell()
-      }
+    if (target.cellIndex === 0) {
+      selectRow(event, target)
+      event.stopPropagation()
+      return
     }
     if ($stafflist.is(":visible")) {
       if (!$(target).closest('#stafflist').length) {
@@ -165,9 +151,9 @@ function startEditable()
       clicktable(event, target)
     } else {
       clearEditcell()
-      $menu.hide()
       $stafflist.hide()
       clearMouseoverTR()
+	  clearSelection()
     }
 
     event.stopPropagation()
@@ -184,55 +170,53 @@ function startEditable()
 function selectRow(event, target)
 {
   var $target = $(target).closest("tr"),
-      $allTR = $(target).closest("table").find("tr")
+      $allTR = $(target).closest("table").find("tr"),
+      $onerow = $("#onerow"),
+      $excelline = $("#excelline")
 
   if (event.ctrlKey) {
     $allTR.removeClass("lastselected")
-	$target.addClass("selected lastselected")
+    $target.addClass("selected lastselected")
+    $onerow.hide()
+    $excelline.show()
   } else if (event.shiftKey) {
+    $allTR.not(".lastselected").removeClass("selected")
     shiftSelect($target)
+    $onerow.hide()
+    $excelline.show()
   } else {
-    $allTR.removeClass("selected")
-    $allTR.removeClass("lastselected")
-	$target.addClass("selected lastselected")
+    $allTR.removeClass("selected lastselected")
+    $target.addClass("selected lastselected")
+    $onerow.show()
+    $excelline.show()
+    oneRowMenu()
   }
 }
 
 function shiftSelect($target)
 {
-  var lastIndex = $("#lastselected").index(),
+  var $lastselected = $(".lastselected").closest("tr"),
+      lastIndex = $lastselected.index(),
       targetIndex = $target.index(),
-      $select
+      $select = {}
 
   if (targetIndex > lastIndex) {
     $select = $target.prevUntil('.lastselected')
   } else if (targetIndex < lastIndex) {
     $select = $target.nextUntil('.lastselected')
+  } else {
+    return
   }
   $select.addClass("selected")
   $target.addClass("selected")
 }
 
-function sendtoLINE ()
+function clearSelection()
 {
-  var  capture = document.querySelector("#capture"),
-  row = target.closest('tr').outerHTML,
-  tbl = document.querySelector("#tbl"),
-  original = tbl.innerHTML
-
-  capture.innerHTML = row
-  tbl.innerHTML = ""
-  html2canvas(capture).then(canvas => {
-    tbl.innerHTML += original
-    $.post("/line/save&push.php", {
-      data: canvas.toDataURL(),
-      user: gv.user
-    })
-  })
-  event.stopPropagation()
-  return
+  $('.selected').removeClass('selected lastselected');
+  $('#onerow').hide();
+  $('#excelline').hide();
 }
-
 // stafflist: menu of Staff column
 // staffmenu: submenu of Date column
 // gv.STAFF[each].staffname: fixed order

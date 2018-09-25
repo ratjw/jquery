@@ -2,8 +2,8 @@
  Byte-order mark (or BOM) causes white space at the top of the page. 
  Notepad++ can save "UTF-8" (without BOM) in "Encoding" menu. -->
 
-<link href="css/styles.css" rel="stylesheet">
-<link href="css/CSS.css" rel="stylesheet">
+<link href="css/menu.css" rel="stylesheet">
+<link href="css/css.css" rel="stylesheet">
 
 <script src="js/click.js"></script>
 <script src="js/constant.js"></script>
@@ -35,24 +35,28 @@
     <li class='active'><a href='javascript:readme()'><span id="readme">Readme</span></a></li>
     <li class='last has-sub'><a nohref><span id="setting">Setting</span></a>
      <ul class='issub'>
-      <li><a href='javascript:addStaff(pointing)'><span id="setstaff">Staff Setting</span></a></li>
+      <li><a href='javascript:addStaff()'><span id="setstaff">Staff Setting</span></a></li>
       <li class='last'><a href='javascript:setHoliday()'><span id="setholiday">Holiday Setting</span></a></li>
      </ul>
     </li>
 	<span id="onerow">
-    <li class='active ' id="addrow"><a href='javascript:addnewrow(tableID, $row, qn)'><span>Add a Row</span></a></li>
+    <li class='active' id="addrow"><a href='javascript:addnewrow()'><span>Add a Row</span></a></li>
     <li class='has-sub' id="itempost"><a nohref><span>Postpone</span></a>
      <ul>
-      <li id="postpone"><a href='javascript:postpone(tableID, $row, opdateth, opdate, staffname, qn)'><span></span></a></li>
+      <li id="postpone"><a href='javascript:postpone()'><span></span></a></li>
      </ul>
     </li>
-    <li class='active' id="changedate"><a href='javascript:changeDate($row, opdateth, opdate, staffname, qn)'><span>Move</span></a></li>
-    <li class='active' id="history"><a href='javascript:editHistory($row)'><span>Track Records</span></a></li>
-    <li class='has-sub'><a nohref><span>Delete</span></a>
+    <li class='active' id="changedate"><a href='javascript:changeDate()'><span>Move</span></a></li>
+    <li class='active' id="history"><a href='javascript:editHistory()'><span>Track Records</span></a></li>
+    <li class='has-sub' id="delete"><a nohref><span>Delete</span></a>
      <ul>
-      <li id="del"><a href='javascript:delCase(tableID, $row, opdateth, opdate, staffname, qn)'><span></span></a></li>
+      <li id="del"><a href='javascript:delCase()'><span></span></a></li>
      </ul>
     </li>
+	</span>
+	<span id="excelline">
+    <li class='active' id="excel"><a href='javascript:sendtoExcel()'><span>Excel</span></a></li>
+    <li class='active' id="line"><a href='javascript:sendtoLINE()'><span>LINE</span></a></li>
 	</span>
     </ul>
   </div>

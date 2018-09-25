@@ -1,9 +1,11 @@
 
-function editHistory($row)
+function editHistory()
 {
-	var	hn = $row.find("td")[HN].innerHTML,
+	var	$selected = $(".selected"),
+		$row = $selected.closest('tr'),
+		hn = $row.find("td")[HN].innerHTML,
 		sql = "sqlReturnData=SELECT * FROM bookhistory "
-			+ "WHERE qn in (select qn from book where hn='" + hn + "') "
+			+ "WHERE qn in (SELECT qn FROM book WHERE hn='" + hn + "') "
 			+ "ORDER BY editdatetime DESC;"
 
 	Ajax(MYSQLIPHP, sql, callbackeditHistory)

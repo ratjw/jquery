@@ -1,9 +1,9 @@
 
-function mainMenu(pointing)
+function oneRowMenu()
 {
-	var $pointing = $(pointing),
-		tableID = $pointing.closest('table').attr('id'),
-		$row = $pointing.closest('tr'),
+	var	$selected = $(".selected"),
+		tableID = $selected.closest('table').attr('id'),
+		$row = $selected.closest('tr'),
 		$cell = $row.find("td"),
 		opdateth = $cell.eq(OPDATE).html(),
 		opdate = getOpdate(opdateth),
@@ -29,68 +29,7 @@ function mainMenu(pointing)
 		itemtext("#del", "<b>Confirm Delete </b>", $cell)
 	}
 	disable(del, "#itemdel")
-	disable(del, "#del")
-
-	var $menu = $("#menu")
-	$menu.menu({
-		select: function( event, ui ) {
-
-			var item = $(ui.item).attr("id")
-
-			switch(item)
-			{
-				case "addrow":
-					addnewrow(tableID, $row, qn)
-					break
-				case "postpone":
-					postpone(tableID, $row, opdateth, opdate, staffname, qn)
-					break
-				case "changedate":
-					changeDate($row, opdateth, opdate, staffname, qn)
-					break
-				case "history":
-					editHistory($row)
-					break
-				case "del":
-					delCase(tableID, $row, opdateth, opdate, staffname, qn)
-					break
-				case "staffqueue":
-					staffqueue(ui.item.text())
-					break
-				case "service":
-					serviceReview()
-					break
-				case "search":
-					search()
-					break
-				case "allsaved":
-					allCases()
-					break
-				case "alldeleted":
-					deletedCases()
-					break
-				case "setstaff":
-					addStaff(pointing)
-					break
-				case "setholiday":
-					setHoliday()
-					break
-				case "readme":
-					readme()
-					break
-			}
-			// clear after selection
-			clearEditcell()
-			$menu.hide()
-			event.stopPropagation()
-		}
-	});
-
-	var $container = $pointing.closest('div')
-
-	$menu.appendTo($container)
-	reposition($menu, "left top", "left bottom", $pointing, $container)
-	menustyle($menu, $pointing)
+	disable(del, "#delete")
 }
 
 function itemtext(id, item, $cell)
@@ -103,11 +42,10 @@ function itemtext(id, item, $cell)
 
 function disable(item, id)
 {
-	var disabled = "ui-state-disabled"
 	if (item) {
-		$(id).removeClass(disabled)
+		$(id).removeClass("disabled")
 	} else {
-		$(id).addClass(disabled)
+		$(id).addClass("disabled")
 	}
 }
 
@@ -127,7 +65,10 @@ function menustyle($me, $target)
 // blank row: a row with no case, and is not the only row of this date
 function checkblank($row, opdate)
 {
-	var	prevDate = $row.prev().find("td").eq(OPDATE).html() || ""
+	var	$row = $(".selected").closest('tr'),
+		$cell = $row.find("td"),
+		opdate = getOpdate($cell.eq(OPDATE).html()),
+		prevDate = $row.prev().find("td").eq(OPDATE).html() || ""
 
 	if (prevDate.numDate() === opdate) {
 		return true
@@ -136,12 +77,15 @@ function checkblank($row, opdate)
 	}
 }
 
-// $row is the pointing (clicked) row
-function addnewrow(tableID, $row)
+function addnewrow()
 {
-	var keepcell = tableID === "tbl" ? OPDATE : STAFFNAME
+	var	$selected = $(".selected"),
+		tableID = $selected.closest('table').attr('id'),
+		$row = $selected.closest('tr'),
+		keepcell = tableID === "tbl" ? OPDATE : STAFFNAME
 
 	$row.clone()
+		.removeClass("selected")
 		.insertAfter($row)
 			.find("td").eq(HN).removeClass("pacs")
 			.parent().find("td").eq(PATIENT).removeClass("camera")
@@ -152,8 +96,16 @@ function addnewrow(tableID, $row)
 
 function postpone(tableID, $row, opdateth, opdate, staffname, qn)
 {
-	var	theatre = $row.find("td").eq(THEATRE).html(),
-		oproom = $row.find("td").eq(OPROOM).html(),
+	var	$selected = $(".selected"),
+		tableID = $selected.closest('table').attr('id'),
+		$row = $selected.closest('tr'),
+		$cell = $row.find("td"),
+		opdateth = $cell.eq(OPDATE).html(),
+		opdate = getOpdate(opdateth),
+		staffname = $cell.eq(STAFFNAME).html(),
+		qn = $cell.eq(QN).html(),
+		theatre = $cell.eq(THEATRE).html(),
+		oproom = $cell.eq(OPROOM).html(),
 		allCases, index,
 
 		sql = "sqlReturnbook=UPDATE book SET opdate='" + LARGESTDATE
@@ -189,14 +141,16 @@ function postpone(tableID, $row, opdateth, opdate, staffname, qn)
 	}
 }
 
-function changeDate($row)
+function changeDate()
 {
-	var $allRows = $("#tbl tr:has('td'), #queuetbl tr:has('td')")
+	var	$row = $(".selected").closest('tr'),
+		$allRows = $("#tbl tr:has('td'), #queuetbl tr:has('td')")
+
 	$allRows.on("mouseover", overDate)
 	$allRows.on("mouseout", outDate)
 	$allRows.on("click", arguments, clickDate)
 
-	$row.addClass("changeDate")
+	$row.removeClass("selected").addClass("changeDate")
 	$(document).on("keydown", clearOnEscape)
 }
 
@@ -314,22 +268,29 @@ function clearMouseoverTR()
 	$(document).off("keydown", clearOnEscape)
 }
 
-function delCase(tableID, $row, opdateth, opdate, staffname, qn)
+// not actually delete the case but set deleted = 1
+function delCase()
 {
-	if (!qn) {
-		$row.remove()
-		return
-	}
-
-	var	theatre = $row.find("td").eq(THEATRE).html(),
-		oproom = $row.find("td").eq(OPROOM).html(),
+	var	$selected = $(".selected"),
+		tableID = $selected.closest('table').attr('id'),
+		$row = $selected.closest('tr'),
+		$cell = $row.find("td"),
+		opdateth = $cell.eq(OPDATE).html(),
+		opdate = getOpdate(opdateth),
+		staffname = $cell.eq(STAFFNAME).html(),
+		qn = $cell.eq(QN).html(),
+		theatre = $cell.eq(THEATRE).html(),
+		oproom = $cell.eq(OPROOM).html(),
 		allCases, index,
-
-		// not actually delete the case but set deleted = 1
 		sql = "sqlReturnbook=UPDATE book SET "
 			+ "deleted=1, "
 			+ "editor = '" + gv.user
 			+ "' WHERE qn="+ qn + ";"
+
+	if (!qn) {
+		$row.remove()
+		return
+	}
 
 	if (oproom) {
 		allCases = sameDateRoomTableQN(opdateth, oproom, theatre)

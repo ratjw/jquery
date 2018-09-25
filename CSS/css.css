@@ -207,7 +207,6 @@ td {
 #movetbl td:nth-child(10),
 #dialogInput,
 #dialogReadme,
-#menu,
 #stafflist,
 #editcell,
 #undelete,
@@ -217,6 +216,8 @@ td {
 #dialogHoliday,
 #holidaycells,
 #holidayinput,
+#onerow,
+#excelline,
 .ui-datepicker-year {
 	display: none;
 }

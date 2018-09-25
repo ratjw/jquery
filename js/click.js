@@ -10,7 +10,6 @@ function keyin(evt, keycode, pointing)
 	var thiscell
 
 	if (keycode === 27)	{
-		$('#menu').hide();
 		$('#stafflist').hide();
 		clearEditcell()
 		window.focus()

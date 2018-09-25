@@ -78,6 +78,11 @@
 #cssmenu > ul li.has-sub ul.issub {
   width: 120px;
 }
+#cssmenu > ul li.disabled a {
+  pointer-events: none;
+  cursor: default;
+  color: #CCCCCC;
+}
 @media (max-width: 600px) {
   #cssmenu > ul {
     width: 100%;
