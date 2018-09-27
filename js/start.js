@@ -14,7 +14,18 @@ function Start(userid, book)
 
   if (typeof book !== "object") { book = "{}" }
   updateBOOK(book)
-  startEditable()
+
+  // call sortable before render, otherwise, rendering is very slow
+  sortable()
+
+  // make the document editable
+  contextmenu()
+  backspace()
+  editcellEvent()
+  wrapperEvent()
+  dragScroll()
+
+  // rendering
   fillupstart()
   setStafflist()
   fillConsults()
@@ -35,13 +46,11 @@ function updateBOOK(result)
   // QTIME = datetime of last fetching from server: $mysqli->query ("SELECT now();")
 }
 
-function startEditable()
+function contextmenu()
 {
-  // call sortable before render, otherwise, it renders very slowly
-  sortable()
-
   $(document).contextmenu( function (event) {
-    var target = event.target    var oncall = /<p[^>]*>.*<\/p>/.test(target.outerHTML)
+    var target = event.target
+    var oncall = /<p[^>]*>.*<\/p>/.test(target.outerHTML)
 
     if (oncall) {
       if (event.ctrlKey) {
@@ -53,8 +62,11 @@ function startEditable()
       event.preventDefault()
     }
   })
+}
 
-  // Prevent the backspace key from navigating back.
+// Prevent the backspace key from navigating back.
+function backspace()
+{
   $(document).off('keydown').on('keydown', function (event) {
     if (event.keyCode === 8) {
       var doPrevent = true
@@ -86,7 +98,10 @@ function startEditable()
     resetTimer()
     gv.idleCounter = 0
   });
+}
 
+function editcellEvent()
+{
   var $editcell = $("#editcell")
   $editcell.on("keydown", function (event) {
     var keyCode = event.which || window.event.keyCode
@@ -112,7 +127,10 @@ function startEditable()
     event.stopPropagation()
     return
   })
+}
 
+function wrapperEvent()
+{
   document.getElementById("wrapper").addEventListener("wheel", function (event) {
     resetTimer();
     gv.idleCounter = 0
@@ -126,13 +144,15 @@ function startEditable()
 
   $("#wrapper").on("click", function (event) {
     var target = event.target
-    var $menu = $('#menu')
     var $stafflist = $('#stafflist')
 
     resetTimer();
     gv.idleCounter = 0
     $(".bordergroove").removeClass("bordergroove")
 
+    if ($(target).closest('#cssmenu').length) {
+      return
+    }
     if (target.cellIndex === 0) {
       selectRow(event, target)
       event.stopPropagation()
@@ -153,13 +173,16 @@ function startEditable()
       clearEditcell()
       $stafflist.hide()
       clearMouseoverTR()
-	  clearSelection()
+      clearSelection()
     }
 
     event.stopPropagation()
   })
+}
 
-  // to make table scrollable while dragging
+// to make table scrollable while dragging
+function dragScroll()
+{
   $("html, body").css( {
     height: "100%",
     overflow: "hidden",
@@ -170,22 +193,23 @@ function startEditable()
 function selectRow(event, target)
 {
   var $target = $(target).closest("tr"),
-      $allTR = $(target).closest("table").find("tr"),
+      $targetTRs = $(target).closest("table").find("tr"),
+      $allTRs = $("tr"),
       $onerow = $("#onerow"),
       $excelline = $("#excelline")
 
   if (event.ctrlKey) {
-    $allTR.removeClass("lastselected")
+    $targetTRs.removeClass("lastselected")
     $target.addClass("selected lastselected")
     $onerow.hide()
     $excelline.show()
   } else if (event.shiftKey) {
-    $allTR.not(".lastselected").removeClass("selected")
+    $targetTRs.not(".lastselected").removeClass("selected")
     shiftSelect($target)
     $onerow.hide()
     $excelline.show()
   } else {
-    $allTR.removeClass("selected lastselected")
+    $allTRs.removeClass("selected lastselected")
     $target.addClass("selected lastselected")
     $onerow.show()
     $excelline.show()
@@ -217,8 +241,9 @@ function clearSelection()
   $('#onerow').hide();
   $('#excelline').hide();
 }
+
 // stafflist: menu of Staff column
-// staffmenu: submenu of Date column
+// staffmenu: dropdown menu of Staff
 // gv.STAFF[each].staffname: fixed order
 function setStafflist()
 {
@@ -423,32 +448,49 @@ function getUpdate()
   }
 }
 
+// savePreviousCell is for Main and Staffqueue tables
+// When editcell is not seen, there must be no change
 function onChange()
 {
-  // savePreviousCell is for Main and Staffqueue tables
-  // When editcell is not seen, there must be no change
-  if ($("#editcell").is(":visible")) {
-    var whereisEditcell = $($("#editcell").data("pointing")).closest("table").attr("id")
-    if (whereisEditcell === "servicetbl") {
-      return saveOnChangeService()
-    } else {
-      return saveOnChange()
-    }
+  if (!$("#editcell").is(":visible")) {
+    return false
   }
-  return false
+
+  var $editcell = $("#editcell"),
+      oldcontent = $editcell.data("oldcontent"),
+      newcontent = getText($editcell),
+      pointed = $editcell.data("pointing"),
+      index = pointed.cellIndex,
+      whereisEditcell = $(pointed).closest("table").attr("id")
+
+  if (oldcontent === newcontent) {
+    return false
+  }
+  if (whereisEditcell === "servicetbl") {
+    qn = $(pointed).closest('tr').children("td")[QNSV].innerHTML
+    return saveOnChangeService(pointed, index, newcontent, qn)
+  } else {
+    qn = $(pointed).closest('tr').children("td")[QN].innerHTML
+    return saveOnChange(pointed, index, newcontent, qn)
+  }
 }
 
-function saveOnChange()
+function saveOnChange(pointed, index, content, qn)
 {
-  var $editcell = $("#editcell"),
-    content = getText($editcell),
-    pointed = $editcell.data("pointing"),
-    column = pointed && pointed.cellIndex,
-    qn = $(pointed).closest('tr').children("td")[QN].innerHTML,
-    sql = "sqlReturnbook=UPDATE book SET "
-    + column + "='" + URIcomponent(content)
-    + "',editor='"+ gv.user
-    + "' WHERE qn="+ qn +";"
+  var column = index === DIAGNOSIS
+                ? "diagnosis"
+                : index === TREATMENT
+                ? "treatment"
+                : index === CONTACT
+                ? "contact"
+                : ""
+
+  if (!column) { return false }
+
+  var sql = "sqlReturnbook=UPDATE book SET "
+          + column + "='" + URIcomponent(content)
+          + "',editor='"+ gv.user
+          + "' WHERE qn="+ qn +";"
 
   Ajax(MYSQLIPHP, sql, callbacksaveOnChange);
 
@@ -456,15 +498,23 @@ function saveOnChange()
 
 }
 
-function saveOnChangeService()
+function saveOnChangeService(pointed, index, content, qn)
 {
-  var $editcell = $("#editcell"),
-    content = getText($editcell),
-    pointed = $editcell.data("pointing"),
-    column = pointed && pointed.cellIndex,
-    sql = sqlColumn(pointed, column, URIcomponent(content)),
-    fromDate = $("#monthstart").val(),
-    toDate = $("#monthpicker").val()
+  var column = index === DIAGNOSISSV
+                ? "diagnosis"
+                : index === TREATMENTSV
+                ? "treatment"
+                : index === ADMISSIONSV
+                ? "admission"
+                : index === FINALSV
+                ? "final"
+                : ""
+
+  if (!column) { return false }
+
+  var sql = sqlColumn(pointed, column, URIcomponent(content)),
+      fromDate = $("#monthstart").val(),
+      toDate = $("#monthpicker").val()
 
   sql  += sqlOneMonth(fromDate, toDate)
 

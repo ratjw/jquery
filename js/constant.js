@@ -3,6 +3,7 @@ var GETIPD	= "php/getipd.php",
 GETNAMEHN	= "php/getnamehn.php",
 MYSQLIPHP	= "php/mysqli.php",
 SEARCH		= "php/search.php",
+LINEBOT		= "line/save&push.php",
 
 //tbl, queuetbl
 OPDATE		= 0,

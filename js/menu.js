@@ -8,36 +8,34 @@ function oneRowMenu()
 		opdateth = $cell.eq(OPDATE).html(),
 		opdate = getOpdate(opdateth),
 		staffname = $cell.eq(STAFFNAME).html(),
+		patient = $cell.eq(PATIENT).html(),
 		qn = $cell.eq(QN).html(),
 		notLARGE = (opdate !== LARGESTDATE)
 
 	disable(qn, "#addrow")
 
-	var itempost = qn && staffname && notLARGE
-	if (itempost) {
-		itemtext("#postpone", "<b>Confirm เลื่อน ไม่กำหนดวัน  </b>", $cell)
+	var postpone = qn && staffname && notLARGE
+	if (postpone) {
+		$("#postponecase").html("<b>Confirm เลื่อน ไม่กำหนดวัน  </b><br>" + patient)
 	}
-	disable(itempost, "#itempost")
-	disable(itempost, "#postpone")
+	disable(postpone, "#postpone")
 
 	disable(qn, "#changedate")
 
 	disable(qn, "#history")
 
-	var del = !!qn || checkblank($row, opdate)
-	if (del) {
-		itemtext("#del", "<b>Confirm Delete </b>", $cell)
+	var Delete = qn || checkblank($row, opdate)
+	if (Delete) {
+		$("#delcase").html("<b>Confirm Delete </b><br>" + patient)
 	}
-	disable(del, "#itemdel")
-	disable(del, "#delete")
+	disable(Delete, "#delete")
 }
 
-function itemtext(id, item, $cell)
+function clickConfirm(id, message, $cell)
 {
 	var $itemdiv = $(id).find("div"),
-		itemtext = item,
 		itemname = $cell.eq(PATIENT).html()
-	$itemdiv.html(itemtext + "<br>" + itemname)
+	$(id).html(message + "<br>" + itemname)
 }
 
 function disable(item, id)
@@ -94,7 +92,7 @@ function addnewrow()
 					.html("")
 }
 
-function postpone(tableID, $row, opdateth, opdate, staffname, qn)
+function postponeCase()
 {
 	var	$selected = $(".selected"),
 		tableID = $selected.closest('table').attr('id'),

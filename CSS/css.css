@@ -218,6 +218,7 @@ td {
 #holidayinput,
 #onerow,
 #excelline,
+#capture,
 .ui-datepicker-year {
 	display: none;
 }
@@ -563,28 +564,21 @@ td.Radiosurgery.Endovascular {
 	box-shadow: 5px 5px 10px slategray;
 }
 
-#menu {
-	font-size: 14px;
-	width: 165px;
-}
-
 #stafflist {
 	font-size: 14px;
 	width: 110px;
 }
 
-#postpone,
-#del,
 #staffmenu {
 	box-shadow: 10px 20px 30px slategray;
 }
 
-#postpone {
+#postponecase {
 	width: 200px;
 	white-space: nowrap;
 }
 
-#del {
+#delcase {
 	width: 170px;
 	white-space: nowrap;
 }

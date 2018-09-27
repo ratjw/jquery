@@ -17,49 +17,94 @@
 <script src="js/sortable.js"></script>
 <script src="js/start.js"></script>
 
+<table id="capture">
+    <tbody>
+	 <tr>
+     <th>Date</th>
+     <th>OR</th>
+     <th>ห้อง</th>
+     <th>เวลา</th>
+     <th>ลำดับ</th>
+     <th>Staff</th>
+     <th>HN</th>
+     <th>Patient</th>
+     <th>Diagnosis</th>
+     <th>Treatment</th>
+     <th>Equipment</th>
+     <th>Contact</th>
+     <th></th>
+	 </tr>
+    </tbody>
+</table>
+
 <div id="wrapper">
  <div id="tblwrapper">
   <div id='cssmenu'>
    <ul>
-    <li class='has-sub'><a nohref><span>Staff</span></a>
-     <ul id="staffmenu">
+    <li>
+     <a nohref><span>Staff</span></a>
+     <ul id="staffmenu"></ul>
+    </li>
+    <li>
+	 <a href='javascript:serviceReview()'><span>Service Review</span></a>
+    </li>
+    <li>
+     <a href='javascript:search()'><span>Search</span></a>
+     <ul class='fixwidth'>
+      <li>
+       <a href='javascript:allCases()'><span>All Saved Cases</span></a>
+      </li>
+      <li>
+       <a href='javascript:deletedCases()'><span>All Deleted Cases</span></a>
+      </li>
      </ul>
     </li>
-    <li class='active'><a href='javascript:serviceReview()'><span id="service">Service Review</span></a></li>
-    <li class='has-sub'><a href='javascript:search()'><span id="search">Search</span></a>
-     <ul class='issub'>
-      <li><a href='javascript:allCases()'><span id="allsaved">All Saved Cases</span></a></li>
-      <li class='last'><a href='javascript:deletedCases()'><span id="alldeleted">All Deleted Cases</span></a></li>
+    <li><a href='javascript:readme()'><span>Readme</span></a></li>
+    <li><a nohref><span>Setting</span></a>
+     <ul class='fixwidth'>
+      <li><a href='javascript:addStaff()'><span>Staff Setting</span></a></li>
+      <li><a href='javascript:setHoliday()'><span>Holiday Setting</span></a></li>
      </ul>
     </li>
-    <li class='active'><a href='javascript:readme()'><span id="readme">Readme</span></a></li>
-    <li class='last has-sub'><a nohref><span id="setting">Setting</span></a>
-     <ul class='issub'>
-      <li><a href='javascript:addStaff()'><span id="setstaff">Staff Setting</span></a></li>
-      <li class='last'><a href='javascript:setHoliday()'><span id="setholiday">Holiday Setting</span></a></li>
-     </ul>
-    </li>
-	<span id="onerow">
-    <li class='active' id="addrow"><a href='javascript:addnewrow()'><span>Add a Row</span></a></li>
-    <li class='has-sub' id="itempost"><a nohref><span>Postpone</span></a>
+   <span id="onerow">
+    <li id="addrow"><a href='javascript:addnewrow()'><span>Add a Row</span></a></li>
+    <li id="postpone">
+     <a nohref><span>Postpone</span></a>
      <ul>
-      <li id="postpone"><a href='javascript:postpone()'><span></span></a></li>
+      <li>
+	    <a href='javascript:postponeCase()'><span id="postponecase"></span></a>
+      </li>
      </ul>
     </li>
-    <li class='active' id="changedate"><a href='javascript:changeDate()'><span>Move</span></a></li>
-    <li class='active' id="history"><a href='javascript:editHistory()'><span>Track Records</span></a></li>
-    <li class='has-sub' id="delete"><a nohref><span>Delete</span></a>
+    <li id="changedate">
+	  <a href='javascript:changeDate()'><span>Move</span></a>
+	</li>
+    <li id="history">
+     <a href='javascript:editHistory()'><span>Track Records</span></a>
+    </li>
+    <li id="delete"><a nohref><span>Delete</span></a>
      <ul>
-      <li id="del"><a href='javascript:delCase()'><span></span></a></li>
+      <li>
+	    <a href='javascript:delCase()'><span id="delcase"></span></a>
+	  </li>
      </ul>
     </li>
-	</span>
-	<span id="excelline">
-    <li class='active' id="excel"><a href='javascript:sendtoExcel()'><span>Excel</span></a></li>
-    <li class='active' id="line"><a href='javascript:sendtoLINE()'><span>LINE</span></a></li>
-	</span>
-    </ul>
+   </span>
+   <span id="excelline">
+    <li>
+     <a href='javascript:sendtoExcel()'>
+      <img src="css/pic/general/Excel.jpg" height="20" width="20">
+     </a>
+    </li>
+    <li>
+     <a href='javascript:sendtoLINE()'>
+      <img src="css/pic/general/LINE.png" height="20" width="20">
+     </a>
+    </li>
+   </span>
+   </ul>
   </div>
+
   <div id="tblcontainer">
    <table id="tbl">
     <tbody>
@@ -96,8 +141,6 @@
   </div>
  </div>
 </div>
-
-<table id="capture"></table>
 
 <!-- Used as cells template -->
 <table id="tblcells">
