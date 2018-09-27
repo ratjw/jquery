@@ -141,12 +141,21 @@ function postponeCase()
 
 function changeDate()
 {
-	var	$row = $(".selected").closest('tr'),
+	var	$selected = $(".selected"),
+		$row = $selected.closest('tr'),
+		$cell = $row.find("td"),
+		args = [
+			$row,
+			opdateth = $cell.eq(OPDATE).html(),
+			opdate = getOpdate(opdateth),
+			staffname = $cell.eq(STAFFNAME).html(),
+			qn = $cell.eq(QN).html()
+		],
 		$allRows = $("#tbl tr:has('td'), #queuetbl tr:has('td')")
 
 	$allRows.on("mouseover", overDate)
 	$allRows.on("mouseout", outDate)
-	$allRows.on("click", arguments, clickDate)
+	$allRows.on("click", args, clickDate)
 
 	$row.removeClass("selected").addClass("changeDate")
 	$(document).on("keydown", clearOnEscape)
@@ -156,7 +165,7 @@ function overDate() { $(this).addClass("pasteDate") }
 
 function outDate() { $(this).removeClass("pasteDate") }
 
-// changeDate arguments = ($row, opdateth, opdate, staffname, qn)
+// args = [$row, opdateth, opdate, staffname, qn]
 function clickDate(event)
 {
 	var args = event.data,
