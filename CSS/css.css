@@ -5,13 +5,8 @@
 	font-family: sans-serif;
 }
 
-#tblwrapper {
-	float: left;
-	height: 100%;
-	width: 100%;
-}
-
 #tblcontainer {
+	float: left;
 	height: 100%;
 	width: 100%;
 	overflow: scroll;

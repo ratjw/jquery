@@ -363,9 +363,9 @@ function splitPane()
 	var height = screen.availHeight
 
 	$("#queuewrapper").show()
-	$("#tblwrapper").css({"float":"left", "height":"100%", "width":"50%"})
+	$("#tblcontainer").css({"float":"left", "height":"100%", "width":"50%"})
 	$("#queuewrapper").css({"float":"right", "height":"100%", "width":"50%"})
-	initResize($("#tblwrapper"))
+	initResize($("#tblcontainer"))
 	$('.ui-resizable-e').css('height', $("#tbl").css("height"))
 
 	fakeScrollAnimate("tblcontainer", "tbl", scrolledTop, tohead.offsetTop)
@@ -411,7 +411,7 @@ function closequeue()
 	var tohead = findVisibleHead('#tbl')
 	
 	$("#queuewrapper").hide()
-	$("#tblwrapper").css({
+	$("#tblcontainer").css({
 		"height": "100%", "width": "100%"
 	})
 
@@ -438,11 +438,13 @@ function fakeScrollAnimate(containerID, tableID, scrolledTop, offsetTop)
 
 function findVisibleHead(table)
 {
-	var tohead
+	var tohead,
+        tablecontainer = $(table).closest('div')[0],
+        tablescrolled = tablecontainer.scrollTop
 
-	$.each($(table + ' tr'), function(i, tr) {
-		tohead = tr
-		return ($(tohead).offset().top < 0)
+	$.each($(table + ' tr'), function() {
+		tohead = this
+		return this.offsetTop < tablescrolled
 	})
 	return tohead
 }

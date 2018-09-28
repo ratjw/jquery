@@ -11,6 +11,7 @@ function Start(userid, book)
   $("head style").remove()
   $("head").append($("body link"))
   $("#wrapper").show()
+  $("#tblcontainer").css("height", window.innerHeight - $("#cssmenu").height())
 
   if (typeof book !== "object") { book = "{}" }
   updateBOOK(book)

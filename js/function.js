@@ -658,6 +658,7 @@ function sendtoLINE()
     $capture.find("tbody").append($(this).clone())
   })
   $captureTRs = $capture.find('tr')
+  $captureTRs.removeClass('selected lastselected')
 
   hide.forEach(function(i) {
     $.each($captureTRs, function() {
@@ -667,7 +668,7 @@ function sendtoLINE()
 
   html2canvas(capture).then(canvas => {
     $.post(LINEBOT, {
-      data: canvas.toDataURL(),
+      data: canvas.toDataURL('image/png', 1.0),
       user: gv.user
     })
     $capture.hide()
@@ -689,6 +690,7 @@ function sendtoExcel()
     $capture.find("tbody").append($(this).clone())
   })
   $captureTRs = $capture.find('tr')
+  $captureTRs.removeClass('selected lastselected')
 
   hide.forEach(function(i) {
     $.each($captureTRs, function() {
@@ -703,7 +705,7 @@ function exportQbookToExcel()
 {
   //getting data from our table
   var data_type = 'data:application/vnd.ms-excel';  //Chrome, FF, not IE
-  var title = 'Qbook selected'
+  var title = 'Qbook Selected '
   var style = '\
     <style type="text/css">\
       #exceltbl {\
@@ -725,6 +727,22 @@ function exportQbookToExcel()
         border-left: solid 1px silver;\
         border-bottom: solid 1px silver;\
       }\
+      #exceltbl tr.Sunday { background-color: #FFDDEE; }\
+      #exceltbl tr.Monday { background-color: #FFFFE0; }\
+      #exceltbl tr.Tuesday { background-color: #FFF0F9; }\
+      #exceltbl tr.Wednesday { background-color: #EEFFEE; }\
+      #exceltbl tr.Thursday { background-color: #FFF7EE; }\
+      #exceltbl tr.Friday { background-color: #E7F7FF; }\
+      #exceltbl tr.Saturday { background-color: #E7E7FF; }\
+\
+      #exceltbl td.Sun { background-color: #F099BB; }\
+      #exceltbl td.Mon { background-color: #F0F0BB; }\
+      #exceltbl td.Tue { background-color: #F0CCEE; }\
+      #exceltbl td.Wed { background-color: #CCF0CC; }\
+      #exceltbl td.Thu { background-color: #F0DDBB; }\
+      #exceltbl td.Fri { background-color: #BBDDF0; }\
+      #exceltbl td.Sat { background-color: #CCBBF0; }\
+\
     </style>'
   var head = '\
       <table id="excelhead">\
@@ -736,7 +754,7 @@ function exportQbookToExcel()
       </tr>\
       <tr></tr>\
       </table>'
-  var filename = Date.now() + title + '.xls'
+  var filename = title + Date.now() + '.xls'
 
   exportToExcel("capture", data_type, title, style, head, filename)    
 }
@@ -948,24 +966,37 @@ function exportToExcel(id, data_type, title, style, head, filename)
   if ($("#exceltbl").length) {
     $("#exceltbl").remove()
   }
+
   $("#" + id).clone(true).attr("id", "exceltbl").appendTo("body")
+
+  // use only the last class because Excel does not accept multiple classes
   $.each( $("#exceltbl tr"), function() {
     var multiclass = this.className.split(" ")
     if (multiclass.length > 1) {
       this.className = multiclass[multiclass.length-1]
-    }  //use only the last class because excel not accept multiple classes
+    }
   })
+
+  // remove blank cells in Excel caused by hidden cells
   $.each( $("#exceltbl tr td, #exceltbl tr th"), function() {
     if ($(this).css("display") === "none") {
       $(this).remove()
-    }  //remove trailing hidden cells in excel
+    }
   })
-  var table = $("#exceltbl")[0].outerHTML
-  table = table.replace(/<br>/g, " ")  //excel split <br> to another cell inside that cell 
 
-  var tableToExcel = '<!DOCTYPE html><HTML><HEAD><meta charset="utf-8"/>' + style + '</HEAD><BODY>'
-  tableToExcel += head + table
-  tableToExcel += '</BODY></HTML>'
+  var $exceltbl = $("#exceltbl")
+
+  // make line breaks show in single cell
+  $exceltbl.find('br').attr('style', "mso-data-placement:same-cell");
+
+  //remove img in equipment
+  $exceltbl.find('img').remove();
+
+  var table = $exceltbl[0].outerHTML
+  var tableToExcel = '<!DOCTYPE html><HTML><HEAD><meta charset="utf-8"/>'
+                    + style + '</HEAD><BODY>'
+      tableToExcel += head + table
+      tableToExcel += '</BODY></HTML>'
 
   var ua = window.navigator.userAgent;
   var msie = ua.indexOf("MSIE")

@@ -19,9 +19,9 @@ function fillupstart()
 	fillall(book, table, start, until)
 
 	//scroll to today
-	var thishead = $("#tbl tr:contains(" + todateth + ")").eq(0)
+	var thishead = $("#tbl tr:contains(" + todateth + ")")[0]
 	$('#tblcontainer').animate({
-		scrollTop: thishead.offset().top
+		scrollTop: thishead.offsetTop
 	}, 300);
 
 	hoverMain()
