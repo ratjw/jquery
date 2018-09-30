@@ -1,4 +1,4 @@
-
+// fixed header of tables, not scroll out of sight
 ;(function($)
 {
   $.fn.fixMe = function($container) {

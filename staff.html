@@ -48,8 +48,11 @@
 	 <a href='javascript:serviceReview()'><span>Service Review</span></a>
     </li>
     <li class='hassub'>
-     <a href='javascript:search()'><span>Search</span></a>
+     <a nohref><span>Search</span></a>
      <ul class='w140'>
+      <li>
+       <a href='javascript:search()'><span>Search Cases by Words</span></a>
+      </li>
       <li>
        <a href='javascript:allCases()'><span>All Saved Cases</span></a>
       </li>
@@ -202,102 +205,80 @@
    </tbody>
   </table>
 
-  <!--  name is the column in Mysql
-		title is the value -->
+  <!--  name is the column in Mysql -->
+  <!--  title is the value -->
   <div id="divRecord" class="dialogBox">
-	<div class="iconcontainer">
-	  <span id="checkRecord" class="ui-icon ui-icon-check icon"></span>
-	  <span id="cancelRecord" class="ui-icon ui-icon-closethick icon"></span>
-	</div>
 	<br>
-	<!-- span class="itemheader">วันที่ผ่าตัด:</span>
-	<input type="text" id="donedate" name="donedate" tabindex="-1">
-	<br -->
-	<span class="itemheader">ผ่าตัดโดย:</span>
 	<span>
 		<input type="radio" id="Staff" name="doneby" title="Staff">
-		<label for="Staff">Staff</label>
+		<label for="Staff">S</label>
 	</span>
 	<span>
 		<input type="radio" id="Resident" name="doneby" title="Resident">
-		<label for="Resident">Resident</label>
+		<label for="Resident">R</label>
 	</span>
-	<br>
-	<span class="itemheader">Set แบบ:</span>
 	<span>
 		<input type="radio" id="Elective" name="manner" title="Elective">
-		<label for="Elective">Elective</label>
+		<label for="Elective">Elect</label>
 	</span>
 	<span>
 		<input type="radio" id="Emergency" name="manner" title="Emergency">
-		<label for="Emergency">Emergency</label>
+		<label for="Emergency">Emer</label>
 	</span>
-	<br>
-	<span class="itemheader">ขนาดการผ่าตัด:</span>
 	<span>
 		<input type="radio" id="Major" name="scale" title="Major">
-		<label for="Major">Major</label>
+		<label for="Major">Maj</label>
 	</span>
 	<span>
 		<input type="radio" id="Minor" name="scale" title="Minor">
-		<label for="Minor">Minor</label>
+		<label for="Minor">Min</label>
 	</span>
 	<br>
-	<span class="itemheader">เป้าหมายการผ่าตัด:</span>
 	<span>
 		<input type="radio" id="BrainTumor" name="disease" title="Brain Tumor">
-		<label for="BrainTumor">Brain Tumor</label>
+		<label for="BrainTumor">BT</label>
 	</span>
 	<span>
 		<input type="radio" id="BrainVascular" name="disease" title="Brain Vascular">
-		<label for="BrainVascular">Brain Vascular</label>
+		<label for="BrainVascular">BV</label>
 	</span>
 	<span>
 		<input type="radio" id="CSFrelated" name="disease" title="CSF related">
-		<label for="CSFrelated">CSF related</label>
-	</span>
-	<br>
-	<span>
+		<label for="CSFrelated">CSF</label>
 	</span>
 	<span>
 		<input type="radio" id="Trauma" name="disease" title="Trauma">
-		<label for="Trauma">Trauma</label>
+		<label for="Trauma">Trau</label>
 	</span>
 	<span>
 		<input type="radio" id="Spine" name="disease" title="Spine">
-		<label for="Spine">Spine++</label>
+		<label for="Spine">Spine</label>
 	</span>
 	<span>
 		<input type="radio" id="etc" name="disease" title="etc">
-		<label for="etc">etc.</label>
-	</span>
-	<br>
-	<span>
+		<label for="etc">etc</label>
 	</span>
 	<span>
 		<input type="radio" id="NoOperation" name="disease" title="No">
-		<label for="NoOperation">No Operation</label>
+		<label for="NoOperation">NoOp</label>
 	</span>
 	<br>
-	<span class="itemheader">Non-Surgical:</span>
 	<span>
 		<input type="checkbox" id="radiosurgery" name="radiosurgery" title="Radiosurgery">
-		<label for="radiosurgery">Radiosurgery</label>
+		<label for="radiosurgery">RaSurg</label>
 	</span>
 	<span>
 		<input type="checkbox" id="endovascular" name="endovascular" title="Endovascular">
-		<label for="endovascular">Endovascular</label>
+		<label for="endovascular">Endovas</label>
 	</span>
 	<br>
-	<span class="itemheader">Complication:</span>
-	<!-- id's "Infection", "Morbidity", "Dead" had been used by countService header -->
 	<span>
 		<input type="checkbox" id="infect" name="infection" title="Infection">
-		<label for="infect">Infection</label>
+		<label for="infect">Infect</label>
 	</span>
 	<span>
 		<input type="checkbox" id="morbidity" name="morbid" title="Morbidity">
-		<label for="morbidity">Morbidity</label>
+		<label for="morbidity">Morbid</label>
 	</span>
 	<span>
 		<input type="checkbox" id="mortal" name="dead" title="Dead">

@@ -40,7 +40,7 @@ require_once "mysqli.php";
 		if ($oldAdmit < $newAdmit) {
 			$admit = "admit='$newAdmit',";
 		}
-		if (!$oldDischarge < $newDischarge) {
+		if ($oldDischarge < $newDischarge) {
 				$discharge = "discharge='$newDischarge',";
 		}
 		if ($admit || $discharge) {

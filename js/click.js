@@ -17,7 +17,6 @@ function keyin(evt, keycode, pointing)
 		return false
 	}
 	if (keycode === 9) {
-		$('#menu').hide();
 		$('#stafflist').hide();
 		savePreviousCell()
 		if (evt.shiftKey) {
@@ -35,7 +34,6 @@ function keyin(evt, keycode, pointing)
 		return false
 	}
 	if (keycode === 13) {
-		$('#menu').hide();
 		$('#stafflist').hide();
 		if (evt.shiftKey || evt.ctrlKey) {
 			return

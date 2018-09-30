@@ -618,31 +618,21 @@ td.Radiosurgery.Endovascular {
 }
 
 #divRecord {
-	width: 550px;
-	height: 200px;
+	width: 400px;
+	height: 100px;
 	font-size: 14px;
 	background-color: snow;
-	padding-left: 25px;
+	padding-left: 15px;
 	border: 1px solid skyblue;
 }
 
-#divRecord .itemheader {
-	font-weight: bold;
-}
-
 #divRecord span {
-	width: 130px;
-}
-
-#divRecord .ui-icon-check,
-#divRecord .ui-icon-closethick {
-	width: 18px;
-	margin: 10px;
+	width: 70px;
 }
 
 #divRecord label {
 	display: inline-block;
-	width: 100px;
+	width: 50px;
 }
 
 #reviewtbl {
@@ -773,7 +763,7 @@ td.Radiosurgery.Endovascular {
 	td.Fri:before { font-size: 18px; top: 2px; content: "วันศุกร์ "; }
 	td.Sat:before { font-size: 18px; top: 2px; content: "วันเสาร์ "; }
 
-	#menu, #stafflist {
+	#stafflist {
 		position: relative;
 		font-size: 14px;
 	}

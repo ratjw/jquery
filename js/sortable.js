@@ -14,7 +14,6 @@ function sortable()
 		cancel: "tr:has('th')",
 		start: function(e, ui){
 			clearTimeout(gv.timer);
-			$('#menu').hide();
 			$('#stafflist').hide();
 			clearEditcell();
 			ui.placeholder.innerHeight(ui.item.outerHeight())

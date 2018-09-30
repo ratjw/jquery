@@ -398,9 +398,10 @@ function updating()
       // editcell may be on first column, on staff, during changeDate
       if (gv.idleCounter === 5) {
         clearEditcell()
-        $('#menu').hide()
         $('#stafflist').hide()
         clearMouseoverTR()
+        refillstaffqueue()
+        refillall()
       }
       // idling (59+1)*10 = 10 minutes, logout
       else if (gv.idleCounter > 59 && !gv.mobile) {
