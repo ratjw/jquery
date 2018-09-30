@@ -461,6 +461,8 @@ td.Radiosurgery.Endovascular {
 .textleft { text-align: left;}
 .textright { text-align: right; }
 .textcenter { text-align: center; }
+.w5 { width:5px; }
+.w10 { width:10px; }
 .w20 { width:20px; }
 .w22 { width:22px; }
 .w30 { width:30px; }
@@ -618,21 +620,45 @@ td.Radiosurgery.Endovascular {
 }
 
 #divRecord {
-	width: 400px;
+/*	width: 500px;
 	height: 100px;
 	font-size: 14px;
 	background-color: snow;
-	padding-left: 15px;
+	padding-left: 15px;*/
 	border: 1px solid skyblue;
 }
 
-#divRecord span {
-	width: 70px;
+#divRecord input {
+  height: 20px;
+  border-radius: 5px;
+  border: 1px solid #1FBED6;
+  background-color: white;
+  -webkit-appearance: none; /*to disable the default appearance of radio button*/
+  -moz-appearance: none;
 }
 
-#divRecord label {
-	display: inline-block;
-	width: 50px;
+#divRecord input:focus { /*no need, if you don't disable default appearance*/
+  outline-color: transparent; /*to remove the square border on focus*/
+}
+
+#divRecord input:checked { /*no need, if you don't disable default appearance*/
+  background-color: #1FBED6;
+}
+
+#divRecord input:checked ~ span {
+  color: white;
+}
+
+#divRecord label span {
+  position: relative;
+  font-size: 12px;
+  color: #1FBED6;
+  top: -5px;
+  width: 0px;
+}
+
+#divRecord label input[type="checkbox"] + span {
+  top: -8.5px;
 }
 
 #reviewtbl {

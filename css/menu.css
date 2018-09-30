@@ -43,26 +43,30 @@
   border-top: 0 none;
   line-height: 3px;
   z-index: 1;
-}/*
+}
 #cssmenu ul li#postpone ul,
 #cssmenu ul li#delete ul {
   line-height: normal;
-}*/
+}
 #cssmenu > ul li a {
   display: block;
   padding: 12px 10px 12px 10px;
   text-decoration: none;
   color: gray;
   text-shadow: 0px 1px 0px #fff;
-}/*
+}
 #cssmenu > ul span#excelline li a {
   padding: 4px 10px 12px 10px;
-}*/
+}
+#cssmenu > ul span#excelline li a img {
+  height: 20px;
+  width: 20px;
+}
 #cssmenu > ul li a:hover {
   background: #d80041;
   color: #fff;
   text-shadow: 0px 1px 0px #000;
-}/*
+}
 #cssmenu > ul li.disabled a {
   pointer-events: none;
   cursor: default;
@@ -73,7 +77,7 @@
 }
 #cssmenu ul li ul li a {
   padding: 12px 7px 12px 7px;
-}*/
+}
 
 @media (max-width: 600px) {
   #cssmenu > ul {

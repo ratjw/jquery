@@ -2,8 +2,8 @@
  Byte-order mark (or BOM) causes white space at the top of the page. 
  Notepad++ can save "UTF-8" (without BOM) in "Encoding" menu. -->
 
-<link href="css/menu.css" rel="stylesheet">
 <link href="css/css.css" rel="stylesheet">
+<link href="css/menu.css" rel="stylesheet">
 
 <script src="js/click.js"></script>
 <script src="js/constant.js"></script>
@@ -49,7 +49,7 @@
     </li>
     <li class='hassub'>
      <a nohref><span>Search</span></a>
-     <ul class='w140'>
+     <ul class='w170'>
       <li>
        <a href='javascript:search()'><span>Search Cases by Words</span></a>
       </li>
@@ -95,12 +95,12 @@
    <span id="excelline">
     <li>
      <a href='javascript:sendtoExcel()'>
-      <img src="css/pic/general/Excel.jpg" height="20" width="20">
+      <img src="css/pic/general/Excel.jpg">
      </a>
     </li>
     <li>
      <a href='javascript:sendtoLINE()'>
-      <img src="css/pic/general/LINE.png" height="20" width="20">
+      <img src="css/pic/general/LINE.png">
      </a>
     </li>
    </span>
@@ -209,82 +209,85 @@
   <!--  title is the value -->
   <div id="divRecord" class="dialogBox">
 	<br>
-	<span>
-		<input type="radio" id="Staff" name="doneby" title="Staff">
-		<label for="Staff">S</label>
-	</span>
-	<span>
-		<input type="radio" id="Resident" name="doneby" title="Resident">
-		<label for="Resident">R</label>
-	</span>
-	<span>
-		<input type="radio" id="Elective" name="manner" title="Elective">
-		<label for="Elective">Elect</label>
-	</span>
-	<span>
-		<input type="radio" id="Emergency" name="manner" title="Emergency">
-		<label for="Emergency">Emer</label>
-	</span>
-	<span>
-		<input type="radio" id="Major" name="scale" title="Major">
-		<label for="Major">Maj</label>
-	</span>
-	<span>
-		<input type="radio" id="Minor" name="scale" title="Minor">
-		<label for="Minor">Min</label>
-	</span>
+	<label>
+		<input class="w40" type="radio" id="Staff" name="doneby" title="Staff">
+		<span>Staff</span>
+	</label>
+	<label>
+		<input class="w65" type="radio" id="Resident" name="doneby" title="Resident">
+		<span>Resident</span>
+	</label>
 	<br>
-	<span>
-		<input type="radio" id="BrainTumor" name="disease" title="Brain Tumor">
-		<label for="BrainTumor">BT</label>
-	</span>
-	<span>
-		<input type="radio" id="BrainVascular" name="disease" title="Brain Vascular">
-		<label for="BrainVascular">BV</label>
-	</span>
-	<span>
-		<input type="radio" id="CSFrelated" name="disease" title="CSF related">
-		<label for="CSFrelated">CSF</label>
-	</span>
-	<span>
-		<input type="radio" id="Trauma" name="disease" title="Trauma">
-		<label for="Trauma">Trau</label>
-	</span>
-	<span>
-		<input type="radio" id="Spine" name="disease" title="Spine">
-		<label for="Spine">Spine</label>
-	</span>
-	<span>
-		<input type="radio" id="etc" name="disease" title="etc">
-		<label for="etc">etc</label>
-	</span>
-	<span>
-		<input type="radio" id="NoOperation" name="disease" title="No">
-		<label for="NoOperation">NoOp</label>
-	</span>
+	<label>
+		<input class="w55" type="radio" id="Elective" name="manner" title="Elective">
+		<span>Elective</span>
+	</label>
+	<label>
+		<input class="w73" type="radio" id="Emergency" name="manner" title="Emergency">
+		<span>Emergency</span>
+	</label>
 	<br>
-	<span>
-		<input type="checkbox" id="radiosurgery" name="radiosurgery" title="Radiosurgery">
-		<label for="radiosurgery">RaSurg</label>
-	</span>
-	<span>
-		<input type="checkbox" id="endovascular" name="endovascular" title="Endovascular">
-		<label for="endovascular">Endovas</label>
-	</span>
+	<label>
+		<input class="w40" type="radio" id="Major" name="scale" title="Major">
+		<span>Major</span>
+	</label>
+	<label>
+		<input class="w40" type="radio" id="Minor" name="scale" title="Minor">
+		<span>Minor</span>
+	</label>
 	<br>
-	<span>
-		<input type="checkbox" id="infect" name="infection" title="Infection">
-		<label for="infect">Infect</label>
-	</span>
-	<span>
-		<input type="checkbox" id="morbidity" name="morbid" title="Morbidity">
-		<label for="morbidity">Morbid</label>
-	</span>
-	<span>
-		<input type="checkbox" id="mortal" name="dead" title="Dead">
-		<label for="mortal">Dead</label>
-	</span>
-	<!-- button id="closeRecord">OK</button -->
+	<label>
+		<input class="w55" type="radio" id="BrainTumor" name="disease" title="Brain Tumor">
+		<span>BTumor</span>
+	</label>
+	<label>
+		<input class="w55" type="radio" id="BrainVascular" name="disease" title="Brain Vascular">
+		<span>BVasc</span>
+	</label>
+	<label>
+		<input class="w40" type="radio" id="CSFrelated" name="disease" title="CSF related">
+		<span>CSF</span>
+	</label>
+	<br>
+	<label>
+		<input class="w55" type="radio" id="Trauma" name="disease" title="Trauma">
+		<span>Trauma</span>
+	</label>
+	<label>
+		<input class="w50" type="radio" id="Spine" name="disease" title="Spine">
+		<span>Spine</span>
+	</label>
+	<label>
+		<input class="w30" type="radio" id="etc" name="disease" title="etc">
+		<span>etc</span>
+	</label>
+	<br>
+	<label>
+		<input class="w50" type="radio" id="NoOperation" name="disease" title="No">
+		<span>NoOp</span>
+	</label>
+	<br>
+	<label>
+		<input class="w85" type="checkbox" id="radiosurgery" name="radiosurgery" title="Radiosurgery">
+		<span>RadioSurgery</span>
+	</label>
+	<label>
+		<input class="w85" type="checkbox" id="endovascular" name="endovascular" title="Endovascular">
+		<span>Endovascular</span>
+	</label>
+	<br>
+	<label>
+		<input class="w65" type="checkbox" id="infect" name="infection" title="Infection">
+		<span>Infection</span>
+	</label>
+	<label>
+		<input class="w55" type="checkbox" id="morbidity" name="morbid" title="Morbidity">
+		<span>Morbid</span>
+	</label>
+	<label>
+		<input class="w55" type="checkbox" id="mortal" name="dead" title="Dead">
+		<span>Mortal</span>
+	</label>
   </div>
 </div>
 <!-- dialogService ends here -->

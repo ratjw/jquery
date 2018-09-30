@@ -849,9 +849,12 @@ function showRecord(pointing)
 {
 	var $pointing = $(pointing),
 		$divRecord = $("#divRecord"),
+		$label = $("#divRecord label"),
+		$span = $label.find("span"),
 		$checkRecord = $("#checkRecord"),
 		$cancelRecord = $("#cancelRecord"),
 		$dialogService = $("#dialogService"),
+		wide,
 		oldRecord,
 		keycode
 
@@ -869,8 +872,12 @@ function showRecord(pointing)
 		disableInput()
 	}
 
-	reposition($divRecord, "right top", "right bottom", $pointing, $dialogService)
-	menustyle($divRecord, $pointing)
+	$.each($label, function(i) {
+		wide = $span.eq(i).prev().attr("class").replace("w", "") + "px"
+		$span.eq(i).css("right", wide)
+	})
+
+	$pointing.append($divRecord.show())
 	$divRecord.find("input").focus()
 
 	function keyRecord(event)
