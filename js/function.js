@@ -373,6 +373,11 @@ function ConsultsTbl(tableID)
   return queuetbl && consult
 }
 
+function returnFalse()
+{
+	return false
+}
+
 // waitnum is for ordering where there is no oproom, casenum
 function calcWaitnum(thisOpdate, $prevrow, $nextrow)
 {

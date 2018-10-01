@@ -149,11 +149,6 @@ function clearShunt()
 	$('#dialogEquip input[name=program]').prop('checked', false)
 }
 
-function returnFalse()
-{
-	return false
-}
-
 function getEditedBy(qn)
 {
 	var sql = "sqlReturnData=SELECT editor,editdatetime FROM bookhistory "

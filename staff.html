@@ -195,6 +195,7 @@
      <th>Treatment</th>
      <th>Admission Status</th>
      <th>Final Status</th>
+     <th>Case Profile</th>
      <th>Admit</th>
      <th>Date</th>
      <th>D/C</th>
@@ -207,85 +208,94 @@
 
   <!--  name is the column in Mysql -->
   <!--  title is the value -->
-  <div id="divRecord" class="dialogBox">
+  <div id="orgRecord" class="divRecord dialogBox">
 	<br>
-	<label>
-		<input class="w40" type="radio" id="Staff" name="doneby" title="Staff">
+	<label class="w70">
+		<input class="w40" type="radio" name="doneby" title="Staff">
 		<span>Staff</span>
 	</label>
 	<label>
-		<input class="w65" type="radio" id="Resident" name="doneby" title="Resident">
+		<input class="w65" type="radio" name="doneby" title="Resident">
 		<span>Resident</span>
 	</label>
 	<br>
-	<label>
-		<input class="w55" type="radio" id="Elective" name="manner" title="Elective">
+	<label class="w70">
+		<input class="w55" type="radio" name="manner" title="Elective">
 		<span>Elective</span>
 	</label>
 	<label>
-		<input class="w73" type="radio" id="Emergency" name="manner" title="Emergency">
+		<input class="w73" type="radio" name="manner" title="Emergency">
 		<span>Emergency</span>
 	</label>
 	<br>
-	<label>
-		<input class="w40" type="radio" id="Major" name="scale" title="Major">
+	<label class="w70">
+		<input class="w40" type="radio" name="scale" title="Major">
 		<span>Major</span>
 	</label>
 	<label>
-		<input class="w40" type="radio" id="Minor" name="scale" title="Minor">
+		<input class="w40" type="radio" name="scale" title="Minor">
 		<span>Minor</span>
 	</label>
 	<br>
-	<label>
-		<input class="w55" type="radio" id="BrainTumor" name="disease" title="Brain Tumor">
+	<label class="w70">
+		<input class="w55" type="radio" name="disease" title="Brain Tumor">
 		<span>BTumor</span>
 	</label>
-	<label>
-		<input class="w55" type="radio" id="BrainVascular" name="disease" title="Brain Vascular">
-		<span>BVasc</span>
+	<label class="w77">
+		<input class="w65" type="radio" name="disease" title="Brain Vascular">
+		<span>BVascular</span>
 	</label>
 	<label>
-		<input class="w40" type="radio" id="CSFrelated" name="disease" title="CSF related">
+		<input class="w40" type="radio" name="disease" title="CSF related">
 		<span>CSF</span>
 	</label>
 	<br>
-	<label>
-		<input class="w55" type="radio" id="Trauma" name="disease" title="Trauma">
+	<label class="w70">
+		<input class="w55" type="radio" name="disease" title="Trauma">
 		<span>Trauma</span>
-	</label>
-	<label>
-		<input class="w50" type="radio" id="Spine" name="disease" title="Spine">
+	</label class="w70">
+	<label class="w77">
+		<input class="w50" type="radio" name="disease" title="Spine">
 		<span>Spine</span>
 	</label>
 	<label>
-		<input class="w30" type="radio" id="etc" name="disease" title="etc">
+		<input class="w30" type="radio" name="disease" title="etc">
 		<span>etc</span>
 	</label>
 	<br>
 	<label>
-		<input class="w50" type="radio" id="NoOperation" name="disease" title="No">
+		<input class="w50" type="radio" name="disease" title="No">
 		<span>NoOp</span>
 	</label>
 	<br>
 	<label>
-		<input class="w85" type="checkbox" id="radiosurgery" name="radiosurgery" title="Radiosurgery">
+		<input class="w85" type="checkbox" name="radiosurgery" title="Radiosurgery">
 		<span>RadioSurgery</span>
 	</label>
 	<label>
-		<input class="w85" type="checkbox" id="endovascular" name="endovascular" title="Endovascular">
+		<input class="w85" type="checkbox" name="endovascular" title="Endovascular">
 		<span>Endovascular</span>
 	</label>
 	<br>
 	<label>
-		<input class="w65" type="checkbox" id="infect" name="infection" title="Infection">
-		<span>Infection</span>
+		<input class="w85" type="checkbox" name="Readmission" title="Readmission">
+		<span>ReAdmission</span>
 	</label>
 	<label>
-		<input class="w55" type="checkbox" id="morbidity" name="morbid" title="Morbidity">
+		<input class="w85" type="checkbox" name="Reoperation" title="Reoperation">
+		<span>ReOperation</span>
+	</label>
+	<br>
+	<label>
+		<input class="w55" type="checkbox" name="infection" title="Infection">
+		<span>Infect</span>
+	</label>
+	<label>
+		<input class="w55" type="checkbox" name="morbid" title="Morbidity">
 		<span>Morbid</span>
 	</label>
 	<label>
-		<input class="w55" type="checkbox" id="mortal" name="dead" title="Dead">
+		<input class="w55" type="checkbox" name="dead" title="Dead">
 		<span>Mortal</span>
 	</label>
   </div>

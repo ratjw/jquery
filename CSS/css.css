@@ -125,9 +125,10 @@ td {
 #servicetbl td:nth-child(5) { width: 15%; }
 #servicetbl td:nth-child(6) { width: 25%; }
 #servicetbl td:nth-child(7) { width: 25%; }
-#servicetbl td:nth-child(8) { width: 40px; }
+#servicetbl td:nth-child(8) { width: 220px; }
 #servicetbl td:nth-child(9) { width: 40px; }
 #servicetbl td:nth-child(10) { width: 40px; }
+#servicetbl td:nth-child(11) { width: 40px; }
 
 #historytbl td:nth-child(1) { width: 5%; }
 #historytbl td:nth-child(2) { width: 10px; }
@@ -183,13 +184,13 @@ td {
 #queuetbl th:nth-child(5), #queuetbl td:nth-child(5),
 #tbl th:nth-child(13), #tbl td:nth-child(13),
 #queuetbl th:nth-child(13), #queuetbl td:nth-child(13),
-#servicetbl th:nth-child(11), #servicetbl td:nth-child(11),
+#servicetbl th:nth-child(12), #servicetbl td:nth-child(12),
 #deletedtbl th:nth-child(10), #deletedtbl td:nth-child(10),
 #dialogService, #servicecells,
 #monthpicker button.ui-datepicker-current,
 #monthpicker .ui-datepicker-calendar,
 #monthstart,
-#divRecord,
+.divRecord,
 #dialogReview,
 #dialogEquip,
 #dialogAll, #allcells,
@@ -461,6 +462,7 @@ td.Radiosurgery.Endovascular {
 .textleft { text-align: left;}
 .textright { text-align: right; }
 .textcenter { text-align: center; }
+<<<<<<< HEAD
 .w15 { width:15px; }
 .w20 { width:20px; }
 .w22 { width:22px; }
@@ -487,6 +489,33 @@ td.Radiosurgery.Endovascular {
 .w350 { width:350px; }
 .w500 { width:500px; }
 .w540 { width:540px; }
+=======
+.w20 { width:20px !important; }
+.w22 { width:22px !important; }
+.w30 { width:30px !important; }
+.w40 { width:40px !important; }
+.w50 { width:50px !important; }
+.w55 { width:55px !important; }
+.w65 { width:65px !important; }
+.w70 { width:70px !important; }
+.w73 { width:73px !important; }
+.w77 { width:77px !important; }
+.w80 { width:80px !important; }
+.w85 { width:85px !important; }
+.w90 { width:90px !important; }
+.w100 { width:100px !important; }
+.w110 { width:110px !important; }
+.w120 { width:120px !important; }
+.w140 { width:140px !important; }
+.w150 { width:150px !important; }
+.w160 { width:160px !important; }
+.w170 { width:170px !important; }
+.w200 { width:200px !important; }
+.w215 { width:215px !important; }
+.w350 { width:350px !important; }
+.w500 { width:500px !important; }
+.w540 { width:540px !important; }
+>>>>>>> origin/master
 .margin0 { margin: 0px; }
 .margintop0 { margin-top: 0px; }
 .marginright { margin-right: 100px; }
@@ -618,16 +647,20 @@ td.Radiosurgery.Endovascular {
 	font-weight: bold;
 }
 
-#divRecord {
-/*	width: 500px;
-	height: 100px;
+.divRecord {
+	width: 210px;
+/*	height: 100px;
 	font-size: 14px;
 	background-color: snow;
 	padding-left: 15px;*/
 	border: 1px solid skyblue;
 }
 
-#divRecord input {
+.divRecord label {
+  display: inline-block;
+}
+
+.divRecord input {
   height: 20px;
   border-radius: 5px;
   border: 1px solid #1FBED6;
@@ -636,19 +669,19 @@ td.Radiosurgery.Endovascular {
   -moz-appearance: none;
 }
 
-#divRecord input:focus { /*no need, if you don't disable default appearance*/
+.divRecord input:focus { /*no need, if you don't disable default appearance*/
   outline-color: transparent; /*to remove the square border on focus*/
 }
 
-#divRecord input:checked { /*no need, if you don't disable default appearance*/
+.divRecord input:checked { /*no need, if you don't disable default appearance*/
   background-color: #1FBED6;
 }
 
-#divRecord input:checked ~ span {
+.divRecord input:checked ~ span {
   color: white;
 }
 
-#divRecord label span {
+.divRecord label span {
   position: relative;
   font-size: 12px;
   color: #1FBED6;
@@ -656,7 +689,7 @@ td.Radiosurgery.Endovascular {
   width: 0px;
 }
 
-#divRecord label input[type="checkbox"] + span {
+.divRecord label input[type="checkbox"] + span {
   top: -8.5px;
 }
 
