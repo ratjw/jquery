@@ -118,21 +118,21 @@ function sqlOneMonth(fromDate, toDate)
 		  + "ORDER BY s.number,opdate,oproom,casenum,waitnum;";
 }
 
-// Principle : gv.SERVE are implicitly in diagnosis, treatment, admit
-// Some values in gv.SERVE are calculated at run time
+// gv.SERVE is a copy of gv.SERVICE which also calculates some values at run time
+// namely - diagnosis, treatment, admit
 // All service values are stored in the corresponding table row : $row.data()
 // Operation is determined by operationFor() in JS
 // Admission is updated by getAdmitDischargeDate in PHP
-// Values in DB are use-defined to override runtime-calc values
-// admitted : "", "No", "Readmission"					<- admit
-// operated : "", "No", "Reoperation"					<- treatment
-// doneby : "", "Staff", "Resident"				<- defaulted by treatment
-// manner : "", "Elective", "Emergency"			<- defaulted by treatment
-// scale : "", "Major", "Minor"					<- defaulted by treatment
+// Values in DB are user-defined to override runtime-calc values
+// admitted : "", "No", "Readmission"			<- admit
+// operated : "", "No", "Reoperation"			<- treatment
+// doneby : "", "Staff", "Resident"				<- default "Staff"
+// manner : "", "Elective", "Emergency"			<- default "Elective"
+// scale : "", "Major", "Minor"					<- default "Major"
 // disease : "", "No", "Brain Tumor", "Brain Vascular",
 //		"CSF related", "Trauma", "Spine", "etc" <- treatment + diagnosis
-// radiosurgery : "", "No", "Radiosurgery"			<- treatment
-// endovascular : "", "No", "Endovascular"			<- treatment
+// radiosurgery : "", "No", "Radiosurgery"		<- treatment
+// endovascular : "", "No", "Endovascular"		<- treatment
 // infection : "", "Infection"					<- user-defined only
 // morbid : "", "Morbidity"						<- user-defined only
 // dead : "", "Dead"							<- user-defined only
@@ -171,8 +171,7 @@ function showService(fromDate, toDate)
 				.filldataService(this, scase, classname)
 	});
 
-	var	$dialogService = $("#dialogService"),
-		$divRecord = $("#divRecord")
+	var	$dialogService = $("#dialogService")
 
 	$dialogService.dialog({
 		hide: 200,
@@ -186,7 +185,6 @@ function showService(fromDate, toDate)
 			$(".fixed").remove()
 			$(window).off("resize", resizeDialog)
 			$dialogService.off("click", clickDialogService)
-			$divRecord.hide()
 		}
 	})
 	
@@ -209,11 +207,6 @@ function showService(fromDate, toDate)
 		event.stopPropagation()
 		var	target = event.target
 
-		if ($divRecord.is(":visible")) {
-			if (!$(target).closest("#divRecord").length) {
-				$divRecord.hide();
-			}
-		}
 		if (target.nodeName !== "TD" || target.colSpan > 1) {
 			clearEditcell()
 		} else {
@@ -372,7 +365,7 @@ function refillService(fromDate, toDate)
 			$cells.eq(CASENUMSV).prop("colSpan", 1)
 				.nextUntil($cells.eq(QNSV)).show()
 		}
-		$rowi.filldataService(this, scase, classname)
+		$rowi.filldataService(this, scase, classname, i)
 	});
 	if (i < (len - 1)) {
 		$rows.slice(i+1).remove()
@@ -381,7 +374,7 @@ function refillService(fromDate, toDate)
 }
 
 jQuery.fn.extend({
-	filldataService : function(bookq, scase, classes) {
+	filldataService : function(bookq, scase, classes, rowi) {
 		var cells = this[0].cells
 
 		if (bookq.hn && gv.isPACS) { cells[HNSV].className = "pacs" }
@@ -398,6 +391,7 @@ jQuery.fn.extend({
 		cells[TREATMENTSV].innerHTML = bookq.treatment
 		cells[ADMISSIONSV].innerHTML = bookq.admission
 		cells[FINALSV].innerHTML = bookq.final
+		cells[PROFILESV].appendChild(showRecord(bookq, rowi))
 		cells[ADMITSV].innerHTML = putThdate(bookq.admit)
 		cells[OPDATESV].innerHTML = putThdate(bookq.opdate)
 		cells[DISCHARGESV].innerHTML = putThdate(bookq.discharge)
@@ -753,8 +747,9 @@ function storePresentCellService(evt, pointing)
 			getADMISSIONSV(evt, pointing)
 			break
 		case FINALSV:
-			getFINALSV(evt, pointing)
+			gv.editableSV && createEditcell(pointing)
 			break
+		case PROFILESV:
 		case ADMITSV:
 		case OPDATESV:
 		case DISCHARGESV:
@@ -833,81 +828,37 @@ function getADMISSIONSV(evt, pointing)
 	}
 }
 
-function getFINALSV(evt, pointing)
+function showRecord(bookq, rowi)
 {
-	if (inPicArea(evt, pointing)) {
-		clearEditcell()
-		showRecord(pointing)
-	} else {
-		if (gv.editableSV) { createEditcell(pointing) }
-	}
-}
-
-// can't use dialog, it will be hijacked to document body
-// and not sticky to pointing while scrolling
-function showRecord(pointing)
-{
-	var $pointing = $(pointing),
-		$divRecord = $("#divRecord"),
-		$label = $("#divRecord label"),
-		$span = $label.find("span"),
-		$checkRecord = $("#checkRecord"),
-		$cancelRecord = $("#cancelRecord"),
-		$dialogService = $("#dialogService"),
+	var $divRecord = $("#orgRecord").clone().attr('id', '')
+		$span = $divRecord.find("span"),
 		wide,
-		oldRecord,
-		keycode
+		oldRecord
 
-	setRecord($pointing)
-	oldRecord = getRecord()
+	initRecord(bookq, rowi, $divRecord)
+	
+	
+	document.body.appendChild($divRecord)
 
-	// off all previous listeners
-	// Enter key = click checkRecord
-	$divRecord.off("keydown").on("keydown", keyRecord)
-	$checkRecord.off("click").on("click", checkRecord)
-	$cancelRecord.off("click").on("click", closeDivRecord)
-	if (gv.editableSV) {
-		enableInput()
-	} else {
-		disableInput()
-	}
+//	oldRecord = getRecord()
 
-	$.each($label, function(i) {
-		wide = $span.eq(i).prev().attr("class").replace("w", "") + "px"
-		$span.eq(i).css("right", wide)
+	$.each($span, function() {
+		wide = this.previousElementSibling.className.replace("w", "") + "px"
+		this.style.right = wide
 	})
 
-	$pointing.append($divRecord.show())
-	$divRecord.find("input").focus()
+	profileInput($divRecord)
+//	$divRecord.find("input").focus()
 
-	function keyRecord(event)
-	{
-		keycode = event.which || window.event.keyCode
-		event.preventDefault()
-		if (keycode === 13) { checkRecord() }
-		if (keycode === 27) { closeDivRecord() }
-	}
+	return $divRecord
+}
 
-	function checkRecord()
-	{
-		if (gv.editableSV) { saveRecord($pointing, oldRecord) }
-		closeDivRecord()
-	}
-
-	function closeDivRecord()
-	{
-		$divRecord.hide()
-		$dialogService.focus()
-	}
-
-	function enableInput()
-	{
+function profileInput($divRecord)
+{
+	if (gv.editableSV) {
 		$divRecord.find("input").off("click", returnFalse)
 		$divRecord.find("input[type=text]").prop("disabled", false)
-	}
-
-	function disableInput()
-	{
+	} else {
 		$divRecord.find("input").on("click", returnFalse)
 		$divRecord.find("input[type=text]").prop("disabled", true)
 	}
@@ -915,14 +866,15 @@ function showRecord(pointing)
 
 // this.name === column in Mysql
 // this.title === possible values
-function setRecord($pointing)
+function initRecord(bookq, rowi, $divRecord)
 {
-	var	qn = $pointing.closest("tr").find("td").eq(QNSV).html(),
-		bookq = getBOOKrowByQN(gv.SERVE, qn),
-		$divRecord = $("#divRecord")
+	var $input = $divRecord.find("input")
 
-	$divRecord.find("input[type=text]").val("")
-	$divRecord.find("input").prop("checked", false)
+	$input.each(function() {
+		inputName = this.getAttribute("name")
+		this.setAttribute("name", inputName + rowi)
+		this.checked = this.title === bookq[this.name]
+	})
 
 	$divRecord.find("input").each(function() {
 		this.checked = this.title === bookq[this.name]
@@ -933,7 +885,7 @@ function getRecord()
 {
 	var	record = {}
 
-	$("#divRecord input").each(function() {
+	$(".divRecord input").each(function() {
 		if (this.type === "checkbox" && !this.checked) {
 			record[this.name] = ""
 		} else {
