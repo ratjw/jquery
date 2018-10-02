@@ -205,12 +205,33 @@ function showService(fromDate, toDate)
 		resetTimer();
 		gv.idleCounter = 0
 		event.stopPropagation()
-		var	target = event.target
+		var	target = event.target,
+			$target = $(target),
+			onProfile = $target.closest(".divRecord").length,
+			onNormalCell = (target.nodeName === "TD" && target.colSpan === 1)
+			pointed = $("#editcell").data("pointing")
 
-		if (target.nodeName !== "TD" || target.colSpan > 1) {
-			clearEditcell()
+		if (onProfile) {
+			if (target.nodeName === "INPUT") {
+				return
+			} else {
+				target = $target.closest('td')[0]
+			}
+		}
+		if (pointed) {
+			if (target === pointed) {
+				return
+			}
+			savePreviousCellService()
+			if (onProfile || onNormalCell) {
+				storePresentCellService(event, target)
+			} else {
+				clearEditcell()
+			}
 		} else {
-			clickservice(event, target)
+			if (onNormalCell || onProfile) {
+				storePresentCellService(event, target)
+			}
 		}
 	}
 
@@ -365,7 +386,7 @@ function refillService(fromDate, toDate)
 			$cells.eq(CASENUMSV).prop("colSpan", 1)
 				.nextUntil($cells.eq(QNSV)).show()
 		}
-		$rowi.filldataService(this, scase, classname, i)
+		$rowi.filldataService(this, scase, classname)
 	});
 	if (i < (len - 1)) {
 		$rows.slice(i+1).remove()
@@ -374,7 +395,7 @@ function refillService(fromDate, toDate)
 }
 
 jQuery.fn.extend({
-	filldataService : function(bookq, scase, classes, rowi) {
+	filldataService : function(bookq, scase, classes) {
 		var cells = this[0].cells
 
 		if (bookq.hn && gv.isPACS) { cells[HNSV].className = "pacs" }
@@ -391,7 +412,7 @@ jQuery.fn.extend({
 		cells[TREATMENTSV].innerHTML = bookq.treatment
 		cells[ADMISSIONSV].innerHTML = bookq.admission
 		cells[FINALSV].innerHTML = bookq.final
-		cells[PROFILESV].appendChild(showRecord(bookq, rowi))
+		cells[PROFILESV].appendChild(showRecord(bookq))
 		cells[ADMITSV].innerHTML = putThdate(bookq.admit)
 		cells[OPDATESV].innerHTML = putThdate(bookq.opdate)
 		cells[DISCHARGESV].innerHTML = putThdate(bookq.discharge)
@@ -403,33 +424,26 @@ jQuery.fn.extend({
 function hoverService()
 {
 	var	tdClass = "td.pacs, td.camera, td.record"
-				+ (gv.editableSV
-				? ", td.Operation, td.Admission, td.Reoperation, td.Readmission"
-				: "")
 
 	hoverCell(tdClass)
 }
 
 function hoverCell(tdClass)
 {
-	var	paleClasses = ["pacs", "camera", "record", "Operation",
-						"Admission", "Reoperation", "Readmission"
-		],
-		boldClasses = ["pacs2", "camera2", "record2", "Operation2",
-						"Admission2", "Reoperation2", "Readmission2"
-		]
+	var	paleClasses = ["pacs", "camera"],
+		boldClasses = ["pacs2", "camera2"]
 
 	$(tdClass)
-	.mousemove(function(event) {
-		if (inPicArea(event, this)) {
-			getClass(this, paleClasses, boldClasses)
-		} else {
+		.mousemove(function(event) {
+			if (inPicArea(event, this)) {
+				getClass(this, paleClasses, boldClasses)
+			} else {
+				getClass(this, boldClasses, paleClasses)
+			}
+		})
+		.mouseout(function (event) {
 			getClass(this, boldClasses, paleClasses)
-		}
-	})
-	.mouseout(function (event) {
-		getClass(this, boldClasses, paleClasses)
-	})
+		})
 }
 
 function putReoperate(classes)
@@ -441,12 +455,6 @@ function putReoperate(classes)
 	}
 	else if (/Operation/.test(classes)) {
 		classname += "Operation "
-	}
-	if (/Radiosurgery/.test(classes)) {
-		classname += "Radiosurgery "
-	}
-	if (/Endovascular/.test(classes)) {
-		classname += "Endovascular"
 	}
 
 	return $.trim(classname)
@@ -472,26 +480,20 @@ function updateRowClasses($this, classname)
 		$treat = $cell.eq(TREATMENTSV),
 		$final = $cell.eq(FINALSV)
 
-	// delete cell classes except "record"
 	$admit[0].className = ""
 	$treat[0].className = ""
-	$final[0].className = "record"
 
 	if (/Readmission/.test(classname)) {
 		$admit.addClass("Readmission")
-		gv.editableSV && hoverCell("td.Readmission")
 	}
 	else if (/Admission/.test(classname)) {
 		$admit.addClass("Admission")
-		gv.editableSV && hoverCell("td.Readmission")
 	}
 	if (/Reoperation/.test(classname)) {
 		$treat.addClass("Reoperation")
-		gv.editableSV && hoverCell("td.Reoperation")
 	}
 	else if (/Operation/.test(classname)) {
 		$treat.addClass("Operation")
-		gv.editableSV && hoverCell("td.Operation")
 	}
 	if (/Radiosurgery/.test(classname)) {
 		$treat.addClass("Radiosurgery")
@@ -642,6 +644,9 @@ function savePreviousCellService()
 		case FINALSV:
 			saveContentService(pointed, "final", newcontent)
 			return true
+		case PROFILESV:
+			saveProfileService(pointed)
+			break
 		case ADMITSV:
 		case DISCHARGESV:
 			return false
@@ -738,18 +743,14 @@ function storePresentCellService(evt, pointing)
 			getNAMESV(evt, pointing)
 			break
 		case DIAGNOSISSV:
-			gv.editableSV && createEditcell(pointing)
-			break
 		case TREATMENTSV:
-			getTREATMENTSV(evt, pointing)
-			break
 		case ADMISSIONSV:
-			getADMISSIONSV(evt, pointing)
-			break
 		case FINALSV:
 			gv.editableSV && createEditcell(pointing)
 			break
 		case PROFILESV:
+			gv.editableSV && getPROFILESV(pointing)
+			break
 		case ADMITSV:
 		case OPDATESV:
 		case DISCHARGESV:
@@ -779,81 +780,36 @@ function getNAMESV(evt, pointing)
 	}
 }
 
-// operated has 2 possibilities : "", Reoperation
-// Operation is determined by keywords in operationFor()
-function getTREATMENTSV(evt, pointing)
+function getPROFILESV(pointing)
 {
-	if (gv.editableSV) {
-		var operated = "", sql = ""
+	var oldRecord = getRecord(pointing),
+		$editcell = $("#editcell")
 
-		if (inPicArea(evt, pointing) && pointing.className) {
-			clearEditcell()
-			// click toggle Operation, Reoperation
-			// Operation is not saved in DB. Use runtime operationFor
-			if (/\bReoperation/.test(pointing.className)) {
-				operated = ""
-			}
-			else if (/\bOperation/.test(pointing.className)) {
-				operated = "Reoperation"
-			}
-			sql = sqlColumn(pointing, "operated", operated)
-			saveService(pointing, sql)
-		} else {
-			createEditcell(pointing)
-		}
-	}
+	$editcell.data("pointing", pointing)
+	$editcell.data("oldcontent", oldRecord)
 }
 
-// admitted has 2 possibilities : "", Readmission
-// Admission depends on hospital IT
-function getADMISSIONSV(evt, pointing)
+function showRecord(bookq)
 {
-	if (gv.editableSV) {
-		var admitted = "", sql = ""
+	var $divRecord = $("#orgRecord").clone().prop('id', ''),
+		wide
 
-		if (inPicArea(evt, pointing) && pointing.className) {
-			clearEditcell()
-			// click toggle Admission, Readmission
-			// Admission is not saved in DB. Use Admit column values
-			if (/\bReadmission/.test(pointing.className)) {
-				admitted = ""
-			} else if (/\bAdmission/.test(pointing.className)) {
-				admitted = "Readmission"
-			}
-			sql = sqlColumn(pointing, "admitted", admitted)
-			saveService(pointing, sql)
-		} else {
-			createEditcell(pointing)
-		}
-	}
-}
+//	document.body.appendChild($divRecord[0])
+	initRecord(bookq, $divRecord)
 
-function showRecord(bookq, rowi)
-{
-	var $divRecord = $("#orgRecord").clone().attr('id', '')
-		$span = $divRecord.find("span"),
-		wide,
-		oldRecord
+//	$.each($span, function() {
+//		wide = this.previousElementSibling.className.replace("w", "") + "px"
+//		this.style.right = wide
+//	})
 
-	initRecord(bookq, rowi, $divRecord)
-	
-	
-	document.body.appendChild($divRecord)
-
-//	oldRecord = getRecord()
-
-	$.each($span, function() {
-		wide = this.previousElementSibling.className.replace("w", "") + "px"
-		this.style.right = wide
-	})
-
-	profileInput($divRecord)
+	inputEditable($divRecord)
+	$divRecord.show()
 //	$divRecord.find("input").focus()
 
-	return $divRecord
+	return $divRecord[0]
 }
 
-function profileInput($divRecord)
+function inputEditable($divRecord)
 {
 	if (gv.editableSV) {
 		$divRecord.find("input").off("click", returnFalse)
@@ -866,26 +822,26 @@ function profileInput($divRecord)
 
 // this.name === column in Mysql
 // this.title === possible values
-function initRecord(bookq, rowi, $divRecord)
+function initRecord(bookq, $divRecord)
 {
-	var $input = $divRecord.find("input")
+	var $input = $divRecord.find("input"),
+		wide
 
 	$input.each(function() {
-		inputName = this.getAttribute("name")
-		this.setAttribute("name", inputName + rowi)
-		this.checked = this.title === bookq[this.name]
-	})
-
-	$divRecord.find("input").each(function() {
-		this.checked = this.title === bookq[this.name]
+		wide = this.className.replace("w", "") + "px"
+		inputName = this.name
+		this.checked = this.title === bookq[inputName]
+		this.name = inputName + bookq.qn
+		this.nextElementSibling.style.right = wide
 	})
 }
 
-function getRecord()
+function getRecord(pointing)
 {
-	var	record = {}
+	var	record = {},
+		$input = $(pointing).find(".divRecord input")
 
-	$(".divRecord input").each(function() {
+	$input.each(function() {
 		if (this.type === "checkbox" && !this.checked) {
 			record[this.name] = ""
 		} else {
@@ -898,32 +854,36 @@ function getRecord()
 	return record
 }
 
-function saveRecord($pointing, oldRecord)
+function saveProfileService(pointed)
 {
-	var newrecord = getRecord(),
-		sql
+	var newRecord = getRecord(pointed),
+		oldRecord = $("#editcell").data("oldcontent"),
+		setRecord = {},
+		$pointing = $(pointed),
+		sql,
+		newkey
 
-	$.each(newrecord, function(key, val) {
+	$.each(newRecord, function(key, val) {
 		if (val === oldRecord[key]) {
-			delete newrecord[key]
+			delete newRecord[key]
 		}
 	})
-	if ( Object.keys(newrecord).length ) {
-		sql = sqlRecord($pointing, newrecord)
+	if ( Object.keys(newRecord).length ) {
+		$.each(newRecord, function(key, val) {
+		   newkey = key.replace(/\d+/g, "");
+		   setRecord[newkey] = newRecord[key];
+		})
+		sql = sqlRecord($pointing, setRecord)
 		saveService($pointing[0], sql)
 	}
 }
 
-function sqlRecord($pointing, newrecord)
+function sqlRecord($pointing, setRecord)
 {
 	var qn = $pointing.closest("tr").find("td").eq(QNSV).html(),
 		sql = "sqlReturnService="
 
-	$.each(newrecord, function(column, content) {
-		if ((column === "radiosurgery" && content === "") ||
-			(column === "endovascular" && content === "")) {
-			content = "No"
-		}
+	$.each(setRecord, function(column, content) {
 		if (column === "disease" && content === "No") {
 			sql += sqlDefaults(qn)			
 		}

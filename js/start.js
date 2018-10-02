@@ -454,7 +454,7 @@ function getUpdate()
 // When editcell is not seen, there must be no change
 function onChange()
 {
-  if (!$("#editcell").is(":visible")) {
+  if (!$("#editcell").data("pointing")) {
     return false
   }
 
@@ -512,6 +512,7 @@ function saveOnChangeService(pointed, index, content, qn)
                 ? "final"
                 : ""
 
+  if (index === PROFILESV) { saveProfileService(pointed) }
   if (!column) { return false }
 
   var sql = sqlColumn(pointed, column, URIcomponent(content)),
