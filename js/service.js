@@ -211,12 +211,14 @@ function showService(fromDate, toDate)
 			onNormalCell = (target.nodeName === "TD" && target.colSpan === 1)
 			pointed = $("#editcell").data("pointing")
 
+		// click onProfile button gives 2 events => first SPAN and then INPUT
+		// INPUT event comes after INPUT value was changed
 		if (onProfile) {
 			if (target.nodeName === "INPUT") {
+				showInputColor($target, target)
 				return
-			} else {
-				target = $target.closest('td')[0]
 			}
+			target = $target.closest('td')[0]
 		}
 		if (pointed) {
 			if (target === pointed) {
@@ -400,9 +402,6 @@ jQuery.fn.extend({
 
 		if (bookq.hn && gv.isPACS) { cells[HNSV].className = "pacs" }
 		if (bookq.hn) { cells[NAMESV].className = "camera" }
-		cells[TREATMENTSV].className = putReoperate(classes)
-		cells[ADMISSIONSV].className = putReadmit(classes)
-		cells[FINALSV].className = "record"
 		updateRowClasses(this, classes)
 
 		cells[CASENUMSV].innerHTML = scase
@@ -446,63 +445,62 @@ function hoverCell(tdClass)
 		})
 }
 
-function putReoperate(classes)
-{
-	var classname = ""
-
-	if (/Reoperation/.test(classes)) {
-		classname += "Reoperation "
-	}
-	else if (/Operation/.test(classes)) {
-		classname += "Operation "
-	}
-
-	return $.trim(classname)
-}
-
-function putReadmit(classes)
-{
-	if (/Readmission/.test(classes)) {
-		return "Readmission"
-	}
-	else if (/Admission/.test(classes)) {
-		return "Admission"
-	}
-
-	return ""
-}
-
 function updateRowClasses($this, classname)
 {
+	var	$cell = $this.children("td"),
+		admit = $cell[ADMISSIONSV],
+		treat = $cell[TREATMENTSV],
+		infect = $cell[FINALSV]
+
 	$this[0].className = classname
-	var $cell = $this.children("td"),
-		$admit = $cell.eq(ADMISSIONSV),
-		$treat = $cell.eq(TREATMENTSV),
-		$final = $cell.eq(FINALSV)
+	admit.className = ""
+	treat.className = ""
+	infect.className = ""
 
-	$admit[0].className = ""
-	$treat[0].className = ""
+	addCellClass(admit, treat, infect, classname)
+}
 
+function addCellClass(admit, treat, infect, classname)
+{
 	if (/Readmission/.test(classname)) {
-		$admit.addClass("Readmission")
-	}
-	else if (/Admission/.test(classname)) {
-		$admit.addClass("Admission")
+		admit.className = "Readmission"
 	}
 	if (/Reoperation/.test(classname)) {
-		$treat.addClass("Reoperation")
-	}
-	else if (/Operation/.test(classname)) {
-		$treat.addClass("Operation")
-	}
-	if (/Radiosurgery/.test(classname)) {
-		$treat.addClass("Radiosurgery")
-	}
-	if (/Endovascular/.test(classname)) {
-		$treat.addClass("Endovascular")
+		treat.className = "Reoperation"
 	}
 	if (/Infection/.test(classname)) {
-		$final.addClass("Infection")
+		infect.className = "Infection"
+	}
+}
+
+function removeCellClass(admit, treat, infect, classname)
+{
+	if (/Readmission/.test(classname)) {
+		admit.className = ""
+	}
+	if (/Reoperation/.test(classname)) {
+		treat.className = ""
+	}
+	if (/Infection/.test(classname)) {
+		infect.className = ""
+	}
+}
+
+function showInputColor($target, target)
+{
+	var	$row = $target.closest("tr"),
+		$cell = $row.children("td"),
+		admit = $cell[ADMISSIONSV],
+		treat = $cell[TREATMENTSV],
+		infect = $cell[FINALSV],
+		classname = target.title
+
+	if (target.checked) {
+		$row.addClass(classname)
+		addCellClass(admit, treat, infect, classname)
+	} else {
+		$row.removeClass(classname)
+		removeCellClass(admit, treat, infect, classname)
 	}
 }
 
