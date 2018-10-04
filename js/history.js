@@ -617,9 +617,9 @@ function showFind(containerID, tableID, qn)
 		bottom = scrolledTop + height,
 		$container = $("#" + containerID)
 
-	$("#" + tableID + " tr.bordergroove").removeClass("bordergroove")
+	$("#" + tableID + " tr.marker").removeClass("marker")
 	if (row) {
-		$(row).addClass("bordergroove")
+		$(row).addClass("marker")
 		if (offset < scrolledTop) {
 			$container.animate({
 				scrollTop: offset
@@ -654,7 +654,7 @@ function makeDialogFound($dialogFind, $findtbl, found, search)
 			$(window).off("resize", resizeFind )
 			$(".fixed").remove()
 			$("#dialogInput").dialog("close")
-			$(".bordergroove").removeClass("bordergroove")
+			$(".marker").removeClass("marker")
 		}
 	})
 

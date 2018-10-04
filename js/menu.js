@@ -47,19 +47,6 @@ function disable(item, id)
 	}
 }
 
-function menustyle($me, $target)
-{
-	if ($me.position().top > $target.position().top) {
-		var shadow = '10px 20px 30px slategray'
-	} else {
-		var shadow = '10px -20px 30px slategray'
-	}
-
-	$me.css({
-		boxShadow: shadow
-	})
-}
-
 // blank row: a row with no case, and is not the only row of this date
 function checkblank($row, opdate)
 {
@@ -90,6 +77,7 @@ function addnewrow()
 			.parent().find("td").eq(keepcell)
 				.nextAll()
 					.html("")
+    clearSelection()
 }
 
 function postponeCase()
@@ -121,6 +109,8 @@ function postponeCase()
 	}
 
 	Ajax(MYSQLIPHP, sql, callbackpostpone)
+
+    clearSelection()
 
 	function callbackpostpone(response)
 	{
@@ -158,7 +148,6 @@ function changeDate()
 	$allRows.on("click", args, clickDate)
 
 	$row.removeClass("selected").addClass("changeDate")
-	$(document).on("keydown", clearOnEscape)
 }
 
 function overDate() { $(this).addClass("pasteDate") }
@@ -230,6 +219,8 @@ function clickDate(event)
 
 	Ajax(MYSQLIPHP, sql, callbackClickDate)
 
+    clearSelection()
+
 	function callbackClickDate(response)
 	{
 		if (typeof response === "object") {
@@ -255,14 +246,6 @@ function clickDate(event)
 	}
 }
 
-function clearOnEscape(event) {
-	var keycode = event.which || window.event.keyCode
-
-	if (keycode === 27)	{
-		clearMouseoverTR()
-	}
-}
-
 function clearMouseoverTR()
 {
 	$("#tbl tr:has('td'), #queuetbl tr:has('td')").off({
@@ -272,7 +255,6 @@ function clearMouseoverTR()
 	})
 	$(".pasteDate").removeClass("pasteDate")
 	$(".changeDate").removeClass("changeDate")
-	$(document).off("keydown", clearOnEscape)
 }
 
 // not actually delete the case but set deleted = 1
@@ -310,6 +292,8 @@ function delCase()
 	}
 
 	Ajax(MYSQLIPHP, sql, callbackdeleterow)
+
+    clearSelection()
 
 	function callbackdeleterow(response)
 	{

@@ -20,11 +20,12 @@ function Start(userid, book)
   sortable()
 
   // make the document editable
-  contextmenu()
-  backspace()
+  contextmenuEvent()
+  backspaceEvent()
   editcellEvent()
   wrapperEvent()
-  dragScroll()
+  documentEvent()
+  forDragScroll()
 
   // rendering
   fillupstart()
@@ -47,7 +48,7 @@ function updateBOOK(result)
   // QTIME = datetime of last fetching from server: $mysqli->query ("SELECT now();")
 }
 
-function contextmenu()
+function contextmenuEvent()
 {
   $(document).contextmenu( function (event) {
     var target = event.target
@@ -66,7 +67,7 @@ function contextmenu()
 }
 
 // Prevent the backspace key from navigating back.
-function backspace()
+function backspaceEvent()
 {
   $(document).off('keydown').on('keydown', function (event) {
     if (event.keyCode === 8) {
@@ -107,6 +108,7 @@ function editcellEvent()
   $editcell.on("keydown", function (event) {
     var keyCode = event.which || window.event.keyCode
     var pointing = $editcell.data("pointing")
+
     if ($('#dialogService').is(':visible')) {
       Skeyin(event, keyCode, pointing)
     } else {
@@ -135,7 +137,7 @@ function wrapperEvent()
   document.getElementById("wrapper").addEventListener("wheel", function (event) {
     resetTimer();
     gv.idleCounter = 0
-    $(".bordergroove").removeClass("bordergroove")
+    $(".marker").removeClass("marker")
   })
   
   document.getElementById("wrapper").addEventListener("mousemove", function (event) {
@@ -149,14 +151,9 @@ function wrapperEvent()
 
     resetTimer();
     gv.idleCounter = 0
-    $(".bordergroove").removeClass("bordergroove")
+    $(".marker").removeClass("marker")
 
     if ($(target).closest('#cssmenu').length) {
-      return
-    }
-    if (target.cellIndex === 0) {
-      selectRow(event, target)
-      event.stopPropagation()
       return
     }
     if ($stafflist.is(":visible")) {
@@ -172,7 +169,6 @@ function wrapperEvent()
       clicktable(event, target)
     } else {
       clearEditcell()
-      $stafflist.hide()
       clearMouseoverTR()
       clearSelection()
     }
@@ -181,66 +177,29 @@ function wrapperEvent()
   })
 }
 
+function documentEvent()
+{
+  $(document).on("keydown", function(event) {
+    var keycode = event.which || window.event.keyCode
+
+    if (keycode === 27)	{
+      $('#stafflist').hide();
+      clearEditcell()
+      clearMouseoverTR()
+      clearSelection()
+      $(".marker").removeClass("marker")
+    }
+  })
+}
+
 // to make table scrollable while dragging
-function dragScroll()
+function forDragScroll()
 {
   $("html, body").css( {
     height: "100%",
     overflow: "hidden",
     margin: "0px"
   })
-}
-
-function selectRow(event, target)
-{
-  var $target = $(target).closest("tr"),
-      $targetTRs = $(target).closest("table").find("tr"),
-      $allTRs = $("tr"),
-      $onerow = $("#onerow"),
-      $excelline = $("#excelline")
-
-  if (event.ctrlKey) {
-    $targetTRs.removeClass("lastselected")
-    $target.addClass("selected lastselected")
-    $onerow.hide()
-    $excelline.show()
-  } else if (event.shiftKey) {
-    $targetTRs.not(".lastselected").removeClass("selected")
-    shiftSelect($target)
-    $onerow.hide()
-    $excelline.show()
-  } else {
-    $allTRs.removeClass("selected lastselected")
-    $target.addClass("selected lastselected")
-    $onerow.show()
-    $excelline.show()
-    oneRowMenu()
-  }
-}
-
-function shiftSelect($target)
-{
-  var $lastselected = $(".lastselected").closest("tr"),
-      lastIndex = $lastselected.index(),
-      targetIndex = $target.index(),
-      $select = {}
-
-  if (targetIndex > lastIndex) {
-    $select = $target.prevUntil('.lastselected')
-  } else if (targetIndex < lastIndex) {
-    $select = $target.nextUntil('.lastselected')
-  } else {
-    return
-  }
-  $select.addClass("selected")
-  $target.addClass("selected")
-}
-
-function clearSelection()
-{
-  $('.selected').removeClass('selected lastselected');
-  $('#onerow').hide();
-  $('#excelline').hide();
 }
 
 // stafflist: menu of Staff column
@@ -250,8 +209,7 @@ function setStafflist()
 {
   var stafflist = ''  var staffmenu = ''
 
-  for (var each = 0; each < gv.STAFF.length; each++)
-  {
+  for (var each = 0; each < gv.STAFF.length; each++) {
     stafflist += '<li><span>' + gv.STAFF[each].staffname + '</span></li>'
     staffmenu += "<li><a href=\"javascript:staffqueue('" + gv.STAFF[each].staffname + "')\"><span>" + gv.STAFF[each].staffname + '</span></a></li>'
   }
@@ -264,12 +222,12 @@ function setStafflist()
 function fillConsults()
 {
   var table = document.getElementById("tbl")  var rows = table.rows  var tlen = rows.length  var today = new Date().ISOdate()  var lastopdate = rows[tlen-1].cells[OPDATE].innerHTML.numDate()  var staffoncall = gv.STAFF.filter(function(staff) {
-      return staff.oncall === "1"
-    })  var slen = staffoncall.length  var nextrow = 1  var index = 0  var start = staffoncall.filter(function(staff) {
-      return staff.startoncall
-    }).reduce(function(a, b) {
-      return a.startoncall > b.startoncall ? a : b
-    }, 0)  var dateoncall = start.startoncall  var staffstart = start.staffname  var oncallRow = {}
+        return staff.oncall === "1"
+      })  var slen = staffoncall.length  var nextrow = 1  var index = 0  var start = staffoncall.filter(function(staff) {
+        return staff.startoncall
+      }).reduce(function(a, b) {
+        return a.startoncall > b.startoncall ? a : b
+      }, 0)  var dateoncall = start.startoncall  var staffstart = start.staffname  var oncallRow = {}
 
   // find staff to start using latest startoncall date
   while ((index < slen) && (staffoncall[index].staffname !== staffstart)) {

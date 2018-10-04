@@ -26,7 +26,7 @@ function fillEquipTable(book, $row, qn)
 
 	// mark table row
 	// clear all previous dialog values
-	$row.addClass("bordergroove")
+	$row.addClass("marker")
 	$dialogEquip.show()
 	$dialogEquip.find('input').val('')
 	$dialogEquip.find('textarea').val('')
@@ -42,7 +42,7 @@ function fillEquipTable(book, $row, qn)
 			$("input").blur()
 		},
 		close: function(event, ui) {
-			$row.removeClass("bordergroove")
+			$row.removeClass("marker")
 		}
 	})
 

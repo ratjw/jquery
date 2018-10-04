@@ -227,6 +227,19 @@ function URIcomponent(content)
   return content
 }
 
+function menustyle($me, $target)
+{
+	if ($me.position().top > $target.position().top) {
+		var shadow = '10px 20px 30px slategray'
+	} else {
+		var shadow = '10px -20px 30px slategray'
+	}
+
+	$me.css({
+		boxShadow: shadow
+	})
+}
+
 function getMaxQN(book)
 {
   var qn = Math.max.apply(Math, $.map(book, function(row, i) {

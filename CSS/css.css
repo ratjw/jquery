@@ -284,16 +284,26 @@ tr#moveto td {
     right: 0;
 }
 
-tr.bordergroove {
+tr.marker {
 	border: solid 3px skyblue !important;
 }
 
+@keyframes blink1 { 
+   50% { border-color: skyblue; } 
+}
+
 tr.changeDate {
-	border: dashed 3px skyblue !important;
+	animation: blink1 .5s step-end infinite alternate;
+	border: dashed 3px lightblue;
+}
+
+@keyframes blink2 { 
+   50% { border-color: royalblue; } 
 }
 
 tr.pasteDate {
-	border-bottom: solid 3px royalblue;
+	animation: blink2 .5s step-end infinite alternate;
+	border-bottom: solid 3px skyblue;
 }
 
 tr.selected {
@@ -333,8 +343,11 @@ td.pacs2 { background-image: url(pic/general/pacs2.png); }
 td.camera { background-image: url(pic/general/camera.png); }
 td.camera2 { background-image: url(pic/general/camera2.png); }
 
+.Reoperation td:nth-child(5),
 .Reoperation { background-color: #CCCCAA !important; }
+.Readmission td:nth-child(6),
 .Readmission { background-color: #AACCCC !important; } 
+.Infection td:nth-child(7),
 .Infection { background-color: #CCAAAA !important; }
 .Morbidity { background-color: #AAAACC !important; }
 .Dead { background-color: #AAAAAA !important; }
@@ -417,6 +430,7 @@ td.camera2 { background-image: url(pic/general/camera2.png); }
 .w40 { width:40px !important; }
 .w50 { width:50px !important; }
 .w55 { width:55px !important; }
+.w60 { width:60px !important; }
 .w65 { width:65px !important; }
 .w70 { width:70px !important; }
 .w73 { width:73px !important; }
@@ -607,6 +621,13 @@ td.camera2 { background-image: url(pic/general/camera2.png); }
 
 .divRecord label input[type="checkbox"] + span {
   top: -8px;
+}
+
+.divRecord hr {
+  height: 1px;
+  border: 0;
+  border-top: 1px solid #B4E4EC;
+  margin: 3px 10px 0px 5px;
 }
 
 #reviewtbl {

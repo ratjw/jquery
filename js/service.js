@@ -178,13 +178,16 @@ function showService(fromDate, toDate)
 		width: window.innerWidth * 95 / 100,
 		height: window.innerHeight * 95 / 100,
 		close: function() {
-			clearEditcell()
 			refillstaffqueue()
 			refillall()
 			$(".ui-dialog:visible").find(".ui-dialog-content").dialog("close");
 			$(".fixed").remove()
 			$(window).off("resize", resizeDialog)
 			$dialogService.off("click", clickDialogService)
+			if ($("#editcell").data("pointing")) {
+				savePreviousCellService()
+			}
+			clearEditcell()
 		}
 	})
 	
@@ -398,11 +401,12 @@ function refillService(fromDate, toDate)
 
 jQuery.fn.extend({
 	filldataService : function(bookq, scase, classes) {
-		var cells = this[0].cells
+		var	row = this[0],
+			cells = row.cells
 
+		row.className = classes
 		if (bookq.hn && gv.isPACS) { cells[HNSV].className = "pacs" }
 		if (bookq.hn) { cells[NAMESV].className = "camera" }
-		updateRowClasses(this, classes)
 
 		cells[CASENUMSV].innerHTML = scase
 		cells[HNSV].innerHTML = bookq.hn
@@ -445,62 +449,15 @@ function hoverCell(tdClass)
 		})
 }
 
-function updateRowClasses($this, classname)
-{
-	var	$cell = $this.children("td"),
-		admit = $cell[ADMISSIONSV],
-		treat = $cell[TREATMENTSV],
-		infect = $cell[FINALSV]
-
-	$this[0].className = classname
-	admit.className = ""
-	treat.className = ""
-	infect.className = ""
-
-	addCellClass(admit, treat, infect, classname)
-}
-
-function addCellClass(admit, treat, infect, classname)
-{
-	if (/Readmission/.test(classname)) {
-		admit.className = "Readmission"
-	}
-	if (/Reoperation/.test(classname)) {
-		treat.className = "Reoperation"
-	}
-	if (/Infection/.test(classname)) {
-		infect.className = "Infection"
-	}
-}
-
-function removeCellClass(admit, treat, infect, classname)
-{
-	if (/Readmission/.test(classname)) {
-		admit.className = ""
-	}
-	if (/Reoperation/.test(classname)) {
-		treat.className = ""
-	}
-	if (/Infection/.test(classname)) {
-		infect.className = ""
-	}
-}
-
 function showInputColor($target, target)
 {
 	var	$row = $target.closest("tr"),
-		$cell = $row.children("td"),
-		admit = $cell[ADMISSIONSV],
-		treat = $cell[TREATMENTSV],
-		infect = $cell[FINALSV],
 		classname = target.title
 
 	if (target.checked) {
 		$row.addClass(classname)
-		addCellClass(admit, treat, infect, classname)
 	} else {
 		$row.removeClass(classname)
-		removeCellClass(admit, treat, infect, classname)
 	}
 }
 
@@ -571,13 +528,6 @@ function Skeyin(event, keycode, pointing)
 		start = getStart(),
 		thiscell
 
-	if (keycode === 27) {
-		pointing.innerHTML = $("#editcell").data("oldcontent")
-		clearEditcell()
-		$("#dialogService").focus()
-		event.preventDefault()
-		return false
-	}
 	if (!pointing) {
 		return
 	}
@@ -591,7 +541,6 @@ function Skeyin(event, keycode, pointing)
 			storePresentCellService(event, thiscell)
 		} else {
 			clearEditcell()
-			window.focus()
 		}
 		event.preventDefault()
 		return false
@@ -606,7 +555,6 @@ function Skeyin(event, keycode, pointing)
 			storePresentCellService(event, thiscell)
 		} else {
 			clearEditcell()
-			window.focus()
 		}
 		event.preventDefault()
 		return false
@@ -705,7 +653,7 @@ function saveService(pointed, sql)
 			if (oldclass !== newclass) {
 				updateCounter(oldclassArray, -1)
 				updateCounter(newclassArray, 1)
-				updateRowClasses($row, newclass)
+				rowi.className = newclass
 			}
 		} else {
 			Alert("saveService", response)

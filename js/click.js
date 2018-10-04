@@ -9,13 +9,6 @@ function keyin(evt, keycode, pointing)
 	var EDITABLE = [DIAGNOSIS, TREATMENT, CONTACT];
 	var thiscell
 
-	if (keycode === 27)	{
-		$('#stafflist').hide();
-		clearEditcell()
-		window.focus()
-		evt.preventDefault()
-		return false
-	}
 	if (keycode === 9) {
 		$('#stafflist').hide();
 		savePreviousCell()
@@ -28,7 +21,6 @@ function keyin(evt, keycode, pointing)
 			storePresentCell(evt, thiscell)
 		} else {
 			clearEditcell()
-			window.focus()
 		}
 		evt.preventDefault()
 		return false
@@ -44,7 +36,6 @@ function keyin(evt, keycode, pointing)
 			storePresentCell(evt, thiscell)
 		} else {
 			clearEditcell()
-			window.focus()
 		}
 		evt.preventDefault()
 		return false
@@ -853,6 +844,11 @@ function storePresentCell(evt, pointing)
 {
 	switch(pointing.cellIndex)
 	{
+		case OPDATE:
+			clearEditcell()
+			clearMouseoverTR()
+			selectRow(event, pointing)
+			return
 		case THEATRE:
 			createEditcell(pointing)
 			break
@@ -883,6 +879,59 @@ function storePresentCell(evt, pointing)
 			getEQUIP(pointing)
 			break
 	}
+	clearSelection()
+}
+
+function selectRow(event, target)
+{
+  var $target = $(target).closest("tr"),
+      $targetTRs = $(target).closest("table").find("tr"),
+      $allTRs = $("tr"),
+      $onerow = $("#onerow"),
+      $excelline = $("#excelline")
+
+  if (event.ctrlKey) {
+    $targetTRs.removeClass("lastselected")
+    $target.addClass("selected lastselected")
+    $onerow.hide()
+    $excelline.show()
+  } else if (event.shiftKey) {
+    $targetTRs.not(".lastselected").removeClass("selected")
+    shiftSelect($target)
+    $onerow.hide()
+    $excelline.show()
+  } else {
+    $allTRs.removeClass("selected lastselected")
+    $target.addClass("selected lastselected")
+    $onerow.show()
+    $excelline.show()
+    oneRowMenu()
+  }
+}
+
+function shiftSelect($target)
+{
+  var $lastselected = $(".lastselected").closest("tr"),
+      lastIndex = $lastselected.index(),
+      targetIndex = $target.index(),
+      $select = {}
+
+  if (targetIndex > lastIndex) {
+    $select = $target.prevUntil('.lastselected')
+  } else if (targetIndex < lastIndex) {
+    $select = $target.nextUntil('.lastselected')
+  } else {
+    return
+  }
+  $select.addClass("selected")
+  $target.addClass("selected")
+}
+
+function clearSelection()
+{
+  $('.selected').removeClass('selected lastselected');
+  $('#onerow').hide();
+  $('#excelline').hide();
 }
 
 function getROOMCASE(pointing)
