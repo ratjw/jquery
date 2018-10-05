@@ -847,7 +847,7 @@ function storePresentCell(evt, pointing)
 		case OPDATE:
 			clearEditcell()
 			clearMouseoverTR()
-			selectRow(event, pointing)
+			selectRow(evt, pointing)
 			return
 		case THEATRE:
 			createEditcell(pointing)

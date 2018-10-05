@@ -14,7 +14,7 @@
 
     $accessToken = "hUNVJKEFaDK+g5KNdPK7kU6DzaiEke19xDI8lPriN0d4E6FibCkzku2Cm1eKjJGrNPvt0METVy5Y09wS6lwrMFmD11tchvXv+u9hP1DTQUX81O75EOaErmUXjV60JMjlCW10JMfZRCJSb9vB14g7/AdB04t89/1O/w1cDnyilFU=";
     $userID = "Uc16be047bd7242f5163bdf7c34331c6a";
-	$image_url = "https://med.mahidol.ac.th/home/qbook/line/" . $file;
+	$image_url = "https://med.mahidol.ac.th/surgery/home/qbook/line/" . $file;
    
     $arrayHeader = array();
     $arrayHeader[] = "Content-Type: application/json";

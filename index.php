@@ -43,7 +43,7 @@ function namesix()
 {
 	var userid = document.getElementById("userid").value
 	if (/^\d{6}$/.test(userid)) {
-		document.getElementById("password").focus()
+		document.getElementById("pwd").focus()
 	}
 }
 
@@ -72,7 +72,7 @@ function nurse()
 
 <p id="logo"><img src="css/pic/general/logoRama.png"></p>
 
-<?php $userid = $password = $nurseid = ""; ?>
+<?php $userid = $pwd = $nurseid = ""; ?>
 
 <div id="login">
 	<br>
@@ -85,8 +85,8 @@ function nurse()
 					onpropertychange="namesix()">
 		<br>
 		<br>
-		Password: <input id="password" type="password" name="password"
-					maxlength="16" size="8" value="<?php echo $password;?>">
+		Password: <input id="pwd" type="password" name="pwd"
+					maxlength="16" size="8" value="<?php echo $pwd;?>">
 		<br>
 		<br>
 		<input type="submit" value="Sign in" onclick="signin()">
@@ -102,7 +102,7 @@ function nurse()
 <?php
 	if ($_SERVER["REQUEST_METHOD"] === "POST") {
 		$userid = $_POST["userid"];
-		$password = $_POST["password"];
+		$pwd = $_POST["pwd"];
 		$nurseid = $_POST["nurseid"];
 		$resultz = "";
 		include "php/mysqli.php";
@@ -118,7 +118,7 @@ function nurse()
 			if (strpos($_SERVER["SERVER_NAME"], "surgery.rama") !== false) {
 				$wsdl="http://appcenter/webservice/patientservice.wsdl";
 				$client = new SoapClient($wsdl);
-				$resultx = $client->Get_staff_detail($userid, $password);
+				$resultx = $client->Get_staff_detail($userid, $pwd);
 				$resulty = simplexml_load_string($resultx);
 				$resultz = (string)$resulty->children()->children()->role;
 			} else {
