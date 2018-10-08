@@ -1,4 +1,8 @@
 <?php
+set_include_path(get_include_path() . PATH_SEPARATOR . 'phpseclib1.0.11');
+
+include('Net/SFTP.php');
+
 	$data = $_POST['data'];
 	$user = $_POST['user'];
 
@@ -10,11 +14,16 @@
 	$uri =  substr($data, strpos($data, ",") + 1);
 
 	// save to file
-	file_put_contents($file, base64_decode($uri));
+//	file_put_contents($file, base64_decode($uri));
+
+	$sftp = new Net_SFTP('med.mahidol.ac.th');
+	$sftp->login('qbook', 'qbookPWD');
+//	$sftp->put('web/line/' . $file, $file, NET_SFTP_LOCAL_FILE);
+	$sftp->put('web/line/' . $file, base64_decode($uri));
 
     $accessToken = "hUNVJKEFaDK+g5KNdPK7kU6DzaiEke19xDI8lPriN0d4E6FibCkzku2Cm1eKjJGrNPvt0METVy5Y09wS6lwrMFmD11tchvXv+u9hP1DTQUX81O75EOaErmUXjV60JMjlCW10JMfZRCJSb9vB14g7/AdB04t89/1O/w1cDnyilFU=";
     $userID = "Uc16be047bd7242f5163bdf7c34331c6a";
-	$image_url = "https://med.mahidol.ac.th/surgery/qbook/line/001198.png";// . $file;
+	$image_url = "https://med.mahidol.ac.th/surgery/qbook/line/" . $file;
    
     $arrayHeader = array();
     $arrayHeader[] = "Content-Type: application/json";
@@ -34,6 +43,6 @@
 	curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($arrayPostData));
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-	curl_exec($ch);
+	$result = curl_exec($ch);
 	curl_close ($ch);
 ?>

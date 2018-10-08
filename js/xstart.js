@@ -59,9 +59,10 @@ function fillForRoom(opdate)
 		room = gv.user,
 		sameDateRoom = sameDateRoomBookQN(book, opdate, room),
 		slen = sameDateRoom.length,
-		i = 0,
+		casenum = 0,
 		showCase = function() {
-			fillEquipTable(book, $(), sameDateRoom[i])
+			fillEquipTable(book, $(), sameDateRoom[casenum])
+			showButtons()
 		},
 		blank = {
 			casenum: "",
@@ -81,52 +82,57 @@ function fillForRoom(opdate)
 	} else {
 		fillEquipTable(book, $(), null, blank)
 	}
-	$('#dialogEquip').dialog("option", "buttons", [
-		{
-			text: "<< Previous Date",
-			width: "140",
-			class: "silver floatleft",
-			click: function () {
-				fillForRoom(opdate.nextdays(-1))
-			}
-		},
-		{
-			text: "< Previous Case",
-			width: "140",
-			class: "floatleft",
-			click: function () {
-				if (i > 0) {
-					i = i-1
-					showCase()
+	showButtons()
+
+	function showButtons()
+	{
+		$('#dialogEquip').dialog("option", "buttons", [
+			{
+				text: "<< Previous Date",
+				width: "140",
+				class: "silver floatleft",
+				click: function () {
+					fillForRoom(opdate.nextdays(-1))
+				}
+			},
+			{
+				text: "< Previous Case",
+				width: "140",
+				class: "floatleft",
+				click: function () {
+					if (casenum > 0) {
+						casenum = casenum-1
+						showCase()
+					}
+				}
+			},
+			{
+				text: "Next Case >",
+				width: "120",
+				click: function () {
+					if (casenum < slen-1) {
+						casenum = casenum+1
+						showCase()
+					}
+				}
+			},
+			{
+				text: "Next Date >>",
+				width: "120",
+				class: "silver",
+				click: function () {
+					fillForRoom(opdate.nextdays(+1))
+				}
+			},
+			{
+				text: "Print",
+				width: "70",
+				click: function () {
+					printpaper()
 				}
 			}
-		},
-		{
-			text: "Next Case >",
-			width: "120",
-			click: function () {
-				if (i < slen-1) {
-					i = i+1
-					showCase()
-				}
-			}
-		},
-		{
-			text: "Next Date >>",
-			width: "120",
-			class: "silver",
-			click: function () {
-				fillForRoom(opdate.nextdays(+1))
-			}
-		},
-		{
-			text: "Print",
-			width: "70",
-			click: function () {
-				printpaper()
-			}
-		}
-	])
+		])
+	}
 }
 
 function updateBOOK(result)
@@ -253,7 +259,6 @@ function getUpdate()
 	{
 		if (typeof response === "object") {
 			updateBOOK(response)
-			refillall()
 		} else {
 			Alert ("getUpdate", response)
 		}
