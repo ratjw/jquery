@@ -15,7 +15,7 @@ if ($sftp->login('qbook', 'qbookPWD')) {
 
 // puts an x-byte file named filename.remote on the SFTP server,
 // where x is the size of filename.local
-$sftp->put('web/line/001198-1538725095.png', '001198-1538725095.png', NET_SFTP_LOCAL_FILE);
+$sftp->put('web/line/save&push.php', 'save&push.php', NET_SFTP_LOCAL_FILE);
 /*
 echo('Transfer Success<br>');
 

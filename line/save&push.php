@@ -16,8 +16,12 @@ include('Net/SFTP.php');
 	// save to file
 //	file_put_contents($file, base64_decode($uri));
 
+	// connect to https server and login
 	$sftp = new Net_SFTP('med.mahidol.ac.th');
 	$sftp->login('qbook', 'qbookPWD');
+
+	// Save the stream of picture content to a file
+	// on the server for webhook
 //	$sftp->put('web/line/' . $file, $file, NET_SFTP_LOCAL_FILE);
 	$sftp->put('web/line/' . $file, base64_decode($uri));
 
