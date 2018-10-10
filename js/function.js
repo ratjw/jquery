@@ -582,7 +582,7 @@ function equipImg(equipPics)
   var img = ""
 
   $.each(equipPics, function() {
-    img += '<img src="css/pic/equip/' + this + '.jpg" height="24" width="30"> '
+    img += '<img src="css/pic/equip/' + this + '.jpg"/> '
   })
 
   return img

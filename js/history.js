@@ -772,31 +772,18 @@ function showUpload(hn, patient)
 
 function sendtoLINE()
 {
-  var $dialogNotify = $('#dialogNotify')
-  var message
-
-  $dialogNotify.dialog({
+  $('#dialogNotify').dialog({
     title: 'Qbook: ' + gv.user,
     closeOnEscape: true,
     modal: true,
     show: 200,
     hide: 200,
-    minWidth: 400,
-    height: 310,
-    buttons: [
-      {
-        text: "Send",
-        click: function () {
-          message = $dialogNotify.find('textarea').val()
-          $dialogNotify.dialog('close')
-          toLINE(message)
-        }
-      }
-	]
+    width: 270,
+    height: 300
   })
 }
 
-function toLINE(message)
+function toLINE()
 {
   var capture = document.querySelector("#capture")
   var $capture = $("#capture")
@@ -804,6 +791,12 @@ function toLINE(message)
   var $selected = $(".selected")
   var row = ""
   var hide = [1, 3, 4, 12]
+  var $dialogNotify = $('#dialogNotify')
+  var message
+
+
+  message = $dialogNotify.find('textarea').val()
+  $dialogNotify.dialog('close')
 
   $captureTRs.slice(1).remove()
   $capture.show()
