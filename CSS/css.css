@@ -215,6 +215,7 @@ td {
 #onerow,
 #excelline,
 #capture,
+#dialogNotify,
 .ui-datepicker-year {
 	display: none;
 }
@@ -580,6 +581,14 @@ td.camera2 { background-image: url(pic/general/camera2.png); }
 	padding: 2px;
 	color: blue;
 	font-weight: bold;
+}
+
+#dialogNotify {
+	text-align: center;
+}
+#dialogNotify textarea {
+	height: 160px;
+	padding: 7px;
 }
 
 .divRecord {

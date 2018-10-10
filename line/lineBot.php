@@ -3,7 +3,7 @@ set_include_path(get_include_path() . PATH_SEPARATOR . 'phpseclib1.0.11');
 
 include('Net/SFTP.php');
 
-	$data = $_POST['data'];
+	$image = $_POST['image'];
 	$user = $_POST['user'];
 
 	$t = microtime();
@@ -11,7 +11,7 @@ include('Net/SFTP.php');
 	$file = $user . '-' . $sec . '.png';
 
 	// remove "data:image/png;base64,"
-	$uri =  substr($data, strpos($data, ",") + 1);
+	$uri =  substr($image, strpos($image, ",") + 1);
 
 	// save to file
 //	file_put_contents($file, base64_decode($uri));
