@@ -525,7 +525,6 @@ function search()
     var keycode = event.which || window.event.keyCode
     if (keycode === 13) { searchDB() }
   })
-  .find("img").off("click").on("click", function(event) { searchDB() })
 }
 
 function getSaffName(pointing)
@@ -773,7 +772,8 @@ function showUpload(hn, patient)
 function sendtoLINE()
 {
   $('#dialogNotify').dialog({
-    title: 'Qbook: ' + gv.user,
+    title: '<img src="css/pic/general/linenotify.png" width="40" style="float:left">'
+         + '<span style="font-size:20px">Qbook: ' + gv.user + '</span>',
     closeOnEscape: true,
     modal: true,
     show: 200,

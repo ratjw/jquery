@@ -55,13 +55,21 @@
   color: gray;
   text-shadow: 0px 1px 0px #fff;
 }
-#cssmenu > ul span#excelline li a {
-  padding: 4px 10px 12px 10px;
-}
-#cssmenu > ul span#excelline li a img {
+#cssmenu > ul li#EXCEL a,
+#cssmenu > ul li#LINE a {
+  width: 30px;
   height: 20px;
-  width: 20px;
+  text-align: center;
+  padding-top: 7px;
 }
+#cssmenu > ul li img {
+  width: 25px;
+  height: 25px;
+}
+#cssmenu > ul li.disabled img {
+  filter: opacity(30%);
+}
+
 #cssmenu > ul li a:hover {
   background: #d80041;
   color: #fff;

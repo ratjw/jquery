@@ -13,16 +13,11 @@ include('Net/SFTP.php');
 	// remove "data:image/png;base64,"
 	$uri =  substr($image, strpos($image, ",") + 1);
 
-	// save to file
-//	file_put_contents($file, base64_decode($uri));
-
 	// connect to https server and login
 	$sftp = new Net_SFTP('med.mahidol.ac.th');
 	$sftp->login('qbook', 'qbookPWD');
 
-	// Save the stream of picture content to a file
-	// on the server for webhook
-//	$sftp->put('web/line/' . $file, $file, NET_SFTP_LOCAL_FILE);
+	// Save the stream of picture content to the server for webhook
 	$sftp->put('web/line/' . $file, base64_decode($uri));
 
     $accessToken = "hUNVJKEFaDK+g5KNdPK7kU6DzaiEke19xDI8lPriN0d4E6FibCkzku2Cm1eKjJGrNPvt0METVy5Y09wS6lwrMFmD11tchvXv+u9hP1DTQUX81O75EOaErmUXjV60JMjlCW10JMfZRCJSb9vB14g7/AdB04t89/1O/w1cDnyilFU=";

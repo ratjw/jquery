@@ -68,7 +68,6 @@
       <li><a href='javascript:setHoliday()'><span>Holiday Setting</span></a></li>
      </ul>
     </li>
-   <span id="onerow">
     <li id="addrow"><a href='javascript:addnewrow()'><span>Add</span></a></li>
     <li id="postpone">
      <a nohref><span>Postpone</span></a>
@@ -91,19 +90,16 @@
 	  </li>
      </ul>
     </li>
-   </span>
-   <span id="excelline">
-    <li class='floatright'>
+    <li id="EXCEL" class='floatright'>
      <a href='javascript:sendtoExcel()'>
-      <img src="css/pic/general/Excel.jpg">
+      <img src="css/pic/general/Excel.png">
      </a>
     </li>
-    <li class='floatright'>
+    <li id="LINE" class='floatright'>
      <a href='javascript:sendtoLINE()'>
       <img src="css/pic/general/LINE.png">
      </a>
     </li>
-   </span>
    </ul>
   </div>
 
@@ -541,7 +537,7 @@
 		placeholder="Dx, Rx, Adm & Final Status">
 	<br>
 	<br>
-	<img src="css/pic/general/find.png">
+	<img src="css/pic/general/find.png" onclick="searchDB()">
 </div>
 
 <div id="dialogFind">

@@ -217,8 +217,6 @@ td img {
 #dialogHoliday,
 #holidaycells,
 #holidayinput,
-#onerow,
-#excelline,
 #capture,
 #dialogNotify,
 .ui-datepicker-year {
@@ -235,7 +233,7 @@ td img {
 	margin-right: 20px;
 }
 #dialogInput img:hover {
-	border: 1px outset blue;
+	border: 2px outset blue;
 }
 
 #deleted,
@@ -290,6 +288,7 @@ tr#moveto td {
     right: 0;
 }
 
+/* mark the row of fillEquipTable, tracking, find, and pasted row after changeDate */
 tr.marker {
 	border: solid 3px skyblue !important;
 }
@@ -307,6 +306,7 @@ tr.changeDate {
    50% { border-color: royalblue; } 
 }
 
+/* mark where changeDate will be pasted */
 tr.pasteDate {
 	animation: blink2 .5s step-end infinite alternate;
 	border-bottom: solid 3px skyblue;
@@ -588,9 +588,6 @@ td.camera2 { background-image: url(pic/general/camera2.png); }
 	font-weight: bold;
 }
 
-#dialogNotify {
-	*text-align: center;
-}
 #dialogNotify textarea {
 	height: 190px;
 	padding: 7px;
