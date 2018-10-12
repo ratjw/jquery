@@ -46,18 +46,8 @@ function disableOneRowMenu()
 
 function disableExcelLINE()
 {
-	var ids = ["#EXCEL", "#LINE"]
-
-	ids.forEach(function(each) {
-		enable(false, each)
-	})
-}
-
-function clickConfirm(id, message, $cell)
-{
-	var $itemdiv = $(id).find("div"),
-		itemname = $cell.eq(PATIENT).html()
-	$(id).html(message + "<br>" + itemname)
+	$("#EXCEL").addClass("disabled")
+	$("#LINE").addClass("disabled")
 }
 
 function enable(able, id)
@@ -125,7 +115,7 @@ function postponeCase()
 		sql += updateCasenum(allCases)
 	}
 
-	waitnum = largestWaitnum(staffname) + 1
+	waitnum = getLargestWaitnum(staffname) + 1
 	sql += "UPDATE book SET opdate='" + LARGESTDATE
 		+ "',waitnum=" + waitnum
 		+ ",theatre='',oproom=null,casenum=null,optime=''"
@@ -153,10 +143,15 @@ function postponeCase()
 	}
 }
 
-function largestWaitnum(staffname)
+function getLargestWaitnum(staffname)
 {
-	max = Object.values(obj).sort((prev, next) => next - prev)[0]
-	max = Math.max.apply( null, arr )
+	var waitnumArr = gv.BOOK.filter(function(patient) {
+		return patient.staffname === staffname && !isNaN(patient.waitnum)
+	}).map(function(patient) {
+		return patient.waitnum
+	})
+
+	return Math.max( ...waitnumArr )
 }
 
 function changeDate()
