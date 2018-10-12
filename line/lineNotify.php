@@ -51,7 +51,7 @@ include('Net/SFTP.php');
 	curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
 	curl_setopt($ch, CURLOPT_HTTPHEADER, [
 		'Content-type: multipart/form-data',
-		'Authorization: Bearer '.$line_token,
+		'Authorization: Bearer '.$line_token
 	]);
 	// receive server response ...
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
