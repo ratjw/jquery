@@ -812,7 +812,7 @@ function toLINE()
     })
   })
 
-  html2canvas(capture).then(canvas => {
+  html2canvas(capture).then(function(canvas) {
     $.post(LINENOTIFY, {
       'user': gv.user,
       'message': message,

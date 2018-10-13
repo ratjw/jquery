@@ -151,7 +151,7 @@ function getLargestWaitnum(staffname)
 		return patient.waitnum
 	})
 
-	return Math.max( ...waitnumArr )
+	return Math.max.apply( null, waitnumArr )
 }
 
 function changeDate()

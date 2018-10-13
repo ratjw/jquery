@@ -636,7 +636,7 @@ function findNextcell(editable, pointing)
         return false
       }
     }
-        //invisible due to colspan in servicetbl
+    //invisible due to colspan in servicetbl
     while ((!$nextcell.is(':visible'))
       || ($nextcell.get(0).nodeName === "TH"))  //TH row
   }

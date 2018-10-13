@@ -1,22 +1,16 @@
 <?php
-set_include_path(get_include_path() . PATH_SEPARATOR . 'phpseclib1.0.11');
-
-include('Net/SFTP.php');
 
 	$user = $_POST['user'];
 	$message = $_POST['message'];
 	$image = $_POST['image'];
 
 	$message = $user . "\n" . $message;
-	$remote_domain = "med.mahidol.ac.th";
-	$remote_path = 'web/line/';
-	$remote_server = "https://med.mahidol.ac.th/surgery/qbook/line/";
    
 	$line_api = 'https://notify-api.line.me/api/notify';
 	$line_token = 'jyaKhr5MuY9jBeWbEzk2OjhT9ucAzCY9Q8ei3ieEGac'; // my LINE
 //	$line_token = '2ItNh2j4Z1fIFCSWkZXBH4qtDYigXpl19ahsdWIR5pX'; // group LINE นิวโรศัลย์ รามา ปัจจุบัน
 
-	// use userID and time as filename
+	// Use userID and time in seconds for filename
 	$t = microtime();
 	$sec = substr($t, strpos($t, ' ') + 1);
 	$filename = $user . '-' . $sec . '.png';
@@ -25,19 +19,13 @@ include('Net/SFTP.php');
 	$content = substr($image, strpos($image, ",") + 1);
 	$file_content = base64_decode($content);
 
-	// connect to https server and login
-	$sftp = new Net_SFTP($remote_domain);
-	$sftp->login('qbook', 'qbookPWD');
+	// Save file locally
+	file_put_contents($filename, $file_content);
 
-	// Save the stream of picture content to remote server for webhook
-	$sftp->put($remote_path . $filename, $file_content);
-
-	$image_url = $remote_server . $filename;
-
+	// "@" is deprecated from PHP 5.5 upward
 	$data = array(
-		'message' => $message,
-		'imageFullsize' => $image_url,
-		'imageThumbnail' => $image_url
+		"message" => $message,
+		"imageFile" => new CURLFile($filename)
 	);
 
 	$ch = curl_init();
