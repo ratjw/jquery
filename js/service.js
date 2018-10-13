@@ -406,7 +406,7 @@ jQuery.fn.extend({
 
 		row.className = classes
 		if (bookq.hn && gv.isPACS) { cells[HNSV].className = "pacs" }
-		if (bookq.hn) { cells[NAMESV].className = "camera" }
+		if (bookq.hn && gv.isMobile) { cells[NAMESV].className = "camera" }
 
 		cells[CASENUMSV].innerHTML = scase
 		cells[HNSV].innerHTML = bookq.hn

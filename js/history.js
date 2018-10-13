@@ -727,7 +727,7 @@ jQuery.fn.extend({
       rowDecoration(row, q.opdate)
     }
     q.hn && gv.isPACS && (cells[2].className = "pacs")
-    q.patient && (cells[3].className = "camera")
+    q.patient && gv.isMobile && (cells[3].className = "camera")
 
     dataforEachCell(cells, data)
   }

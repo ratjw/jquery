@@ -13,6 +13,12 @@ function Start(userid, book)
   $("#wrapper").show()
   $("#tblcontainer").css("height", window.innerHeight - $("#cssmenu").height())
 
+  if (/mobi/i.test(navigator.userAgent)) {
+    gv.isMobile = true
+    gv.isPACS = false
+  }
+
+
   if (typeof book !== "object") { book = "{}" }
   updateBOOK(book)
 
@@ -366,7 +372,7 @@ function updating()
         refillall()
       }
       // idling (59+1)*10 = 10 minutes, logout
-      else if (gv.idleCounter > 59 && !gv.mobile) {
+      else if (gv.idleCounter > 59 && !gv.isMobile) {
         history.back()
         gv.idleCounter = 0
         // may not successfully access the history

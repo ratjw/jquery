@@ -36,11 +36,11 @@ LARGESTDATE		= "9999-12-31",
 	timestamp: "",
 	timer: {},
 	idleCounter: 0,
-	mobile: false,
+	isMobile: false,
 	isPACS: true
 }
 
 if (/Android|webOS|iPhone|iPad|BlackBerry|IEMobile/i.test(navigator.userAgent)) {
-	gv.mobile = true
+	gv.isMobile = true
 	gv.isPACS = false
 }

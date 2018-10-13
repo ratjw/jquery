@@ -244,7 +244,7 @@ function updating()
 		}
 		// idle not more than 1000 min.
 		gv.idleCounter += 1
-		if (gv.idleCounter > 6000 && !gv.mobile) {
+		if (gv.idleCounter > 6000 && !gv.isMobile) {
 			history.back()
 		}
 	}

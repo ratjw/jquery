@@ -88,6 +88,26 @@ HOLIDAYENGTHAI = {
 	"Vassasub": "ชดเชยวันเข้าพรรษา"
 },
 
+//====================================================================================================
+
+gv = {
+	BOOK: [],
+	CONSULT: [],
+	SERVICE: [],
+	SERVE: [],
+	STAFF: [],
+	ONCALL: [],
+	HOLIDAY: [],
+	user: "",
+	timestamp: "",
+	uploadWindow: null,
+	timer: {},
+	idleCounter: 0,
+	isMobile: false,
+	isPACS: true,
+	editableSV: true
+},
+
 BRAINDX = [
 	/\bbrain\b/i, /basal ganglion/i, /basal.*gg/i, /bgg/i, /cavernous/i, /cerebell/i, 
 	/cranio/i, /\bCNS\b/i, /convexity/i, /\bCPA?\b/i, /cliv[aou]/i,
@@ -429,29 +449,4 @@ RADIOSURGERY = [
 ENDOVASCULAR = [
 	/\bcoil/i, /emboli[zs]/i, /\bendovasc/i, /\bintervention/i,
 	/\bstent/i, /\btransart/i, /\btransvenous/i
-],
-
-//====================================================================================================
-
-gv = {
-	BOOK: [],
-	CONSULT: [],
-	SERVICE: [],
-	SERVE: [],
-	STAFF: [],
-	ONCALL: [],
-	HOLIDAY: [],
-	user: "",
-	timestamp: "",
-	uploadWindow: null,
-	timer: {},
-	idleCounter: 0,
-	mobile: false,
-	isPACS: true,
-	editableSV: true
-}
-
-if (/Android|webOS|iPhone|iPad|BlackBerry|IEMobile/i.test(navigator.userAgent)) {
-	gv.mobile = true
-	gv.isPACS = false
-}
+]

@@ -675,7 +675,7 @@ function fillCellsHN(tableID, qn, $cells)
 	bookq = getBOOKrowByQN(book, qn)
 
 	if (gv.isPACS) { $cells[HN].className = "pacs" }
-	$cells[PATIENT].className = "camera"
+	if (gv.isMobile) { $cells[PATIENT].className = "camera" }
 
 	$cells[STAFFNAME].innerHTML = bookq.staffname
 	$cells[HN].innerHTML = bookq.hn
@@ -757,7 +757,7 @@ function getNameHN(pointed, content)
 			var bookq = getBOOKrowByQN(book, qn)
 
 			if (gv.isPACS) { $cells[HN].className = "pacs" }
-			$cells[PATIENT].className = "camera"
+			if (gv.isMobile) { $cells[PATIENT].className = "camera" }
 
 			// prevent showing null
 			$cells[STAFFNAME].innerHTML = bookq.staffname
