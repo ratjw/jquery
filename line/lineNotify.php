@@ -5,6 +5,7 @@
 	$image = $_POST['image'];
 
 	$message = $user . "\n" . $message;
+	$subdir = "imagefile/";
    
 	$line_api = 'https://notify-api.line.me/api/notify';
 	$line_token = 'jyaKhr5MuY9jBeWbEzk2OjhT9ucAzCY9Q8ei3ieEGac'; // my LINE
@@ -20,12 +21,12 @@
 	$file_content = base64_decode($content);
 
 	// Save file locally
-	file_put_contents($filename, $file_content);
+	file_put_contents($subdir . $filename, $file_content);
 
 	// "@" is deprecated from PHP 5.5 upward
 	$data = array(
 		"message" => $message,
-		"imageFile" => new CURLFile($filename)
+		"imageFile" => new CURLFile($subdir . $filename)
 	);
 
 	$ch = curl_init();
