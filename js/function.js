@@ -685,9 +685,10 @@ function sendtoLINE()
   })
 
   html2canvas(capture).then(canvas => {
-    $.post(LINEBOT, {
-      data: canvas.toDataURL('image/png', 1.0),
-      user: gv.user
+    $.get("line/upload.php", {
+//      data: canvas.toDataURL('image/png', 1.0),
+//      user: gv.user
+      url: URIcomponent("https://med.mahidol.ac.th/surgery/qbook/line/info.php")
     })
     $capture.hide()
   })
