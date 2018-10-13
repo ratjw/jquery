@@ -107,9 +107,7 @@ function saveTheatre(pointed, newcontent)
 	index = allOldCases.indexOf(qn)
 	allOldCases.splice(index, 1)
 
-	for (var i=0; i<allOldCases.length; i++) {
-		sql += sqlCaseNum(i + 1, allOldCases[i])
-	}
+	sql += updateCasenum(allOldCases)
 
 	allNewCases = sameDateRoomTableQN(opdateth, oproom, newcontent)
 	if (casenum) {
@@ -179,9 +177,7 @@ function saveOpRoom(pointed, newcontent)
 		index = allOldCases.indexOf(qn)
 		allOldCases.splice(index, 1)
 
-		for (var i=0; i<allOldCases.length; i++) {
-			sql += sqlCaseNum(i + 1, allOldCases[i])
-		}
+		sql += updateCasenum(allOldCases)
 
 		if (newcontent === "") {
 			sql += sqlNewRoom(null, null, qn)
@@ -886,25 +882,19 @@ function selectRow(event, target)
 {
   var $target = $(target).closest("tr"),
       $targetTRs = $(target).closest("table").find("tr"),
-      $allTRs = $("tr"),
-      $onerow = $("#onerow"),
-      $excelline = $("#excelline")
+      $allTRs = $("tr")
 
   if (event.ctrlKey) {
     $targetTRs.removeClass("lastselected")
     $target.addClass("selected lastselected")
-    $onerow.hide()
-    $excelline.show()
+    disableOneRowMenu()
   } else if (event.shiftKey) {
     $targetTRs.not(".lastselected").removeClass("selected")
     shiftSelect($target)
-    $onerow.hide()
-    $excelline.show()
+    disableOneRowMenu()
   } else {
     $allTRs.removeClass("selected lastselected")
     $target.addClass("selected lastselected")
-    $onerow.show()
-    $excelline.show()
     oneRowMenu()
   }
 }
@@ -930,8 +920,8 @@ function shiftSelect($target)
 function clearSelection()
 {
   $('.selected').removeClass('selected lastselected');
-  $('#onerow').hide();
-  $('#excelline').hide();
+  disableOneRowMenu()
+  disableExcelLINE()
 }
 
 function getROOMCASE(pointing)

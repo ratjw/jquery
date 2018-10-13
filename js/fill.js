@@ -24,7 +24,7 @@ function fillupstart()
 		scrollTop: thishead.offsetTop
 	}, 300);
 
-	hoverMain()
+//	hoverMain()
 }
 
 function fillall(book, table, start, until)

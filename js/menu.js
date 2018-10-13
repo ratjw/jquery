@@ -12,35 +12,47 @@ function oneRowMenu()
 		qn = $cell.eq(QN).html(),
 		notLARGE = (opdate !== LARGESTDATE)
 
-	disable(qn, "#addrow")
+	enable(qn, "#addrow")
 
 	var postpone = qn && staffname && notLARGE
 	if (postpone) {
 		$("#postponecase").html("<b>Confirm เลื่อน ไม่กำหนดวัน  </b><br>" + patient)
 	}
-	disable(postpone, "#postpone")
+	enable(postpone, "#postpone")
 
-	disable(qn, "#changedate")
+	enable(qn, "#changedate")
 
-	disable(qn, "#history")
+	enable(qn, "#history")
 
 	var Delete = qn || checkblank($row, opdate)
 	if (Delete) {
 		$("#delcase").html("<b>Confirm Delete </b><br>" + patient)
 	}
-	disable(Delete, "#delete")
+	enable(Delete, "#delete")
+
+	enable(true, "#EXCEL")
+
+	enable(true, "#LINE")
 }
 
-function clickConfirm(id, message, $cell)
+function disableOneRowMenu()
 {
-	var $itemdiv = $(id).find("div"),
-		itemname = $cell.eq(PATIENT).html()
-	$(id).html(message + "<br>" + itemname)
+	var ids = ["#addrow", "#postpone", "#changedate", "#history", "#delete"]
+
+	ids.forEach(function(each) {
+		enable(false, each)
+	})
 }
 
-function disable(item, id)
+function disableExcelLINE()
 {
-	if (item) {
+	$("#EXCEL").addClass("disabled")
+	$("#LINE").addClass("disabled")
+}
+
+function enable(able, id)
+{
+	if (able) {
 		$(id).removeClass("disabled")
 	} else {
 		$(id).addClass("disabled")
@@ -92,21 +104,23 @@ function postponeCase()
 		qn = $cell.eq(QN).html(),
 		theatre = $cell.eq(THEATRE).html(),
 		oproom = $cell.eq(OPROOM).html(),
-		allCases, index,
-
-		sql = "sqlReturnbook=UPDATE book SET opdate='" + LARGESTDATE
-			+ "', editor='" + gv.user
-			+ "' WHERE qn="+ qn + ";"
+		allCases,
+		index,
+		sql = "sqlReturnbook="
 
 	if (oproom) {
 		allCases = sameDateRoomTableQN(opdateth, oproom, theatre)
 		index = allCases.indexOf(qn)
 		allCases.splice(index, 1)
-
-		for (var i=0; i<allCases.length; i++) {
-			sql += sqlCaseNum(i + 1, allCases[i])
-		}
+		sql += updateCasenum(allCases)
 	}
+
+	waitnum = getLargestWaitnum(staffname) + 1
+	sql += "UPDATE book SET opdate='" + LARGESTDATE
+		+ "',waitnum=" + waitnum
+		+ ",theatre='',oproom=null,casenum=null,optime=''"
+		+ ",editor='" + gv.user
+		+ "' WHERE qn="+ qn + ";"
 
 	Ajax(MYSQLIPHP, sql, callbackpostpone)
 
@@ -127,6 +141,17 @@ function postponeCase()
 			Alert ("postpone", response)
 		}
 	}
+}
+
+function getLargestWaitnum(staffname)
+{
+	var waitnumArr = gv.BOOK.filter(function(patient) {
+		return patient.staffname === staffname && !isNaN(patient.waitnum)
+	}).map(function(patient) {
+		return patient.waitnum
+	})
+
+	return Math.max( ...waitnumArr )
 }
 
 function changeDate()
@@ -201,9 +226,7 @@ function clickDate(event)
 	// click the same case
 	if (thisqn === moveQN) { return }
 
-	for (var i=0; i<allOldCases.length; i++) {
-		sql += sqlCaseNum(i + 1, allOldCases[i])
-	}
+	sql += updateCasenum(allOldCases)
 
 	for (var i=0; i<allNewCases.length; i++) {
 		if (allNewCases[i] === moveQN) {
@@ -285,10 +308,7 @@ function delCase()
 		allCases = sameDateRoomTableQN(opdateth, oproom, theatre)
 		index = allCases.indexOf(qn)
 		allCases.splice(index, 1)
-
-		for (var i=0; i<allCases.length; i++) {
-			sql += sqlCaseNum(i + 1, allCases[i])
-		}
+		sql += updateCasenum(allCases)
 	}
 
 	Ajax(MYSQLIPHP, sql, callbackdeleterow)

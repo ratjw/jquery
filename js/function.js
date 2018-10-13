@@ -229,15 +229,15 @@ function URIcomponent(content)
 
 function menustyle($me, $target)
 {
-	if ($me.position().top > $target.position().top) {
-		var shadow = '10px 20px 30px slategray'
-	} else {
-		var shadow = '10px -20px 30px slategray'
-	}
+  if ($me.position().top > $target.position().top) {
+    var shadow = '10px 20px 30px slategray'
+  } else {
+    var shadow = '10px -20px 30px slategray'
+  }
 
-	$me.css({
-		boxShadow: shadow
-	})
+  $me.css({
+    boxShadow: shadow
+  })
 }
 
 function getMaxQN(book)
@@ -388,7 +388,7 @@ function ConsultsTbl(tableID)
 
 function returnFalse()
 {
-	return false
+  return false
 }
 
 // waitnum is for ordering where there is no oproom, casenum
@@ -582,7 +582,7 @@ function equipImg(equipPics)
   var img = ""
 
   $.each(equipPics, function() {
-    img += '<img src="css/pic/equip/' + this + '.jpg" height="24" width="30"> '
+    img += '<img src="css/pic/equip/' + this + '.jpg"> '
   })
 
   return img
@@ -659,65 +659,6 @@ function findNextRow(editable, pointing)
     || ($nextcell.get(0).nodeName === "TH"))  //TH row
 
   return $nextcell.get(0)
-}
-
-function sendtoLINE()
-{
-  var capture = document.querySelector("#capture")
-  var $capture = $("#capture")
-  var $captureTRs = $capture.find('tr')
-  var $selected = $(".selected")
-  var row = ""
-  var hide = [1, 3, 4, 12]
-
-  $captureTRs.slice(1).remove()
-  $capture.show()
-  $.each($selected, function() {
-    $capture.find("tbody").append($(this).clone())
-  })
-  $captureTRs = $capture.find('tr')
-  $captureTRs.removeClass('selected lastselected')
-
-  hide.forEach(function(i) {
-    $.each($captureTRs, function() {
-      this.cells[i].style.display = 'none'
-    })
-  })
-
-  html2canvas(capture).then(canvas => {
-    $.get("line/upload.php", {
-//      data: canvas.toDataURL('image/png', 1.0),
-//      user: gv.user
-      url: URIcomponent("https://med.mahidol.ac.th/surgery/qbook/line/info.php")
-    })
-    $capture.hide()
-  })
-}
-
-function sendtoExcel()
-{
-  var capture = document.querySelector("#capture")
-  var $capture = $("#capture")
-  var $captureTRs = $capture.find('tr')
-  var $selected = $(".selected")
-  var row = ""
-  var hide = [1, 3, 4, 12]
-
-  $captureTRs.slice(1).remove()
-
-  $.each($selected, function() {
-    $capture.find("tbody").append($(this).clone())
-  })
-  $captureTRs = $capture.find('tr')
-  $captureTRs.removeClass('selected lastselected')
-
-  hide.forEach(function(i) {
-    $.each($captureTRs, function() {
-      this.cells[i].style.display = 'none'
-    })
-  })
-
-  exportQbookToExcel()
 }
 
 function exportQbookToExcel()

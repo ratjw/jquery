@@ -20,12 +20,9 @@ function Start(userid, book)
   sortable()
 
   // make the document editable
-  contextmenuEvent()
-  backspaceEvent()
   editcellEvent()
   wrapperEvent()
   documentEvent()
-  forDragScroll()
 
   // rendering
   fillupstart()
@@ -33,6 +30,9 @@ function Start(userid, book)
   fillConsults()
 
   gv.user = userid
+  disableOneRowMenu()
+  disableExcelLINE()
+  overrideJqueryUI()
   resetTimer()
 }
 
@@ -46,60 +46,6 @@ function updateBOOK(result)
   if (result.HOLIDAY) { gv.HOLIDAY = result.HOLIDAY }
   if (result.QTIME) { gv.timestamp = result.QTIME }
   // QTIME = datetime of last fetching from server: $mysqli->query ("SELECT now();")
-}
-
-function contextmenuEvent()
-{
-  $(document).contextmenu( function (event) {
-    var target = event.target
-    var oncall = /<p[^>]*>.*<\/p>/.test(target.outerHTML)
-
-    if (oncall) {
-      if (event.ctrlKey) {
-        exchangeOncall(target)
-      }
-      else if (event.altKey) {
-        addStaff(target)
-      }
-      event.preventDefault()
-    }
-  })
-}
-
-// Prevent the backspace key from navigating back.
-function backspaceEvent()
-{
-  $(document).off('keydown').on('keydown', function (event) {
-    if (event.keyCode === 8) {
-      var doPrevent = true
-      var types = ["text", "password", "file", "number", "date", "time"]
-      var d = $(event.srcElement || event.target)
-      var disabled = d.prop("readonly") || d.prop("disabled")
-      if (!disabled) {
-        if (d[0].isContentEditable) {
-          doPrevent = false
-        } else if (d.is("input")) {
-          var type = d.attr("type")
-          if (type) {
-            type = type.toLowerCase()
-          }
-          if (types.indexOf(type) > -1) {
-            doPrevent = false
-          }
-        } else if (d.is("textarea")) {
-          doPrevent = false
-        }
-      }
-      if (doPrevent) {
-        event.preventDefault()
-        return false
-      }
-    } else if (event.keyCode === 27) {
-      clearSelection()
-    }
-    resetTimer()
-    gv.idleCounter = 0
-  });
 }
 
 function editcellEvent()
@@ -179,27 +125,87 @@ function wrapperEvent()
 
 function documentEvent()
 {
-  $(document).on("keydown", function(event) {
-    var keycode = event.which || window.event.keyCode
+  $(document).off('keydown').on('keydown', function (event) {
+    // Prevent the backspace key from navigating back.
+    if (event.keyCode === 8) {
+      var doPrevent = true
+      var types = ["text", "password", "file", "number", "date", "time"]
+      var d = $(event.srcElement || event.target)
+      var disabled = d.prop("readonly") || d.prop("disabled")
+      if (!disabled) {
+        if (d[0].isContentEditable) {
+          doPrevent = false
+        } else if (d.is("input")) {
+          var type = d.attr("type")
+          if (type) {
+            type = type.toLowerCase()
+          }
+          if (types.indexOf(type) > -1) {
+            doPrevent = false
+          }
+        } else if (d.is("textarea")) {
+          doPrevent = false
+        }
+      }
+      if (doPrevent) {
+        event.preventDefault()
+        return false
+      }
+    }
+	else if (event.keyCode === 27) {
+      clearAllEditing()
+    }
+    resetTimer()
+    gv.idleCounter = 0
+  });
 
-    if (keycode === 27)	{
-      $('#stafflist').hide();
-      clearEditcell()
-      clearMouseoverTR()
-      clearSelection()
-      $(".marker").removeClass("marker")
+  $(document).contextmenu( function (event) {
+    var target = event.target
+    var oncall = /<p[^>]*>.*<\/p>/.test(target.outerHTML)
+
+    if (oncall) {
+      if (event.ctrlKey) {
+        exchangeOncall(target)
+      }
+      else if (event.altKey) {
+        addStaff(target)
+      }
+      event.preventDefault()
     }
   })
-}
 
-// to make table scrollable while dragging
-function forDragScroll()
-{
+  // to let table scrollable while dragging
   $("html, body").css( {
     height: "100%",
     overflow: "hidden",
     margin: "0px"
   })
+}
+
+// allow the title to contain HTML
+function overrideJqueryUI()
+{
+  $.widget("ui.dialog", $.extend({}, $.ui.dialog.prototype, {
+    _title: function(title) {
+        if (!this.options.title ) {
+            title.html("&#160;");
+        } else {
+            title.html(this.options.title);
+        }
+    }
+  }))
+}
+
+function clearAllEditing()
+{
+  $('#stafflist').hide();
+  clearEditcell()
+  clearMouseoverTR()
+  clearSelection()
+  if ($("#dialogNotify").hasClass('ui-dialog-content')) {
+    $("#dialogNotify").dialog("close")
+  }
+  $(".marker").removeClass("marker")
 }
 
 // stafflist: menu of Staff column
@@ -355,9 +361,7 @@ function updating()
       // idling (5+1)*10 = 1 minute, clear editing setup
       // editcell may be on first column, on staff, during changeDate
       if (gv.idleCounter === 5) {
-        clearEditcell()
-        $('#stafflist').hide()
-        clearMouseoverTR()
+        clearAllEditing()
         refillstaffqueue()
         refillall()
       }

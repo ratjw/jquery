@@ -121,10 +121,7 @@ function sortable()
 					index = allOldCases.indexOf(oldqn)
 					allOldCases.splice(index, 1)
 				}
-
-				for (var i=0; i<allOldCases.length; i++) {
-					sql += sqlCaseNum(i + 1, allOldCases[i])
-				}
+				sql += updateCasenum(allOldCases)
 			}
 
 			if (thisroom) {
@@ -196,6 +193,15 @@ function stopsorting()
 	// after sorting, editcell was placed at row 0 column 1
 	// and display at placeholder position in entire row width
 	$('#editcell').hide()
+}
+
+function updateCasenum(allCases)
+{
+	var sql = ""
+	for (var i=0; i<allCases.length; i++) {
+		sql += sqlCaseNum(i + 1, allCases[i])
+	}
+	return sql
 }
 
 function sqlCaseNum(casenum, qn)
