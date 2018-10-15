@@ -710,7 +710,7 @@ td.camera2 { background-image: url(pic/general/camera2.png); }
 	margin: 0px;
 }
 
-@media only screen and (max-width: 640px) {
+@media (max-width: 600px) {
 
 	/* Force table to not be like tables anymore */
 	table, thead, tbody, tr, th, td { 

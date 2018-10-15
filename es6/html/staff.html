@@ -1,9 +1,19 @@
-<!-- PHP include file !!!
- Byte-order mark (or BOM) causes white space at the top of the page. 
- Notepad++ can save "UTF-8" (without BOM) in "Encoding" menu. -->
+<!DOCTYPE html>
+<HTML>
+<HEAD>
+<meta charset="utf-8"/>
+<title>Neurosurgery Service</title>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--meta name="viewport" content="width=1024"-->
 
 <link href="css/css.css" rel="stylesheet">
 <link href="css/menu.css" rel="stylesheet">
+<link href="css/jquery-ui.min.css" rel="stylesheet">
+
+<script src="js/jquery-1.12.4.min.js"></script>
+<script src="js/jquery.mousewheel.min.js"></script>
+<script src="js/jquery-ui.min.js"></script>
 
 <script src="js/click.js"></script>
 <script src="js/constant.js"></script>
@@ -16,6 +26,9 @@
 <script src="js/service.js"></script>
 <script src="js/sortable.js"></script>
 <script src="js/start.js"></script>
+
+</HEAD>
+<BODY>
 
 <table id="capture">
     <tbody>
@@ -1019,3 +1032,6 @@
 
 <!-- For IE that not support <a download>, used in Export to Excel -->
 <iframe id="txtArea1"></iframe>
+
+</BODY>
+</HTML>

@@ -1,5 +1,24 @@
+// global variables
+var gv = {
+	BOOK: [],
+	CONSULT: [],
+	SERVICE: [],
+	SERVE: [],
+	STAFF: [],
+	ONCALL: [],
+	HOLIDAY: [],
+	user: "",
+	timestamp: "",
+	uploadWindow: null,
+	timer: {},
+	idleCounter: 0,
+	isMobile: false,
+	isPACS: true,
+	editableSV: true
+},
+
 //Actually these are constants but older browsers do not support const
-var GETIPD	= "php/getipd.php",
+GETIPD	= "php/getipd.php",
 GETNAMEHN	= "php/getnamehn.php",
 MYSQLIPHP	= "php/mysqli.php",
 SEARCH		= "php/search.php",
@@ -88,25 +107,8 @@ HOLIDAYENGTHAI = {
 	"Vassasub": "ชดเชยวันเข้าพรรษา"
 },
 
-//====================================================================================================
-
-gv = {
-	BOOK: [],
-	CONSULT: [],
-	SERVICE: [],
-	SERVE: [],
-	STAFF: [],
-	ONCALL: [],
-	HOLIDAY: [],
-	user: "",
-	timestamp: "",
-	uploadWindow: null,
-	timer: {},
-	idleCounter: 0,
-	isMobile: false,
-	isPACS: true,
-	editableSV: true
-},
+//===========================================================================================
+// Constants for program to guess the disease and treatment in Service Review
 
 BRAINDX = [
 	/\bbrain\b/i, /basal ganglion/i, /basal.*gg/i, /bgg/i, /cavernous/i, /cerebell/i, 

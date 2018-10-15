@@ -1,45 +1,46 @@
 
-function Start(userid, book)
+function Start(userid)
 {
 //  if ('serviceWorker' in navigator) {
 //    navigator.serviceWorker.register('service-worker.js')
 //  }
 
-  $("#login").remove()
-  $("#logo").remove()
-  $("head script:contains('function')").remove()
-  $("head style").remove()
-  $("head").append($("body link"))
+  // "=init" tells book.php to get staff oncall also
+  Ajax(MYSQLIPHP, "start=start", loading);
+
   $("#wrapper").show()
   $("#tblcontainer").css("height", window.innerHeight - $("#cssmenu").height())
+  gv.user = userid
 
   if (/mobi/i.test(navigator.userAgent)) {
     gv.isMobile = true
     gv.isPACS = false
+    touchEvent()
   }
 
+  function loading(response)
+  {
+    if (typeof response !== "object") { response = "{}" }
+    updateBOOK(response)
 
-  if (typeof book !== "object") { book = "{}" }
-  updateBOOK(book)
+    // call sortable before render, otherwise, rendering is very slow
+    sortable()
 
-  // call sortable before render, otherwise, rendering is very slow
-  sortable()
+    // make the document editable
+    editcellEvent()
+    wrapperEvent()
+    documentEvent()
 
-  // make the document editable
-  editcellEvent()
-  wrapperEvent()
-  documentEvent()
+    // rendering
+    fillupstart()
+    setStafflist()
+    fillConsults()
 
-  // rendering
-  fillupstart()
-  setStafflist()
-  fillConsults()
-
-  gv.user = userid
-  disableOneRowMenu()
-  disableExcelLINE()
-  overrideJqueryUI()
-  resetTimer()
+    disableOneRowMenu()
+    disableExcelLINE()
+    overrideJqueryUI()
+    resetTimer()
+  }
 }
 
 function updateBOOK(result)
@@ -186,6 +187,24 @@ function documentEvent()
     overflow: "hidden",
     margin: "0px"
   })
+}
+
+function touchEvent()
+{
+  $('.static_parent').on('touchstart mouseenter', '.link', function (e) {
+    $(this).addClass('hover_effect');
+  });
+
+  $('.static_parent').on('mouseleave touchmove click', '.link', function (e) {
+    $(this).removeClass('hover_effect');
+
+    // As it's the chain's last event we only prevent it from making HTTP request
+    if (e.type == 'click') {
+        e.preventDefault ? e.preventDefault() : e.returnValue = false;
+
+        // Ajax behavior here!
+    }
+  });
 }
 
 // allow the title to contain HTML
