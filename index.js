@@ -1,5 +1,5 @@
 
-	// Browsers that support ES6 module: Edge/16, Firefox/60, Chrome/61, Safari 10.1
+	// Browsers that support module: Edge/16, Firefox/60, Chrome/61, Safari 10.1
 	var module = false
 	var ua = navigator.userAgent
 	var isMobile = /Android|webOS|iPhone|iPad|BlackBerry|IEMobile/i.test(ua);
@@ -28,14 +28,12 @@
 	}
 
 	if (check()) {
-		// The engine supports ES6 features you want to use
 		engine = "es6"
 	} else {
-		// The engine doesn't support those ES6 features
-		// Use the boring ES5 :(
 		engine = "es5"
 	}
 
+	document.getElementById("isMobile").value = isMobile
 	document.getElementById("isPACS").value = isPACS
 	document.getElementById("module").value = module
 	document.getElementById("engine").value = engine
@@ -46,12 +44,6 @@ function namesix()
 	if (/^\d{6}$/.test(userid)) {
 		document.getElementById("pwd").focus()
 	}
-}
-
-function signin()
-{
-	var h4 = document.getElementsByTagName('h4')[0]
-	if (h4) { h4.remove() }
 }
 
 function nurse()

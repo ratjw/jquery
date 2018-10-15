@@ -1,0 +1,354 @@
+#wrapper {
+	height: 100%;
+	width: 100%;
+	overflow: hidden;
+	font-family: sans-serif;
+}
+
+#tblcontainer {
+	float: left;
+	height: 100%;
+	width: 100%;
+}
+
+#tblcontainer {
+	height: 100%;
+	width: 100%;
+	overflow: scroll;
+	box-sizing: border-box;
+	border: solid 2px silver;
+}
+
+table {
+	border-right: solid 1px gray;
+	border-collapse: collapse;
+}
+
+th {
+	height: 30px;
+	font-size: 14px;
+	font-weight: bold;
+	background-color: #7799AA;
+	color: white;
+	border-top: solid 1px silver;
+	border-left: solid 1px silver;
+	border-bottom: solid 1px silver;
+}
+
+td {
+	empty-cells: show;
+	height: 30px;
+	font-size: 14px;
+	padding-left: 3px;
+	border-left: solid 1px lightgray;
+	border-bottom: solid 1px silver;
+	background-repeat: no-repeat;
+	background-position: right bottom;
+}
+
+#tbl td:first-child,
+#tbl td:nth-child(2),
+#tbl td:nth-child(3),
+#tbl td:nth-child(4),
+#tbl td:nth-child(5),
+#tbl td:nth-child(6),
+#tbl td:nth-child(7),
+#tbl td:nth-child(8) {
+	font-size: 12px;
+}
+
+#tbl td:first-child {
+	min-width: 40px;
+	max-width: 60px;
+}
+
+#tbl td:nth-child(2),
+#tbl td:nth-child(3),
+#tbl td:nth-child(4),
+#tbl td:nth-child(5) {
+	text-align: center;
+	min-width: 30px;
+	max-width: 30px;
+}
+#tbl td:nth-child(6) { min-width: 40px; width: 5%; }
+#tbl td:nth-child(7) { min-width: 50px; max-width: 50px; }
+#tbl td:nth-child(8) { min-width: 70px; width: 10%; }
+#tbl td:nth-child(9) { width: 25%; }
+#tbl td:nth-child(10) { width: 25%; }
+#tbl td:nth-child(11) { width: 20%; }
+#tbl td:nth-child(12) { width: 20%; }
+
+#wrapper,
+#tblcells,
+#tbl th:nth-child(13), #tbl td:nth-child(13),
+#dialogEquip {
+	display: none;
+}
+
+tr.bordergroove {
+	border: solid 3px skyblue !important;
+}
+
+tr.sunday { background-color: #FFDDEE; }
+tr.monday { background-color: #FFFFE0; }
+tr.tuesday { background-color: #FFF0F9; }
+tr.wednesday { background-color: #EEFFEE; }
+tr.thursday { background-color: #FFF7EE; }
+tr.friday { background-color: #E7F7FF; }
+tr.saturday { background-color: #E7E7FF; }
+
+td.sun { background-color: #F099BB; }
+td.mon { background-color: #F0F0BB; }
+td.tue { background-color: #F0CCEE; }
+td.wed { background-color: #CCF0CC; }
+td.thu { background-color: #F0DDBB; }
+td.fri { background-color: #BBDDF0; }
+td.sat { background-color: #CCBBF0; }
+
+td.sun:before { content: "อาทิตย์ "; }
+td.mon:before { content: "จันทร์ "; }
+td.tue:before { content: "อังคาร "; }
+td.wed:before { content: "พุธ "; }
+td.thu:before { content: "พฤหัส "; }
+td.fri:before { content: "ศุกร์ "; }
+td.sat:before { content: "เสาร์ "; }
+
+td.pacs { background-image: url(pic/general/pacs.png); }
+td.pacs2 { background-image: url(pic/general/pacs2.png); }
+td.camera { background-image: url(pic/general/camera.png); }
+td.camera2 { background-image: url(pic/general/camera2.png); }
+
+.ui-dialog {
+	position: fixed;
+	box-shadow: 10px 20px 30px slategray;
+}
+
+.ui-dialog-title {
+    font-size: 120%;
+	text-align: center; 
+}
+
+.ui-icon-closethick {
+	float: right;
+	margin: 10px 10px 0 0;
+}
+
+.iconcontainer {
+	float: right;
+	height: 30px;
+}
+
+.ui-icon:hover {
+	cursor: pointer;
+	border: black dotted
+}
+
+.ui-icon-circle-close {
+	float: right;
+	background-color: white;
+	height: 15px;
+	width: 15px;
+}
+
+.ui-dialog-buttonpane {
+	font-size: 0px;
+}
+
+.ui-dialog-buttonset {
+	font-size: 14px;
+	margin: 0 30px 0 0;
+}
+
+.dialogBox span {
+	display:inline-block;
+	padding: 0px;
+	margin: 0px;
+	border: 0px;
+}
+
+.floatleft { float: left;}
+.floatright { float: right; }
+.textleft { text-align: left;}
+.textright { text-align: right; }
+.textcenter { text-align: center; }
+.w20 { width:20px; }
+.w22 { width:22px; }
+.w30 { width:30px; }
+.w40 { width:40px; }
+.w50 { width:50px; }
+.w55 { width:55px; }
+.w65 { width:65px; }
+.w70 { width:70px; }
+.w73 { width:73px; }
+.w77 { width:77px; }
+.w80 { width:80px; }
+.w85 { width:85px; }
+.w90 { width:90px; }
+.w100 { width:100px; }
+.w110 { width:110px; }
+.w120 { width:120px; }
+.w140 { width:140px; }
+.w150 { width:150px; }
+.w160 { width:160px; }
+.w170 { width:170px; }
+.w200 { width:200px; }
+.w215 { width:215px; }
+.w350 { width:350px; }
+.w500 { width:500px; }
+.w540 { width:540px; }
+.margin0 { margin: 0px; }
+.margintop0 { margin-top: 0px; }
+.marginright { margin-right: 100px; }
+
+#dialogEquip {
+	font-size: 14px;
+	color: black;
+	background-color: white;
+}
+
+#oproom,
+#casenum,
+#optime,
+#opdate,
+#staffname,
+#patientname,
+#hn { font-size: 16px; font-weight: bold; }
+
+#dialogEquip input[type=radio] + label,
+#dialogEquip input[type=checkbox] + label {
+	color: #999999;
+}
+#dialogEquip input[type=radio]:checked + label,
+#dialogEquip input[type=checkbox]:checked + label {
+	color: black;
+	font-weight: bold;
+}
+#dialogEquip input[type=text] {
+	border: 0;
+	outline: 0;
+	background: transparent;
+	border-bottom: 1px dashed gray;
+	color: blue;
+	font-weight: bold;
+}
+#dialogEquip textarea {
+	width: 500px;
+	height: 55px;
+	padding: 2px;
+	color: blue;
+	font-weight: bold;
+}
+
+#editedby { position:absolute } 
+
+@media only screen and (max-width: 640px) {
+
+	/* Force table to not be like tables anymore */
+	table, thead, tbody, tr, th, td { 
+		display: block; 
+	}
+
+	/* Hide table headers (but not display: none;, for accessibility) */
+	th { 
+		position: absolute;
+		top: -9999px;
+		left: -9999px;
+	}
+ 
+	tr { border: 1px solid #ccc; }
+
+	td { 
+		/* Behave  like a "row" */
+		height: auto;
+		min-height: 30px;
+		border: none;
+		border-bottom: 1px solid #eee; 
+		position: relative;
+		padding-left: 40%; 
+		white-space: normal;
+		text-align: left;
+		empty-cells: show;
+	}
+
+	td:first-child {
+		font-size: 16px;
+	}
+
+	td:before { 
+		/* Now like a table header */
+		position: absolute;
+		/* Top/left values mimic padding */
+		top: 7px;
+		left: 7px;
+		width: 35%; 
+		white-space: nowrap;
+		text-align: left;
+		font-weight: bold;
+	/*
+	Label the data
+	*/
+		content: attr(data-title);
+	}
+
+	td.sun:before { font-size: 18px; top: 2px; content: "วันอาทิตย์ "; }
+	td.mon:before { font-size: 18px; top: 2px; content: "วันจันทร์ "; }
+	td.tue:before { font-size: 18px; top: 2px; content: "วันอังคาร "; }
+	td.wed:before { font-size: 18px; top: 2px; content: "วันพุธ "; }
+	td.thu:before { font-size: 18px; top: 2px; content: "วันพฤหัส "; }
+	td.fri:before { font-size: 18px; top: 2px; content: "วันศุกร์ "; }
+	td.sat:before { font-size: 18px; top: 2px; content: "วันเสาร์ "; }
+
+	#menu, #stafflist {
+	/*	position: relative;*/
+		font-size: 14px;
+	}
+}
+
+@media print { 
+	BODY {
+		overflow: visible;
+	}
+
+	#dialogEquip {
+		font-size: 16px;
+		font-family: sans-serif;
+		background-color: white;
+		border: 0px;
+		margin-top: 50px;
+		margin-left: 50px;
+		padding-left: 0px;
+	}
+/*
+	.pale {
+		color: #D3D3D3;
+		font-weight: 300;
+	}
+*/
+	input, input[type=checkbox] { 
+		border: 0px; 
+	}
+
+	input[type=radio] + label {
+		color: #FFFFFF;
+		background-color: white;
+	}
+
+	input[type=radio]:checked + label {
+		color: #000000;
+		border: 2px; 
+	}
+
+	input[type=checkbox] + label {
+		color: #FFFFFF;
+		background-color: white;
+	}
+
+	input[type=checkbox]:checked + label {
+		color: #000000;
+		border: 2px black; 
+	}
+
+	div, span { 
+		display:inline-block; 
+	} 
+}
