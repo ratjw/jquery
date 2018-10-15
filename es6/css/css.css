@@ -41,6 +41,7 @@ td {
 	background-position: right bottom;
 }
 
+/* used in Equipment column */
 td img {
 	height: 32px;
 	width: 40px;
