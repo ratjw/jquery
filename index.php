@@ -40,16 +40,14 @@ h4 {
 
 </HEAD>
 <BODY>
-
 <?php include "login.php" ?>
-
 <p id="logo"><img src="logoRama.png"></p>
 
 <div id="login">
 	<br>
 	<h3>Neurosurgery Service</h3>
 
-	<form id="form" method="post" action="">
+	<form id="form" method="post">
 		Login ID: <input id="userid" type="text" name="userid"
 					maxlength="6" size="6" value=""
 					oninput="namesix()" 
@@ -73,9 +71,9 @@ h4 {
 		<br -->
 	</form>
 </div>
-<h4> <?php echo $error;?> </h4>
+<h4> <?php echo $error; ?> </h4>
 
-<script src="index.js"></script>
+<script src="login.js"></script>
 
 </BODY>
 </HTML>

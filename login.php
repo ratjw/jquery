@@ -10,7 +10,7 @@
 		$isMobile = !empty($_POST['isMobile']) ? $_POST['isMobile'] : '';
 		$isPACS = !empty($_POST['isPACS']) ? $_POST['isPACS'] : '';
 		$module = !empty($_POST['module']) ? $_POST['module'] : '';
-		$engine = !empty($_POST['engine']) ? 'sub-' . $_POST['engine'] : '';
+		$engine = !empty($_POST['engine']) ? 'browser-' . $_POST['engine'] : '';
 
 		$_SESSION['userid'] = $userid;
 
@@ -19,17 +19,16 @@
 
 		$url = "?$userid";
 		$location = "location:";
-		$index = "/index.php";
-		$nurse = $location . "sub-nurse" . $index;
-		if (false /*$module*/) {
-			$staff = $location . "sub-module" . $index;
-		} else {
-			$staff = $location . $engine . $index;
-		}
+		$nurse = $location . "browser-nurse";
+//		if ($module === "true") {
+//			$staff = $location . "browser-module";
+//		} else {
+			$staff = $location . $engine;
+//		}
 		$resultz = "";
 
-		if ($isMobile) {
-			header($location . "sub-mobile" . $index);
+		if ($isMobile === "true") {
+			header($location . "browser-mobile");
 		}
 
 		if ($nurseid === "nurse" || preg_match('/^\d{1,2}$/', $nurseid)) {
@@ -48,12 +47,12 @@
 			}
 
 			if ($resultz === "S" || $resultz === "R") {
-				header($staff . $url);
+				header($staff);
 			}
 			else if ($resultz === "N") {
 			header($nurse);
 			} else {
-				$error = "Wrong password or username";
+				$error = "Incorrect password or username";
 			}
 		}
 		// 1 or 2 digits for each OR room
@@ -61,7 +60,7 @@
 			header($nurse);
 		}
 		else {
-			$error = "Wrong username";
+			$error = "Invalid username";
 		}
 	}
 ?>
