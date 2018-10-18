@@ -1,7 +1,7 @@
 
 function serviceReview()
 {
-	var	$dialogService = $("#dialogService"),
+	let	$dialogService = $("#dialogService"),
 		$monthpicker = $("#monthpicker"),
 		$monthstart = $("#monthstart"),
 		selectedYear = new Date().getFullYear(),
@@ -54,19 +54,31 @@ function serviceReview()
 
 function entireMonth(fromDate)
 {
-	var date = new Date(fromDate),
+	let date = new Date(fromDate),
 		toDate = new Date(date.getFullYear(), date.getMonth()+1, 0),
+		$dialogService = $("#dialogService"),
+		$servicetbl = $("#servicetbl"),
 		$monthpicker = $("#monthpicker"),
 		$exportService = $("#exportService"),
 		$reportService = $("#reportService"),
+		th8 = "#servicetbl th:nth-child(8)",
+		td8 = "#servicetbl td:nth-child(8)",
+		imgopen = "#imgopen",
+		imgclose = "#imgclose",
 		inputval = $monthpicker.val(),
 		titledate = inputval.slice(0, -4) + (Number(inputval.slice(-4)) + 543),
 		title = "Service Neurosurgery เดือน " + titledate
+		+`<button id="hideProfile">
+			<img id="imgopen" src="css/pic/general/openpane.png">
+			<img id="imgclose" src="css/pic/general/closepane.png">
+			<span class="w10 inline"></span>
+			Profile
+		  </button>`
+		
 
-	// show month name before change $monthpicker.val to last date of this month
-	$("#dialogService").dialog({
-		title: title
-	})
+	$("#dialogService").dialog({ title: title })
+	$(imgopen).hide()
+	$(imgclose).show()
 	toDate = $.datepicker.formatDate("yy-mm-dd", toDate)
 	$monthpicker.val(toDate)
 
@@ -79,33 +91,40 @@ function entireMonth(fromDate)
 	})
 
 	$exportService.show()
-	$exportService.on("click", function(e) {
-		e.preventDefault()
+	$exportService.on("click", event => {
+		event.preventDefault()
 		exportServiceToExcel()
 	})
 	$reportService.show()
-	$reportService.on("click", function(e) {
-		e.preventDefault()
+	$reportService.on("click", event => {
+		event.preventDefault()
 		showReportToDept(title)
+	})
+	$("#hideProfile").on("click", event => {
+		event.preventDefault()
+		$(th8 + ', ' + td8).toggle()
+		if ($(th8).css("display") === "none") {
+			$(imgopen).show()
+			$(imgclose).hide()
+		} else {
+			$(imgopen).hide()
+			$(imgclose).show()
+		}
 	})
 }
 
 //Retrieve the specified month from server
-function getServiceOneMonth(fromDate, toDate)
+async function getServiceOneMonth(fromDate, toDate)
 {
-	var defer = $.Deferred(),
-		sql = "sqlReturnData=" + sqlOneMonth(fromDate, toDate)
+	let sql = "sqlReturnData=" + sqlOneMonth(fromDate, toDate)
 
-	Ajax(MYSQLIPHP, sql, callbackGetService)
-
-	return defer.promise()
-
-	function callbackGetService(response)
-	{
-		typeof response === "object"
-			? defer.resolve( response )
-			: defer.reject("getServiceOneMonth", response)
-	}
+    return postData(MYSQLIPHP, sql).then(response => {
+		if (typeof response === "object") {
+			return response
+		} else {
+			return "getServiceOneMonth, " + response
+		}
+	})
 }
 
 function sqlOneMonth(fromDate, toDate)
@@ -138,7 +157,7 @@ function sqlOneMonth(fromDate, toDate)
 // dead : "", "Dead"							<- user-defined only
 function showService(fromDate, toDate)
 {
-	var $servicetbl = $("#servicetbl"),
+	let $servicetbl = $("#servicetbl"),
 		$servicecells = $("#servicecells"),
 		staffname = "",
 		scase = 0,
@@ -171,7 +190,7 @@ function showService(fromDate, toDate)
 				.filldataService(this, scase, classname)
 	});
 
-	var	$dialogService = $("#dialogService")
+	let	$dialogService = $("#dialogService")
 
 	$dialogService.dialog({
 		hide: 200,
@@ -208,7 +227,7 @@ function showService(fromDate, toDate)
 		resetTimer();
 		gv.idleCounter = 0
 		event.stopPropagation()
-		var	target = event.target,
+		let	target = event.target,
 			$target = $(target),
 			onProfile = $target.closest(".divRecord").length,
 			onNormalCell = (target.nodeName === "TD" && target.colSpan === 1)
@@ -252,10 +271,10 @@ function showService(fromDate, toDate)
 
 function calcSERVE()
 {
-	var gvserve = gv.SERVICE.slice()
+	let gvserve = gv.SERVICE.slice()
 
 	$.each(gvserve, function() {
-		var	treatment = this.treatment
+		let	treatment = this.treatment
 
 		if (!this.radiosurgery && isMatched(RADIOSURGERY, treatment)) {
 			this.radiosurgery = "Radiosurgery"
@@ -282,7 +301,7 @@ function calcSERVE()
 
 function operationFor(thisrow)
 {
-	var	KEYWORDS = {
+	let	KEYWORDS = {
 			"Brain Tumor": [ BRAINTUMORRX, BRAINTUMORRXNO, BRAINTUMORDX, BRAINTUMORDXNO ],
 			"Brain Vascular": [ BRAINVASCULARRX, BRAINVASCULARRXNO, BRAINVASCULARDX, BRAINVASCULARDXNO ],
 			"Trauma": [ TRAUMARX, TRAUMARXNO, TRAUMADX, TRAUMADXNO ],
@@ -326,7 +345,7 @@ function operationFor(thisrow)
 
 function isMatched(keyword, diagtreat)
 {
-	var test = false
+	let test = false
 
 	$.each( keyword, function() {
 		return !(test = this.test(diagtreat))
@@ -336,7 +355,7 @@ function isMatched(keyword, diagtreat)
 
 function isOpfor(keyword, opfor, RxDx, diagRx)
 {
-	for (var i=opfor.length-1; i>=0; i--) {
+	for (let i=opfor.length-1; i>=0; i--) {
 		if (!isMatched(keyword[opfor[i]][RxDx], diagRx)) {
 			opfor.splice(i, 1)
 		}
@@ -346,7 +365,7 @@ function isOpfor(keyword, opfor, RxDx, diagRx)
 
 function isNotOpfor(keyword, opfor, RxDx, diagRx)
 {
-	for (var i=opfor.length-1; i>=0; i--) {
+	for (let i=opfor.length-1; i>=0; i--) {
 		if (isMatched(keyword[opfor[i]][RxDx], diagRx)) {
 			opfor.splice(i, 1)
 		}
@@ -356,7 +375,7 @@ function isNotOpfor(keyword, opfor, RxDx, diagRx)
 
 function refillService(fromDate, toDate)
 {
-	var $servicetbl = $("#servicetbl"),
+	let $servicetbl = $("#servicetbl"),
 		$rows = $servicetbl.find("tr"),
 		$servicecells = $("#servicecells"),
 		len = $rows.length
@@ -401,7 +420,7 @@ function refillService(fromDate, toDate)
 
 jQuery.fn.extend({
 	filldataService : function(bookq, scase, classes) {
-		var	row = this[0],
+		let	row = this[0],
 			cells = row.cells
 
 		row.className = classes
@@ -426,14 +445,14 @@ jQuery.fn.extend({
 // Simulate hover on icon by changing background pics
 function hoverService()
 {
-	var	tdClass = "td.pacs, td.camera, td.record"
+	let	tdClass = "td.pacs, td.camera"
 
 	hoverCell(tdClass)
 }
 
 function hoverCell(tdClass)
 {
-	var	paleClasses = ["pacs", "camera"],
+	let	paleClasses = ["pacs", "camera"],
 		boldClasses = ["pacs2", "camera2"]
 
 	$(tdClass)
@@ -451,7 +470,7 @@ function hoverCell(tdClass)
 
 function showInputColor($target, target)
 {
-	var	$row = $target.closest("tr"),
+	let	$row = $target.closest("tr"),
 		classname = target.title
 
 	if (target.checked) {
@@ -463,25 +482,22 @@ function showInputColor($target, target)
 
 function getAdmitDischargeDate(fromDate, toDate)
 {
-	var sql = "from=" + fromDate
+	let sql = "from=" + fromDate
 			+ "&to=" + toDate
 			+ "&sql=" + sqlOneMonth(fromDate, toDate)
 
-	Ajax(GETIPD, sql, callbackgetipd)
-
-	function callbackgetipd(response)
-	{
+    postData(MYSQLIPHP, sql).then(response => {
 		if (typeof response === "object") {
 			updateBOOK(response)
 			gv.SERVE = calcSERVE()
 			fillAdmitDischargeDate()
 		}
-	}
+	})
 }
 
 function fillAdmitDischargeDate()
 {
-	var i = 0,
+	let i = 0,
 		staffname = "",
 		$rows = $("#servicetbl tr")
 
@@ -491,7 +507,7 @@ function fillAdmitDischargeDate()
 			i++
 		}
 		i++
-		var $thisRow = $rows.eq(i),
+		let $thisRow = $rows.eq(i),
 			$cells = $thisRow.children("td")
 
 		if (this.admit && this.admit !== $cells.eq(ADMITSV).html()) {
@@ -523,7 +539,7 @@ function clickservice(evt, clickedCell)
 
 function Skeyin(event, keycode, pointing)
 {
-	var SEDITABLE	= [DIAGNOSISSV, TREATMENTSV, ADMISSIONSV, FINALSV],
+	let SEDITABLE	= [DIAGNOSISSV, TREATMENTSV, ADMISSIONSV, FINALSV],
 		fromDate = $("#monthstart").val(),
 		start = getStart(),
 		thiscell
@@ -563,7 +579,7 @@ function Skeyin(event, keycode, pointing)
 
 function savePreviousCellService()
 {
-	var $editcell = $("#editcell"),
+	let $editcell = $("#editcell"),
 		oldcontent = $editcell.data("oldcontent"),
 		newcontent = getText($editcell),
 		pointed = $editcell.data("pointing")
@@ -611,14 +627,14 @@ function saveContentService(pointed, column, content)
 		content = URIcomponent(content)
 	}
 
-	var sql = sqlColumn(pointed, column, content)
+	let sql = sqlColumn(pointed, column, content)
 
 	saveService(pointed, sql)
 }
 
 function saveService(pointed, sql)
 {
-	var $row = $(pointed).closest("tr"),
+	let $row = $(pointed).closest("tr"),
 		rowi = $row[0],
 		qn = rowi.cells[QNSV].innerHTML,
 		oldcontent = $("#editcell").data("oldcontent"),
@@ -627,28 +643,25 @@ function saveService(pointed, sql)
 
 	sql	+= sqlOneMonth(fromDate, toDate)
 
-	Ajax(MYSQLIPHP, sql, callbacksaveScontent);
-
-	function callbacksaveScontent(response)
-	{
+    postData(MYSQLIPHP, sql).then(response => {
 		if (typeof response === "object") {
 			updateBOOK(response)
 
 			// other user may add a row
-			var servelen = gv.SERVE.length
+			let servelen = gv.SERVE.length
 			gv.SERVE = calcSERVE()
 			if (gv.SERVE.length !== servelen) {
 				refillService(fromDate, toDate)
 			}
 
 			// Calc countService of this case only
-			var oldclass = rowi.className
-			var bookq = getBOOKrowByQN(gv.SERVE, qn)
-			var newclass = countService(bookq, fromDate, toDate)
-			var oldclassArray = oldclass.split(" ")
-			var newclassArray = newclass.split(" ")
-			var counter
-			var newcounter
+			let oldclass = rowi.className
+			let bookq = getBOOKrowByQN(gv.SERVE, qn)
+			let newclass = countService(bookq, fromDate, toDate)
+			let oldclassArray = oldclass.split(" ")
+			let newclassArray = newclass.split(" ")
+			let counter
+			let newcounter
 
 			if (oldclass !== newclass) {
 				updateCounter(oldclassArray, -1)
@@ -660,12 +673,12 @@ function saveService(pointed, sql)
 			pointed.innerHTML = oldcontent
 			//return to previous content
 		}
-	}
+	})
 }
 
 function updateCounter(classArray, one)
 {
-	var counter
+	let counter
 
 	$.each( classArray, function(i, each) {
 		if (counter = document.getElementById(each)) {
@@ -676,7 +689,7 @@ function updateCounter(classArray, one)
 
 function storePresentCellService(evt, pointing)
 {
-	var cindex = pointing.cellIndex
+	let cindex = pointing.cellIndex
 
 	switch(cindex)
 	{
@@ -717,8 +730,8 @@ function getHNSV(evt, pointing)
 
 function getNAMESV(evt, pointing)
 {
-	var hn = $(pointing).closest("tr").children("td").eq(HNSV).html()
-	var patient = pointing.innerHTML
+	let hn = $(pointing).closest("tr").children("td").eq(HNSV).html()
+	let patient = pointing.innerHTML
 
 	clearEditcell()
 	if (inPicArea(evt, pointing)) {
@@ -728,7 +741,7 @@ function getNAMESV(evt, pointing)
 
 function getPROFILESV(pointing)
 {
-	var oldRecord = getRecord(pointing),
+	let oldRecord = getRecord(pointing),
 		$editcell = $("#editcell")
 
 	$editcell.data("pointing", pointing)
@@ -737,7 +750,7 @@ function getPROFILESV(pointing)
 
 function showRecord(bookq)
 {
-	var $divRecord = $("#orgRecord").clone().prop('id', ''),
+	let $divRecord = $("#orgRecord").clone().prop('id', ''),
 		wide
 
 //	document.body.appendChild($divRecord[0])
@@ -770,7 +783,7 @@ function inputEditable($divRecord)
 // this.title === possible values
 function initRecord(bookq, $divRecord)
 {
-	var $input = $divRecord.find("input"),
+	let $input = $divRecord.find("input"),
 		wide
 
 	$input.each(function() {
@@ -784,7 +797,7 @@ function initRecord(bookq, $divRecord)
 
 function getRecord(pointing)
 {
-	var	record = {},
+	let	record = {},
 		$input = $(pointing).find(".divRecord input")
 
 	$input.each(function() {
@@ -802,7 +815,7 @@ function getRecord(pointing)
 
 function saveProfileService(pointed)
 {
-	var newRecord = getRecord(pointed),
+	let newRecord = getRecord(pointed),
 		oldRecord = $("#editcell").data("oldcontent"),
 		setRecord = {},
 		$pointing = $(pointed),
@@ -826,7 +839,7 @@ function saveProfileService(pointed)
 
 function sqlRecord($pointing, setRecord)
 {
-	var qn = $pointing.closest("tr").find("td").eq(QNSV).html(),
+	let qn = $pointing.closest("tr").find("td").eq(QNSV).html(),
 		sql = "sqlReturnService="
 
 	$.each(setRecord, function(column, content) {
@@ -841,33 +854,37 @@ function sqlRecord($pointing, setRecord)
 
 function sqlColumn(pointing, column, content)
 {
-	var qn = $(pointing).closest("tr").find("td").eq(QNSV).html()
+	let qn = $(pointing).closest("tr").find("td").eq(QNSV).html()
 
 	return "sqlReturnService=" + sqlItem(column, content, qn)
 }
 
 function sqlDefaults(qn)
 {
+  getUserID().then(response => {
 	return "UPDATE book SET "
 		+ "operated='',"
 		+ "doneby='',"
 		+ "scale='',"
 		+ "manner='',"
-		+ "editor='" + gv.user
+		+ "editor='" + response
 		+ "' WHERE qn=" + qn + ";"
+  })
 }
 
 function sqlItem(column, content, qn)
 {
+  getUserID().then(response => {
 	return "UPDATE book SET "
 		+ column + "='" + content
-		+ "',editor='" + gv.user
+		+ "',editor='" + response
 		+ "' WHERE qn=" + qn + ";"
+  })
 }
 
 function showReportToDept(title)
 {
-	var sumColumn = [0, 0, 0, 0, 0, 0, 0, 0]
+	let sumColumn = [0, 0, 0, 0, 0, 0, 0, 0]
 
 	$("#dialogReview").dialog({
 		title: title,
@@ -912,7 +929,7 @@ function showReportToDept(title)
 
 function countOpCase(thisrow, thisitem)
 {
-	var row = ROWREPORT[thisitem],
+	let row = ROWREPORT[thisitem],
 		doneby = thisrow.doneby ? thisrow.doneby : "Staff",
 		scale = thisrow.scale ? thisrow.scale : "Major",
 		manner = thisrow.manner ? thisrow.manner : "Elective",
@@ -927,7 +944,7 @@ function countOpCase(thisrow, thisitem)
 
 function countNonOpCase(thisrow, thisitem)
 {
-	var row = ROWREPORT[thisitem],
+	let row = ROWREPORT[thisitem],
 		manner = thisrow.manner ? thisrow.manner : "Elective",
 		column = 1 + COLUMNREPORT[manner]
 
@@ -951,7 +968,7 @@ function resetcountService()
 // Service Review of one case
 function countService(thiscase, fromDate, toDate)
 {
-	var classname = "",
+	let classname = "",
 		items = ["admitted", "operated", "radiosurgery", "endovascular", "infection", "morbid", "dead"]
 
 	$.each(items, function() {
@@ -981,7 +998,7 @@ function countAllServices()
 	resetcountService()
 
 	$.each( $("#servicetbl tr"), function() {
-		var counter = this.className.split(" "),
+		let counter = this.className.split(" "),
 			id
 
 		$.each(counter, function() {

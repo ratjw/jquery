@@ -117,10 +117,8 @@ function Ajax(url, params, callback)
 
 function sameDateRoomBookQN(book, opdate, room)
 {
-	if (!room) { return [] }
-
 	var sameRoom = book.filter(function(row) {
-		return row.opdate === opdate && row.oproom === room;
+		return row.opdate === opdate && Number(row.oproom) === Number(room);
 	})
 	$.each(sameRoom, function(i) {
 		sameRoom[i] = this.qn
@@ -139,6 +137,49 @@ function getBOOKrowByQN(book, qn)
 		return null
 	}
 	return bookq
+}
+
+// if the row is above the screen, then scrollTop to it
+// if too low, then scrollTop to it minus (scroll down) container height
+function showFind($container, row)
+{
+  var scrolledTop = $container.scrollTop(),
+    offset = row.offsetTop,
+    rowHeight = row && row.offsetHeight,
+    height = $container[0].clientHeight - rowHeight,
+    bottom = scrolledTop + height
+
+  $(".marker").removeClass("marker")
+  if (row) {
+    $(row).addClass("marker")
+    if (offset < scrolledTop) {
+      $container.animate({
+        scrollTop: offset
+      }, 500);
+    }
+    else if (offset > bottom) {
+      $container.animate({
+        scrollTop: offset - height
+      }, 500);
+    }
+    return true
+  }
+}
+
+function getTableRowByQN(tableID, qn)
+{
+  return $("#" + tableID + " tr:has(td)").filter(function() {
+    return this.cells[QN].innerHTML === qn
+  })[0]
+}
+
+// main table (#tbl) only
+function getTableRowsByDate(opdateth)
+{
+  if (!opdateth) { return [] }
+  return $("#tbl tr").filter(function() {
+    return this.cells[OPDATE].innerHTML === opdateth;
+  })
 }
 
 function Alert(title, message)
@@ -219,7 +260,7 @@ function equipImg(equipPics)
 	var img = ""
 
 	$.each(equipPics, function() {
-		img += '<img src="css/pic/equip/' + this + '.jpg" height="24" width="30"> '
+		img += '<img src="css/pic/equip/' + this + '.jpg"> '
 	})
 
 	return img

@@ -1,6 +1,6 @@
 function fillEquipTable(book, $row, qn)
 {
-	var NAMEOFDAYTHAI	= ["อาทิตย์", "จันทร์", "อังคาร", "พุธ", "พฤหัส", "ศุกร์", "เสาร์"],
+	let NAMEOFDAYTHAI	= ["อาทิตย์", "จันทร์", "อังคาร", "พุธ", "พฤหัส", "ศุกร์", "เสาร์"],
 		bookq = getBOOKrowByQN(book, qn),
 		bookqEquip = bookq.equipment,
 		JsonEquip = bookqEquip? JSON.parse(bookqEquip) : {},
@@ -151,16 +151,13 @@ function clearShunt()
 
 function getEditedBy(qn)
 {
-	var sql = "sqlReturnData=SELECT editor,editdatetime FROM bookhistory "
+	let sql = "sqlReturnData=SELECT editor,editdatetime FROM bookhistory "
 			+ "WHERE qn="+ qn + " AND equipment <> '' "
 			+ "ORDER BY editdatetime DESC;"
 
-	Ajax(MYSQLIPHP, sql, callbackgetEditedby)
-
-	function callbackgetEditedby(response)
-	{
+	postData(MYSQLIPHP, sql).then(response => {
 		if (typeof response === "object") {
-			var Editedby = ""
+			let Editedby = ""
 			$.each(response, function(key, val) {
 				Editedby += (val.editor + " : " + val.editdatetime + "<br>")
 			})
@@ -168,18 +165,19 @@ function getEditedBy(qn)
 		} else {
 			Alert("getEditedby", response)
 		}
-	}
+	})
 }
 
 function Checklistequip() 
 {
-	var	$dialogEquip = $("#dialogEquip"),
+	let	$dialogEquip = $("#dialogEquip"),
 		bookqEquip = $dialogEquip.data("bookqEquip"),
 		JsonEquip = $dialogEquip.data("JsonEquip"),
 		$row = $dialogEquip.data("$row"),
 		qn = $dialogEquip.data("qn"),
 		equipJSON = {},
-		equipment = ""
+		equipment = "",
+		sql = ""
 
 	$( "#dialogEquip input, #dialogEquip textarea" ).each( function() {
 		if (this.checked) {
@@ -199,22 +197,20 @@ function Checklistequip()
 	//escape the \ (escape) and ' (single quote) for sql string, not for JSON
 	equipment = equipment.replace(/\\/g,"\\\\").replace(/'/g,"\\'")
 
-	var sql = "sqlReturnbook=UPDATE book SET "
+	getUserID().then(response => {
+		sql = "sqlReturnbook=UPDATE book SET "
 			+ "equipment='"+ equipment +"' ,"
-			+ "editor='"+ gv.user +"' "
+			+ "editor='"+ response +"' "
 			+ "WHERE qn="+ qn +";"
 
-	Ajax(MYSQLIPHP, sql, callbackEq)
-
-	function callbackEq(response)
-	{
-		if (typeof response === "object") {
+		postData(MYSQLIPHP, sql).then(response => {
+		  if (typeof response === "object") {
 			updateBOOK(response)
 			if ($row.find("td").eq(QN).html() !== qn) {
 				$row = getTableRowByQN("tbl", qn)
 			}
 			$row.find("td").eq(EQUIPMENT).html(makeEquip(equipJSON))
-		} else {
+		  } else {
 			// Error in update server
 			// Roll back. If old form has equips, fill checked & texts
 			// prop("checked", true) : radio and checkbox
@@ -231,20 +227,21 @@ function Checklistequip()
 					}
 				})
 			}
-		}
-	}
+		  }
+		})
+	})
 }
 
 function printpaper()
 {
 	if (/Edge|MS|\.NET/.test(navigator.userAgent)) {
-		var orgEquip = document.getElementById('dialogEquip')
-		var win = window.open()
+		let orgEquip = document.getElementById('dialogEquip')
+		let win = window.open()
 		win.document.open()
 		win.document.write('<LINK type="text/css" rel="stylesheet" href="css/print.css">')
 		win.document.writeln(orgEquip.outerHTML)
 
-		var dialogEquip = win.document.getElementById('dialogEquip')
+		let dialogEquip = win.document.getElementById('dialogEquip')
 
 		preparePrint(orgEquip, dialogEquip)
 
@@ -253,14 +250,14 @@ function printpaper()
 		win.print()
 		win.close()
 	} else {
-		var original = document.body.innerHTML
-		var orgEquip = document.getElementById('dialogEquip')
-		var cloneEquip = $('#dialogEquip').clone()
+		let original = document.body.innerHTML
+		let orgEquip = document.getElementById('dialogEquip')
+		let cloneEquip = $('#dialogEquip').clone()
 
 		document.body.innerHTML = ""//orgEquip.outerHTML
 		$("body").append(cloneEquip)
 
-		var dialogEquip = document.getElementById('dialogEquip')
+		let dialogEquip = document.getElementById('dialogEquip')
 
 		preparePrint(orgEquip, dialogEquip)
 
@@ -274,12 +271,12 @@ function printpaper()
 
 function preparePrint(orgEquip, dialogEquip)
 {
-	var originINPUT = orgEquip.getElementsByTagName("INPUT")
-	var printINPUT = dialogEquip.getElementsByTagName("INPUT")
-	var originTEXTAREA = orgEquip.getElementsByTagName("TEXTAREA")
-	var printTEXTAREA = dialogEquip.getElementsByTagName("TEXTAREA")
+	let originINPUT = orgEquip.getElementsByTagName("INPUT")
+	let printINPUT = dialogEquip.getElementsByTagName("INPUT")
+	let originTEXTAREA = orgEquip.getElementsByTagName("TEXTAREA")
+	let printTEXTAREA = dialogEquip.getElementsByTagName("TEXTAREA")
 
-	for (var i = 0; i < originINPUT.length; i++) 
+	for (let i = 0; i < originINPUT.length; i++) 
 	{
 		if (originINPUT[i].checked) {
 			printINPUT[i].checked = originINPUT[i].checked
@@ -294,13 +291,13 @@ function preparePrint(orgEquip, dialogEquip)
 
 function prepareText(originEquip, printEquip)
 {
-	for (var i = 0; i < originEquip.length; i++) 
+	for (let i = 0; i < originEquip.length; i++) 
 	{
 		if (originEquip[i].value) {
 			printEquip[i].value = originEquip[i].value
 		}
 		else {
-			var temp = printEquip[i]
+			let temp = printEquip[i]
 			while (temp.nodeName !== "SPAN") {
 				temp = temp.parentNode
 			}

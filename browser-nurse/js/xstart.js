@@ -1,40 +1,29 @@
 
-function Start(userid, book)
+function Start()
 {
 //	if ('serviceWorker' in navigator) {
 //		navigator.serviceWorker.register('service-worker.js')
 //	}
 
-	$("#login").remove()
-	$("#logo").remove()
-	$("head script:contains('function')").remove()
-	$("head style").remove()
-	$("head").append($("body link"))
-	$("#wrapper").show()
-	gv.user = userid
+	Ajax(MYSQLIPHP, "start=start", loading);
+
+	$("#tblcontainer").show()
 	resetTimer()
 
-	if (typeof response !== "object") { book = "{}" }
-	updateBOOK(book)
-	if (/^\d{1,2}$/.test(gv.user)) {
-		fillForRoom(new Date().ISOdate())
-	} else {
-		$("#wrapper").show()
-		$("#tblhead").show()
-		fillupstart();
-		fillConsults()
-	}
-
-	$("#wrapper").on("click", function (event) {
+	$("#tblcontainer").on("click", function (event) {
 		resetTimer();
 		event.stopPropagation()
 		var target = event.target
+		if (target.nodeName !== "TD") { return }
 		var $row = $(target).closest('tr')
-		var qn = $row.children('td').eq(QN).html()
-		if ((target.nodeName !== "TD") || (!qn)) {
-			return false
+		var	$cell = $row.children('td')
+		var opdate = $cell.eq(OPDATE).html().numDate()
+		var room = $cell.eq(OPROOM).html()
+		var qn = $cell.eq(QN).html()
+
+		if (target.nodeName === "TD") {
+			fillForRoom(opdate, room, qn)
 		}
-		fillEquipTable(gv.BOOK, $row, qn)
 	})
 
 	$(document).contextmenu( function (event) {
@@ -45,26 +34,26 @@ function Start(userid, book)
 		event.preventDefault();
 	})
 
-	// to make table scrollable while dragging
-	$("html, body").css( {
-		height: "100%",
-		overflow: "hidden",
-		margin: "0px"
-	})
+	function loading(response) {
+		if (typeof response === "object") {
+			updateBOOK(response)
+//		if (/^\d{1,2}$/.test(gv.user)) {
+//			fillForRoom(new Date().ISOdate(), room)
+//		} else {
+			fillupstart();
+			fillConsults()
+		}
+	}
 }
 
-function fillForRoom(opdate)
+function fillForRoom(opdate, room, qn)
 {
-	var book = gv.BOOK,
-		room = gv.user,
-		sameDateRoom = sameDateRoomBookQN(book, opdate, room),
-		slen = sameDateRoom.length,
-		casenum = 0,
-		showCase = function() {
-			fillEquipTable(book, $(), sameDateRoom[casenum])
-			showButtons()
-		},
-		blank = {
+	var	book = gv.BOOK
+	var	sameRoomQN = sameDateRoomBookQN(book, opdate, room)
+	var	slen = sameRoomQN.length
+	var	row = {}
+	var q = 0
+	var	blank = {
 			casenum: "",
 			diagnosis: "",
 			equipment: "",
@@ -76,23 +65,30 @@ function fillForRoom(opdate)
 			staffname: "",
 			treatment: ""
 		}
+	var	showCase = function() {
+			if (qn) {
+				q = sameRoomQN.indexOf(qn)
+			} else {
+				qn = sameRoomQN[q]
+			}
+			if (qn) {
+				row = getTableRowByQN("tbl", qn)
+			} else {
+				row = getTableRowsByDate(opdate.thDate())[0]
+			}
+			fillEquipTable(book, $(row), sameRoomQN[q], blank)
+			showButtons()
+			showFind($("#tblcontainer"), row)
+		}
 
-	if (slen) {
-		showCase()
-	} else {
-		fillEquipTable(book, $(), null, blank)
-	}
-	showButtons()
-
-	function showButtons()
-	{
+	function showButtons() {
 		$('#dialogEquip').dialog("option", "buttons", [
 			{
 				text: "<< Previous Date",
 				width: "140",
 				class: "silver floatleft",
 				click: function () {
-					fillForRoom(opdate.nextdays(-1))
+					fillForRoom(opdate.nextdays(-1), room)
 				}
 			},
 			{
@@ -100,8 +96,9 @@ function fillForRoom(opdate)
 				width: "140",
 				class: "floatleft",
 				click: function () {
-					if (casenum > 0) {
-						casenum = casenum-1
+					if (q > 0) {
+						q = q - 1
+						qn = 0
 						showCase()
 					}
 				}
@@ -110,8 +107,9 @@ function fillForRoom(opdate)
 				text: "Next Case >",
 				width: "120",
 				click: function () {
-					if (casenum < slen-1) {
-						casenum = casenum+1
+					if (q < slen-1) {
+						q = q + 1
+						qn = 0
 						showCase()
 					}
 				}
@@ -121,7 +119,7 @@ function fillForRoom(opdate)
 				width: "120",
 				class: "silver",
 				click: function () {
-					fillForRoom(opdate.nextdays(+1))
+					fillForRoom(opdate.nextdays(+1), room)
 				}
 			},
 			{
@@ -133,6 +131,8 @@ function fillForRoom(opdate)
 			}
 		])
 	}
+
+	showCase()
 }
 
 function updateBOOK(result)

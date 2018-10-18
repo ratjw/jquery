@@ -65,7 +65,7 @@ h4 {
 		<input type="hidden" name="isMobile" id="isMobile" />
 		<input type="hidden" name="isPACS" id="isPACS" />
 		<input type="hidden" name="module" id="module" />
-		<input type="hidden" name="engine" id="engine" />
+		<input type="hidden" name="browser" id="browser" />
 		<!-- img src="css/pic/general/nurse.png" width="30" height="45" onclick="nurse()">
 		<br>
 		<br -->

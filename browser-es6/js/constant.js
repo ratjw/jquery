@@ -1,5 +1,5 @@
 // global variables
-var gv = {
+let gv = {
 	BOOK: [],
 	CONSULT: [],
 	SERVICE: [],
@@ -7,7 +7,6 @@ var gv = {
 	STAFF: [],
 	ONCALL: [],
 	HOLIDAY: [],
-	user: "",
 	timestamp: "",
 	uploadWindow: null,
 	timer: {},
@@ -18,7 +17,8 @@ var gv = {
 },
 
 //Actually these are constants but older browsers do not support const
-GETIPD	= "php/getipd.php",
+GETUSERIDPHP= "php/getuserid.php",
+GETIPD		= "php/getipd.php",
 GETNAMEHN	= "php/getnamehn.php",
 MYSQLIPHP	= "php/mysqli.php",
 SEARCH		= "php/search.php",

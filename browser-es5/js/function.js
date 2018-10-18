@@ -342,7 +342,7 @@ function sameDateRoomBookQN(book, opdate, room)
   if (!room) { return [] }
 
   var sameRoom = book.filter(function(row) {
-    return row.opdate === opdate && row.oproom === room;
+    return row.opdate === opdate && Number(row.oproom) === Number(room);
   })
   $.each(sameRoom, function(i) {
     sameRoom[i] = this.qn

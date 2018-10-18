@@ -214,6 +214,7 @@ td img {
 #undelete,
 #txtArea1,
 #dialogStaff,
+#scbb option:first-of-type,
 #staffcells,
 #dialogHoliday,
 #holidaycells,
@@ -430,7 +431,9 @@ td.camera2 { background-image: url(pic/general/camera2.png); }
 .textleft { text-align: left;}
 .textright { text-align: right; }
 .textcenter { text-align: center; }
+.inline { display: inline-block; }
 
+.w5 { width:5px !important; }
 .w20 { width:20px !important; }
 .w22 { width:22px !important; }
 .w30 { width:30px !important; }
@@ -522,6 +525,18 @@ td.camera2 { background-image: url(pic/general/camera2.png); }
 
 #monthpicker { margin-left:5px }
 
+#hideProfile {
+	float: right;
+	font-size: 16px;
+	height: 30px;
+	line-height: 20px;
+	padding-top:2px
+}
+#hideProfile img {
+	float: left;
+	width: 25px;
+}
+
 #editcell { 
 	text-align: left; 
 	overflow: hidden;
@@ -587,6 +602,9 @@ td.camera2 { background-image: url(pic/general/camera2.png); }
 	padding: 2px;
 	color: blue;
 	font-weight: bold;
+}
+#editedby {
+	position: absolute;
 }
 
 #dialogNotify textarea {

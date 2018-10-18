@@ -1,10 +1,3 @@
-
-<?php
-	session_start();
-
-	$userid = !empty($_SESSION['userid']) ? $_SESSION['userid'] : '';
-?>
-
 <!DOCTYPE html>
 <HTML>
 <HEAD>
@@ -204,6 +197,7 @@
   <button id="exportService">Export to xls</button>
   <button id="reportService">Report to Dept.</button>
   <br>
+  <br>
   <div id="monthpicker"></div>
   <div id="monthstart"></div>
   <table id="servicetbl">
@@ -216,7 +210,7 @@
      <th>Treatment</th>
      <th>Admission Status</th>
      <th>Final Status</th>
-     <th>Case Profile</th>
+     <th>Profile</th>
      <th>Admit</th>
      <th>Date</th>
      <th>D/C</th>
@@ -334,7 +328,7 @@
     <td data-title="Treatment"></td>
     <td data-title="Admission Status"></td>
     <td data-title="Final Status"></td>
-    <td data-title="Case Profile"></td>
+    <td data-title="Profile"></td>
     <td data-title="Admit"></td>
     <td data-title="Date"></td>
     <td data-title="D/C"></td>
@@ -604,7 +598,7 @@
 	<tr>
 	 <td>Name : <input type="text" id="sname" size="10">
 	 </td>
-	 <td>Specialty : <select id="scbb"><option style="display:none"></option>
+	 <td>Specialty : <select id="scbb"><option></option>
 		</select>
 	 </td>
 	 <td>Date Oncall : <input type="text" id="sdate" size="10" readonly>
@@ -1030,7 +1024,7 @@
  <div>
   <span class="w350"></span>
   <span class="w70"> Edited by </span>
-  <span style="position:absolute" id="editedby"></span>
+  <span id="editedby"></span>
  </div>
  <br>
 </div>
@@ -1039,10 +1033,6 @@
 
 <!-- For IE that not support <a download>, used in Export to Excel -->
 <iframe id="txtArea1"></iframe>
-
-<?php
-	echo "<script> Start('$userid') </script>";
-?>
 
 </BODY>
 </HTML>

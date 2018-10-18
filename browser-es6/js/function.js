@@ -2,7 +2,7 @@
 ;(function($)
 {
   $.fn.fixMe = function($container) {
-    var $this = $(this),
+    let $this = $(this),
       $t_fixed,
       pad = $container.css("paddingLeft")
     init();
@@ -20,7 +20,7 @@
     }
 
     function scrollFixed() {
-      var offset = $(this).scrollTop(),
+      let offset = $(this).scrollTop(),
       tableTop = $this[0].offsetTop,
       tableBottom = tableTop + $this.height() - $this.find("thead").height();
       if(offset < tableTop || offset > tableBottom) {
@@ -36,7 +36,7 @@
 function resizeFixed($fix, $this)
 {
   $fix.find("th").each(function(index) {
-    var wide = $this.find("th").eq(index).width()
+    let wide = $this.find("th").eq(index).width()
 
     $(this).css("width", wide + "px")
   });
@@ -44,7 +44,7 @@ function resizeFixed($fix, $this)
 
 function winResizeFix($this, $container)
 {
-  var $fix = $container.find(".fixed"),
+  let $fix = $container.find(".fixed"),
     hide = $fix.css("display") === "none",
     pad = $container.css("paddingLeft")
 
@@ -55,7 +55,7 @@ function winResizeFix($this, $container)
 
 String.prototype.thDate = function () 
 {  //MySQL date (2014-05-11) to Thai date (11 พค. 2557) 
-  var date = this.split("-")
+  let date = this.split("-")
   if ((date.length === 1) || (date[0] < "1900")) {
     return false
   }
@@ -69,11 +69,11 @@ String.prototype.thDate = function ()
 
 String.prototype.numDate = function () 
 {  //Thai date (11 พค. 2557) to MySQL date (2014-05-11)
-  var date = this.split(" ")
+  let date = this.split(" ")
   if ((date.length === 1) || parseInt(date[1])) {
     return ""
   }
-  var mm = THAIMONTH.indexOf(date[1]) + 1
+  let mm = THAIMONTH.indexOf(date[1]) + 1
 
     return [
     Number(date[2]) - 543,
@@ -84,17 +84,17 @@ String.prototype.numDate = function ()
  
 Date.prototype.ISOdate = function () 
 {  // Javascript Date Object to MySQL date (2014-05-11)
-    var yyyy = this.getFullYear();
-    var mm = this.getMonth()+1;
+    let yyyy = this.getFullYear();
+    let mm = this.getMonth()+1;
   mm = (mm < 10)? "0"+mm : ""+mm;
-    var dd = this.getDate();
+    let dd = this.getDate();
   dd = (dd < 10)? "0"+dd : ""+dd;
     return yyyy + "-" + mm + "-" + dd;
 } 
 
 String.prototype.nextdays = function (days)
 {  // ISOdate to be added or substract by days
-  var morrow = new Date(this);
+  let morrow = new Date(this);
   morrow.setDate(morrow.getDate()+days);
   return morrow.ISOdate();
 }
@@ -106,26 +106,22 @@ String.prototype.getAge = function (toDate)
     return this
   }
 
-  var birth = new Date(this);
-  if (toDate === LARGESTDATE) {
-    var today = new Date()
-  } else {
-    var today = new Date(toDate);
-  }
+  let birth = new Date(this);
+  let today = (toDate === LARGESTDATE) ? new Date() : new Date(toDate);
 
   if (today.getTime() - birth.getTime() < 0)
     return "wrong date"
 
-  var ayear = today.getFullYear();
-  var amonth = today.getMonth();
-  var adate = today.getDate();
-  var byear = birth.getFullYear();
-  var bmonth = birth.getMonth();
-  var bdate = birth.getDate();
+  let ayear = today.getFullYear();
+  let amonth = today.getMonth();
+  let adate = today.getDate();
+  let byear = birth.getFullYear();
+  let bmonth = birth.getMonth();
+  let bdate = birth.getDate();
 
-  var days = adate - bdate;
-  var months = amonth - bmonth;
-  var years = ayear - byear;
+  let days = adate - bdate;
+  let months = amonth - bmonth;
+  let years = ayear - byear;
   if (days < 0)
   {
     months -= 1
@@ -137,9 +133,9 @@ String.prototype.getAge = function (toDate)
     months += 12
   }
 
-  var ageyears = years? years + Math.floor(months / 6)  + " ปี " : "";
-  var agemonths = months? months + Math.floor(days / 15)  + " ด." : "";
-  var agedays = days? days + " ว." : "";
+  let ageyears = years? years + Math.floor(months / 6)  + " ปี " : "";
+  let agemonths = months? months + Math.floor(days / 15)  + " ด." : "";
+  let agedays = days? days + " ว." : "";
 
   return years? ageyears : months? agemonths : agedays;
 }
@@ -147,7 +143,7 @@ String.prototype.getAge = function (toDate)
 //get 1st date of last month
 function getStart()
 {
-  var start = new Date()
+  let start = new Date()
 
   return new Date(start.getFullYear(), start.getMonth()-1, 1).ISOdate()
 }
@@ -184,25 +180,24 @@ function putAgeOpdate(dob, date)
   }
 }
 
-function Ajax(url, params, callback)
+function getUserID()
 {
-  var http = new XMLHttpRequest();
-  http.open("POST", url, true);
-  http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-  http.onreadystatechange = function() 
-  {
-    if (http.readyState === 4 && http.status === 200) {
-      try {
-        callback(JSON.parse(http.responseText));
-      } catch (e) {
-        callback(http.responseText);
-      }
+  return fetch(GETUSERIDPHP + "?userid='x'").then(response => response = response.text())
+}
+
+async function postData(url = ``, data) {
+    const response = await fetch(url, {
+        method: "POST",
+        headers: {"Content-Type": "application/x-www-form-urlencoded"},
+		body: data
+    })
+    const text = await response.text()
+    try {
+        const result = JSON.parse(text)
+        return result
+    } catch {
+        return text
     }
-    if (/404|500|503|504/.test(http.status)) {
-      callback(http.statusText);
-    }
-  }
-  http.send(params);
 }
 
 function contentEncode()
@@ -230,9 +225,9 @@ function URIcomponent(content)
 function menustyle($me, $target)
 {
   if ($me.position().top > $target.position().top) {
-    var shadow = '10px 20px 30px slategray'
+    let shadow = '10px 20px 30px slategray'
   } else {
-    var shadow = '10px -20px 30px slategray'
+    let shadow = '10px -20px 30px slategray'
   }
 
   $me.css({
@@ -242,7 +237,7 @@ function menustyle($me, $target)
 
 function getMaxQN(book)
 {
-  var qn = Math.max.apply(Math, $.map(book, function(row, i) {
+  let qn = Math.max.apply(Math, $.map(book, function(row, i) {
       return row.qn
     }))
   return String(qn)
@@ -250,7 +245,7 @@ function getMaxQN(book)
 
 function getBOOKrowByQN(book, qn)
 {  
-  var bookq
+  let bookq
   $.each(book, function() {
     bookq = this
     return (this.qn !== qn);
@@ -270,7 +265,7 @@ function getTableRowByQN(tableID, qn)
 
 function getWaitingBOOKrowByHN(hn)
 {  
-  var  todate = new Date().ISOdate()
+  let  todate = new Date().ISOdate()
 
   return $.grep(gv.BOOK, function(bookq) {
     return bookq.opdate > todate && bookq.hn === hn
@@ -279,7 +274,7 @@ function getWaitingBOOKrowByHN(hn)
 
 function getWaitingTableRowByHN(hn)
 {
-  var  todate = new Date().ISOdate()
+  let  todate = new Date().ISOdate()
 
   return $("#tbl tr:has(td)").filter(function() {
     return this.cells[OPDATE].innerHTML.numDate() > todate
@@ -305,7 +300,7 @@ function getBOOKrowsByDate(book, opdate)
 
 function findStartRowInBOOK(book, opdate)
 {
-  var q = 0
+  let q = 0
   while ((q < book.length) && (book[q].opdate < opdate)) {
     q++
   }
@@ -314,7 +309,7 @@ function findStartRowInBOOK(book, opdate)
 
 function findLastDateInBOOK(book)
 {
-  var q = 0
+  let q = 0
   while ((q < book.length) && (book[q].opdate < LARGESTDATE)) {
     q++
   }
@@ -326,7 +321,7 @@ function sameDateRoomTableQN(opdateth, room, theatre)
 {
   if (!room) { return [] }
 
-  var sameRoom = $('#tbl tr').filter(function() {
+  let sameRoom = $('#tbl tr').filter(function() {
     return this.cells[OPDATE].innerHTML === opdateth
       && this.cells[THEATRE].innerHTML === theatre
       && this.cells[OPROOM].innerHTML === room
@@ -341,8 +336,8 @@ function sameDateRoomBookQN(book, opdate, room)
 {
   if (!room) { return [] }
 
-  var sameRoom = book.filter(function(row) {
-    return row.opdate === opdate && row.oproom === room;
+  let sameRoom = book.filter(function(row) {
+    return row.opdate === opdate && Number(row.oproom) === Number(room);
   })
   $.each(sameRoom, function(i) {
     sameRoom[i] = this.qn
@@ -354,7 +349,7 @@ function sameDateRoomBookQN(book, opdate, room)
 function createThisdateTableRow(opdate, opdateth)
 {
   if (opdate === LARGESTDATE) { return null }
-  var rows = getTableRowsByDate(opdate.nextdays(-1).thDate()),
+  let rows = getTableRowsByDate(opdate.nextdays(-1).thDate()),
     $row = $(rows[rows.length-1]),
     $thisrow = $row && $row.clone().insertAfter($row)
 
@@ -380,8 +375,8 @@ function isConsults()
 
 function ConsultsTbl(tableID)
 {  
-  var queuetbl = tableID === "queuetbl"
-  var consult = $("#titlename").html() === "Consults"
+  let queuetbl = tableID === "queuetbl"
+  let consult = $("#titlename").html() === "Consults"
 
   return queuetbl && consult
 }
@@ -394,7 +389,7 @@ function returnFalse()
 // waitnum is for ordering where there is no oproom, casenum
 function calcWaitnum(thisOpdate, $prevrow, $nextrow)
 {
-  var prevWaitNum = Number($prevrow.prop("title")),
+  let prevWaitNum = Number($prevrow.prop("title")),
     nextWaitNum = Number($nextrow.prop("title")),
 
     $prevRowCell = $prevrow.children("td"),
@@ -423,7 +418,7 @@ function decimalToTime(dec)
 {
   if (dec === 0) { return "" }
 
-  var  integer = Math.floor(dec),
+  let  integer = Math.floor(dec),
     decimal = dec - integer
 
   return [
@@ -434,7 +429,7 @@ function decimalToTime(dec)
 
 function strtoTime(value)
 {
-  var  time = value.split("."),
+  let  time = value.split("."),
     hour = time[0],
     min = time[1] || "0",
     val = Number(value)
@@ -457,7 +452,7 @@ function strtoTime(value)
 
 function getNextDayOfWeek(date, dayOfWeek)
 {
-  var resultDate = new Date(date.getTime());
+  let resultDate = new Date(date.getTime());
 
   resultDate.setDate(date.getDate() + (7 + dayOfWeek - date.getDay()) % 7);
 
@@ -465,7 +460,7 @@ function getNextDayOfWeek(date, dayOfWeek)
 }
 
 function inPicArea(evt, pointing) {
-  var $pointing = $(pointing),
+  let $pointing = $(pointing),
     x = evt.pageX,
     y = evt.pageY,
     square = picArea(pointing),
@@ -480,7 +475,7 @@ function inPicArea(evt, pointing) {
 }
 
 function picArea(pointing) {
-  var $pointing = $(pointing),
+  let $pointing = $(pointing),
     right = $pointing.offset().left + $pointing.width(),
     bottom = $pointing.offset().top + $pointing.height(),
     left = right - 25,
@@ -503,7 +498,7 @@ function dataforEachCell(cells, data)
 
 function rowDecoration(row, date)
 {
-  var  cells = row.cells
+  let  cells = row.cells
 
   row.className = dayName(NAMEOFDAYFULL, date) || "nodate"
   cells[OPDATE].innerHTML = putThdate(date)
@@ -522,7 +517,7 @@ function showEquip(equipString)
 
 function makeEquip(equipJSON)
 {
-  var equip = "",
+  let equip = "",
     equipIcons = {
       Fluoroscope: "Fluoroscope",
       Navigator_frameless: "Navigator",
@@ -549,7 +544,7 @@ function makeEquip(equipJSON)
     equipPics = []
 
   $.each(equipJSON, function(key, value) {
-    var Monitor = /Monitor/.test(equip)
+    let Monitor = /Monitor/.test(equip)
     if (equip) { equip += ", " }
     if (value === "checked") {
       if (key in equipIcons) {
@@ -579,7 +574,7 @@ function makeEquip(equipJSON)
 
 function equipImg(equipPics)
 {
-  var img = ""
+  let img = ""
 
   $.each(equipPics, function() {
     img += '<img src="css/pic/equip/' + this + '.jpg"> '
@@ -590,8 +585,8 @@ function equipImg(equipPics)
 
 function findPrevcell(editable, pointing) 
 {
-  var $prevcell = $(pointing)
-  var column = $prevcell.index()
+  let $prevcell = $(pointing)
+  let column = $prevcell.index()
 
   if ((column = editable[($.inArray(column, editable) - 1)]))
   {
@@ -620,8 +615,8 @@ function findPrevcell(editable, pointing)
 
 function findNextcell(editable, pointing) 
 {
-  var $nextcell = $(pointing)
-  var column = $nextcell.index()
+  let $nextcell = $(pointing)
+  let column = $nextcell.index()
 
   if ((column = editable[($.inArray(column, editable) + 1)]))
   {
@@ -646,7 +641,7 @@ function findNextcell(editable, pointing)
 
 function findNextRow(editable, pointing) 
 {
-  var $nextcell = $(pointing)
+  let $nextcell = $(pointing)
 
   //go to next row first editable
   do {
@@ -664,9 +659,9 @@ function findNextRow(editable, pointing)
 function exportQbookToExcel()
 {
   //getting data from our table
-  var data_type = 'data:application/vnd.ms-excel';  //Chrome, FF, not IE
-  var title = 'Qbook Selected '
-  var style = '\
+  let data_type = 'data:application/vnd.ms-excel';  //Chrome, FF, not IE
+  let title = 'Qbook Selected '
+  let style = '\
     <style type="text/css">\
       #exceltbl {\
         border-right: solid 1px gray;\
@@ -704,7 +699,7 @@ function exportQbookToExcel()
       #exceltbl td.Sat { background-color: #CCBBF0; }\
 \
     </style>'
-  var head = '\
+  let head = '\
       <table id="excelhead">\
       <tr></tr>\
       <tr>\
@@ -714,7 +709,7 @@ function exportQbookToExcel()
       </tr>\
       <tr></tr>\
       </table>'
-  var filename = title + Date.now() + '.xls'
+  let filename = title + Date.now() + '.xls'
 
   exportToExcel("capture", data_type, title, style, head, filename)    
 }
@@ -722,9 +717,9 @@ function exportQbookToExcel()
 function exportServiceToExcel()
 {
   //getting data from our table
-  var data_type = 'data:application/vnd.ms-excel';  //Chrome, FF, not IE
-  var title = $('#dialogService').dialog( "option", "title" )
-  var style = '\
+  let data_type = 'data:application/vnd.ms-excel';  //Chrome, FF, not IE
+  let title = $('#dialogService').dialog( "option", "title" )
+  let style = '\
     <style type="text/css">\
       #exceltbl {\
         border-right: solid 1px gray;\
@@ -770,7 +765,7 @@ function exportServiceToExcel()
       #exceltbl tr.Dead,\
       #exceltbl td.Dead { background-color: #AAAAAA; }\
     </style>'
-  var head = '\
+  let head = '\
       <table id="excelhead">\
       <tr>\
         <td></td>\
@@ -798,9 +793,9 @@ function exportServiceToExcel()
       <tr></tr>\
       <tr></tr>\
       </table>'
-  var month = $("#monthstart").val()
+  let month = $("#monthstart").val()
   month = month.substring(0, month.lastIndexOf("-"))  //use yyyy-mm for filename
-  var filename = 'Service Neurosurgery ' + month + '.xls'
+  let filename = 'Service Neurosurgery ' + month + '.xls'
 
   exportToExcel("servicetbl", data_type, title, style, head, filename)    
 }
@@ -810,9 +805,9 @@ function exportFindToExcel(search)
   // getting data from our table
   // data_type is for Chrome, FF
   // IE uses "txt/html", "replace" with blob
-  var data_type = 'data:application/vnd.ms-excel'
-  var title = $('#dialogFind').dialog( "option", "title" )
-  var style = '\
+  let data_type = 'data:application/vnd.ms-excel'
+  let title = $('#dialogFind').dialog( "option", "title" )
+  let style = '\
     <style type="text/css">\
       #exceltbl {\
         border-right: solid 1px gray;\
@@ -843,7 +838,7 @@ function exportFindToExcel(search)
         text-align: center;\
       }\
     </style>'
-  var head = '\
+  let head = '\
       <table id="excelhead">\
       <tr></tr>\
       <tr>\
@@ -853,7 +848,7 @@ function exportFindToExcel(search)
       </tr>\
       <tr></tr>\
       </table>'
-  var filename = 'Search ' + search + '.xls'
+  let filename = 'Search ' + search + '.xls'
 
   exportToExcel("findtbl", data_type, title, style, head, filename)    
 }
@@ -863,8 +858,8 @@ function exportReportToExcel(title)
   // getting data from our table
   // data_type is for Chrome, FF
   // IE uses "txt/html", "replace" with blob
-  var data_type = 'data:application/vnd.ms-excel'
-  var style = '\
+  let data_type = 'data:application/vnd.ms-excel'
+  let style = '\
     <style type="text/css">\
       #exceltbl {\
         border-right: solid 1px gray;\
@@ -908,7 +903,7 @@ function exportReportToExcel(title)
         text-align: center;\
       }\
     </style>'
-  var head = '\
+  let head = '\
       <table id="excelhead">\
       <tr></tr>\
       <tr>\
@@ -916,7 +911,7 @@ function exportReportToExcel(title)
       </tr>\
       <tr></tr>\
       </table>'
-  var filename = 'Report ' + title + '.xls'
+  let filename = 'Report ' + title + '.xls'
 
   exportToExcel("reviewtbl", data_type, title, style, head, filename)    
 }
@@ -931,7 +926,7 @@ function exportToExcel(id, data_type, title, style, head, filename)
 
   // use only the last class because Excel does not accept multiple classes
   $.each( $("#exceltbl tr"), function() {
-    var multiclass = this.className.split(" ")
+    let multiclass = this.className.split(" ")
     if (multiclass.length > 1) {
       this.className = multiclass[multiclass.length-1]
     }
@@ -944,7 +939,7 @@ function exportToExcel(id, data_type, title, style, head, filename)
     }
   })
 
-  var $exceltbl = $("#exceltbl")
+  let $exceltbl = $("#exceltbl")
 
   // make line breaks show in single cell
   $exceltbl.find('br').attr('style', "mso-data-placement:same-cell");
@@ -952,15 +947,15 @@ function exportToExcel(id, data_type, title, style, head, filename)
   //remove img in equipment
   $exceltbl.find('img').remove();
 
-  var table = $exceltbl[0].outerHTML
-  var tableToExcel = '<!DOCTYPE html><HTML><HEAD><meta charset="utf-8"/>'
+  let table = $exceltbl[0].outerHTML
+  let tableToExcel = '<!DOCTYPE html><HTML><HEAD><meta charset="utf-8"/>'
                     + style + '</HEAD><BODY>'
       tableToExcel += head + table
       tableToExcel += '</BODY></HTML>'
 
-  var ua = window.navigator.userAgent;
-  var msie = ua.indexOf("MSIE")
-  var edge = ua.indexOf("Edge"); 
+  let ua = window.navigator.userAgent;
+  let msie = ua.indexOf("MSIE")
+  let edge = ua.indexOf("Edge"); 
 
   if (msie > 0 || edge > 0 || navigator.userAgent.match(/Trident.*rv\:11\./)) // If Internet Explorer
   {
@@ -968,7 +963,7 @@ function exportToExcel(id, data_type, title, style, head, filename)
     //use blobs if we can
     tableToExcel = [tableToExcel];
     //convert to array
-    var blob1 = new Blob(tableToExcel, {
+    let blob1 = new Blob(tableToExcel, {
       type: "text/html"
     });
     window.navigator.msSaveBlob(blob1, filename);
@@ -981,7 +976,7 @@ function exportToExcel(id, data_type, title, style, head, filename)
     return (sa);  //not tested
     }
   } else {
-    var a = document.createElement('a');
+    let a = document.createElement('a');
     document.body.appendChild(a);  // You need to add this line in FF
     a.href = data_type + ', ' + encodeURIComponent(tableToExcel);
     a.download = filename

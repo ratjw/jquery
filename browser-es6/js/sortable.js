@@ -1,6 +1,6 @@
 function sortable()
 {
-	var prevplace,
+	let prevplace,
 		thisplace,
 		sender
 
@@ -30,7 +30,7 @@ function sortable()
 			thisplace = ui.placeholder.index()
 		},
 		stop: function(e, ui) {
-			var $item = ui.item,
+			let $item = ui.item,
 				$itemcell = $item.children("td"),
 				receiver = $item.closest('table').attr('id'),
 				oldwaitnum = $item[0].title,
@@ -53,7 +53,7 @@ function sortable()
 				return false
 			}
 
-			var $thisdrop, before,
+			let $thisdrop, before,
 				$previtem = $item.prev(),
 				$nextitem = $item.next()
 			if (!$previtem.length || $previtem.has('th').length) {
@@ -64,7 +64,7 @@ function sortable()
 					$thisdrop = $previtem
 					before = 0
 				} else {		//ui.offset (no '()') = helper position
-					var helperpos = ui.offset.top,
+					let helperpos = ui.offset.top,
 						prevpos = $previtem.offset().top,
 						thispos = $item.offset().top,
 						nextpos = $nextitem.offset().top,
@@ -96,7 +96,7 @@ function sortable()
 				}
 			}
 
-			var $thiscell = $thisdrop.children("td"),
+			let $thiscell = $thisdrop.children("td"),
 				thisOpdateth = $thisdrop.children("td").eq(OPDATE).html(),
 				thisOpdate = getOpdate(thisOpdateth),
 				thistheatre = $thiscell.eq(THEATRE).html(),
@@ -135,7 +135,7 @@ function sortable()
 					}
 				}
 
-				for (var i=0; i<allNewCases.length; i++) {
+				for (let i=0; i<allNewCases.length; i++) {
 					if (allNewCases[i] === oldqn) {
 						sql += sqlMover(newWaitnum, thisOpdate, thisroom, i + 1, oldqn)
 					} else {
@@ -154,10 +154,7 @@ function sortable()
 			}
 			sql = "sqlReturnbook=" + sql
 
-			Ajax(MYSQLIPHP, sql, callbacksortable);
-
-			function callbacksortable(response)
-			{
+			postData(MYSQLIPHP, sql).then(response => {
 				if (typeof response === "object") {
 					updateBOOK(response)
 					if (receiver === "tbl") {
@@ -176,7 +173,7 @@ function sortable()
 				} else {
 					Alert ("Sortable", response)
 				}
-			}
+			})
 		}
 	})
 }
@@ -197,8 +194,8 @@ function stopsorting()
 
 function updateCasenum(allCases)
 {
-	var sql = ""
-	for (var i=0; i<allCases.length; i++) {
+	let sql = ""
+	for (let i=0; i<allCases.length; i++) {
 		sql += sqlCaseNum(i + 1, allCases[i])
 	}
 	return sql
@@ -206,19 +203,23 @@ function updateCasenum(allCases)
 
 function sqlCaseNum(casenum, qn)
 {	
+  getUserID().then(response => {
 	return "UPDATE book SET "
 		+  "casenum=" + casenum
-		+  ",editor='" + gv.user
+		+  ",editor='" + response
 		+  "' WHERE qn="+ qn + ";";
+  })
 }
 
 function sqlMover(waitnum, opdate, oproom, casenum, qn)
 {
+  getUserID().then(response => {
 	return "UPDATE book SET "
 		+  "waitnum=" + waitnum
 		+  ", opdate='" + opdate
 		+  "',oproom=" + oproom
 		+  ",casenum=" + casenum
-		+  ",editor='" + gv.user
+		+  ",editor='" + response
 		+  "' WHERE qn="+ qn + ";";
+  })
 }

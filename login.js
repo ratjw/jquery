@@ -1,10 +1,13 @@
-
+// Ridirect to https
+if (window.location.protocol === "http:" && window.location.hostname !== "localhost") {
+	window.location = "https://" + window.host
+}
 	// Browsers that support module: Edge/16, Firefox/60, Chrome/61, Safari 10.1
 	var module = false
 	var ua = navigator.userAgent
 	var isMobile = /Android|webOS|iPhone|iPad|BlackBerry|IEMobile/i.test(ua)
 	var isPACS = !isMobile
-	var engine = ""
+	var browser = ""
 
 	if (isPACS) {
 		// (.*)$ is the second argument
@@ -28,15 +31,15 @@
 	}
 
 	if (check()) {
-		engine = "es6"
+		browser = "es6"
 	} else {
-		engine = "es5"
+		browser = "es5"
 	}
 
 	document.getElementById("isMobile").value = isMobile
 	document.getElementById("isPACS").value = isPACS
 	document.getElementById("module").value = module
-	document.getElementById("engine").value = engine
+	document.getElementById("browser").value = browser
 
 function namesix()
 {
@@ -64,7 +67,8 @@ function nurse()
 function check() {
     "use strict";
 
-    if (typeof Symbol == "undefined") return false;
+    if (typeof Symbol === "undefined") return false;
+    if (typeof fetch === "undefined") return false;
     try {
         eval("class Foo {}");
         eval("var bar = (x) => x+1");

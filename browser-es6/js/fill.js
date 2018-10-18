@@ -3,7 +3,7 @@ function fillupstart()
 {	// Display all cases in each day of 5 weeks
 	// Find the 1st of last month
 	// fill until 2 year from now
-	var	table = document.getElementById("tbl"),
+	let	table = document.getElementById("tbl"),
 		today = new Date(),
 		start = getStart(),
 		nextyear = today.getFullYear() + 2,
@@ -19,7 +19,7 @@ function fillupstart()
 	fillall(book, table, start, until)
 
 	//scroll to today
-	var thishead = $("#tbl tr:contains(" + todateth + ")")[0]
+	let thishead = $("#tbl tr:contains(" + todateth + ")")[0]
 	$('#tblcontainer').animate({
 		scrollTop: thishead.offsetTop
 	}, 300);
@@ -29,7 +29,7 @@ function fillupstart()
 
 function fillall(book, table, start, until)
 {
-	var tbody = table.getElementsByTagName("tbody")[0],
+	let tbody = table.getElementsByTagName("tbody")[0],
 		rows = table.rows,
 		head = table.rows[0],
 		date = start,
@@ -44,8 +44,8 @@ function fillall(book, table, start, until)
 	}
 
 	//i for rows in table (with head as the first row)
-	var i = 0
-	var blen = book.length
+	let i = 0
+	let blen = book.length
 
 	for (q; q < blen; q++)
 	{	
@@ -68,7 +68,7 @@ function fillall(book, table, start, until)
 			//make table head row before every Monday
 			if ((new Date(date).getDay())%7 === 1)
 			{
-				var clone = head.cloneNode(true)
+				let clone = head.cloneNode(true)
 				tbody.appendChild(clone)
  				i++
 			}
@@ -86,7 +86,7 @@ function fillall(book, table, start, until)
 		//make table head row before every Monday
 		if (((new Date(date)).getDay())%7 === 1)
 		{
-			var clone = head.cloneNode(true)
+			let clone = head.cloneNode(true)
 			tbody.appendChild(clone)
 		}
 		//make a blank row
@@ -96,7 +96,7 @@ function fillall(book, table, start, until)
 
 function refillall()
 {
-	var book = gv.BOOK,
+	let book = gv.BOOK,
 		table = document.getElementById("tbl"),
 		$tbody = $("#tbl tbody"),
 		start = $('#tbl tr:has("td")').first().find('td').eq(OPDATE).html().numDate(),
@@ -112,7 +112,7 @@ function refillall()
 function refillOneDay(opdate)
 {
 	if (opdate === LARGESTDATE) { return }
-	var book = gv.BOOK,
+	let book = gv.BOOK,
 		opdateth = putThdate(opdate),
 		opdateBOOKrows = getBOOKrowsByDate(book, opdate),
 		$opdateTblRows = getTableRowsByDate(opdateth),
@@ -169,7 +169,7 @@ function refillOneDay(opdate)
 //create and decorate new row
 function makenextrow(table, date)
 {
-	var	tbody = table.getElementsByTagName("tbody")[0],
+	let	tbody = table.getElementsByTagName("tbody")[0],
 		tblcells = document.getElementById("tblcells"),
 		row = tblcells.rows[0].cloneNode(true),
 		rowi = tbody.appendChild(row)
@@ -186,7 +186,7 @@ function dayName(DAYNAME, date)
 
 function fillblank(rowi)
 {
-	var cells = rowi.cells
+	let cells = rowi.cells
 	cells[THEATRE].innerHTML = ""
 	cells[OPROOM].innerHTML = ""
 	cells[OPTIME].innerHTML = ""
@@ -205,7 +205,7 @@ function fillblank(rowi)
 
 function filldata(bookq, row)
 {
-	var cells = row.cells
+	let cells = row.cells
 
 	row.title = bookq.waitnum
 	if (bookq.hn && gv.isPACS) { cells[HN].className = "pacs" }
@@ -227,7 +227,7 @@ function filldata(bookq, row)
 
 function staffqueue(staffname)
 {
-	var	todate = new Date().ISOdate(),
+	let	todate = new Date().ISOdate(),
 		book = gv.BOOK,
 		consult = gv.CONSULT,
 		$queuetbl = $('#queuetbl'),
@@ -245,7 +245,7 @@ function staffqueue(staffname)
 		if (consult.length === 0)
 			consult.push({"opdate" : todate})
 
-		var start = getStart()
+		let start = getStart()
 
 		fillall(consult, queuetbl, start, todate)
 
@@ -265,11 +265,11 @@ function staffqueue(staffname)
 
 function refillstaffqueue()
 {
-	var today = new Date()
-	var todate = today.ISOdate()
-	var staffname = $('#titlename').html()
-	var book = gv.BOOK
-	var consult = gv.CONSULT
+	let today = new Date()
+	let todate = today.ISOdate()
+	let staffname = $('#titlename').html()
+	let book = gv.BOOK
+	let consult = gv.CONSULT
 
 	if (!isSplited()) { return }
 
@@ -279,13 +279,13 @@ function refillstaffqueue()
 		if (consult.length === 0)
 			consult.push({"opdate" : todate})
 
-		var table = document.getElementById("queuetbl")
-		var start = (new Date((today).getFullYear(), (today).getMonth() - 1, 1)).ISOdate()
+		let table = document.getElementById("queuetbl")
+		let start = (new Date((today).getFullYear(), (today).getMonth() - 1, 1)).ISOdate()
 
 		fillall(consult, table, start, todate)
 	} else {
 		//render as staffqueue
-		var i = 0
+		let i = 0
 		$.each( book, function(q, each) {
 			if ((this.opdate >= todate) && (this.staffname === staffname)) {
 				i++
@@ -306,7 +306,7 @@ function refillstaffqueue()
 
 jQuery.fn.extend({
 	filldataQueue : function(bookq) {
-		var	$cells = this.find("td")
+		let	$cells = this.find("td")
 
 		this[0].title = bookq.waitnum
 		addColor(this, bookq.opdate)
@@ -331,7 +331,7 @@ jQuery.fn.extend({
 // hover on background pics
 function hoverMain()
 {
-	var	paleClasses = ["pacs", "camera"],
+	let	paleClasses = ["pacs", "camera"],
 		boldClasses = ["pacs2", "camera2"]
 
 	$("td.pacs, td.camera").mousemove(function(event) {
@@ -348,12 +348,12 @@ function hoverMain()
 
 function getClass(thiscell, fromClass, toClass)
 {
-	var	classname = thiscell.className,
+	let	classname = thiscell.className,
 		classes = classname.split(" "),
 		oldClass = checkMatch(classes, fromClass)
 
 	if (oldClass) {
-		var hasIndex = fromClass.indexOf(oldClass),
+		let hasIndex = fromClass.indexOf(oldClass),
 			newClass = toClass[hasIndex]
 		thiscell.className = classname.replace(oldClass, newClass)
 	}
@@ -361,8 +361,8 @@ function getClass(thiscell, fromClass, toClass)
 
 function checkMatch(classes, oldClasses)
 {
-	for (var i=0; i<classes.length; i++) {
-		for (var j=0; j<oldClasses.length; j++) {
+	for (let i=0; i<classes.length; i++) {
+		for (let j=0; j<oldClasses.length; j++) {
 			if (classes[i] === oldClasses[j]) {
 				return classes[i]
 			}
@@ -378,7 +378,7 @@ function putNameAge(bookq)
 
 function addColor($this, bookqOpdate) 
 {
-	var predate = $this.prev().children("td").eq(OPDATE).html(),
+	let predate = $this.prev().children("td").eq(OPDATE).html(),
 		prevdate = (predate? predate.numDate() : ""),
 		prevIsOdd = $this.prev().prop("class").indexOf("odd") >= 0,
 		samePrevDate = bookqOpdate === prevdate
@@ -394,7 +394,7 @@ function addColor($this, bookqOpdate)
 
 function setHoliday()
 {
-	var	$dialogHoliday = $("#dialogHoliday"),
+	let	$dialogHoliday = $("#dialogHoliday"),
 		$holidaytbl = $("#holidaytbl"),
 		$holidateth = $("#holidateth")
 
@@ -414,7 +414,7 @@ function setHoliday()
 			}
 		}],
 		close: function() {
-			var	$inputRow = $("#holidaytbl tr:has('input')")
+			let	$inputRow = $("#holidaytbl tr:has('input')")
 
 			if ($inputRow.length) {
 				holidayInputBack($inputRow)
@@ -457,7 +457,7 @@ function setHoliday()
 
 function fillHoliday($holidaytbl)
 {
-	var	holidaylist = '<option style="display:none"></option>'
+	let	holidaylist = '<option style="display:none"></option>'
 
 	$.each(HOLIDAYENGTHAI, function(key, val) {
 		holidaylist += '<option value="' + key
@@ -479,7 +479,7 @@ function fillHoliday($holidaytbl)
 
 jQuery.fn.extend({
 	filldataHoliday : function(q) {
-		var	cells = this[0].cells,
+		let	cells = this[0].cells,
 			data = [
 				putThdate(q.holidate),
 				HOLIDAYENGTHAI[q.dayname]
@@ -491,7 +491,7 @@ jQuery.fn.extend({
 
 function addHoliday(that)
 {
-	var	$dialogHoliday = $("#dialogHoliday"),
+	let	$dialogHoliday = $("#dialogHoliday"),
 		$holidaytbl = $("#holidaytbl")
 
 	// already has an <input> row
@@ -500,7 +500,7 @@ function addHoliday(that)
 	$holidaytbl.find("tbody")
 		.append($("#holidayinput tr"))
 
-	var	append = $holidaytbl.height(),
+	let	append = $holidaytbl.height(),
 		height = $dialogHoliday.height()
 	if (append > height) {
 		$dialogHoliday.scrollTop(append - height)
@@ -509,7 +509,7 @@ function addHoliday(that)
 
 function saveHoliday()
 {
-	var	vdateth = document.getElementById("holidateth").value,
+	let	vdateth = document.getElementById("holidateth").value,
 		vdate = vdateth.numDate(),
 		vname = document.getElementById("holidayname").value,
 		rows = getTableRowsByDate(vdateth),
@@ -521,10 +521,7 @@ function saveHoliday()
 
 	if (!vdate || !vname) { return }
 
-	Ajax(MYSQLIPHP, sql, callbackHoliday);
-
-	function callbackHoliday(response)
-	{
+	postData(MYSQLIPHP, sql).then(response => {
 		if (typeof response === "object") {
 			gv.HOLIDAY = response
 			holidayInputBack($("#holidateth").closest("tr"))
@@ -535,17 +532,17 @@ function saveHoliday()
 		} else {
 			alert(response)
 		}
-	}
+	})
 }
 
 function delHoliday(that)
 {
-	var	$row = $(that).closest("tr")
+	let	$row = $(that).closest("tr")
 
 	if ($row.find("input").length) {
 		holidayInputBack($row)
 	} else {
-		var	$cell = $row.find("td"),
+		let	$cell = $row.find("td"),
 			vdateth = $cell[0].innerHTML,
 			vdate = vdateth.numDate(),
 			vname = $cell[1].innerHTML.replace(/<button.*$/, ""),
@@ -557,10 +554,7 @@ function delHoliday(that)
 				+ "' AND dayname='" + holidayEng
 				+ "';SELECT * FROM holiday ORDER BY holidate;"
 
-		Ajax(MYSQLIPHP, sql, callbackHoliday);
-
-		function callbackHoliday(response)
-		{
+		postData(MYSQLIPHP, sql).then(response => {
 			if (typeof response === "object") {
 				gv.HOLIDAY = response
 				$(rows).each(function() {
@@ -570,7 +564,7 @@ function delHoliday(that)
 			} else {
 				alert(response)
 			}
-		}
+		})
 	}
 }
 
@@ -589,7 +583,7 @@ function holidayInputBack($inputRow)
 
 function holiday(date)
 {
-	var	monthdate = date.substring(5),
+	let	monthdate = date.substring(5),
 		dayofweek = (new Date(date)).getDay(),
 		holidayname = "",
 		Mon = (dayofweek === 1),

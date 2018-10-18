@@ -25,7 +25,7 @@ NAMEOFDAYFULL	= ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday
 THAIMONTH		= ["มค.", "กพ.", "มีค.", "เมย.", "พค.", "มิย.", "กค.", "สค.", "กย.", "ตค.", "พย.", "ธค."],
 LARGESTDATE		= "9999-12-31",
 
-//====================================================================================================
+//================================================================================================
 
 	gv = {
 	BOOK: [],
@@ -38,9 +38,4 @@ LARGESTDATE		= "9999-12-31",
 	idleCounter: 0,
 	isMobile: false,
 	isPACS: true
-}
-
-if (/Android|webOS|iPhone|iPad|BlackBerry|IEMobile/i.test(navigator.userAgent)) {
-	gv.isMobile = true
-	gv.isPACS = false
 }

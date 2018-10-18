@@ -1,9 +1,10 @@
 
 function oneRowMenu()
 {
-	var	$selected = $(".selected"),
+	let	$selected = $(".selected"),
 		tableID = $selected.closest('table').attr('id'),
 		$row = $selected.closest('tr'),
+		prevDate = $row.prev().find("td").eq(OPDATE).html() || ""
 		$cell = $row.find("td"),
 		opdateth = $cell.eq(OPDATE).html(),
 		opdate = getOpdate(opdateth),
@@ -14,7 +15,7 @@ function oneRowMenu()
 
 	enable(qn, "#addrow")
 
-	var postpone = qn && staffname && notLARGE
+	let postpone = qn && staffname && notLARGE
 	if (postpone) {
 		$("#postponecase").html("<b>Confirm เลื่อน ไม่กำหนดวัน  </b><br>" + patient)
 	}
@@ -24,7 +25,7 @@ function oneRowMenu()
 
 	enable(qn, "#history")
 
-	var Delete = qn || checkblank($row, opdate)
+	let Delete = qn || prevDate === opdateth
 	if (Delete) {
 		$("#delcase").html("<b>Confirm Delete </b><br>" + patient)
 	}
@@ -37,7 +38,7 @@ function oneRowMenu()
 
 function disableOneRowMenu()
 {
-	var ids = ["#addrow", "#postpone", "#changedate", "#history", "#delete"]
+	let ids = ["#addrow", "#postpone", "#changedate", "#history", "#delete"]
 
 	ids.forEach(function(each) {
 		enable(false, each)
@@ -59,24 +60,9 @@ function enable(able, id)
 	}
 }
 
-// blank row: a row with no case, and is not the only row of this date
-function checkblank($row, opdate)
-{
-	var	$row = $(".selected").closest('tr'),
-		$cell = $row.find("td"),
-		opdate = getOpdate($cell.eq(OPDATE).html()),
-		prevDate = $row.prev().find("td").eq(OPDATE).html() || ""
-
-	if (prevDate.numDate() === opdate) {
-		return true
-	} else {
-		return false
-	}
-}
-
 function addnewrow()
 {
-	var	$selected = $(".selected"),
+	let	$selected = $(".selected"),
 		tableID = $selected.closest('table').attr('id'),
 		$row = $selected.closest('tr'),
 		keepcell = tableID === "tbl" ? OPDATE : STAFFNAME
@@ -94,7 +80,7 @@ function addnewrow()
 
 function postponeCase()
 {
-	var	$selected = $(".selected"),
+	let	$selected = $(".selected"),
 		tableID = $selected.closest('table').attr('id'),
 		$row = $selected.closest('tr'),
 		$cell = $row.find("td"),
@@ -116,18 +102,14 @@ function postponeCase()
 	}
 
 	waitnum = getLargestWaitnum(staffname) + 1
-	sql += "UPDATE book SET opdate='" + LARGESTDATE
-		+ "',waitnum=" + waitnum
-		+ ",theatre='',oproom=null,casenum=null,optime=''"
-		+ ",editor='" + gv.user
-		+ "' WHERE qn="+ qn + ";"
+    getUserID().then(response => {
+	  sql += "UPDATE book SET opdate='" + LARGESTDATE
+		  + "',waitnum=" + waitnum
+		  + ",theatre='',oproom=null,casenum=null,optime=''"
+		  + ",editor='" + response
+		  + "' WHERE qn="+ qn + ";"
 
-	Ajax(MYSQLIPHP, sql, callbackpostpone)
-
-    clearSelection()
-
-	function callbackpostpone(response)
-	{
+      postData(MYSQLIPHP, sql).then(response => {
 		if (typeof response === "object") {
 			updateBOOK(response)
 			refillOneDay(opdate)
@@ -140,12 +122,15 @@ function postponeCase()
 		} else {
 			Alert ("postpone", response)
 		}
-	}
+	  })
+
+      clearSelection()
+	})
 }
 
 function getLargestWaitnum(staffname)
 {
-	var waitnumArr = gv.BOOK.filter(function(patient) {
+	let waitnumArr = gv.BOOK.filter(function(patient) {
 		return patient.staffname === staffname && !isNaN(patient.waitnum)
 	}).map(function(patient) {
 		return patient.waitnum
@@ -156,7 +141,7 @@ function getLargestWaitnum(staffname)
 
 function changeDate()
 {
-	var	$selected = $(".selected"),
+	let	$selected = $(".selected"),
 		$row = $selected.closest('tr'),
 		$cell = $row.find("td"),
 		args = [
@@ -182,7 +167,7 @@ function outDate() { $(this).removeClass("pasteDate") }
 // args = [$row, opdateth, opdate, staffname, qn]
 function clickDate(event)
 {
-	var args = event.data,
+	let args = event.data,
 		$moverow = args[0],
 		moveOpdateth = args[1],
 		moveOpdate = args[2],
@@ -228,7 +213,7 @@ function clickDate(event)
 
 	sql += updateCasenum(allOldCases)
 
-	for (var i=0; i<allNewCases.length; i++) {
+	for (let i=0; i<allNewCases.length; i++) {
 		if (allNewCases[i] === moveQN) {
 			casenum = thisroom? (i + 1) : null
 			sql += sqlMover(thisWaitnum, thisOpdate, thisroom || null, casenum, moveQN)
@@ -240,12 +225,9 @@ function clickDate(event)
 	if (!sql) { return }
 	sql = "sqlReturnbook=" + sql
 
-	Ajax(MYSQLIPHP, sql, callbackClickDate)
-
     clearSelection()
 
-	function callbackClickDate(response)
-	{
+    postData(MYSQLIPHP, sql).then(response => {
 		if (typeof response === "object") {
 			updateBOOK(response);
 			if (moveOpdateth) {
@@ -255,7 +237,7 @@ function clickDate(event)
 				refillOneDay(thisOpdate)
 			}
 			if (isSplited()) {
-				var titlename = $('#titlename').html()
+				let titlename = $('#titlename').html()
 				if ((titlename === staffname) ||
 					(titlename === "Consults")) {
 					// changeDate of this staffname's case
@@ -266,7 +248,7 @@ function clickDate(event)
 		} else {
 			Alert ("changeDate", response)
 		}
-	}
+	})
 }
 
 function clearMouseoverTR()
@@ -283,7 +265,7 @@ function clearMouseoverTR()
 // not actually delete the case but set deleted = 1
 function delCase()
 {
-	var	$selected = $(".selected"),
+	let	$selected = $(".selected"),
 		tableID = $selected.closest('table').attr('id'),
 		$row = $selected.closest('tr'),
 		$cell = $row.find("td"),
@@ -293,31 +275,28 @@ function delCase()
 		qn = $cell.eq(QN).html(),
 		theatre = $cell.eq(THEATRE).html(),
 		oproom = $cell.eq(OPROOM).html(),
-		allCases, index,
+		allCases, index, sql
+
+	getUserID().then(response => {
 		sql = "sqlReturnbook=UPDATE book SET "
 			+ "deleted=1, "
-			+ "editor = '" + gv.user
+			+ "editor = '" + response
 			+ "' WHERE qn="+ qn + ";"
 
-	if (!qn) {
-		$row.remove()
-		return
-	}
+		if (!qn) {
+			$row.remove()
+			return
+		}
 
-	if (oproom) {
-		allCases = sameDateRoomTableQN(opdateth, oproom, theatre)
-		index = allCases.indexOf(qn)
-		allCases.splice(index, 1)
-		sql += updateCasenum(allCases)
-	}
+		if (oproom) {
+			allCases = sameDateRoomTableQN(opdateth, oproom, theatre)
+			index = allCases.indexOf(qn)
+			allCases.splice(index, 1)
+			sql += updateCasenum(allCases)
+		}
 
-	Ajax(MYSQLIPHP, sql, callbackdeleterow)
-
-    clearSelection()
-
-	function callbackdeleterow(response)
-	{
-		if (typeof response === "object") {
+        postData(MYSQLIPHP, sql).then(response => {
+		  if (typeof response === "object") {
 			updateBOOK(response)
 			if (tableID === "tbl") {
 				refillOneDay(opdate)
@@ -333,16 +312,19 @@ function delCase()
 				}
 				refillOneDay(opdate)
 			}
-		} else {
+		  } else {
 			Alert ("delCase", response)
-		}
-	}
+		  }
+	    })
+
+		clearSelection()
+	})
 }
 
 function deleteRow($row, opdate)
 {
-	var prevDate = $row.prev().children("td").eq(OPDATE).html()
-	var nextDate = $row.next().children("td").eq(OPDATE).html()
+	let prevDate = $row.prev().children("td").eq(OPDATE).html()
+	let nextDate = $row.next().children("td").eq(OPDATE).html()
 
 	prevDate = getOpdate(prevDate)
 	nextDate = getOpdate(nextDate)
@@ -361,10 +343,10 @@ function deleteRow($row, opdate)
 
 function splitPane()
 {
-	var scrolledTop = document.getElementById("tblcontainer").scrollTop
-	var tohead = findVisibleHead('#tbl')
-	var width = screen.availWidth
-	var height = screen.availHeight
+	let scrolledTop = document.getElementById("tblcontainer").scrollTop
+	let tohead = findVisibleHead('#tbl')
+	let width = screen.availWidth
+	let height = screen.availHeight
 
 	$("#queuewrapper").show()
 	$("#tblcontainer").css({"float":"left", "height":"100%", "width":"50%"})
@@ -384,19 +366,19 @@ function initResize($wrapper)
 		handles: 'e',
 		resize: function(e, ui) 
 		{
-			var parent = ui.element.parent();
-			var remainSpace = parent.width() - ui.element.outerWidth()
-			var divTwo = ui.element.next()
-			var margin = divTwo.outerWidth() - divTwo.innerWidth()
-			var divTwoWidth = (remainSpace-margin-1)/parent.width()*100+"%";
+			let parent = ui.element.parent();
+			let remainSpace = parent.width() - ui.element.outerWidth()
+			let divTwo = ui.element.next()
+			let margin = divTwo.outerWidth() - divTwo.innerWidth()
+			let divTwoWidth = (remainSpace-margin-1)/parent.width()*100+"%";
 			divTwo.css("width", divTwoWidth);
 		},
 		stop: function(e, ui) 
 		{
-			var parent = ui.element.parent();
-			var remainSpace = parent.width() - ui.element.outerWidth()
-			var divTwo = ui.element.next()
-			var margin = divTwo.outerWidth() - divTwo.innerWidth()
+			let parent = ui.element.parent();
+			let remainSpace = parent.width() - ui.element.outerWidth()
+			let divTwo = ui.element.next()
+			let margin = divTwo.outerWidth() - divTwo.innerWidth()
 			ui.element.css(
 			{
 				width: ui.element.outerWidth()/parent.width()*100+"%",
@@ -411,8 +393,8 @@ function initResize($wrapper)
 
 function closequeue()
 {
-	var scrolledTop = document.getElementById("tblcontainer").scrollTop
-	var tohead = findVisibleHead('#tbl')
+	let scrolledTop = document.getElementById("tblcontainer").scrollTop
+	let tohead = findVisibleHead('#tbl')
 	
 	$("#queuewrapper").hide()
 	$("#tblcontainer").css({
@@ -424,9 +406,9 @@ function closequeue()
 
 function fakeScrollAnimate(containerID, tableID, scrolledTop, offsetTop)
 {
-	var $container = $('#' + containerID)
-	var $table = $('#' + tableID)
-	var pixel = 300
+	let $container = $('#' + containerID)
+	let $table = $('#' + tableID)
+	let pixel = 300
 	if ((scrolledTop > offsetTop) || (offsetTop < 300)) {
 		pixel = -300
 	}
@@ -442,7 +424,7 @@ function fakeScrollAnimate(containerID, tableID, scrolledTop, offsetTop)
 
 function findVisibleHead(table)
 {
-	var tohead,
+	let tohead,
         tablecontainer = $(table).closest('div')[0],
         tablescrolled = tablecontainer.scrollTop
 
