@@ -4,6 +4,7 @@ function oneRowMenu()
 	var	$selected = $(".selected"),
 		tableID = $selected.closest('table').attr('id'),
 		$row = $selected.closest('tr'),
+		prevDate = $row.prev().find("td").eq(OPDATE).html() || ""
 		$cell = $row.find("td"),
 		opdateth = $cell.eq(OPDATE).html(),
 		opdate = getOpdate(opdateth),
@@ -24,11 +25,11 @@ function oneRowMenu()
 
 	enable(qn, "#history")
 
-	var Delete = qn || checkblank($row, opdate)
-	if (Delete) {
-		$("#delcase").html("<b>Confirm Delete </b><br>" + patient)
+	var Devare = qn || (prevDate === opdateth)
+	if (Devare) {
+		$("#delcase").html("<b>Confirm Devare </b><br>" + patient)
 	}
-	enable(Delete, "#delete")
+	enable(Devare, "#devare")
 
 	enable(true, "#EXCEL")
 
@@ -37,7 +38,7 @@ function oneRowMenu()
 
 function disableOneRowMenu()
 {
-	var ids = ["#addrow", "#postpone", "#changedate", "#history", "#delete"]
+	var ids = ["#addrow", "#postpone", "#changedate", "#history", "#devare"]
 
 	ids.forEach(function(each) {
 		enable(false, each)
@@ -56,21 +57,6 @@ function enable(able, id)
 		$(id).removeClass("disabled")
 	} else {
 		$(id).addClass("disabled")
-	}
-}
-
-// blank row: a row with no case, and is not the only row of this date
-function checkblank($row, opdate)
-{
-	var	$row = $(".selected").closest('tr'),
-		$cell = $row.find("td"),
-		opdate = getOpdate($cell.eq(OPDATE).html()),
-		prevDate = $row.prev().find("td").eq(OPDATE).html() || ""
-
-	if (prevDate.numDate() === opdate) {
-		return true
-	} else {
-		return false
 	}
 }
 
@@ -280,7 +266,7 @@ function clearMouseoverTR()
 	$(".changeDate").removeClass("changeDate")
 }
 
-// not actually delete the case but set deleted = 1
+// not actually devare the case but set devared = 1
 function delCase()
 {
 	var	$selected = $(".selected"),
@@ -295,7 +281,7 @@ function delCase()
 		oproom = $cell.eq(OPROOM).html(),
 		allCases, index,
 		sql = "sqlReturnbook=UPDATE book SET "
-			+ "deleted=1, "
+			+ "devared=1, "
 			+ "editor = '" + gv.user
 			+ "' WHERE qn="+ qn + ";"
 
@@ -311,11 +297,11 @@ function delCase()
 		sql += updateCasenum(allCases)
 	}
 
-	Ajax(MYSQLIPHP, sql, callbackdeleterow)
+	Ajax(MYSQLIPHP, sql, callbackdevarerow)
 
     clearSelection()
 
-	function callbackdeleterow(response)
+	function callbackdevarerow(response)
 	{
 		if (typeof response === "object") {
 			updateBOOK(response)
@@ -327,7 +313,7 @@ function delCase()
 				}
 			} else {
 				if (isConsults()) {
-					deleteRow($row, opdate)
+					devareRow($row, opdate)
 				} else {
 					$row.remove()
 				}
@@ -339,7 +325,7 @@ function delCase()
 	}
 }
 
-function deleteRow($row, opdate)
+function devareRow($row, opdate)
 {
 	var prevDate = $row.prev().children("td").eq(OPDATE).html()
 	var nextDate = $row.next().children("td").eq(OPDATE).html()

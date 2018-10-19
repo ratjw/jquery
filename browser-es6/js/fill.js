@@ -489,7 +489,7 @@ jQuery.fn.extend({
 	}
 })
 
-function addHoliday(that)
+function addHoliday()
 {
 	let	$dialogHoliday = $("#dialogHoliday"),
 		$holidaytbl = $("#holidaytbl")

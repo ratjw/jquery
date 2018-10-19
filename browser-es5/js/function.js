@@ -107,11 +107,7 @@ String.prototype.getAge = function (toDate)
   }
 
   var birth = new Date(this);
-  if (toDate === LARGESTDATE) {
-    var today = new Date()
-  } else {
-    var today = new Date(toDate);
-  }
+  var today = (toDate === LARGESTDATE) ? new Date() : new Date(toDate);
 
   if (today.getTime() - birth.getTime() < 0)
     return "wrong date"

@@ -10,9 +10,6 @@
   background: #ffffff;
   border: 1px solid #ece6e8;
   border-bottom: 3px solid #d9ced2;
-  -webkit-border-radius: 2px;
-  -moz-border-radius: 2px;
-  -o-border-radius: 2px;
   border-radius: 2px;
 }
 #cssmenu > ul li#responsive-tab {
@@ -133,8 +130,6 @@
 @media (min-width: 600px) {
   #cssmenu > ul > li.collapsed {
     display: inline-block !important;
-    *display: inline;
-    zoom: 1;
   }
   #cssmenu > ul ul li.collapsed {
     display: block !important;

@@ -2,14 +2,16 @@
 //    navigator.serviceWorker.register('service-worker.js')
 //  }
 
-getUserID().then(response => {
-  if (/^\d{6}$/.test(response)) {
-    $("#wrapper").show()
-    $("#tblcontainer").css("height", window.innerHeight - $("#cssmenu").height())
-    postData(MYSQLIPHP, "start='x'").then(response => loading(response))
-  } else {
-    Alert("Alert!", "Invalid userid")
-  }
+$(function() {
+  getUserID().then(response => {
+    if (/^\d{6}$/.test(response)) {
+      $("#wrapper").show()
+      $("#tblcontainer").css("height", window.innerHeight - $("#cssmenu").height())
+      postData(MYSQLIPHP, "start='x'").then(response => loading(response))
+    } else {
+      Alert("Alert!", "Invalid userid")
+    }
+  })
 })
 
 function loading(response)

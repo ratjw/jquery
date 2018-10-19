@@ -594,30 +594,29 @@
 
 <div id="dialogStaff">
   <table id="stafftbl">
-  <thead>
+   <thead>
 	<tr>
-	 <td>Name : <input type="text" id="sname" size="10">
-	 </td>
-	 <td>Specialty : <select id="scbb"><option></option>
-		</select>
-	 </td>
-	 <td>Date Oncall : <input type="text" id="sdate" size="10" readonly>
-	 </td>
-	 <input id="shidden" type="hidden">
+	  <td>Name : <input type="text" id="sname" size="10">
+	  </td>
+	  <td>Specialty : <select id="scbb"><option></option></select>
+	  </td>
+	  <td>Date Oncall : <input type="text" id="sdate" size="10" readonly>
+						 <input id="shidden" type="hidden">
+	  </td>
 	</tr>
 	<tr>
-	<td><button onClick=doadddata()>AddStaff</button></td>
-	<td><button onClick=doupdatedata()>UpdateStaff</button></td>
-	<td><button onClick=dodeletedata()>DeleteStaff</button></td>
+	  <td><button onclick="doadddata()">AddStaff</button></td>
+	  <td><button onclick="doupdatedata()">UpdateStaff</button></td>
+	  <td><button onclick="dodeletedata()">DeleteStaff</button></td>
 	</tr>
-   <tr>
-	<th>Staff</th>
-	<th>Specialty</th>
-	<th>Start Date Oncall</th>
-   </tr>
-  </thead>
-  <tbody>
-  </tbody>
+    <tr>
+	  <th>Staff</th>
+	  <th>Specialty</th>
+	  <th>Start Date Oncall</th>
+    </tr>
+   </thead>
+   <tbody>
+   </tbody>
   </table>
 </div>
 
@@ -637,7 +636,7 @@
    <tr>
 	<th>Date</th>
 	<th>Holiday Name
-	 <button id="addholiday" onClick=addHoliday(this)>+</button>
+	 <button id="addholiday" onclick="addHoliday()">+</button>
 	</th>
    </tr>
   </thead>
@@ -649,10 +648,11 @@
 <table id="holidaycells">
   <tbody>
 	<tr>
-	 <td data-title="Date"></td>
-	 <td data-title="Holiday Name"></td>
+	  <td data-title="Date"></td>
+	  <td data-title="Holiday Name">
+	    <button class="delholiday" onclick="delHoliday(this)">-</button>
+	  </td>
 	</tr>
-	<button class="delholiday" onClick=delHoliday(this)>-</button>
   </tbody>
 </table>
 
@@ -664,7 +664,7 @@
 	 <td>
 	  <select id="holidayname">
 	  </select>
-	  <button class="delholiday" onClick=delHoliday(this)>-</button>
+	  <button class="delholiday" onclick="delHoliday(this)">-</button>
 	 </td>
 	</tr>
   </tbody>

@@ -182,7 +182,7 @@ function putAgeOpdate(dob, date)
 
 function getUserID()
 {
-  return fetch(GETUSERIDPHP + "?userid='x'").then(response => response = response.text())
+  return fetch(GETUSERIDPHP + "?userid=x").then(response => response.text())
 }
 
 async function postData(url = ``, data) {
@@ -195,7 +195,7 @@ async function postData(url = ``, data) {
     try {
         const result = JSON.parse(text)
         return result
-    } catch {
+    } catch(e) {
         return text
     }
 }

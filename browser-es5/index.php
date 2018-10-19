@@ -35,7 +35,7 @@
 <script src="js/start.js"></script>
 
 </HEAD>
-<BODY>
+<BODY onload="Start('<?php echo $userid ?>')">
 
 <table id="capture">
     <tbody>
@@ -1039,10 +1039,6 @@
 
 <!-- For IE that not support <a download>, used in Export to Excel -->
 <iframe id="txtArea1"></iframe>
-
-<?php
-	echo "<script> Start('$userid') </script>";
-?>
 
 </BODY>
 </HTML>
