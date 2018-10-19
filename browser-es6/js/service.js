@@ -486,7 +486,7 @@ function getAdmitDischargeDate(fromDate, toDate)
 			+ "&to=" + toDate
 			+ "&sql=" + sqlOneMonth(fromDate, toDate)
 
-    postData(MYSQLIPHP, sql).then(response => {
+    postData(GETIPD, sql).then(response => {
 		if (typeof response === "object") {
 			updateBOOK(response)
 			gv.SERVE = calcSERVE()

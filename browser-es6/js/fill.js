@@ -24,7 +24,7 @@ function fillupstart()
 		scrollTop: thishead.offsetTop
 	}, 300);
 
-//	hoverMain()
+	hoverMain()
 }
 
 function fillall(book, table, start, until)
@@ -105,6 +105,7 @@ function refillall()
 	$tbody.html($tbody.find("tr:first").clone())
 	fillall(book, table, start, until)
 	hoverMain()
+	// For new HN added to this table
 }
 
 // main table (#tbl) only
@@ -569,9 +570,9 @@ function delHoliday(that)
 }
 
 function getHolidayEng(vname) {
-	return $.grep(Object.keys(HOLIDAYENGTHAI), function(key) {
+	return Object.keys(HOLIDAYENGTHAI).find(function(key) {
 		return HOLIDAYENGTHAI[key] === vname
-	})[0]
+	})
 }
 
 function holidayInputBack($inputRow)
@@ -589,9 +590,9 @@ function holiday(date)
 		Mon = (dayofweek === 1),
 		Tue = (dayofweek === 2),
 		Wed = (dayofweek === 3),
-		holiday = $.grep(gv.HOLIDAY, function(day) {
+		holiday = gv.HOLIDAY.find(function(day) {
 			return day.holidate === date
-		})[0]
+		})
 
 	if (date === LARGESTDATE) { return }
 	if (holiday) {

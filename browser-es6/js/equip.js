@@ -211,7 +211,7 @@ function Checklistequip()
 			}
 			$row.find("td").eq(EQUIPMENT).html(makeEquip(equipJSON))
 		  } else {
-			// Error in update server
+			// Error update server
 			// Roll back. If old form has equips, fill checked & texts
 			// prop("checked", true) : radio and checkbox
 			// .val(val) : <input text> && <textarea>

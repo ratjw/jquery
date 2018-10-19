@@ -38,7 +38,7 @@ if (window.location.protocol === "http:" && window.location.hostname !== "localh
 
 	document.getElementById("isMobile").value = isMobile
 	document.getElementById("isPACS").value = isPACS
-	document.getElementById("module").value = module
+	document.getElementById("module").value = false//module
 	document.getElementById("browser").value = browser
 
 function namesix()

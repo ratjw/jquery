@@ -461,9 +461,8 @@ function saveHN(pointed, content)
 		return false
 	}
 
-	let	waiting = getWaitingBOOKrowByHN(content)[0]
+	let	waiting = getWaitingBOOKrowByHN(content)
 
-//	pointed.innerHTML = content
 	if (waiting) {
 		getCaseHN(pointed, waiting)
 	} else {
@@ -472,6 +471,7 @@ function saveHN(pointed, content)
 	return true
 }
 
+// May have other columns before, thus has qn already
 function getCaseHN(pointed, waiting)
 {
 	let	wanting = $.extend({}, waiting)
@@ -618,8 +618,8 @@ function getCaseHN(pointed, waiting)
 		// store waitnum in row title
 		let waitnum = calcWaitnum(opdateth, $row.prev(), $row.next())
 		$row[0].title = waitnum
-		getUserID().then(response => {
-		  return "INSERT INTO book ("
+
+		return "INSERT INTO book ("
 			+ "waitnum,opdate,hn,patient,dob,"
 			+ "staffname,diagnosis,treatment,contact,editor) "
 			+ "VALUES (" + waitnum
@@ -631,9 +631,8 @@ function getCaseHN(pointed, waiting)
 			+ "','" + URIcomponent(wanting.diagnosis)
 			+ "','" + URIcomponent(wanting.treatment)
 			+ "','" + URIcomponent(wanting.contact)
-			+ "','" + response
+			+ "','" + getUserID()
 			+ "');"
-		})
 	}
 
 	function sqlUpdateHN()
@@ -731,7 +730,7 @@ function getNameHN(pointed, content)
 		+ "&qn=" + qn
 		+ "&editor=" + response
 
-		postData(MYSQLIPHP, sql).then(response => {
+		postData(GETNAMEHN, sql).then(response => {
 		  if (typeof response === "object") {
 			updateBOOK(response)
 

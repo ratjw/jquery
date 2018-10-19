@@ -551,7 +551,7 @@ function searchDB()
       + "&staffname=" + staffname
       + "&others=" + others
 
-    postData(MYSQLIPHP, sql).then(response => {
+    postData(SEARCH, sql).then(response => {
       if (typeof response === "object") {
         makeFind(response, search)
       } else {

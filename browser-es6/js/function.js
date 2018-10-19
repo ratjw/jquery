@@ -182,7 +182,7 @@ function putAgeOpdate(dob, date)
 
 function getUserID()
 {
-  return fetch(GETUSERIDPHP + "?userid=x").then(response => response.text())
+  return fetch(GETUSERIDPHP + "?userid=").then(response => response.text())
 }
 
 async function postData(url = ``, data) {
@@ -258,23 +258,19 @@ function getBOOKrowByQN(book, qn)
 
 function getTableRowByQN(tableID, qn)
 {
-  return $("#" + tableID + " tr:has(td)").filter(function() {
-    return this.cells[QN].innerHTML === qn
-  })[0]
+  return $("#" + tableID + " tr:has(td)").toArray().find(row => row.cells[QN].innerHTML === qn)
 }
 
 function getWaitingBOOKrowByHN(hn)
 {  
   let  todate = new Date().ISOdate()
 
-  return $.grep(gv.BOOK, function(bookq) {
-    return bookq.opdate > todate && bookq.hn === hn
-  })
+  return gv.BOOK.find(bookq => bookq.opdate > todate && bookq.hn === hn)
 }
 
 function getWaitingTableRowByHN(hn)
 {
-  let  todate = new Date().ISOdate()
+  let todate = new Date().ISOdate()
 
   return $("#tbl tr:has(td)").filter(function() {
     return this.cells[OPDATE].innerHTML.numDate() > todate

@@ -6,29 +6,29 @@
 		$isMobile = !empty($_POST['isMobile']) ? $_POST['isMobile'] : '';
 		$isPACS = !empty($_POST['isPACS']) ? $_POST['isPACS'] : '';
 		$module = !empty($_POST['module']) ? $_POST['module'] : '';
-		$browser = !empty($_POST['browser']) ? 'browser-' . $_POST['browser'] : '';
+		$es = !empty($_POST['browser']) ? $_POST['browser'] : '';
 
 		session_start();
 		$_SESSION['userid'] = $userid;
 
-		$servername = "surgery.rama.mahidol.ac.th";
-		$wsdl="http://appcenter/webservice/patientservice.wsdl";
-
-		$url = "?$userid";
 		$location = "location:";
-		$nurse = $location . "browser-nurse";
-//		if ($module === "true") {
-//			$staff = $location . "browser-module";
-//		} else {
-			$staff = $location . $browser;
-//		}
-		$resultz = "";
-		$error = "";
+		$browserDoctor = $location . "browser-" . $es;
+		$browserNurse = $location . "browser-nurse";
+		$browserModule = $location . "browser-module";
+		$browserMobile = $location . "browser-mobile";
 
 		// Variables via POST are strings only
-		if ($isMobile === "true") {
-			header($location . "browser-mobile");
+		if ($module === "true") {
+			$browserDoctor = $browserModule;
 		}
+		if ($isMobile === "true") {
+			$browserDoctor = $browserMobile;
+		}
+
+		$servername = "surgery.rama.mahidol.ac.th";
+		$wsdl="http://appcenter/webservice/patientservice.wsdl";
+		$resultz = "";
+		$error = "";
 
 		// Desktop client
 		if (preg_match('/^\d{6}$/', $userid)) {
@@ -46,10 +46,10 @@
 			}
 
 			if ($resultz === "S" || $resultz === "R") {
-				header($staff);
+				header($browserDoctor);
 			}
 			else if ($resultz === "N") {
-				header($nurse);
+				header($browserNurse);
 			}
 			else {
 				$error = "Unauthorized";
