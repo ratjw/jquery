@@ -102,14 +102,14 @@ function postponeCase()
 	}
 
 	waitnum = getLargestWaitnum(staffname) + 1
-    getUserID().then(response => {
-	  sql += "UPDATE book SET opdate='" + LARGESTDATE
-		  + "',waitnum=" + waitnum
-		  + ",theatre='',oproom=null,casenum=null,optime=''"
-		  + ",editor='" + response
-		  + "' WHERE qn="+ qn + ";"
 
-      postData(MYSQLIPHP, sql).then(response => {
+	sql += "UPDATE book SET opdate='" + LARGESTDATE
+		+ "',waitnum=" + waitnum
+		+ ",theatre='',oproom=null,casenum=null,optime=''"
+		+ ",editor='" + gv.user
+        + "' WHERE qn="+ qn + ";"
+
+    postData(MYSQLIPHP, sql).then(response => {
 		if (typeof response === "object") {
 			updateBOOK(response)
 			refillOneDay(opdate)
@@ -122,10 +122,9 @@ function postponeCase()
 		} else {
 			Alert ("postpone", response)
 		}
-	  })
-
-      clearSelection()
 	})
+
+    clearSelection()
 }
 
 function getLargestWaitnum(staffname)
@@ -277,48 +276,46 @@ function delCase()
 		oproom = $cell.eq(OPROOM).html(),
 		allCases, index, sql
 
-	getUserID().then(response => {
-		sql = "sqlReturnbook=UPDATE book SET "
-			+ "deleted=1, "
-			+ "editor = '" + response
-			+ "' WHERE qn="+ qn + ";"
+	sql = "sqlReturnbook=UPDATE book SET "
+		+ "deleted=1, "
+		+ "editor = '" + gv.user
+		+ "' WHERE qn="+ qn + ";"
 
-		if (!qn) {
-			$row.remove()
-			return
-		}
+	if (!qn) {
+		$row.remove()
+		return
+	}
 
-		if (oproom) {
-			allCases = sameDateRoomTableQN(opdateth, oproom, theatre)
-			index = allCases.indexOf(qn)
-			allCases.splice(index, 1)
-			sql += updateCasenum(allCases)
-		}
+	if (oproom) {
+		allCases = sameDateRoomTableQN(opdateth, oproom, theatre)
+		index = allCases.indexOf(qn)
+		allCases.splice(index, 1)
+		sql += updateCasenum(allCases)
+	}
 
-        postData(MYSQLIPHP, sql).then(response => {
-		  if (typeof response === "object") {
-			updateBOOK(response)
-			if (tableID === "tbl") {
-				refillOneDay(opdate)
-				if ((isSplited()) && 
-					(isStaffname(staffname))) {
-					refillstaffqueue()
-				}
-			} else {
-				if (isConsults()) {
-					deleteRow($row, opdate)
-				} else {
-					$row.remove()
-				}
-				refillOneDay(opdate)
+	postData(MYSQLIPHP, sql).then(response => {
+	  if (typeof response === "object") {
+		updateBOOK(response)
+		if (tableID === "tbl") {
+			refillOneDay(opdate)
+			if ((isSplited()) && 
+				(isStaffname(staffname))) {
+				refillstaffqueue()
 			}
-		  } else {
-			Alert ("delCase", response)
-		  }
-	    })
-
-		clearSelection()
+		} else {
+			if (isConsults()) {
+				deleteRow($row, opdate)
+			} else {
+				$row.remove()
+			}
+			refillOneDay(opdate)
+		}
+	  } else {
+		Alert ("delCase", response)
+	  }
 	})
+
+	clearSelection()
 }
 
 function deleteRow($row, opdate)

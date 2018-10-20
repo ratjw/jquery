@@ -197,38 +197,36 @@ function Checklistequip()
 	//escape the \ (escape) and ' (single quote) for sql string, not for JSON
 	equipment = equipment.replace(/\\/g,"\\\\").replace(/'/g,"\\'")
 
-	getUserID().then(response => {
-		sql = "sqlReturnbook=UPDATE book SET "
-			+ "equipment='"+ equipment +"' ,"
-			+ "editor='"+ response +"' "
-			+ "WHERE qn="+ qn +";"
+	sql = "sqlReturnbook=UPDATE book SET "
+		+ "equipment='"+ equipment +"' ,"
+		+ "editor='"+ gv.user +"' "
+		+ "WHERE qn="+ qn +";"
 
-		postData(MYSQLIPHP, sql).then(response => {
-		  if (typeof response === "object") {
-			updateBOOK(response)
-			if ($row.find("td").eq(QN).html() !== qn) {
-				$row = getTableRowByQN("tbl", qn)
-			}
-			$row.find("td").eq(EQUIPMENT).html(makeEquip(equipJSON))
-		  } else {
-			// Error update server
-			// Roll back. If old form has equips, fill checked & texts
-			// prop("checked", true) : radio and checkbox
-			// .val(val) : <input text> && <textarea>
-			Alert("Checklistequip", response)
-			$('#dialogEquip input').val('')
-			$('#dialogEquip textarea').val('')
-			if ( bookqEquip ) {
-				$.each(JsonEquip, function(key, val) {
-					if (val === 'checked') {
-						$("#"+ key).prop("checked", true)
-					} else {
-						$("#"+ key).val(val)
-					}
-				})
-			}
-		  }
-		})
+	postData(MYSQLIPHP, sql).then(response => {
+	  if (typeof response === "object") {
+		updateBOOK(response)
+		if ($row.find("td").eq(QN).html() !== qn) {
+			$row = getTableRowByQN("tbl", qn)
+		}
+		$row.find("td").eq(EQUIPMENT).html(makeEquip(equipJSON))
+	  } else {
+		// Error update server
+		// Roll back. If old form has equips, fill checked & texts
+		// prop("checked", true) : radio and checkbox
+		// .val(val) : <input text> && <textarea>
+		Alert("Checklistequip", response)
+		$('#dialogEquip input').val('')
+		$('#dialogEquip textarea').val('')
+		if ( bookqEquip ) {
+			$.each(JsonEquip, function(key, val) {
+				if (val === 'checked') {
+					$("#"+ key).prop("checked", true)
+				} else {
+					$("#"+ key).val(val)
+				}
+			})
+		}
+	  }
 	})
 }
 

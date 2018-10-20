@@ -214,19 +214,18 @@ function toUndelete(thisWhen, deleted)
     allCases.splice(casenum, 0, qn)
     alllen = allCases.length
 
-    getUserID().then(response => {
-      for (let i=0; i<alllen; i++) {
+    for (let i=0; i<alllen; i++) {
         if (allCases[i] === qn) {
           sql += "UPDATE book SET "
               +  "deleted=0,"
-              +  "editor='" + response
+              +  "editor='" + gv.user
               +  "' WHERE qn="+ qn + ";"
         } else {
           sql += sqlCaseNum(i + 1, allCases[i])
         }
-      }
+    }
 
-      postData(MYSQLIPHP, sql).then(response => {
+    postData(MYSQLIPHP, sql).then(response => {
         if (typeof response === "object") {
           updateBOOK(response);
           refillOneDay(opdate)
@@ -238,7 +237,6 @@ function toUndelete(thisWhen, deleted)
         } else {
           Alert("toUndelete", response)
         }
-      })
     })
   })
 }
@@ -757,10 +755,9 @@ function showUpload(hn, patient)
 
 function sendtoLINE()
 {
-  getUserID().then(response => {
     $('#dialogNotify').dialog({
       title: '<img src="css/pic/general/linenotify.png" width="40" style="float:left">'
-           + '<span style="font-size:20px">Qbook: ' + response + '</span>',
+           + '<span style="font-size:20px">Qbook: ' + gv.user + '</span>',
       closeOnEscape: true,
       modal: true,
       show: 200,
@@ -768,7 +765,6 @@ function sendtoLINE()
       width: 270,
       height: 300
     })
-  })
 }
 
 function toLINE()
@@ -800,15 +796,13 @@ function toLINE()
     })
   })
 
-  getUserID().then(response => {
-    html2canvas(capture).then(function(canvas) {
-      $.post(LINENOTIFY, {
-        'user': response,
+  html2canvas(capture).then(function(canvas) {
+    $.post(LINENOTIFY, {
+        'user': gv.user,
         'message': message,
         'image': canvas.toDataURL('image/png', 1.0)
-      })
-      $capture.hide()
     })
+    $capture.hide()
   })
 }
 

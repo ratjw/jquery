@@ -13,7 +13,8 @@ let gv = {
 	idleCounter: 0,
 	isMobile: false,
 	isPACS: true,
-	editableSV: true
+	editableSV: true,
+	user: ""
 },
 
 //Actually these are constants but older browsers do not support const

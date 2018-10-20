@@ -203,23 +203,19 @@ function updateCasenum(allCases)
 
 function sqlCaseNum(casenum, qn)
 {	
-  getUserID().then(response => {
-	return "UPDATE book SET "
+  return "UPDATE book SET "
 		+  "casenum=" + casenum
-		+  ",editor='" + response
+		+  ",editor='" + gv.user
 		+  "' WHERE qn="+ qn + ";";
-  })
 }
 
 function sqlMover(waitnum, opdate, oproom, casenum, qn)
 {
-  getUserID().then(response => {
-	return "UPDATE book SET "
+  return "UPDATE book SET "
 		+  "waitnum=" + waitnum
 		+  ", opdate='" + opdate
 		+  "',oproom=" + oproom
 		+  ",casenum=" + casenum
-		+  ",editor='" + response
+		+  ",editor='" + gv.user
 		+  "' WHERE qn="+ qn + ";";
-  })
 }

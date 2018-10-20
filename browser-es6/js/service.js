@@ -114,7 +114,7 @@ function entireMonth(fromDate)
 }
 
 //Retrieve the specified month from server
-async function getServiceOneMonth(fromDate, toDate)
+function getServiceOneMonth(fromDate, toDate)
 {
 	let sql = "sqlReturnData=" + sqlOneMonth(fromDate, toDate)
 
@@ -861,25 +861,21 @@ function sqlColumn(pointing, column, content)
 
 function sqlDefaults(qn)
 {
-  getUserID().then(response => {
-	return "UPDATE book SET "
+  return "UPDATE book SET "
 		+ "operated='',"
 		+ "doneby='',"
 		+ "scale='',"
 		+ "manner='',"
-		+ "editor='" + response
+		+ "editor='" + gv.user
 		+ "' WHERE qn=" + qn + ";"
-  })
 }
 
 function sqlItem(column, content, qn)
 {
-  getUserID().then(response => {
-	return "UPDATE book SET "
+  return "UPDATE book SET "
 		+ column + "='" + content
-		+ "',editor='" + response
+		+ "',editor='" + gv.user
 		+ "' WHERE qn=" + qn + ";"
-  })
 }
 
 function showReportToDept(title)

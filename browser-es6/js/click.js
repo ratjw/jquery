@@ -149,13 +149,11 @@ function saveTheatre(pointed, newcontent)
 
 function sqlNewTheatre(theatre, casenum, qn)
 {
-  getUserID().then(response => {
 	return "UPDATE book SET "
 		+  "theatre='" + theatre
 		+  "',casenum=" + casenum
-		+  ",editor='" + response
+		+  ",editor='" + gv.user
 		+  "' WHERE qn="+ qn + ";"
-  })
 }
 
 function saveOpRoom(pointed, newcontent)
@@ -225,13 +223,11 @@ function saveOpRoom(pointed, newcontent)
 
 function sqlNewRoom(oproom, casenum, qn)
 {
-  getUserID().then(response => {
 	return "UPDATE book SET "
 		+  "oproom=" + oproom
 		+  ",casenum=" + casenum
-		+  ",editor='" + response
+		+  ",editor='" + gv.user
 		+  "' WHERE qn="+ qn + ";"
-  })
 }
 
 function saveCaseNum(pointed, newcontent)
@@ -321,13 +317,12 @@ function saveContentQN(pointed, column, content)
 		titlename = $('#titlename').html(),
 		sql
 
-    getUserID().then(response => {
 		sql = "sqlReturnbook=UPDATE book SET "
 		+ column + "='" + content
-		+ "',editor='"+ response
+		+ "',editor='"+ gv.user
 		+ "' WHERE qn="+ qn +";"
 
-	  postData(MYSQLIPHP, sql).then(response => {
+	postData(MYSQLIPHP, sql).then(response => {
 		if (typeof response === "object") {
 			updateBOOK(response)
 			if ((column === "oproom") ||
@@ -375,7 +370,6 @@ function saveContentQN(pointed, column, content)
 			pointed.innerHTML = oldcontent
 			// return to previous content
 		}
-	  })
 	})
 }
 
@@ -405,52 +399,50 @@ function saveContentNoQN(pointed, column, content)
 		sql2 = staffname + "','"
 	}
 
-	getUserID().then(response => {
-		sql = "sqlReturnbook=INSERT INTO book ("
-			+ "waitnum, opdate, " + sql1 + column + ", editor) VALUES ("
-			+ waitnum + ",'" + opdate +"','"
-			+ sql2 + content +"','"+ response + "');"
+	sql = "sqlReturnbook=INSERT INTO book ("
+		+ "waitnum, opdate, " + sql1 + column + ", editor) VALUES ("
+		+ waitnum + ",'" + opdate +"','"
+		+ sql2 + content +"','"+ gv.user + "');"
 
-		postData(MYSQLIPHP, sql).then(response => {
-		  if (typeof response === "object") {
-			updateBOOK(response)
+	postData(MYSQLIPHP, sql).then(response => {
+	  if (typeof response === "object") {
+		updateBOOK(response)
 
-			// find and fill qn of new case input in that row, either tbl or queuetbl
-			let book = (ConsultsTbl(tableID))? gv.CONSULT : gv.BOOK
-			let qn = Math.max.apply(Math, $.map(book, function(bookq, i){
-						return bookq.qn
-					}))
-			$cells[QN].innerHTML = qn
+		// find and fill qn of new case input in that row, either tbl or queuetbl
+		let book = (ConsultsTbl(tableID))? gv.CONSULT : gv.BOOK
+		let qn = Math.max.apply(Math, $.map(book, function(bookq, i){
+					return bookq.qn
+				}))
+		$cells[QN].innerHTML = qn
 
-			if (tableID === 'tbl') {
-				// delete staffoncall
-				if (/(<([^>]+)>)/i.test(staffname)) { $cells[STAFFNAME].innerHTML = "" }
-				// Remote effect from editing on tbl to queuetbl if Staffqueue is showing
-				// Create new case of staffname that match titlename -> refill queuetbl
-				if (isSplited()) {
-					if (pointed.innerHTML === titlename) {
-						refillstaffqueue()
-					}
-				}
-			} else {
-				// tableID === 'queuetbl'
-				// staffname has been changed, refill staff table
-				if (column === "staffname") {
+		if (tableID === 'tbl') {
+			// delete staffoncall
+			if (/(<([^>]+)>)/i.test(staffname)) { $cells[STAFFNAME].innerHTML = "" }
+			// Remote effect from editing on tbl to queuetbl if Staffqueue is showing
+			// Create new case of staffname that match titlename -> refill queuetbl
+			if (isSplited()) {
+				if (pointed.innerHTML === titlename) {
 					refillstaffqueue()
 				}
-				// Remote effect to main table -> add new case to main table
-				// (not just refill corresponding cell)
-				// consults are not apparent on main table, no remote effect
-				if (!isConsults()) {
-					refillOneDay(opdate)
-				}
 			}
-		  } else {
-			Alert("saveContentNoQN", response)
-			pointed.innerHTML = oldcontent
-			// return to previous content
-		  }
-		})
+		} else {
+			// tableID === 'queuetbl'
+			// staffname has been changed, refill staff table
+			if (column === "staffname") {
+				refillstaffqueue()
+			}
+			// Remote effect to main table -> add new case to main table
+			// (not just refill corresponding cell)
+			// consults are not apparent on main table, no remote effect
+			if (!isConsults()) {
+				refillOneDay(opdate)
+			}
+		}
+	  } else {
+		Alert("saveContentNoQN", response)
+		pointed.innerHTML = oldcontent
+		// return to previous content
+	  }
 	})
 }
 
@@ -550,9 +542,8 @@ function getCaseHN(pointed, waiting)
 
 	function moveCaseHN()
 	{
-	  getUserID().then(response => {
 		sql += "UPDATE book SET deleted=1"
-			+ ",editor='" + response
+			+ ",editor='" + gv.user
 			+ "' WHERE qn=" + waiting.qn + ";"
 			+ sqlCaseHN()
 
@@ -575,8 +566,7 @@ function getCaseHN(pointed, waiting)
 				// unsuccessful entry
 			}
 		})
-	  })
-	  $dialogMoveCase.dialog("close")
+		$dialogMoveCase.dialog("close")
 	}
 
 	function copyCaseHN()
@@ -631,14 +621,13 @@ function getCaseHN(pointed, waiting)
 			+ "','" + URIcomponent(wanting.diagnosis)
 			+ "','" + URIcomponent(wanting.treatment)
 			+ "','" + URIcomponent(wanting.contact)
-			+ "','" + getUserID()
+			+ "','" + gv.user
 			+ "');"
 	}
 
 	function sqlUpdateHN()
 	{
-		getUserID().then(response => {
-		  return "UPDATE book SET "
+		return "UPDATE book SET "
 			+ "hn='" + hn
 			+ "',patient='" + patient
 			+ "',dob='" + dob
@@ -646,10 +635,9 @@ function getCaseHN(pointed, waiting)
 			+ "',diagnosis='" + URIcomponent(wanting.diagnosis)
 			+ "',treatment='" + URIcomponent(wanting.treatment)
 			+ "',contact='" + URIcomponent(wanting.contact)
-			+ "',editor='" + response
+			+ "',editor='" + gv.user
 			+ "' WHERE qn=" + qn
 			+ ";"
-		})
 	}
 }
 
@@ -719,8 +707,8 @@ function getNameHN(pointed, content)
 		waitnum = calcWaitnum(opdateth, $row.prev(), $row.next())
 		$row[0].title = waitnum	
 	}
-	getUserID().then(response => {
-	  sql = "hn=" + content
+
+	sql = "hn=" + content
 		+ "&waitnum="+ waitnum
 		+ "&opdate="+ opdate
 		+ "&staffname=" + staffname
@@ -728,60 +716,59 @@ function getNameHN(pointed, content)
 		+ "&treatment=" + treatment
 		+ "&contact=" + contact
 		+ "&qn=" + qn
-		+ "&editor=" + response
+		+ "&editor=" + gv.user
 
-		postData(GETNAMEHN, sql).then(response => {
-		  if (typeof response === "object") {
-			updateBOOK(response)
+	postData(GETNAMEHN, sql).then(response => {
+	  if (typeof response === "object") {
+		updateBOOK(response)
 
-			let book = (ConsultsTbl(tableID)) ? gv.CONSULT : gv.BOOK
+		let book = (ConsultsTbl(tableID)) ? gv.CONSULT : gv.BOOK
 
-			// New case input
-			if (noqn) {
-				qn = getMaxQN(book)
-				$cells[QN].innerHTML = qn
+		// New case input
+		if (noqn) {
+			qn = getMaxQN(book)
+			$cells[QN].innerHTML = qn
+		}
+
+		let bookq = getBOOKrowByQN(book, qn)
+
+		if (gv.isPACS) { $cells[HN].className = "pacs" }
+		if (gv.isMobile) { $cells[PATIENT].className = "camera" }
+
+		// prevent showing null
+		$cells[STAFFNAME].innerHTML = bookq.staffname
+		$cells[HN].innerHTML = bookq.hn
+		$cells[PATIENT].innerHTML = putNameAge(bookq)
+		$cells[DIAGNOSIS].innerHTML = bookq.diagnosis
+		$cells[TREATMENT].innerHTML = bookq.treatment
+		$cells[CONTACT].innerHTML = bookq.contact
+
+		// Both cases remote effect -> refill corresponding cell
+		// no need to refillall main table because new case row was already there
+		// Consults cases are not shown in main table
+		if (tableID === 'tbl') {
+			if (isSplited() && isStaffname(staffname)) {
+				refillAnotherTableCell('queuetbl', cellindex, qn)
 			}
-
-			let bookq = getBOOKrowByQN(book, qn)
-
-			if (gv.isPACS) { $cells[HN].className = "pacs" }
-			if (gv.isMobile) { $cells[PATIENT].className = "camera" }
-
-			// prevent showing null
-			$cells[STAFFNAME].innerHTML = bookq.staffname
-			$cells[HN].innerHTML = bookq.hn
-			$cells[PATIENT].innerHTML = putNameAge(bookq)
-			$cells[DIAGNOSIS].innerHTML = bookq.diagnosis
-			$cells[TREATMENT].innerHTML = bookq.treatment
-			$cells[CONTACT].innerHTML = bookq.contact
-
-			// Both cases remote effect -> refill corresponding cell
-			// no need to refillall main table because new case row was already there
-			// Consults cases are not shown in main table
-			if (tableID === 'tbl') {
-				if (isSplited() && isStaffname(staffname)) {
-					refillAnotherTableCell('queuetbl', cellindex, qn)
+		} else {
+			if (!isConsults()) {
+				if (noqn) {
+					refillall()
+				} else {
+					refillAnotherTableCell('tbl', cellindex, qn)
 				}
-			} else {
-				if (!isConsults()) {
-					if (noqn) {
-						refillall()
-					} else {
-						refillAnotherTableCell('tbl', cellindex, qn)
-					}
-				}
 			}
-			// re-render editcell for keyin cell only
-			let newpoint = $('#editcell').data("pointing")
-			if (newpoint.cellIndex > PATIENT) {
-				createEditcell(newpoint)
-			}
-		  } else {
-			Alert("getNameHN", response)
-			pointed.innerHTML = oldcontent
-			// unsuccessful entry
-		  }
-		})
+		}
+		// re-render editcell for keyin cell only
+		let newpoint = $('#editcell').data("pointing")
+		if (newpoint.cellIndex > PATIENT) {
+			createEditcell(newpoint)
+		}
+	  } else {
+		Alert("getNameHN", response)
+		pointed.innerHTML = oldcontent
+		// unsuccessful entry
+	  }
 	})
 }
 

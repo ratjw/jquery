@@ -2,9 +2,11 @@
 //    navigator.serviceWorker.register('service-worker.js')
 //  }
 
-$(function() {
-  getUserID().then(response => {
-    if (/^\d{6}$/.test(response)) {
+$(function()
+{
+  getUserID().then(userid => {
+    if (/^\d{6}$/.test(userid)) {
+	  gv.user = userid
       $("#wrapper").show()
       $("#tblcontainer").css("height", window.innerHeight - $("#cssmenu").height())
       postData(MYSQLIPHP, "start='x'").then(response => loading(response))
@@ -460,16 +462,14 @@ function saveOnChange(pointed, index, content, qn)
 
   if (!column) { return false }
 
-  getUserID().then(response => {
   let sql = "sqlReturnbook=UPDATE book SET "
           + column + "='" + URIcomponent(content)
-          + "',editor='"+ response
+          + "',editor='"+ gv.user
           + "' WHERE qn="+ qn +";"
 
-    postData(MYSQLIPHP, sql).then(response => callbacksaveOnChange(response))
+  postData(MYSQLIPHP, sql).then(response => callbacksaveOnChange(response))
 
-    pointed.innerHTML = content
-  })
+  pointed.innerHTML = content
 }
 
 function saveOnChangeService(pointed, index, content, qn)
