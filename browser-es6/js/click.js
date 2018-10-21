@@ -289,9 +289,7 @@ function saveContent(pointed, column, content)
 	pointed.innerHTML = content
 
 	// take care of white space, double qoute, single qoute, and back slash
-	if (/\W/.test(content)) {
-		content = URIcomponent(content)
-	}
+	content = URIcomponent(content)
 
 	if (qn) {
 		saveContentQN(pointed, column, content)

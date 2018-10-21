@@ -623,9 +623,7 @@ function saveContentService(pointed, column, content)
 	pointed.innerHTML = content? content : ""
 
 	//take care of white space, double qoute, single qoute, and back slash
-	if (/\W/.test(content)) {
-		content = URIcomponent(content)
-	}
+	content = URIcomponent(content)
 
 	let sql = sqlColumn(pointed, column, content)
 

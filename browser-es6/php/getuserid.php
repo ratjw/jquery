@@ -1,4 +1,4 @@
 <?php
-	session_start();
+	@session_start();
 	echo empty($_SESSION['userid']) ? '' : $_SESSION['userid'];
 ?>

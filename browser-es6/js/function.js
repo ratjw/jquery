@@ -180,11 +180,6 @@ function putAgeOpdate(dob, date)
   }
 }
 
-function getUserID()
-{
-  return fetch(GETUSERIDPHP + "?userid=").then(response => response.text())
-}
-
 async function postData(url = ``, data) {
     const response = await fetch(url, {
         method: "POST",
@@ -198,13 +193,6 @@ async function postData(url = ``, data) {
     } catch(e) {
         return text
     }
-}
-
-function contentEncode()
-{
-  if (/\W/.test(content)) {
-    content = URIcomponent(content)
-  }
 }
 
 // take care of white space, double qoute, single qoute, and back slash

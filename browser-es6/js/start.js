@@ -4,7 +4,7 @@
 
 $(function()
 {
-  getUserID().then(userid => {
+  fetch(GETUSERIDPHP).then(response => response.text()).then(userid => {
     if (/^\d{6}$/.test(userid)) {
 	  gv.user = userid
       $("#wrapper").show()

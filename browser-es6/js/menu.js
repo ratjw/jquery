@@ -127,15 +127,14 @@ function postponeCase()
     clearSelection()
 }
 
+// The second parameter (, 0) ensure a default value if arrayAfter.map is empty
 function getLargestWaitnum(staffname)
 {
-	let waitnumArr = gv.BOOK.filter(function(patient) {
-		return patient.staffname === staffname && !isNaN(patient.waitnum)
-	}).map(function(patient) {
-		return patient.waitnum
+	let dateStaff = gv.BOOK.filter(function(patient) {
+		return patient.staffname === staffname && patient.opdate === LARGESTDATE
 	})
 
-	return Math.max( ...waitnumArr )
+	return Math.max(...dateStaff.map(patient => patient.waitnum), 0)
 }
 
 function changeDate()
