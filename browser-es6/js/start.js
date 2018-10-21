@@ -2,18 +2,20 @@
 //    navigator.serviceWorker.register('service-worker.js')
 //  }
 
-$(function()
+$(async function()
 {
-  fetch(GETUSERIDPHP).then(response => response.text()).then(userid => {
-    if (/^\d{6}$/.test(userid)) {
-	  gv.user = userid
-      $("#wrapper").show()
-      $("#tblcontainer").css("height", window.innerHeight - $("#cssmenu").height())
-      postData(MYSQLIPHP, "start='x'").then(response => loading(response))
-    } else {
-      Alert("Alert!", "Invalid userid")
-    }
-  })
+  let response = await fetch(GETUSERIDPHP)
+  let userid = await response.text()
+
+  if (/^\d{6}$/.test(userid)) {
+	gv.user = userid
+    $("#wrapper").show()
+    $("#tblcontainer").css("height", window.innerHeight - $("#cssmenu").height())
+    let response = await postData(MYSQLIPHP, "start=")
+	loading(response)
+  } else {
+    Alert("Alert!", "Invalid userid")
+  }
 })
 
 function loading(response)
@@ -333,7 +335,7 @@ function exchangeOncall(pointing)
   clearEditcell()
 }
 
-function changeOncall(pointing, opdate, staffname)
+async function changeOncall(pointing, opdate, staffname)
 {
   let sql = "sqlReturnStaff=INSERT INTO oncall "
       + "(dateoncall, staffname, edittime) "
@@ -341,14 +343,13 @@ function changeOncall(pointing, opdate, staffname)
       + "','" + staffname
       + "',NOW());"
 
-  postData(MYSQLIPHP, sql).then(response => {
-    if (typeof response === "object") {
-      pointing.innerHTML = htmlwrap(staffname)
-      gv.ONCALL = response
-    } else {
-      Alert("changeOncall", response)
-    }
-  })
+  let response = await postData(MYSQLIPHP, sql)
+  if (typeof response === "object") {
+    pointing.innerHTML = htmlwrap(staffname)
+    gv.ONCALL = response
+  } else {
+    Alert("changeOncall", response)
+  }
 }
 
 function resetTimer()
@@ -359,7 +360,7 @@ function resetTimer()
   gv.timer = setTimeout( updating, 10000)
 }
 
-function updating()
+async function updating()
 {
   // If there is some changes, reset idle time
   // If not, continue counting idle time
@@ -384,16 +385,15 @@ function updating()
 
       let sql = "sqlReturnData=SELECT MAX(editdatetime) as timestamp from bookhistory;"
 
-      postData(MYSQLIPHP, sql).then(response => {
+      let response = await postData(MYSQLIPHP, sql)
 
-        // gv.timestamp is this client last edit
-        // timestamp is from server
-        if (typeof response === "object") {
-          if (gv.timestamp < response[0].timestamp) {
-            getUpdate()
-          }
+      // gv.timestamp is this client last edit
+      // timestamp is from server
+      if (typeof response === "object") {
+        if (gv.timestamp < response[0].timestamp) {
+          getUpdate()
         }
-      })
+      }
 	}
   }
 
@@ -401,26 +401,25 @@ function updating()
 }
 
 // There is some changes in database from other users
-function getUpdate()
+async function getUpdate()
 {
   let fromDate = $('#monthstart').val()  let toDate = $('#monthpicker').val()  let sql = "sqlReturnService=" + sqlOneMonth(fromDate, toDate)
 
-  postData(MYSQLIPHP, sql).then(response => {
-    if (typeof response === "object") {
-      updateBOOK(response)
-      if ($("#dialogService").hasClass('ui-dialog-content')
-        && $("#dialogService").dialog('isOpen')) {
-        gv.SERVE = calcSERVE()
-        refillService(fromDate, toDate)
-      }
-      refillall()
-      if (isSplited()) {
-        refillstaffqueue()
-      }
-    } else {
-      Alert ("getUpdate", response)
+  let response = await postData(MYSQLIPHP, sql)
+  if (typeof response === "object") {
+    updateBOOK(response)
+    if ($("#dialogService").hasClass('ui-dialog-content')
+      && $("#dialogService").dialog('isOpen')) {
+      gv.SERVE = calcSERVE()
+      refillService(fromDate, toDate)
     }
-  })
+    refillall()
+    if (isSplited()) {
+      refillstaffqueue()
+    }
+  } else {
+    Alert ("getUpdate", response)
+  }
 }
 
 // savePreviousCell is for Main and Staffqueue tables
@@ -467,7 +466,7 @@ function saveOnChange(pointed, index, content, qn)
           + "',editor='"+ gv.user
           + "' WHERE qn="+ qn +";"
 
-  postData(MYSQLIPHP, sql).then(response => callbacksaveOnChange(response))
+  updateOnChange(sql)
 
   pointed.innerHTML = content
 }
@@ -493,14 +492,15 @@ function saveOnChangeService(pointed, index, content, qn)
 
   sql  += sqlOneMonth(fromDate, toDate)
 
-  postData(MYSQLIPHP, sql).then(response => callbacksaveOnChange(response))
+  updateOnChange(sql)
 
   pointed.innerHTML = content
 
 }
 
-function callbacksaveOnChange(response)
+function updateOnChange(sql)
 {
+  let response = await postData(MYSQLIPHP, sql)
   if (typeof response === "object") {
     updateBOOK(response)
   }
@@ -571,7 +571,7 @@ function doadddata()
       + vnum + ",'"+ vname  +"','"+ vspecialty
       + "');"
 
-  postData(MYSQLIPHP, sql).then(response => callbackdodata(response))
+  dodata(sql)
 }
 
 function doupdatedata()
@@ -583,7 +583,7 @@ function doupdatedata()
         + "' WHERE number=" + vshidden
         + ";"
 
-  postData(MYSQLIPHP, sql).then(response => callbackdodata(response))
+  dodata(sql)
   }
 } // end of function doupdatedata
 
@@ -592,12 +592,13 @@ function dodeletedata()
   if (confirm("ต้องการลบข้อมูลนี้หรือไม่")) {
     let vshidden = document.getElementById("shidden").value    let sql = "sqlReturnStaff=DELETE FROM staff WHERE number=" + vshidden + ";"
 
-  postData(MYSQLIPHP, sql).then(response => callbackdodata(response))
+    dodata(sql)
   }
 }
 
-function callbackdodata(response)
+function dodata(sql)
 {
+  let response = await postData(MYSQLIPHP, sql)
   if (typeof response === "object") {
     showAddStaff(response)
   } else {
