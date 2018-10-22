@@ -360,7 +360,7 @@ function resetTimer()
   gv.timer = setTimeout( updating, 10000)
 }
 
-async function updating()
+function updating()
 {
   // If there is some changes, reset idle time
   // If not, continue counting idle time
@@ -382,22 +382,26 @@ async function updating()
       gv.idleCounter = 0
     } else {
       gv.idleCounter += 1
-
-      let sql = "sqlReturnData=SELECT MAX(editdatetime) as timestamp from bookhistory;"
-
-      let response = await postData(MYSQLIPHP, sql)
-
-      // gv.timestamp is this client last edit
-      // timestamp is from server
-      if (typeof response === "object") {
-        if (gv.timestamp < response[0].timestamp) {
-          getUpdate()
-        }
-      }
+      doUpdate()
 	}
   }
 
   resetTimer()
+}
+
+async function doUpdate()
+{
+  let sql = "sqlReturnData=SELECT MAX(editdatetime) as timestamp from bookhistory;"
+
+  let response = await postData(MYSQLIPHP, sql)
+
+  // gv.timestamp is this client last edit
+  // timestamp is from server
+  if (typeof response === "object") {
+    if (gv.timestamp < response[0].timestamp) {
+      getUpdate()
+    }
+  }
 }
 
 // There is some changes in database from other users
@@ -498,7 +502,7 @@ function saveOnChangeService(pointed, index, content, qn)
 
 }
 
-function updateOnChange(sql)
+async function updateOnChange(sql)
 {
   let response = await postData(MYSQLIPHP, sql)
   if (typeof response === "object") {
@@ -596,7 +600,7 @@ function dodeletedata()
   }
 }
 
-function dodata(sql)
+async function dodata(sql)
 {
   let response = await postData(MYSQLIPHP, sql)
   if (typeof response === "object") {
