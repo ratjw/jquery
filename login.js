@@ -1,7 +1,7 @@
 // Ridirect to https
-if (window.location.protocol === "http:" && window.location.hostname !== "localhost") {
-	window.location = "https://" + window.host
-}
+//if (window.location.protocol === "http:" && window.location.hostname !== "localhost") {
+//	window.location = "https://" + window.host
+//}
 	// Browsers that support module: Edge/16, Firefox/60, Chrome/61, Safari 10.1
 	var module = false
 	var ua = navigator.userAgent

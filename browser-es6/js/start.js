@@ -498,7 +498,7 @@ function saveOnChangeService(pointed, index, content, qn)
 
 }
 
-function updateOnChange(sql)
+async function updateOnChange(sql)
 {
   let response = await postData(MYSQLIPHP, sql)
   if (typeof response === "object") {
@@ -596,7 +596,7 @@ function dodeletedata()
   }
 }
 
-function dodata(sql)
+async function dodata(sql)
 {
   let response = await postData(MYSQLIPHP, sql)
   if (typeof response === "object") {
