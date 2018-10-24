@@ -1,5 +1,5 @@
 
-function editHistory()
+async function editHistory()
 {
   let  $selected = $(".selected"),
     $row = $selected.closest('tr'),
@@ -10,13 +10,12 @@ function editHistory()
 
   clearEditcell()
 
-  postData(MYSQLIPHP, sql).then(response => {
-    if (typeof response === "object") {
-      makehistory($row, hn, response)
-    } else {
-      Alert("editHistory", response)
-    }
-  })
+  let response = await postData(MYSQLIPHP, sql)
+  if (typeof response === "object") {
+    makehistory($row, hn, response)
+  } else {
+    Alert("editHistory", response)
+  }
 }
 
 function makehistory($row, hn, response)
@@ -90,7 +89,7 @@ jQuery.fn.extend({
   }
 })
 
-function deletedCases()
+async function deletedCases()
 {
   let sql = "sqlReturnData=SELECT a.* "
       + "FROM (SELECT editdatetime, b.* "
@@ -98,13 +97,12 @@ function deletedCases()
         + "WHERE b.deleted > 0 AND bh.action = 'delete' GROUP BY b.qn) a "
       + "ORDER BY a.editdatetime DESC;"
 
-  postData(MYSQLIPHP, sql).then(response => {
-    if (typeof response === "object") {
-      makedeletedCases(response)
-    } else {
-      Alert("deletedCases", response)
-    }
-  })
+  let response = await postData(MYSQLIPHP, sql)
+  if (typeof response === "object") {
+    makedeletedCases(response)
+  } else {
+    Alert("deletedCases", response)
+  }
 }
 
 function makedeletedCases(deleted)
@@ -194,7 +192,7 @@ function toUndelete(thisWhen, deleted)
 
   $('#dialogDeleted').dialog("close")
 
-  $("#undel").on("click", function() {
+  $("#undel").on("click", async function() {
     let $thiscase = $thisWhen.closest("tr").children("td"),
       opdateth = $thiscase.eq(UNDELOPDATE).html(),
       opdate = getOpdate(opdateth),
@@ -215,29 +213,32 @@ function toUndelete(thisWhen, deleted)
     alllen = allCases.length
 
     for (let i=0; i<alllen; i++) {
-        if (allCases[i] === qn) {
-          sql += "UPDATE book SET "
-              +  "deleted=0,"
-              +  "editor='" + gv.user
-              +  "' WHERE qn="+ qn + ";"
-        } else {
-          sql += sqlCaseNum(i + 1, allCases[i])
-        }
+      if (allCases[i] === qn) {
+        sql += "UPDATE book SET "
+            +  "deleted=0,"
+            +  "editor='" + gv.user
+            +  "' WHERE qn="+ qn + ";"
+      } else {
+        sql += sqlCaseNum(i + 1, allCases[i])
+      }
     }
 
-    postData(MYSQLIPHP, sql).then(response => {
-        if (typeof response === "object") {
-          updateBOOK(response);
-          refillOneDay(opdate)
-          //undelete this staff's case or a Consults case
-          if (isSplited() && (isStaffname(staffname) || isConsults())) {
-            refillstaffqueue()
-          }
-          scrolltoThisCase(qn)
-        } else {
-          Alert("toUndelete", response)
-        }
-    })
+    let response = await postData(MYSQLIPHP, sql)
+    if (typeof response === "object") {
+      toUndelete()
+    } else {
+      Alert("toUndelete", response)
+    }
+
+    function toUndelete() {
+      updateBOOK(response);
+      refillOneDay(opdate)
+      //undelete this staff's case or a Consults case
+      if (isSplited() && (isStaffname(staffname) || isConsults())) {
+        refillstaffqueue()
+      }
+      scrolltoThisCase(qn)
+	}
   })
 }
 
@@ -247,23 +248,17 @@ function closeUndel()
 }
 
 // All cases (include consult cases, exclude deleted ones)
-function allCases()
+async function allCases()
 {
   let sql = "sqlReturnData=SELECT * FROM book WHERE deleted=0 ORDER BY opdate;"
 
-  postData(MYSQLIPHP, sql).then(response => {
-    if (typeof response === "object") {
-      // Make paginated dialog box containing alltbl
-      pagination(
-        $("#dialogAll"),
-        $("#alltbl"),
-        response,
-        "All Saved Cases"
-      )
-    } else {
-      Alert("allCases", response)
-    }
-  })
+  let response = await postData(MYSQLIPHP, sql)
+  if (typeof response === "object") {
+    // Make paginated dialog box containing alltbl
+    pagination($("#dialogAll"), $("#alltbl"), response, "All Saved Cases")
+  } else {
+    Alert("allCases", response)
+  }
 }
 
 function pagination($dialog, $tbl, book, search)
@@ -533,7 +528,7 @@ function getSaffName(pointing)
   menustyle($stafflist, $pointing)
 }
 
-function searchDB()
+async function searchDB()
 {
   let hn = $('input[name="hn"]').val(),
     staffname = $('input[name="staffname"]').val(),
@@ -549,13 +544,12 @@ function searchDB()
       + "&staffname=" + staffname
       + "&others=" + others
 
-    postData(SEARCH, sql).then(response => {
-      if (typeof response === "object") {
-        makeFind(response, search)
-      } else {
-        Alert("Search: " + search, response)
-      }
-    })
+    let response = await postData(MYSQLIPHP, sql)
+    if (typeof response === "object") {
+      makeFind(response, search)
+    } else {
+      Alert("Search: " + search, response)
+    }
   } else {
     Alert("Search: ''", "<br><br>No Result")
   }

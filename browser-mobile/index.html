@@ -1,10 +1,3 @@
-
-<?php
-	session_start();
-
-	$userid = !empty($_SESSION['userid']) ? $_SESSION['userid'] : '';
-?>
-
 <!DOCTYPE html>
 <HTML>
 <HEAD>
@@ -18,7 +11,7 @@
 <link href="css/menu.css" rel="stylesheet">
 <link href="css/jquery-ui.min.css" rel="stylesheet">
 
-<script src="js/jquery-1.12.4.min.js"></script>
+<script src="js/jquery-3.3.1.min.js"></script>
 <script src="js/jquery.mousewheel.min.js"></script>
 <script src="js/jquery-ui.min.js"></script>
 
@@ -81,7 +74,7 @@
       </li>
      </ul>
     </li>
-    <li class='floatright'><a href='javascript:readme()'><span>Readme</span></a></li>
+<!--    <li class='floatright'><a href='javascript:readme()'><span>Readme</span></a></li>
     <li class='floatright hassub'><a nohref><span>Setting</span></a>
      <ul class='w120'>
       <li><a href='javascript:addStaff()'><span>Staff Setting</span></a></li>
@@ -100,7 +93,7 @@
     <li id="changedate">
 	  <a href='javascript:changeDate()'><span>Move</span></a>
 	</li>
-    <li id="history">
+-->    <li id="history">
      <a href='javascript:editHistory()'><span>Tracking</span></a>
     </li>
     <li id="delete"><a nohref><span>Delete</span></a>
@@ -123,45 +116,42 @@
    </ul>
   </div>
 
-  <div id="dialogNotify">
-    <textarea placeholder="พิมพ์ข้อความ"></textarea>
-    <button id="buttonLINE" onclick="toLINE()"></button>
+  <div id="tblwrapper">
+   <div id="tblcontainer">
+    <table id="tbl">
+     <tbody>
+      <tr>
+       <th>Date</th>
+       <th>OR</th>
+       <th>ห้อง</th>
+       <th>เวลา</th>
+       <th>ลำดับ</th>
+       <th>Staff</th>
+       <th>HN</th>
+       <th>Patient</th>
+       <th>Diagnosis</th>
+       <th>Treatment</th>
+       <th>Equipment</th>
+       <th>Contact</th>
+       <th></th>
+      </tr>
+     </tbody>
+    </table>
+   </div>
   </div>
 
-  <div id="tblcontainer">
-   <table id="tbl">
-    <tbody>
-	 <tr>
-     <th>Date</th>
-     <th>OR</th>
-     <th>ห้อง</th>
-     <th>เวลา</th>
-     <th>ลำดับ</th>
-     <th>Staff</th>
-     <th>HN</th>
-     <th>Patient</th>
-     <th>Diagnosis</th>
-     <th>Treatment</th>
-     <th>Equipment</th>
-     <th>Contact</th>
-     <th></th>
-	 </tr>
-    </tbody>
-   </table>
-  </div>
-
- <div id="queuewrapper">
-  <div id="titlebar">
+  <div id="queuewrapper">
+   <div id="titlebar">
 	<span id="titlename"></span>
 	<span class="ui-icon ui-icon-closethick" onclick="closequeue()"></span>
-  </div> 
-  <div id="queuecontainer">
+   </div> 
+   <div id="queuecontainer">
     <table id="queuetbl">
      <tbody>
      </tbody>
     </table>
+   </div>
   </div>
- </div>
 </div>
 
 <!-- Used as cells template -->
@@ -185,6 +175,11 @@
  </tbody>
 </table>
 
+<div id="dialogNotify">
+  <textarea placeholder="พิมพ์ข้อความ"></textarea>
+  <button id="buttonLINE" onclick="toLINE()"></button>
+</div>
+
 <div id="dialogService">
   <div id="servicehead">
     <div>
@@ -204,6 +199,7 @@
   <button id="exportService">Export to xls</button>
   <button id="reportService">Report to Dept.</button>
   <br>
+  <br>
   <div id="monthpicker"></div>
   <div id="monthstart"></div>
   <table id="servicetbl">
@@ -216,7 +212,7 @@
      <th>Treatment</th>
      <th>Admission Status</th>
      <th>Final Status</th>
-     <th>Case Profile</th>
+     <th>Profile</th>
      <th>Admit</th>
      <th>Date</th>
      <th>D/C</th>
@@ -334,7 +330,7 @@
     <td data-title="Treatment"></td>
     <td data-title="Admission Status"></td>
     <td data-title="Final Status"></td>
-    <td data-title="Case Profile"></td>
+    <td data-title="Profile"></td>
     <td data-title="Admit"></td>
     <td data-title="Date"></td>
     <td data-title="D/C"></td>
@@ -600,30 +596,29 @@
 
 <div id="dialogStaff">
   <table id="stafftbl">
-  <thead>
+   <thead>
 	<tr>
-	 <td>Name : <input type="text" id="sname" size="10">
-	 </td>
-	 <td>Specialty : <select id="scbb"><option style="display:none"></option>
-		</select>
-	 </td>
-	 <td>Date Oncall : <input type="text" id="sdate" size="10" readonly>
-	 </td>
-	 <input id="shidden" type="hidden">
+	  <td>Name : <input type="text" id="sname" size="10">
+	  </td>
+	  <td>Specialty : <select id="scbb"><option></option></select>
+	  </td>
+	  <td>Date Oncall : <input type="text" id="sdate" size="10" readonly>
+						 <input id="shidden" type="hidden">
+	  </td>
 	</tr>
 	<tr>
-	<td><button onClick=doadddata()>AddStaff</button></td>
-	<td><button onClick=doupdatedata()>UpdateStaff</button></td>
-	<td><button onClick=dodeletedata()>DeleteStaff</button></td>
+	  <td><button onclick="doadddata()">AddStaff</button></td>
+	  <td><button onclick="doupdatedata()">UpdateStaff</button></td>
+	  <td><button onclick="dodeletedata()">DeleteStaff</button></td>
 	</tr>
-   <tr>
-	<th>Staff</th>
-	<th>Specialty</th>
-	<th>Start Date Oncall</th>
-   </tr>
-  </thead>
-  <tbody>
-  </tbody>
+    <tr>
+	  <th>Staff</th>
+	  <th>Specialty</th>
+	  <th>Start Date Oncall</th>
+    </tr>
+   </thead>
+   <tbody>
+   </tbody>
   </table>
 </div>
 
@@ -643,7 +638,7 @@
    <tr>
 	<th>Date</th>
 	<th>Holiday Name
-	 <button id="addholiday" onClick=addHoliday(this)>+</button>
+	 <button id="addholiday" onclick="addHoliday()">+</button>
 	</th>
    </tr>
   </thead>
@@ -655,10 +650,11 @@
 <table id="holidaycells">
   <tbody>
 	<tr>
-	 <td data-title="Date"></td>
-	 <td data-title="Holiday Name"></td>
+	  <td data-title="Date"></td>
+	  <td data-title="Holiday Name">
+	    <button class="delholiday" onclick="delHoliday(this)">-</button>
+	  </td>
 	</tr>
-	<button class="delholiday" onClick=delHoliday(this)>-</button>
   </tbody>
 </table>
 
@@ -670,7 +666,7 @@
 	 <td>
 	  <select id="holidayname">
 	  </select>
-	  <button class="delholiday" onClick=delHoliday(this)>-</button>
+	  <button class="delholiday" onclick="delHoliday(this)">-</button>
 	 </td>
 	</tr>
   </tbody>
@@ -1030,7 +1026,7 @@
  <div>
   <span class="w350"></span>
   <span class="w70"> Edited by </span>
-  <span style="position:absolute" id="editedby"></span>
+  <span id="editedby"></span>
  </div>
  <br>
 </div>
@@ -1039,10 +1035,6 @@
 
 <!-- For IE that not support <a download>, used in Export to Excel -->
 <iframe id="txtArea1"></iframe>
-
-<?php
-	echo "<script> Start('$userid') </script>";
-?>
 
 </BODY>
 </HTML>

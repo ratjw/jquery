@@ -116,45 +116,42 @@
    </ul>
   </div>
 
-  <div id="dialogNotify">
-    <textarea placeholder="พิมพ์ข้อความ"></textarea>
-    <button id="buttonLINE" onclick="toLINE()"></button>
+  <div id="tblwrapper">
+   <div id="tblcontainer">
+    <table id="tbl">
+     <tbody>
+      <tr>
+       <th>Date</th>
+       <th>OR</th>
+       <th>ห้อง</th>
+       <th>เวลา</th>
+       <th>ลำดับ</th>
+       <th>Staff</th>
+       <th>HN</th>
+       <th>Patient</th>
+       <th>Diagnosis</th>
+       <th>Treatment</th>
+       <th>Equipment</th>
+       <th>Contact</th>
+       <th></th>
+      </tr>
+     </tbody>
+    </table>
+   </div>
   </div>
 
-  <div id="tblcontainer">
-   <table id="tbl">
-    <tbody>
-	 <tr>
-     <th>Date</th>
-     <th>OR</th>
-     <th>ห้อง</th>
-     <th>เวลา</th>
-     <th>ลำดับ</th>
-     <th>Staff</th>
-     <th>HN</th>
-     <th>Patient</th>
-     <th>Diagnosis</th>
-     <th>Treatment</th>
-     <th>Equipment</th>
-     <th>Contact</th>
-     <th></th>
-	 </tr>
-    </tbody>
-   </table>
-  </div>
-
- <div id="queuewrapper">
-  <div id="titlebar">
+  <div id="queuewrapper">
+   <div id="titlebar">
 	<span id="titlename"></span>
 	<span class="ui-icon ui-icon-closethick" onclick="closequeue()"></span>
-  </div> 
-  <div id="queuecontainer">
+   </div> 
+   <div id="queuecontainer">
     <table id="queuetbl">
      <tbody>
      </tbody>
     </table>
+   </div>
   </div>
- </div>
 </div>
 
 <!-- Used as cells template -->
@@ -177,6 +174,11 @@
   </tr>
  </tbody>
 </table>
+
+<div id="dialogNotify">
+  <textarea placeholder="พิมพ์ข้อความ"></textarea>
+  <button id="buttonLINE" onclick="toLINE()"></button>
+</div>
 
 <div id="dialogService">
   <div id="servicehead">

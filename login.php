@@ -41,8 +41,8 @@
 			else if (strpos($_SERVER["SERVER_NAME"], "localhost") !== false) {
 				$resultz = "S";
 			}
-			else {
-				$error = "Incorrect password or username";
+			else if (strpos($_SERVER["SERVER_NAME"], "192.168") !== false) {
+				$resultz = "S";
 			}
 
 			if ($resultz === "S" || $resultz === "R") {
@@ -51,8 +51,13 @@
 			else if ($resultz === "N") {
 				header($browserNurse);
 			}
-			else {
+			// Pass the login but other than S, R, N
+			else if (preg_match('/w/', $resultz)) {
 				$error = "Unauthorized";
+			}
+			// Fail the login
+			else {
+				$error = "Incorrect password or username";
 			}
 		} else {
 			$error = "Invalid username";

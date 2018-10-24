@@ -67,11 +67,12 @@ function nurse()
 function check() {
     "use strict";
 
-    if (typeof Symbol === "undefined") return false;
     if (typeof fetch === "undefined") return false;
+//    if (typeof find === "undefined") return false;
     try {
         eval("class Foo {}");
-        eval("var bar = (x) => x+1");
+        eval("var bar = async (x) => x+1");
+		eval('"foo".includes("foo")')
     } catch (e) { return false; }
 
     return true;

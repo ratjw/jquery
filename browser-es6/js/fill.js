@@ -18,12 +18,6 @@ function fillupstart()
 	
 	fillall(book, table, start, until)
 
-	//scroll to today
-	let thishead = $("#tbl tr:contains(" + todateth + ")")[0]
-	$('#tblcontainer').animate({
-		scrollTop: thishead.offsetTop
-	}, 300);
-
 	hoverMain()
 }
 
@@ -235,7 +229,6 @@ function staffqueue(staffname)
 		queuetbl = $queuetbl[0]
 		
 
-	if (!isSplited()) { splitPane() }
 	$('#titlename').html(staffname)
 	
 	//delete previous queuetbl lest it accumulates
@@ -261,6 +254,7 @@ function staffqueue(staffname)
 		});
 	}
 
+	if (!isSplited()) { splitPane() }
 	hoverMain()
 }
 
@@ -328,6 +322,79 @@ jQuery.fn.extend({
 		$cells[QN].innerHTML = bookq.qn
 	}
 })
+
+function splitPane()
+{
+	let scrolledTop = document.getElementById("tblcontainer").scrollTop
+	let tohead = findVisibleHead('#tbl')
+	let menuHeight = $("#cssmenu").height()
+	let titleHeight = $("#titlebar").height()
+
+	$("#tblwrapper").css({
+		"height": "100%" - menuHeight,
+		"width": "50%"
+	})
+	$("#queuewrapper").show().css({
+		"height": "100%" - menuHeight,
+		"width": "50%"
+	})
+	$("#queuecontainer").css({
+		"height": $("#tblcontainer").height() - titleHeight
+	})
+
+	initResize($("#tblwrapper"))
+	$('.ui-resizable-e').css('height', $("#tbl").css("height"))
+
+//	fakeScrollAnimate("tblcontainer", "tbl", scrolledTop, tohead.offsetTop)
+}
+
+// remainSpace-margin-1 to prevent right pane disappear while resizing in Chrome 
+function initResize($container)
+{
+	$container.resizable(
+	{
+		autoHide: true,
+		handles: 'e',
+		resize: function(e, ui) 
+		{
+			let parent = ui.element.parent();
+			let remainSpace = parent.width() - ui.element.outerWidth()
+			let divTwo = ui.element.next()
+			let margin = divTwo.outerWidth() - divTwo.innerWidth()
+			let divTwoWidth = (remainSpace-margin-1)/parent.width()*100+"%";
+			divTwo.css("width", divTwoWidth);
+		},
+		stop: function(e, ui) 
+		{
+			let parent = ui.element.parent();
+			let remainSpace = parent.width() - ui.element.outerWidth()
+			let divTwo = ui.element.next()
+			let margin = divTwo.outerWidth() - divTwo.innerWidth()
+			ui.element.css(
+			{
+				width: ui.element.outerWidth()/parent.width()*100+"%",
+			});
+			ui.element.next().css(
+			{
+				width: (remainSpace-margin)/parent.width()*100+"%",
+			});
+		}
+	});
+}
+
+function closequeue()
+{
+	let scrolledTop = document.getElementById("tblcontainer").scrollTop
+	let tohead = findVisibleHead('#tbl')
+	
+	$("#queuewrapper").hide()
+	$("#tblwrapper").css({
+		"height": "100%" - $("#cssmenu").height(),
+		"width": "100%"
+	})
+
+//	fakeScrollAnimate("tblcontainer", "tbl", scrolledTop, tohead.offsetTop)
+}
 
 // hover on background pics
 function hoverMain()
@@ -508,7 +575,7 @@ function addHoliday()
 	}
 }
 
-function saveHoliday()
+async function saveHoliday()
 {
 	let	vdateth = document.getElementById("holidateth").value,
 		vdate = vdateth.numDate(),
@@ -522,21 +589,20 @@ function saveHoliday()
 
 	if (!vdate || !vname) { return }
 
-	postData(MYSQLIPHP, sql).then(response => {
-		if (typeof response === "object") {
-			gv.HOLIDAY = response
-			holidayInputBack($("#holidateth").closest("tr"))
-			fillHoliday($("#holidaytbl"))
-			$(rows).each(function() {
-				this.cells[DIAGNOSIS].style.backgroundImage = holiday(vdate)
-			})
-		} else {
-			alert(response)
-		}
-	})
+	let response = await postData(MYSQLIPHP, sql)
+	if (typeof response === "object") {
+		gv.HOLIDAY = response
+		holidayInputBack($("#holidateth").closest("tr"))
+		fillHoliday($("#holidaytbl"))
+		$(rows).each(function() {
+			this.cells[DIAGNOSIS].style.backgroundImage = holiday(vdate)
+		})
+	} else {
+		alert(response)
+	}
 }
 
-function delHoliday(that)
+async function delHoliday(that)
 {
 	let	$row = $(that).closest("tr")
 
@@ -555,17 +621,16 @@ function delHoliday(that)
 				+ "' AND dayname='" + holidayEng
 				+ "';SELECT * FROM holiday ORDER BY holidate;"
 
-		postData(MYSQLIPHP, sql).then(response => {
-			if (typeof response === "object") {
-				gv.HOLIDAY = response
-				$(rows).each(function() {
-					this.cells[DIAGNOSIS].style.backgroundImage = ""
-				})
-				$row.remove()
-			} else {
-				alert(response)
-			}
-		})
+		let response = await postData(MYSQLIPHP, sql)
+		if (typeof response === "object") {
+			gv.HOLIDAY = response
+			$(rows).each(function() {
+				this.cells[DIAGNOSIS].style.backgroundImage = ""
+			})
+			$row.remove()
+		} else {
+			alert(response)
+		}
 	}
 }
 

@@ -5,11 +5,16 @@
 	font-family: sans-serif;
 }
 
-#tblcontainer {
+#tblwrapper {
 	float: left;
 	height: 100%;
 	width: 100%;
-	overflow: scroll;
+}
+
+#tblcontainer {
+	height: 100%;
+	width: 100%;
+	overflow: auto;
 	box-sizing: border-box;
 	border: solid 2px silver;
 }
@@ -52,8 +57,7 @@ td img {
 }
 
 #queuecontainer {
-	height: 92%;
-	overflow: scroll;
+	overflow: auto;
 	box-sizing: border-box;
 	border-top: solid 2px silver;
 	border-right: solid 2px silver;
@@ -107,22 +111,22 @@ td img {
 #tbl td:nth-child(2),
 #tbl td:nth-child(3),
 #tbl td:nth-child(4),
-#tbl td:nth-child(5) { min-width: 30px; max-width: 30px; }
-#tbl td:nth-child(6) { min-width: 40px; width: 3%; }
-#tbl td:nth-child(7) { min-width: 50px; max-width: 50px; }
+#tbl td:nth-child(5) { min-width: 25px; max-width: 30px; }
+#tbl td:nth-child(6) { min-width: 40px; max-width: 60px; }
+#tbl td:nth-child(7) { min-width: 50px; max-width: 70px; }
 #tbl td:nth-child(8) { min-width: 70px; width: 10%; }
-#tbl td:nth-child(9) { width: 25%; }
-#tbl td:nth-child(10) { width: 25%; }
-#tbl td:nth-child(11) { width: 20%; }
-#tbl td:nth-child(12) { width: 20%; }
+#tbl td:nth-child(9) { min-width: 200px; width: 20%; }
+#tbl td:nth-child(10) { min-width: 200px; width: 20%; }
+#tbl td:nth-child(11) { min-width: 100px; width: 15%; }
+#tbl td:nth-child(12) { min-width: 100px; width: 15%; }
 
 #queuetbl td:nth-child(6) { min-width: 40px; max-width: 60px; }
-#queuetbl td:nth-child(7) { min-width: 50px; max-width: 50px; }
+#queuetbl td:nth-child(7) { min-width: 50px; max-width: 70px; }
 #queuetbl td:nth-child(8) { min-width: 70px; width: 10%; }
-#queuetbl td:nth-child(9) { width: 25%; }
-#queuetbl td:nth-child(10) { width: 25%; }
-#queuetbl td:nth-child(11) { width: 20%; }
-#queuetbl td:nth-child(12) { width: 20%; }
+#queuetbl td:nth-child(9) { min-width: 200px; width: 25%; }
+#queuetbl td:nth-child(10) { min-width: 200px; width: 25%; }
+#queuetbl td:nth-child(11) { min-width: 100px; width: 15%; }
+#queuetbl td:nth-child(12) { min-width: 100px; width: 15%; }
 
 #servicetbl td:nth-child(1) { width: 15px; }
 #servicetbl td:nth-child(2) { width: 50px; }
@@ -184,6 +188,9 @@ td img {
 #wrapper,
 #queuewrapper,
 #tblcells,
+#tbl th:nth-child(2), #tbl td:nth-child(2),
+#tbl th:nth-child(4), #tbl td:nth-child(4),
+#tbl th:nth-child(5), #tbl td:nth-child(5),
 #queuetbl th:nth-child(2), #queuetbl td:nth-child(2),
 #queuetbl th:nth-child(3), #queuetbl td:nth-child(3),
 #queuetbl th:nth-child(4), #queuetbl td:nth-child(4),
@@ -214,6 +221,7 @@ td img {
 #undelete,
 #txtArea1,
 #dialogStaff,
+#scbb option:first-of-type,
 #staffcells,
 #dialogHoliday,
 #holidaycells,
@@ -345,8 +353,8 @@ td.Thu:before { content: "พฤหัส "; }
 td.Fri:before { content: "ศุกร์ "; }
 td.Sat:before { content: "เสาร์ "; }
 
-td.pacs { background-image: url(pic/general/pacs.png); }
-td.pacs2 { background-image: url(pic/general/pacs2.png); }
+/*td.pacs { background-image: url(pic/general/pacs.png); }
+td.pacs2 { background-image: url(pic/general/pacs2.png); }*/
 td.camera { background-image: url(pic/general/camera.png); }
 td.camera2 { background-image: url(pic/general/camera2.png); }
 
@@ -383,7 +391,8 @@ td.camera2 { background-image: url(pic/general/camera2.png); }
 
 .ui-icon-closethick {
 	float: right;
-	margin: 10px 10px 0 0;
+	top: 15px;
+	right:10px;
 }
 
 .iconcontainer {
@@ -430,7 +439,9 @@ td.camera2 { background-image: url(pic/general/camera2.png); }
 .textleft { text-align: left;}
 .textright { text-align: right; }
 .textcenter { text-align: center; }
+.inline { display: inline-block; }
 
+.w5 { width:5px !important; }
 .w20 { width:20px !important; }
 .w22 { width:22px !important; }
 .w30 { width:30px !important; }
@@ -522,6 +533,18 @@ td.camera2 { background-image: url(pic/general/camera2.png); }
 
 #monthpicker { margin-left:5px }
 
+#hideProfile {
+	float: right;
+	font-size: 16px;
+	height: 30px;
+	line-height: 20px;
+	padding-top:2px
+}
+#hideProfile img {
+	float: left;
+	width: 20px;
+}
+
 #editcell { 
 	text-align: left; 
 	overflow: hidden;
@@ -587,6 +610,9 @@ td.camera2 { background-image: url(pic/general/camera2.png); }
 	padding: 2px;
 	color: blue;
 	font-weight: bold;
+}
+#editedby {
+	position: absolute;
 }
 
 #dialogNotify textarea {

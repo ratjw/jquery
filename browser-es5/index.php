@@ -128,6 +128,7 @@
     <button id="buttonLINE" onclick="toLINE()"></button>
   </div>
 
+ <div id="tblwrapper">
   <div id="tblcontainer">
    <table id="tbl">
     <tbody>
@@ -149,6 +150,7 @@
     </tbody>
    </table>
   </div>
+ </div>
 
  <div id="queuewrapper">
   <div id="titlebar">

@@ -1,6 +1,6 @@
 function sortable()
 {
-	var prevplace,
+	let prevplace,
 		thisplace,
 		sender
 
@@ -30,7 +30,7 @@ function sortable()
 			thisplace = ui.placeholder.index()
 		},
 		stop: function(e, ui) {
-			var $item = ui.item,
+			let $item = ui.item,
 				$itemcell = $item.children("td"),
 				receiver = $item.closest('table').attr('id'),
 				oldwaitnum = $item[0].title,
@@ -44,16 +44,16 @@ function sortable()
 			//allow drag to Consults, but not to wrong staffname
 			if ((sender === "tbl") && (receiver === "queuetbl")
 				&& !isConsults() && !isStaffname(staffname)) {
-					stopsorting()
+					stopSorting()
 					return false
 			}
 				
 			if (!$itemcell.eq(QN).html()) {
-				stopsorting()
+				stopSorting()
 				return false
 			}
 
-			var $thisdrop, before,
+			let $thisdrop, before,
 				$previtem = $item.prev(),
 				$nextitem = $item.next()
 			if (!$previtem.length || $previtem.has('th').length) {
@@ -64,7 +64,7 @@ function sortable()
 					$thisdrop = $previtem
 					before = 0
 				} else {		//ui.offset (no '()') = helper position
-					var helperpos = ui.offset.top,
+					let helperpos = ui.offset.top,
 						prevpos = $previtem.offset().top,
 						thispos = $item.offset().top,
 						nextpos = $nextitem.offset().top,
@@ -82,7 +82,7 @@ function sortable()
 					}
 					if (nearest === nearplace) {
 						if ((prevplace === thisplace) && (sender === receiver)) {
-							stopsorting()
+							stopSorting()
 							return false
 						}
 						if (prevplace < thisplace) {
@@ -96,7 +96,7 @@ function sortable()
 				}
 			}
 
-			var $thiscell = $thisdrop.children("td"),
+			let $thiscell = $thisdrop.children("td"),
 				thisOpdateth = $thisdrop.children("td").eq(OPDATE).html(),
 				thisOpdate = getOpdate(thisOpdateth),
 				thistheatre = $thiscell.eq(THEATRE).html(),
@@ -135,7 +135,7 @@ function sortable()
 					}
 				}
 
-				for (var i=0; i<allNewCases.length; i++) {
+				for (let i=0; i<allNewCases.length; i++) {
 					if (allNewCases[i] === oldqn) {
 						sql += sqlMover(newWaitnum, thisOpdate, thisroom, i + 1, oldqn)
 					} else {
@@ -153,35 +153,35 @@ function sortable()
 				sql += sqlMover(newWaitnum, thisOpdate, null, null, oldqn)
 			}
 			sql = "sqlReturnbook=" + sql
+			stopSortable(sql, receiver, oldOpdateth, oldOpdate, thisOpdate)
 
-			Ajax(MYSQLIPHP, sql, callbacksortable);
-
-			function callbacksortable(response)
-			{
-				if (typeof response === "object") {
-					updateBOOK(response)
-					if (receiver === "tbl") {
-						if (oldOpdateth) {
-							refillOneDay(oldOpdate)
-						}
-						refillOneDay(thisOpdate)
-						if (isSplited()) {
-							refillstaffqueue()
-						}
-					} else {
-						refillstaffqueue()
-						refillOneDay(oldOpdate)
-						refillOneDay(thisOpdate)
-					}
-				} else {
-					Alert ("Sortable", response)
-				}
-			}
 		}
 	})
 }
 
-function stopsorting()
+async function stopSortable(sql, receiver, oldOpdateth, oldOpdate, thisOpdate) {
+	let response = await postData(MYSQLIPHP, sql)
+	if (typeof response === "object") {
+		updateBOOK(response)
+		if (receiver === "tbl") {
+			if (oldOpdateth) {
+				refillOneDay(oldOpdate)
+			}
+			refillOneDay(thisOpdate)
+			if (isSplited()) {
+				refillstaffqueue()
+			}
+		} else {
+			refillstaffqueue()
+			refillOneDay(oldOpdate)
+			refillOneDay(thisOpdate)
+		}
+	} else {
+		Alert ("Sortable", response)
+	}
+}
+
+function stopSorting()
 {
 	// Return to original place
 	// Timer: Global timer every 10 sec
@@ -197,8 +197,8 @@ function stopsorting()
 
 function updateCasenum(allCases)
 {
-	var sql = ""
-	for (var i=0; i<allCases.length; i++) {
+	let sql = ""
+	for (let i=0; i<allCases.length; i++) {
 		sql += sqlCaseNum(i + 1, allCases[i])
 	}
 	return sql
@@ -206,7 +206,7 @@ function updateCasenum(allCases)
 
 function sqlCaseNum(casenum, qn)
 {	
-	return "UPDATE book SET "
+  return "UPDATE book SET "
 		+  "casenum=" + casenum
 		+  ",editor='" + gv.user
 		+  "' WHERE qn="+ qn + ";";
@@ -214,7 +214,7 @@ function sqlCaseNum(casenum, qn)
 
 function sqlMover(waitnum, opdate, oproom, casenum, qn)
 {
-	return "UPDATE book SET "
+  return "UPDATE book SET "
 		+  "waitnum=" + waitnum
 		+  ", opdate='" + opdate
 		+  "',oproom=" + oproom

@@ -1,41 +1,58 @@
-
-function Start(userid)
-{
 //  if ('serviceWorker' in navigator) {
 //    navigator.serviceWorker.register('service-worker.js')
 //  }
 
-  if (!/^\d{6}$/.test(userid)) { return }
+$(async function()
+{
+  let response = await fetch(GETUSERIDPHP)
+  let userid = await response.text()
 
-  Ajax(MYSQLIPHP, "start=start", loading);
-
-  gv.user = userid
-  $("#wrapper").show()
-  $("#tblcontainer").css("height", window.innerHeight - $("#cssmenu").height())
-
-  function loading(response)
-  {
-    if (typeof response !== "object") { response = "{}" }
-    updateBOOK(response)
-
-    // call sortable before render, otherwise, rendering is very slow
-    sortable()
-
-    // make the document editable
-    editcellEvent()
-    wrapperEvent()
-    documentEvent()
-
-    // rendering
-    fillupstart()
-    setStafflist()
-    fillConsults()
-
-    disableOneRowMenu()
-    disableExcelLINE()
-    overrideJqueryUI()
-    resetTimer()
+  if (/^\d{6}$/.test(userid)) {
+	gv.user = userid
+    $("#wrapper").show()
+    $("#tblwrapper").css("height", window.innerHeight - $("#cssmenu").height())
+    let response = await postData(MYSQLIPHP, "start=")
+    loading(response)
+  } else {
+    Alert("Alert!", "Invalid userid")
   }
+})
+
+function loading(response)
+{
+  if (typeof response !== "object") { response = "{}" }
+  updateBOOK(response)
+
+  // call sortable before render, otherwise, rendering is very slow
+  sortable()
+
+  // rendering
+  fillupstart()
+  setStafflist()
+  fillConsults()
+
+  // make the document editable
+  editcellEvent()
+  wrapperEvent()
+  documentEvent()
+  scrolltoToday()
+
+  disableOneRowMenu()
+  disableExcelLINE()
+  overrideJqueryUI()
+  resetTimer()
+}
+
+function scrolltoToday()
+{
+  let today = new Date(),
+    todate = today.ISOdate(),
+    todateth = todate.thDate()
+//  $('#tblcontainer').scrollTop(0)
+  let thishead = $("#tbl tr:contains(" + todateth + ")")[0]
+  $('#tblcontainer').animate({
+    scrollTop: thishead.offsetTop
+  }, 300);
 }
 
 function updateBOOK(response)
@@ -52,10 +69,11 @@ function updateBOOK(response)
 
 function editcellEvent()
 {
-  var $editcell = $("#editcell")
-  $editcell.on("keydown", function (event) {
-    var keyCode = event.which || window.event.keyCode
-    var pointing = $editcell.data("pointing")
+  let $editcell = $("#editcell")
+
+  $editcell.on("keydown", event => {
+    let keyCode = event.which || window.event.keyCode
+    let pointing = $editcell.data("pointing")
 
     if ($('#dialogService').is(':visible')) {
       Skeyin(event, keyCode, pointing)
@@ -69,12 +87,12 @@ function editcellEvent()
   })
 
   // for resizing the editing cell
-  $editcell.on("keyup", function (event) {
-    var keyCode = event.which || window.event.keyCode
+  $editcell.on("keyup", event => {
+    let keyCode = event.which || window.event.keyCode
     $editcell.height($editcell[0].scrollHeight)
   })
 
-  $editcell.on("click", function (event) {
+  $editcell.on("click", event => {
     event.stopPropagation()
     return
   })
@@ -82,20 +100,20 @@ function editcellEvent()
 
 function wrapperEvent()
 {
-  document.getElementById("wrapper").addEventListener("wheel", function (event) {
+  document.getElementById("wrapper").addEventListener("wheel", event => {
     resetTimer();
     gv.idleCounter = 0
     $(".marker").removeClass("marker")
   })
   
-  document.getElementById("wrapper").addEventListener("mousemove", function (event) {
+  document.getElementById("wrapper").addEventListener("mousemove", event => {
     resetTimer();
     gv.idleCounter = 0
   })
 
-  $("#wrapper").on("click", function (event) {
-    var target = event.target
-    var $stafflist = $('#stafflist')
+  $("#wrapper").on("click", event => {
+    let target = event.target
+    let $stafflist = $('#stafflist')
 
     resetTimer();
     gv.idleCounter = 0
@@ -127,18 +145,18 @@ function wrapperEvent()
 
 function documentEvent()
 {
-  $(document).off('keydown').on('keydown', function (event) {
+  $(document).off('keydown').on('keydown', event => {
     // Prevent the backspace key from navigating back.
     if (event.keyCode === 8) {
-      var doPrevent = true
-      var types = ["text", "password", "file", "number", "date", "time"]
-      var d = $(event.srcElement || event.target)
-      var disabled = d.prop("readonly") || d.prop("disabled")
+      let doPrevent = true
+      let types = ["text", "password", "file", "number", "date", "time"]
+      let d = $(event.srcElement || event.target)
+      let disabled = d.prop("readonly") || d.prop("disabled")
       if (!disabled) {
         if (d[0].isContentEditable) {
           doPrevent = false
         } else if (d.is("input")) {
-          var type = d.attr("type")
+          let type = d.attr("type")
           if (type) {
             type = type.toLowerCase()
           }
@@ -154,16 +172,16 @@ function documentEvent()
         return false
       }
     }
-	else if (event.keyCode === 27) {
+    else if (event.keyCode === 27) {
       clearAllEditing()
     }
     resetTimer()
     gv.idleCounter = 0
   });
-
-  $(document).contextmenu( function (event) {
-    var target = event.target
-    var oncall = /<p[^>]*>.*<\/p>/.test(target.outerHTML)
+/*
+  $(document).contextmenu( event => {
+    let target = event.target
+    let oncall = /<p[^>]*>.*<\/p>/.test(target.outerHTML)
 
     if (oncall) {
       if (event.ctrlKey) {
@@ -176,30 +194,28 @@ function documentEvent()
     }
   })
 
+	window.oncontextmenu = function(event) {
+		if (event.targetTouches[0].target.tagName === 'A') {
+			preventDefault();
+			stopPropagation();
+			return false;
+		}
+	}
+
   // to let table scrollable while dragging
   $("html, body").css( {
     height: "100%",
     overflow: "hidden",
     margin: "0px"
   })
-}
-
-function touchEvent()
-{
-  $('.static_parent').on('touchstart mouseenter', '.link', function (e) {
-    $(this).addClass('hover_effect');
-  });
-
-  $('.static_parent').on('mouseleave touchmove click', '.link', function (e) {
-    $(this).removeClass('hover_effect');
-
-    // As it's the chain's last event we only prevent it from making HTTP request
-    if (e.type == 'click') {
-        e.preventDefault ? e.preventDefault() : e.returnValue = false;
-
-        // Ajax behavior here!
-    }
-  });
+  
+  window.addEventListener('resize', () => {
+    $("#tblwrapper").css("height", window.innerHeight - $("#cssmenu").height())
+	$("#queuecontainer").css({
+		"height": $("#tblwrapper").height() - $("#titlebar").height()
+	})
+  })
+*/
 }
 
 // allow the title to contain HTML
@@ -233,9 +249,9 @@ function clearAllEditing()
 // gv.STAFF[each].staffname: fixed order
 function setStafflist()
 {
-  var stafflist = ''  var staffmenu = ''
+  let stafflist = ''  let staffmenu = ''
 
-  for (var each = 0; each < gv.STAFF.length; each++) {
+  for (let each = 0; each < gv.STAFF.length; each++) {
     stafflist += '<li><span>' + gv.STAFF[each].staffname + '</span></li>'
     staffmenu += "<li><a href=\"javascript:staffqueue('" + gv.STAFF[each].staffname + "')\"><span>" + gv.STAFF[each].staffname + '</span></a></li>'
   }
@@ -247,13 +263,8 @@ function setStafflist()
 // Only on main table
 function fillConsults()
 {
-  var table = document.getElementById("tbl")  var rows = table.rows  var tlen = rows.length  var today = new Date().ISOdate()  var lastopdate = rows[tlen-1].cells[OPDATE].innerHTML.numDate()  var staffoncall = gv.STAFF.filter(function(staff) {
-        return staff.oncall === "1"
-      })  var slen = staffoncall.length  var nextrow = 1  var index = 0  var start = staffoncall.filter(function(staff) {
-        return staff.startoncall
-      }).reduce(function(a, b) {
-        return a.startoncall > b.startoncall ? a : b
-      }, 0)  var dateoncall = start.startoncall  var staffstart = start.staffname  var oncallRow = {}
+  let table = document.getElementById("tbl")  let rows = table.rows  let tlen = rows.length  let today = new Date().ISOdate()  let lastopdate = rows[tlen-1].cells[OPDATE].innerHTML.numDate()  let staffoncall = gv.STAFF.filter(staff => (staff.oncall === "1"))  let slen = staffoncall.length  let nextrow = 1  let index = 0  let start = staffoncall.filter(staff => staff.startoncall)
+      .reduce((a, b) => a.startoncall > b.startoncall ? a : b, 0)  let dateoncall = start.startoncall  let staffstart = start.staffname  let oncallRow = {}
 
   // find staff to start using latest startoncall date
   while ((index < slen) && (staffoncall[index].staffname !== staffstart)) {
@@ -280,7 +291,7 @@ function fillConsults()
 
   // write substitute oncall
   nextrow = 1
-  gv.ONCALL.forEach(function(oncall) {
+  gv.ONCALL.forEach(oncall => {
     dateoncall = oncall.dateoncall
     if (dateoncall > today) {
       oncallRow = findOncallRow(rows, nextrow, tlen, dateoncall)
@@ -294,9 +305,9 @@ function fillConsults()
 
 function findOncallRow(rows, nextrow, tlen, dateoncall)
 {
-  var opdateth = dateoncall && dateoncall.thDate()
+  let opdateth = dateoncall && dateoncall.thDate()
 
-  for (var i = nextrow; i < tlen; i++) {
+  for (let i = nextrow; i < tlen; i++) {
     if (rows[i].cells[OPDATE].innerHTML === opdateth) {
       return rows[i]
     }
@@ -318,11 +329,11 @@ function showStaffOnCall(opdate)
 
 function exchangeOncall(pointing)
 {
-  var $stafflist = $("#stafflist")  var $pointing = $(pointing)
+  let $stafflist = $("#stafflist")  let $pointing = $(pointing)
 
   $stafflist.menu({
-    select: function( event, ui ) {
-      var staffname = ui.item.text()      var opdateth = $pointing.closest('tr').find("td")[OPDATE].innerHTML      var opdate = getOpdate(opdateth)
+    select: ( event, ui ) => {
+      let staffname = ui.item.text()      let opdateth = $pointing.closest('tr').find("td")[OPDATE].innerHTML      let opdate = getOpdate(opdateth)
 
       changeOncall(pointing, opdate, staffname)
       $stafflist.hide()
@@ -335,24 +346,20 @@ function exchangeOncall(pointing)
   clearEditcell()
 }
 
-function changeOncall(pointing, opdate, staffname)
+async function changeOncall(pointing, opdate, staffname)
 {
-  var sql = "sqlReturnStaff=INSERT INTO oncall "
+  let sql = "sqlReturnStaff=INSERT INTO oncall "
       + "(dateoncall, staffname, edittime) "
       + "VALUES ('" + opdate
       + "','" + staffname
       + "',NOW());"
 
-  Ajax(MYSQLIPHP, sql, callbackchangeOncall);
-
-  function callbackchangeOncall(response)
-  {
-    if (typeof response === "object") {
-      pointing.innerHTML = htmlwrap(staffname)
-      gv.ONCALL = response
-    } else {
-      Alert("changeOncall", response)
-    }
+  let response = await postData(MYSQLIPHP, sql)
+  if (typeof response === "object") {
+    pointing.innerHTML = htmlwrap(staffname)
+    gv.ONCALL = response
+  } else {
+    Alert("changeOncall", response)
   }
 }
 
@@ -372,63 +379,61 @@ function updating()
   if (onChange()) {
     gv.idleCounter = 0
   } else {
-    var sql = "sqlReturnData=SELECT MAX(editdatetime) as timestamp from bookhistory;"
-
-    Ajax(MYSQLIPHP, sql, updatingback);
-
-    function updatingback(response)
-    {
-      // idling (5+1)*10 = 1 minute, clear editing setup
-      // editcell may be on first column, on staff, during changeDate
-      if (gv.idleCounter === 5) {
-        clearAllEditing()
-        refillstaffqueue()
-        refillall()
-      }
-      // idling (59+1)*10 = 10 minutes, logout
-      else if (gv.idleCounter > 59 && !gv.isMobile) {
-        history.back()
-        gv.idleCounter = 0
-        // may not successfully access the history
-      }
-      gv.idleCounter += 1
-
-      // gv.timestamp is this client last edit
-      // timestamp is from server
-      if (typeof response === "object") {
-        if (gv.timestamp < response[0].timestamp) {
-          getUpdate()
-        }
-      }
+    // idling (5+1)*10 = 1 minute, clear editing setup
+    // editcell may be on first column, on staff, during changeDate
+    if (gv.idleCounter === 5) {
+      clearAllEditing()
+      refillstaffqueue()
+      refillall()
     }
+    // idling (59+1)*10 = 10 minutes, logout
+    else if (gv.idleCounter > 59 && !gv.isMobile) {
+      history.back()
+      // may not successfully access the history
+      gv.idleCounter = 0
+    } else {
+      gv.idleCounter += 1
+      doUpdate()
+	}
   }
 
   resetTimer()
 }
 
-// There is some changes in database from other users
-function getUpdate()
+async function doUpdate()
 {
-  var fromDate = $('#monthstart').val()  var toDate = $('#monthpicker').val()  var sql = "sqlReturnService=" + sqlOneMonth(fromDate, toDate)
+  let sql = "sqlReturnData=SELECT MAX(editdatetime) as timestamp from bookhistory;"
 
-  Ajax(MYSQLIPHP, sql, callbackGetUpdate);
+  let response = await postData(MYSQLIPHP, sql)
 
-  function callbackGetUpdate(response)
-  {
-    if (typeof response === "object") {
-      updateBOOK(response)
-      if ($("#dialogService").hasClass('ui-dialog-content')
-        && $("#dialogService").dialog('isOpen')) {
-        gv.SERVE = calcSERVE()
-        refillService(fromDate, toDate)
-      }
-      refillall()
-      if (isSplited()) {
-        refillstaffqueue()
-      }
-    } else {
-      Alert ("getUpdate", response)
+  // gv.timestamp is this client last edit
+  // timestamp is from server
+  if (typeof response === "object") {
+    if (gv.timestamp < response[0].timestamp) {
+      getUpdate()
     }
+  }
+}
+
+// There is some changes in database from other users
+async function getUpdate()
+{
+  let fromDate = $('#monthstart').val()  let toDate = $('#monthpicker').val()  let sql = "sqlReturnService=" + sqlOneMonth(fromDate, toDate)
+
+  let response = await postData(MYSQLIPHP, sql)
+  if (typeof response === "object") {
+    updateBOOK(response)
+    if ($("#dialogService").hasClass('ui-dialog-content')
+        && $("#dialogService").dialog('isOpen')) {
+      gv.SERVE = calcSERVE()
+      refillService(fromDate, toDate)
+    }
+    refillall()
+    if (isSplited()) {
+      refillstaffqueue()
+    }
+  } else {
+    Alert ("getUpdate", response)
   }
 }
 
@@ -440,7 +445,7 @@ function onChange()
     return false
   }
 
-  var $editcell = $("#editcell"),
+  let $editcell = $("#editcell"),
       oldcontent = $editcell.data("oldcontent"),
       newcontent = getText($editcell),
       pointed = $editcell.data("pointing"),
@@ -461,7 +466,7 @@ function onChange()
 
 function saveOnChange(pointed, index, content, qn)
 {
-  var column = index === DIAGNOSIS
+  let column = index === DIAGNOSIS
                 ? "diagnosis"
                 : index === TREATMENT
                 ? "treatment"
@@ -471,20 +476,19 @@ function saveOnChange(pointed, index, content, qn)
 
   if (!column) { return false }
 
-  var sql = "sqlReturnbook=UPDATE book SET "
+  let sql = "sqlReturnbook=UPDATE book SET "
           + column + "='" + URIcomponent(content)
           + "',editor='"+ gv.user
           + "' WHERE qn="+ qn +";"
 
-  Ajax(MYSQLIPHP, sql, callbacksaveOnChange);
+  updateOnChange(sql)
 
   pointed.innerHTML = content
-
 }
 
 function saveOnChangeService(pointed, index, content, qn)
 {
-  var column = index === DIAGNOSISSV
+  let column = index === DIAGNOSISSV
                 ? "diagnosis"
                 : index === TREATMENTSV
                 ? "treatment"
@@ -497,20 +501,21 @@ function saveOnChangeService(pointed, index, content, qn)
   if (index === PROFILESV) { saveProfileService(pointed) }
   if (!column) { return false }
 
-  var sql = sqlColumn(pointed, column, URIcomponent(content)),
+  let sql = sqlColumn(pointed, column, URIcomponent(content)),
       fromDate = $("#monthstart").val(),
       toDate = $("#monthpicker").val()
 
   sql  += sqlOneMonth(fromDate, toDate)
 
-  Ajax(MYSQLIPHP, sql, callbacksaveOnChange);
+  updateOnChange(sql)
 
   pointed.innerHTML = content
 
 }
 
-function callbacksaveOnChange(response)
+async function updateOnChange(sql)
 {
+  let response = await postData(MYSQLIPHP, sql)
   if (typeof response === "object") {
     updateBOOK(response)
   }
@@ -518,9 +523,9 @@ function callbacksaveOnChange(response)
 
 function addStaff()
 {
-  var scbb = document.getElementById("scbb")  var $dialogStaff = $("#dialogStaff")  var $stafftbl = $("#stafftbl")
+  let scbb = document.getElementById("scbb")  let $dialogStaff = $("#dialogStaff")  let $stafftbl = $("#stafftbl")
 
-  for (var each=0; each<SPECIALTY.length; each++) {
+  for (let each=0; each<SPECIALTY.length; each++) {
     scbb.innerHTML += "<option value=" + SPECIALTY[each]+ ">"
             + SPECIALTY[each] + "</option>"
   }
@@ -528,7 +533,7 @@ function addStaff()
   clearval()
   $stafftbl.find('tr').slice(3).remove()
 
-  $.each( gv.STAFF, function(i, item) {
+  $.each( gv.STAFF, (i, item) => {
     $('#staffcells tr').clone()
       .appendTo($stafftbl.find('tbody'))
         .filldataStaff(i, item)
@@ -546,8 +551,8 @@ function addStaff()
 }
 
 jQuery.fn.extend({
-  filldataStaff : function(i, q) {
-    var cells = this[0].cells    var data = [
+  filldataStaff : function (i, q) {
+    let cells = this[0].cells    let data = [
         "<a href=\"javascript:getval('" + i + "')\">"
         + q.staffname + "</a>",
         q.specialty,
@@ -576,38 +581,39 @@ function clearval()
 
 function doadddata()
 {
-  var vname = document.getElementById("sname").value  var vspecialty = document.getElementById("scbb").value  var vdate = document.getElementById("sdate").value  var vnum = Math.max.apply(Math, gv.STAFF.map(function(staff) { return staff.number })) + 1  var sql = "sqlReturnStaff="
+  let vname = document.getElementById("sname").value  let vspecialty = document.getElementById("scbb").value  let vdate = document.getElementById("sdate").value  let vnum = Math.max.apply(Math, gv.STAFF.map(staff => staff.number)) + 1  let sql = "sqlReturnStaff="
       + "INSERT INTO staff (number,staffname,specialty) VALUES("
       + vnum + ",'"+ vname  +"','"+ vspecialty
       + "');"
 
-  Ajax(MYSQLIPHP, sql, callbackdodata);
+  dodata(sql)
 }
 
 function doupdatedata()
 {
   if (confirm("ต้องการแก้ไขข้อมูลนี้หรือไม่")) {
-    var vname = document.getElementById("sname").value    var vspecialty = document.getElementById("scbb").value    var vdate = document.getElementById("sdate").value    var vshidden = document.getElementById("shidden").value    var sql = "sqlReturnStaff=UPDATE staff SET "
+    let vname = document.getElementById("sname").value    let vspecialty = document.getElementById("scbb").value    let vdate = document.getElementById("sdate").value    let vshidden = document.getElementById("shidden").value    let sql = "sqlReturnStaff=UPDATE staff SET "
         + ", staffname='" + vname
         + "', specialty='" + vspecialty
         + "' WHERE number=" + vshidden
         + ";"
 
-    Ajax(MYSQLIPHP, sql, callbackdodata);
+  dodata(sql)
   }
 } // end of function doupdatedata
 
 function dodeletedata()
 {
   if (confirm("ต้องการลบข้อมูลนี้หรือไม่")) {
-    var vshidden = document.getElementById("shidden").value    var sql = "sqlReturnStaff=DELETE FROM staff WHERE number=" + vshidden + ";"
+    let vshidden = document.getElementById("shidden").value    let sql = "sqlReturnStaff=DELETE FROM staff WHERE number=" + vshidden + ";"
 
-    Ajax(MYSQLIPHP, sql, callbackdodata);
+    dodata(sql)
   }
 }
 
-function callbackdodata(response)
+async function dodata(sql)
 {
+  let response = await postData(MYSQLIPHP, sql)
   if (typeof response === "object") {
     showAddStaff(response)
   } else {

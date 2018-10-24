@@ -90,7 +90,7 @@ function savePreviousCell()
 	}
 }
 
-function saveTheatre(pointed, newcontent)
+async function saveTheatre(pointed, newcontent)
 {
 	let	$cell = $(pointed).closest("tr").find("td"),
 		opdateth = $cell[OPDATE].innerHTML,
@@ -127,22 +127,21 @@ function saveTheatre(pointed, newcontent)
 	if (!sql) { return false }
 	sql = "sqlReturnbook=" + sql
 
-	postData(MYSQLIPHP, sql).then(response => {
-		if (typeof response === "object") {
-			updateBOOK(response)
-			refillOneDay(opdate)
-			if (isSplited() && (isStaffname(staffname) || isConsults())) {
-				refillstaffqueue()
-			}
-			// re-render editcell for keyin cell only
-			let newpoint = $('#editcell').data("pointing")
-			if (newpoint.cellIndex > PATIENT) {
-				createEditcell(newpoint)
-			}
-		} else {
-			Alert ("saveTheatre", response)
+	let response = await postData(MYSQLIPHP, sql)
+	if (typeof response === "object") {
+		updateBOOK(response)
+		refillOneDay(opdate)
+		if (isSplited() && (isStaffname(staffname) || isConsults())) {
+			refillstaffqueue()
 		}
-	})
+		// re-render editcell for keyin cell only
+		let newpoint = $('#editcell').data("pointing")
+		if (newpoint.cellIndex > PATIENT) {
+			createEditcell(newpoint)
+		}
+	} else {
+		Alert ("saveTheatre", response)
+	}
 
 	return true
 }
@@ -156,7 +155,7 @@ function sqlNewTheatre(theatre, casenum, qn)
 		+  "' WHERE qn="+ qn + ";"
 }
 
-function saveOpRoom(pointed, newcontent)
+async function saveOpRoom(pointed, newcontent)
 {
 	let	$cell = $(pointed).closest("tr").find("td"),
 		opdateth = $cell[OPDATE].innerHTML,
@@ -201,22 +200,21 @@ function saveOpRoom(pointed, newcontent)
 	if (!sql) { return false }
 	sql = "sqlReturnbook=" + sql
 
-	postData(MYSQLIPHP, sql).then(response => {
-		if (typeof response === "object") {
-			updateBOOK(response)
-			refillOneDay(opdate)
-			if (isSplited() && (isStaffname(staffname) || isConsults())) {
-				refillstaffqueue()
-			}
-			// re-render editcell for keyin cell only
-			let newpoint = $('#editcell').data("pointing")
-			if (newpoint.cellIndex > PATIENT) {
-				createEditcell(newpoint)
-			}
-		} else {
-			Alert ("saveOpRoom", response)
+    let response = await postData(MYSQLIPHP, sql)
+    if (typeof response === "object") {
+		updateBOOK(response)
+		refillOneDay(opdate)
+		if (isSplited() && (isStaffname(staffname) || isConsults())) {
+			refillstaffqueue()
 		}
-	})
+		// re-render editcell for keyin cell only
+		let newpoint = $('#editcell').data("pointing")
+		if (newpoint.cellIndex > PATIENT) {
+			createEditcell(newpoint)
+		}
+	} else {
+		Alert ("saveOpRoom", response)
+	}
 
 	return true
 }
@@ -230,7 +228,7 @@ function sqlNewRoom(oproom, casenum, qn)
 		+  "' WHERE qn="+ qn + ";"
 }
 
-function saveCaseNum(pointed, newcontent)
+async function saveCaseNum(pointed, newcontent)
 {
 	let $cells = $(pointed).closest("tr").find("td"),
 		opdateth = $cells[OPDATE].innerHTML,
@@ -259,23 +257,22 @@ function saveCaseNum(pointed, newcontent)
 		}
 	}
 
-	postData(MYSQLIPHP, sql).then(response => {
-		if (typeof response === "object") {
-			updateBOOK(response)
-			refillOneDay(opdate)
-			if (isSplited() && (isStaffname(staffname) || isConsults())) {
-				refillstaffqueue()
-			}
-			// re-render editcell for keyin cell only
-			let newpoint = $('#editcell').data("pointing")
-			if (newpoint.cellIndex > PATIENT) {
-				createEditcell(newpoint)
-			}
-		} else {
-			Alert ("saveCaseNum", response)
+    let response = await postData(MYSQLIPHP, sql)
+    if (typeof response === "object") {
+		updateBOOK(response)
+		refillOneDay(opdate)
+		if (isSplited() && (isStaffname(staffname) || isConsults())) {
+			refillstaffqueue()
 		}
-		clearEditcell()
-	})
+		// re-render editcell for keyin cell only
+		let newpoint = $('#editcell').data("pointing")
+		if (newpoint.cellIndex > PATIENT) {
+			createEditcell(newpoint)
+		}
+	} else {
+		Alert ("saveCaseNum", response)
+	}
+	clearEditcell()
 
 	return true
 }
@@ -299,7 +296,7 @@ function saveContent(pointed, column, content)
 	return true
 }
 
-function saveContentQN(pointed, column, content)
+async function saveContentQN(pointed, column, content)
 {
 	let	cellindex = pointed.cellIndex,
 		tableID = $(pointed).closest("table").attr("id"),
@@ -320,58 +317,57 @@ function saveContentQN(pointed, column, content)
 		+ "',editor='"+ gv.user
 		+ "' WHERE qn="+ qn +";"
 
-	postData(MYSQLIPHP, sql).then(response => {
-		if (typeof response === "object") {
-			updateBOOK(response)
-			if ((column === "oproom") ||
-				(column === "casenum")) {
-				refillOneDay(opdate)
-				refillstaffqueue()
-			}
-			if (tableID === 'tbl') {
-				// Remote effect from editing on main table to queuetbl
-				// 1. if staffname that match titlename gets involved
-				//    (either change to or from this staffname)
-				//    -> refill queuetbl
-				// 2. make change to the row which match titlename
-				//    (input is not staffname, but on staff that match titlename)
-				//    -> refill corresponding cell in another table
-				if (isSplited()) {
-					if ((oldcontent === titlename) || (pointed.innerHTML === titlename)) {
-						refillstaffqueue()
-					} else {
-						if (titlename === staffname) {
-							refillAnotherTableCell('queuetbl', cellindex, qn)
-						}
+    let response = await postData(MYSQLIPHP, sql)
+    if (typeof response === "object") {
+		updateBOOK(response)
+		if ((column === "oproom") ||
+			(column === "casenum")) {
+			refillOneDay(opdate)
+			refillstaffqueue()
+		}
+		if (tableID === 'tbl') {
+			// Remote effect from editing on main table to queuetbl
+			// 1. if staffname that match titlename gets involved
+			//    (either change to or from this staffname)
+			//    -> refill queuetbl
+			// 2. make change to the row which match titlename
+			//    (input is not staffname, but on staff that match titlename)
+			//    -> refill corresponding cell in another table
+			if (isSplited()) {
+				if ((oldcontent === titlename) || (pointed.innerHTML === titlename)) {
+					refillstaffqueue()
+				} else {
+					if (titlename === staffname) {
+						refillAnotherTableCell('queuetbl', cellindex, qn)
 					}
 				}
-			} else {
-				// tableID === 'queuetbl'
-				// staffname has been changed, refill staff table
-				if (column === "staffname") {
-					refillstaffqueue()
-				}
-				// Remote effect from editing on queuetbl to main table
-				// -> refill corresponding cell
-				// consults are not apparent on main table, no remote effect
-				if (!isConsults()) {
-					refillAnotherTableCell('tbl', cellindex, qn)
-				}
-			}
-			// re-render editcell for keyin cell only
-			let newpoint = $('#editcell').data("pointing")
-			if (newpoint.cellIndex > PATIENT) {
-				createEditcell(newpoint)
 			}
 		} else {
-			Alert("saveContentQN", response)
-			pointed.innerHTML = oldcontent
-			// return to previous content
+			// tableID === 'queuetbl'
+			// staffname has been changed, refill staff table
+			if (column === "staffname") {
+				refillstaffqueue()
+			}
+			// Remote effect from editing on queuetbl to main table
+			// -> refill corresponding cell
+			// consults are not apparent on main table, no remote effect
+			if (!isConsults()) {
+				refillAnotherTableCell('tbl', cellindex, qn)
+			}
 		}
-	})
+		// re-render editcell for keyin cell only
+		let newpoint = $('#editcell').data("pointing")
+		if (newpoint.cellIndex > PATIENT) {
+			createEditcell(newpoint)
+		}
+	} else {
+		Alert("saveContentQN", response)
+		pointed.innerHTML = oldcontent
+		// return to previous content
+	}
 }
 
-function saveContentNoQN(pointed, column, content)
+async function saveContentNoQN(pointed, column, content)
 {
 	let	cellindex = pointed.cellIndex,
 		tableID = $(pointed).closest("table").attr("id"),
@@ -402,8 +398,8 @@ function saveContentNoQN(pointed, column, content)
 		+ waitnum + ",'" + opdate +"','"
 		+ sql2 + content +"','"+ gv.user + "');"
 
-	postData(MYSQLIPHP, sql).then(response => {
-	  if (typeof response === "object") {
+    let response = await postData(MYSQLIPHP, sql)
+    if (typeof response === "object") {
 		updateBOOK(response)
 
 		// find and fill qn of new case input in that row, either tbl or queuetbl
@@ -436,12 +432,11 @@ function saveContentNoQN(pointed, column, content)
 				refillOneDay(opdate)
 			}
 		}
-	  } else {
+	} else {
 		Alert("saveContentNoQN", response)
 		pointed.innerHTML = oldcontent
 		// return to previous content
-	  }
-	})
+	}
 }
 
 function saveHN(pointed, content)
@@ -538,56 +533,56 @@ function getCaseHN(pointed, waiting)
 		}
 	})
 
-	function moveCaseHN()
+	async function moveCaseHN()
 	{
 		sql += "UPDATE book SET deleted=1"
 			+ ",editor='" + gv.user
 			+ "' WHERE qn=" + waiting.qn + ";"
 			+ sqlCaseHN()
 
-		postData(MYSQLIPHP, sql).then(response => {
-			if (typeof response === "object") {
-				updateBOOK(response)
+		let response = await postData(MYSQLIPHP, sql)
+		if (typeof response === "object") {
+			updateBOOK(response)
 
-				fillCellsHN(tableID, qn, $cells)
+			fillCellsHN(tableID, qn, $cells)
 
-				if (tableID === 'tbl') {
-					refillOneDay(waiting.opdate)
-					refillstaffqueue()
-				} else {
-					refillall()
-					refillstaffqueue()
-				}
+			if (tableID === 'tbl') {
+				refillOneDay(waiting.opdate)
+				refillstaffqueue()
 			} else {
-				Alert("saveCaseHN", response)
-				pointed.innerHTML = oldcontent
-				// unsuccessful entry
+				refillall()
+				refillstaffqueue()
 			}
-		})
+		} else {
+			Alert("saveCaseHN", response)
+			pointed.innerHTML = oldcontent
+			// unsuccessful entry
+		}
+
 		$dialogMoveCase.dialog("close")
 	}
 
-	function copyCaseHN()
+	async function copyCaseHN()
 	{
 		sql += sqlCaseHN()
 
-		postData(MYSQLIPHP, sql).then(response => {
-			if (typeof response === "object") {
-				updateBOOK(response)
+		let response = await postData(MYSQLIPHP, sql)
+		if (typeof response === "object") {
+			updateBOOK(response)
 
-				fillCellsHN(tableID, qn, $cells)
+			fillCellsHN(tableID, qn, $cells)
 
-				if (tableID === 'tbl') {
-					refillstaffqueue()
-				} else {
-					refillall()
-				}
+			if (tableID === 'tbl') {
+				refillstaffqueue()
 			} else {
-				Alert("saveCaseHN", response)
-				pointed.innerHTML = oldcontent
-				// unsuccessful entry
+				refillall()
 			}
-		})
+		} else {
+			Alert("saveCaseHN", response)
+			pointed.innerHTML = oldcontent
+			// unsuccessful entry
+		}
+
 		$dialogMoveCase.dialog("close")
 	}
 
@@ -681,7 +676,7 @@ jQuery.fn.extend({
 	}
 })
 
-function getNameHN(pointed, content)
+async function getNameHN(pointed, content)
 {
 	let tableID = $(pointed).closest("table").attr("id"),
 		$row = $(pointed).closest('tr'),
@@ -716,8 +711,8 @@ function getNameHN(pointed, content)
 		+ "&qn=" + qn
 		+ "&editor=" + gv.user
 
-	postData(GETNAMEHN, sql).then(response => {
-	  if (typeof response === "object") {
+	let response = await postData(GETNAMEHN, sql)
+	if (typeof response === "object") {
 		updateBOOK(response)
 
 		let book = (ConsultsTbl(tableID)) ? gv.CONSULT : gv.BOOK
@@ -750,11 +745,7 @@ function getNameHN(pointed, content)
 			}
 		} else {
 			if (!isConsults()) {
-				if (noqn) {
-					refillall()
-				} else {
-					refillAnotherTableCell('tbl', cellindex, qn)
-				}
+				noqn ? refillall() : refillAnotherTableCell('tbl', cellindex, qn)
 			}
 		}
 		// re-render editcell for keyin cell only
@@ -762,12 +753,11 @@ function getNameHN(pointed, content)
 		if (newpoint.cellIndex > PATIENT) {
 			createEditcell(newpoint)
 		}
-	  } else {
+	} else {
 		Alert("getNameHN", response)
 		pointed.innerHTML = oldcontent
 		// unsuccessful entry
-	  }
-	})
+	}
 }
 
 function refillAnotherTableCell(tableID, cellindex, qn)

@@ -353,12 +353,13 @@ function splitPane()
 	var height = screen.availHeight
 
 	$("#queuewrapper").show()
-	$("#tblcontainer").css({"float":"left", "height":"100%", "width":"50%"})
-	$("#queuewrapper").css({"float":"right", "height":"100%", "width":"50%"})
-	initResize($("#tblcontainer"))
+	$("#tblwrapper").css({"float": "left", "height": "100%", "width": "50%"})
+	$("#queuewrapper").css({"float": "right", "height": "100%", "width": "50%"})
+	$("#queuecontainer").css({"height": $("#tblwrapper").height()})
+	initResize($("#tblwrapper"))
 	$('.ui-resizable-e').css('height', $("#tbl").css("height"))
 
-	fakeScrollAnimate("tblcontainer", "tbl", scrolledTop, tohead.offsetTop)
+//	fakeScrollAnimate("tblcontainer", "tbl", scrolledTop, tohead.offsetTop)
 }
 
 // remainSpace-margin-1 to prevent right pane disappear while resizing in Chrome 
@@ -397,15 +398,16 @@ function initResize($wrapper)
 
 function closequeue()
 {
-	var scrolledTop = document.getElementById("tblcontainer").scrollTop
-	var tohead = findVisibleHead('#tbl')
+//	var scrolledTop = document.getElementById("tblcontainer").scrollTop
+//	var tohead = findVisibleHead('#tbl')
 	
 	$("#queuewrapper").hide()
-	$("#tblcontainer").css({
-		"height": "100%", "width": "100%"
+	$("#tblwrapper").css({
+//		"height": "100%" - $("#cssmenu").height(),
+		"width": "100%"
 	})
 
-	fakeScrollAnimate("tblcontainer", "tbl", scrolledTop, tohead.offsetTop)
+//	fakeScrollAnimate("tblcontainer", "tbl", scrolledTop, tohead.offsetTop)
 }
 
 function fakeScrollAnimate(containerID, tableID, scrolledTop, offsetTop)

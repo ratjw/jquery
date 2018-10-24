@@ -78,7 +78,7 @@ function addnewrow()
     clearSelection()
 }
 
-function postponeCase()
+async function postponeCase()
 {
 	let	$selected = $(".selected"),
 		tableID = $selected.closest('table').attr('id'),
@@ -109,20 +109,19 @@ function postponeCase()
 		+ ",editor='" + gv.user
         + "' WHERE qn="+ qn + ";"
 
-    postData(MYSQLIPHP, sql).then(response => {
-		if (typeof response === "object") {
-			updateBOOK(response)
-			refillOneDay(opdate)
-			if ((isSplited()) && 
-				(isStaffname(staffname))) {
-				// changeDate of this staffname's case
-				refillstaffqueue()
-			}
-			scrolltoThisCase(qn)
-		} else {
-			Alert ("postpone", response)
+	let response = await postData(MYSQLIPHP, sql)
+	if (typeof response === "object") {
+		updateBOOK(response)
+		refillOneDay(opdate)
+		if ((isSplited()) && 
+			(isStaffname(staffname))) {
+			// changeDate of this staffname's case
+			refillstaffqueue()
 		}
-	})
+		scrolltoThisCase(qn)
+	} else {
+		Alert ("postpone", response)
+	}
 
     clearSelection()
 }
@@ -163,7 +162,7 @@ function overDate() { $(this).addClass("pasteDate") }
 function outDate() { $(this).removeClass("pasteDate") }
 
 // args = [$row, opdateth, opdate, staffname, qn]
-function clickDate(event)
+async function clickDate(event)
 {
 	let args = event.data,
 		$moverow = args[0],
@@ -187,21 +186,16 @@ function clickDate(event)
 		allNewCases, index, thisindex, casenum,
 		sql = ""
 
-	allOldCases = sameDateRoomTableQN(moveOpdateth, moveroom, movetheatre)
-	moveindex = allOldCases.indexOf(moveQN)
 	// remove itself from old sameDateRoom
-	if (moveindex >= 0) {
-		allOldCases.splice(moveindex, 1)
-	}
+	allOldCases = sameDateRoomTableQN(moveOpdateth, moveroom, movetheatre)
+					.filter(e => e !== moveQN);
 
-	allNewCases = sameDateRoomTableQN(thisOpdateth, thisroom, thistheatre)
-	sameroomindex = allNewCases.indexOf(moveQN)
 	// remove itself in new sameDateRoom, in case new === old
-	if (sameroomindex >= 0) {
-		allNewCases.splice(sameroomindex, 1)
-	}
-	thisindex = allNewCases.indexOf(thisqn)
+	allNewCases = sameDateRoomTableQN(thisOpdateth, thisroom, thistheatre)
+					.filter(e => e !== moveQN);
 
+	// insert itself into new sameDateRoom after the clicked row
+	thisindex = allNewCases.indexOf(thisqn)
 	allNewCases.splice(thisindex + 1, 0, moveQN)
 
 	event.stopPropagation()
@@ -225,28 +219,27 @@ function clickDate(event)
 
     clearSelection()
 
-    postData(MYSQLIPHP, sql).then(response => {
-		if (typeof response === "object") {
-			updateBOOK(response);
-			if (moveOpdateth) {
-				refillOneDay(moveOpdate)
-			}
-			if (moveOpdate !== thisOpdate) {
-				refillOneDay(thisOpdate)
-			}
-			if (isSplited()) {
-				let titlename = $('#titlename').html()
-				if ((titlename === staffname) ||
-					(titlename === "Consults")) {
-					// changeDate of this staffname's case
-					refillstaffqueue()
-				}
-			} 
-			scrolltoThisCase(moveQN)
-		} else {
-			Alert ("changeDate", response)
+	let response = await postData(MYSQLIPHP, sql)
+	if (typeof response === "object") {
+		updateBOOK(response);
+		if (moveOpdateth) {
+			refillOneDay(moveOpdate)
 		}
-	})
+		if (moveOpdate !== thisOpdate) {
+			refillOneDay(thisOpdate)
+		}
+		if (isSplited()) {
+			let titlename = $('#titlename').html()
+			if ((titlename === staffname) ||
+				(titlename === "Consults")) {
+				// changeDate of this staffname's case
+				refillstaffqueue()
+			}
+		} 
+		scrolltoThisCase(moveQN)
+	} else {
+		Alert ("changeDate", response)
+	}
 }
 
 function clearMouseoverTR()
@@ -261,7 +254,7 @@ function clearMouseoverTR()
 }
 
 // not actually delete the case but set deleted = 1
-function delCase()
+async function delCase()
 {
 	let	$selected = $(".selected"),
 		tableID = $selected.closest('table').attr('id'),
@@ -292,8 +285,8 @@ function delCase()
 		sql += updateCasenum(allCases)
 	}
 
-	postData(MYSQLIPHP, sql).then(response => {
-	  if (typeof response === "object") {
+	let response = await postData(MYSQLIPHP, sql)
+	if (typeof response === "object") {
 		updateBOOK(response)
 		if (tableID === "tbl") {
 			refillOneDay(opdate)
@@ -309,10 +302,9 @@ function delCase()
 			}
 			refillOneDay(opdate)
 		}
-	  } else {
+	} else {
 		Alert ("delCase", response)
-	  }
-	})
+	}
 
 	clearSelection()
 }
@@ -335,69 +327,6 @@ function deleteRow($row, opdate)
 		$row.children("td").eq(PATIENT).removeClass("camera")
 		$row.children('td').eq(STAFFNAME).html(showStaffOnCall(opdate))
 	}
-}
-
-function splitPane()
-{
-	let scrolledTop = document.getElementById("tblcontainer").scrollTop
-	let tohead = findVisibleHead('#tbl')
-	let width = screen.availWidth
-	let height = screen.availHeight
-
-	$("#queuewrapper").show()
-	$("#tblcontainer").css({"float":"left", "height":"100%", "width":"50%"})
-	$("#queuewrapper").css({"float":"right", "height":"100%", "width":"50%"})
-	initResize($("#tblcontainer"))
-	$('.ui-resizable-e').css('height', $("#tbl").css("height"))
-
-	fakeScrollAnimate("tblcontainer", "tbl", scrolledTop, tohead.offsetTop)
-}
-
-// remainSpace-margin-1 to prevent right pane disappear while resizing in Chrome 
-function initResize($wrapper)
-{
-	$wrapper.resizable(
-	{
-		autoHide: true,
-		handles: 'e',
-		resize: function(e, ui) 
-		{
-			let parent = ui.element.parent();
-			let remainSpace = parent.width() - ui.element.outerWidth()
-			let divTwo = ui.element.next()
-			let margin = divTwo.outerWidth() - divTwo.innerWidth()
-			let divTwoWidth = (remainSpace-margin-1)/parent.width()*100+"%";
-			divTwo.css("width", divTwoWidth);
-		},
-		stop: function(e, ui) 
-		{
-			let parent = ui.element.parent();
-			let remainSpace = parent.width() - ui.element.outerWidth()
-			let divTwo = ui.element.next()
-			let margin = divTwo.outerWidth() - divTwo.innerWidth()
-			ui.element.css(
-			{
-				width: ui.element.outerWidth()/parent.width()*100+"%",
-			});
-			ui.element.next().css(
-			{
-				width: (remainSpace-margin)/parent.width()*100+"%",
-			});
-		}
-	});
-}
-
-function closequeue()
-{
-	let scrolledTop = document.getElementById("tblcontainer").scrollTop
-	let tohead = findVisibleHead('#tbl')
-	
-	$("#queuewrapper").hide()
-	$("#tblcontainer").css({
-		"height": "100%", "width": "100%"
-	})
-
-	fakeScrollAnimate("tblcontainer", "tbl", scrolledTop, tohead.offsetTop)
 }
 
 function fakeScrollAnimate(containerID, tableID, scrolledTop, offsetTop)

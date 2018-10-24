@@ -36,6 +36,7 @@ function loading(response)
   wrapperEvent()
   documentEvent()
   scrolltoToday()
+  partitionDisplay()
 
   disableOneRowMenu()
   disableExcelLINE()
@@ -53,6 +54,15 @@ function scrolltoToday()
   $('#tblcontainer').animate({
     scrollTop: thishead.offsetTop
   }, 300);
+}
+
+function partitionDisplay()
+{
+  $("#tbl tr").each(function() {
+    if ($(this).index() > 20) {
+      $(this).hide()
+	}
+  })
 }
 
 function updateBOOK(response)
@@ -178,7 +188,7 @@ function documentEvent()
     resetTimer()
     gv.idleCounter = 0
   });
-
+/*
   $(document).contextmenu( event => {
     let target = event.target
     let oncall = /<p[^>]*>.*<\/p>/.test(target.outerHTML)
@@ -194,6 +204,14 @@ function documentEvent()
     }
   })
 
+	window.oncontextmenu = function(event) {
+		if (event.targetTouches[0].target.tagName === 'A') {
+			preventDefault();
+			stopPropagation();
+			return false;
+		}
+	}
+
   // to let table scrollable while dragging
   $("html, body").css( {
     height: "100%",
@@ -207,7 +225,7 @@ function documentEvent()
 		"height": $("#tblwrapper").height() - $("#titlebar").height()
 	})
   })
-  
+*/
 }
 
 // allow the title to contain HTML

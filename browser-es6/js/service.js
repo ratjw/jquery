@@ -114,17 +114,16 @@ function entireMonth(fromDate)
 }
 
 //Retrieve the specified month from server
-function getServiceOneMonth(fromDate, toDate)
+async function getServiceOneMonth(fromDate, toDate)
 {
 	let sql = "sqlReturnData=" + sqlOneMonth(fromDate, toDate)
 
-    return postData(MYSQLIPHP, sql).then(response => {
-		if (typeof response === "object") {
-			return response
-		} else {
-			return "getServiceOneMonth, " + response
-		}
-	})
+	let response = await postData(MYSQLIPHP, sql)
+	if (typeof response === "object") {
+		return response
+	} else {
+		return "getServiceOneMonth, " + response
+	}
 }
 
 function sqlOneMonth(fromDate, toDate)
@@ -480,19 +479,18 @@ function showInputColor($target, target)
 	}
 }
 
-function getAdmitDischargeDate(fromDate, toDate)
+async function getAdmitDischargeDate(fromDate, toDate)
 {
 	let sql = "from=" + fromDate
 			+ "&to=" + toDate
 			+ "&sql=" + sqlOneMonth(fromDate, toDate)
 
-    postData(GETIPD, sql).then(response => {
-		if (typeof response === "object") {
-			updateBOOK(response)
-			gv.SERVE = calcSERVE()
-			fillAdmitDischargeDate()
-		}
-	})
+	let response = await postData(GETIPD, sql)
+	if (typeof response === "object") {
+		updateBOOK(response)
+		gv.SERVE = calcSERVE()
+		fillAdmitDischargeDate()
+	}
 }
 
 function fillAdmitDischargeDate()
@@ -630,7 +628,7 @@ function saveContentService(pointed, column, content)
 	saveService(pointed, sql)
 }
 
-function saveService(pointed, sql)
+async function saveService(pointed, sql)
 {
 	let $row = $(pointed).closest("tr"),
 		rowi = $row[0],
@@ -641,37 +639,36 @@ function saveService(pointed, sql)
 
 	sql	+= sqlOneMonth(fromDate, toDate)
 
-    postData(MYSQLIPHP, sql).then(response => {
-		if (typeof response === "object") {
-			updateBOOK(response)
+	let response = await postData(MYSQLIPHP, sql)
+	if (typeof response === "object") {
+		updateBOOK(response)
 
-			// other user may add a row
-			let servelen = gv.SERVE.length
-			gv.SERVE = calcSERVE()
-			if (gv.SERVE.length !== servelen) {
-				refillService(fromDate, toDate)
-			}
-
-			// Calc countService of this case only
-			let oldclass = rowi.className
-			let bookq = getBOOKrowByQN(gv.SERVE, qn)
-			let newclass = countService(bookq, fromDate, toDate)
-			let oldclassArray = oldclass.split(" ")
-			let newclassArray = newclass.split(" ")
-			let counter
-			let newcounter
-
-			if (oldclass !== newclass) {
-				updateCounter(oldclassArray, -1)
-				updateCounter(newclassArray, 1)
-				rowi.className = newclass
-			}
-		} else {
-			Alert("saveService", response)
-			pointed.innerHTML = oldcontent
-			//return to previous content
+		// other user may add a row
+		let servelen = gv.SERVE.length
+		gv.SERVE = calcSERVE()
+		if (gv.SERVE.length !== servelen) {
+			refillService(fromDate, toDate)
 		}
-	})
+
+		// Calc countService of this case only
+		let oldclass = rowi.className
+		let bookq = getBOOKrowByQN(gv.SERVE, qn)
+		let newclass = countService(bookq, fromDate, toDate)
+		let oldclassArray = oldclass.split(" ")
+		let newclassArray = newclass.split(" ")
+		let counter
+		let newcounter
+
+		if (oldclass !== newclass) {
+			updateCounter(oldclassArray, -1)
+			updateCounter(newclassArray, 1)
+			rowi.className = newclass
+		}
+	} else {
+		Alert("saveService", response)
+		pointed.innerHTML = oldcontent
+		//return to previous content
+	}
 }
 
 function updateCounter(classArray, one)
@@ -748,21 +745,11 @@ function getPROFILESV(pointing)
 
 function showRecord(bookq)
 {
-	let $divRecord = $("#orgRecord").clone().prop('id', ''),
+	let $divRecord = $("#orgRecord").clone().prop('id', '').css('display', 'block'),
 		wide
 
-//	document.body.appendChild($divRecord[0])
 	initRecord(bookq, $divRecord)
-
-//	$.each($span, function() {
-//		wide = this.previousElementSibling.className.replace("w", "") + "px"
-//		this.style.right = wide
-//	})
-
 	inputEditable($divRecord)
-	$divRecord.show()
-//	$divRecord.find("input").focus()
-
 	return $divRecord[0]
 }
 

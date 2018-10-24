@@ -5,11 +5,16 @@
 	font-family: sans-serif;
 }
 
-#tblcontainer {
+#tblwrapper {
 	float: left;
 	height: 100%;
 	width: 100%;
-	overflow: scroll;
+}
+
+#tblcontainer {
+	height: 100%;
+	width: 100%;
+	overflow: auto;
 	box-sizing: border-box;
 	border: solid 2px silver;
 }
@@ -52,8 +57,7 @@ td img {
 }
 
 #queuecontainer {
-	height: 92%;
-	overflow: scroll;
+	overflow: auto;
 	box-sizing: border-box;
 	border-top: solid 2px silver;
 	border-right: solid 2px silver;
