@@ -746,9 +746,7 @@ td.camera2 { background-image: url(pic/general/camera2.png); }
 
 	/* Hide table headers (but not display: none;, for accessibility) */
 	th { 
-		position: absolute;
-		top: -9999px;
-		left: -9999px;
+		visibility: hidden;
 	}
  
 	tr { border: 1px solid #ccc; }

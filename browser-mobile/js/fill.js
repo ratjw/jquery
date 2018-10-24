@@ -1,15 +1,12 @@
-
+// Display all cases in each day of the week
+// from the 1st of last month until 10 days from now
 function fillupstart()
-{	// Display all cases in each day of 5 weeks
-	// Find the 1st of last month
-	// fill until 2 year from now
+{
 	let	table = document.getElementById("tbl"),
 		today = new Date(),
 		start = getStart(),
-		nextyear = today.getFullYear() + 2,
-		month = today.getMonth(),
-		date = today.getDate(),
-		until = (new Date(nextyear, month, date)).ISOdate(),
+		end = today.setDate(today.getDate() + 10),
+		until = new Date(end).ISOdate(),
 		book = gv.BOOK,
 		todate = today.ISOdate(),
 		todateth = todate.thDate()
@@ -21,7 +18,25 @@ function fillupstart()
 	hoverMain()
 }
 
-function fillall(book, table, start, until)
+// Display from fillupstart to 1 year from now
+function fillupfinish()
+{
+	let	table = document.getElementById("tbl"),
+		today = new Date(),
+		begin = today.setDate(today.getDate() + 11),
+		start = new Date(begin).ISOdate(),
+		nextyear = today.getFullYear() + 1,
+		month = today.getMonth(),
+		date = today.getDate(),
+		until = (new Date(nextyear, month, date)).ISOdate(),
+		book = gv.BOOK,
+		todate = today.ISOdate(),
+		todateth = todate.thDate()
+
+	fillall(book, table, start, until, table.rows.length-1)
+}
+
+function fillall(book, table, start, until, num=0)
 {
 	let tbody = table.getElementsByTagName("tbody")[0],
 		rows = table.rows,
@@ -31,14 +46,14 @@ function fillall(book, table, start, until)
 		q = findStartRowInBOOK(book, start),
 		k = findStartRowInBOOK(book, LARGESTDATE)
 
-	// get rid of cases with unspecified opdate
-	// Consult cases and new start have no LARGESTDATE, so k = -1
+	// get rid of cases with unspecified opdate (LARGESTDATE)
+	// Consult cases have no LARGESTDATE, findStartRowInBOOK returns k = -1
 	if (k >= 0) {
 		book = book.slice(0, k)
 	}
 
 	//i for rows in table (with head as the first row)
-	let i = 0
+	let i = num
 	let blen = book.length
 
 	for (q; q < blen; q++)
@@ -739,7 +754,7 @@ function holiday(date)
 	case "12-06":
 	case "12-07":
 		if (Mon)
-			holidayname = "url('css/pic/holiday/Kingsub.png')"
+			holidayname = "url('css/pic/holiday/King9sub.png')"
 		break
 	case "12-10":
 		holidayname = "url('css/pic/holiday/Constitution.png')"

@@ -35,12 +35,14 @@ function loading(response)
   editcellEvent()
   wrapperEvent()
   documentEvent()
-  scrolltoToday()
+//  scrolltoToday()
 
   disableOneRowMenu()
   disableExcelLINE()
   overrideJqueryUI()
   resetTimer()
+  // Let tbl animate scrollTop finish first
+//  setTimeout( fillupfinish, 500)
 }
 
 function scrolltoToday()
@@ -48,7 +50,7 @@ function scrolltoToday()
   let today = new Date(),
     todate = today.ISOdate(),
     todateth = todate.thDate()
-//  $('#tblcontainer').scrollTop(0)
+  $('#tblcontainer').scrollTop(0)
   let thishead = $("#tbl tr:contains(" + todateth + ")")[0]
   $('#tblcontainer').animate({
     scrollTop: thishead.offsetTop
