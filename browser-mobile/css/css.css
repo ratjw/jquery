@@ -746,7 +746,9 @@ td.camera2 { background-image: url(pic/general/camera2.png); }
 
 	/* Hide table headers (but not display: none;, for accessibility) */
 	th { 
-		visibility: hidden;
+		position: absolute;
+		top: -9999px;
+		left: -9999px;
 	}
  
 	tr { border: 1px solid #ccc; }
@@ -771,7 +773,7 @@ td.camera2 { background-image: url(pic/general/camera2.png); }
 		border: none;
 		border-bottom: 1px solid #eee; 
 		position: relative;
-		padding-left: 40%; 
+		padding-left: 30%; 
 		white-space: normal;
 		text-align: left;
 		empty-cells: show;
@@ -787,7 +789,7 @@ td.camera2 { background-image: url(pic/general/camera2.png); }
 		/* Top/left values mimic padding */
 		top: 7px;
 		left: 7px;
-		width: 35%; 
+		width: 30%; 
 		white-space: nowrap;
 		text-align: left;
 		font-weight: bold;

@@ -85,18 +85,18 @@
     width: 100%;
   }
   #cssmenu > ul li {
-    display: block;
-  }
-  #cssmenu > ul li a {
-    background: url('images/menu.png') no-repeat;
-    background-position: 95% -35%;
-  }
-  #cssmenu > ul li a:hover {
-    background-color: #d80041;
-    background-position: 95% 135%;
-  }
-  #cssmenu > ul li {
     display: none;
+  }
+  #cssmenu > ul li.responsive {
+    display: inline-block;;
+  }
+  #cssmenu > ul li.responsive.hassub a {
+    background: url('images/caret.png') no-repeat;
+    background-position: 100% -100%;
+  }
+  #cssmenu > ul li.responsive a:hover {
+    background-color: #d80041;
+    background-position: 100% -100%;
   }
   #cssmenu > ul li.right {
     float: none;
@@ -105,8 +105,8 @@
     position: relative;
   }
   #cssmenu > ul li ul {
-    display: block;
-    position: static;
+    display: none;
+    position: absolute;
     width: 100%;
     background: #ffffff;
     border: 0 none;
@@ -116,7 +116,7 @@
   }
   #cssmenu > ul li ul li a span {
     display: block;
-    padding-left: 24px;
+    padding-left: 7px;
   }
   #cssmenu > ul li > a {
     background-image: none;

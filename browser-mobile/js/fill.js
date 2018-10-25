@@ -347,11 +347,11 @@ function splitPane()
 
 	$("#tblwrapper").css({
 		"height": "100%" - menuHeight,
-		"width": "50%"
+		"width": "20%"
 	})
 	$("#queuewrapper").show().css({
 		"height": "100%" - menuHeight,
-		"width": "50%"
+		"width": "80%"
 	})
 	$("#queuecontainer").css({
 		"height": $("#tblcontainer").height() - titleHeight

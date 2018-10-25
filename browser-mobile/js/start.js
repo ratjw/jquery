@@ -35,7 +35,7 @@ function loading(response)
   editcellEvent()
   wrapperEvent()
   documentEvent()
-//  scrolltoToday()
+  scrolltoToday()
 
   disableOneRowMenu()
   disableExcelLINE()
@@ -143,6 +143,12 @@ function wrapperEvent()
 
     event.stopPropagation()
   })
+
+  $("#cssmenu a[nohref]").on("touchend", function(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    return false;
+  })
 }
 
 function documentEvent()
@@ -180,7 +186,7 @@ function documentEvent()
     resetTimer()
     gv.idleCounter = 0
   });
-/*
+
   $(document).contextmenu( event => {
     let target = event.target
     let oncall = /<p[^>]*>.*<\/p>/.test(target.outerHTML)
@@ -196,14 +202,6 @@ function documentEvent()
     }
   })
 
-	window.oncontextmenu = function(event) {
-		if (event.targetTouches[0].target.tagName === 'A') {
-			preventDefault();
-			stopPropagation();
-			return false;
-		}
-	}
-
   // to let table scrollable while dragging
   $("html, body").css( {
     height: "100%",
@@ -217,7 +215,6 @@ function documentEvent()
 		"height": $("#tblwrapper").height() - $("#titlebar").height()
 	})
   })
-*/
 }
 
 // allow the title to contain HTML
