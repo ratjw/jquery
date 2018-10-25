@@ -252,7 +252,7 @@ async function allCases()
 {
   let sql = "sqlReturnData=SELECT * FROM book WHERE deleted=0 ORDER BY opdate;"
 
-  let response = await postData(MYSQLIPHP, URIcomponent(sql))
+  let response = await postData(MYSQLIPHP, sql)
   if (typeof response === "object") {
     // Make paginated dialog box containing alltbl
     pagination($("#dialogAll"), $("#alltbl"), response, "All Saved Cases")
