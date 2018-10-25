@@ -203,7 +203,7 @@ function URIcomponent(content)
     content = content.replace(/\s+$/,'')
     content = content.replace(/\"/g, "&#34;")  // double quotes
     content = content.replace(/\'/g, "&#39;")  // single quotes
-//    content = content.replace(/%/g, "&#37;")  // per cent, mysql: like "%...%"
+    content = content.replace(/%/g, "&#37;")   // per cent, mysql: like "%...%"
     content = content.replace(/\\/g, "\\\\")
     content = encodeURIComponent(content)
   }
