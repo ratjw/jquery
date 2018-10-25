@@ -212,10 +212,9 @@ function URIcomponent(content)
 
 function menustyle($me, $target)
 {
+  let shadow = '10px -20px 30px slategray'
   if ($me.position().top > $target.position().top) {
-    let shadow = '10px 20px 30px slategray'
-  } else {
-    let shadow = '10px -20px 30px slategray'
+    shadow = '10px 20px 30px slategray'
   }
 
   $me.css({
