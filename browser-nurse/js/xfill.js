@@ -5,14 +5,13 @@ function fillupstart()
 	// fill until 2 year from now
 	var	table = document.getElementById("tbl"),
 		today = new Date(),
-		start = new Date(today.getFullYear(), today.getMonth()-1).ISOdate(),
-		nextyear = today.getFullYear() + 2,
-		month = today.getMonth(),
-		date = today.getDate(),
-		until = (new Date(nextyear, month, date)).ISOdate(),
-		book = gv.BOOK,
+		start = new Date(today.setDate(today.getDate() - 10)).ISOdate(),
+		today = new Date(),
+		until = new Date(today.setDate(today.getDate() + 10)).ISOdate(),
+		today = new Date(),
 		todate = today.ISOdate(),
 		todateth = todate.thDate()
+		book = gv.BOOK,
 
 	if (book.length === 0) { book.push({"opdate" : todate}) }
 	
