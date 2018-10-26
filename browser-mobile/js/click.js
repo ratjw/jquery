@@ -848,18 +848,16 @@ function selectRow(event, target)
       $targetTRs = $(target).closest("table").find("tr"),
       $allTRs = $("tr")
 
-  if (event.ctrlKey) {
-    $targetTRs.removeClass("lastselected")
-    $target.addClass("selected lastselected")
-    disableOneRowMenu()
-  } else if (event.shiftKey) {
-    $targetTRs.not(".lastselected").removeClass("selected")
-    shiftSelect($target)
-    disableOneRowMenu()
+  if ($target[0].className.indexOf("selected") >= 0) {
+    $target.removeClass("selected")
   } else {
-    $allTRs.removeClass("selected lastselected")
-    $target.addClass("selected lastselected")
+    $target.addClass("selected")
+  }
+
+  if ($(".selected").length) {
     oneRowMenu()
+  } else {
+    disableOneRowMenu()
   }
 }
 

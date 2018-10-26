@@ -773,10 +773,8 @@ function toLINE()
   let row = ""
   let hide = [1, 3, 4, 12]
   let $dialogNotify = $('#dialogNotify')
-  let message
+  let message = $dialogNotify.find('textarea').val()
 
-
-  message = $dialogNotify.find('textarea').val()
   $dialogNotify.dialog('close')
 
   $captureTRs.slice(1).remove()
