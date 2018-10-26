@@ -500,10 +500,9 @@ function showEquip(equipString)
 
 function makeEquip(equipJSON)
 {
-  let equip = "",
-    equipIcons = {
+  let equipIcons = {
       Fluoroscope: "Fluoroscope",
-      Navigator_frameless: "Navigator",
+      "Navigator_frameless": "Navigator",
       "Navigator_frame-based": "Navigator",
       Oarm: "Oarm",
       Robotics: "Robotics",
@@ -520,30 +519,35 @@ function makeEquip(equipJSON)
       CN6: "Monitor",
       CN7: "Monitor",
       CN8: "Monitor",
+      CN9: "Monitor",
+      CN10: "Monitor",
+      CN11: "Monitor",
+      CN12: "Monitor",
       SSEP: "Monitor",
       EMG: "Monitor",
       MEP: "Monitor"
     },
-    equipPics = []
+    equip = [],
+    monitor = [],
+	equipPics = []
 
   $.each(equipJSON, function(key, value) {
-    let Monitor = /Monitor/.test(equip)
-    if (equip) { equip += ", " }
     if (value === "checked") {
       if (key in equipIcons) {
         equipPics.push(equipIcons[key])
-        if (!Monitor) {
-          equip += "Monitor:"
-        }
-      }
-      equip += key
+        if (equipIcons[key] === "Monitor") {
+          monitor.push(key)
+        } else {
+          equip.push(key)
+		}
+      } else {
+        equip.push(key)
+	  }
     } else {
       if (key === "Monitor") {
-        if (Monitor) {
-          equip += value
-        }
+        monitor.push(value)
       } else {
-        equip += key + ":" + value
+        equip.push(key + ":" + value)
       }
     }
   })
@@ -551,8 +555,11 @@ function makeEquip(equipJSON)
   equipPics = equipPics.filter(function(pic, pos) {
     return equipPics.indexOf(pic) === pos;
   })
-
-  return equip + "<br>" + equipImg(equipPics)
+  // convert to string
+  equip = equip.length ? equip.join(', ') : ''
+  monitor = monitor.length ? ", Monitor:" + monitor.toString() : ''
+  
+  return equip + monitor + "<br>" + equipImg(equipPics)
 }
 
 function equipImg(equipPics)

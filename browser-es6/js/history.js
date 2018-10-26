@@ -535,6 +535,9 @@ async function searchDB()
     others = $('input[name="others"]').val(),
     sql = "", search = ""
 
+  // Close before open another dialog
+  $("#dialogInput").dialog("close")
+
   // for dialog title
   search += hn
   search += (search && staffname ? ", " : "") + staffname
@@ -553,7 +556,6 @@ async function searchDB()
   } else {
     Alert("Search: ''", "<br><br>No Result")
   }
-  $("#dialogInput").dialog("close")
 }
 
 function makeFind(found, search)

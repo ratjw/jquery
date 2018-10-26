@@ -24,7 +24,7 @@ function loading(response)
   updateBOOK(response)
 
   // call sortable before render, otherwise, rendering is very slow
-  sortable()
+//  sortable()
 
   // rendering
   fillupstart()
@@ -42,7 +42,7 @@ function loading(response)
   overrideJqueryUI()
   resetTimer()
   // Let tbl animate scrollTop finish first
-//  setTimeout( fillupfinish, 500)
+  setTimeout( fillupfinish, 500)
 }
 
 function scrolltoToday()

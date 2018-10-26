@@ -528,12 +528,16 @@ function getSaffName(pointing)
   menustyle($stafflist, $pointing)
 }
 
+// From <img onclick> or keydown Enter
 async function searchDB()
 {
   let hn = $('input[name="hn"]').val(),
     staffname = $('input[name="staffname"]').val(),
     others = $('input[name="others"]').val(),
     sql = "", search = ""
+
+  // Close before open another dialog
+  $("#dialogInput").dialog("close")
 
   // for dialog title
   search += hn
@@ -553,7 +557,6 @@ async function searchDB()
   } else {
     Alert("Search: ''", "<br><br>No Result")
   }
-  $("#dialogInput").dialog("close")
 }
 
 function makeFind(found, search)

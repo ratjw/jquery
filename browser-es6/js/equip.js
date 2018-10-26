@@ -98,12 +98,12 @@ function showEditableEquip()
 			text: "Save",
 			width: "100",
 			click: function () {
-				if (!$('#copay').val()) {
+				if (copay()) {
+					Checklistequip()
+					showNonEditableEquip()
+				} else {
 					Alert("Checklistequip", "<br>ต้องระบุจำนวนเงิน<br>จ่ายไม่ได้เลย = 0")
-					return
 				}
-				Checklistequip()
-				showNonEditableEquip()
 			}
 		},
 		{
@@ -115,6 +115,21 @@ function showEditableEquip()
 		}
 	])
 	enableInput()
+}
+
+function copay()
+{
+	let ok = true
+
+	if (!$('#copay').val()) {
+		$( "#dialogEquip input, #dialogEquip textarea" ).each( function() {
+			if (this.checked || this.value) {
+				ok = false
+			}
+		})
+	}
+
+	return ok
 }
 
 function disableInput()
@@ -208,6 +223,7 @@ async function Checklistequip()
 			$row = getTableRowByQN("tbl", qn)
 		}
 		$row.find("td").eq(EQUIPMENT).html(makeEquip(equipJSON))
+		$dialogEquip.dialog('close')
 	} else {
 		// Error update server
 		// Roll back. If old form has equips, fill checked & texts
