@@ -462,12 +462,8 @@ td.camera2 { background-image: url(pic/general/camera2.png); }
 .w500 { width:500px !important; }
 .w540 { width:540px !important; }
 
-.margin0 { margin: 0px; }
-.margintop0 { margin-top: 0px; }
-.marginright { margin-right: 100px; }
-.red { color:red; }
-.Aqua { background-color: #00FFFF; }
-.lightAqua { background-color: #AAFFFF; }
+.monthbut { color:white !important; background-color: #00AAFF !important; }
+.yearbut { color:white !important; background-color: #0077BB !important; }
 
 #titlebar {
 	height: 40px;

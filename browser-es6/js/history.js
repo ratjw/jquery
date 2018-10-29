@@ -278,8 +278,6 @@ function pagination($dialog, $tbl, book, search)
 {
   let  beginday = book[0].opdate,
     lastday = findLastDateInBOOK(book),
-    width = winWidth(95),
-    height = winHeight(95),
     firstday = getPrevMonday()
 
   $dialog.dialog({
@@ -288,8 +286,8 @@ function pagination($dialog, $tbl, book, search)
     modal: true,
     show: 200,
     hide: 200,
-    width: width,
-    height: height,
+    width: winWidth(95),
+    height: winHeight(95),
     close: function() {
       $(window).off("resize", resizeDialog )
       $(".fixed").remove()
@@ -297,14 +295,14 @@ function pagination($dialog, $tbl, book, search)
     buttons: [
       {
         text: "<<< Year",
-        class: "Aqua",
+        class: "yearbut",
         click: function () {
           showOneWeek(book, firstday, -364)
         }
       },
       {
         text: "<< Month",
-        class: "lightAqua",
+        class: "monthbut",
         click: function () {
           offset = firstday.slice(-2) > 28 ? -35 : -28
           showOneWeek(book, firstday, offset)
@@ -312,7 +310,6 @@ function pagination($dialog, $tbl, book, search)
       },
       {
         text: "< Week",
-        class: "marginright",
         click: function () {
           showOneWeek(book, firstday, -7)
         }
@@ -328,7 +325,7 @@ function pagination($dialog, $tbl, book, search)
       },
       {
         text: "Month >>",
-        class: "lightAqua",
+        class: "monthbut",
         click: function () {
           offset = firstday.slice(-2) > 28 ? 35 : 28
           showOneWeek(book, firstday, offset)
@@ -336,7 +333,7 @@ function pagination($dialog, $tbl, book, search)
       },
       {
         text: "Year >>>",
-        class: "Aqua",
+        class: "yearbut",
         click: function () {
           showOneWeek(book, firstday, 364)
         }
