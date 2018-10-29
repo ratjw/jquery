@@ -201,6 +201,7 @@ function showService(fromDate, toDate)
 		close: function() {
 			refillstaffqueue()
 			refillall()
+            fillConsults()
 			$(".ui-dialog:visible").find(".ui-dialog-content").dialog("close");
 			$(".fixed").remove()
 			$(window).off("resize", resizeDialog)

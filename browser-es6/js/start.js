@@ -30,6 +30,7 @@ function loading(response)
   fillupstart()
   setStafflist()
   fillConsults()
+//  initEquipment()
 
   // make the document editable
   editcellEvent()
@@ -358,6 +359,14 @@ async function changeOncall(pointing, opdate, staffname)
   }
 }
 
+function initEquipment(width, type, name, id, caption)
+{
+  `<span class="${width}">
+	<input type="${type}" name="${name}" id="${id}">
+	<label for="${id}">${caption}</label>
+  </span>`
+}
+
 function resetTimer()
 {
   // gv.timer is just an id, not the clock
@@ -374,22 +383,7 @@ function updating()
   if (onChange()) {
     gv.idleCounter = 0
   } else {
-    // idling (5+1)*10 = 1 minute, clear editing setup
-    // editcell may be on first column, on staff, during changeDate
-    if (gv.idleCounter === 5) {
-      clearAllEditing()
-      refillstaffqueue()
-      refillall()
-    }
-    // idling (59+1)*10 = 10 minutes, logout
-    else if (gv.idleCounter > 59 && !gv.isMobile) {
-      history.back()
-      // may not successfully access the history
-      gv.idleCounter = 0
-    } else {
-      gv.idleCounter += 1
-      doUpdate()
-	}
+    doUpdate()
   }
 
   resetTimer()
@@ -406,29 +400,9 @@ async function doUpdate()
   if (typeof response === "object") {
     if (gv.timestamp < response[0].timestamp) {
       getUpdate()
-    }
-  }
-}
-
-// There is some changes in database from other users
-async function getUpdate()
-{
-  let fromDate = $('#monthstart').val()  let toDate = $('#monthpicker').val()  let sql = "sqlReturnService=" + sqlOneMonth(fromDate, toDate)
-
-  let response = await postData(MYSQLIPHP, sql)
-  if (typeof response === "object") {
-    updateBOOK(response)
-    if ($("#dialogService").hasClass('ui-dialog-content')
-        && $("#dialogService").dialog('isOpen')) {
-      gv.SERVE = calcSERVE()
-      refillService(fromDate, toDate)
-    }
-    refillall()
-    if (isSplited()) {
-      refillstaffqueue()
-    }
-  } else {
-    Alert ("getUpdate", response)
+    } else {
+      onIdling()
+	}
   }
 }
 
@@ -514,6 +488,47 @@ async function updateOnChange(sql)
   if (typeof response === "object") {
     updateBOOK(response)
   }
+}
+
+// There is some changes in database from other users
+async function getUpdate()
+{
+  let fromDate = $('#monthstart').val()
+  let toDate = $('#monthpicker').val()
+  let sql = "sqlReturnService=" + sqlOneMonth(fromDate, toDate)
+
+  let response = await postData(MYSQLIPHP, sql)
+  if (typeof response === "object") {
+    updateBOOK(response)
+    if ($("#dialogService").hasClass('ui-dialog-content')
+        && $("#dialogService").dialog('isOpen')) {
+      gv.SERVE = calcSERVE()
+      refillService(fromDate, toDate)
+    }
+    refillall()
+    fillConsults()
+    if (isSplited()) {
+      refillstaffqueue()
+    }
+  } else {
+    Alert ("getUpdate", response)
+  }
+}
+
+// idling every 6*10 = 1 minute, clear editing setup
+// idling (59+1)*10 = 10 minutes, logout
+function onIdling()
+{
+    if (!(gv.idleCounter % 6)) {
+      clearAllEditing()
+      refillstaffqueue()
+      refillall()
+      fillConsults()
+    } else if (gv.idleCounter > 59 && !gv.isMobile) {
+      history.back()
+    }
+
+    gv.idleCounter += 1
 }
 
 function addStaff()

@@ -551,6 +551,7 @@ function getCaseHN(pointed, waiting)
 				refillstaffqueue()
 			} else {
 				refillall()
+                fillConsults()
 				refillstaffqueue()
 			}
 		} else {
@@ -576,6 +577,7 @@ function getCaseHN(pointed, waiting)
 				refillstaffqueue()
 			} else {
 				refillall()
+                fillConsults()
 			}
 		} else {
 			Alert("saveCaseHN", response)
@@ -745,7 +747,12 @@ async function getNameHN(pointed, content)
 			}
 		} else {
 			if (!isConsults()) {
-				noqn ? refillall() : refillAnotherTableCell('tbl', cellindex, qn)
+				if (noqn) {
+					refillall()
+                    fillConsults()
+				} else {
+					refillAnotherTableCell('tbl', cellindex, qn)
+				}
 			}
 		}
 		// re-render editcell for keyin cell only
