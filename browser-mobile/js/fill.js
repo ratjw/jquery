@@ -581,7 +581,7 @@ function addHoliday()
 	if ($holidaytbl.find("input").length) { return }
 
 	$holidaytbl.find("tbody")
-		.append($("#holidayinput tr"))
+		.append($("#holidayInput tr"))
 
 	let	append = $holidaytbl.height(),
 		height = $dialogHoliday.height()
@@ -659,20 +659,20 @@ function holidayInputBack($inputRow)
 {
 	$("#holidateth").val("")
 	$("#holidayname").val("")
-	$('#holidayinput tbody').append($inputRow)
+	$('#holidayInput tbody').append($inputRow)
 }
 
 function holiday(date)
 {
-	let	monthdate = date.substring(5),
+	var	monthdate = date.substring(5),
 		dayofweek = (new Date(date)).getDay(),
 		holidayname = "",
 		Mon = (dayofweek === 1),
 		Tue = (dayofweek === 2),
 		Wed = (dayofweek === 3),
-		holiday = gv.HOLIDAY.find(function(day) {
+		holiday = $.grep(gv.HOLIDAY, function(day) {
 			return day.holidate === date
-		})
+		})[0]
 
 	if (date === LARGESTDATE) { return }
 	if (holiday) {
@@ -682,88 +682,85 @@ function holiday(date)
 	switch (monthdate)
 	{
 	case "12-31":
-		holidayname = "url('css/pic/holiday/Yearend.png')"
+		holidayname = "Yearend"
 		break
 	case "01-01":
-		holidayname = "url('css/pic/holiday/Newyear.png')"
+		holidayname = "Newyear"
 		break
 	case "01-02":
 		if (Mon || Tue)
-			holidayname = "url('css/pic/holiday/Yearendsub.png')"
+			holidayname = "Yearendsub"
 		break
 	case "01-03":
 		if (Mon || Tue)
-			holidayname = "url('css/pic/holiday/Newyearsub.png')"
+			holidayname = "Newyearsub"
 		break
 	case "04-06":
-		holidayname = "url('css/pic/holiday/Chakri.png')"
+		holidayname = "Chakri"
 		break
 	case "04-07":
 	case "04-08":
 		if (Mon)
-			holidayname = "url('css/pic/holiday/Chakrisub.png')"
+			holidayname = "Chakrisub"
 		break
 	case "04-13":
 	case "04-14":
 	case "04-15":
-		holidayname = "url('css/pic/holiday/Songkran.png')"
+		holidayname = "Songkran"
 		break
 	case "04-16":
-		if (Mon || Tue)
-			holidayname = "url('css/pic/holiday/Songkransub.png')"
-		break
 	case "04-17":
-		if (Mon || Wed)
-			holidayname = "url('css/pic/holiday/Songkransub.png')"
+		if (Mon || Tue || Wed)
+			holidayname = "Songkransub"
 		break
 	case "07-28":
-		holidayname = "url('css/pic/holiday/King10.png')"
+		holidayname = "King10"
 		break
 	case "07-29":
 	case "07-30":
 		if (Mon)
-			holidayname = "url('css/pic/holiday/King10sub.png')"
+			holidayname = "King10sub"
 		break
 	case "08-12":
-		holidayname = "url('css/pic/holiday/Queen.png')"
+		holidayname = "Queen"
 		break
 	case "08-13":
 	case "08-14":
 		if (Mon)
-			holidayname = "url('css/pic/holiday/Queensub.png')"
+			holidayname = "Queensub"
 		break
 	case "10-13":
-		holidayname = "url('css/pic/holiday/King09.png')"
+		holidayname = "King09"
 		break
 	case "10-14":
 	case "10-15":
 		if (Mon)
-			holidayname = "url('css/pic/holiday/King09sub.png')"
+			holidayname = "King09sub"
 		break
 	case "10-23":
-		holidayname = "url('css/pic/holiday/Piya.png')"
+		holidayname = "Piya"
 		break
 	case "10-24":
 	case "10-25":
 		if (Mon)
-			holidayname = "url('css/pic/holiday/Piyasub.png')"
+			holidayname = "Piyasub"
 		break
 	case "12-05":
-		holidayname = "url('css/pic/holiday/King9.png')"
+		holidayname = "King9"
 		break
 	case "12-06":
 	case "12-07":
 		if (Mon)
-			holidayname = "url('css/pic/holiday/King9sub.png')"
+			holidayname = "King9sub"
 		break
 	case "12-10":
-		holidayname = "url('css/pic/holiday/Constitution.png')"
+		holidayname = "Constitution"
 		break
 	case "12-11":
 	case "12-12":
 		if (Mon)
-			holidayname = "url('css/pic/holiday/Constitutionsub.png')"
+			holidayname = "Constitutionsub"
 		break
 	}
-	return holidayname
+	return "url('css/pic/holiday/" + holidayname +".png')"
 }

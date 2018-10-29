@@ -209,7 +209,7 @@
 
   <!--  name is the column in Mysql -->
   <!--  title is the value -->
-  <div id="orgRecord" class="divRecord dialogBox">
+  <div id="profileRecord" class="divRecord dialogBox">
 	<br>
 	<label class="w70">
 		<input class="w40" type="radio" name="doneby" title="Staff">
@@ -642,7 +642,7 @@
   </tbody>
 </table>
 
-<table id="holidayinput">
+<table id="holidayInput">
   <tbody>
 	<tr>
 	 <td>

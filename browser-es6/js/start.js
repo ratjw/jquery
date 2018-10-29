@@ -4,7 +4,7 @@
 
 $(async function()
 {
-  let response = await fetch(GETUSERIDPHP)
+  let response = await fetch(GETUSERID)
   let userid = await response.text()
 
   if (/^\d{6}$/.test(userid)) {
@@ -77,6 +77,7 @@ function editcellEvent()
     let keyCode = event.which || window.event.keyCode
     let pointing = $editcell.data("pointing")
 
+    event.preventDefault()
     if ($('#dialogService').is(':visible')) {
       Skeyin(event, keyCode, pointing)
     } else {

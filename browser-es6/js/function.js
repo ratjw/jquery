@@ -28,6 +28,8 @@
       }
       else if (offset >= tableTop && offset <= tableBottom && $t_fixed.is(":hidden")) {
         $t_fixed.show();
+//        resizeFixed($t_fixed, $this);
+//        reposition($t_fixed, "left top", "left+" + pad + " top", $container)
       }
     }
   };

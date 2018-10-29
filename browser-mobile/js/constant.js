@@ -18,7 +18,7 @@ let gv = {
 }
 
 const GETIPD = "php/getipd.php", 
-GETUSERIDPHP = "php/getuserid.php",
+GETUSERID = "php/getuserid.php",
 GETNAMEHN	= "php/getnamehn.php",
 MYSQLIPHP	= "php/mysqli.php",
 SEARCH		= "php/search.php",

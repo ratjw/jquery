@@ -30,7 +30,6 @@
 		$resultz = "";
 		$error = "";
 
-		// Desktop client
 		if (preg_match('/^\d{6}$/', $userid)) {
 			if (strpos($_SERVER["SERVER_NAME"], $servername) !== false) {
 				$client = new SoapClient($wsdl);
@@ -52,7 +51,7 @@
 				header($browserNurse);
 			}
 			// Pass the login but other than S, R, N
-			else if (preg_match('/w/', $resultz)) {
+			else if (preg_match('/^\w{1}$/', $resultz)) {
 				$error = "Unauthorized";
 			}
 			// Fail the login

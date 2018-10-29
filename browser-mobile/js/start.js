@@ -4,7 +4,7 @@
 
 $(async function()
 {
-  let response = await fetch(GETUSERIDPHP)
+  let response = await fetch(GETUSERID)
   let userid = await response.text()
 
   if (/^\d{6}$/.test(userid)) {

@@ -2,11 +2,11 @@
   "name": "Surgery Book",
   "short_name": "Book",
   "icons": [{
-    "src": "css/pic/general/logoRama.png",
+    "src": "logoRama.png",
       "sizes": "256x256",
       "type": "image/png"
     }, {
-    "src": "css/pic/general/logoRama.png",
+    "src": "logoRama.png",
       "sizes": "128x128",
       "type": "image/png"
     }],

@@ -15,8 +15,8 @@ function serviceReview()
 		title: "Service Neurosurgery",
 		closeOnEscape: true,
 		modal: true,
-		width: window.innerWidth * 95 / 100,
-		height: window.innerHeight * 95 / 100
+		width: winWidth(95),
+		height: winHeight(95)
 	})
 
 	$monthpicker.show()
@@ -76,7 +76,7 @@ function entireMonth(fromDate)
 		  </button>`
 		
 
-	$("#dialogService").dialog({ title: title })
+	$dialogService.dialog({ title: title })
 	$(imgopen).hide()
 	$(imgclose).show()
 	toDate = $.datepicker.formatDate("yy-mm-dd", toDate)
@@ -95,11 +95,13 @@ function entireMonth(fromDate)
 		event.preventDefault()
 		exportServiceToExcel()
 	})
+
 	$reportService.show()
 	$reportService.on("click", event => {
 		event.preventDefault()
 		showReportToDept(title)
 	})
+
 	$("#hideProfile").on("click", event => {
 		event.preventDefault()
 		$(th8 + ', ' + td8).toggle()
@@ -110,6 +112,7 @@ function entireMonth(fromDate)
 			$(imgopen).hide()
 			$(imgclose).show()
 		}
+		winResizeFix($servicetbl, $dialogService)
 	})
 }
 
@@ -193,8 +196,8 @@ function showService(fromDate, toDate)
 
 	$dialogService.dialog({
 		hide: 200,
-		width: window.innerWidth * 95 / 100,
-		height: window.innerHeight * 95 / 100,
+		width: winWidth(95),
+		height: winHeight(95),
 		close: function() {
 			refillstaffqueue()
 			refillall()
@@ -261,8 +264,8 @@ function showService(fromDate, toDate)
 	function resizeDialog()
 	{
 		$dialogService.dialog({
-			width: window.innerWidth * 95 / 100,
-			height: window.innerHeight * 95 / 100
+			width: winWidth(95),
+			height: winHeight(95)
 		})
 		winResizeFix($servicetbl, $dialogService)
 	}
@@ -745,7 +748,7 @@ function getPROFILESV(pointing)
 
 function showRecord(bookq)
 {
-	let $divRecord = $("#orgRecord").clone().prop('id', '').css('display', 'block'),
+	let $divRecord = $("#profileRecord").clone().prop('id', '').css('display', 'block'),
 		wide
 
 	initRecord(bookq, $divRecord)

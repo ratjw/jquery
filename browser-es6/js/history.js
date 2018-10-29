@@ -40,8 +40,8 @@ function makehistory($row, hn, response)
     modal: true,
     show: 200,
     hide: 200,
-    width: window.innerWidth * 95 / 100,
-    height: window.innerHeight * 95 / 100,
+    width: winWidth(95),
+    height: winHeight(95),
     close: function() {
       $(window).off("resize", resizeHistory )
       $(".fixed").remove()
@@ -55,8 +55,8 @@ function makehistory($row, hn, response)
 
   function resizeHistory() {
     $dialogHistory.dialog({
-      width: window.innerWidth * 95 / 100,
-      height: window.innerHeight * 95 / 100
+      width: winWidth(95),
+      height: winHeight(95)
     })
     winResizeFix($historytbl, $dialogHistory)
   }
@@ -108,14 +108,17 @@ async function deletedCases()
 function makedeletedCases(deleted)
 {
   let $deletedtbl = $('#deletedtbl')
+    $deletedtr = $('#deletedcells tr')
 
   // delete previous table lest it accumulates
   $deletedtbl.find('tr').slice(1).remove()
 
-  $.each( deleted, function() {
-    $('#deletedcells tr').clone()
+  // display the first 20
+  $.each( deleted, function(i) {
+    $deletedtr.clone()
       .appendTo($deletedtbl.find('tbody'))
         .filldataDeleted(this)
+    return i < 20;
   });
 
   let $dialogDeleted = $("#dialogDeleted")
@@ -124,8 +127,8 @@ function makedeletedCases(deleted)
     closeOnEscape: true,
     modal: true,
     hide: 200,
-    width: window.innerWidth * 95 / 100,
-    height: window.innerHeight * 95 / 100,
+    width: winWidth(95),
+    height: winHeight(95),
     close: function() {
       $(window).off("resize", resizeDeleted )
       $(".fixed").remove()
@@ -145,11 +148,21 @@ function makedeletedCases(deleted)
 
   function resizeDeleted() {
     $dialogDeleted.dialog({
-      width: window.innerWidth * 95 / 100,
-      height: window.innerHeight * 95 / 100
+      width: winWidth(95),
+      height: winHeight(95)
     })
     winResizeFix($deletedtbl, $dialogDeleted)
   }
+
+  // display the rest
+  setTimeout(function() {
+    $.each( deleted, function(i) {
+      if (i < 21) return
+      $deletedtr.clone()
+        .appendTo($deletedtbl.find('tbody'))
+          .filldataDeleted(this)
+    });
+  }, 100)
 }
 
 jQuery.fn.extend({
@@ -265,8 +278,8 @@ function pagination($dialog, $tbl, book, search)
 {
   let  beginday = book[0].opdate,
     lastday = findLastDateInBOOK(book),
-    width = window.innerWidth * 95 / 100,
-    height = window.innerHeight * 95 / 100,
+    width = winWidth(95),
+    height = winHeight(95),
     firstday = getPrevMonday()
 
   $dialog.dialog({
@@ -447,8 +460,8 @@ function pagination($dialog, $tbl, book, search)
 
   function resizeDialog() {
     $dialog.dialog({
-      width: window.innerWidth * 95 / 100,
-      height: window.innerHeight * 95 / 100
+      width: winWidth(95),
+      height: winHeight(95)
     })
     winResizeFix($tbl, $dialog)
   }
@@ -547,7 +560,7 @@ async function searchDB()
       + "&staffname=" + staffname
       + "&others=" + others
 
-    let response = await postData(MYSQLIPHP, sql)
+    let response = await postData(SEARCH, sql)
     if (typeof response === "object") {
       makeFind(response, search)
     } else {
@@ -619,8 +632,8 @@ function makeDialogFound($dialogFind, $findtbl, found, search)
     title: "Search: " + search,
     closeOnEscape: true,
     modal: true,
-    width: window.innerWidth*95/100,
-    height: window.innerHeight*95/100,
+    width: winWidth(95),
+    height: winHeight(95),
     buttons: [
       {
         text: "Export to xls",
@@ -712,6 +725,16 @@ jQuery.fn.extend({
     dataforEachCell(cells, data)
   }
 })
+
+function winWidth(percent)
+{
+  return window.innerWidth * percent / 100
+}
+
+function winHeight(percent)
+{
+  return window.innerHeight * percent / 100
+}
 
 function PACS(hn)
 { 

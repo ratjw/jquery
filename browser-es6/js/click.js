@@ -505,7 +505,7 @@ function getCaseHN(pointed, waiting)
 		autoResize: true,
 		show: 200,
 		hide: 200,
-		width: window.innerWidth * 95 / 100,
+		width: winWidth(95),
 		buttons: [
 			{
 				text: "ย้ายมา ลบเคสเดิมออก",

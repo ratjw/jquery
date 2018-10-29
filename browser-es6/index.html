@@ -225,7 +225,7 @@
 
   <!--  name is the column in Mysql -->
   <!--  title is the value -->
-  <div id="orgRecord" class="divRecord dialogBox">
+  <div id="profileRecord" class="divRecord dialogBox">
 	<br>
 	<label class="w70">
 		<input class="w40" type="radio" name="doneby" title="Staff">
@@ -637,9 +637,8 @@
   <thead>
    <tr>
 	<th>Date</th>
-	<th>Holiday Name
-	 <button id="addholiday" onclick="addHoliday()">+</button>
-	</th>
+	<th>Holiday Name</th>
+	<th><button id="addholiday" onclick="addHoliday()">+</button></th>
    </tr>
   </thead>
   <tbody>
@@ -650,24 +649,19 @@
 <table id="holidaycells">
   <tbody>
 	<tr>
-	  <td data-title="Date"></td>
-	  <td data-title="Holiday Name">
-	    <button class="delholiday" onclick="delHoliday(this)">-</button>
-	  </td>
+	  <td></td>
+	  <td></td>
+	  <td><button class="delholiday" onclick="delHoliday(this)">-</button></td>
 	</tr>
   </tbody>
 </table>
 
-<table id="holidayinput">
+<table id="holidayInput">
   <tbody>
 	<tr>
-	 <td>
-	  <input type="text" id="holidateth" readonly></td>
-	 <td>
-	  <select id="holidayname">
-	  </select>
-	  <button class="delholiday" onclick="delHoliday(this)">-</button>
-	 </td>
+     <td><input type="text" id="holidateth" class="w73" readonly></td>
+     <td><select id="holidayname" class="w150"></select></td>
+     <td><button class="delholiday" onclick="delHoliday(this)">-</button></td>
 	</tr>
   </tbody>
 </table>

@@ -737,7 +737,7 @@ function getPROFILESV(pointing)
 
 function showRecord(bookq)
 {
-	var $divRecord = $("#orgRecord").clone().prop('id', ''),
+	var $divRecord = $("#profileRecord").clone().prop('id', ''),
 		wide
 
 //	document.body.appendChild($divRecord[0])

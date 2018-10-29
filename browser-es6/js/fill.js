@@ -479,7 +479,9 @@ function setHoliday()
 {
 	let	$dialogHoliday = $("#dialogHoliday"),
 		$holidaytbl = $("#holidaytbl"),
-		$holidateth = $("#holidateth")
+		$holidateth = $("#holidateth"),
+		$holidayname = $("#holidayname"),
+		holidaylist = '<option style="display:none"></option>'
 
 	fillHoliday($holidaytbl)
 	$dialogHoliday.dialog({
@@ -488,10 +490,11 @@ function setHoliday()
 		modal: true,
 		show: 200,
 		hide: 200,
-		width: 500,
+		width: 350,
 		height: 600,
 		buttons: [{
 			text: "Save",
+			id: "buttonHoliday",
 			click: function () {
 				saveHoliday()
 			}
@@ -504,6 +507,11 @@ function setHoliday()
 			}
 		}
 	})
+
+	let $buttonHoliday = $("#buttonHoliday")
+	$buttonHoliday.hide()
+
+	// select date by calendar
 	$holidateth.datepicker({
 		autoSize: true,
 		dateFormat: "dd M yy",
@@ -534,29 +542,32 @@ function setHoliday()
 		},
 		onSelect: function (input, inst) {
 			$holidateth.val(input.slice(0, -4) + (inst.selectedYear + 543))
+			if ($holidayname.val()) {
+				$buttonHoliday.show()
+			}
+		}
+	})
+
+	// option holidays Eng: Thai
+	$.each(HOLIDAYENGTHAI, function(key, val) {
+		holidaylist += `<option value="${key}">${val}</option>`
+	})
+	$holidayname.html(holidaylist)
+	$holidayname.change(function() {
+		if ($holidateth.val()) {
+			$buttonHoliday.show()
 		}
 	})
 }
 
 function fillHoliday($holidaytbl)
 {
-	let	holidaylist = '<option style="display:none"></option>'
-
-	$.each(HOLIDAYENGTHAI, function(key, val) {
-		holidaylist += '<option value="' + key
-					+ '">' + val
-					+ '</option>'
-	})
-	document.getElementById("holidayname").innerHTML = holidaylist
-
 	$holidaytbl.find('tr').slice(1).remove()
 
 	$.each( gv.HOLIDAY, function(i) {
 		$('#holidaycells tr').clone()
 			.appendTo($holidaytbl.find('tbody'))
 				.filldataHoliday(this)
-		$holidaytbl.find("tbody tr:last td:last")
-				.append($(".delholiday").eq(0).clone())
 	});
 }
 
@@ -581,39 +592,12 @@ function addHoliday()
 	if ($holidaytbl.find("input").length) { return }
 
 	$holidaytbl.find("tbody")
-		.append($("#holidayinput tr"))
+		.append($("#holidayInput tr"))
 
 	let	append = $holidaytbl.height(),
 		height = $dialogHoliday.height()
 	if (append > height) {
 		$dialogHoliday.scrollTop(append - height)
-	}
-}
-
-async function saveHoliday()
-{
-	let	vdateth = document.getElementById("holidateth").value,
-		vdate = vdateth.numDate(),
-		vname = document.getElementById("holidayname").value,
-		rows = getTableRowsByDate(vdateth),
-
-		sql = "sqlReturnData="
-			+ "INSERT INTO holiday (holidate,dayname) VALUES('"
-			+ vdate + "','"+ vname
-			+ "');SELECT * FROM holiday ORDER BY holidate;"
-
-	if (!vdate || !vname) { return }
-
-	let response = await postData(MYSQLIPHP, sql)
-	if (typeof response === "object") {
-		gv.HOLIDAY = response
-		holidayInputBack($("#holidateth").closest("tr"))
-		fillHoliday($("#holidaytbl"))
-		$(rows).each(function() {
-			this.cells[DIAGNOSIS].style.backgroundImage = holiday(vdate)
-		})
-	} else {
-		alert(response)
 	}
 }
 
@@ -649,121 +633,94 @@ async function delHoliday(that)
 	}
 }
 
-function getHolidayEng(vname) {
-	return Object.keys(HOLIDAYENGTHAI).find(function(key) {
-		return HOLIDAYENGTHAI[key] === vname
-	})
+async function saveHoliday()
+{
+	let	vdateth = document.getElementById("holidateth").value,
+		vdate = vdateth.numDate(),
+		vname = document.getElementById("holidayname").value,
+		rows = getTableRowsByDate(vdateth),
+
+		sql = "sqlReturnData="
+			+ "INSERT INTO holiday (holidate,dayname) VALUES('"
+			+ vdate + "','"+ vname
+			+ "');SELECT * FROM holiday ORDER BY holidate;"
+
+	if (!vdate || !vname) { return }
+
+	let response = await postData(MYSQLIPHP, sql)
+	if (typeof response === "object") {
+		gv.HOLIDAY = response
+		holidayInputBack($("#holidateth").closest("tr"))
+		fillHoliday($("#holidaytbl"))
+		$("#buttonHoliday").hide()
+		$(rows).each(function() {
+			this.cells[DIAGNOSIS].style.backgroundImage = holiday(vdate)
+		})
+	} else {
+		alert(response)
+	}
 }
 
+function getHolidayEng(vname) {
+	return Object.keys(HOLIDAYENGTHAI).find(key => HOLIDAYENGTHAI[key] === vname)
+}
+
+// Have to move $inputRow back and forth because datepicker is sticked to #holidateth
 function holidayInputBack($inputRow)
 {
 	$("#holidateth").val("")
 	$("#holidayname").val("")
-	$('#holidayinput tbody').append($inputRow)
+	$('#holidayInput tbody').append($inputRow)
 }
 
 function holiday(date)
 {
-	let	monthdate = date.substring(5),
+	if (date === LARGESTDATE) { return }
+
+	let holiday = gv.HOLIDAY.find(day => day.holidate === date)
+	if (holiday) {
+		return `url('css/pic/holiday/${holiday.dayname}.png')`
+	}
+
+	// Thai official holiday & Compensation
+	const monthdate = date.substring(5),
 		dayofweek = (new Date(date)).getDay(),
-		holidayname = "",
 		Mon = (dayofweek === 1),
 		Tue = (dayofweek === 2),
 		Wed = (dayofweek === 3),
-		holiday = gv.HOLIDAY.find(function(day) {
-			return day.holidate === date
-		})
+		Thai = {
+			"12-31": "Yearend",
+			"01-01": "Newyear",
+			"01-02": (Mon || Tue) && "Yearendsub",
+			"01-03": (Mon || Tue) && "Newyearsub",
+			"04-06": "Chakri",
+			"04-07": Mon && "Chakrisub",
+			"04-08": Mon && "Chakrisub",
+			"04-13": "Songkran",
+			"04-14": "Songkran",
+			"04-15": "Songkran",
+			"04-16": (Mon || Tue || Wed) && "Songkransub",
+			"04-17": (Mon || Tue || Wed) && "Songkransub",
+			"07-28": "King10",
+			"07-29": Mon && "King10sub",
+			"07-30": Mon && "King10sub",
+			"08-12": "Queen",
+			"08-13": Mon && "Queensub",
+			"08-14": Mon && "Queensub",
+			"10-13": "King09",
+			"10-14": Mon && "King09sub",
+			"10-15": Mon && "King09sub",
+			"10-23": "Piya",
+			"10-24": Mon && "Piyasub",
+			"10-25": Mon && "Piyasub",
+			"12-05": "King9",
+			"12-06": Mon && "King9sub",
+			"12-07": Mon && "King9sub",
+			"12-10": "Constitution",
+			"12-11": Mon && "Constitutionsub",
+			"12-12": Mon && "Constitutionsub"
+		},
+		geturl = (dayname) => "url('css/pic/holiday/" + dayname + ".png')"
 
-	if (date === LARGESTDATE) { return }
-	if (holiday) {
-		return "url('css/pic/holiday/" + holiday.dayname + ".png')"
-	}
-
-	switch (monthdate)
-	{
-	case "12-31":
-		holidayname = "url('css/pic/holiday/Yearend.png')"
-		break
-	case "01-01":
-		holidayname = "url('css/pic/holiday/Newyear.png')"
-		break
-	case "01-02":
-		if (Mon || Tue)
-			holidayname = "url('css/pic/holiday/Yearendsub.png')"
-		break
-	case "01-03":
-		if (Mon || Tue)
-			holidayname = "url('css/pic/holiday/Newyearsub.png')"
-		break
-	case "04-06":
-		holidayname = "url('css/pic/holiday/Chakri.png')"
-		break
-	case "04-07":
-	case "04-08":
-		if (Mon)
-			holidayname = "url('css/pic/holiday/Chakrisub.png')"
-		break
-	case "04-13":
-	case "04-14":
-	case "04-15":
-		holidayname = "url('css/pic/holiday/Songkran.png')"
-		break
-	case "04-16":
-		if (Mon || Tue)
-			holidayname = "url('css/pic/holiday/Songkransub.png')"
-		break
-	case "04-17":
-		if (Mon || Wed)
-			holidayname = "url('css/pic/holiday/Songkransub.png')"
-		break
-	case "07-28":
-		holidayname = "url('css/pic/holiday/King10.png')"
-		break
-	case "07-29":
-	case "07-30":
-		if (Mon)
-			holidayname = "url('css/pic/holiday/King10sub.png')"
-		break
-	case "08-12":
-		holidayname = "url('css/pic/holiday/Queen.png')"
-		break
-	case "08-13":
-	case "08-14":
-		if (Mon)
-			holidayname = "url('css/pic/holiday/Queensub.png')"
-		break
-	case "10-13":
-		holidayname = "url('css/pic/holiday/King09.png')"
-		break
-	case "10-14":
-	case "10-15":
-		if (Mon)
-			holidayname = "url('css/pic/holiday/King09sub.png')"
-		break
-	case "10-23":
-		holidayname = "url('css/pic/holiday/Piya.png')"
-		break
-	case "10-24":
-	case "10-25":
-		if (Mon)
-			holidayname = "url('css/pic/holiday/Piyasub.png')"
-		break
-	case "12-05":
-		holidayname = "url('css/pic/holiday/King9.png')"
-		break
-	case "12-06":
-	case "12-07":
-		if (Mon)
-			holidayname = "url('css/pic/holiday/King9sub.png')"
-		break
-	case "12-10":
-		holidayname = "url('css/pic/holiday/Constitution.png')"
-		break
-	case "12-11":
-	case "12-12":
-		if (Mon)
-			holidayname = "url('css/pic/holiday/Constitutionsub.png')"
-		break
-	}
-	return holidayname
+	return Thai[monthdate] && geturl(Thai[monthdate])
 }

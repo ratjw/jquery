@@ -1156,69 +1156,69 @@ function isConsultsTbl() {
 let holiday = function (date) {
 	// Buddhist holiday and compensation for religious day on weekend
 	let Buddhist = {
-		"2018-03-01" : "url('css/pic/Magha.jpg')",
-		"2018-05-09" : "url('css/pic/Ploughing.jpg')",
-		"2018-05-29" : "url('css/pic/Vesak.jpg')",
-		"2018-07-27" : "url('css/pic/Asalha.jpg')",
-		"2018-07-28" : "url('css/pic/Vassa.jpg')"		// delete trailing comma
-//		"2019-02-19" : "url('css/pic/Magha.jpg')",
-//		"2019-05-13" : "url('css/pic/Ploughing.jpg')",
-//		"2019-05-18" : "url('css/pic/Vesak.jpg')",
-//		"2019-05-20" : "url('css/pic/Vesaksub.jpg')",
-//		"2019-07-16" : "url('css/pic/Asalha.jpg')",
-//		"2019-07-17" : "url('css/pic/Vassa.jpg')",
-//		"2020-02-08" : "url('css/pic/Magha.jpg')",
-//		"2020-02-10" : "url('css/pic/Maghasub.jpg')",	// หยุดชดเชยวันมาฆบูชา
-//		"2020-05-06" : "url('css/pic/Vesak.jpg')",
-//		"2020-05-13" : "url('css/pic/Ploughing.jpg')",
-//		"2020-07-04" : "url('css/pic/Asalha.jpg')",
-//		"2020-07-05" : "url('css/pic/Vassa.jpg')",
-//		"2020-07-06" : "url('css/pic/Asalhasub.jpg')",	// หยุดชดเชยวันอาสาฬหบูชา
-//		"2020-07-07" : "url('css/pic/Vassasub.jpg')",
-//		"2021-02-25" : "url('css/pic/Magha.jpg')",
-//		"2021-05-13" : "url('css/pic/Ploughing.jpg')",
-//		"2021-05-25" : "url('css/pic/Vesak.jpg')",
-//		"2021-07-23" : "url('css/pic/Asalha.jpg')",
-//		"2021-07-24" : "url('css/pic/Vassa.jpg')",
-//		"2021-07-26" : "url('css/pic/Vassasub.jpg')",	// หยุดชดเชยวันเข้าพรรษา
-//		"2022-02-15" : "url('css/pic/Magha.jpg')",		// วันมาฆบูชา
-//		"2022-05-13" : "url('css/pic/Ploughing.jpg')",	// วันพืชมงคล
-//		"2022-05-14" : "url('css/pic/Vesak.jpg')",		// วันวิสาขบูชา
-//		"2022-05-16" : "url('css/pic/Vesaksub.jpg')",	// หยุดชดเชยวันวิสาขบูชา
-//		"2022-07-12" : "url('css/pic/Asalha.jpg')",		// วันอาสาฬหบูชา
-//		"2022-07-13" : "url('css/pic/Vassa.jpg')",		// วันเข้าพรรษา
-//		"2023-03-05" : "url('css/pic/Magha.jpg')",
-//		"2023-03-06" : "url('css/pic/Maghasub.jpg')",
-//		"2023-05-13" : "url('css/pic/Ploughing.jpg')",	// วันพืชมงคล???
-//		"2023-06-02" : "url('css/pic/Vesak.jpg')",
-//		"2023-07-31" : "url('css/pic/Asalha.jpg')",
-//		"2023-08-01" : "url('css/pic/Vassa.jpg')",
-//		"2024-02-24" : "url('css/pic/Magha.jpg')",
-//		"2024-05-13" : "url('css/pic/Ploughing.jpg')",	// วันพืชมงคล???
-//		"2024-05-22" : "url('css/pic/Vesak.jpg')",
-//		"2024-07-20" : "url('css/pic/Asalha.jpg')",
-//		"2024-07-21" : "url('css/pic/Vassa.jpg')",
-//		"2024-07-22" : "url('css/pic/Asalhasub.jpg')",
-//		"2024-07-23" : "url('css/pic/Vassasub.jpg')",
-//		"2025-02-12" : "url('css/pic/Magha.jpg')",
-//		"2025-05-11" : "url('css/pic/Vesak.jpg')",
-//		"2025-05-12" : "url('css/pic/Vesaksub.jpg')",
-//		"2025-05-13" : "url('css/pic/Ploughing.jpg')",	// วันพืชมงคล???
-//		"2025-07-10" : "url('css/pic/Asalha.jpg')",
-//		"2025-07-11" : "url('css/pic/Vassa.jpg')",
-//		"2026-03-03" : "url('css/pic/Magha.jpg')",
-//		"2026-05-13" : "url('css/pic/Ploughing.jpg')",	// วันพืชมงคล???
-//		"2026-05-31" : "url('css/pic/Vesak.jpg')",
-//		"2026-06-01" : "url('css/pic/Vesaksub.jpg')",
-//		"2026-07-29" : "url('css/pic/Asalha.jpg')",
-//		"2026-07-30" : "url('css/pic/Vassa.jpg')",
-//		"2027-02-21" : "url('css/pic/Magha.jpg')",
-//		"2027-02-22" : "url('css/pic/Maghasub.jpg')",
-//		"2027-05-13" : "url('css/pic/Ploughing.jpg')",	// วันพืชมงคล???
-//		"2027-05-20" : "url('css/pic/Vesak.jpg')",
-//		"2027-07-18" : "url('css/pic/Asalha.jpg')",
-//		"2027-07-19" : "url('css/pic/Vassa.jpg')",
-//		"2027-07-20" : "url('css/pic/Asalhasub.jpg')"
+		"2018-03-01" : "url('css/pic/holiday/Magha.png')",
+		"2018-05-09" : "url('css/pic/holiday/Ploughing.png')",
+		"2018-05-29" : "url('css/pic/holiday/Vesak.png')",
+		"2018-07-27" : "url('css/pic/holiday/Asalha.png')",
+		"2018-07-28" : "url('css/pic/holiday/Vassa.png')"		// delete trailing comma
+//		"2019-02-19" : "url('css/pic/holiday/Magha.png')",
+//		"2019-05-13" : "url('css/pic/holiday/Ploughing.png')",
+//		"2019-05-18" : "url('css/pic/holiday/Vesak.png')",
+//		"2019-05-20" : "url('css/pic/holiday/Vesaksub.png')",
+//		"2019-07-16" : "url('css/pic/holiday/Asalha.png')",
+//		"2019-07-17" : "url('css/pic/holiday/Vassa.png')",
+//		"2020-02-08" : "url('css/pic/holiday/Magha.png')",
+//		"2020-02-10" : "url('css/pic/holiday/Maghasub.png')",	// หยุดชดเชยวันมาฆบูชา
+//		"2020-05-06" : "url('css/pic/holiday/Vesak.png')",
+//		"2020-05-13" : "url('css/pic/holiday/Ploughing.png')",
+//		"2020-07-04" : "url('css/pic/holiday/Asalha.png')",
+//		"2020-07-05" : "url('css/pic/holiday/Vassa.png')",
+//		"2020-07-06" : "url('css/pic/holiday/Asalhasub.png')",	// หยุดชดเชยวันอาสาฬหบูชา
+//		"2020-07-07" : "url('css/pic/holiday/Vassasub.png')",
+//		"2021-02-25" : "url('css/pic/holiday/Magha.png')",
+//		"2021-05-13" : "url('css/pic/holiday/Ploughing.png')",
+//		"2021-05-25" : "url('css/pic/holiday/Vesak.png')",
+//		"2021-07-23" : "url('css/pic/holiday/Asalha.png')",
+//		"2021-07-24" : "url('css/pic/holiday/Vassa.png')",
+//		"2021-07-26" : "url('css/pic/holiday/Vassasub.png')",	// หยุดชดเชยวันเข้าพรรษา
+//		"2022-02-15" : "url('css/pic/holiday/Magha.png')",		// วันมาฆบูชา
+//		"2022-05-13" : "url('css/pic/holiday/Ploughing.png')",	// วันพืชมงคล
+//		"2022-05-14" : "url('css/pic/holiday/Vesak.png')",		// วันวิสาขบูชา
+//		"2022-05-16" : "url('css/pic/holiday/Vesaksub.png')",	// หยุดชดเชยวันวิสาขบูชา
+//		"2022-07-12" : "url('css/pic/holiday/Asalha.png')",		// วันอาสาฬหบูชา
+//		"2022-07-13" : "url('css/pic/holiday/Vassa.png')",		// วันเข้าพรรษา
+//		"2023-03-05" : "url('css/pic/holiday/Magha.png')",
+//		"2023-03-06" : "url('css/pic/holiday/Maghasub.png')",
+//		"2023-05-13" : "url('css/pic/holiday/Ploughing.png')",	// วันพืชมงคล???
+//		"2023-06-02" : "url('css/pic/holiday/Vesak.png')",
+//		"2023-07-31" : "url('css/pic/holiday/Asalha.png')",
+//		"2023-08-01" : "url('css/pic/holiday/Vassa.png')",
+//		"2024-02-24" : "url('css/pic/holiday/Magha.png')",
+//		"2024-05-13" : "url('css/pic/holiday/Ploughing.png')",	// วันพืชมงคล???
+//		"2024-05-22" : "url('css/pic/holiday/Vesak.png')",
+//		"2024-07-20" : "url('css/pic/holiday/Asalha.png')",
+//		"2024-07-21" : "url('css/pic/holiday/Vassa.png')",
+//		"2024-07-22" : "url('css/pic/holiday/Asalhasub.png')",
+//		"2024-07-23" : "url('css/pic/holiday/Vassasub.png')",
+//		"2025-02-12" : "url('css/pic/holiday/Magha.png')",
+//		"2025-05-11" : "url('css/pic/holiday/Vesak.png')",
+//		"2025-05-12" : "url('css/pic/holiday/Vesaksub.png')",
+//		"2025-05-13" : "url('css/pic/holiday/Ploughing.png')",	// วันพืชมงคล???
+//		"2025-07-10" : "url('css/pic/holiday/Asalha.png')",
+//		"2025-07-11" : "url('css/pic/holiday/Vassa.png')",
+//		"2026-03-03" : "url('css/pic/holiday/Magha.png')",
+//		"2026-05-13" : "url('css/pic/holiday/Ploughing.png')",	// วันพืชมงคล???
+//		"2026-05-31" : "url('css/pic/holiday/Vesak.png')",
+//		"2026-06-01" : "url('css/pic/holiday/Vesaksub.png')",
+//		"2026-07-29" : "url('css/pic/holiday/Asalha.png')",
+//		"2026-07-30" : "url('css/pic/holiday/Vassa.png')",
+//		"2027-02-21" : "url('css/pic/holiday/Magha.png')",
+//		"2027-02-22" : "url('css/pic/holiday/Maghasub.png')",
+//		"2027-05-13" : "url('css/pic/holiday/Ploughing.png')",	// วันพืชมงคล???
+//		"2027-05-20" : "url('css/pic/holiday/Vesak.png')",
+//		"2027-07-18" : "url('css/pic/holiday/Asalha.png')",
+//		"2027-07-19" : "url('css/pic/holiday/Vassa.png')",
+//		"2027-07-20" : "url('css/pic/holiday/Asalhasub.png')"
 	}
 
 	let monthdate = date.substring(5),
@@ -1229,38 +1229,38 @@ let holiday = function (date) {
 
 	// Thai official holiday & Compensation
 	Thai = {
-		"12-31": () => geturl("Yearend"),
-		"01-01": () => geturl("Newyear"),
-		"01-02": () => (Mon || Tue) && geturl("Yearendsub"),
-		"01-03": () => (Mon || Tue) && geturl("Newyearsub"),
-		"04-06": () => geturl("Chakri"),
-		"04-07": () => Mon && geturl("Chakrisub"),
-		"04-08": () => Mon && geturl("Chakrisub"),
-		"04-13": () => geturl("Songkran"),
-		"04-14": () => geturl("Songkran"),
-		"04-15": () => geturl("Songkran"),
-		"04-16": () => (Mon || Tue || Wed) && geturl("Songkransub"),
-		"04-17": () => (Mon || Tue || Wed) && geturl("Songkransub"),
-		"07-28": () => geturl("King10"),
-		"07-29": () => Mon && geturl("King10sub"),
-		"07-30": () => Mon && geturl("King10sub"),
-		"08-12": () => geturl("Queen"),
-		"08-13": () => Mon && geturl("Queensub"),
-		"08-14": () => Mon && geturl("Queensub"),
-		"10-13": () => geturl("King09"),
-		"10-14": () => Mon && geturl("King09sub"),
-		"10-15": () => Mon && geturl("King09sub"),
-		"10-23": () => geturl("Piya"),
-		"10-24": () => Mon && geturl("Piyasub"),
-		"10-25": () => Mon && geturl("Piyasub"),
-		"12-05": () => geturl("King9"),
-		"12-06": () => Mon && geturl("Kingsub"),
-		"12-07": () => Mon && geturl("Kingsub"),
-		"12-10": () => geturl("Constitution"),
-		"12-11": () => Mon && geturl("Constitutionsub"),
-		"12-12": () => Mon && geturl("Constitutionsub")
+		"12-31": "Yearend",
+		"01-01": "Newyear",
+		"01-02": (Mon || Tue) && "Yearendsub",
+		"01-03": (Mon || Tue) && "Newyearsub",
+		"04-06": "Chakri",
+		"04-07": Mon && "Chakrisub",
+		"04-08": Mon && "Chakrisub",
+		"04-13": "Songkran",
+		"04-14": "Songkran",
+		"04-15": "Songkran",
+		"04-16": (Mon || Tue || Wed) && "Songkransub",
+		"04-17": (Mon || Tue || Wed) && "Songkransub",
+		"07-28": "King10",
+		"07-29": Mon && "King10sub",
+		"07-30": Mon && "King10sub",
+		"08-12": "Queen",
+		"08-13": Mon && "Queensub",
+		"08-14": Mon && "Queensub",
+		"10-13": "King09",
+		"10-14": Mon && "King09sub",
+		"10-15": Mon && "King09sub",
+		"10-23": "Piya",
+		"10-24": Mon && "Piyasub",
+		"10-25": Mon && "Piyasub",
+		"12-05": "King9",
+		"12-06": Mon && "King9sub",
+		"12-07": Mon && "King9sub",
+		"12-10": "Constitution",
+		"12-11": Mon && "Constitutionsub",
+		"12-12": Mon && "Constitutionsub"
 	},
-	geturl = (dayname) => "url('css/pic/" + dayname + ".jpg')"
+	geturl = (dayname) => "url('css/pic/holiday/" + dayname + ".png')"
 
 	return Buddhist[date] || Thai[monthdate] && Thai[monthdate]()
 }

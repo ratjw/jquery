@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <!--meta name="viewport" content="width=1024"-->
 
-<link href="html/manifest.json" rel="manifest">
+<link href="manifest.json" rel="manifest">
 <style>
 #logo { text-align:center; }
 

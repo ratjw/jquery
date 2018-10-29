@@ -222,7 +222,7 @@ td img {
 #staffcells,
 #dialogHoliday,
 #holidaycells,
-#holidayinput,
+#holidayInput,
 #capture,
 #dialogNotify,
 .ui-datepicker-year {
@@ -276,9 +276,6 @@ tr#moveto td {
 	padding-bottom: 15px;	
 	border-left: 0px;
 }
-
-#addholiday,
-.delholiday { float: right; }
 
 .leftButton { margin-right: 80px !important; }
 .deleted,
@@ -364,14 +361,6 @@ td.camera2 { background-image: url(pic/general/camera2.png); }
 .Morbidity { background-color: #AAAACC !important; }
 .Dead { background-color: #AAAAAA !important; }
 
-.fixed{
-	top: 0;
-	position: fixed;
-	width: auto;
-	display: none;
-	border: none;
-}
-
 .ui-sortable-helper {
 	display: table;
 }
@@ -429,6 +418,13 @@ td.camera2 { background-image: url(pic/general/camera2.png); }
 	padding: 0px;
 	margin: 0px;
 	border: 0px;
+}
+
+.fixed{
+	position: fixed;
+	width: auto;
+	display: none;
+	border: none;
 }
 
 .floatleft { float: left;}
@@ -503,10 +499,6 @@ td.camera2 { background-image: url(pic/general/camera2.png); }
 	background-color: snow;
 }
 
-#servicetbl td:first-child {
-	text-align: center;
-}
-
 #servicehead {
 	width: auto;
 	text-align: center;
@@ -517,6 +509,21 @@ td.camera2 { background-image: url(pic/general/camera2.png); }
 	border: solid 1px white;
 	width: 170px;
 	padding: 2px 10px;
+}
+/*
+#servicetbl tbody{
+  display: block;
+  overflow: auto;
+  height: auto;
+  width: 100%;
+}
+
+#servicetbl thead tr{
+  display: block;
+}
+*/
+#servicetbl td:first-child {
+	text-align: center;
 }
 
 #servicetbl td.serviceStaff {
@@ -556,7 +563,9 @@ td.camera2 { background-image: url(pic/general/camera2.png); }
 	width: 110px;
 }
 
+
 #staffmenu {
+	width: 100px;
 	box-shadow: 10px 20px 30px slategray;
 }
 
@@ -568,64 +577,6 @@ td.camera2 { background-image: url(pic/general/camera2.png); }
 #delcase {
 	width: 170px;
 	white-space: nowrap;
-}
-
-#staffmenu { width: 100px; }
-
-#dialogEquip {
-	font-size: 14px;
-	color: black;
-	background-color: white;
-}
-
-#oproom,
-#casenum,
-#optime,
-#opdate,
-#staffname { font-size: 16px; font-weight: bold; }
-
-#dialogEquip input[type=radio] + label,
-#dialogEquip input[type=checkbox] + label {
-	color: #999999;
-}
-#dialogEquip input[type=radio]:checked + label,
-#dialogEquip input[type=checkbox]:checked + label {
-	color: black;
-	font-weight: bold;
-}
-#dialogEquip input[type=text] {
-	border: 0;
-	outline: 0;
-	background: transparent;
-	border-bottom: 1px dashed gray;
-	color: blue;
-	font-weight: bold;
-}
-#dialogEquip textarea {
-	width: 500px;
-	height: 55px;
-	padding: 2px;
-	color: blue;
-	font-weight: bold;
-}
-#editedby {
-	position: absolute;
-}
-
-#dialogNotify textarea {
-	height: 190px;
-	padding: 7px;
-	font-size: 14px;
-}
-#buttonLINE {
-	width: 50px;
-	height: 50px;
-	background-image: url(pic/general/message.png);
-	background-size: 50px;
-	border: 1px solid lightblue;
-}
-#buttonLINE:hover {
-	border: 2px solid lightblue;
 }
 
 .divRecord {
@@ -712,6 +663,66 @@ td.camera2 { background-image: url(pic/general/camera2.png); }
 
 #Grand {
 	background-color: Turquoise;
+}
+
+#dialogEquip {
+	font-size: 14px;
+	color: black;
+	background-color: white;
+}
+
+#oproom,
+#casenum,
+#optime,
+#opdate,
+#staffname { font-size: 16px; font-weight: bold; }
+
+#dialogEquip input[type=radio] + label,
+#dialogEquip input[type=checkbox] + label {
+	color: #999999;
+}
+#dialogEquip input[type=radio]:checked + label,
+#dialogEquip input[type=checkbox]:checked + label {
+	color: black;
+	font-weight: bold;
+}
+#dialogEquip input[type=text] {
+	border: 0;
+	outline: 0;
+	background: transparent;
+	border-bottom: 1px dashed gray;
+	color: blue;
+	font-weight: bold;
+}
+#dialogEquip textarea {
+	width: 500px;
+	height: 55px;
+	padding: 2px;
+	color: blue;
+	font-weight: bold;
+}
+#editedby {
+	position: absolute;
+}
+
+#dialogHoliday table td {
+	padding: 0 10px;
+}
+
+#dialogNotify textarea {
+	height: 190px;
+	padding: 7px;
+	font-size: 14px;
+}
+#buttonLINE {
+	width: 50px;
+	height: 50px;
+	background-image: url(pic/general/message.png);
+	background-size: 50px;
+	border: 1px solid lightblue;
+}
+#buttonLINE:hover {
+	border: 2px solid lightblue;
 }
 
 #dialogReadme {

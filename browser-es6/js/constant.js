@@ -18,7 +18,7 @@ let gv = {
 }
 
 const GETIPD = "php/getipd.php", 
-GETUSERIDPHP = "php/getuserid.php",
+GETUSERID 	= "php/getuserid.php",
 GETNAMEHN	= "php/getnamehn.php",
 MYSQLIPHP	= "php/mysqli.php",
 SEARCH		= "php/search.php",
@@ -104,7 +104,9 @@ HOLIDAYENGTHAI = {
 	"Asalha": "วันอาสาฬหบูชา",
 	"Asalhasub": "ชดเชยวันอาสาฬหบูชา",
 	"Vassa": "วันเข้าพรรษา",
-	"Vassasub": "ชดเชยวันเข้าพรรษา"
+	"Vassasub": "ชดเชยวันเข้าพรรษา",
+	"special": "วันหยุดพิเศษ",
+	"no": "ไม่หยุด"
 },
 
 //===========================================================================================
