@@ -180,7 +180,7 @@ function showService(fromDate, toDate)
 			$servicecells.find("tr").clone()
 				.appendTo($servicetbl.find("tbody"))
 					.children("td").eq(CASENUMSV)
-						.prop("colSpan", 10)
+						.prop("colSpan", QNSV)
 							.addClass("serviceStaff")
 								.html(staffname)
 									.siblings().hide()
@@ -210,6 +210,7 @@ function showService(fromDate, toDate)
 				savePreviousCellService()
 			}
 			clearEditcell()
+			clearSelection()
 		}
 	})
 	

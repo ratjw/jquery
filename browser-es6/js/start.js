@@ -78,7 +78,6 @@ function editcellEvent()
     let keyCode = event.which || window.event.keyCode
     let pointing = $editcell.data("pointing")
 
-    event.preventDefault()
     if ($('#dialogService').is(':visible')) {
       Skeyin(event, keyCode, pointing)
     } else {
@@ -515,11 +514,11 @@ async function getUpdate()
   }
 }
 
-// idling every 6*10 = 1 minute, clear editing setup
+// idling every 6*10 = 1 minute, refillall
 // idling (59+1)*10 = 10 minutes, logout
 function onIdling()
 {
-    if (!(gv.idleCounter % 6)) {
+    if (gv.idleCounter && !(gv.idleCounter % 6)) {
       clearAllEditing()
       refillstaffqueue()
       refillall()
