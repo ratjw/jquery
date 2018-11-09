@@ -28,6 +28,7 @@
 <script src="js/start.js"></script>
 
 </HEAD>
+<BODY onload="Start()">
 
 <table id="capture">
     <tbody>
