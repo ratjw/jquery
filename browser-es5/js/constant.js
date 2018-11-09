@@ -18,7 +18,8 @@ var gv = {
 },
 
 //Actually these are constants but older browsers do not support const
-GETIPD	= "php/getipd.php",
+GETUSERID	= "php/getuserid.php",
+GETIPD		= "php/getipd.php",
 GETNAMEHN	= "php/getnamehn.php",
 MYSQLIPHP	= "php/mysqli.php",
 SEARCH		= "php/search.php",

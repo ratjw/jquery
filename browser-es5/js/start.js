@@ -1,41 +1,41 @@
 
-function Start(userid)
+function Start()
 {
-//  if ('serviceWorker' in navigator) {
-//    navigator.serviceWorker.register('service-worker.js')
-//  }
+  Ajax(GETUSERID, "", checkid)
 
-  if (!/^\d{6}$/.test(userid)) { return }
+  function checkid(response) {
+    if (!/^\d{6}$/.test(response)) { return }
 
-  Ajax(MYSQLIPHP, "start=start", loading);
+    Ajax(MYSQLIPHP, "start=start", loading);
 
-  gv.user = userid
-  $("#wrapper").show()
-  $("#tblcontainer").css("height", window.innerHeight - $("#cssmenu").height())
-
-  function loading(response)
-  {
-    if (typeof response !== "object") { response = "{}" }
-    updateBOOK(response)
-
-    // call sortable before render, otherwise, rendering is very slow
-    sortable()
-
-    // make the document editable
-    editcellEvent()
-    wrapperEvent()
-    documentEvent()
-
-    // rendering
-    fillupstart()
-    setStafflist()
-    fillConsults()
-
-    disableOneRowMenu()
-    disableExcelLINE()
-    overrideJqueryUI()
-    resetTimer()
+    gv.user = response
+    $("#wrapper").show()
+    $("#tblcontainer").css("height", window.innerHeight - $("#cssmenu").height())
   }
+}
+
+function loading(response)
+{
+  if (typeof response !== "object") { response = "{}" }
+  updateBOOK(response)
+
+  // call sortable before render, otherwise, rendering is very slow
+  sortable()
+
+  // make the document editable
+  editcellEvent()
+  wrapperEvent()
+  documentEvent()
+
+  // rendering
+  fillupstart()
+  setStafflist()
+  fillConsults()
+
+  disableOneRowMenu()
+  disableExcelLINE()
+  overrideJqueryUI()
+  resetTimer()
 }
 
 function updateBOOK(response)

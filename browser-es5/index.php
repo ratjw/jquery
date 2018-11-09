@@ -1,10 +1,3 @@
-
-<?php
-	session_start();
-
-	$userid = !empty($_SESSION['userid']) ? $_SESSION['userid'] : '';
-?>
-
 <!DOCTYPE html>
 <HTML>
 <HEAD>
@@ -35,7 +28,6 @@
 <script src="js/start.js"></script>
 
 </HEAD>
-<BODY onload="Start('<?php echo $userid ?>')">
 
 <table id="capture">
     <tbody>
