@@ -37,10 +37,6 @@ function fillEquipTable(book, $row, qn)
 		modal: true,
 		width: 750,
 		height: height > 1000 ? 1000 : height,
-		open: function(event, ui) {
-			//disable default autofocus on text input
-			$("input").blur()
-		},
 		close: function(event, ui) {
 			$row.removeClass("marker")
 		}
@@ -98,12 +94,12 @@ function showEditableEquip()
 			text: "Save",
 			width: "100",
 			click: function () {
-				if (!$('#copay').val()) {
+				if ($('#copay').val()) {
+					Checklistequip()
+					showNonEditableEquip()
+				} else {
 					Alert("Checklistequip", "<br>ต้องระบุจำนวนเงิน<br>จ่ายไม่ได้เลย = 0")
-					return
 				}
-				Checklistequip()
-				showNonEditableEquip()
 			}
 		},
 		{

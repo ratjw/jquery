@@ -68,7 +68,7 @@ function check() {
     "use strict";
 
     if (typeof fetch === "undefined") return false;
-//    if (typeof find === "undefined") return false;
+    if (typeof find === "undefined") return false;
     try {
         eval("class Foo {}");
         eval("var bar = async (x) => x+1");

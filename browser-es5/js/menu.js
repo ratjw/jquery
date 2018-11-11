@@ -25,11 +25,11 @@ function oneRowMenu()
 
 	enable(qn, "#history")
 
-	var Devare = qn || (prevDate === opdateth)
-	if (Devare) {
-		$("#delcase").html("<b>Confirm Devare </b><br>" + patient)
+	var Delete = qn || (prevDate === opdateth)
+	if (Delete) {
+		$("#delcase").html("<b>Confirm delete </b><br>" + patient)
 	}
-	enable(Devare, "#devare")
+	enable(Delete, "#delete")
 
 	enable(true, "#EXCEL")
 
@@ -38,7 +38,7 @@ function oneRowMenu()
 
 function disableOneRowMenu()
 {
-	var ids = ["#addrow", "#postpone", "#changedate", "#history", "#devare"]
+	var ids = ["#addrow", "#postpone", "#changedate", "#history", "#delete"]
 
 	ids.forEach(function(each) {
 		enable(false, each)
@@ -266,7 +266,7 @@ function clearMouseoverTR()
 	$(".changeDate").removeClass("changeDate")
 }
 
-// not actually devare the case but set devared = 1
+// not actually delete the case but set deleted = 1
 function delCase()
 {
 	var	$selected = $(".selected"),
@@ -281,7 +281,7 @@ function delCase()
 		oproom = $cell.eq(OPROOM).html(),
 		allCases, index,
 		sql = "sqlReturnbook=UPDATE book SET "
-			+ "devared=1, "
+			+ "deleted=1, "
 			+ "editor = '" + gv.user
 			+ "' WHERE qn="+ qn + ";"
 
@@ -297,11 +297,11 @@ function delCase()
 		sql += updateCasenum(allCases)
 	}
 
-	Ajax(MYSQLIPHP, sql, callbackdevarerow)
+	Ajax(MYSQLIPHP, sql, callbackdeleterow)
 
     clearSelection()
 
-	function callbackdevarerow(response)
+	function callbackdeleterow(response)
 	{
 		if (typeof response === "object") {
 			updateBOOK(response)
@@ -313,7 +313,7 @@ function delCase()
 				}
 			} else {
 				if (isConsults()) {
-					devareRow($row, opdate)
+					deleteRow($row, opdate)
 				} else {
 					$row.remove()
 				}
@@ -325,7 +325,7 @@ function delCase()
 	}
 }
 
-function devareRow($row, opdate)
+function deleteRow($row, opdate)
 {
 	var prevDate = $row.prev().children("td").eq(OPDATE).html()
 	var nextDate = $row.next().children("td").eq(OPDATE).html()

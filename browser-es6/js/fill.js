@@ -720,7 +720,7 @@ function holiday(date)
 			"12-11": Mon && "Constitutionsub",
 			"12-12": Mon && "Constitutionsub"
 		},
-		geturl = (dayname) => "url('css/pic/holiday/" + dayname + ".png')"
+		geturl = (dayname) => `url('css/pic/holiday/${dayname}.png')`
 
 	return Thai[monthdate] && geturl(Thai[monthdate])
 }

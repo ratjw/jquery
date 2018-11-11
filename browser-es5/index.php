@@ -75,12 +75,7 @@
      </ul>
     </li>
     <li class='floatright'><a href='javascript:readme()'><span>Readme</span></a></li>
-    <li class='floatright hassub'><a nohref><span>Setting</span></a>
-     <ul class='w120'>
-      <li><a href='javascript:addStaff()'><span>Staff Setting</span></a></li>
-      <li><a href='javascript:setHoliday()'><span>Holiday Setting</span></a></li>
-     </ul>
-    </li>
+    <li class='floatright'><a href='javascript:addStaff()'><span>Staff Setting</span></a></li>
     <li id="addrow"><a href='javascript:addnewrow()'><span>Add</span></a></li>
     <li id="postpone">
      <a nohref><span>Postpone</span></a>
@@ -594,22 +589,19 @@
 </table>
 
 <div id="dialogStaff">
-  <table id="stafftbl">
+ <table id="stafftbl">
   <thead>
 	<tr>
-	 <td>Name : <input type="text" id="sname" size="10">
+	 <td>Name : <input type="text" id="sname" size="10"></td>
+	 <td>Specialty : <select id="scbb"><option style="display:none"></option></select></td>
+	 <td>Date Oncall : <input type="text" id="sdate" size="10" readonly >
+	  <input id="shidden" type="hidden" >
 	 </td>
-	 <td>Specialty : <select id="scbb"><option style="display:none"></option>
-		</select>
-	 </td>
-	 <td>Date Oncall : <input type="text" id="sdate" size="10" readonly>
-	 </td>
-	 <input id="shidden" type="hidden">
 	</tr>
 	<tr>
-	<td><button onClick=doadddata()>AddStaff</button></td>
-	<td><button onClick=doupdatedata()>UpdateStaff</button></td>
-	<td><button onClick=dodeletedata()>DeleteStaff</button></td>
+	 <td><button onClick="doadddata()">AddStaff</button></td>
+	 <td><button onClick="doupdatedata()">UpdateStaff</button></td>
+	 <td><button onClick="dodeletedata()">DeleteStaff</button></td>
 	</tr>
    <tr>
 	<th>Staff</th>
@@ -619,7 +611,7 @@
   </thead>
   <tbody>
   </tbody>
-  </table>
+ </table>
 </div>
 
 <table id="staffcells">
@@ -629,45 +621,6 @@
     <td data-title="Specialty"></td>
     <td data-title="Start Date Oncall"></td>
    </tr>
-  </tbody>
-</table>
-
-<div id="dialogHoliday">
-  <table id="holidaytbl">
-  <thead>
-   <tr>
-	<th>Date</th>
-	<th>Holiday Name
-	 <button id="addholiday" onClick=addHoliday(this)>+</button>
-	</th>
-   </tr>
-  </thead>
-  <tbody>
-  </tbody>
-  </table>
-</div>
-
-<table id="holidaycells">
-  <tbody>
-	<tr>
-	 <td data-title="Date"></td>
-	 <td data-title="Holiday Name"></td>
-	</tr>
-	<button class="delholiday" onClick=delHoliday(this)>-</button>
-  </tbody>
-</table>
-
-<table id="holidayInput">
-  <tbody>
-	<tr>
-	 <td>
-	  <input type="text" id="holidateth" readonly></td>
-	 <td>
-	  <select id="holidayname">
-	  </select>
-	  <button class="delholiday" onClick=delHoliday(this)>-</button>
-	 </td>
-	</tr>
   </tbody>
 </table>
 
