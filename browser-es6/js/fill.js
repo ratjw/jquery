@@ -675,14 +675,23 @@ function holidayInputBack($inputRow)
 
 function holiday(date)
 {
-	if (date === LARGESTDATE) { return }
-
-	let holiday = gv.HOLIDAY.find(day => day.holidate === date)
-	if (holiday) {
-		return `url('css/pic/holiday/${holiday.dayname}.png')`
+	if (date !== LARGESTDATE) {
+		return religiousHoliday(date) || officialHoliday(date)
 	}
+}
 
-	// Thai official holiday & Compensation
+// Thai official holiday & Compensation
+function religiousHoliday(date)
+{
+	let relHoliday = gv.HOLIDAY.find(day => day.holidate === date)
+	if (relHoliday) {
+		return `url('css/pic/holiday/${relHoliday.dayname}.png')`
+	}
+}
+
+// Thai official holiday & Compensation
+function officialHoliday(date)
+{
 	const monthdate = date.substring(5),
 		dayofweek = (new Date(date)).getDay(),
 		Mon = (dayofweek === 1),
@@ -720,7 +729,9 @@ function holiday(date)
 			"12-11": Mon && "Constitutionsub",
 			"12-12": Mon && "Constitutionsub"
 		},
-		geturl = (dayname) => `url('css/pic/holiday/${dayname}.png')`
+		govHoliday = Thai[monthdate]
 
-	return Thai[monthdate] && geturl(Thai[monthdate])
+	if (govHoliday) {
+		return `url('css/pic/holiday/${govHoliday}.png')`
+	}
 }
