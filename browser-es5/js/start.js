@@ -1,5 +1,5 @@
 
-function Start()
+;(function Start()
 {
   Ajax(GETUSERID, "", checkid)
 
@@ -12,7 +12,7 @@ function Start()
     $("#wrapper").show()
     $("#tblcontainer").css("height", window.innerHeight - $("#cssmenu").height())
   }
-}
+})()
 
 function loading(response)
 {

@@ -9,6 +9,7 @@ $(async function()
 
   if (/^\d{6}$/.test(userid)) {
 	gv.user = userid
+    gv.isPACS = !gv.isMobile && /10.6./.test(window.location)
     $("#wrapper").show()
     $("#tblwrapper").css("height", window.innerHeight - $("#cssmenu").height())
     let response = await postData(MYSQLIPHP, "start=")

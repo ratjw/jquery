@@ -4,7 +4,6 @@
 		$pwd = !empty($_POST['pwd']) ? $_POST['pwd'] : '';
 		$nurseid = !empty($_POST['nurseid']) ? $_POST['nurseid'] : '';
 		$isMobile = !empty($_POST['isMobile']) ? $_POST['isMobile'] : '';
-		$isPACS = !empty($_POST['isPACS']) ? $_POST['isPACS'] : '';
 		$module = !empty($_POST['module']) ? $_POST['module'] : '';
 		$es = !empty($_POST['browser']) ? $_POST['browser'] : '';
 

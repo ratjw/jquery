@@ -1,15 +1,18 @@
-// Ridirect to https
-//if (window.location.protocol === "http:" && window.location.hostname !== "localhost") {
-//	window.location = "https://" + window.host
-//}
-	// Browsers that support module: Edge/16, Firefox/60, Chrome/61, Safari 10.1
+(function ()
+{
+    "use strict";
+
+	// Ridirect to https
+//	if (window.location.protocol === "http:" && window.location.hostname !== "localhost") {
+//		window.location = "https://" + window.host
+//	}
+	// Browsers that support module: Chrome/61, Firefox/60, Edge/16, Safari 10.1
 	var module = false
 	var ua = navigator.userAgent
 	var isMobile = /Android|webOS|iPhone|iPad|BlackBerry|IEMobile/i.test(ua)
-	var isPACS = !isMobile
 	var browser = ""
 
-	if (isPACS) {
+	if (!isMobile) {
 		// (.*)$ is the second argument
 		var Chrome = ua.match(/Chrome\/(.*)$/)
 		var Firefox = ua.match(/Firefox\/(.*)$/)
@@ -37,9 +40,9 @@
 	}
 
 	document.getElementById("isMobile").value = isMobile
-	document.getElementById("isPACS").value = isPACS
 	document.getElementById("module").value = false//module
 	document.getElementById("browser").value = browser
+})()
 
 function namesix()
 {
@@ -65,8 +68,6 @@ function nurse()
 }
 
 function check() {
-    "use strict";
-
     if (typeof fetch === "undefined") return false;
     if (typeof find === "undefined") return false;
     try {

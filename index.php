@@ -63,7 +63,6 @@ h4 {
 		<br>
 		<input id="nurseid" type="hidden" name="nurseid" value="">
 		<input type="hidden" name="isMobile" id="isMobile" />
-		<input type="hidden" name="isPACS" id="isPACS" />
 		<input type="hidden" name="module" id="module" />
 		<input type="hidden" name="browser" id="browser" />
 	</form>
