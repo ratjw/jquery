@@ -132,6 +132,15 @@ function wrapperEvent()
     if (target.nodeName === "P") {
       target = $(target).closest('td')[0]
     }
+    if (target.cellIndex === 1) {
+      if (target.style.minWidth < 25) {
+         $("#tbl th:nth-child(2)").html("OR")
+         $("#tbl th:nth-child(2), #tbl td:nth-child(2)").css({ "minWidth": "25px", "maxWidth": "30px" })
+      } else {
+         $("#tbl th:nth-child(2)").html("")
+         $("#tbl th:nth-child(2), #tbl td:nth-child(2)").css({ "minWidth": "1px", "maxWidth": "30px" })
+      }
+    }
     if (target.nodeName === "TD") {
       clicktable(event, target)
     } else {

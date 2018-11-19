@@ -270,6 +270,8 @@ function staffqueue(staffname)
 	}
 
 	if (!isSplited()) { splitPane() }
+
+	clearEditcell()
 	hoverMain()
 }
 
