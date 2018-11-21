@@ -48,26 +48,13 @@ function namesix()
 {
 	var userid = document.getElementById("userid").value
 	if (/^\d{6}$/.test(userid)) {
+		sessionStorage.setItem('userid', userid)
 		document.getElementById("pwd").focus()
 	}
 }
 
-function nurse()
-{
-	var userid = document.getElementById("userid")
-	var nurseid = document.getElementById("nurseid")
-
-	if (/^\d{1,2}$/.test(userid.value)) {
-		nurseid.value = userid.value
-	} else {
-		nurseid.value = 'nurse'
-	}
-	document.getElementsByTagName('form').submit()
-	document.getElementById('nurseid').value = ''
-
-}
-
 function check() {
+	if (/rvpn/.test(window.location.href)) return false;
     if (typeof fetch === "undefined") return false;
     if (typeof find === "undefined") return false;
     try {

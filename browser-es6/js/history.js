@@ -205,7 +205,7 @@ function toUndelete(thisWhen, deleted)
 
   $('#dialogDeleted').dialog("close")
 
-  $("#undel").on("click", async function() {
+  $("#undel").off().on("click", async function() {
     let $thiscase = $thisWhen.closest("tr").children("td"),
       opdateth = $thiscase.eq(UNDELOPDATE).html(),
       opdate = getOpdate(opdateth),
@@ -238,12 +238,6 @@ function toUndelete(thisWhen, deleted)
 
     let response = await postData(MYSQLIPHP, sql)
     if (typeof response === "object") {
-      toUndelete()
-    } else {
-      Alert("toUndelete", response)
-    }
-
-    function toUndelete() {
       updateBOOK(response);
       refillOneDay(opdate)
       //undelete this staff's case or a Consults case
@@ -251,7 +245,9 @@ function toUndelete(thisWhen, deleted)
         refillstaffqueue()
       }
       scrolltoThisCase(qn)
-	}
+    } else {
+      Alert("toUndelete", response)
+    }
   })
 }
 

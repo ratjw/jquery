@@ -1,18 +1,17 @@
 
-;(function Start()
+$(function ()
 {
-  Ajax(GETUSERID, "", checkid)
+  var response = sessionStorage.getItem("userid")
 
-  function checkid(response) {
-    if (!/^\d{6}$/.test(response)) { return }
-
+  if (/^\d{6}$/.test(response)) {
     Ajax(MYSQLIPHP, "start=start", loading);
 
     gv.user = response
+    gv.isPACS = !gv.isMobile && /10.6./.test(window.location)
     $("#wrapper").show()
-    $("#tblcontainer").css("height", window.innerHeight - $("#cssmenu").height())
+    $("#tblwrapper").css("height", window.innerHeight - $("#cssmenu").height())
   }
-})()
+})
 
 function loading(response)
 {
