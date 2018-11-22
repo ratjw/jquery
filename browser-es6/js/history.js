@@ -187,7 +187,7 @@ jQuery.fn.extend({
   }
 })
 
-function toUndelete(thisWhen, deleted) 
+function toUndelete(thisDate, deleted) 
 {
   let UNDELOPDATE      = 0;
   let UNDELSTAFFNAME    = 1;
@@ -199,14 +199,12 @@ function toUndelete(thisWhen, deleted)
 //  let UNDELEDITOR      = 7;
 //  let UNDELEDITDATETIME  = 8;
   let UNDELQN        = 9;
-  let $thisWhen      = $(thisWhen)
+  let $thisDate      = $(thisDate)
 
-  reposition($("#undelete"), "left center", "left center", $thisWhen)
-
-  $('#dialogDeleted').dialog("close")
+  reposition($("#undelete"), "left center", "left center", $thisDate)
 
   $("#undel").off().on("click", async function() {
-    let $thiscase = $thisWhen.closest("tr").children("td"),
+    let $thiscase = $thisDate.closest("tr").children("td"),
       opdateth = $thiscase.eq(UNDELOPDATE).html(),
       opdate = getOpdate(opdateth),
       staffname = $thiscase.eq(UNDELSTAFFNAME).html(),
@@ -235,6 +233,8 @@ function toUndelete(thisWhen, deleted)
         sql += sqlCaseNum(i + 1, allCases[i])
       }
     }
+
+    $('#dialogDeleted').dialog("close")
 
     let response = await postData(MYSQLIPHP, sql)
     if (typeof response === "object") {
