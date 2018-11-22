@@ -190,8 +190,6 @@ function toUndelete(thisWhen, deleted)
 
   reposition($("#undelete"), "left center", "left center", $thisWhen)
 
-  $('#dialogDeleted').dialog("close")
-
   $("#undel").on("click", async function() {
     let $thiscase = $thisWhen.closest("tr").children("td"),
       opdateth = $thiscase.eq(UNDELOPDATE).html(),
@@ -222,6 +220,8 @@ function toUndelete(thisWhen, deleted)
         sql += sqlCaseNum(i + 1, allCases[i])
       }
     }
+
+    $('#dialogDeleted').dialog("close")
 
     let response = await postData(MYSQLIPHP, sql)
     if (typeof response === "object") {

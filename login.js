@@ -55,7 +55,7 @@ function namesix()
 }
 
 function check() {
-	if (/rvpn/.test(window.location.href)) return false;
+//	if (/rvpn/.test(window.location.href)) return false;
     if (typeof fetch === "undefined") return false;
     if (typeof find === "undefined") return false;
     try {

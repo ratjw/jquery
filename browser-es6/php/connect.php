@@ -1,12 +1,12 @@
 <?php
-	@session_start();
+//	@session_start($_POST["sid"]);
 
-	$userid = empty($_SESSION['userid']) ? '' : $_SESSION['userid'];
+//	$userid = empty($_SESSION['userid']) ? '' : $_SESSION['userid'];
 
-	if (!preg_match('/^\d{6}$/', $userid)) {
-		echo "Unauthorized user!!!";
-		exit;
-	}
+//	if (!preg_match('/^\d{6}$/', $userid)) {
+//		echo "Unauthorized user!!!";
+//		exit;
+//	}
 
 	$servername = "localhost";
 	$username = "root";
