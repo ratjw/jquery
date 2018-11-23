@@ -42,7 +42,7 @@
 	document.getElementById("isMobile").value = isMobile
 	document.getElementById("module").value = false//module
 	document.getElementById("browser").value = browser
-	sessionStorage.clear()
+	sessionStorage.setItem('userid', document.getElementById("userid").value)
 })()
 
 function namesix()

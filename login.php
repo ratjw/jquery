@@ -2,7 +2,6 @@
 	if ($_SERVER["REQUEST_METHOD"] == "POST") {
 		$userid = !empty($_POST['userid']) ? $_POST['userid'] : '';
 		$pwd = !empty($_POST['pwd']) ? $_POST['pwd'] : '';
-		$nurseid = !empty($_POST['nurseid']) ? $_POST['nurseid'] : '';
 		$isMobile = !empty($_POST['isMobile']) ? $_POST['isMobile'] : '';
 		$module = !empty($_POST['module']) ? $_POST['module'] : '';
 		$es = !empty($_POST['browser']) ? $_POST['browser'] : '';

@@ -1,9 +1,6 @@
 
 $(async function()
 {
-//  let sid = sessionStorage.getItem("sid")
-//  let response = await fetch(GETUSERID + "?sid=" + sid)
-//  let userid = await response.text()
   let userid = sessionStorage.getItem('userid')
 
   if (/^\d{6}$/.test(userid)) {
@@ -31,6 +28,8 @@ function loading(response)
   fillupstart()
   setStafflist()
   fillConsults()
+
+  // setting up equipments
 //  initEquipment()
 
   // make the document editable

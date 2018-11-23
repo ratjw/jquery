@@ -40,7 +40,12 @@ h4 {
 
 </HEAD>
 <BODY>
-<?php $error = ""; include "login.php" ?>
+
+<?php
+	include "login.php";
+	$error = "";
+?>
+
 <p id="logo"><img src="logoRama.png"></p>
 
 <div id="login">
@@ -61,7 +66,6 @@ h4 {
 		<input type="submit" value="Sign in">
 		<br>
 		<br>
-		<input id="nurseid" type="hidden" name="nurseid" value="">
 		<input type="hidden" name="isMobile" id="isMobile" />
 		<input type="hidden" name="module" id="module" />
 		<input type="hidden" name="browser" id="browser" />
