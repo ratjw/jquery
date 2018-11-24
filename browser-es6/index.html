@@ -51,65 +51,65 @@
 </table>
 
 <div id="wrapper">
-  <div id='cssmenu'>
+  <div id="cssmenu">
    <ul>
-    <li class='hassub'>
+    <li class="hassub">
      <a nohref><span>Staff</span></a>
      <ul id="staffmenu"></ul>
     </li>
     <li>
-	 <a href='javascript:serviceReview()'><span>Service Review</span></a>
+	 <a nohref onclick="serviceReview()"><span>Service Review</span></a>
     </li>
-    <li class='hassub'>
+    <li class="hassub">
      <a nohref><span>Search</span></a>
-     <ul class='w170'>
+     <ul class="w170">
       <li>
-       <a href='javascript:search()'><span>Search Cases by Words</span></a>
+       <a nohref onclick="search()"><span>Search Cases by Words</span></a>
       </li>
       <li>
-       <a href='javascript:allCases()'><span>All Saved Cases</span></a>
+       <a nohref onclick="allCases()"><span>All Saved Cases</span></a>
       </li>
       <li>
-       <a href='javascript:deletedCases()'><span>All Deleted Cases</span></a>
+       <a nohref onclick="deletedCases()"><span>All Deleted Cases</span></a>
       </li>
      </ul>
     </li>
-    <li class='floatright'><a href='javascript:readme()'><span>Readme</span></a></li>
-    <li class='floatright hassub'><a nohref><span>Setting</span></a>
-     <ul class='w120'>
-      <li><a href='javascript:addStaff()'><span>Staff Setting</span></a></li>
-      <li><a href='javascript:setHoliday()'><span>Holiday Setting</span></a></li>
+    <li class="floatright"><a nohref onclick="readme()"><span>Readme</span></a></li>
+    <li class="floatright hassub"><a nohref><span>Setting</span></a>
+     <ul class="w120">
+      <li><a nohref onclick="addStaff()"><span>Staff Setting</span></a></li>
+      <li><a nohref onclick="setHoliday()"><span>Holiday Setting</span></a></li>
      </ul>
     </li>
-    <li id="addrow"><a href='javascript:addnewrow()'><span>Add</span></a></li>
+    <li id="addrow"><a nohref onclick="addnewrow()"><span>Add</span></a></li>
     <li id="postpone">
      <a nohref><span>Postpone</span></a>
      <ul>
       <li>
-	    <a href='javascript:postponeCase()'><span id="postponecase"></span></a>
+	    <a nohref onclick="postponeCase()"><span id="postponecase"></span></a>
       </li>
      </ul>
     </li>
     <li id="changedate">
-	  <a href='javascript:changeDate()'><span>Move</span></a>
+	  <a nohref onclick="changeDate()"><span>Move</span></a>
 	</li>
     <li id="history">
-     <a href='javascript:editHistory()'><span>Tracking</span></a>
+     <a nohref onclick="editHistory()"><span>Tracking</span></a>
     </li>
     <li id="delete"><a nohref><span>Delete</span></a>
      <ul>
       <li>
-	    <a href='javascript:delCase()'><span id="delcase"></span></a>
+	    <a nohref onclick="delCase()"><span id="delcase"></span></a>
 	  </li>
      </ul>
     </li>
-    <li id="EXCEL" class='floatright'>
-     <a href='javascript:sendtoExcel()'>
+    <li id="EXCEL" class="floatright">
+     <a nohref onclick="sendtoExcel()">
       <img src="css/pic/general/Excel.png">
      </a>
     </li>
-    <li id="LINE" class='floatright'>
-     <a href='javascript:sendtoLINE()'>
+    <li id="LINE" class="floatright">
+     <a nohref onclick="sendtoLINE()">
       <img src="css/pic/general/LINE.png">
      </a>
     </li>
