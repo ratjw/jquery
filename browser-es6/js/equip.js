@@ -35,7 +35,7 @@ function fillEquipTable(book, $row, qn)
 		title: "เครื่องมือผ่าตัด",
 		closeOnEscape: true,
 		modal: true,
-		width: 750,
+		width: 700,
 		height: height > 1000 ? 1000 : height,
 		close: function(event, ui) {
 			$row.removeClass("marker")
@@ -70,15 +70,16 @@ function showNonEditableEquip()
 {
 	$('#dialogEquip').dialog("option", "buttons", [
 		{
-			text: "แก้ไข",
+			text: "ยกเลิกทุกรายการ",
+			style: "margin-right:450px",
 			click: function () {
-				showEditableEquip()
+				cancelAll()
 			}
 		},
 		{
-			text: "ยกเลิกทุกรายการ",
+			text: "แก้ไข",
 			click: function () {
-				cancelAll()
+				showEditableEquip()
 			}
 		}
 	])
@@ -217,6 +218,8 @@ async function Checklistequip()
 
 async function cancelAll()
 {
+	if (!confirm("ลบออกทั้งหมด และกลับคืนไม่ได้")) return
+
 	let	$dialogEquip = $("#dialogEquip"),
 		bookqEquip = $dialogEquip.data("bookqEquip"),
 		JsonEquip = $dialogEquip.data("JsonEquip"),

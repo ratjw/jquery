@@ -101,6 +101,8 @@ td img {
 #tbl td:first-child,
 #queuetbl td:first-child { min-width: 40px; max-width: 60px; }
 
+#tbl td:nth-child(2) { width: 0px; }
+
 #historytbl td:nth-child(2),
 #historytbl td:nth-child(3),
 #tbl td:nth-child(2),
@@ -108,7 +110,6 @@ td img {
 #tbl td:nth-child(4),
 #tbl td:nth-child(5) { text-align: center; }
 
-#tbl td:nth-child(2),
 #tbl td:nth-child(3),
 #tbl td:nth-child(4),
 #tbl td:nth-child(5) { min-width: 25px; max-width: 30px; }
@@ -434,9 +435,8 @@ td.camera2 { background-image: url(pic/general/camera2.png); }
 .textcenter { text-align: center; }
 .inline { display: inline-block; }
 
-.w5 { width:5px !important; }
+.w10 { width:10px !important; }
 .w20 { width:20px !important; }
-.w22 { width:22px !important; }
 .w30 { width:30px !important; }
 .w40 { width:40px !important; }
 .w50 { width:50px !important; }

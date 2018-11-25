@@ -30,7 +30,7 @@ function loading(response)
   fillConsults()
 
   // setting up equipments
-//  initEquipment()
+  initEquipment()
 
   // make the document editable
   editcellEvent()
@@ -135,12 +135,13 @@ function wrapperEvent()
       target = $(target).closest('td')[0]
     }
     if (target.cellIndex === 1) {
-      if (target.style.minWidth < 25) {
+      if (target.style.width < "30px") {
          $("#tbl th:nth-child(2)").html("OR")
-         $("#tbl th:nth-child(2), #tbl td:nth-child(2)").css({ "minWidth": "25px", "maxWidth": "30px" })
-      } else {
+         $("#tbl th:nth-child(2), #tbl td:nth-child(2)").css({ "width": "30px" })
+      }
+	  else if (target.nodeName === "TH") {
          $("#tbl th:nth-child(2)").html("")
-         $("#tbl th:nth-child(2), #tbl td:nth-child(2)").css({ "minWidth": "1px", "maxWidth": "30px" })
+         $("#tbl th:nth-child(2), #tbl td:nth-child(2)").css({ "width": "0px" })
       }
     }
     if (target.nodeName === "TD") {
@@ -255,10 +256,10 @@ function setStafflist()
 {
   let stafflist = ''  let staffmenu = ''
 
-  for (let each = 0; each < gv.STAFF.length; each++) {
-    stafflist += '<li><span>' + gv.STAFF[each].staffname + '</span></li>'
-    staffmenu += "<li><a href=\"javascript:staffqueue('" + gv.STAFF[each].staffname + "')\"><span>" + gv.STAFF[each].staffname + '</span></a></li>'
-  }
+  gv.STAFF.forEach(function(each) {
+    stafflist += '<li><span>' + each.staffname + '</span></li>'
+    staffmenu += "<li><a href=\"javascript:staffqueue('" + each.staffname + "')\"><span>" + each.staffname + '</span></a></li>'
+  })
   staffmenu += '<li><a href="javascript:staffqueue(\'Consults\')"><span>Consults</span></a></li>'
   document.getElementById("stafflist").innerHTML = stafflist
   document.getElementById("staffmenu").innerHTML = staffmenu
@@ -367,12 +368,43 @@ async function changeOncall(pointing, opdate, staffname)
   }
 }
 
-function initEquipment(width, type, name, id, caption)
+function initEquipment()
 {
-  `<span class="${width}">
-	<input type="${type}" name="${name}" id="${id}">
-	<label for="${id}">${caption}</label>
-  </span>`
+  let equip = "", type = "", width = "", name = "", id = "", label = ""
+
+  equipSheet.forEach(function(item) {
+    type = item[0]
+    width = item[1]
+    name = item[2]
+    id = item[3]
+    label = item[4]
+    if (type === "divbegin") {
+	  equip += `<div title="${name}">`
+    } else if (type === "divend") {
+	  equip += `</div>`
+    } else if (type === "span") {
+	  equip += `<span class="${width}" id="${id}">${label}</span>`
+    } else if (type === "spanInSpan") {
+	  equip += `<span class="${width}">${label}<span id="${id}"></span></span>`
+	} else if (type === "br") {
+	  equip += `<br>`
+	} else if (type === "radio" || type === "checkbox") {
+	  equip += `<span class="${width}">
+                  <input type="${type}" name="${name}" id="${id}">
+                  <label for="${id}">${label}</label>
+                </span>`
+	} else if (type === "text") {
+	  equip += `<span>
+                  <input type="${type}" class="${name}" id="${id}" placeholder="${label}">
+                </span>`
+	} else if (type === "textarea") {
+	  equip += `<span>
+                  <textarea id="${id}" placeholder="${label}"></textarea>
+                </span>`
+	}
+  })
+
+  document.getElementById("dialogEquip").innerHTML = equip
 }
 
 function resetTimer()
