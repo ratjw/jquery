@@ -108,7 +108,7 @@ HOLIDAYENGTHAI = {
 	"no": "ไม่หยุด"
 },
 
-// ["type", "width", "name", "id", "label"]
+// ["type", "width", "name", "id" (also used in label for), "label"]
 equipSheet = [
     ["spanInSpan", "w70", "", "oproom", "ห้อง "],
     ["spanInSpan", "w70", "", "casenum", "Case "],
@@ -127,7 +127,8 @@ equipSheet = [
     ["span", "", "", "", "HN&nbsp;"],
     ["span", "", "", "hn", ""],
     ["br", "", "", "", ""],
-    // floatleft makes the subsequent text rows go downward
+    // floatleft makes the subsequent text rows go downwards
+    // instead of pushing previous rows upward
     ["span", "w110 floatleft", "", "", "Diagnosis"],
     ["span", "w540", "", "diagnosis", ""],
     ["br", "", "", "", ""],
