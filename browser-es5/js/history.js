@@ -95,11 +95,11 @@ jQuery.fn.extend({
 
 function deletedCases()
 {
-  var sql = "sqlReturnData=SELECT a.* "
-      + "FROM (SELECT editdatetime, b.* "
-        + "FROM book b INNER JOIN bookhistory bh ON b.qn = bh.qn "
-        + "WHERE b.deleted > 0 AND bh.action = 'delete' GROUP BY b.qn) a "
-      + "ORDER BY a.editdatetime DESC;"
+  var sql = "sqlReturnData=SELECT editdatetime, b.* "
+          + "FROM book b INNER JOIN bookhistory bh ON b.qn = bh.qn "
+          + "WHERE b.deleted > 0 AND b.opdate>DATE_ADD(NOW(), INTERVAL -3 MONTH) AND bh.action = 'delete' "
+		  + "GROUP BY b.qn "
+          + "ORDER BY a.editdatetime DESC;"
 
   Ajax(MYSQLIPHP, sql, callbackdeletedCases)
 

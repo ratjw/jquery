@@ -91,11 +91,14 @@ jQuery.fn.extend({
 
 async function deletedCases()
 {
-  let sql = "sqlReturnData=SELECT a.* "
-      + "FROM (SELECT editdatetime, b.* "
-        + "FROM book b INNER JOIN bookhistory bh ON b.qn = bh.qn "
-        + "WHERE b.deleted > 0 AND bh.action = 'delete' GROUP BY b.qn) a "
-      + "ORDER BY a.editdatetime DESC;"
+  let sql = `sqlReturnData=SELECT editdatetime, b.* 
+                             FROM book b 
+							   LEFT JOIN bookhistory bh ON b.qn = bh.qn 
+                             WHERE b.deleted>0 
+							   AND b.opdate>DATE_ADD(NOW(), INTERVAL -3 MONTH) 
+							   AND bh.action='delete' 
+							 GROUP BY b.qn 
+                             ORDER BY editdatetime DESC;`
 
   let response = await postData(MYSQLIPHP, sql)
   if (typeof response === "object") {

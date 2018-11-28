@@ -42,7 +42,8 @@ function loading(response)
   disableExcelLINE()
   overrideJqueryUI()
   resetTimer()
-  // Let tbl animate scrollTop finish first
+
+  // Let tbl animate scrollTop (300 ms) finish first
   setTimeout( fillupfinish, 500)
 }
 
