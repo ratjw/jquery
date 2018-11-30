@@ -477,7 +477,7 @@ jQuery.fn.extend({
   }
 })
 
-function search()
+function searchCases()
 {
   let $dialogInput = $("#dialogInput"),
     $stafflist = $('#stafflist')
