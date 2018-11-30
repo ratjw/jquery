@@ -51,7 +51,7 @@
      <a nohref><span>Search</span></a>
      <ul class='w170'>
       <li>
-       <a href='javascript:search()'><span>Search Cases by Words</span></a>
+       <a href='javascript:searchCases()'><span>Search Cases by Words</span></a>
       </li>
       <li>
        <a href='javascript:allCases()'><span>All Saved Cases</span></a>
