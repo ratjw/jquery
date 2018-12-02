@@ -1,4 +1,4 @@
-(function ()
+function login()
 {
     "use strict";
 
@@ -43,7 +43,7 @@
 	document.getElementById("module").value = false//module
 	document.getElementById("browser").value = browser
 	sessionStorage.setItem('userid', document.getElementById("userid").value)
-})()
+}
 
 function namesix()
 {

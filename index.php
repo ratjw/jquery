@@ -39,10 +39,9 @@ h4 {
 </style>
 
 </HEAD>
-<BODY>
+<BODY onload="login()">
 
 <?php
-	include "login.php";
 	$error = "";
 ?>
 
@@ -52,7 +51,7 @@ h4 {
 	<br>
 	<h3>Neurosurgery Service</h3>
 
-	<form id="form" method="post">
+	<form id="form" method="post" action="login.php">
 		Login ID: <input id="userid" type="text" name="userid"
 					maxlength="6" size="6" value=""
 					oninput="namesix()" 
