@@ -1,4 +1,4 @@
-// global variables
+//--- global variables --------------
 let gv = {
 	BOOK: [],
 	CONSULT: [],
@@ -16,6 +16,9 @@ let gv = {
 	editableSV: true,
 	user: ""
 }
+
+
+//--- constants ---------------------
 
 const GETIPD = "php/getipd.php", 
 GETUSERID 	= "php/getuserid.php",
@@ -343,7 +346,7 @@ equipSheet = [
 ],
 
 //===========================================================================================
-// Constants for program to guess the disease and treatment in Service Review
+// Keyword constants for program to guess the disease in Service Review from disease and treatment
 
 BRAINDX = [
 	/\bbrain\b/i, /basal ganglion/i, /basal.*gg/i, /bgg/i, /cavernous/i, /cerebell/i, 

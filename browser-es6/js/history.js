@@ -94,8 +94,8 @@ async function deletedCases()
   let sql = `sqlReturnData=SELECT editdatetime, b.* 
                              FROM book b 
 							   LEFT JOIN bookhistory bh ON b.qn = bh.qn 
-                             WHERE b.deleted>0 
-							   AND b.opdate>DATE_ADD(NOW(), INTERVAL -3 MONTH) 
+                             WHERE editdatetime>DATE_ADD(NOW(), INTERVAL -3 MONTH) 
+							   AND b.deleted>0 
 							   AND bh.action='delete' 
 							 GROUP BY b.qn 
                              ORDER BY editdatetime DESC;`
