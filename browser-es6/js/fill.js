@@ -8,7 +8,7 @@ function fillupstart()
 		end = today.setDate(today.getDate() + 50),
 		until = new Date(end).ISOdate(),
 		book = gv.BOOK,
-		todate = today.ISOdate(),
+		todate = today.ISOdate()
 
 	if (book.length === 0) { book.push({"opdate" : todate}) }
 	
@@ -29,7 +29,7 @@ function fillupfinish()
 		date = today.getDate(),
 		until = (new Date(nextyear, month, date)).ISOdate(),
 		book = gv.BOOK,
-		todate = today.ISOdate(),
+		todate = today.ISOdate()
 	
 	fillall(book, table, start, until, table.rows.length-1)
 }
