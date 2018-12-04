@@ -2,26 +2,16 @@
 	if ($_SERVER["REQUEST_METHOD"] == "POST") {
 		$userid = !empty($_POST['userid']) ? $_POST['userid'] : '';
 		$pwd = !empty($_POST['pwd']) ? $_POST['pwd'] : '';
-		$isMobile = !empty($_POST['isMobile']) ? $_POST['isMobile'] : '';
-		$module = !empty($_POST['module']) ? $_POST['module'] : '';
-		$es = !empty($_POST['browser']) ? $_POST['browser'] : '';
+		$browser = !empty($_POST['browser']) ? $_POST['browser'] : '';
 
+		// php session not work in hospital-desktop because cookie is unabled
+		// work in outside devices that log in intranet
 		session_start();
 		$_SESSION['userid'] = $userid;
 
 		$location = "location:";
-		$browserDoctor = $location . "browser-" . $es;
+		$browserDoctor = $location . $browser;
 		$browserNurse = $location . "browser-nurse";
-		$browserModule = $location . "browser-module";
-		$browserMobile = $location . "browser-mobile";
-
-		// Variables via POST are strings only
-		if ($module === "true") {
-			$browserDoctor = $browserModule;
-		}
-		if ($isMobile === "true") {
-			$browserDoctor = $browserMobile;
-		}
 
 		$servername = "surgery.rama.mahidol.ac.th";
 		$wsdl="http://appcenter/webservice/patientservice.wsdl";

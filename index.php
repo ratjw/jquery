@@ -38,6 +38,8 @@ h4 {
 }
 </style>
 
+<script src="newlogin.js"></script>
+
 </HEAD>
 <BODY onload="login()">
 
@@ -51,7 +53,7 @@ h4 {
 	<br>
 	<h3>Neurosurgery Service</h3>
 
-	<form id="form" method="post" action="login.php">
+	<form id="form" method="post" action="newlogin.php">
 		Login ID: <input id="userid" type="text" name="userid"
 					maxlength="6" size="6" value=""
 					oninput="namesix()" 
@@ -65,15 +67,11 @@ h4 {
 		<input type="submit" value="Sign in">
 		<br>
 		<br>
-		<input type="hidden" name="isMobile" id="isMobile" />
-		<input type="hidden" name="module" id="module" />
 		<input type="hidden" name="browser" id="browser" />
 	</form>
 </div>
 
 <h4> <?php echo $error; ?> </h4>
-
-<script src="login.js"></script>
 
 </BODY>
 </HTML>
