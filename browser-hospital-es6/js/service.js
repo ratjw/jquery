@@ -534,12 +534,6 @@ function fillAdmitDischargeDate()
 	});
 }
 
-function clickservice(evt, clickedCell)
-{
-	savePreviousCellService()
-	storePresentCellService(evt, clickedCell)
-}
-
 function Skeyin(event, keycode, pointing)
 {
 	let SEDITABLE	= [DIAGNOSISSV, TREATMENTSV, ADMISSIONSV, FINALSV],

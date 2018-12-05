@@ -1,16 +1,14 @@
-//  if ('serviceWorker' in navigator) {
-//    navigator.serviceWorker.register('service-worker.js')
-//  }
 
 $(async function()
 {
-  let response = await fetch(GETUSERID)
-  let userid = await response.text()
+  let userid = sessionStorage.getItem('userid')
 
   if (/^\d{6}$/.test(userid)) {
 	gv.user = userid
+    gv.isPACS = !gv.isMobile && /10.6./.test(window.location)
     $("#wrapper").show()
     $("#tblwrapper").css("height", window.innerHeight - $("#cssmenu").height())
+
     let response = await postData(MYSQLIPHP, "start=")
     loading(response)
   } else {
@@ -41,6 +39,7 @@ function loading(response)
   disableExcelLINE()
   overrideJqueryUI()
   resetTimer()
+
   // Let tbl animate scrollTop finish first
   setTimeout( fillupfinish, 500)
 }

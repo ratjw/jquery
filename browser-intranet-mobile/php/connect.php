@@ -1,10 +1,4 @@
 <?php
-	@session_start();
-
-	$userid = empty($_SESSION['userid']) ? '' : $_SESSION['userid'];
-
-	if (!preg_match('/^\d{6}$/', $userid)) exit("Unauthorized user!!!");
-
 	$servername = "localhost";
 	$username = "root";
 	$password = "Zaq1@wsx";
