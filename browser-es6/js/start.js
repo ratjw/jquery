@@ -430,6 +430,33 @@ function updating()
   resetTimer()
 }
 
+function onChange()
+{
+  // When editcell is not pointing, there must be no change by this editor
+  if (!$("#editcell").data("pointing")) {
+    return false
+  }
+
+  let $editcell = $("#editcell"),
+      $divEditcell = $editcell.parent("div")
+      oldcontent = $editcell.data("oldcontent"),
+      newcontent = getText($editcell),
+      pointed = $editcell.data("pointing"),
+      index = pointed.cellIndex,
+      whereisEditcell = $divEditcell.attr("id")
+
+  if (oldcontent === newcontent) {
+    return false
+  }
+  if (whereisEditcell === "dialogService") {
+    qn = $divEditcell.find("td")[QNSV].innerHTML
+    return saveOnChangeService(pointed, index, newcontent, qn)
+  } else {
+    qn = $divEditcell.find("td")[QN].innerHTML
+    return saveOnChange(pointed, index, newcontent, qn)
+  }
+}
+
 async function doUpdate()
 {
   let sql = "sqlReturnData=SELECT MAX(editdatetime) as timestamp from bookhistory;"
@@ -447,31 +474,69 @@ async function doUpdate()
   }
 }
 
-// savePreviousCell is for Main and Staffqueue tables
-// When editcell is not seen, there must be no change
-function onChange()
+// There is some changes in database from other users
+async function getUpdate()
 {
-  if (!$("#editcell").data("pointing")) {
-    return false
-  }
+  let fromDate = $('#monthstart').val()
+  let toDate = $('#monthpicker').val()
+  let sql = "sqlReturnService=" + sqlOneMonth(fromDate, toDate)
 
-  let $editcell = $("#editcell"),
-      oldcontent = $editcell.data("oldcontent"),
-      newcontent = getText($editcell),
-      pointed = $editcell.data("pointing"),
-      index = pointed.cellIndex,
-      whereisEditcell = $(pointed).closest("table").attr("id")
-
-  if (oldcontent === newcontent) {
-    return false
-  }
-  if (whereisEditcell === "servicetbl") {
-    qn = $(pointed).closest('tr').children("td")[QNSV].innerHTML
-    return saveOnChangeService(pointed, index, newcontent, qn)
+  let response = await postData(MYSQLIPHP, sql)
+  if (typeof response === "object") {
+    updateBOOK(response)
+    if ($("#dialogService").hasClass('ui-dialog-content')
+        && $("#dialogService").dialog('isOpen')) {
+      gv.SERVE = calcSERVE()
+      refillService(fromDate, toDate)
+    }
+    refillall()
+//    fillConsults()
+    if (isSplited()) {
+      refillstaffqueue()
+    }
+    renewEditcell()
   } else {
-    qn = $(pointed).closest('tr').children("td")[QN].innerHTML
-    return saveOnChange(pointed, index, newcontent, qn)
+    Alert ("getUpdate", response)
   }
+}
+
+// after refillall, pointing remains in its row but parent is null
+function renewEditcell()
+{
+  let $editcell = $("#editcell")
+  let whereisEditcell = $editcell.parent("div").attr("id")
+  let id = (whereisEditcell === "tblcontainer")
+         ? "tbl"
+		 : (whereisEditcell === "queuecontainer")
+		 ? "queuetbl"
+		 : (whereisEditcell === "dialogService")
+		 ? "servicetbl"
+		 : ""
+  let pointing = $editcell.data("pointing")
+  let qn = $(pointing).closest("tr").find("td")[QN].innerHTML
+  let row = id && getTableRowByQN(id, qn)
+  let cell = pointing.cellIndex
+
+  if (row) {
+    pointing = row.cells[cell]
+    createEditcell(pointing)
+  }
+}
+
+// idling every 6*10 = 1 minute, refillall
+// idling (59+1)*10 = 10 minutes, logout
+function onIdling()
+{
+    if (gv.idleCounter && !(gv.idleCounter % 6)) {
+      clearAllEditing()
+      refillstaffqueue()
+      refillall()
+      fillConsults()
+    } else if (gv.idleCounter > 59 && !gv.isMobile) {
+      history.back()
+    }
+
+    gv.idleCounter += 1
 }
 
 function saveOnChange(pointed, index, content, qn)
@@ -492,8 +557,8 @@ function saveOnChange(pointed, index, content, qn)
           + "' WHERE qn="+ qn +";"
 
   updateOnChange(sql)
-
   pointed.innerHTML = content
+  return true
 }
 
 function saveOnChangeService(pointed, index, content, qn)
@@ -518,9 +583,8 @@ function saveOnChangeService(pointed, index, content, qn)
   sql  += sqlOneMonth(fromDate, toDate)
 
   updateOnChange(sql)
-
   pointed.innerHTML = content
-
+  return true
 }
 
 async function updateOnChange(sql)
@@ -529,47 +593,6 @@ async function updateOnChange(sql)
   if (typeof response === "object") {
     updateBOOK(response)
   }
-}
-
-// There is some changes in database from other users
-async function getUpdate()
-{
-  let fromDate = $('#monthstart').val()
-  let toDate = $('#monthpicker').val()
-  let sql = "sqlReturnService=" + sqlOneMonth(fromDate, toDate)
-
-  let response = await postData(MYSQLIPHP, sql)
-  if (typeof response === "object") {
-    updateBOOK(response)
-    if ($("#dialogService").hasClass('ui-dialog-content')
-        && $("#dialogService").dialog('isOpen')) {
-      gv.SERVE = calcSERVE()
-      refillService(fromDate, toDate)
-    }
-    refillall()
-    fillConsults()
-    if (isSplited()) {
-      refillstaffqueue()
-    }
-  } else {
-    Alert ("getUpdate", response)
-  }
-}
-
-// idling every 6*10 = 1 minute, refillall
-// idling (59+1)*10 = 10 minutes, logout
-function onIdling()
-{
-    if (gv.idleCounter && !(gv.idleCounter % 6)) {
-      clearAllEditing()
-      refillstaffqueue()
-      refillall()
-      fillConsults()
-    } else if (gv.idleCounter > 59 && !gv.isMobile) {
-      history.back()
-    }
-
-    gv.idleCounter += 1
 }
 
 function addStaff()

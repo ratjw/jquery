@@ -4,11 +4,6 @@
 		$pwd = !empty($_POST['pwd']) ? $_POST['pwd'] : '';
 		$browser = !empty($_POST['browser']) ? $_POST['browser'] : '';
 
-		// php session not work in hospital-desktop because cookie is unabled
-		// work in outside devices that log in intranet
-		session_start();
-		$_SESSION['userid'] = $userid;
-
 		$location = "location:";
 		$browserDoctor = $location . $browser;
 		$browserNurse = $location . "browser-nurse";

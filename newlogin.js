@@ -9,8 +9,6 @@ function login()
 
 	// all via vpn (desktops and mobiles) must be "vpn-es5"
 	// intranet old browser is in "vpn-es5"
-	// "intranet-mobile" has php session (for more secured username checking)
-	// "hospital-es6" no php session
 	// Browsers that support module: Chrome/61, Firefox/60, Edge/16, Safari 10.1
 	// (.*)$ is the second argument
 	var ua = navigator.userAgent
@@ -30,10 +28,10 @@ function login()
 							: false
 */	var browser = checkES6()
 				? (isMobile === "true")
-					? "browser-intranet-mobile"
+					? "browser-mobile"
 //					: ($module === "true")
 //						? "browser-module"
-						: "browser-hospital-es6"
+						: "browser-es6"
 				: "browser-vpn-es5"
 
 	document.getElementById("browser").value = browser

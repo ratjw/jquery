@@ -65,10 +65,10 @@ function addnewrow()
 	let	$selected = $(".selected"),
 		tableID = $selected.closest('table').attr('id'),
 		$row = $selected.closest('tr'),
-		keepcell = tableID === "tbl" ? OPDATE : STAFFNAME
+		keepcell = tableID === "tbl" ? OPDATE : STAFFNAME,
+		$clone = $row.clone()
 
-	$row.clone()
-		.removeClass("selected")
+	$clone.removeClass("selected")
 		.insertAfter($row)
 			.find("td").eq(HN).removeClass("pacs")
 			.parent().find("td").eq(PATIENT).removeClass("camera")
@@ -76,6 +76,7 @@ function addnewrow()
 				.nextAll()
 					.html("")
     clearSelection()
+	createEditcell($clone.find("td")[HN])
 }
 
 async function postponeCase()

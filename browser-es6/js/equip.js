@@ -73,7 +73,9 @@ function showNonEditableEquip()
 			text: "ยกเลิกทุกรายการ",
 			style: "margin-right:450px",
 			click: function () {
-				cancelAll()
+				if (confirm("ลบออกทั้งหมด และกลับคืนไม่ได้")) {
+					cancelAll()
+				}
 			}
 		},
 		{
@@ -86,17 +88,22 @@ function showNonEditableEquip()
 	disableInput()
 }
 
+// has equip must have copay. if no copay, ->alert
 function showEditableEquip()
 {
 	$('#dialogEquip').dialog("option", "buttons", [
 		{
 			text: "Save",
 			click: function () {
-				if ($('#copay').val()) {
-					Checklistequip()
-					showNonEditableEquip()
+				if (checkEquip()) {
+					if ($('#copay').val()) {
+						Checklistequip()
+						showNonEditableEquip()
+					} else {
+						Alert("Checklistequip", "<br>ต้องระบุจำนวนเงิน<br>จ่ายไม่ได้เลย = 0")
+					}
 				} else {
-					Alert("Checklistequip", "<br>ต้องระบุจำนวนเงิน<br>จ่ายไม่ได้เลย = 0")
+					cancelAll()
 				}
 			}
 		}
@@ -154,6 +161,25 @@ async function getEditedBy(qn)
 	}
 }
 
+function checkEquip()
+{
+	let equip = false
+
+	$( "#dialogEquip input:not(#copay), #dialogEquip textarea" ).each( function() {
+		if (this.checked) {
+			equip = true
+			return false
+		} else if (this.type === "text" || this.type === "textarea") {
+			if (this.value) {
+				equip = true
+				return false
+			}
+		}
+	})
+
+	return equip
+}
+
 async function Checklistequip() 
 {
 	let	$dialogEquip = $("#dialogEquip"),
@@ -192,7 +218,7 @@ async function Checklistequip()
 	if (typeof response === "object") {
 		updateBOOK(response)
 		if ($row.find("td").eq(QN).html() !== qn) {
-			$row = getTableRowByQN("tbl", qn)
+			$row = $(getTableRowByQN("tbl", qn))
 		}
 		$row.find("td").eq(EQUIPMENT).html(makeEquip(equipJSON))
 		$dialogEquip.dialog('close')
@@ -218,8 +244,6 @@ async function Checklistequip()
 
 async function cancelAll()
 {
-	if (!confirm("ลบออกทั้งหมด และกลับคืนไม่ได้")) return
-
 	let	$dialogEquip = $("#dialogEquip"),
 		bookqEquip = $dialogEquip.data("bookqEquip"),
 		JsonEquip = $dialogEquip.data("JsonEquip"),

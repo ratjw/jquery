@@ -582,7 +582,7 @@ function savePreviousCellService()
 		pointed = $editcell.data("pointing")
 
 	if (!pointed || (oldcontent === newcontent)) {
-		return false
+		return
 	}
 
 	switch(pointed.cellIndex)
@@ -590,25 +590,25 @@ function savePreviousCellService()
 		case CASENUMSV:
 		case HNSV:
 		case NAMESV:
-			return false
+			break
 		case DIAGNOSISSV:
 			saveContentService(pointed, "diagnosis", newcontent)
-			return true
+			break
 		case TREATMENTSV:
 			saveContentService(pointed, "treatment", newcontent)
-			return true
+			break
 		case ADMISSIONSV:
 			saveContentService(pointed, "admission", newcontent)
-			return true
+			break
 		case FINALSV:
 			saveContentService(pointed, "final", newcontent)
-			return true
+			break
 		case PROFILESV:
 			saveProfileService(pointed)
 			break
 		case ADMITSV:
 		case DISCHARGESV:
-			return false
+			break
 	}
 }
 

@@ -60,33 +60,41 @@ function savePreviousCell()
 	}
 
 	if (!pointed || (oldcontent === newcontent)) {
-		return false
+		return
 	}
 
 	switch(column)
 	{
 		case OPDATE:
-			return false
+			break
 		case THEATRE:
-			return saveTheatre(pointed, newcontent)
+			saveTheatre(pointed, newcontent)
+			break
 		case OPROOM:
-			return saveOpRoom(pointed, newcontent)
+			saveOpRoom(pointed, newcontent)
+			break
 		case OPTIME:
-			return saveContent(pointed, "optime", newcontent)
+			saveContent(pointed, "optime", newcontent)
+			break
 		case CASENUM:
-			return saveCaseNum(pointed, newcontent)
+			saveCaseNum(pointed, newcontent)
+			break
 		case STAFFNAME:
-			return false
+			break
 		case HN:
-			return saveHN(pointed, newcontent)
+			saveHN(pointed, newcontent)
+			break
 		case PATIENT:
-			return false
+			break
 		case DIAGNOSIS:
-			return saveContent(pointed, "diagnosis", newcontent)
+			saveContent(pointed, "diagnosis", newcontent)
+			break
 		case TREATMENT:
-			return saveContent(pointed, "treatment", newcontent)
+			saveContent(pointed, "treatment", newcontent)
+			break
 		case CONTACT:
-			return saveContent(pointed, "contact", newcontent)
+			saveContent(pointed, "contact", newcontent)
+			break
 	}
 }
 
@@ -124,7 +132,7 @@ async function saveTheatre(pointed, newcontent)
 		}
 	}
 
-	if (!sql) { return false }
+	if (!sql) { return }
 	sql = "sqlReturnbook=" + sql
 
 	let response = await postData(MYSQLIPHP, sql)
@@ -142,8 +150,6 @@ async function saveTheatre(pointed, newcontent)
 	} else {
 		Alert ("saveTheatre", response)
 	}
-
-	return true
 }
 
 function sqlNewTheatre(theatre, casenum, qn)
@@ -197,7 +203,7 @@ async function saveOpRoom(pointed, newcontent)
 		}
 	}
 
-	if (!sql) { return false }
+	if (!sql) { return }
 	sql = "sqlReturnbook=" + sql
 
     let response = await postData(MYSQLIPHP, sql)
@@ -215,8 +221,6 @@ async function saveOpRoom(pointed, newcontent)
 	} else {
 		Alert ("saveOpRoom", response)
 	}
-
-	return true
 }
 
 function sqlNewRoom(oproom, casenum, qn)
@@ -273,8 +277,6 @@ async function saveCaseNum(pointed, newcontent)
 		Alert ("saveCaseNum", response)
 	}
 	clearEditcell()
-
-	return true
 }
 
 // use only "pointed" to save data
@@ -293,7 +295,6 @@ function saveContent(pointed, column, content)
 	} else {
 		saveContentNoQN(pointed, column, content)
 	}
-	return true
 }
 
 async function saveContentQN(pointed, column, content)
@@ -443,7 +444,7 @@ function saveHN(pointed, content)
 {
 	if (!/^\d{7}$/.test(content)) {
 		pointed.innerHTML = ""
-		return false
+		return
 	}
 
 	let	waiting = getWaitingBOOKrowByHN(content)
@@ -453,7 +454,6 @@ function saveHN(pointed, content)
 	} else {
 		getNameHN(pointed, content)
 	}
-	return true
 }
 
 // May have other columns before, thus has qn already
@@ -497,6 +497,12 @@ function getCaseHN(pointed, waiting)
 
 	$movefrom.html(tblcells).filldataWaiting(waiting)
 	$moveto.html(tblcells).filldataWaiting(wanting)
+	let width = winWidth(95)
+	width = width < 500
+		  ? 550
+		  : width > 800
+		  ? 800
+		  : width
 
 	$dialogMoveCase.dialog({
 		title: "เคสซ้ำ",
@@ -505,7 +511,7 @@ function getCaseHN(pointed, waiting)
 		autoResize: true,
 		show: 200,
 		hide: 200,
-		width: winWidth(95),
+		width: width,
 		buttons: [
 			{
 				text: "ย้ายมา ลบเคสเดิมออก",
@@ -815,38 +821,46 @@ function storePresentCell(evt, pointing)
 			clearEditcell()
 			clearMouseoverTR()
 			selectRow(evt, pointing)
-			return
+			break
 		case THEATRE:
 			createEditcell(pointing)
+			clearSelection()
 			break
 		case OPROOM:
 			getROOMCASE(pointing)
+			clearSelection()
 			break
 		case OPTIME:
 			getOPTIME(pointing)
+			clearSelection()
 			break
 		case CASENUM:
 			getROOMCASE(pointing)
+			clearSelection()
 			break
 		case STAFFNAME:
 			getSTAFFNAME(pointing)
+			clearSelection()
 			break
 		case HN:
 			getHN(evt, pointing)
+			clearSelection()
 			break
 		case PATIENT:
 			getNAME(evt, pointing)
+			clearSelection()
 			break
 		case DIAGNOSIS:
 		case TREATMENT:
 		case CONTACT:
 			createEditcell(pointing)
+			clearSelection()
 			break
 		case EQUIPMENT:
 			getEQUIP(pointing)
+			clearSelection()
 			break
 	}
-	clearSelection()
 }
 
 function selectRow(event, target)
@@ -1051,6 +1065,8 @@ function createEditcell(pointing)
 
 function editcellData($editcell, pointing, context)
 {
+	let qn = $(pointing).closest('tr').find("td")[QN].innerHTML
+
 	$editcell.data("pointing", pointing)
 	$editcell.data("oldcontent", context)
 }

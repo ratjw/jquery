@@ -11,7 +11,7 @@ function sortable()
 		forcePlaceholderSize: true,
 		revert: true,
 		delay: 150,
-		cancel: "tr:has('th')",
+		cancel: "tr:has('th'), [contenteditable]",
 		start: function(e, ui){
 			clearTimeout(gv.timer);
 			$('#stafflist').hide();
