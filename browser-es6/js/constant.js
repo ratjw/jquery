@@ -21,7 +21,6 @@ let gv = {
 //--- constants ---------------------
 
 const GETIPD = "php/getipd.php", 
-GETUSERID 	= "php/getuserid.php",
 GETNAMEHN	= "php/getnamehn.php",
 MYSQLIPHP	= "php/mysqli.php",
 SEARCH		= "php/search.php",

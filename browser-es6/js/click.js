@@ -44,11 +44,6 @@ function keyin(evt, keycode, pointing)
 		evt.preventDefault()
 		return false
 	}
-	// no keyin on date
-	if (pointing.cellIndex === 0) {
-		evt.preventDefault()
-		return false
-	}
 }
 
 function savePreviousCell() 

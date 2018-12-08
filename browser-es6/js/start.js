@@ -159,8 +159,9 @@ function wrapperEvent()
 
 function documentEvent()
 {
+  // Prevent the Backspace key from navigating back.
+  // Esc to cancel everything
   $(document).off('keydown').on('keydown', event => {
-    // Prevent the backspace key from navigating back.
     if (event.keyCode === 8) {
       let doPrevent = true
       let types = ["text", "password", "file", "number", "date", "time"]
@@ -224,7 +225,7 @@ function documentEvent()
   
 }
 
-// allow the title to contain HTML
+// allow the dialog title to contain HTML
 function overrideJqueryUI()
 {
   $.widget("ui.dialog", $.extend({}, $.ui.dialog.prototype, {

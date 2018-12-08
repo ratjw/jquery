@@ -88,7 +88,8 @@ function showNonEditableEquip()
 	disableInput()
 }
 
-// has equip must have copay. if no copay, ->alert
+// having any equip must have copay. if no copay, ->alert
+// having no equip, cancel copay
 function showEditableEquip()
 {
 	$('#dialogEquip').dialog("option", "buttons", [
