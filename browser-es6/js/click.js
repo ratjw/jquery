@@ -31,7 +31,11 @@ function keyin(evt, keycode, pointing)
 			return
 		}
 		savePreviousCell()
-		thiscell = findNextRow(EDITABLE, pointing)
+		if (pointing.cellIndex === HN) {
+			thiscell = findNextcell(EDITABLE, pointing)
+		} else {
+			thiscell = findNextRow(EDITABLE, pointing)
+		}
 		if (thiscell) {
 			storePresentCell(evt, thiscell)
 		} else {
