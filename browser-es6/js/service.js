@@ -11,6 +11,8 @@ function serviceReview()
 	$("#servicetbl").hide()
 	$("#exportService").hide()
 	$("#reportService").hide()
+	$(".divRecord").hide()
+	
 	$dialogService.dialog({
 		title: "Service Neurosurgery",
 		closeOnEscape: true,
@@ -57,28 +59,14 @@ function entireMonth(fromDate)
 	let date = new Date(fromDate),
 		toDate = new Date(date.getFullYear(), date.getMonth()+1, 0),
 		$dialogService = $("#dialogService"),
-		$servicetbl = $("#servicetbl"),
 		$monthpicker = $("#monthpicker"),
 		$exportService = $("#exportService"),
 		$reportService = $("#reportService"),
-		th8 = "#dialogService th:nth-child(8)",
-		td8 = "#dialogService td:nth-child(8)",
-		imgopen = "#imgopen",
-		imgclose = "#imgclose",
 		inputval = $monthpicker.val(),
 		titledate = inputval.slice(0, -4) + (Number(inputval.slice(-4)) + 543),
 		title = "Service Neurosurgery เดือน " + titledate
-		+`<button id="hideProfile">
-			<img id="imgopen" src="css/pic/general/openpane.png">
-			<img id="imgclose" src="css/pic/general/closepane.png">
-			<span class="w10 inline"></span>
-			Profile
-		  </button>`
-		
 
 	$dialogService.dialog({ title: title })
-	$(imgopen).hide()
-	$(imgclose).show()
 	toDate = $.datepicker.formatDate("yy-mm-dd", toDate)
 	$monthpicker.val(toDate)
 
@@ -100,19 +88,6 @@ function entireMonth(fromDate)
 	$reportService.on("click", event => {
 		event.preventDefault()
 		showReportToDept(title)
-	})
-
-	$("#hideProfile").on("click", event => {
-		event.preventDefault()
-		$(th8 + ', ' + td8).toggle()
-		if ($(th8).css("display") === "none") {
-			$(imgopen).show()
-			$(imgclose).hide()
-		} else {
-			$(imgopen).hide()
-			$(imgclose).show()
-		}
-		winResizeFix($servicetbl, $dialogService)
 	})
 }
 
@@ -159,8 +134,12 @@ function sqlOneMonth(fromDate, toDate)
 // dead : "", "Dead"							<- user-defined only
 function showService(fromDate, toDate)
 {
-	let $servicetbl = $("#servicetbl"),
+	let	$dialogService = $("#dialogService"),
+		$servicetbl = $("#servicetbl"),
 		$servicecells = $("#servicecells"),
+		$imgopen = $("#servicetbl th #imgopen"),
+		$imgclose = $("#servicetbl th #imgclose"),
+		$divRecord = $("#servicetbl .divRecord"),
 		staffname = "",
 		scase = 0,
 		classname = ""
@@ -192,8 +171,6 @@ function showService(fromDate, toDate)
 				.filldataService(this, scase, classname)
 	});
 
-	let	$dialogService = $("#dialogService")
-
 	$dialogService.dialog({
 		hide: 200,
 		width: winWidth(95),
@@ -204,6 +181,7 @@ function showService(fromDate, toDate)
             fillConsults()
 			$(".ui-dialog:visible").find(".ui-dialog-content").dialog("close");
 			$(".fixed").remove()
+			hideProfile()
 			$(window).off("resize", resizeDialog)
 			$dialogService.off("click", clickDialogService)
 			if ($("#editcell").data("pointing")) {
@@ -234,16 +212,28 @@ function showService(fromDate, toDate)
 		let	target = event.target,
 			$target = $(target),
 			onProfile = $target.closest(".divRecord").length,
-			onNormalCell = (target.nodeName === "TD" && target.colSpan === 1)
-			pointed = $("#editcell").data("pointing")
+			onNormalCell = (target.nodeName === "TD" && target.colSpan === 1),
+			pointed = $("#editcell").data("pointing"),
+			isHideColumn = target.cellIndex === PROFILESV,
+			onDivRecord = /divRecord/.test(target.className),
+			onImage = target.nodeName === "IMG"
 
-		// click onProfile button gives 2 events => first SPAN and then INPUT
+		if (isHideColumn || onDivRecord || onImage) {
+		  if ($servicetbl.find("th").eq(PROFILESV).width() < 200) {
+			showProfile()
+		  } else {
+			hideProfile()
+		  }
+		  $("#dialogService .fixed").refixMe($servicetbl)
+		}
+
+		// click a button on divRecord gives 2 events => first SPAN and then INPUT
 		// INPUT event comes after INPUT value was changed
 		if (onProfile) {
-			if (target.nodeName === "INPUT") {
-				showInputColor($target, target)
+			if (target.nodeName !== "INPUT") {
 				return
 			}
+			showInputColor($target, target)
 			target = $target.closest('td')[0]
 		}
 		if (pointed) {
@@ -251,7 +241,7 @@ function showService(fromDate, toDate)
 				return
 			}
 			savePreviousCellService()
-			if (onProfile || onNormalCell) {
+			if (onNormalCell || onProfile) {
 				storePresentCellService(event, target)
 			} else {
 				clearEditcell()
@@ -263,6 +253,22 @@ function showService(fromDate, toDate)
 		}
 	}
 
+	function showProfile() {
+		$servicetbl.addClass("showColumn8")
+		$dialogService.find(".fixed").addClass("showColumn8")
+		$(".divRecord").show()
+		$imgopen.hide()
+		$imgclose.show()
+	}
+
+	function hideProfile() {
+		$servicetbl.removeClass("showColumn8")
+		$dialogService.find(".fixed").removeClass("showColumn8")
+		$(".divRecord").hide()
+		$imgopen.show()
+		$imgclose.hide()
+	}
+			
 	function resizeDialog()
 	{
 		$dialogService.dialog({
@@ -394,7 +400,7 @@ function refillService(fromDate, toDate)
 			i++
 			$staff = $rows.eq(i).children("td").eq(CASENUMSV)
 			if ($staff.prop("colSpan") === 1) {
-				$staff.prop("colSpan", 10)
+				$staff.prop("colSpan", QNSV - CASENUMSV)
 					.addClass("serviceStaff")
 						.siblings().hide()
 			}
@@ -438,6 +444,7 @@ jQuery.fn.extend({
 		cells[TREATMENTSV].innerHTML = bookq.treatment
 		cells[ADMISSIONSV].innerHTML = bookq.admission
 		cells[FINALSV].innerHTML = bookq.final
+		while(cells[PROFILESV].firstChild) cells[PROFILESV].firstChild.remove()
 		cells[PROFILESV].appendChild(showRecord(bookq))
 		cells[ADMITSV].innerHTML = putThdate(bookq.admit)
 		cells[OPDATESV].innerHTML = putThdate(bookq.opdate)
@@ -744,12 +751,30 @@ function getPROFILESV(pointing)
 
 function showRecord(bookq)
 {
-	let $divRecord = $("#profileRecord").clone().prop('id', '').css('display', 'block'),
-		wide
+	let $divRecord = $("#profileRecord > div").clone()
 
 	initRecord(bookq, $divRecord)
 	inputEditable($divRecord)
 	return $divRecord[0]
+}
+
+// this.name === column in Mysql
+// this.title === value of this item
+// add qn to this.name to make it unique
+// next sibling (span) right = wide pixels, to make it (span) contained in input box
+function initRecord(bookq, $divRecord)
+{
+	let $input = $divRecord.find("input"),
+		inputName = "",
+		wide = ""
+
+	$input.each(function() {
+		inputName = this.name
+		this.checked = this.title === bookq[inputName]
+		this.name = inputName + bookq.qn
+		wide = this.className.replace("w", "") + "px"
+		this.nextElementSibling.style.right = wide
+	})
 }
 
 function inputEditable($divRecord)
@@ -761,22 +786,6 @@ function inputEditable($divRecord)
 		$divRecord.find("input").on("click", returnFalse)
 		$divRecord.find("input[type=text]").prop("disabled", true)
 	}
-}
-
-// this.name === column in Mysql
-// this.title === possible values
-function initRecord(bookq, $divRecord)
-{
-	let $input = $divRecord.find("input"),
-		wide
-
-	$input.each(function() {
-		wide = this.className.replace("w", "") + "px"
-		inputName = this.name
-		this.checked = this.title === bookq[inputName]
-		this.name = inputName + bookq.qn
-		this.nextElementSibling.style.right = wide
-	})
 }
 
 function getRecord(pointing)

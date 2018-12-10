@@ -50,7 +50,8 @@ function fillall(book, table, start, until, num=0)
 		book = book.slice(0, k)
 	}
 
-	//i for rows in table (with head as the first row)
+	// i for rows in table (with head as the first row)
+	// i from fillupfinish = table.rows.length-1
 	let i = num
 	let blen = book.length
 

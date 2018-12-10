@@ -135,14 +135,13 @@ function wrapperEvent()
     if (target.nodeName === "P") {
       target = $(target).closest('td')[0]
     }
-    if (target.cellIndex === 1) {
-      if (target.style.width < "30px") {
-         $("#tbl th:nth-child(2)").html("OR")
-         $("#tbl th:nth-child(2), #tbl td:nth-child(2)").css({ "width": "30px" })
+    if (target.cellIndex === THEATRE) {
+	  let $tbl = $("#tbl")
+      if ($tbl.find("th").eq(THEATRE).width() < 10) {
+        $tbl.addClass("showColumn2")
       }
 	  else if (target.nodeName === "TH") {
-         $("#tbl th:nth-child(2)").html("")
-         $("#tbl th:nth-child(2), #tbl td:nth-child(2)").css({ "width": "0px" })
+        $tbl.removeClass("showColumn2")
       }
     }
     if (target.nodeName === "TD") {
@@ -514,7 +513,7 @@ function renewEditcell()
 		 ? "servicetbl"
 		 : ""
   let pointing = $editcell.data("pointing")
-  let qn = $(pointing).closest("tr").find("td")[QN].innerHTML
+  let qn = $(pointing).siblings(":last").html()
   let row = id && getTableRowByQN(id, qn)
   let cell = pointing.cellIndex
 

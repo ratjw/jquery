@@ -122,10 +122,10 @@
      <tbody>
       <tr>
        <th>Date</th>
-       <th></th>
-       <th>ห้อง</th>
-       <th>เวลา</th>
-       <th>ลำดับ</th>
+       <th>OR</th>
+       <th>Rm</th>
+       <th>Time</th>
+       <th>№</th>
        <th>Staff</th>
        <th>HN</th>
        <th>Patient</th>
@@ -212,7 +212,11 @@
      <th>Treatment</th>
      <th>Admission Status</th>
      <th>Final Status</th>
-     <th>Profile</th>
+     <th>
+	   <img id="imgopen" src="css/pic/general/openpane.png">
+	   <img id="imgclose" src="css/pic/general/closepane.png">
+	   Profile
+	 </th>
      <th>Admit</th>
      <th>Date</th>
      <th>D/C</th>
@@ -225,7 +229,8 @@
 
   <!--  name is the column in Mysql -->
   <!--  title is the value -->
-  <div id="profileRecord" class="divRecord dialogBox">
+  <div id="profileRecord">
+   <div class="divRecord dialogBox">
 	<br>
 	<label class="w70">
 		<input class="w40" type="radio" name="doneby" title="Staff">
@@ -315,6 +320,7 @@
 		<input class="w50" type="checkbox" name="dead" title="Dead">
 		<span>Mortal</span>
 	</label>
+   </div>
   </div>
 </div>
 <!-- dialogService ends here -->

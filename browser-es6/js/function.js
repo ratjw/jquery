@@ -1,39 +1,46 @@
 // fixed header of tables, not scroll out of sight
-;(function($)
-{
-  $.fn.fixMe = function($container) {
-    let $this = $(this),
+$.fn.fixMe = function($container) {
+  let $this = $(this),
       $t_fixed,
       pad = $container.css("paddingLeft")
-    init();
-    $container.off("scroll").on("scroll", scrollFixed);
 
-    function init() {
-      $t_fixed = $this.clone();
-      $t_fixed.removeAttr("id")
-      $t_fixed.find("tbody").remove().end()
-          .addClass("fixed").insertBefore($this);
-      $container.scrollTop(0)
-      resizeFixed($t_fixed, $this);
-      reposition($t_fixed, "left top", "left+" + pad + " top", $container)
-      $t_fixed.hide()
-    }
+  init();
+  $container.off("scroll").on("scroll", scrollFixed);
 
-    function scrollFixed() {
-      let offset = $(this).scrollTop(),
+  function init() {
+    $t_fixed = $this.clone();
+    $t_fixed.removeAttr("id")
+    $t_fixed.find("tbody").remove().end()
+              .addClass("fixed")
+                .insertBefore($this);
+    $container.scrollTop(0)
+    resizeFixed($t_fixed, $this);
+    reposition($t_fixed, "left top", "left+" + pad + " top", $container)
+    $t_fixed.hide()
+  }
+
+  function scrollFixed() {
+    let offset = $(this).scrollTop(),
       tableTop = $this[0].offsetTop,
       tableBottom = tableTop + $this.height() - $this.find("thead").height();
-      if(offset < tableTop || offset > tableBottom) {
-        $t_fixed.hide();
-      }
-      else if (offset >= tableTop && offset <= tableBottom && $t_fixed.is(":hidden")) {
-        $t_fixed.show();
-//        resizeFixed($t_fixed, $this);
-//        reposition($t_fixed, "left top", "left+" + pad + " top", $container)
-      }
+
+    if(offset < tableTop || offset > tableBottom) {
+      $t_fixed.hide();
     }
-  };
-})(jQuery);
+    else if (offset >= tableTop && offset <= tableBottom && $t_fixed.is(":hidden")) {
+      $t_fixed.show();
+//    resizeFixed($t_fixed, $this);
+//    reposition($t_fixed, "left top", "left+" + pad + " top", $container)
+    }
+  }
+};
+
+$.fn.refixMe = function($original) {
+  let $fix = $original.find("thead tr").clone();
+
+  resizeFixed($fix, $original);
+  $(this).html($fix)
+}
 
 function resizeFixed($fix, $this)
 {
@@ -47,8 +54,8 @@ function resizeFixed($fix, $this)
 function winResizeFix($this, $container)
 {
   let $fix = $container.find(".fixed"),
-    hide = $fix.css("display") === "none",
-    pad = $container.css("paddingLeft")
+      hide = $fix.css("display") === "none",
+      pad = $container.css("paddingLeft")
 
   resizeFixed($fix, $this)
   reposition($fix, "left top", "left+" + pad + " top", $container)

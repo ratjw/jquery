@@ -1064,7 +1064,7 @@ function createEditcell(pointing)
 
 function editcellData($editcell, pointing, context)
 {
-	let qn = $(pointing).closest('tr').find("td")[QN].innerHTML
+	let qn = $(pointing).siblings(":last").html()
 
 	$editcell.data("pointing", pointing)
 	$editcell.data("oldcontent", context)

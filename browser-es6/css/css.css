@@ -64,17 +64,28 @@ td img {
 	border-left: solid 2px snow;
 }
 
-#tbl td:first-child,
-#tbl td:nth-child(2),
+#tbl.showColumn2 th:nth-child(2),
+#tbl.showColumn2 td:nth-child(2) { width: 30px; font-size: 10px; }
+#tbl th:nth-child(2), td:nth-child(2) { width: 0px; font-size: 0px; }
+#tbl th:nth-child(3),
 #tbl td:nth-child(3),
+#tbl th:nth-child(4),
 #tbl td:nth-child(4),
+#tbl th:nth-child(5),
 #tbl td:nth-child(5),
+#queuetbl th:nth-child(3),
+#queuetbl td:nth-child(3),
+#queuetbl th:nth-child(4),
+#queuetbl td:nth-child(4),
+#queuetbl th:nth-child(5),
+#queuetbl td:nth-child(5) {
+	font-size: xx-small;
+}
+#tbl td:first-child,
 #tbl td:nth-child(6),
 #tbl td:nth-child(7),
 #tbl td:nth-child(8),
 #queuetbl td:first-child,
-#queuetbl td:nth-child(4),
-#queuetbl td:nth-child(5),
 #queuetbl td:nth-child(6),
 #queuetbl td:nth-child(7),
 #queuetbl td:nth-child(8),
@@ -98,21 +109,20 @@ td img {
 	font-size: 12px;
 }
 
-#tbl td:first-child,
-#queuetbl td:first-child { min-width: 40px; max-width: 60px; }
-
-#tbl td:nth-child(2) { width: 0px; }
-
-#historytbl td:nth-child(2),
-#historytbl td:nth-child(3),
 #tbl td:nth-child(2),
 #tbl td:nth-child(3),
 #tbl td:nth-child(4),
-#tbl td:nth-child(5) { text-align: center; }
+#tbl td:nth-child(5),
+#servicetbl td:first-child,
+#historytbl td:nth-child(2),
+#historytbl td:nth-child(3) {
+	text-align: center;
+}
 
-#tbl td:nth-child(3),
-#tbl td:nth-child(4),
-#tbl td:nth-child(5) { min-width: 25px; max-width: 30px; }
+#tbl td:first-child { min-width: 40px; max-width: 60px; }
+#tbl td:nth-child(3) { min-width: 15px; max-width: 20px; }
+#tbl td:nth-child(4) { min-width: 25px; max-width: 30px; }
+#tbl td:nth-child(5) { min-width: 15px; max-width: 20px; }
 #tbl td:nth-child(6) { min-width: 40px; max-width: 60px; }
 #tbl td:nth-child(7) { min-width: 50px; max-width: 70px; }
 #tbl td:nth-child(8) { min-width: 70px; width: 10%; }
@@ -121,6 +131,7 @@ td img {
 #tbl td:nth-child(11) { min-width: 100px; width: 15%; }
 #tbl td:nth-child(12) { min-width: 100px; width: 15%; }
 
+#queuetbl td:first-child { min-width: 40px; max-width: 60px; }
 #queuetbl td:nth-child(6) { min-width: 40px; max-width: 60px; }
 #queuetbl td:nth-child(7) { min-width: 50px; max-width: 70px; }
 #queuetbl td:nth-child(8) { min-width: 70px; width: 10%; }
@@ -129,6 +140,27 @@ td img {
 #queuetbl td:nth-child(11) { min-width: 100px; width: 15%; }
 #queuetbl td:nth-child(12) { min-width: 100px; width: 15%; }
 
+#queuetbl {
+	margin-bottom: 100px;
+}
+#queuetbl tr.odd {
+	background-color: #EEEEFF;
+}
+
+#titlebar {
+	height: 40px;
+	background-color: #7799AA;
+}
+
+#titlename {
+	font-size: 20px;
+	font-weight: bold;
+	color: white;
+	width: 100px;
+	line-height: 35px;
+	margin-left: 25px;
+}
+
 #servicetbl td:nth-child(1) { width: 15px; }
 #servicetbl td:nth-child(2) { width: 50px; }
 #servicetbl td:nth-child(3) { width: 10%; }
@@ -136,10 +168,30 @@ td img {
 #servicetbl td:nth-child(5) { width: 15%; }
 #servicetbl td:nth-child(6) { width: 25%; }
 #servicetbl td:nth-child(7) { width: 25%; }
-#servicetbl td:nth-child(8) { width: 200px; }
 #servicetbl td:nth-child(9) { width: 40px; }
 #servicetbl td:nth-child(10) { width: 40px; }
 #servicetbl td:nth-child(11) { width: 40px; }
+#servicetbl th:nth-child(8),
+#servicetbl td:nth-child(8),
+#dialogService .fixed th:nth-child(8) {
+	width: 0px;
+	font-size: 0px;
+}
+#servicetbl.showColumn8 th:nth-child(8),
+#servicetbl.showColumn8 td:nth-child(8),
+#dialogService .fixed.showColumn8 th:nth-child(8) {
+	width: 200px;
+	font-size: 14px;
+}
+
+#servicetbl td.serviceStaff {
+	height: 40px;
+	font-weight: bold;
+	font-size: 16px;
+	text-align: left;
+	padding-left: 10px;
+	background-color: #DDFFFF;
+}
 
 #historytbl td:nth-child(1) { width: 5%; }
 #historytbl td:nth-child(2) { width: 10px; }
@@ -201,7 +253,7 @@ td img {
 #monthpicker button.ui-datepicker-current,
 #monthpicker .ui-datepicker-calendar,
 #monthstart,
-.divRecord,
+#imgclose,
 #dialogReview,
 #dialogEquip,
 #dialogAll, #allcells,
@@ -362,6 +414,54 @@ td.camera2 { background-image: url(pic/general/camera2.png); }
 .Morbidity { background-color: #AAAACC !important; }
 .Dead { background-color: #AAAAAA !important; }
 
+.divRecord {
+	width: 200px;
+}
+
+.divRecord label {
+  display: inline-block;
+}
+
+.divRecord input {
+  height: 17px;
+  border-radius: 5px;
+  border: 1px solid #19adc4;
+  background-color: white;
+  -webkit-appearance: none; /*to disable the default appearance of radio button*/
+  -moz-appearance: none;
+}
+
+.divRecord input:focus { /*no need, if you don't disable default appearance*/
+  outline-color: transparent; /*to remove the square border on focus*/
+}
+
+.divRecord input:checked { /*no need, if you don't disable default appearance*/
+  background-color: #19adc4;
+}
+
+.divRecord input:checked ~ span {
+  color: white;
+}
+
+.divRecord label span {
+  position: relative;
+  font-size: 11px;
+  color: #19adc4;
+  top: -4.5px;
+  width: 0px;
+}
+
+.divRecord label input[type="checkbox"] + span {
+  top: -8px;
+}
+
+.divRecord hr {
+  height: 1px;
+  border: 0;
+  border-top: 1px solid #B4E4EC;
+  margin: 3px 10px 0px 5px;
+}
+
 .ui-sortable-helper {
 	display: table;
 }
@@ -465,26 +565,7 @@ td.camera2 { background-image: url(pic/general/camera2.png); }
 .monthbut { color:white !important; background-color: #00AAFF !important; }
 .yearbut { color:white !important; background-color: #0077BB !important; }
 
-#titlebar {
-	height: 40px;
-	background-color: #7799AA;
-}
-
-#titlename {
-	font-size: 20px;
-	font-weight: bold;
-	color: white;
-	width: 100px;
-	line-height: 35px;
-	margin-left: 25px;
-}
-
-#queuetbl {
-	margin-bottom: 100px;
-}
-
-#historytbl tr:nth-child(odd),
-#queuetbl tr.odd {
+#historytbl tr:nth-child(odd) {
 	background-color: #EEEEFF;
 }
 
@@ -506,41 +587,11 @@ td.camera2 { background-image: url(pic/general/camera2.png); }
 	width: 170px;
 	padding: 2px 10px;
 }
-/*
-#servicetbl tbody{
-  display: block;
-  overflow: auto;
-  height: auto;
-  width: 100%;
-}
-
-#servicetbl thead tr{
-  display: block;
-}
-*/
-#servicetbl td:first-child {
-	text-align: center;
-}
-
-#servicetbl td.serviceStaff {
-	height: 40px;
-	font-weight: bold;
-	font-size: 16px;
-	text-align: left;
-	padding-left: 10px;
-	background-color: #DDFFFF;
-}
 
 #monthpicker { margin-left:5px }
 
-#hideProfile {
-	float: right;
-	font-size: 16px;
-	height: 30px;
-	line-height: 20px;
-	padding-top:2px
-}
-#hideProfile img {
+#imgopen,
+#imgclose {
 	float: left;
 	width: 20px;
 }
@@ -575,54 +626,6 @@ td.camera2 { background-image: url(pic/general/camera2.png); }
 	white-space: nowrap;
 }
 
-.divRecord {
-	width: 200px;
-}
-
-.divRecord label {
-  display: inline-block;
-}
-
-.divRecord input {
-  height: 17px;
-  border-radius: 5px;
-  border: 1px solid #19adc4;
-  background-color: white;
-  -webkit-appearance: none; /*to disable the default appearance of radio button*/
-  -moz-appearance: none;
-}
-
-.divRecord input:focus { /*no need, if you don't disable default appearance*/
-  outline-color: transparent; /*to remove the square border on focus*/
-}
-
-.divRecord input:checked { /*no need, if you don't disable default appearance*/
-  background-color: #19adc4;
-}
-
-.divRecord input:checked ~ span {
-  color: white;
-}
-
-.divRecord label span {
-  position: relative;
-  font-size: 11px;
-  color: #19adc4;
-  top: -4.5px;
-  width: 0px;
-}
-
-.divRecord label input[type="checkbox"] + span {
-  top: -8px;
-}
-
-.divRecord hr {
-  height: 1px;
-  border: 0;
-  border-top: 1px solid #B4E4EC;
-  margin: 3px 10px 0px 5px;
-}
-
 #reviewtbl {
 	font-weight: bold;
 }
@@ -648,7 +651,7 @@ td.camera2 { background-image: url(pic/general/camera2.png); }
 	background-color: #FF6688;
 }
 
-.nonsurgical td {
+#reviewtbl tr.nonsurgical td {
 	background-color: LightGray;
 	border-left: solid 1px silver;
 }
