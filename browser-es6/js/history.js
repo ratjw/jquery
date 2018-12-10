@@ -203,8 +203,11 @@ function toUndelete(thisDate, deleted)
 //  let UNDELEDITDATETIME  = 8;
   let UNDELQN        = 9;
   let $thisDate      = $(thisDate)
+  let $undelete = $("#undelete")
 
-  reposition($("#undelete"), "left center", "left center", $thisDate)
+  // jquery position not work in hidden elements
+  $undelete.show()
+  reposition($undelete, "left center", "left center", $thisDate)
 
   $("#undel").off().on("click", async function() {
     let $thiscase = $thisDate.closest("tr").children("td"),
@@ -524,7 +527,7 @@ function getSaffName(pointing)
   let $stafflist = $("#stafflist"),
     $pointing = $(pointing)
 
-  $stafflist.appendTo($pointing.closest('div'))
+  $stafflist.appendTo($pointing.closest('div')).show()
   $stafflist.menu({
     select: function( event, ui ) {
       pointing.value = ui.item.text()

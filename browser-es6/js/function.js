@@ -222,7 +222,7 @@ function URIcomponent(content)
 function menustyle($me, $target)
 {
   let shadow = '10px -20px 30px slategray'
-  if ($me.position().top > $target.position().top) {
+  if ($me.offset().top > $target.offset().top) {
     shadow = '10px 20px 30px slategray'
   }
 

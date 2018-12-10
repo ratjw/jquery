@@ -993,7 +993,7 @@ function getSTAFFNAME(pointing)
 		$pointing = $(pointing)
 
 	createEditcell(pointing)
-	$stafflist.appendTo($pointing.closest('div'))
+	$stafflist.appendTo($pointing.closest('div')).show()
 
 	$stafflist.menu({
 		select: function( event, ui ) {
@@ -1007,9 +1007,6 @@ function getSTAFFNAME(pointing)
 	// reposition from main menu to determine shadow
 	reposition($stafflist, "left top", "left bottom", $pointing)
 	menustyle($stafflist, $pointing)
-
-	// repeat to make it show on first click in queuetbl
-	reposition($stafflist, "left top", "left bottom", $pointing)
 }
 
 function getHN(evt, pointing)
@@ -1075,7 +1072,8 @@ function showEditcell($editcell, $pointing, height, width)
 	$editcell.css({
 		height: height,
 		width: width,
-		fontSize: $pointing.css("fontSize")
+		fontSize: $pointing.css("fontSize"),
+		display: "block"
 	})
 	$editcell.appendTo($pointing.closest('div'))
 	reposition($editcell, "left center", "left center", $pointing)
@@ -1089,14 +1087,8 @@ function reposition($me, mypos, atpos, $target, within)
 		at: atpos,
 		of: $target,
 		within: within
-	}).show()
-	$me.position({
-		my: mypos,
-		at: atpos,
-		of: $target,
-		within: within
-	}).show()
-}	// Don't know why have to repeat 2 times
+	})
+}
 
 function clearEditcell()
 {

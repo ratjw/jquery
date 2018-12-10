@@ -346,7 +346,7 @@ function exchangeOncall(pointing)
     }
   })
 
-  // reposition from main menu to determine shadow
+  $stafflist.show()
   reposition($stafflist, "left top", "left bottom", $pointing)
   menustyle($stafflist, $pointing)
   clearEditcell()
