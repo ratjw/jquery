@@ -43,8 +43,7 @@ function loading(response)
   overrideJqueryUI()
   resetTimer()
 
-  // Let tbl animate scrollTop (300 ms) finish first
-  setTimeout( fillupfinish, 500)
+  setTimeout( fillupfinish, 2000)
 }
 
 function scrolltoToday()
