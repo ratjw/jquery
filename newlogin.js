@@ -26,14 +26,19 @@ function login()
 						: (Safari && Safari.length > 1)
 							? Safari[1] >= "10.1"
 							: false
-*/	var browser = checkES6()
-				? (isMobile === "true")
-					? "browser-mobile"
-//					: ($module === "true")
-//						? "browser-module"
-						: "browser-es6"
-				: "browser-vpn-es5"
-
+*/	var browser = /rvpn/.test(window.origin)
+				? isMobile
+					? "browser-vpn-mobile"
+					: "browser-vpn-es5"
+				: checkES6()
+					? isMobile
+						? "browser-mobile"
+//						: module
+//							? "browser-module"
+							: "browser-es6"
+					: "browser-es5"
+					
+browser = "browser-vpn-mobile"
 	document.getElementById("browser").value = browser
 	sessionStorage.setItem('userid', document.getElementById("userid").value)
 }
@@ -49,7 +54,6 @@ function namesix()
 
 // vpn not run ES6
 function checkES6() {
-	if (/rvpn/.test(window.origin)) return false
     if (typeof fetch === "undefined") return false
     if (typeof find === "undefined") return false
     try {

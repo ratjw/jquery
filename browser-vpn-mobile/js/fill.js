@@ -1,9 +1,9 @@
 // Display all cases in each day of the week
-// from the 1st of last month
+// Find the 1st of last month
 // fill until 10 days from now
 function fillupstart()
 {
-	let	table = document.getElementById("tbl"),
+	var	table = document.getElementById("tbl"),
 		today = new Date(),
 		start = getStart(),
 		end = today.setDate(today.getDate() + 10),
@@ -35,9 +35,9 @@ function fillupfinish()
 	fillall(book, table, start, until, table.rows.length-1)
 }
 
-function fillall(book, table, start, until, num=0)
+function fillall(book, table, start, until)
 {
-	let tbody = table.getElementsByTagName("tbody")[0],
+	var tbody = table.getElementsByTagName("tbody")[0],
 		rows = table.rows,
 		head = table.rows[0],
 		date = start,
@@ -45,15 +45,15 @@ function fillall(book, table, start, until, num=0)
 		q = findStartRowInBOOK(book, start),
 		k = findStartRowInBOOK(book, LARGESTDATE)
 
-	// get rid of cases with unspecified opdate (LARGESTDATE)
-	// Consult cases have no LARGESTDATE, findStartRowInBOOK returns k = -1
+	// get rid of cases with unspecified opdate
+	// Consult cases and new start have no LARGESTDATE, so k = -1
 	if (k >= 0) {
 		book = book.slice(0, k)
 	}
 
 	//i for rows in table (with head as the first row)
-	let i = num
-	let blen = book.length
+	var i = 0
+	var blen = book.length
 
 	for (q; q < blen; q++)
 	{	
@@ -76,7 +76,7 @@ function fillall(book, table, start, until, num=0)
 			//make table head row before every Monday
 			if ((new Date(date).getDay())%7 === 1)
 			{
-				let clone = head.cloneNode(true)
+				var clone = head.cloneNode(true)
 				tbody.appendChild(clone)
  				i++
 			}
@@ -94,7 +94,7 @@ function fillall(book, table, start, until, num=0)
 		//make table head row before every Monday
 		if (((new Date(date)).getDay())%7 === 1)
 		{
-			let clone = head.cloneNode(true)
+			var clone = head.cloneNode(true)
 			tbody.appendChild(clone)
 		}
 		//make a blank row
@@ -104,7 +104,7 @@ function fillall(book, table, start, until, num=0)
 
 function refillall()
 {
-	let book = gv.BOOK,
+	var book = gv.BOOK,
 		table = document.getElementById("tbl"),
 		$tbody = $("#tbl tbody"),
 		start = $('#tbl tr:has("td")').first().find('td').eq(OPDATE).html().numDate(),
@@ -113,7 +113,6 @@ function refillall()
 	$tbody.html($tbody.find("tr:first").clone())
 	fillall(book, table, start, until)
 	hoverMain()
-	// For new HN added to this table
 }
 
 // main table (#tbl) only
@@ -121,7 +120,7 @@ function refillall()
 function refillOneDay(opdate)
 {
 	if (opdate === LARGESTDATE) { return }
-	let book = gv.BOOK,
+	var book = gv.BOOK,
 		opdateth = putThdate(opdate),
 		opdateBOOKrows = getBOOKrowsByDate(book, opdate),
 		$opdateTblRows = getTableRowsByDate(opdateth),
@@ -178,7 +177,7 @@ function refillOneDay(opdate)
 //create and decorate new row
 function makenextrow(table, date)
 {
-	let	tbody = table.getElementsByTagName("tbody")[0],
+	var	tbody = table.getElementsByTagName("tbody")[0],
 		tblcells = document.getElementById("tblcells"),
 		row = tblcells.rows[0].cloneNode(true),
 		rowi = tbody.appendChild(row)
@@ -195,7 +194,7 @@ function dayName(DAYNAME, date)
 
 function fillblank(rowi)
 {
-	let cells = rowi.cells
+	var cells = rowi.cells
 	cells[THEATRE].innerHTML = ""
 	cells[OPROOM].innerHTML = ""
 	cells[OPTIME].innerHTML = ""
@@ -214,10 +213,10 @@ function fillblank(rowi)
 
 function filldata(bookq, row)
 {
-	let cells = row.cells
+	var cells = row.cells
 
 	row.title = bookq.waitnum
-//	if (bookq.hn && gv.isPACS) { cells[HN].className = "pacs" }
+	if (bookq.hn && gv.isPACS) { cells[HN].className = "pacs" }
 	if (bookq.patient && gv.isMobile) { cells[PATIENT].className = "camera" }
 
 	cells[THEATRE].innerHTML = bookq.theatre
@@ -236,13 +235,14 @@ function filldata(bookq, row)
 
 function staffqueue(staffname)
 {
-	let	todate = new Date().ISOdate(),
+	var	todate = new Date().ISOdate(),
 		book = gv.BOOK,
 		consult = gv.CONSULT,
 		$queuetbl = $('#queuetbl'),
 		queuetbl = $queuetbl[0]
 		
 
+	if (!isSplited()) { splitPane() }
 	$('#titlename').html(staffname)
 	
 	//delete previous queuetbl lest it accumulates
@@ -253,7 +253,7 @@ function staffqueue(staffname)
 		if (consult.length === 0)
 			consult.push({"opdate" : todate})
 
-		let start = getStart()
+		var start = getStart()
 
 		fillall(consult, queuetbl, start, todate)
 
@@ -268,17 +268,16 @@ function staffqueue(staffname)
 		});
 	}
 
-	if (!isSplited()) { splitPane() }
 	hoverMain()
 }
 
 function refillstaffqueue()
 {
-	let today = new Date()
-	let todate = today.ISOdate()
-	let staffname = $('#titlename').html()
-	let book = gv.BOOK
-	let consult = gv.CONSULT
+	var today = new Date()
+	var todate = today.ISOdate()
+	var staffname = $('#titlename').html()
+	var book = gv.BOOK
+	var consult = gv.CONSULT
 
 	if (!isSplited()) { return }
 
@@ -288,13 +287,13 @@ function refillstaffqueue()
 		if (consult.length === 0)
 			consult.push({"opdate" : todate})
 
-		let table = document.getElementById("queuetbl")
-		let start = (new Date((today).getFullYear(), (today).getMonth() - 1, 1)).ISOdate()
+		var table = document.getElementById("queuetbl")
+		var start = (new Date((today).getFullYear(), (today).getMonth() - 1, 1)).ISOdate()
 
 		fillall(consult, table, start, todate)
 	} else {
 		//render as staffqueue
-		let i = 0
+		var i = 0
 		$.each( book, function(q, each) {
 			if ((this.opdate >= todate) && (this.staffname === staffname)) {
 				i++
@@ -315,12 +314,12 @@ function refillstaffqueue()
 
 jQuery.fn.extend({
 	filldataQueue : function(bookq) {
-		let	$cells = this.find("td")
+		var	$cells = this.find("td")
 
 		this[0].title = bookq.waitnum
 		addColor(this, bookq.opdate)
 		$cells[OPDATE].className = dayName(NAMEOFDAYABBR, bookq.opdate)
-//		$cells[HN].className = (bookq.hn && gv.isPACS)? "pacs" : ""
+		$cells[HN].className = (bookq.hn && gv.isPACS)? "pacs" : ""
 		$cells[PATIENT].className = (bookq.patient && gv.isMobile)? "camera" : ""
 
 		$cells[OPDATE].innerHTML = putThdate(bookq.opdate)
@@ -337,83 +336,10 @@ jQuery.fn.extend({
 	}
 })
 
-function splitPane()
-{
-	let scrolledTop = document.getElementById("tblcontainer").scrollTop
-	let tohead = findVisibleHead('#tbl')
-	let menuHeight = $("#cssmenu").height()
-	let titleHeight = $("#titlebar").height()
-
-	$("#tblwrapper").css({
-		"height": "100%" - menuHeight,
-		"width": "20%"
-	})
-	$("#queuewrapper").show().css({
-		"height": "100%" - menuHeight,
-		"width": "80%"
-	})
-	$("#queuecontainer").css({
-		"height": $("#tblcontainer").height() - titleHeight
-	})
-
-	initResize($("#tblwrapper"))
-	$('.ui-resizable-e').css('height', $("#tbl").css("height"))
-
-//	fakeScrollAnimate("tblcontainer", "tbl", scrolledTop, tohead.offsetTop)
-}
-
-// remainSpace-margin-1 to prevent right pane disappear while resizing in Chrome 
-function initResize($container)
-{
-	$container.resizable(
-	{
-		autoHide: true,
-		handles: 'e',
-		resize: function(e, ui) 
-		{
-			let parent = ui.element.parent();
-			let remainSpace = parent.width() - ui.element.outerWidth()
-			let divTwo = ui.element.next()
-			let margin = divTwo.outerWidth() - divTwo.innerWidth()
-			let divTwoWidth = (remainSpace-margin-1)/parent.width()*100+"%";
-			divTwo.css("width", divTwoWidth);
-		},
-		stop: function(e, ui) 
-		{
-			let parent = ui.element.parent();
-			let remainSpace = parent.width() - ui.element.outerWidth()
-			let divTwo = ui.element.next()
-			let margin = divTwo.outerWidth() - divTwo.innerWidth()
-			ui.element.css(
-			{
-				width: ui.element.outerWidth()/parent.width()*100+"%",
-			});
-			ui.element.next().css(
-			{
-				width: (remainSpace-margin)/parent.width()*100+"%",
-			});
-		}
-	});
-}
-
-function closequeue()
-{
-	let scrolledTop = document.getElementById("tblcontainer").scrollTop
-	let tohead = findVisibleHead('#tbl')
-	
-	$("#queuewrapper").hide()
-	$("#tblwrapper").css({
-		"height": "100%" - $("#cssmenu").height(),
-		"width": "100%"
-	})
-
-//	fakeScrollAnimate("tblcontainer", "tbl", scrolledTop, tohead.offsetTop)
-}
-
 // hover on background pics
 function hoverMain()
 {
-	let	paleClasses = ["pacs", "camera"],
+	var	paleClasses = ["pacs", "camera"],
 		boldClasses = ["pacs2", "camera2"]
 
 	$("td.pacs, td.camera").mousemove(function(event) {
@@ -430,12 +356,12 @@ function hoverMain()
 
 function getClass(thiscell, fromClass, toClass)
 {
-	let	classname = thiscell.className,
+	var	classname = thiscell.className,
 		classes = classname.split(" "),
 		oldClass = checkMatch(classes, fromClass)
 
 	if (oldClass) {
-		let hasIndex = fromClass.indexOf(oldClass),
+		var hasIndex = fromClass.indexOf(oldClass),
 			newClass = toClass[hasIndex]
 		thiscell.className = classname.replace(oldClass, newClass)
 	}
@@ -443,8 +369,8 @@ function getClass(thiscell, fromClass, toClass)
 
 function checkMatch(classes, oldClasses)
 {
-	for (let i=0; i<classes.length; i++) {
-		for (let j=0; j<oldClasses.length; j++) {
+	for (var i=0; i<classes.length; i++) {
+		for (var j=0; j<oldClasses.length; j++) {
 			if (classes[i] === oldClasses[j]) {
 				return classes[i]
 			}
@@ -460,7 +386,7 @@ function putNameAge(bookq)
 
 function addColor($this, bookqOpdate) 
 {
-	let predate = $this.prev().children("td").eq(OPDATE).html(),
+	var predate = $this.prev().children("td").eq(OPDATE).html(),
 		prevdate = (predate? predate.numDate() : ""),
 		prevIsOdd = $this.prev().prop("class").indexOf("odd") >= 0,
 		samePrevDate = bookqOpdate === prevdate
@@ -472,193 +398,6 @@ function addColor($this, bookqOpdate)
 	}
 	// In LARGESTDATE, prevdate = "" but bookqOpdate = LARGESTDATE
 	// So LARGESTDATE cases are !samePrevDate, thus has alternate colors
-}
-
-function setHoliday()
-{
-	let	$dialogHoliday = $("#dialogHoliday"),
-		$holidaytbl = $("#holidaytbl"),
-		$holidateth = $("#holidateth")
-
-	fillHoliday($holidaytbl)
-	$dialogHoliday.dialog({
-		title: "Holiday",
-		closeOnEscape: true,
-		modal: true,
-		show: 200,
-		hide: 200,
-		width: 500,
-		height: 600,
-		buttons: [{
-			text: "Save",
-			click: function () {
-				saveHoliday()
-			}
-		}],
-		close: function() {
-			let	$inputRow = $("#holidaytbl tr:has('input')")
-
-			if ($inputRow.length) {
-				holidayInputBack($inputRow)
-			}
-		}
-	})
-	$holidateth.datepicker({
-		autoSize: true,
-		dateFormat: "dd M yy",
-		monthNames: [ "มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", 
-					  "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม" ],
-		// use Short names to be consistent with the month converted by numDate()
-		monthNamesShort: THAIMONTH,
-		yearSuffix: new Date().getFullYear() +  543,
-		beforeShow: function (input, inst) {
-			if (inst.selectedYear) {
-				// prevent using Buddhist year from <input>
-				$(this).datepicker("setDate",
-					new Date(inst.currentYear, inst.currentMonth, inst.currentDay))
-			} else {
-				$(this).datepicker("setDate", new Date())
-			}
-			$holidateth.one("click", function() {
-				if (input.value) {
-					$holidateth.val(input.value.slice(0, -4) + (inst.selectedYear + 543))
-				}
-			})
-		},
-		onChangeMonthYear: function (year, month, inst) {
-			$(this).datepicker("setDate",
-				new Date(inst.selectedYear, inst.selectedMonth, inst.selectedDay))
-			inst.settings.yearSuffix = inst.selectedYear + 543
-			$holidateth.val($holidateth.val().slice(0, -4) + (inst.selectedYear + 543))
-		},
-		onSelect: function (input, inst) {
-			$holidateth.val(input.slice(0, -4) + (inst.selectedYear + 543))
-		}
-	})
-}
-
-function fillHoliday($holidaytbl)
-{
-	let	holidaylist = '<option style="display:none"></option>'
-
-	$.each(HOLIDAYENGTHAI, function(key, val) {
-		holidaylist += '<option value="' + key
-					+ '">' + val
-					+ '</option>'
-	})
-	document.getElementById("holidayname").innerHTML = holidaylist
-
-	$holidaytbl.find('tr').slice(1).remove()
-
-	$.each( gv.HOLIDAY, function(i) {
-		$('#holidaycells tr').clone()
-			.appendTo($holidaytbl.find('tbody'))
-				.filldataHoliday(this)
-		$holidaytbl.find("tbody tr:last td:last")
-				.append($(".delholiday").eq(0).clone())
-	});
-}
-
-jQuery.fn.extend({
-	filldataHoliday : function(q) {
-		let	cells = this[0].cells,
-			data = [
-				putThdate(q.holidate),
-				HOLIDAYENGTHAI[q.dayname]
-			]
-
-		dataforEachCell(cells, data)
-	}
-})
-
-function addHoliday()
-{
-	let	$dialogHoliday = $("#dialogHoliday"),
-		$holidaytbl = $("#holidaytbl")
-
-	// already has an <input> row
-	if ($holidaytbl.find("input").length) { return }
-
-	$holidaytbl.find("tbody")
-		.append($("#holidayInput tr"))
-
-	let	append = $holidaytbl.height(),
-		height = $dialogHoliday.height()
-	if (append > height) {
-		$dialogHoliday.scrollTop(append - height)
-	}
-}
-
-async function saveHoliday()
-{
-	let	vdateth = document.getElementById("holidateth").value,
-		vdate = vdateth.numDate(),
-		vname = document.getElementById("holidayname").value,
-		rows = getTableRowsByDate(vdateth),
-
-		sql = "sqlReturnData="
-			+ "INSERT INTO holiday (holidate,dayname) VALUES('"
-			+ vdate + "','"+ vname
-			+ "');SELECT * FROM holiday ORDER BY holidate;"
-
-	if (!vdate || !vname) { return }
-
-	let response = await postData(MYSQLIPHP, sql)
-	if (typeof response === "object") {
-		gv.HOLIDAY = response
-		holidayInputBack($("#holidateth").closest("tr"))
-		fillHoliday($("#holidaytbl"))
-		$(rows).each(function() {
-			this.cells[DIAGNOSIS].style.backgroundImage = holiday(vdate)
-		})
-	} else {
-		alert(response)
-	}
-}
-
-async function delHoliday(that)
-{
-	let	$row = $(that).closest("tr")
-
-	if ($row.find("input").length) {
-		holidayInputBack($row)
-	} else {
-		let	$cell = $row.find("td"),
-			vdateth = $cell[0].innerHTML,
-			vdate = vdateth.numDate(),
-			vname = $cell[1].innerHTML.replace(/<button.*$/, ""),
-			rows = getTableRowsByDate(vdateth),
-			holidayEng = getHolidayEng(vname),
-
-			sql = "sqlReturnData=DELETE FROM holiday WHERE "
-				+ "holidate='" + vdate
-				+ "' AND dayname='" + holidayEng
-				+ "';SELECT * FROM holiday ORDER BY holidate;"
-
-		let response = await postData(MYSQLIPHP, sql)
-		if (typeof response === "object") {
-			gv.HOLIDAY = response
-			$(rows).each(function() {
-				this.cells[DIAGNOSIS].style.backgroundImage = ""
-			})
-			$row.remove()
-		} else {
-			alert(response)
-		}
-	}
-}
-
-function getHolidayEng(vname) {
-	return Object.keys(HOLIDAYENGTHAI).find(function(key) {
-		return HOLIDAYENGTHAI[key] === vname
-	})
-}
-
-function holidayInputBack($inputRow)
-{
-	$("#holidateth").val("")
-	$("#holidayname").val("")
-	$('#holidayInput tbody').append($inputRow)
 }
 
 function holiday(date)

@@ -1,11 +1,11 @@
 // Display all cases in each day of the week
-// from the 1st of last month until 50 days from now
+// from the 1st of last month until 20 days from now
 function fillupstart()
 {
 	let	table = document.getElementById("tbl"),
 		today = new Date(),
 		start = getStart(),
-		end = today.setDate(today.getDate() + 50),
+		end = today.setDate(today.getDate() + 20),
 		until = new Date(end).ISOdate(),
 		book = gv.BOOK,
 		todate = today.ISOdate()
@@ -22,7 +22,7 @@ function fillupfinish()
 {
 	let	table = document.getElementById("tbl"),
 		today = new Date(),
-		begin = today.setDate(today.getDate() + 51),
+		begin = today.setDate(today.getDate() + 21),
 		start = new Date(begin).ISOdate(),
 		nextyear = today.getFullYear() + 2,
 		month = today.getMonth(),
