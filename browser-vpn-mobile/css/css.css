@@ -115,9 +115,9 @@ td img {
 #tbl td:nth-child(6) { min-width: 40px; width: 3%; }
 #tbl td:nth-child(7) { min-width: 50px; max-width: 50px; }
 #tbl td:nth-child(8) { min-width: 70px; width: 10%; }
-#tbl td:nth-child(9) { width: 25%; }
-#tbl td:nth-child(10) { width: 25%; }
-#tbl td:nth-child(11) { width: 20%; }
+#tbl td:nth-child(9) { width: 20%; }
+#tbl td:nth-child(10) { width: 20%; }
+#tbl td:nth-child(11) { width: 30%; }
 #tbl td:nth-child(12) { width: 20%; }
 
 #queuetbl td:nth-child(6) { min-width: 40px; max-width: 60px; }
