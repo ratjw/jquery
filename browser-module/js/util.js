@@ -3,12 +3,11 @@ import {
 	OPDATE, STAFFNAME, HN, PATIENT, DIAGNOSIS, TREATMENT, CONTACT, QN,
 	LARGESTDATE, THAIMONTH
 } from "./const.js"
-import { modelIdling } from "./model.js"
 import { isConsultsTbl } from "./view.js"
 
 export {
-	updateBOOK, showUpload, clearTimer, resetTimer, updating,
-	getBOOKrowByQN, ISOdate, thDate, numDate, nextdays, getOpdate,
+	updateBOOK, showUpload, getBOOKrowByQN,
+	ISOdate, thDate, numDate, nextdays, getOpdate,
 	putThdate, putAgeOpdate, calculateWaitnum, URIcomponent, Alert,
 	winWidth, winHeight, menustyle, setuser, UndoManager
 }
@@ -19,9 +18,6 @@ export {
 // ONCALL is for exchanging between staffs for oncall consultation
 // HOLIDAY is for Buddhist holiday entry of every year
 // timestamp is the last time access from this client to the server
-// timer is just an id number of setTimeout, not the clock object
-// idleCounter is number of cycles of idle setTimeout
-// uploadWindow is to be replaced by new window, used for showUpload only
 // can't check PACS (always unauthorized 401 with Firefox)
 export let BOOK = [],
 	CONSULT = [],
@@ -29,9 +25,6 @@ export let BOOK = [],
 	ONCALL = [],
 	HOLIDAY = [],
 	timestamp = "",
-	uploadWindow = null,
-	timer = 0,
-	idleCounter = 0,
 	isPACS = true,
 	user = "",
 
@@ -94,72 +87,12 @@ function updateBOOK(response) {
 }
 
 // hnName is a pre-defined letiable in child window (jQuery-File-Upload)
+// uploadWindow is to be replaced by new window, used for showUpload only
+let uploadWindow = null
 function showUpload(hn, patient) {
 	uploadWindow && !uploadWindow.closed && uploadWindow.close();
 	uploadWindow = window.open("jQuery-File-Upload/index.html", "_blank")
 	uploadWindow.hnName = {"hn": hn, "patient": patient}
-}
-
-// poke server every 10 sec.
-function clearTimer() {
-	clearTimeout(timer)
-}
-function resetTimer() {
-	clearTimer()
-	timer = setTimeout( updating, 10000)
-}
-
-// While idling every 10 sec., get updated by itself and another clients
-// 1. Visible editcell
-// 	1.1 Editcell changed (update itself and from another client on the way)
-//	1.2 Editcell not changed, check updated from another client
-// 2. Not visible editcell, get update from another client
-let updating = function () {
-	if ($("#editcell").is(":visible") && onChange()) {
-		idleCounter = 0
-		updateEditcellData()
-	} else {
-		idling()
-	}
-
-	resetTimer(true, false)
-}
-
-// savePreviousCell and return with true (changed) or false (not changed)
-let onChange = function () {
-	let whereEditcell = $("#editcell").siblings("table").attr("id")
-
-	// Service table : Main or Staffqueue tables
-	return (whereEditcell === "servicetbl")
-			? savePreviousCellService()
-			: savePreviousCell()
-}
-
-// Check data in server changed from last loading timestamp
-// if not being editing on screen (idling) 1 minute, clear editing setup
-// if idling 10 minutes, logout
-// if some changes in database from other users (while this user is idling),
-// then sync data of editcell with underlying table cell
-let idling = function () {
-
-	modelIdling(timestamp).then(response => {
-		idleCounter += 1
-		if (idleCounter === 5) {
-			clearMenu()
-			clearEditcell()
-			clearMouseoverTR()
-		} else {
-			if (idleCounter > 59) {
-				window.location = window.location.href
-			}
-		}
-
-		if (typeof response === "object") {
-			updateBOOK(response)
-			viewIdling()
-			$("#editcell").is(":visible") && updateEditcellData()
-		}
-	}).catch(error => {})
 }
 
 // Javascript Date Object to MySQL date (ISOdate 2014-05-11)
@@ -328,7 +261,7 @@ function getWaitingBOOKrowByHN(hn)
 {  
 	var	todate = new Date().ISOdate()
 
-	return $.grep(gv.BOOK, function(bookq) {
+	return $.grep(BOOK, function(bookq) {
 		return bookq.opdate > todate && bookq.hn === hn
 	})
 }

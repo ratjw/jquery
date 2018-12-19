@@ -86,21 +86,6 @@ function oneRowMenu()
 	enable(true, "#LINE")
 }
 
-function disableOneRowMenu()
-{
-	let ids = ["#addrow", "#postpone", "#changedate", "#history", "#delete"]
-
-	ids.forEach(function(each) {
-		enable(false, each)
-	})
-}
-
-function disableExcelLINE()
-{
-	$("#EXCEL").addClass("disabled")
-	$("#LINE").addClass("disabled")
-}
-
 function enable(able, id)
 {
 	if (able) {
@@ -174,7 +159,7 @@ async function postponeCase(args) {
 	sql += "UPDATE book SET opdate='" + LARGESTDATE
 		+ "',waitnum=" + waitnum
 		+ ",theatre='',oproom=null,casenum=null,optime=''"
-		+ ",editor='" + gv.user
+		+ ",editor='" + user
         + "' WHERE qn="+ qn + ";"
 
 	let response = await postData(MYSQLIPHP, sql)
@@ -274,7 +259,7 @@ let doChangeDate = function (args) {
 // The second parameter (, 0) ensure a default value if arrayAfter.map is empty
 function getLargestWaitnum(staffname)
 {
-	let dateStaff = gv.BOOK.filter(function(patient) {
+	let dateStaff = BOOK.filter(function(patient) {
 		return patient.staffname === staffname && patient.opdate === LARGESTDATE
 	})
 
@@ -416,7 +401,7 @@ async function delCase(args) {
 
 	sql = "sqlReturnbook=UPDATE book SET "
 		+ "deleted=1, "
-		+ "editor = '" + gv.user
+		+ "editor = '" + user
 		+ "' WHERE qn="+ qn + ";"
 
 	if (!qn) {
@@ -614,7 +599,7 @@ function pagination($dialog, $tbl, book, search)
   $(window).on("resize", resizeDialog )
 
   $dialog.find('.pacs').on("click", function() {
-    if (gv.isPACS) {
+    if (isPACS) {
       PACS(this.innerHTML)
     }
   })
@@ -976,7 +961,7 @@ async function toUndelete(thisDate, deleted)
       oproom = delrow.oproom,
       casenum = delrow.casenum,
 
-      book = (waitnum < 0)? gv.CONSULT : gv.BOOK,
+      book = (waitnum < 0)? CONSULT : BOOK,
       allCases = sameDateRoomBookQN(book, opdate, oproom),
       alllen
 
@@ -987,7 +972,7 @@ async function toUndelete(thisDate, deleted)
       if (allCases[i] === qn) {
         sql += "UPDATE book SET "
             +  "deleted=0,"
-            +  "editor='" + gv.user
+            +  "editor='" + user
             +  "' WHERE qn="+ qn + ";"
       } else {
         sql += sqlCaseNum(i + 1, allCases[i])
@@ -1282,7 +1267,7 @@ function makeDialogFound($dialogFind, $findtbl, found, search)
   }
 
   $dialogFind.find('.pacs').on("click", function() {
-    if (gv.isPACS) {
+    if (isPACS) {
       PACS(this.innerHTML)
     }
   })
@@ -1329,7 +1314,7 @@ jQuery.fn.extend({
     } else {
       rowDecoration(row, q.opdate)
     }
-    q.hn && gv.isPACS && (cells[2].className = "pacs")
+    q.hn && isPACS && (cells[2].className = "pacs")
     q.patient && (cells[3].className = "upload")
 
     dataforEachCell(cells, data)
@@ -1361,12 +1346,12 @@ function PACS(hn)
 
 function showUpload(hn, patient)
 {
-  let win = gv.showUpload
+  let win = showUpload
   if (hn) {
     if (win && !win.closed) {
       win.close();
     }
-    gv.showUpload = win = window.open("jQuery-File-Upload", "_blank")
+    showUpload = win = window.open("jQuery-File-Upload", "_blank")
     win.hnName = {"hn": hn, "patient": patient}
     //hnName is a pre-defined variable in child window (jQuery-File-Upload)
   }
@@ -1376,7 +1361,7 @@ function sendtoLINE()
 {
     $('#dialogNotify').dialog({
       title: '<img src="css/pic/general/linenotify.png" width="40" style="float:left">'
-           + '<span style="font-size:20px">Qbook: ' + gv.user + '</span>',
+           + '<span style="font-size:20px">Qbook: ' + user + '</span>',
       closeOnEscape: true,
       modal: true,
       show: 200,
@@ -1417,7 +1402,7 @@ function toLINE()
 
   html2canvas(capture).then(function(canvas) {
     $.post(LINENOTIFY, {
-        'user': gv.user,
+        'user': user,
         'message': message,
         'image': canvas.toDataURL('image/png', 1.0)
     })

@@ -1,7 +1,7 @@
 
 import {
 	OPDATE, THEATRE, OPROOM, OPTIME, CASENUM, STAFFNAME, HN, PATIENT,
-	DIAGNOSIS, TREATMENT, EQUIPMENT, CONTACT, QN, LARGESTDATE
+	DIAGNOSIS, TREATMENT, EQUIPMENT, CONTACT, QN, LARGESTDATE, equipSheet
 } from "./const.js"
 
 import {
@@ -10,6 +10,7 @@ import {
 } from "./edit.js"
 
 import { clearMouseoverTR } from "./menu.js"
+import { modelIdling } from "./model.js"
 import { sortable } from "./sort.js"
 import { savePreviousCellService } from "./serv.js"
 
@@ -21,7 +22,7 @@ import {
 import {
 	BOOK, CONSULT, STAFF, ONCALL, HOLIDAY,isPACS, START,
 	getOpdate, ISOdate, thDate, calculateWaitnum, URIcomponent, Alert,
-	UndoManager, updateBOOK, showUpload, resetTimer, updating, menustyle
+	UndoManager, updateBOOK, showUpload, menustyle, timestamp
 } from "./util.js"
 
 import {
@@ -32,8 +33,13 @@ import {
 // Public functions
 export {
 	savePreviousCell, editPresentCell,
-	PACS, userStaff
+	PACS, userStaff, clearTimer, resetTimer
 }
+
+// timer is just an id number of setTimeout, not the clock object
+// idleCounter is number of cycles of idle setTimeout
+let timer = 0,
+    idleCounter = 0
 
 //let onclick = {
 //	"clickaddStaff": addStaff,
@@ -65,68 +71,29 @@ function userStaff() {
 
 // Success return from server
 function success(response) {
-	updateBOOK(response)
+  updateBOOK(response)
 
-	// call sortable before render, otherwise it renders very slowly
-	sortable()
-	makeStart()
-	setStafflist()
-	resetTimer()
+  // call sortable before render, otherwise it renders very slowly
+  sortable()
+  makeStart()
 
-	$("#wrapper").on("click", function (event) {
-		resetTimer();
-		$(".borderfound").removeClass("borderfound")
-		event.stopPropagation()
-		let	target = event.target,
-			clickOutside = function (id) {
-				if (($(id).is(":visible")) && (!$(target).closest(id).length)) {
-					$(id).hide();
-					clearEditcell()
-				}
-			}
+  // setting up equipments
+  initEquipment()
 
-		// clickOutside these 3 pop-ups to close
-		clickOutside("#menu")
-		clickOutside("#stafflist")
-		clickOutside("#undelete")
+  // make the document editable
+  editcellEvent()
+  wrapperEvent()
+  documentEvent()
+  scrolltoToday()
+  setStafflist()
+  fillConsults()
 
-		if (target.nodeName !== "TD") {
-			clearEditcell()
-			if (target.nodeName === "TH") {
-				if (target.cellIndex === 0) {
-					UndoManager.undo()
-				}
-				else if (target.cellIndex === 1) {
-					UndoManager.redo()
-				}
-			}
-			return	
-		}
-		// Both main and staff tables (same wrapper)
-		clicktable(event.target)
-	})
+  disableOneRowMenu()
+  disableExcelLINE()
+  overrideJqueryUI()
+  resetTimer()
 
-	// ctrl+shift+Home to see last entries of local and server
-	$(window).on("keydown", function (event) {
-		let	keycode = event.which || window.event.keyCode,
-			home = keycode === 36,
-			y = keycode === 89,
-			z = keycode === 90
-
-		if (home && event.ctrlKey && event.shiftKey) {
-			// Merge data to server
-			latestEntry()
-			event.preventDefault()
-		}
-		else if (y && event.ctrlKey) {
-			UndoManager.redo()
-			event.preventDefault()
-		}
-		else if (z && event.ctrlKey) {
-			UndoManager.undo()
-			event.preventDefault()
-		}
-	})
+  setTimeout( fillupfinish, 2000)
 }
 
 // *** offline browsing by service worker ***
@@ -180,6 +147,45 @@ let makeStart = function() {
 	animateScroll($('#tblcontainer'), thishead.offsetTop, 300)
 }
 
+function initEquipment()
+{
+  let equip = "", type = "", width = "", name = "", id = "", label = ""
+
+  equipSheet.forEach(function(item) {
+    type = item[0]
+    width = item[1]
+    name = item[2]
+    id = item[3]
+    label = item[4]
+    if (type === "divbegin") {
+	  equip += `<div title="${name}">`
+    } else if (type === "divend") {
+	  equip += `</div>`
+    } else if (type === "span") {
+	  equip += `<span class="${width}" id="${id}">${label}</span>`
+    } else if (type === "spanInSpan") {
+	  equip += `<span class="${width}">${label}<span id="${id}"></span></span>`
+	} else if (type === "br") {
+	  equip += `<br>`
+	} else if (type === "radio" || type === "checkbox") {
+	  equip += `<span class="${width}">
+                  <input type="${type}" name="${name}" id="${id}">
+                  <label for="${id}">${label}</label>
+                </span>`
+	} else if (type === "text") {
+	  equip += `<span>
+                  <input type="${type}" class="${name}" id="${id}" placeholder="${label}">
+                </span>`
+	} else if (type === "textarea") {
+	  equip += `<span>
+                  <textarea id="${id}" placeholder="${label}"></textarea>
+                </span>`
+	}
+  })
+
+  document.getElementById("dialogEquip").innerHTML = equip
+}
+
 // stafflist for enter name in Staff column
 // staffmenu for dropdown sub-menu
 let setStafflist = function () {
@@ -196,9 +202,273 @@ let setStafflist = function () {
   setClickStaff()
 }
 
-let clearMenu = function() {
-	$('#menu').hide();
-	$('#stafflist').hide();
+function editcellEvent()
+{
+  let $editcell = $("#editcell")
+
+  $editcell.on("keydown", event => {
+    let keyCode = event.which || window.event.keyCode
+    let pointing = $editcell.data("pointing")
+
+    if ($('#dialogService').is(':visible')) {
+      Skeyin(event, keyCode, pointing)
+    } else {
+      keyin(event, keyCode, pointing)
+    }
+    if (!$("#spin").length) {
+      resetTimer()
+      idleCounter = 0
+    }
+  })
+
+  // for resizing the editing cell
+  $editcell.on("keyup", event => {
+    let keyCode = event.which || window.event.keyCode
+    $editcell.height($editcell[0].scrollHeight)
+  })
+
+  $editcell.on("click", event => {
+    event.stopPropagation()
+    return
+  })
+}
+
+function wrapperEvent()
+{
+  document.getElementById("wrapper").addEventListener("wheel", event => {
+    resetTimer();
+    idleCounter = 0
+    $(".marker").removeClass("marker")
+  })
+  
+  document.getElementById("wrapper").addEventListener("mousemove", event => {
+    resetTimer();
+    idleCounter = 0
+  })
+
+  $("#wrapper").on("click", event => {
+    let target = event.target
+    let $stafflist = $('#stafflist')
+
+    resetTimer();
+    idleCounter = 0
+    $(".marker").removeClass("marker")
+
+    if ($(target).closest('#cssmenu').length) {
+      return
+    }
+    if ($stafflist.is(":visible")) {
+      if (!$(target).closest('#stafflist').length) {
+        $stafflist.hide();
+        clearEditcell()
+      }
+    }
+    if (target.nodeName === "P") {
+      target = $(target).closest('td')[0]
+    }
+    if (target.cellIndex === THEATRE) {
+	  let $tbl = $("#tbl")
+      if ($tbl.find("th").eq(THEATRE).width() < 10) {
+        $tbl.addClass("showColumn2")
+      }
+	  else if (target.nodeName === "TH") {
+        $tbl.removeClass("showColumn2")
+      }
+    }
+    if (target.nodeName === "TD") {
+      clicktable(event, target)
+    } else {
+      clearEditcell()
+      clearMouseoverTR()
+      clearSelection()
+    }
+
+    event.stopPropagation()
+  })
+}
+
+function documentEvent()
+{
+  // Prevent the Backspace key from navigating back.
+  // Esc to cancel everything
+  $(document).off('keydown').on('keydown', event => {
+    let keycode = event.which || window.event.keyCode,
+      ctrl = event.ctrlKey,
+      shift = event.shiftKey,
+      home = keycode === 36,
+      backspace = keycode === 8,
+      esc = keycode === 27,
+      y = keycode === 89,
+      z = keycode === 90
+
+    if (backspace) {
+      let doPrevent = true
+      let types = ["text", "password", "file", "number", "date", "time"]
+      let d = $(event.srcElement || event.target)
+      let disabled = d.prop("readonly") || d.prop("disabled")
+      if (!disabled) {
+        if (d[0].isContentEditable) {
+          doPrevent = false
+        } else if (d.is("input")) {
+          let type = d.attr("type")
+          if (type) {
+            type = type.toLowerCase()
+          }
+          if (types.indexOf(type) > -1) {
+            doPrevent = false
+          }
+        } else if (d.is("textarea")) {
+          doPrevent = false
+        }
+      }
+      if (doPrevent) {
+        event.preventDefault()
+        return false
+      }
+    }
+    else if (esc) {
+      clearAllEditing()
+    }
+    // ctrl+shift+Home to see last entries of local and server
+    else if (home && ctrl && shift) {
+      // Merge data to server
+      latestEntry()
+      event.preventDefault()
+    }
+    else if (y && ctrl) {
+      UndoManager.redo()
+      event.preventDefault()
+    }
+    else if (z && ctrl) {
+      UndoManager.undo()
+      event.preventDefault()
+    }
+
+    resetTimer()
+    idleCounter = 0
+  });
+
+  $(document).contextmenu( event => {
+    let target = event.target
+    let oncall = /<p[^>]*>.*<\/p>/.test(target.outerHTML)
+
+    if (oncall) {
+      if (event.ctrlKey) {
+        exchangeOncall(target)
+      }
+      else if (event.altKey) {
+        addStaff(target)
+      }
+      event.preventDefault()
+    }
+  })
+
+  window.addEventListener('resize', () => {
+    $("#tblwrapper").css("height", window.innerHeight - $("#cssmenu").height())
+    $("#queuecontainer").css({
+      "height": $("#tblwrapper").height() - $("#titlebar").height()
+    })
+  })
+}
+
+function scrolltoToday()
+{
+  let today = new Date(),
+    todate = today.ISOdate(),
+    todateth = todate.thDate()
+  $('#tblcontainer').scrollTop(0)
+  let thishead = $("#tbl tr:contains(" + todateth + ")")[0]
+  $('#tblcontainer').animate({
+    scrollTop: thishead.offsetTop
+  }, 300);
+}
+
+// allow the dialog title to contain HTML
+function overrideJqueryUI()
+{
+  $.widget("ui.dialog", $.extend({}, $.ui.dialog.prototype, {
+    _title: function(title) {
+        if (!this.options.title ) {
+            title.html("&#160;");
+        } else {
+            title.html(this.options.title);
+        }
+    }
+  }))
+}
+
+// poke server every 10 sec.
+function clearTimer() {
+	clearTimeout(timer)
+}
+function resetTimer() {
+	clearTimer()
+	timer = setTimeout( updating, 10000)
+}
+
+// While idling every 10 sec., get updated by itself and another clients
+// 1. Visible editcell
+// 	1.1 Editcell changed (update itself and from another client on the way)
+//	1.2 Editcell not changed, check updated from another client
+// 2. Not visible editcell, get update from another client
+let updating = function () {
+	if ($("#editcell").is(":visible") && onChange()) {
+		idleCounter = 0
+		updateEditcellData()
+	} else {
+		idling()
+	}
+
+	resetTimer(true, false)
+}
+
+// savePreviousCell and return with true (changed) or false (not changed)
+let onChange = function () {
+	let whereEditcell = $("#editcell").siblings("table").attr("id")
+
+	// Service table : Main or Staffqueue tables
+	return (whereEditcell === "servicetbl")
+			? savePreviousCellService()
+			: savePreviousCell()
+}
+
+// Check data in server changed from last loading timestamp
+// if not being editing on screen (idling) 1 minute, clear editing setup
+// if idling 10 minutes, logout
+// if some changes in database from other users (while this user is idling),
+// then sync data of editcell with underlying table cell
+let idling = function () {
+
+	modelIdling(timestamp).then(response => {
+		idleCounter += 1
+		if (idleCounter === 5) {
+			clearMenu()
+			clearEditcell()
+			clearMouseoverTR()
+		} else {
+			if (idleCounter > 59) {
+				window.location = window.location.href
+			}
+		}
+
+		if (typeof response === "object") {
+			updateBOOK(response)
+			viewIdling()
+			$("#editcell").is(":visible") && updateEditcellData()
+		}
+	}).catch(error => {})
+}
+
+function clearAllEditing()
+{
+  $('#stafflist').hide();
+  clearEditcell()
+  clearMouseoverTR()
+  clearSelection()
+  if ($("#dialogNotify").hasClass('ui-dialog-content')) {
+    $("#dialogNotify").dialog("close")
+  }
+  $(".marker").removeClass("marker")
 }
 
 // Click on main or staff table
@@ -517,130 +787,267 @@ function editPresentCell(pointing) {
 		store = {}
 
 	store[OPDATE] = function () {
-		createEditcellOpdate(pointing)
-		mainMenu(pointing)
-		$("#editcell").blur()
-		// prevent mobile keyboard popup
+		clearEditcell()
+		clearMouseoverTR()
+		selectRow(evt, pointing)
+	}
+	store[THEATRE] = function () {
+		createEditcell(pointing)
+		clearSelection()
 	}
 	store[OPROOM] = function () {
-		selectRoomTime(pointing)
-		createEditcellRoomtime(pointing)
+		getROOMCASE(pointing)
+		clearSelection()
+	}
+	store[OPTIME] = function () {
+		getOPTIME(pointing)
+		clearSelection()
+	}
+	store[CASENUM] = function () {
+		getROOMCASE(pointing)
+		clearSelection()
 	}
 	store[STAFFNAME] = function () {
-		createEditcell(pointing)
-		stafflist(pointing)
+		getSTAFFNAME(pointing)
+		clearSelection()
 	}
 	store[HN] = function () {
-		pointing.innerHTML
-		? (clearEditcell(),
-		   pointing.className === "pacs" && PACS(pointing.innerHTML))
-		: createEditcell(pointing)
+		getHN(evt, pointing)
+		clearSelection()
 	}
 	store[PATIENT] = function () {
-		let hn = $(pointing).closest('tr').children("td").eq(HN).html(),
-			patient = pointing.innerHTML
-
-		clearEditcell()
-		hn && showUpload(hn, patient)
+		getNAME(evt, pointing)
+		clearSelection()
 	}
 	store[DIAGNOSIS] = function () {
 		createEditcell(pointing)
+		clearSelection()
 	}
 	store[TREATMENT] = function () {
 		createEditcell(pointing)
+		clearSelection()
+	}
+	store[EQUIPMENT] = function () {
+		getEQUIP(pointing)
+		clearSelection()
 	}
 	store[CONTACT] = function () {
 		createEditcell(pointing)
-	};
+		clearSelection()
+	}
 
 	store[cell] && store[cell]()
 }
 
-let selectRoomTime = function (pointing) {
-	let ORSURG	= "XSU",
-		ORNEURO	= "4",
-		ORTIME	= "09.00",
-		roomtime = pointing.innerHTML
-	roomtime = roomtime ? roomtime.split("<br>") : ""
-	let oproom = roomtime[0] ? roomtime[0] : "",
-		optime = roomtime[1] ? roomtime[1] : "",
-		theatre = oproom && oproom.match(/\D+/) || ORSURG,
-		$editcell = $("#editcell")
-	$editcell.css("height", "")
-	$editcell.html(theatre)
-	$editcell.append('<input id="orroom"><br><input id="ortime">')
-	let $orroom = $("#orroom"),
-		$ortime = $("#ortime")
-	$orroom.val(oproom ? oproom.match(/\d+/)[0] : "(" + ORNEURO + ")")
+function selectRow(event, target)
+{
+  let $target = $(target).closest("tr"),
+      $targetTRs = $(target).closest("table").find("tr"),
+      $allTRs = $("tr")
 
-	let orroom = ""
-	$orroom.spinner({
-		min: 1,
-		max: 20,
-		step: -1,
+  if (event.ctrlKey) {
+    $targetTRs.removeClass("lastselected")
+    $target.addClass("selected lastselected")
+    disableOneRowMenu()
+  } else if (event.shiftKey) {
+    $targetTRs.not(".lastselected").removeClass("selected")
+    shiftSelect($target)
+    disableOneRowMenu()
+  } else {
+    $allTRs.removeClass("selected lastselected")
+    $target.addClass("selected lastselected")
+    oneRowMenu()
+  }
+}
+
+function shiftSelect($target)
+{
+  let $lastselected = $(".lastselected").closest("tr"),
+      lastIndex = $lastselected.index(),
+      targetIndex = $target.index(),
+      $select = {}
+
+  if (targetIndex > lastIndex) {
+    $select = $target.prevUntil('.lastselected')
+  } else if (targetIndex < lastIndex) {
+    $select = $target.nextUntil('.lastselected')
+  } else {
+    return
+  }
+  $select.addClass("selected")
+  $target.addClass("selected")
+}
+
+function clearSelection()
+{
+  $('.selected').removeClass('selected lastselected');
+  disableOneRowMenu()
+  disableExcelLINE()
+}
+
+function disableOneRowMenu()
+{
+	let ids = ["#addrow", "#postpone", "#changedate", "#history", "#delete"]
+
+	ids.forEach(function(each) {
+		$(each).addClass("disabled")
+	})
+}
+
+function disableExcelLINE()
+{
+	$("#EXCEL").addClass("disabled")
+	$("#LINE").addClass("disabled")
+}
+
+function getROOMCASE(pointing)
+{
+	let	noPatient = !$(pointing).siblings(":last").html(),
+		noRoom = !$(pointing).closest("tr").find("td").eq(OPROOM).html(),
+		getCasenum = pointing.cellIndex === CASENUM,
+		oldval = pointing.innerHTML,
+		$editcell = $("#editcell"),
+		newval = null,
+		html = '<input id="spin">'
+
+	if ( noPatient || getCasenum && noRoom ) {
+		savePreviousCell()
+		clearEditcell()
+		return
+	}
+
+	createEditcell(pointing)
+	$editcell.css("width", 40)
+	$editcell.html(html)
+
+	let	$spin = $("#spin")
+	$spin.css("width", 35)
+	$spin.val(oldval)
+	$spin.spinner({
+		min: 0,
+		max: 99,
+		step: 1,
+		// make newval 0 as blank value
 		spin: function( event, ui ) {
-			if ($orroom.val() === "(" + ORNEURO + ")") {
-				orroom = ORNEURO
-			}
+			newval = ui.value || ""
 		},
 		stop: function( event, ui ) {
-			if (orroom) {
-				$orroom.val(orroom)
-				orroom = ""	
+			if (newval !== null) {
+				$spin.val(newval)
+				newval = null
 			}
 		}
 	})
+	$spin.focus()
+	clearTimeout(gv.timer)
+}
 
-	let ortime
-	$ortime.spinner({
+function getOPTIME(pointing)
+{
+	let	oldtime = pointing.innerHTML || "09.00",
+		$editcell = $("#editcell"),
+		newtime,
+		html = '<input id="spin">'
+
+	// no case
+	if ( !$(pointing).siblings(":last").html() ) { return }
+
+	createEditcell(pointing)
+	$editcell.css("width", 65)
+	$editcell.html(html)
+
+	$spin = $("#spin")
+	$spin.css("width", 60)
+	$spin.spinner({
 		min: 0,
 		max: 24,
-		step: -0.5,
+		step: 0.5,
 		create: function( event, ui ) {
-			$ortime.val(optime ? optime : "(" + ORTIME + ")")
+			$spin.val(oldtime)
 		},
 		spin: function( event, ui ) {
-			ortime = ($ortime.val() === "(" + ORTIME + ")") ? ORTIME : decimalToTime(ui.value)
+			newtime = decimalToTime(ui.value)
 		},
 		stop: function( event, ui ) {
-			if (ortime) {
-				$ortime.val(ortime)
-				ortime = ""	
+			if (newtime !== undefined) {
+				$spin.val(newtime)
+				newtime = ""
 			}
 		}
 	})
+	$spin.focus()
+	clearTimeout(gv.timer)
 }
 
-// Decimal 9.5 to time 09.30
-let decimalToTime = function (dec) {
-	let	integer = Math.floor(dec),
-		decimal = dec - integer
-
-	return [
-		(integer < 10) ? "0" + integer : "" + integer,
-		decimal ? String(decimal * 60) : "00"
-	].join(".")
-}
-
-// Menu on Staff column to select staff name
-let stafflist = function (pointing) {
+function getSTAFFNAME(pointing)
+{
 	let $stafflist = $("#stafflist"),
-		width = $stafflist.outerWidth()
+		$pointing = $(pointing)
+
+	createEditcell(pointing)
+	$stafflist.appendTo($pointing.closest('div')).show()
 
 	$stafflist.menu({
 		select: function( event, ui ) {
-			let staffname = ui.item.text()
-			saveContent(pointing, "staffname", staffname)
-			$(pointing).html(staffname)
+			saveContent(pointing, "staffname", ui.item.text())
 			clearEditcell()
-			$stafflist.hide()		// to disappear after selection
+			$stafflist.hide()
 			event.stopPropagation()
 		}
 	});
 
-	$stafflist.appendTo($(pointing).closest('div'))
-	reposition($stafflist, "left top", "left bottom", pointing)
-	menustyle($stafflist, pointing, width)
+	// reposition from main menu to determine shadow
+	reposition($stafflist, "left top", "left bottom", $pointing)
+	menustyle($stafflist, $pointing)
+}
+
+function getHN(evt, pointing)
+{
+	if (pointing.innerHTML) {
+		clearEditcell()
+		if (gv.isPACS) {
+			if (inPicArea(evt, pointing)) {
+				PACS(pointing.innerHTML)
+			}
+		}
+	} else {
+		createEditcell(pointing)
+	}
+}
+
+function getNAME(evt, pointing)
+{
+	let hn = $(pointing).closest('tr').children("td")[HN].innerHTML
+	let patient = pointing.innerHTML
+
+	if (inPicArea(evt, pointing)) {
+		showUpload(hn, patient)
+	}
+	clearEditcell()
+}
+
+function getEQUIP(pointing)
+{
+	let tableID = $(pointing).closest('table').attr('id'),
+		book = ConsultsTbl(tableID)? gv.CONSULT : gv.BOOK,
+		$row = $(pointing).closest('tr'),
+		qn = $row.find("td")[QN].innerHTML
+
+	if (qn) {
+		fillEquipTable(book, $row, qn)
+	}
+}
+ 
+function getText($cell)
+{
+	// TRIM excess spaces at begin, mid, end
+	// remove html tags except <br>
+	let HTMLTRIM		= /^(\s*<[^>]*>)*\s*|\s*(<[^>]*>\s*)*$/g
+	let HTMLNOTBR		= /(<((?!br)[^>]+)>)/ig
+
+	return $cell.length && $cell.html()
+							.replace(HTMLTRIM, '')
+							.replace(HTMLNOTBR, '')
 }
 
 function PACS(hn) { 
@@ -756,7 +1163,7 @@ function fillHoliday($holidaytbl)
 {
 	$holidaytbl.find('tr').slice(1).remove()
 
-	$.each( gv.HOLIDAY, function(i) {
+	$.each( HOLIDAY, function(i) {
 		$('#holidaycells tr').clone()
 			.appendTo($holidaytbl.find('tbody'))
 				.filldataHoliday(this)
@@ -820,7 +1227,7 @@ async function delHoliday(that)
 
 		let response = await postData(MYSQLIPHP, sql)
 		if (typeof response === "object") {
-			gv.HOLIDAY = response
+			HOLIDAY = response
 			$(rows).each(function() {
 				this.cells[DIAGNOSIS].style.backgroundImage = ""
 			})
@@ -847,7 +1254,7 @@ async function saveHoliday()
 
 	let response = await postData(MYSQLIPHP, sql)
 	if (typeof response === "object") {
-		gv.HOLIDAY = response
+		HOLIDAY = response
 		holidayInputBack($("#holidateth").closest("tr"))
 		fillHoliday($("#holidaytbl"))
 		$("#buttonHoliday").hide()
@@ -881,7 +1288,7 @@ function holiday(date)
 // Thai official holiday & Compensation
 function religiousHoliday(date)
 {
-	let relHoliday = gv.HOLIDAY.find(day => day.holidate === date)
+	let relHoliday = HOLIDAY.find(day => day.holidate === date)
 	if (relHoliday) {
 		return `url('css/pic/holiday/${relHoliday.dayname}.png')`
 	}

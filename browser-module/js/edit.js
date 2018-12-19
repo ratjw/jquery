@@ -4,9 +4,8 @@ import {
 	DIAGNOSISSV, TREATMENTSV, ADMISSIONSV, FINALSV
 } from "./const.js"
 
-import { savePreviousCell, editPresentCell } from "./control.js"
+import { savePreviousCell, editPresentCell, resetTimer } from "./control.js"
 import { savePreviousCellService, editPresentCellService } from "./serv.js"
-import { resetTimer } from "./util.js"
 export {
 	createEditcellOpdate, createEditcellRoomtime, createEditcell,
 	updateEditcellData, clearEditcell, reposition,
@@ -14,7 +13,7 @@ export {
 }
 
 // Store $("#editcell") instance for use in this entire module
-let $editcell = null
+let $editcell = {}
 
 // pointer is the current position
 // pointing is new coming position to update to
@@ -225,15 +224,16 @@ function createEditcellRoomtime(pointing) {
 	showEditcell($pointing, height, width)
 }
 
-function createEditcell(pointing) {
-	let $pointing = $(pointing),
-		height = $pointing.height() + "px",
-		width = $pointing.width() + "px",
-		context = getHtmlText($pointing)
+function createEditcell(pointing)
+{
+	let $pointing = $(pointing)
+	let height = $pointing.height() + "px"
+	let width = $pointing.width() + "px"
+	let context = getText($pointing).replace(/Consult<br>.*$/, "")
 
+	editcellData($editcell, pointing, context)
 	$editcell.html(context)
-	editcellSaveData(pointing, context)
-	showEditcell($pointing, height, width)
+	showEditcell($editcell, $pointing, height, width)
 }
 
 // Update module variables

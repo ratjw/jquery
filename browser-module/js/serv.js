@@ -11,7 +11,7 @@ import { CASENUMSV, HNSV, NAMESV, DIAGNOSISSV, TREATMENTSV, ADMISSIONSV,
   ROWREPORT, COLUMNREPORT, SPECIALTY
 } from "./const.js"
 
-import { PACS } from "./control.js"
+import { PACS, resetTimer } from "./control.js"
 import {
 	getPointer, getOldcontent, getNewcontent, clearEditcell, createEditcell
 } from "./edit.js"
@@ -21,7 +21,7 @@ import { modelGetfromServer, modelGetIPD, modelSaveService } from "./model.js"
 import {
 	BOOK, CONSULT, STAFF, isPACS, START,
 	putAgeOpdate, getBOOKrowByQN, URIcomponent,
-	updateBOOK, resetTimer, showUpload,
+	updateBOOK, showUpload,
 	Alert, winWidth, winHeight, UndoManager
 } from "./util.js"
 

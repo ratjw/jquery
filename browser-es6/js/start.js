@@ -26,8 +26,6 @@ function loading(response)
 
   // rendering
   fillupstart()
-  setStafflist()
-  fillConsults()
 
   // setting up equipments
   initEquipment()
@@ -37,6 +35,8 @@ function loading(response)
   wrapperEvent()
   documentEvent()
   scrolltoToday()
+  setStafflist()
+  fillConsults()
 
   disableOneRowMenu()
   disableExcelLINE()
@@ -44,18 +44,6 @@ function loading(response)
   resetTimer()
 
   setTimeout( fillupfinish, 2000)
-}
-
-function scrolltoToday()
-{
-  let today = new Date(),
-    todate = today.ISOdate(),
-    todateth = todate.thDate()
-  $('#tblcontainer').scrollTop(0)
-  let thishead = $("#tbl tr:contains(" + todateth + ")")[0]
-  $('#tblcontainer').animate({
-    scrollTop: thishead.offsetTop
-  }, 300);
 }
 
 function updateBOOK(response)
@@ -213,7 +201,18 @@ function documentEvent()
 		"height": $("#tblwrapper").height() - $("#titlebar").height()
 	})
   })
-  
+}
+
+function scrolltoToday()
+{
+  let today = new Date(),
+    todate = today.ISOdate(),
+    todateth = todate.thDate()
+  $('#tblcontainer').scrollTop(0)
+  let thishead = $("#tbl tr:contains(" + todateth + ")")[0]
+  $('#tblcontainer').animate({
+    scrollTop: thishead.offsetTop
+  }, 300);
 }
 
 // allow the dialog title to contain HTML

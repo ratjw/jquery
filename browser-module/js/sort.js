@@ -3,12 +3,12 @@ import {
 	OPDATE, STAFFNAME, HN, PATIENT, DIAGNOSIS, TREATMENT, CONTACT, QN,
 	LARGESTDATE
 } from "./const.js"
-
+import { clearTimer, resetTimer } from "./control.js"
 import { clearEditcell } from "./edit.js"
 import { clearMouseoverTR } from "./menu.js"
 import { modelSortable } from "./model.js"
 import { getOpdate, calculateWaitnum, Alert, UndoManager, 
-	updateBOOK, clearTimer, resetTimer, showUpload
+	updateBOOK, showUpload
 } from "./util.js"
 import { viewSortable } from "./view.js"
 
