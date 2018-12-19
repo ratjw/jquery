@@ -1,15 +1,17 @@
 
-// const
-// tbl, queuetbl
 import {
-	HN, DIAGNOSIS, TREATMENT, CONTACT, QN
-} from "./control.js"
-
-// servicetbl
-import {
+	HN, DIAGNOSIS, TREATMENT, CONTACT, QN,
 	DIAGNOSISSV, TREATMENTSV, ADMISSIONSV, FINALSV
-} from "./serv.js"
-// const
+} from "./const.js"
+
+import { savePreviousCell, editPresentCell } from "./control.js"
+import { savePreviousCellService, editPresentCellService } from "./serv.js"
+import { resetTimer } from "./util.js"
+export {
+	createEditcellOpdate, createEditcellRoomtime, createEditcell,
+	updateEditcellData, clearEditcell, reposition,
+	getPointer, getOldcontent, getNewcontent
+}
 
 // Store $("#editcell") instance for use in this entire module
 let $editcell = null
@@ -27,26 +29,17 @@ let oldcontent = ""
 // to check the pointer still points to same case after reViewAll while idling
 let qn = 0
 
-import { savePreviousCell, editPresentCell, resetTimer } from "./control.js"
-import { savePreviousCellService, editPresentCellService } from "./serv.js"
-
-export {
-	createEditcellOpdate, createEditcellRoomtime, createEditcell,
-	updateEditcellData, clearEditcell, reposition,
-	getPointer, getOldcontent, getNewcontent
-}
-
 // Initialize $editcell
 // Attach events to editcell all the time
 $(function() {
 	$editcell = $("#editcell")
 	$editcell.on("click", function (event) {
-		resetTimer(true, true);
+		resetTimer();
 		event.stopPropagation()
 	}).on("keydown", function (event) {
 		let keycode = event.which || window.event.keyCode
 
-		resetTimer(true, true);
+		resetTimer();
 		keyin(event, keycode)
 	
 	// resize editcell along with underlying td
@@ -66,7 +59,7 @@ $(function() {
 
 		pointer.innerHTML = $editcell.html()
 		$editcell.css({
-			height: $(pointer).height() + "px",
+			height: $(pointer).height() + "px"
 		})
 		reposition($editcell, "center", "center", pointer)
 	})
@@ -314,16 +307,11 @@ let clearMenu = function() {
 }
 
 function reposition($me, mypos, atpos, target, within) {
+	$me.show()
 	$me.position({
 		my: mypos,
 		at: atpos,
 		of: target,
 		within: within
-	}).show()
-	$me.position({
-		my: mypos,
-		at: atpos,
-		of: target,
-		within: within
-	}).show()
-}	// Don't know why have to repeat 2 times
+	})
+}

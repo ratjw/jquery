@@ -719,7 +719,7 @@ jQuery.fn.extend({
       rowDecoration(row, q.opdate)
     }
     q.hn && gv.isPACS && (cells[2].className = "pacs")
-    q.patient && gv.isMobile && (cells[3].className = "camera")
+    q.patient && (cells[3].className = "upload")
 
     dataforEachCell(cells, data)
   }
@@ -760,12 +760,12 @@ function PACS(hn)
 
 function showUpload(hn, patient)
 {
-  let win = gv.uploadWindow
+  let win = gv.showUpload
   if (hn) {
     if (win && !win.closed) {
       win.close();
     }
-    gv.uploadWindow = win = window.open("jQuery-File-Upload", "_blank")
+    gv.showUpload = win = window.open("jQuery-File-Upload", "_blank")
     win.hnName = {"hn": hn, "patient": patient}
     //hnName is a pre-defined variable in child window (jQuery-File-Upload)
   }

@@ -1,68 +1,41 @@
 
-// NAMEOFDAYABBR : for row color
-// NAMEOFDAYFULL : for 1st column color
-const NAMEOFDAYABBR = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-const NAMEOFDAYFULL = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-
 import {
-	OPDATE, OPROOM, CASENUM, STAFFNAME, HN, PATIENT, DIAGNOSIS, TREATMENT, CONTACT, QN,
-	BOOK, CONSULT, LARGESTDATE, isPACS, START,
-	PACS, uploadWindow
-} from "./control.js"
+	OPDATE, OPROOM, CASENUM, STAFFNAME, HN, PATIENT, DIAGNOSIS, TREATMENT,
+	CONTACT, QN, LARGESTDATE,
+	NAMEOFDAYABBR, NAMEOFDAYFULL, HOLIDAYENGTHAI
+} from "./const.js"
 
+import { PACS } from "./control.js"
 import { reViewService } from "./serv.js"
 import { reposition, clearEditcell } from "./edit.js"
-import { getBOOKrowByQN, ISOdate, thDate, nextdays, numDate,
-			getOpdate, putThdate, putAgeOpdate, winWidth, winHeight
-		} from "./util.js"
+import {
+	BOOK, CONSULT, isPACS, getBOOKrowByQN, ISOdate, thDate, nextdays,
+	numDate, getOpdate, putThdate, putAgeOpdate, winWidth, winHeight,
+	START, showUpload
+} from "./util.js"
 
 export {
-	viewAll, reViewAll, reViewStaffqueue, viewChangeDate, viewAllCases,
-	viewDeleteCase, viewDeletedCases, viewCaseHistory, viewFind,
-	viewIdling, viewLatestEntry, viewSaveByHN,
-	viewSaveContent, viewSaveNoQN, viewSaveRoomTime, viewSortable,
-	viewStaffqueue, viewUndelete, animateScroll, isConsultsTbl, winResizeFix
+	viewAll, reViewAll, viewStaffqueue, reViewStaffqueue, viewChangeDate,
+	viewAllCases, viewDeleteCase, viewDeletedCases, viewCaseHistory, viewFind,
+	viewIdling, viewLatestEntry, viewSaveByHN, viewSaveContent, viewSaveNoQN,
+	viewSaveRoomTime, viewSortable, viewUndelete, animateScroll,
+	isConsultsTbl, winResizeFix, setClickStaff
 }
 
-;(function($) {
-	$.fn.fixMe = function($container) {
-		let $this = $(this),
-			$t_fixed,
-			pad = $container.css("paddingLeft")
-		init();
-		$container.off("scroll").on("scroll", scrollFixed);
-
-		function init() {
-			$t_fixed = $this.clone();
-			$t_fixed.attr("id", "fixheader")
-			$t_fixed.find("tbody").remove().end()
-					.addClass("fixed").insertBefore($this);
-			$container.scrollTop(0)
-			resizeFixed();
-			reposition($t_fixed, "left top", "left+" + pad + " top", $container)
-			$t_fixed.hide()
-		}
-		function resizeFixed() {
-			$t_fixed.find("th").each(function(index) {
-				$(this).css("width",$this.find("th").eq(index).width() + "px");
-			});
-		}
-		function scrollFixed() {
-			let offset = $(this).scrollTop(),
-			tableTop = $this[0].offsetTop,
-			tableBottom = tableTop + $this.height() - $this.find("thead").height();
-			if(offset < tableTop || offset > tableBottom) {
-				$t_fixed.hide();
-			}
-			else if (offset >= tableTop && offset <= tableBottom && $t_fixed.is(":hidden")) {
-				$t_fixed.show();
-			}
-		}
-	};
-})(jQuery);
+document.getElementById("clickclosequeue").onclick = closequeue
 
 // function declaration (definition ) : public
 // function expression (literal) : local
+
+function setClickStaff()
+{
+	document.querySelectorAll(".clickStaff").forEach(function(item) {
+		item.onclick = function() {
+			let staffname = item.className.split(" ")[1]
+			viewStaffqueue(staffname)
+		}
+	})
+}
 
 function winResizeFix($this, $container) {
 	let $fix = $("#fixheader"),
@@ -306,7 +279,7 @@ let putRoomTime = function (q) {
 
 function viewStaffqueue(staffname) {
 	let todate = ISOdate(new Date()),
-		consult = gv.CONSULT,
+		consult = CONSULT,
 		queuetbl = document.getElementById("queuetbl")
 
 	// delete previous queuetbl lest it accumulates
@@ -417,7 +390,6 @@ let splitPane = function () {
 	$("#queuewrapper").show()
 	$("#tblwrapper").css({"float":"left", "height":"100%", "width":"50%"})
 	$("#queuewrapper").css({"float":"right", "height":"100%", "width":"50%"})
-	$("#closequeue").off("click").on("click", function () { closequeue() })
 	initResize($("#tblwrapper"))
 	$('.ui-resizable-e').css('height', $("#tbl").css("height"))
 
@@ -456,7 +428,7 @@ let initResize = function ($wrapper) {
 	});
 }
 
-let closequeue = function closequeue() {
+function closequeue() {
 	let scrolledTop = document.getElementById("tblcontainer").scrollTop,
 		tohead = findVisibleHead('#tbl')
 	
@@ -816,7 +788,7 @@ function viewAllCases(response) {
 		let patient = this.innerHTML,
 			hn = $(this).prev().html()
 
-		hn && uploadWindow(hn, patient)
+		hn && showUpload(hn, patient)
 	})
 
 	// for resizing dialogs in landscape / portrait view
@@ -1032,7 +1004,7 @@ let makeDialogFind = function (found, hn) {
 		let patient = this.innerHTML
 		let hn = $(this).prev().html()
 
-		hn && uploadWindow(hn, patient)
+		hn && showUpload(hn, patient)
 	})
 
 	// for resizing dialogs in landscape / portrait view
@@ -1160,13 +1132,13 @@ let holiday = function (date) {
 		"2018-05-09" : "url('css/pic/holiday/Ploughing.png')",
 		"2018-05-29" : "url('css/pic/holiday/Vesak.png')",
 		"2018-07-27" : "url('css/pic/holiday/Asalha.png')",
-		"2018-07-28" : "url('css/pic/holiday/Vassa.png')"		// delete trailing comma
-//		"2019-02-19" : "url('css/pic/holiday/Magha.png')",
-//		"2019-05-13" : "url('css/pic/holiday/Ploughing.png')",
-//		"2019-05-18" : "url('css/pic/holiday/Vesak.png')",
-//		"2019-05-20" : "url('css/pic/holiday/Vesaksub.png')",
-//		"2019-07-16" : "url('css/pic/holiday/Asalha.png')",
-//		"2019-07-17" : "url('css/pic/holiday/Vassa.png')",
+		"2018-07-28" : "url('css/pic/holiday/Vassa.png')",
+		"2019-02-19" : "url('css/pic/holiday/Magha.png')",
+		"2019-05-13" : "url('css/pic/holiday/Ploughing.png')",
+		"2019-05-18" : "url('css/pic/holiday/Vesak.png')",
+		"2019-05-20" : "url('css/pic/holiday/Vesaksub.png')",
+		"2019-07-16" : "url('css/pic/holiday/Asalha.png')",
+		"2019-07-17" : "url('css/pic/holiday/Vassa.png')",
 //		"2020-02-08" : "url('css/pic/holiday/Magha.png')",
 //		"2020-02-10" : "url('css/pic/holiday/Maghasub.png')",	// หยุดชดเชยวันมาฆบูชา
 //		"2020-05-06" : "url('css/pic/holiday/Vesak.png')",
@@ -1260,7 +1232,7 @@ let holiday = function (date) {
 		"12-11": Mon && "Constitutionsub",
 		"12-12": Mon && "Constitutionsub"
 	},
-	geturl = (dayname) => "url('css/pic/holiday/" + dayname + ".png')"
+	govHoliday = Thai[monthdate]
 
-	return Buddhist[date] || Thai[monthdate] && Thai[monthdate]()
+	return Buddhist[date] || govHoliday && `url('css/pic/holiday/${govHoliday}.png')`
 }

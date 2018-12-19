@@ -1,3 +1,10 @@
+/* to let table scrollable while dragging */
+html, body {
+    height: 100%;
+    overflow: hidden;
+    margin: 0px;
+}
+
 #wrapper {
 	height: 100%;
 	width: 100%;
@@ -168,21 +175,15 @@ td img {
 #servicetbl td:nth-child(5) { width: 15%; }
 #servicetbl td:nth-child(6) { width: 25%; }
 #servicetbl td:nth-child(7) { width: 25%; }
+#servicetbl th:nth-child(8),
+#servicetbl td:nth-child(8),
+#dialogService .fixed th:nth-child(8) { width: 0px; font-size: 0px; }
+#servicetbl.showColumn8 th:nth-child(8),
+#servicetbl.showColumn8 td:nth-child(8),
+#dialogService .fixed.showColumn8 th:nth-child(8) { width: 200px; font-size: 14px; }
 #servicetbl td:nth-child(9) { width: 40px; }
 #servicetbl td:nth-child(10) { width: 40px; }
 #servicetbl td:nth-child(11) { width: 40px; }
-#servicetbl th:nth-child(8),
-#servicetbl td:nth-child(8),
-#dialogService .fixed th:nth-child(8) {
-	width: 0px;
-	font-size: 0px;
-}
-#servicetbl.showColumn8 th:nth-child(8),
-#servicetbl.showColumn8 td:nth-child(8),
-#dialogService .fixed.showColumn8 th:nth-child(8) {
-	width: 200px;
-	font-size: 14px;
-}
 
 #servicetbl td.serviceStaff {
 	height: 40px;
@@ -544,8 +545,7 @@ td.camera2 { background-image: url(pic/general/camera2.png); }
 .w60 { width:60px !important; }
 .w65 { width:65px !important; }
 .w70 { width:70px !important; }
-.w73 { width:73px !important; }
-.w77 { width:77px !important; }
+.w75 { width:75px !important; }
 .w80 { width:80px !important; }
 .w85 { width:85px !important; }
 .w90 { width:90px !important; }
@@ -609,7 +609,6 @@ td.camera2 { background-image: url(pic/general/camera2.png); }
 	font-size: 14px;
 	width: 110px;
 }
-
 
 #staffmenu {
 	width: 100px;

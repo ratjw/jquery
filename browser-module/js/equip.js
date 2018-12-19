@@ -1,27 +1,17 @@
 
-import { BOOK, CONSULT, QN, updateBOOK } from "./control.js"
+import { QN } from "./const.js"
 import { modelStart, modelGetEquip, modelSaveEquip } from "./model.js"
 import {
-	getBOOKrowByQN, putAgeOpdate, putThdate,
-	ISOdate, nextdays, Alert
+	BOOK, updateBOOK, getBOOKrowByQN, putAgeOpdate,
+	putThdate, ISOdate, nextdays, Alert
 } from "./util.js"
+
 import { viewAll } from "./view.js"
 
-export { userOR, makeEquipTable }
+export { makeEquipTable }
 
 // function declaration (definition ) : public
 // function expression (literal) : local
-
-// For OR personels with login id 000000 / no password
-function userOR() {
-	modelStart().then(response => {
-		if (/BOOK/.test(response)) {
-			success(response)
-		} else {
-			Alert("userOR", response)
-		}
-	}).catch(error => {})
-}
 
 function success(response) {
 	updateBOOK(response)
@@ -116,7 +106,9 @@ function makeEquipTable($rowi, qn) {
 				$('#editedby').html(Editedby)
 			};
 
-			;/{/.test(response) ? hasData() : Alert("callbackgetEditedby", response)
+			typeof response === "object"
+			? hasData()
+			: Alert("callbackgetEditedby", response)
 		}).catch(error => {})
 	},
 	noEquip = function () {
@@ -218,7 +210,7 @@ let Checklistequip = function (qn, bookqEquip) {
 				});
 		};
 
-		;/BOOK/.test(response) ? updateBOOK(response) : rollback()
+		typeof response === "object" ? updateBOOK(response) : rollback()
 	}).catch(error => {})
 }
 

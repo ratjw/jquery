@@ -148,7 +148,7 @@ function refillOneDay(opdate)
 		$cells.eq(OPDATE).prop("class", dayName(NAMEOFDAYABBR, opdate))
 		$cells.eq(STAFFNAME).html(showStaffOnCall(opdate))
 		$cells.eq(HN).removeClass("pacs")
-		$cells.eq(PATIENT).removeClass("camera")
+		$cells.eq(PATIENT).removeClass("upload")
 		$cells.eq(DIAGNOSIS).css("backgroundImage", holiday(opdate))
 	} else {
 		if (tblRows > bookRows) {
@@ -218,7 +218,7 @@ function filldata(bookq, row)
 
 	row.title = bookq.waitnum
 	if (bookq.hn && gv.isPACS) { cells[HN].className = "pacs" }
-	if (bookq.patient && gv.isMobile) { cells[PATIENT].className = "camera" }
+	if (bookq.patient) { cells[PATIENT].className = "upload" }
 
 	cells[THEATRE].innerHTML = bookq.theatre
 	cells[OPROOM].innerHTML = bookq.oproom || ""
@@ -323,7 +323,7 @@ jQuery.fn.extend({
 		addColor(this, bookq.opdate)
 		$cells[OPDATE].className = dayName(NAMEOFDAYABBR, bookq.opdate)
 		$cells[HN].className = (bookq.hn && gv.isPACS)? "pacs" : ""
-		$cells[PATIENT].className = (bookq.patient && gv.isMobile)? "camera" : ""
+		$cells[PATIENT].className = (bookq.patient)? "upload" : ""
 
 		$cells[OPDATE].innerHTML = putThdate(bookq.opdate)
 		$cells[OPROOM].innerHTML = bookq.oproom || ""
@@ -415,10 +415,10 @@ function closequeue()
 // hover on background pics
 function hoverMain()
 {
-	let	paleClasses = ["pacs", "camera"],
-		boldClasses = ["pacs2", "camera2"]
+	let	paleClasses = ["pacs", "upload"],
+		boldClasses = ["pacs2", "upload2"]
 
-	$("td.pacs, td.camera").mousemove(function(event) {
+	$("td.pacs, td.upload").mousemove(function(event) {
 		if (inPicArea(event, this)) {
 			getClass(this, paleClasses, boldClasses)
 		} else {

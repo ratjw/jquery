@@ -1,13 +1,6 @@
 
-// const
-const GETIPD	= "php/getipd.php",
-	GETNAMEHN	= "php/getnamehn.php",
-	MYSQLIPHP	= "php/mysqli.php",
-	SEARCH		= "php/search.php"
-
-import { QN, LARGESTDATE } from "./control.js"
-import { userID } from "./main.js"
-import { URIcomponent } from "./util.js"
+import { QN, LARGESTDATE } from "./const.js"
+import { user, URIcomponent } from "./util.js"
 
 export {
 	modelSaveRoomTime, modelSaveContent, modelSaveNoQN, modelSaveByHN,
@@ -17,15 +10,23 @@ export {
 	modelIdling, modelSortable, modelSyncServer, modelFindLatestEntry
 }
 
+// const
+const GETIPD	= "php/getipd.php",
+	GETNAMEHN	= "php/getnamehn.php",
+	MYSQLIPHP	= "php/mysqli.php",
+	SEARCH		= "php/search.php",
+	LINEBOT		= "line/lineBot.php",
+	LINENOTIFY	= "line/lineNotify.php"
+
 // function declaration (definition ) : public
 // function expression (literal) : local
 
 function modelStart() {
-	return Ajax(MYSQLIPHP, "start=''");
+	return postData(MYSQLIPHP, "start=''");
 }
 
 function modelIdling(timestamp) {
-	return Ajax(MYSQLIPHP, "functionName=checkupdate&time=" + timestamp);
+	return postData(MYSQLIPHP, "functionName=checkupdate&time=" + timestamp);
 }
 
 function modelSortable(args) {
@@ -38,37 +39,37 @@ function modelSortable(args) {
 			+ (roomtime.roomtime &&
 				("', oproom='" + roomtime.roomtime[0]
 				+"', optime='" + roomtime.roomtime[1]))
-			+ "', editor='"+ userID
+			+ "', editor='"+ user
 			+ "' WHERE qn="+ thisqn +";"
 
-	return Ajax(MYSQLIPHP, sql);
+	return postData(MYSQLIPHP, sql);
 }
 
 function modelFindLatestEntry() {
 	let sql = "sqlReturnData=SELECT qn FROM bookhistory "
 			+ "WHERE editdatetime=(SELECT MAX(editdatetime) FROM bookhistory);"
 
-	return Ajax(MYSQLIPHP, sql);
+	return postData(MYSQLIPHP, sql);
 }
 
 function modelSyncServer(book, consult) {
 	let sql = "functionName=syncServer&book=" + book
 			+ "&consult=" + consult
 
-	return Ajax(MYSQLIPHP, sql);
+	return postData(MYSQLIPHP, sql);
 }
 
 function modelSaveService(column, content, qn) {
 	let sql = "sqlReturnbook=UPDATE book SET "
 			+ column +"='"+ content
-			+ "', editor='"+ userID
+			+ "', editor='"+ user
 			+ "' WHERE qn="+ qn +";"
 
-	return Ajax(MYSQLIPHP, sql);
+	return postData(MYSQLIPHP, sql);
 }
 
 function modelGetIPD(fromDate, toDate) {
-	return Ajax(GETIPD, "from=" + fromDate + "&to=" + toDate)
+	return postData(GETIPD, "from=" + fromDate + "&to=" + toDate)
 }
 
 function modelGetfromServer(fromDate, toDate) {
@@ -77,7 +78,7 @@ function modelGetfromServer(fromDate, toDate) {
 			  + "' AND waitnum<>0 "
 			  + "ORDER BY opdate, oproom='', oproom, optime, waitnum;";
 
-	return Ajax(MYSQLIPHP, sql)
+	return postData(MYSQLIPHP, sql)
 }
 
 function modelFind(hn, patient, diagnosis, treatment, contact) {
@@ -100,19 +101,19 @@ function modelFind(hn, patient, diagnosis, treatment, contact) {
 				: ("contact like '%" + contact + "%' "))
 		sql += "ORDER BY opdate DESC;"
 
-	return Ajax(MYSQLIPHP, sql)
+	return postData(MYSQLIPHP, sql)
 }
 
 function modelUndelete(opdate, qn) {
 	let sql = "functionName=undelete&qn=" + qn
 			+ "&opdate=" + opdate
-			+ "&editor=" + userID
+			+ "&editor=" + user
 
-	return Ajax(MYSQLIPHP, sql);
+	return postData(MYSQLIPHP, sql);
 }
 
 function modelAllDeletedCases() {
-	return Ajax(MYSQLIPHP, "functionName=deletedCases")
+	return postData(MYSQLIPHP, "functionName=deletedCases")
 }
 
 function modelAllCases() {
@@ -120,22 +121,22 @@ function modelAllCases() {
 			+ "WHERE waitnum > 0 "
 			+ "ORDER BY opdate;"
 
-	return Ajax(MYSQLIPHP, sql)
+	return postData(MYSQLIPHP, sql)
 }
 
 function modelCaseHistory(qn) {
 	let sql = "sqlReturnData=SELECT * FROM bookhistory "
 			+ "WHERE qn="+ qn +" ORDER BY editdatetime DESC;"
 
-	return Ajax(MYSQLIPHP, sql)
+	return postData(MYSQLIPHP, sql)
 }
 
 function modelDeleteCase(waitnum, qn) {
 	// In database, not actually delete the case but SET waitnum=NULL
 	let sql = "sqlReturnbook=UPDATE book SET waitnum=" + waitnum + ", "
-			+ "editor='" + userID + "' WHERE qn="+ qn + ";"
+			+ "editor='" + user + "' WHERE qn="+ qn + ";"
 
-	return Ajax(MYSQLIPHP, sql)
+	return postData(MYSQLIPHP, sql)
 }
 
 function modelChangeDate(args) {
@@ -143,9 +144,9 @@ function modelChangeDate(args) {
 			+ (args.oproom
 				? ("oproom='" + args.oproom + "', optime='" + args.optime + "', ")
 				: "")
-			+ "editor='" + userID + "' WHERE qn="+ args.qn + ";"
+			+ "editor='" + user + "' WHERE qn="+ args.qn + ";"
 
-	return Ajax(MYSQLIPHP, sql)
+	return postData(MYSQLIPHP, sql)
 }
 
 function modelSaveRoomTime(args) {
@@ -157,13 +158,13 @@ function modelSaveRoomTime(args) {
 		sql = qn ? "sqlReturnbook=UPDATE book SET "
 					+ "oproom='" + oproom + "', "
 					+ "optime='" + optime + "', "
-					+ "editor='" + userID + "' WHERE qn="+ qn + ";"	
+					+ "editor='" + user + "' WHERE qn="+ qn + ";"	
 				 : "sqlReturnbook=INSERT INTO book ("
 					+ "waitnum, opdate, oproom, optime, editor) VALUES ("
 					+ waitnum + ", '" + opdate +"','" + oproom +"','" + optime
-					+ "','"+ userID +"');"
+					+ "','"+ user +"');"
 
-	return Ajax(MYSQLIPHP, sql)
+	return postData(MYSQLIPHP, sql)
 }
 
 function modelSaveContent(args) {
@@ -172,10 +173,10 @@ function modelSaveContent(args) {
 		qn = args.qn,
 		sql = "sqlReturnbook=UPDATE book SET "
 				+ column +"='"+ content
-				+ "', editor='"+ userID
+				+ "', editor='"+ user
 				+ "' WHERE qn="+ qn +";"
 
-	return Ajax(MYSQLIPHP, sql);
+	return postData(MYSQLIPHP, sql);
 }
 
 function modelSaveNoQN(args) {
@@ -196,17 +197,17 @@ function modelSaveNoQN(args) {
 			? "sqlReturnbook=INSERT INTO book ("
 				+ "waitnum,opdate,oproom,optime,staffname," + column + ",qn,editor) VALUES ("
 				+ waitnum + ",'" + opdate +"','" + oproom +"','" + optime + "','"
-				+ staffname + "','"+ content + "'," + qn + ",'" + userID +"');"
+				+ staffname + "','"+ content + "'," + qn + ",'" + user +"');"
 			: "sqlReturnbook=INSERT INTO book ("
 				+ "waitnum,opdate,oproom,optime," + column + ",qn,editor) VALUES ("
 				+ waitnum + ",'" + opdate + "','" + oproom + "','" + optime
-				+ "','" + content + "'," + qn + ",'" + userID + "');"
+				+ "','" + content + "'," + qn + ",'" + user + "');"
 	} else {
 		// argsold (passed as args) has no waitnum
 		sql = "sqlReturnbook=DELETE FROM book WHERE qn=" + qn + ";"
 	}
 
-	return Ajax(MYSQLIPHP, sql);
+	return postData(MYSQLIPHP, sql);
 }
 
 function modelSaveByHN(args) {
@@ -222,36 +223,36 @@ function modelSaveByHN(args) {
 
 	// existing case (with another columns): send the qn
 	existedCase = function () {
-		return Ajax(GETNAMEHN, "hn=" + content
+		return postData(GETNAMEHN, "hn=" + content
 			+	"&opdate="+ opdate
 			+	"&qn="+ qn
-			+	"&username="+ userID)
+			+	"&username="+ user)
 	},
 
 	// new row: send waitnum, oproom, optime, no qn
 	// and store waitnum in row title
 	newCase = function () {
-		return Ajax(GETNAMEHN, "hn=" + content
+		return postData(GETNAMEHN, "hn=" + content
 			+	"&waitnum="+ waitnum
 			+	"&opdate="+ opdate
 			+	"&oproom="+ oproom
 			+	"&optime="+ optime
 			+	((tableID === "queuetbl") ? ("&staffname="+ staffname) : "")
-			+	"&username="+ userID)
+			+	"&username="+ user)
 	},
 
 	// redo new case, use previous data *to conform with undo*
 	redoNew = function() {
-		return Ajax(MYSQLIPHP, "sqlReturnbook=INSERT INTO book ("
+		return postData(MYSQLIPHP, "sqlReturnbook=INSERT INTO book ("
 			+ "waitnum,opdate,oproom,optime,staffname,hn,patient,dob,qn,editor) VALUES ("
 			+ waitnum + ",'" + opdate +"','" + oproom +"','" + optime + "','"
 			+ staffname + "','"+ content + "','" + args.patientnew + "','" + args.dobnew + "',"
-			+ qnnew + ",'" + userID +"');")
+			+ qnnew + ",'" + user +"');")
 	},
 
 	// redo existed case, revert to new input
 	redoExisted = function() {
-		return Ajax(MYSQLIPHP, "sqlReturnbook=UPDATE book SET "
+		return postData(MYSQLIPHP, "sqlReturnbook=UPDATE book SET "
 					+ "hn='" + content + "',"
 					+ "patient='" + URIcomponent(args.patientnew) + "',"
 					+ "dob='" + URIcomponent(args.dobnew) + "',"
@@ -263,12 +264,12 @@ function modelSaveByHN(args) {
 
 	// Undo new case = delete from database
 	undoNew = function () {
-		return Ajax(MYSQLIPHP, "sqlReturnbook=DELETE FROM book WHERE qn=" + qnnew + ";")
+		return postData(MYSQLIPHP, "sqlReturnbook=DELETE FROM book WHERE qn=" + qnnew + ";")
 	},
 
 	// Undo existing case with another columns
 	undoExisted = function () {
-		return Ajax(MYSQLIPHP, "sqlReturnbook=UPDATE book SET "
+		return postData(MYSQLIPHP, "sqlReturnbook=UPDATE book SET "
 					+ "hn='',patient='',dob=null,"
 					+ "diagnosis='" + URIcomponent(args.diagnosisold) + "',"
 					+ "treatment='" + URIcomponent(args.treatmentold) + "',"
@@ -307,31 +308,29 @@ function modelGetEquip(qn)	{
 	let sql = "sqlReturnData=SELECT editor, editdatetime FROM bookhistory "
 			+ "WHERE qn="+ qn + " AND equipment <> '';"
 
-	return Ajax(MYSQLIPHP, sql)
+	return postData(MYSQLIPHP, sql)
 }
 
 function modelSaveEquip(equipment, qn) {
 	let sql = "sqlReturnbook=UPDATE book SET "
 			+ "equipment='"+ equipment +"' ,"
-			+ "editor='"+ userID +"' "
+			+ "editor='"+ user +"' "
 			+ "WHERE qn="+ qn +";"
 
-	return Ajax(MYSQLIPHP, sql);
+	return postData(MYSQLIPHP, sql);
 }
 
-let Ajax = function (url, params) {
-	return new Promise(function(resolve, reject) {
-		let http = new XMLHttpRequest();
-		http.open("POST", url, true);
-		http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-		http.onreadystatechange = function() {
-			if (http.readyState === 4 && http.status === 200) {
-				resolve(http.responseText);
-			}
-			if (/401|404|500|503|504/.test(http.status)) {
-				reject(http.statusText);
-			}
-		}
-		http.send(params);
-	})
+async function postData(url = ``, data) {
+    const response = await fetch(url, {
+        method: "POST",
+        headers: {"Content-Type": "application/x-www-form-urlencoded"},
+		body: data
+    })
+    const text = await response.text()
+    try {
+        const result = JSON.parse(text)
+        return result
+    } catch(e) {
+        return text
+    }
 }

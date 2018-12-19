@@ -1,23 +1,13 @@
 
-import { userOR } from "./equip.js"
 import { userStaff } from "./control.js"
+import { setuser, user, Alert } from "./util.js"
 
-// from PHP form login
-export const userID = localStorage.getItem("userID")
+setuser()
 
-document.getElementById("login").parentNode.removeChild(login)
-document.getElementById("logo").parentNode.removeChild(logo)
 document.getElementById("wrapper").style.display = "block"
+document.getElementById("tblwrapper").style.height = window.innerHeight
+  - document.getElementById("cssmenu").style.height;
 
-// to make table scrollable while dragging
-let	html = document.getElementsByTagName("html")[0],
-	body = document.getElementsByTagName("body")[0]
-
-html.style.height = "100%"
-html.style.overflow = "hidden"
-html.style.margin = "0px"
-body.style.height = "100%"
-body.style.overflow = "hidden"
-body.style.margin = "0px"
-
-userID === "000000" ? userOR() : userStaff()
+/^\d{6}$/.test(user)
+? userStaff()
+: Alert("Alert!", "Invalid userid")

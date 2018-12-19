@@ -5,7 +5,7 @@ $(async function()
 
   if (/^\d{6}$/.test(userid)) {
     gv.user = userid
-    gv.isPACS = !gv.isMobile && /10.6./.test(window.location)
+    gv.isPACS = /10.6./.test(window.location)
     $("#wrapper").show()
     $("#tblwrapper").css("height", window.innerHeight - $("#cssmenu").height())
 
@@ -207,13 +207,6 @@ function documentEvent()
     }
   })
 
-  // to let table scrollable while dragging
-  $("html, body").css( {
-    height: "100%",
-    overflow: "hidden",
-    margin: "0px"
-  })
-  
   window.addEventListener('resize', () => {
     $("#tblwrapper").css("height", window.innerHeight - $("#cssmenu").height())
 	$("#queuecontainer").css({
@@ -257,10 +250,10 @@ function setStafflist()
   let stafflist = ''  let staffmenu = ''
 
   gv.STAFF.forEach(function(each) {
-    stafflist += '<li><span>' + each.staffname + '</span></li>'
-    staffmenu += "<li><a href=\"javascript:staffqueue('" + each.staffname + "')\"><span>" + each.staffname + '</span></a></li>'
+    stafflist += `<li><span>${each.staffname}</span></li>`
+    staffmenu += `<li><a onclick="staffqueue('${each.staffname}')"><span>${each.staffname}</span></a></li>`
   })
-  staffmenu += '<li><a href="javascript:staffqueue(\'Consults\')"><span>Consults</span></a></li>'
+  staffmenu += `<li><a onclick="staffqueue('Consults')"><span>Consults</span></a></li>`
   document.getElementById("stafflist").innerHTML = stafflist
   document.getElementById("staffmenu").innerHTML = staffmenu
 }
@@ -531,7 +524,7 @@ function onIdling()
       refillstaffqueue()
       refillall()
       fillConsults()
-    } else if (gv.idleCounter > 59 && !gv.isMobile) {
+    } else if (gv.idleCounter > 59) {
       history.back()
     }
 

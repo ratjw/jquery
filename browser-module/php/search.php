@@ -28,7 +28,7 @@ require_once "mysqli.php";
 
 function getData($mysqli, $sql, $others)
 {
-	$column = array("diagnosis","treatment","admission","final");
+	$column = array("diagnosis","treatment","equipment","admission","final");
 	$data = array();
 	$findArr = explode(" ", $others);
 

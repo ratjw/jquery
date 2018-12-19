@@ -1,20 +1,167 @@
 
-// const
-const THAIMONTH		= ["มค.", "กพ.", "มีค.", "เมย.", "พค.", "มิย.", "กค.", "สค.", "กย.", "ตค.", "พย.", "ธค."];
-
 import {
 	OPDATE, STAFFNAME, HN, PATIENT, DIAGNOSIS, TREATMENT, CONTACT, QN,
-	BOOK, CONSULT, LARGESTDATE
-} from "./control.js"
-
+	LARGESTDATE, THAIMONTH
+} from "./const.js"
+import { modelIdling } from "./model.js"
 import { isConsultsTbl } from "./view.js"
 
 export {
-	getBOOKrowByQN, ISOdate, thDate,
-	numDate, nextdays, getOpdate, putThdate, putAgeOpdate, calculateWaitnum,
-	URIcomponent, Alert, winWidth, winHeight, UndoManager
+	updateBOOK, showUpload, clearTimer, resetTimer, updating,
+	getBOOKrowByQN, ISOdate, thDate, numDate, nextdays, getOpdate,
+	putThdate, putAgeOpdate, calculateWaitnum, URIcomponent, Alert,
+	winWidth, winHeight, menustyle, setuser, UndoManager
 }
- 
+
+//--- global variables --------------
+// BOOK is for main table and individual staff's cases table
+// CONSULT is for Consults table (special table in queuetbl)
+// ONCALL is for exchanging between staffs for oncall consultation
+// HOLIDAY is for Buddhist holiday entry of every year
+// timestamp is the last time access from this client to the server
+// timer is just an id number of setTimeout, not the clock object
+// idleCounter is number of cycles of idle setTimeout
+// uploadWindow is to be replaced by new window, used for showUpload only
+// can't check PACS (always unauthorized 401 with Firefox)
+export let BOOK = [],
+	CONSULT = [],
+	STAFF = [],
+	ONCALL = [],
+	HOLIDAY = [],
+	timestamp = "",
+	uploadWindow = null,
+	timer = 0,
+	idleCounter = 0,
+	isPACS = true,
+	user = "",
+
+	// get 1st of last month, the first date of main table
+	START = ISOdate(new Date(new Date().getFullYear(),
+			new Date().getMonth()-1, 1))
+
+;(function($) {
+	$.fn.fixMe = function($container) {
+		let $this = $(this),
+			$t_fixed,
+			pad = $container.css("paddingLeft")
+		init();
+		$container.off("scroll").on("scroll", scrollFixed);
+
+		function init() {
+			$t_fixed = $this.clone();
+			$t_fixed.attr("id", "fixheader")
+			$t_fixed.find("tbody").remove().end()
+					.addClass("fixed").insertBefore($this);
+			$container.scrollTop(0)
+			resizeFixed();
+			reposition($t_fixed, "left top", "left+" + pad + " top", $container)
+			$t_fixed.hide()
+		}
+		function resizeFixed() {
+			$t_fixed.find("th").each(function(index) {
+				$(this).css("width",$this.find("th").eq(index).width() + "px");
+			});
+		}
+		function scrollFixed() {
+			let offset = $(this).scrollTop(),
+			tableTop = $this[0].offsetTop,
+			tableBottom = tableTop + $this.height() - $this.find("thead").height();
+			if(offset < tableTop || offset > tableBottom) {
+				$t_fixed.hide();
+			}
+			else if (offset >= tableTop && offset <= tableBottom && $t_fixed.is(":hidden")) {
+				$t_fixed.show();
+			}
+		}
+	};
+})(jQuery);
+
+// from login.js
+function setuser() {
+	user = sessionStorage.getItem("userid")
+}
+
+// Save data got from server
+// Two main data for tables (BOOK, CONSULT) and a timestamp
+// QTIME = datetime of last fetching : $mysqli->query("SELECT now();")
+function updateBOOK(response) {
+	if (response.BOOK) { BOOK = response.BOOK }
+	if (response.CONSULT) { CONSULT = response.CONSULT }
+	if (response.STAFF) { STAFF = response.STAFF }
+	if (response.ONCALL) { ONCALL = response.ONCALL }
+	if (response.HOLIDAY) { HOLIDAY = response.HOLIDAY }
+	if (response.QTIME) { timestamp = response.QTIME }
+}
+
+// hnName is a pre-defined letiable in child window (jQuery-File-Upload)
+function showUpload(hn, patient) {
+	uploadWindow && !uploadWindow.closed && uploadWindow.close();
+	uploadWindow = window.open("jQuery-File-Upload/index.html", "_blank")
+	uploadWindow.hnName = {"hn": hn, "patient": patient}
+}
+
+// poke server every 10 sec.
+function clearTimer() {
+	clearTimeout(timer)
+}
+function resetTimer() {
+	clearTimer()
+	timer = setTimeout( updating, 10000)
+}
+
+// While idling every 10 sec., get updated by itself and another clients
+// 1. Visible editcell
+// 	1.1 Editcell changed (update itself and from another client on the way)
+//	1.2 Editcell not changed, check updated from another client
+// 2. Not visible editcell, get update from another client
+let updating = function () {
+	if ($("#editcell").is(":visible") && onChange()) {
+		idleCounter = 0
+		updateEditcellData()
+	} else {
+		idling()
+	}
+
+	resetTimer(true, false)
+}
+
+// savePreviousCell and return with true (changed) or false (not changed)
+let onChange = function () {
+	let whereEditcell = $("#editcell").siblings("table").attr("id")
+
+	// Service table : Main or Staffqueue tables
+	return (whereEditcell === "servicetbl")
+			? savePreviousCellService()
+			: savePreviousCell()
+}
+
+// Check data in server changed from last loading timestamp
+// if not being editing on screen (idling) 1 minute, clear editing setup
+// if idling 10 minutes, logout
+// if some changes in database from other users (while this user is idling),
+// then sync data of editcell with underlying table cell
+let idling = function () {
+
+	modelIdling(timestamp).then(response => {
+		idleCounter += 1
+		if (idleCounter === 5) {
+			clearMenu()
+			clearEditcell()
+			clearMouseoverTR()
+		} else {
+			if (idleCounter > 59) {
+				window.location = window.location.href
+			}
+		}
+
+		if (typeof response === "object") {
+			updateBOOK(response)
+			viewIdling()
+			$("#editcell").is(":visible") && updateEditcellData()
+		}
+	}).catch(error => {})
+}
+
 // Javascript Date Object to MySQL date (ISOdate 2014-05-11)
 function ISOdate(date) {
 	if (!date) { return date }
@@ -321,6 +468,18 @@ function winHeight(container) {
 	return window.innerHeight
 }
 
+// Shadow down when menu is below target row (high on screen)
+// Shadow up when menu is higher than target row (low on screen)
+let menustyle = function ($me, target, width) {
+	let shadow = ($me.position().top > $(target).position().top)
+					? '10px 20px 30px slategray'
+					: '10px -20px 30px slategray'
+	$me.css({
+		width: width,
+		boxShadow: shadow
+	})
+}
+
 let UndoManager = (function () {
 
 	let commands = [],
@@ -430,3 +589,89 @@ let UndoManager = (function () {
 		}
 	};
 })();
+/*
+// Sync data in localStorage with server
+// update if timestamp > max. editdatetime
+function latestEntry() {
+	findLatestEntry().then((qn) => {
+		let latestqn = function(anybook) {
+				return $.grep(anybook, function(each) {
+					return each.qn === qn
+				})
+			},
+			local = localStorage.getItem("ALLBOOK"),
+			temp = JSON.parse(local),
+			localbook = temp.BOOK ? temp.BOOK : [],
+			localconsult = temp.CONSULT ? temp.CONSULT : [],
+			latestLocal = latestqn(localbook)[0]
+
+		if (!latestLocal) {
+			latestLocal = latestqn(localconsult)[0]
+			if (!latestLocal) {
+				return
+			}
+		}
+
+		let	latestServer = latestqn(BOOK)[0]
+		if (!latestServer) {
+			latestServer = latestqn(CONSULT)[0]
+			if (!latestServer) {
+				return
+			}
+		}
+
+		viewLatestEntry( [ latestLocal, latestServer ] )
+	})
+
+	$("#latesttbl").on("click", function (event) {
+		event.stopPropagation()
+		// row 0 : header
+		// row 1 : local
+		// row 2 : server
+		if (event.target.parentNode.rowIndex === 1) {
+			syncServer()
+		}
+		$("#dialogLatestEntry").dialog("close")
+	})
+}
+
+let syncServer = function() {
+	let book = JSON.stringify(BOOK),
+		consult = JSON.stringify(CONSULT)
+
+	modelSyncServer(book, consult).then(response => {
+		let syncSuccess = function () {
+			updateBOOK(response)
+			viewIdling()
+
+			// To sync data of editcell with underlying table cell
+			$("#editcell").is(":visible") && updateEditcellData()
+		}
+
+		typeof response === "object"
+		? syncSuccess()
+		: Alert ("syncServer", response)
+	}).catch(error => {})
+}
+
+let findLatestEntry = () => {
+	return new Promise((resolve, reject) => {
+		modelFindLatestEntry().then(response => {
+			if (response.indexOf('"qn"') !== -1) {
+				response = JSON.parse(response)
+				resolve(response[0].qn)
+			} else {
+				Alert ("findLatestEntry", response)
+				reject()
+			}
+		}).catch(error => {})
+	})
+}*/
+/* Mysql file length
+SELECT 
+table_name AS `Table`, 
+round(((data_length + index_length) / 1024 / 1024), 2) `Size in MB` 
+FROM information_schema.TABLES 
+WHERE table_schema = "neurosurgery"
+AND table_name = "bookhistory";
+*/

@@ -8,10 +8,9 @@ let gv = {
 	ONCALL: [],
 	HOLIDAY: [],
 	timestamp: "",
-	uploadWindow: null,
-	timer: {},
+	showUpload: null,
+	timer: 0,
 	idleCounter: 0,
-	isMobile: false,
 	isPACS: true,
 	editableSV: true,
 	user: ""
@@ -56,6 +55,28 @@ OPDATESV	= 9,
 DISCHARGESV	= 10,
 QNSV		= 11,
 
+// NAMEOFDAYABBR for 1st column color
+// NAMEOFDAYFULL for row color
+NAMEOFDAYABBR	= ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+NAMEOFDAYFULL	= ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+THAIMONTH		= ["มค.", "กพ.", "มีค.", "เมย.", "พค.", "มิย.", "กค.", "สค.", "กย.", "ตค.", "พย.", "ธค."],
+LARGESTDATE		= "9999-12-31",
+
+HOLIDAYENGTHAI = {
+	"Magha": "วันมาฆบูชา",
+	"Maghasub": "ชดเชยวันมาฆบูชา",
+	"Ploughing": "วันพืชมงคล",
+	"Ploughingsub": "ชดเชยวันพืชมงคล",
+	"Vesak": "วันวิสาขบูชา",
+	"Vesaksub": "ชดเชยวันวิสาขบูชา",
+	"Asalha": "วันอาสาฬหบูชา",
+	"Asalhasub": "ชดเชยวันอาสาฬหบูชา",
+	"Vassa": "วันเข้าพรรษา",
+	"Vassasub": "ชดเชยวันเข้าพรรษา",
+	"special": "วันหยุดพิเศษ",
+	"no": "ไม่หยุด"
+},
+
 ROWREPORT = {
 	"Brain Tumor": 3,
 	"Brain Vascular": 4,
@@ -87,28 +108,6 @@ SPECIALTY = [
 	"urology",
 	"vascular"
 ],
-
-// NAMEOFDAYABBR for 1st column color
-// NAMEOFDAYFULL for row color
-NAMEOFDAYABBR	= ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
-NAMEOFDAYFULL	= ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
-THAIMONTH		= ["มค.", "กพ.", "มีค.", "เมย.", "พค.", "มิย.", "กค.", "สค.", "กย.", "ตค.", "พย.", "ธค."],
-LARGESTDATE		= "9999-12-31",
-
-HOLIDAYENGTHAI = {
-	"Magha": "วันมาฆบูชา",
-	"Maghasub": "ชดเชยวันมาฆบูชา",
-	"Ploughing": "วันพืชมงคล",
-	"Ploughingsub": "ชดเชยวันพืชมงคล",
-	"Vesak": "วันวิสาขบูชา",
-	"Vesaksub": "ชดเชยวันวิสาขบูชา",
-	"Asalha": "วันอาสาฬหบูชา",
-	"Asalhasub": "ชดเชยวันอาสาฬหบูชา",
-	"Vassa": "วันเข้าพรรษา",
-	"Vassasub": "ชดเชยวันเข้าพรรษา",
-	"special": "วันหยุดพิเศษ",
-	"no": "ไม่หยุด"
-},
 
 // ["type", "width", "name", "id" (also used in label for), "label"]
 equipSheet = [
@@ -571,9 +570,7 @@ ETCRX = [
 	/scope/i, /stim/i, /suture/i,
 	/tracheos/i, /VNS/i
 ],
-NOOPERATION = [
-	/adjust.*pressure/i, /advice.*surg[ery|ical]/i, /conservative/i, /observe/i, /\boff OR/
-],
+
 BRAINTUMORRXNO = [
 	/(clot|hematoma).*(remov|irrigat|evacuat)/i,
 	/clip/i, /EDAS/i, /EDAMS/i, /excision.*AVM|AVM.*excision/i,
@@ -678,6 +675,9 @@ ETCRXNO = [
 	/thora/i, /TLIF/i
 ],
 
+NOOPERATION = [
+	/adjust.*pressure/i, /advice.*surg[ery|ical]/i, /conservative/i, /observe/i, /\boff OR/
+],
 RADIOSURGERY = [
 	/conformal radiotherapy/i, /CRT/i, /Cyber ?Knife/i,
 	/Gamma knife/i, /GKS/i, /Linac/i,

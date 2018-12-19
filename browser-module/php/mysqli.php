@@ -5,7 +5,7 @@ require_once "book.php";
 	// start.js (start)
 	// xstart.js (start)
 	if (isset($_POST['start'])) {
-		echo start($mysqli, $_POST['start']);
+		echo start($mysqli);
 	}
 	// xstart.js (getUpdate)
 	else if (isset($_POST['nosqlReturnbook']))
@@ -123,7 +123,7 @@ function getOncall($mysqli)
 
 function getHoliday($mysqli)
 {
-	$sql = "SELECT * FROM holiday ORDER BY holiday;";
+	$sql = "SELECT * FROM holiday ORDER BY holidate;";
 	return multiquery($mysqli, $sql);
 }
 

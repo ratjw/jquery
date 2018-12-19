@@ -1,78 +1,53 @@
 
-export const
-	STAFF = [
-		"อ.เอก",
-		"อ.อัตถพร", 
-		"อ.สรยุทธ", 
-		"อ.วัฒนา", 
-		"อ.เกรียงศักดิ์", 
-		"อ.พีรพงศ์"
-	],
-
-	// tbl, queuetbl
-	OPDATE		= 0,
-	OPROOM		= 1,
-	CASENUM		= 2,
-	STAFFNAME	= 3,
-	HN			= 4,
-	PATIENT		= 5,
-	DIAGNOSIS	= 6,
-	TREATMENT	= 7,
-	CONTACT		= 8,
-	QN			= 9,
-
-	LARGESTDATE	= "9999-12-31",
-
-	// At this moment I can't check PACS (always unauthorized 401 with Firefox)
-	isPACS = localStorage.getItem("isPACS") === "true",
-
-	// get 1st of last month, the first date of main table
-	START = ISOdate(new Date(new Date().getFullYear(), new Date().getMonth()-1, 1))
-
-// End const
-
-// BOOK is data array for main table and staff table
-// CONSULT is data array for Consults table (special staff table)
-export let
-	BOOK = [],
-	CONSULT = []
-
-// timestamp is the last time access from this client to the server
-// timer is ID of setTimeout
-// idleCounter is number of cycles of idle setTimeout
-let timestamp = "",
-	timer = 0,
-	idleCounter = 0
+import {
+	OPDATE, THEATRE, OPROOM, OPTIME, CASENUM, STAFFNAME, HN, PATIENT,
+	DIAGNOSIS, TREATMENT, EQUIPMENT, CONTACT, QN, LARGESTDATE
+} from "./const.js"
 
 import {
 	createEditcellOpdate, createEditcellRoomtime, getPointer, getOldcontent,
 	getNewcontent, updateEditcellData, createEditcell, clearEditcell, reposition
 } from "./edit.js"
 
-import { clearMouseoverTR, mainMenu, menustyle } from "./menu.js"
+import { clearMouseoverTR } from "./menu.js"
 import { sortable } from "./sort.js"
 import { savePreviousCellService } from "./serv.js"
 
 import {
-	modelStart, modelIdling, modelSyncServer, modelFindLatestEntry,
+	modelStart, modelSyncServer, modelFindLatestEntry,
 	modelSaveRoomTime, modelSaveContent, modelSaveNoQN, modelSaveByHN
 } from "./model.js"
 
 import {
-	getOpdate, ISOdate, thDate, 
-	calculateWaitnum, URIcomponent, Alert, UndoManager
+	BOOK, CONSULT, STAFF, ONCALL, HOLIDAY,isPACS, START,
+	getOpdate, ISOdate, thDate, calculateWaitnum, URIcomponent, Alert,
+	UndoManager, updateBOOK, showUpload, resetTimer, updating, menustyle
 } from "./util.js"
 
 import {
 	viewAll, viewLatestEntry, viewIdling, viewSaveRoomTime, viewSaveContent,
-	viewSaveNoQN, viewSaveByHN, animateScroll
+	viewSaveNoQN, viewSaveByHN, animateScroll, setClickStaff
 } from "./view.js"
 
 // Public functions
 export {
 	savePreviousCell, editPresentCell,
-	PACS, uploadWindow, userStaff, updateBOOK, resetTimer
+	PACS, userStaff
 }
+
+//let onclick = {
+//	"clickaddStaff": addStaff,
+//	"clicksetHoliday": setHoliday,
+//	"clickdoadddata": doadddata,
+//	"clickdoupdatedata": doupdatedata,
+//	"clickdodeletedata": dodeletedata,
+//	"addholiday": addHoliday
+//}
+// id="staffmenu", onclick="delHoliday(this)"
+
+//$.each(onclick, function(key, val) {
+//	document.getElementById(key).onclick= val
+//})
 
 // function declaration (definition ) : public
 // function expression (literal) : local
@@ -80,11 +55,9 @@ export {
 // For staff & residents with login id / password from Get_staff_detail
 function userStaff() {
 	modelStart().then(response => {
-		if (/BOOK/.test(response)) {
-			success(response)
-		} else {
-			failed(response)
-		}
+		typeof response === "object"
+		? success(response)
+		: failed(response)
 	}).catch(error => {})
 
 	document.oncontextmenu = () => false
@@ -98,10 +71,10 @@ function success(response) {
 	sortable()
 	makeStart()
 	setStafflist()
-	resetTimer(true, true)
+	resetTimer()
 
 	$("#wrapper").on("click", function (event) {
-		resetTimer(true, true);
+		resetTimer();
 		$(".borderfound").removeClass("borderfound")
 		event.stopPropagation()
 		let	target = event.target,
@@ -156,8 +129,7 @@ function success(response) {
 	})
 }
 
-// Failed return from server, use localStorage, no editing
-// --- unfinished coding - sync local to server ***
+// *** offline browsing by service worker ***
 function failed(response) {
 	let title = "Server Error",
 		error = error + "<br><br>Response from server has no data",
@@ -174,13 +146,7 @@ function failed(response) {
 
 		// add 7 days to QTIME in localStorage so that it will not be
 		// overrided with backward data after access with failed server
-		let date = new Date().setDate(new Date().getDate() + 7),
-			mm = date.getMonth() + 1,
-			dd = date.getDate()
-		date = [date.getFullYear(),
-				(mm < 10) ? "0" + mm : "" + mm,
-				(dd < 10) ? "0" + dd : "" + dd
-				].join("-")
+		let date = nextdays(new Date(), 7)
 		localStorage.setItem('localQTIME', date)
 	} else {
 		Alert(title, error + "No localStorage backup")
@@ -214,102 +180,20 @@ let makeStart = function() {
 	animateScroll($('#tblcontainer'), thishead.offsetTop, 300)
 }
 
+// stafflist for enter name in Staff column
+// staffmenu for dropdown sub-menu
 let setStafflist = function () {
-	let	stafflist = '',		// For enter name in Staff column
-		staffmenu = ''		// For sub-menu in Opdate column
-	for (let each = 0; each < STAFF.length; each++)
-	{
-		stafflist += '<li><div>' + STAFF[each] + '</div></li>'
-		staffmenu += '<li id="staffqueue"><div>' + STAFF[each] + '</div></li>'
-	}
-	staffmenu += '<li id="staffqueue"><div>Consults</div></li>'
-	document.getElementById("stafflist").innerHTML = stafflist
-	document.getElementById("staffmenu").innerHTML = staffmenu
-}
-
-// While idling every 10 sec., get updated by itself and another clients
-// 1. Visible editcell
-// 	1.1 Editcell changed (update itself and from another client on the way)
-//	1.2 Editcell not changed, check updated from another client
-// 2. Not visible editcell, get update from another client
-let updating = function () {
-	if ($("#editcell").is(":visible") && onChange()) {
-		idleCounter = 0
-		updateEditcellData()
-	} else {
-		idling()
-	}
-
-	resetTimer(true, false)
-}
-
-// savePreviousCell and return with true (changed) or false (not changed)
-let onChange = function () {
-	let whereEditcell = $("#editcell").siblings("table").attr("id")
-
-	// Service table : Main or Staffqueue tables
-	return (whereEditcell === "servicetbl")
-			? savePreviousCellService()
-			: savePreviousCell()
-}
-
-// Check data in server changed from last loading timestamp
-let idling = function () {
-
-	modelIdling(timestamp).then(response => {
-		idleCounter += 1
-
-		// not being editing on screen (idling) 1 minute, clear editing setup
-		if (idleCounter === 5) {
-			clearMenu()
-			clearEditcell()
-			clearMouseoverTR()
-		} else {
-			// idling 10 minutes, logout
-			if (idleCounter > 59) {
-				window.location = window.location.href
-			}
-		}
-
-		if (/BOOK/.test(response)) {
-
-			// some changes in database from other users (while this is idling)
-			updateBOOK(response)
-			viewIdling()
-
-			// To sync data of editcell with underlying table cell
-			$("#editcell").is(":visible") && updateEditcellData()
-		}
-	}).catch(error => {})
-}
-
-// Save data got from server
-// Two main data for tables and a timestamp
-function updateBOOK(response) {
-	let temp = JSON.parse(response)
-
-	BOOK = temp.BOOK ? temp.BOOK : []
-	CONSULT = temp.CONSULT ? temp.CONSULT : []
-	timestamp = temp.QTIME
-
-	// save updated data to override localStorage
-	// but not within 7 days after previous failed server
-	// timestamp was added 7 days when accessed with failed server
-	let localQTIME = localStorage.getItem('localQTIME')
-	if (localQTIME < timestamp) {
-		localStorage.setItem('ALLBOOK', response)
-		localStorage.setItem('localQTIME', timestamp)
-	}
-}
-
-// timer is just an id number, not the clock object
-// poke server every 10 sec.
-// set === reset time out
-// idle === reset idleCounter
-function resetTimer(set, idle) {
-	clearTimeout(timer)
-	set && (timer = setTimeout( updating, 10000))
-	idle && (idleCounter = 0)
+  let stafflist = '',
+      staffmenu = ''
+  STAFF.forEach(function(each) {
+    stafflist += `<li><div>${each.staffname}</div></li>`
+    staffmenu += `<li><a class="clickStaff ${each.staffname}">
+                 <span>${each.staffname}</span></a></li>`
+  })
+  staffmenu += `<li><a class="clickStaff Consults"><span>Consults</span></a></li>`
+  document.getElementById("stafflist").innerHTML = stafflist
+  document.getElementById("staffmenu").innerHTML = staffmenu
+  setClickStaff()
 }
 
 let clearMenu = function() {
@@ -317,99 +201,12 @@ let clearMenu = function() {
 	$('#stafflist').hide();
 }
 
-// Sync data in localStorage with server
-// update if timestamp > max. editdatetime
-function latestEntry() {
-	findLatestEntry().then((qn) => {
-		let latestqn = function(anybook) {
-				return $.grep(anybook, function(each) {
-					return each.qn === qn
-				})
-			},
-			local = localStorage.getItem("ALLBOOK"),
-			temp = JSON.parse(local),
-			localbook = temp.BOOK ? temp.BOOK : [],
-			localconsult = temp.CONSULT ? temp.CONSULT : [],
-			latestLocal = latestqn(localbook)[0]
-
-		if (!latestLocal) {
-			latestLocal = latestqn(localconsult)[0]
-			if (!latestLocal) {
-				return
-			}
-		}
-
-		let	latestServer = latestqn(BOOK)[0]
-		if (!latestServer) {
-			latestServer = latestqn(CONSULT)[0]
-			if (!latestServer) {
-				return
-			}
-		}
-
-		viewLatestEntry( [ latestLocal, latestServer ] )
-	})
-
-	$("#latesttbl").on("click", function (event) {
-		event.stopPropagation()
-		// row 0 : header
-		// row 1 : local
-		// row 2 : server
-		if (event.target.parentNode.rowIndex === 1) {
-			syncServer()
-		}
-		$("#dialogLatestEntry").dialog("close")
-	})
-}
-
-let syncServer = function() {
-	let book = JSON.stringify(BOOK),
-		consult = JSON.stringify(CONSULT)
-
-	modelSyncServer(book, consult).then(response => {
-		let syncSuccess = function () {
-			updateBOOK(response)
-			viewIdling()
-
-			// To sync data of editcell with underlying table cell
-			$("#editcell").is(":visible") && updateEditcellData()
-		}
-
-		;/BOOK/.test(response)
-		? syncSuccess()
-		: Alert ("syncServer", response)
-	}).catch(error => {})
-}
-
-let findLatestEntry = () => {
-	return new Promise((resolve, reject) => {
-		modelFindLatestEntry().then(response => {
-			if (response.indexOf('"qn"') !== -1) {
-				response = JSON.parse(response)
-				resolve(response[0].qn)
-			} else {
-				Alert ("findLatestEntry", response)
-				reject()
-			}
-		}).catch(error => {})
-	})
-}
-/* Mysql file length
-SELECT 
-table_name AS `Table`, 
-round(((data_length + index_length) / 1024 / 1024), 2) `Size in MB` 
-FROM information_schema.TABLES 
-WHERE table_schema = "neurosurgery"
-AND table_name = "bookhistory";
-*/
-
 // Click on main or staff table
 function clicktable(clickedCell) {
 	savePreviousCell()
 	editPresentCell(clickedCell)
 }
 
-// Return true/false for function onChange()
 function savePreviousCell() {
 	let pointed = getPointer(),
 		oldcontent = getOldcontent(),
@@ -492,7 +289,7 @@ var doSaveRoomTime = function(args) {
 			viewSaveRoomTime(args.opdate)
 		};
 
-		;/BOOK/.test(response)
+		typeof response === "object"
 		? hasData()
 		: Alert ("saveRoomTime", response)
 	}).catch(error => {})
@@ -560,7 +357,7 @@ let saveConQN = function (args) {
 			// return to previous content
 		};
 
-		;/BOOK/.test(response) ? hasData() : noData()
+		typeof response === "object" ? hasData() : noData()
 	}).catch(error => {})
 }
 
@@ -604,7 +401,7 @@ let saveNoQN = function (args) {
 				reject()
 			};
 
-			;/BOOK/.test(response) ? hasData() : noData()
+			typeof response === "object" ? hasData() : noData()
 		}).catch(error => { reject() })
 	})
 }
@@ -708,7 +505,7 @@ let modelSaveHN = function (argsnew) {
 				reject()
 			};
 
-			;/BOOK/.test(response) ? hasData() : noData()
+			typeof response === "object" ? hasData() : noData()
 		}).catch(error => { reject() })
 	})
 }
@@ -744,7 +541,7 @@ function editPresentCell(pointing) {
 			patient = pointing.innerHTML
 
 		clearEditcell()
-		hn && uploadWindow(hn, patient)
+		hn && showUpload(hn, patient)
 	}
 	store[DIAGNOSIS] = function () {
 		createEditcell(pointing)
@@ -844,18 +641,6 @@ let stafflist = function (pointing) {
 	$stafflist.appendTo($(pointing).closest('div'))
 	reposition($stafflist, "left top", "left bottom", pointing)
 	menustyle($stafflist, pointing, width)
-	reposition($stafflist, "left top", "left bottom", pointing)
-	// Repeat to make it show on first click on staff table
-}
-
-// id to be deleted and replaced by new window, used for uploadWindow only
-let id
-
-function uploadWindow(hn, patient) {
-	id && !id.closed && id.close();
-	id = window.open("jQuery-File-Upload/index.html", "_blank")
-	id.hnName = {"hn": hn, "patient": patient}
-	// hnName is a pre-defined letiable in child window (jQuery-File-Upload)
 }
 
 function PACS(hn) { 
@@ -881,3 +666,271 @@ function PACS(hn) {
 
 	(msie > 0 || edge > 0 || IE) ? window.open(pacs) : openMSIE()
 }
+/*
+function setHoliday()
+{
+	let	$dialogHoliday = $("#dialogHoliday"),
+		$holidaytbl = $("#holidaytbl"),
+		$holidateth = $("#holidateth"),
+		$holidayname = $("#holidayname"),
+		holidaylist = '<option style="display:none"></option>'
+
+	fillHoliday($holidaytbl)
+	$dialogHoliday.dialog({
+		title: "Holiday",
+		closeOnEscape: true,
+		modal: true,
+		show: 200,
+		hide: 200,
+		width: 350,
+		height: 600,
+		buttons: [{
+			text: "Save",
+			id: "buttonHoliday",
+			click: function () {
+				saveHoliday()
+			}
+		}],
+		close: function() {
+			let	$inputRow = $("#holidaytbl tr:has('input')")
+
+			if ($inputRow.length) {
+				holidayInputBack($inputRow)
+			}
+		}
+	})
+
+	let $buttonHoliday = $("#buttonHoliday")
+	$buttonHoliday.hide()
+
+	// select date by calendar
+	$holidateth.datepicker({
+		autoSize: true,
+		dateFormat: "dd M yy",
+		monthNames: [ "มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", 
+					  "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม" ],
+		// use Short names to be consistent with the month converted by numDate()
+		monthNamesShort: THAIMONTH,
+		yearSuffix: new Date().getFullYear() +  543,
+		beforeShow: function (input, inst) {
+			if (inst.selectedYear) {
+				// prevent using Buddhist year from <input>
+				$(this).datepicker("setDate",
+					new Date(inst.currentYear, inst.currentMonth, inst.currentDay))
+			} else {
+				$(this).datepicker("setDate", new Date())
+			}
+			$holidateth.one("click", function() {
+				if (input.value) {
+					$holidateth.val(input.value.slice(0, -4) + (inst.selectedYear + 543))
+				}
+			})
+		},
+		onChangeMonthYear: function (year, month, inst) {
+			$(this).datepicker("setDate",
+				new Date(inst.selectedYear, inst.selectedMonth, inst.selectedDay))
+			inst.settings.yearSuffix = inst.selectedYear + 543
+			$holidateth.val($holidateth.val().slice(0, -4) + (inst.selectedYear + 543))
+		},
+		onSelect: function (input, inst) {
+			$holidateth.val(input.slice(0, -4) + (inst.selectedYear + 543))
+			if ($holidayname.val()) {
+				$buttonHoliday.show()
+			}
+		}
+	})
+
+	// option holidays Eng: Thai
+	$.each(HOLIDAYENGTHAI, function(key, val) {
+		holidaylist += `<option value="${key}">${val}</option>`
+	})
+	$holidayname.html(holidaylist)
+	$holidayname.change(function() {
+		if ($holidateth.val()) {
+			$buttonHoliday.show()
+		}
+	})
+}
+
+function fillHoliday($holidaytbl)
+{
+	$holidaytbl.find('tr').slice(1).remove()
+
+	$.each( gv.HOLIDAY, function(i) {
+		$('#holidaycells tr').clone()
+			.appendTo($holidaytbl.find('tbody'))
+				.filldataHoliday(this)
+	});
+}
+
+jQuery.fn.extend({
+	filldataHoliday : function(q) {
+		let	cells = this[0].cells,
+			data = [
+				putThdate(q.holidate),
+				HOLIDAYENGTHAI[q.dayname]
+			]
+
+		dataforEachCell(cells, data)
+	}
+})
+
+function addHoliday()
+{
+	let	$dialogHoliday = $("#dialogHoliday"),
+		$holidaytbl = $("#holidaytbl")
+
+	// already has an <input> row
+	if ($holidaytbl.find("input").length) { return }
+
+	$holidaytbl.find("tbody")
+		.append($("#holidayInput tr"))
+
+	let	append = $holidaytbl.height(),
+		height = $dialogHoliday.height()
+	if (append > height) {
+		$dialogHoliday.scrollTop(append - height)
+	}
+}
+
+document.querySelectorAll("delholiday").forEach(function(item) {
+	item.addEventListener("click", function() {
+		delHoliday(this)
+	})
+})
+
+async function delHoliday(that)
+{
+	let	$row = $(that).closest("tr")
+
+	if ($row.find("input").length) {
+		holidayInputBack($row)
+	} else {
+		let	$cell = $row.find("td"),
+			vdateth = $cell[0].innerHTML,
+			vdate = vdateth.numDate(),
+			vname = $cell[1].innerHTML.replace(/<button.*$/, ""),
+			rows = getTableRowsByDate(vdateth),
+			holidayEng = getHolidayEng(vname),
+
+			sql = "sqlReturnData=DELETE FROM holiday WHERE "
+				+ "holidate='" + vdate
+				+ "' AND dayname='" + holidayEng
+				+ "';SELECT * FROM holiday ORDER BY holidate;"
+
+		let response = await postData(MYSQLIPHP, sql)
+		if (typeof response === "object") {
+			gv.HOLIDAY = response
+			$(rows).each(function() {
+				this.cells[DIAGNOSIS].style.backgroundImage = ""
+			})
+			$row.remove()
+		} else {
+			alert(response)
+		}
+	}
+}
+/*
+async function saveHoliday()
+{
+	let	vdateth = document.getElementById("holidateth").value,
+		vdate = vdateth.numDate(),
+		vname = document.getElementById("holidayname").value,
+		rows = getTableRowsByDate(vdateth),
+
+		sql = "sqlReturnData="
+			+ "INSERT INTO holiday (holidate,dayname) VALUES('"
+			+ vdate + "','"+ vname
+			+ "');SELECT * FROM holiday ORDER BY holidate;"
+
+	if (!vdate || !vname) { return }
+
+	let response = await postData(MYSQLIPHP, sql)
+	if (typeof response === "object") {
+		gv.HOLIDAY = response
+		holidayInputBack($("#holidateth").closest("tr"))
+		fillHoliday($("#holidaytbl"))
+		$("#buttonHoliday").hide()
+		$(rows).each(function() {
+			this.cells[DIAGNOSIS].style.backgroundImage = holiday(vdate)
+		})
+	} else {
+		alert(response)
+	}
+}
+
+function getHolidayEng(vname) {
+	return Object.keys(HOLIDAYENGTHAI).find(key => HOLIDAYENGTHAI[key] === vname)
+}
+
+// Have to move $inputRow back and forth because datepicker is sticked to #holidateth
+function holidayInputBack($inputRow)
+{
+	$("#holidateth").val("")
+	$("#holidayname").val("")
+	$('#holidayInput tbody').append($inputRow)
+}
+
+function holiday(date)
+{
+	if (date !== LARGESTDATE) {
+		return religiousHoliday(date) || officialHoliday(date)
+	}
+}
+
+// Thai official holiday & Compensation
+function religiousHoliday(date)
+{
+	let relHoliday = gv.HOLIDAY.find(day => day.holidate === date)
+	if (relHoliday) {
+		return `url('css/pic/holiday/${relHoliday.dayname}.png')`
+	}
+}
+
+// Thai official holiday & Compensation
+function officialHoliday(date)
+{
+	const monthdate = date.substring(5),
+		dayofweek = (new Date(date)).getDay(),
+		Mon = (dayofweek === 1),
+		Tue = (dayofweek === 2),
+		Wed = (dayofweek === 3),
+		Thai = {
+			"12-31": "Yearend",
+			"01-01": "Newyear",
+			"01-02": (Mon || Tue) && "Yearendsub",
+			"01-03": (Mon || Tue) && "Newyearsub",
+			"04-06": "Chakri",
+			"04-07": Mon && "Chakrisub",
+			"04-08": Mon && "Chakrisub",
+			"04-13": "Songkran",
+			"04-14": "Songkran",
+			"04-15": "Songkran",
+			"04-16": (Mon || Tue || Wed) && "Songkransub",
+			"04-17": (Mon || Tue || Wed) && "Songkransub",
+			"07-28": "King10",
+			"07-29": Mon && "King10sub",
+			"07-30": Mon && "King10sub",
+			"08-12": "Queen",
+			"08-13": Mon && "Queensub",
+			"08-14": Mon && "Queensub",
+			"10-13": "King09",
+			"10-14": Mon && "King09sub",
+			"10-15": Mon && "King09sub",
+			"10-23": "Piya",
+			"10-24": Mon && "Piyasub",
+			"10-25": Mon && "Piyasub",
+			"12-05": "King9",
+			"12-06": Mon && "King9sub",
+			"12-07": Mon && "King9sub",
+			"12-10": "Constitution",
+			"12-11": Mon && "Constitutionsub",
+			"12-12": Mon && "Constitutionsub"
+		},
+		govHoliday = Thai[monthdate]
+
+	if (govHoliday) {
+		return `url('css/pic/holiday/${govHoliday}.png')`
+	}
+}
+*/

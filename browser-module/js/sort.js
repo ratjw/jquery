@@ -1,15 +1,15 @@
 
-// tbl, queuetbl
 import {
 	OPDATE, STAFFNAME, HN, PATIENT, DIAGNOSIS, TREATMENT, CONTACT, QN,
-	LARGESTDATE,
-	resetTimer, updateBOOK
-} from "./control.js"
+	LARGESTDATE
+} from "./const.js"
 
 import { clearEditcell } from "./edit.js"
 import { clearMouseoverTR } from "./menu.js"
 import { modelSortable } from "./model.js"
-import { getOpdate, calculateWaitnum, Alert, UndoManager } from "./util.js"
+import { getOpdate, calculateWaitnum, Alert, UndoManager, 
+	updateBOOK, clearTimer, resetTimer, showUpload
+} from "./util.js"
 import { viewSortable } from "./view.js"
 
 // Sortable 2 windows connected with each other
@@ -29,8 +29,7 @@ export function sortable () {
 		cancel: "tr:has('th')",
 		start: function(e, ui){
 
-			// clearTimeout only
-			resetTimer(false, false)
+			clearTimer()
 			clearMenu()
 			clearEditcell()
 			clearMouseoverTR()
@@ -169,7 +168,7 @@ function modelSort(argm, argv) {
 			viewSortable(argv)
 		}
 
-		;/BOOK/.test(response)
+		typeof response === "object"
 		? hasData()
 		: Alert("Sortable", response)
 	}).catch(error => {})
@@ -183,7 +182,7 @@ let stopsorting = function () {
 	// setTimeout 10 sec
 	//  Editcell hide after 1 min (5 cycles) idling
 	//  Logout after 10 min (50 cycles) idling
-	resetTimer(true, true)
+	resetTimer()
 
 	//  after sorting, editcell was placed at row 0 column 1
 	//  and display at placeholder position in entire width

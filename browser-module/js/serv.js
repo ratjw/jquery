@@ -1,23 +1,17 @@
 
-export const
-	//servicetbl
-	CASENUMSV	= 0,
-	HNSV		= 1,
-	NAMESV		= 2,
-	DIAGNOSISSV	= 3,
-	TREATMENTSV	= 4,
-	ADMISSIONSV	= 5,
-	FINALSV		= 6,
-	ADMITSV		= 7,
-	OPDATESV	= 8,
-	DISCHARGESV	= 9,
-	QNSV		= 10
+import { CASENUMSV, HNSV, NAMESV, DIAGNOSISSV, TREATMENTSV, ADMISSIONSV,
+  FINALSV, PROFILESV, ADMITSV, OPDATESV, DISCHARGESV, QNSV,
 
-import {
-	BOOK, CONSULT, STAFF, isPACS, START,
-	updateBOOK, resetTimer, uploadWindow, PACS
-} from "./control.js"
+  BRAINDX, BRAINTUMORDX, BRAINVASCULARDX, CSFDX, TRAUMADX, SPINEDX, ETCDX,
+  BRAINTUMORDXNO, BRAINVASCULARDXNO, CSFDXNO, TRAUMADXNO, SPINEDXNO, ETCDXNO,
+  BRAINTUMORRX, BRAINVASCULARRX, CSFRX, TRAUMARX, SPINERX, SPINEOP, ETCRX,
+  BRAINTUMORRXNO, BRAINVASCULARRXNO, CSFRXNO, TRAUMARXNO, SPINERXNO, ETCRXNO,
+  NOOPERATION, RADIOSURGERY, ENDOVASCULAR,
 
+  ROWREPORT, COLUMNREPORT, SPECIALTY
+} from "./const.js"
+
+import { PACS } from "./control.js"
 import {
 	getPointer, getOldcontent, getNewcontent, clearEditcell, createEditcell
 } from "./edit.js"
@@ -25,27 +19,40 @@ import {
 import { modelGetfromServer, modelGetIPD, modelSaveService } from "./model.js"
 
 import {
+	BOOK, CONSULT, STAFF, isPACS, START,
 	putAgeOpdate, getBOOKrowByQN, URIcomponent,
+	updateBOOK, resetTimer, showUpload,
 	Alert, winWidth, winHeight, UndoManager
 } from "./util.js"
 
 import { reViewAll, reViewStaffqueue, winResizeFix } from "./view.js"
 
-export { serviceReview, reViewService, savePreviousCellService, editPresentCellService }
+export { reViewService, savePreviousCellService, editPresentCellService }
 
-let SERVICE = {}, fromDate = "", toDate = "", editable = true
+// SERVICE is retrieved from DB by getServiceOneMonth
+// SERVE is calculated from SERVICE by calcSERVE
+let SERVICE = [],
+  SERVE = [],
+  fromDate = "",
+  toDate = "",
+  editable = true
+
+document.getElementById("clickserviceReview").onclick = serviceReview
+
+// Save data got from server
+function updateSERVICE(response) {
+	if (response.SERVICE) { SERVICE = response.SERVICE }
+}
 
 // function declaration (definition ) : public
 // function expression (literal) : local
 
-// Service table use SERVICE which is generated from BOOK + CONSULT
-// for a specified month in each call to serviceReview
 // Includes all serviced cases, operated or not (consulted)
 // Then count complications and morbid/mortal
 // Button click Export to Excel
 // PHP Getipd retrieves admit/discharge dates
 function serviceReview() {
-	resetcountService()
+//	resetcountService()
 	$('#servicehead').hide()
 	$('#servicetbl').hide()
 	$('#exportService').hide()
@@ -131,9 +138,9 @@ let getfromServer = function () {
 	return new Promise((resolve, reject) => {
 
 		modelGetfromServer(fromDate, toDate).then(response => {
-			;/dob/.test(response)
-				? resolve( JSON.parse(response) )
-				: reject( "getfromServer", response )
+			typeof response === "object"
+			? resolve( JSON.parse(response) )
+			: reject( "getfromServer", response )
 		}).catch(error => {})
 	})
 }
@@ -176,9 +183,9 @@ let showService = function () {
 	$('#servicetbl').show()
 	$("#servicetbl").off("click").on("click", function (event) {
 
-		// Editcell hide after 1 min (5 cycles) idling
-		// Logout after 10 min (50 cycles) idling
-		resetTimer(true, true);
+		// Editcell hide after 1 min (6 cycles) idling
+		// Logout after 10 min (60 cycles) idling
+		resetTimer();
 
 		event.stopPropagation()
 		let target = event.target
@@ -319,8 +326,9 @@ let addColorService = function ($this, color) {
 let getAdmitDischargeDate = function () {
 
 	modelGetIPD(fromDate, toDate).then(response => {
-		if (/BOOK/.test(response)) {
+		if (typeof response === "object") {
 			updateBOOK(response)
+			SERVE = calcSERVE()
 			fillAdmitDischargeDate()
 		}
 	}).catch(error => {})
@@ -366,7 +374,6 @@ let clickservice = function (clickedCell) {
 	editPresentCellService(clickedCell)
 }
 
-// Return true/false for function onChange() when idling
 function savePreviousCellService() {
 	let pointed = getPointer(),
 		oldcontent = getOldcontent(),
@@ -440,7 +447,7 @@ let modelSaveServ = function (pointed, column, content, oldcontent, rowi, $rowi,
 			pointed.innerHTML = oldcontent		// return to previous content
 		};
 
-		;/BOOK/.test(response) ? hasData() : noData()
+		typeof response === "object" ? hasData() : noData()
 	}).catch(error => {})
 }
 
@@ -487,7 +494,7 @@ function editPresentCellService(pointing) {
 				patient = pointing.innerHTML
 
 			clearEditcell()
-			hn && uploadWindow(hn, patient)
+			hn && showUpload(hn, patient)
 			break
 		case DIAGNOSISSV:
 		case TREATMENTSV:
@@ -503,7 +510,7 @@ function editPresentCellService(pointing) {
 			break
 	}
 }
-
+/*
 let resetcountService = function () {
 	[ "Admit", "Discharge", "Operation", "Readmission",
 	   "Reoperation", "Infection", "Morbidity", "Dead"
@@ -511,7 +518,7 @@ let resetcountService = function () {
 		document.getElementById(item).innerHTML = 0
 	})
 }
-
+*/
 let countService = function (thiscase) {
 	let color = "";
 

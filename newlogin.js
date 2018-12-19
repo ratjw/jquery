@@ -13,7 +13,7 @@ function login()
 	// (.*)$ is the second argument
 	var ua = navigator.userAgent
 	var isMobile = /Android|webOS|iPhone|iPad|BlackBerry|IEMobile/i.test(ua)
-/*	var Chrome = ua.match(/Chrome\/(.*)$/)
+	var Chrome = ua.match(/Chrome\/(.*)$/)
 	var Firefox = ua.match(/Firefox\/(.*)$/)
 	var Edge = ua.match(/Edge\/(.*)$/)
 	var Safari = ua.match(/Safari\/(.*)$/)
@@ -26,19 +26,18 @@ function login()
 						: (Safari && Safari.length > 1)
 							? Safari[1] >= "10.1"
 							: false
-*/	var browser = /rvpn/.test(window.origin)
+	var browser = /rvpn/.test(window.origin)
 				? isMobile
 					? "browser-vpn-mobile"
 					: "browser-vpn-es5"
 				: checkES6()
 					? isMobile
 						? "browser-mobile"
-//						: module
-//							? "browser-module"
+						: module
+							? "browser-module"
 							: "browser-es6"
 					: "browser-es5"
 					
-browser = "browser-vpn-mobile"
 	document.getElementById("browser").value = browser
 	sessionStorage.setItem('userid', document.getElementById("userid").value)
 }
