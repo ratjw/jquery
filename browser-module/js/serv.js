@@ -11,21 +11,21 @@ import { CASENUMSV, HNSV, NAMESV, DIAGNOSISSV, TREATMENTSV, ADMISSIONSV,
   ROWREPORT, COLUMNREPORT, SPECIALTY
 } from "./const.js"
 
-import { PACS, resetTimer } from "./control.js"
+import { PACS, resetTimer, fillConsults } from "./control.js"
 import {
 	getPointer, getOldcontent, getNewcontent, clearEditcell, createEditcell
 } from "./edit.js"
 
-import { modelGetfromServer, modelGetIPD, modelSaveService } from "./model.js"
+import { modelGetServiceOneMonth, modelGetIPD, modelSaveService } from "./model.js"
 
 import {
-	BOOK, CONSULT, STAFF, isPACS, START,
+	getSTAFF, isPACS, START,
 	putAgeOpdate, getBOOKrowByQN, URIcomponent,
-	updateBOOK, showUpload,
-	Alert, winWidth, winHeight, UndoManager
+	updateBOOK, showUpload, getClass,
+	Alert, winWidth, winHeight, UndoManager, winResizeFix
 } from "./util.js"
 
-import { reViewAll, reViewStaffqueue, winResizeFix } from "./view.js"
+import { reViewAll, reViewStaffqueue } from "./view.js"
 
 export { reViewService, savePreviousCellService, editPresentCellService }
 
@@ -35,14 +35,9 @@ let SERVICE = [],
   SERVE = [],
   fromDate = "",
   toDate = "",
-  editable = true
+  editableSV = true
 
 document.getElementById("clickserviceReview").onclick = serviceReview
-
-// Save data got from server
-function updateSERVICE(response) {
-	if (response.SERVICE) { SERVICE = response.SERVICE }
-}
 
 // function declaration (definition ) : public
 // function expression (literal) : local
@@ -52,282 +47,486 @@ function updateSERVICE(response) {
 // Button click Export to Excel
 // PHP Getipd retrieves admit/discharge dates
 function serviceReview() {
-//	resetcountService()
-	$('#servicehead').hide()
-	$('#servicetbl').hide()
-	$('#exportService').hide()
-	let $dialogService = $('#dialogService')
+	let	$dialogService = $("#dialogService"),
+		$monthpicker = $("#monthpicker"),
+		$monthstart = $("#monthstart"),
+		selectedYear = new Date().getFullYear(),
+		BuddhistYear = Number(selectedYear) + 543
+
+	$("#servicehead").hide()
+	$("#servicetbl").hide()
+	$("#exportService").hide()
+	$("#reportService").hide()
+	$(".divRecord").hide()
+	
 	$dialogService.dialog({
-		title: 'Service Neurosurgery',
+		title: "Service Neurosurgery",
 		closeOnEscape: true,
 		modal: true,
-		width: winWidth() * 95 / 100,
-		height: winHeight() * 95 / 100
+		width: winWidth(95),
+		height: winHeight(95)
 	})
 
-	// Div monthpicker has Thai month
-	// Div monthpicking has ISO date
-	//	val: begin date of the month
-	//	title: end date of the month
-	$('#monthpicker').show()
-	$('#monthpicker').datepicker( {
-		altField: $('#monthpicking'),
+	$monthpicker.show()
+	$monthpicker.datepicker({
+		altField: $monthstart,
 		altFormat: "yy-mm-dd",
 		autoSize: true,
 		dateFormat: "MM yy",
 		monthNames: [ "มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", 
 					  "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม" ],
+		yearSuffix: new Date().getFullYear() +  543,
 		onChangeMonthYear: function (year, month, inst) {
-			$(this).datepicker('setDate', new Date(inst.selectedYear, inst.selectedMonth, 1))
+			$(this).datepicker("setDate", new Date(inst.selectedYear, inst.selectedMonth, 1))
+			inst.settings.yearSuffix = inst.selectedYear + 543
 		},
-		// Hide date calendar, show only header
 		beforeShow: function (input, obj) {
-			$('.ui-datepicker-calendar').hide()
+			$(".ui-datepicker-calendar").hide()
 		}
 	}).datepicker("setDate", new Date(new Date().getFullYear(), new Date().getMonth(), 1))
 
-	$(document).off("click", ".ui-datepicker-title")
-				.on("click", ".ui-datepicker-title", function() {
-		fromDate = $('#monthpicking').val()
-		editable = fromDate >= START
-		toDate = calEndOfMonth()
+	$dialogService.off("click").on("click", ".ui-datepicker-title", function() {
+		entireMonth($monthstart.val())
+	})
 
-		getServiceOneMonth().then(function(service) {
-			SERVICE = service
-			showService()
-		}).catch(error => {})
-
-		$(document).off("click", '.ui-datepicker-title')
-		$("#exportService").show()
-		$("#exportService").off("click").on("click", function(e) {
-			e.preventDefault();
-			exportToExcel()
-		})
-
-		// for resizing dialogs in landscape / portrait view
-		$(window).resize(function() {
-			$dialogService.dialog({
-				width: winWidth() * 95 / 100,
-				height: winHeight() * 95 / 100
-			})
-			winResizeFix($("#servicetbl"), $dialogService)
-		})
+	document.getElementById("dialogService").addEventListener("wheel", function (event) {
+		resetTimer();
+		idleCounter = 0
+	})
+	
+	document.getElementById("dialogService").addEventListener("mousemove", function (event) {
+		resetTimer();
+		idleCounter = 0
 	})
 }
 
-let getServiceOneMonth = function() {
-
-	return new Promise((resolve, reject) => {
-		let beforeStart = function () {
-			getfromServer().then( function (service) {
-				resolve(service)
-			}).catch(error => {})
-		},
-		afterStart = function () {
-			resolve(getfromBOOKCONSULT())
-		}
-
-		fromDate < START ? beforeStart() : afterStart()
-	})
-}
-
-// No data before last month in BOOK, CONSULT
-// Retrieve the specified month from server
-let getfromServer = function () {
-
-	return new Promise((resolve, reject) => {
-
-		modelGetfromServer(fromDate, toDate).then(response => {
-			typeof response === "object"
-			? resolve( JSON.parse(response) )
-			: reject( "getfromServer", response )
-		}).catch(error => {})
-	})
-}
-
-// Get only cases in specified month
-// Merge book & service then sort by date
-let getfromBOOKCONSULT = function() {
-	let	addFromRAM = function (bookconsult) {
-		return $.grep( bookconsult, function (e) {
-			return e.opdate >= fromDate && e.opdate <= toDate
-		} )
-	},
-	servicebook = addFromRAM(BOOK),
-	serviceconsult = addFromRAM(CONSULT),
-	service = servicebook.concat(serviceconsult),
-	data = service.sort(function (a, b) {
-		return (a.opdate < b.opdate)
-			? -1
-			: a.opdate > b.opdate ? 1 : 0;
-	})
-
-	return data
-}
-
-// new Date(yyyy, mm, 1) is 1st date of month
-// new Date(yyyy, mm, 0) is 1 day before 1st date of month === last date of this month
-let calEndOfMonth = function () {
+// new Date(yyyy, mm+1, 0) is the day before 1st date of next month === last date of this month
+function entireMonth(fromDate)
+{
 	let date = new Date(fromDate),
-		last = new Date(date.getFullYear(), date.getMonth()+1, 0)
+		toDate = new Date(date.getFullYear(), date.getMonth()+1, 0),
+		$dialogService = $("#dialogService"),
+		$monthpicker = $("#monthpicker"),
+		$exportService = $("#exportService"),
+		$reportService = $("#reportService"),
+		inputval = $monthpicker.val(),
+		titledate = inputval.slice(0, -4) + (Number(inputval.slice(-4)) + 543),
+		title = "Service Neurosurgery เดือน " + titledate
 
-	return $.datepicker.formatDate('yy-mm-dd', last)
+	$dialogService.dialog({ title: title })
+	toDate = $.datepicker.formatDate("yy-mm-dd", toDate)
+	$monthpicker.val(toDate)
+
+	modelGetServiceOneMonth(fromDate, toDate).then(response => {
+		if (typeof response === "object") {
+			SERVICE = response
+			SERVE = calcSERVE()
+			showService(fromDate, toDate)
+		} else {
+			Alert("getServiceOneMonth", response)
+		}
+	}).catch(error => {})
+
+	$exportService.show()
+	$exportService.on("click", event => {
+		event.preventDefault()
+		exportServiceToExcel()
+	})
+
+	$reportService.show()
+	$reportService.on("click", event => {
+		event.preventDefault()
+		showReportToDept(title)
+	})
 }
 
-// Iterate through each staff with his own cases numbers
-// Get admit/discharge if vacant
-// Count morbid/mortal
+// SERVE is a copy of SERVICE but also contains some calculated values at run time
+//    i.e. - diagnosis, treatment, admit
+// All service values are stored in the corresponding table row : $row.data()
+// Operation is determined by operationFor() in JS
+// Admission is updated by getAdmitDischargeDate in PHP
+// Values in DB are user-defined to override runtime-calc values
+// admitted : "", "No", "Readmission"			<- admit
+// operated : "", "No", "Reoperation"			<- treatment
+// doneby : "", "Staff", "Resident"				<- default "Staff"
+// manner : "", "Elective", "Emergency"			<- default "Elective"
+// scale : "", "Major", "Minor"					<- default "Major"
+// disease : "", "No", "Brain Tumor", "Brain Vascular",
+//		"CSF related", "Trauma", "Spine", "etc" <- treatment + diagnosis
+// radiosurgery : "", "No", "Radiosurgery"		<- treatment
+// endovascular : "", "No", "Endovascular"		<- treatment
+// infection : "", "Infection"					<- user-defined only
+// morbid : "", "Morbidity"						<- user-defined only
+// dead : "", "Dead"							<- user-defined only
 let showService = function () {
+	let	$dialogService = $("#dialogService"),
+		$servicetbl = $("#servicetbl"),
+		$servicecells = $("#servicecells"),
+		$imgopen = $("#servicetbl th #imgopen"),
+		$imgclose = $("#servicetbl th #imgclose"),
+		$divRecord = $("#servicetbl .divRecord"),
+		staffname = "",
+		scase = 0,
+		classname = ""
+
+	$("#monthpicker").hide()
+	$("#servicehead").show()
+
 	// delete previous servicetbl lest it accumulates
 	$('#servicetbl tr').slice(1).remove()
 	$('#servicetbl').show()
-	$("#servicetbl").off("click").on("click", function (event) {
+	editableSV = fromDate >= START
 
-		// Editcell hide after 1 min (6 cycles) idling
-		// Logout after 10 min (60 cycles) idling
-		resetTimer();
+	//delete previous servicetbl lest it accumulates
+	$servicetbl.find("tr").slice(1).remove()
+	$servicetbl.show()
+	editableSV = fromDate >= getStart()
 
-		event.stopPropagation()
-		let target = event.target
-		return (target.nodeName === "TH") || (target.className === "serviceStaff")
-				? clearEditcell()
-				: clickservice(target)
-	})
-
-	$.each( STAFF, function() {
-		let staffname = String(this),
+	$.each( SERVE, function() {
+		if (this.staffname !== staffname) {
+			staffname = this.staffname
 			scase = 0
-		$('#servicecells tr').clone()
-			.appendTo($('#servicetbl tbody'))
-				.children("td").eq(CASENUMSV)
-					.prop("colSpan", 8)
-						.addClass("serviceStaff")
-							.html(staffname)
-								.siblings().hide()
-		$.each( SERVICE, function() {
-			if (this.staffname === staffname) {
-				let color = countService(this)
-				scase++
-				$('#servicecells tr').clone()
-					.appendTo($('#servicetbl tbody'))
-						.filldataService(this, scase, color)
-			}
-		});
-	})
+			$servicecells.find("tr").clone()
+				.appendTo($servicetbl.find("tbody"))
+					.children("td").eq(CASENUMSV)
+						.prop("colSpan", QNSV - CASENUMSV)
+							.addClass("serviceStaff")
+								.html(staffname)
+									.siblings().hide()
+		}
+		classname = countService(this, fromDate, toDate)
+		scase++
+		$servicecells.find("tr").clone()
+			.appendTo($servicetbl.find("tbody"))
+				.filldataService(this, scase, classname)
+	});
 
-	let $monthpicker = $('#monthpicker')
-
-	$monthpicker.hide()
-	$('#servicehead').show()
-	$('#dialogService').dialog({
-		title: 'Service Neurosurgery เดือน ' + $monthpicker.val(),
-
-		// Animation helps dialog disappear more quickly
-		// than waiting for reViewAll to finish
-		hide: 500,
+	$dialogService.dialog({
+		hide: 200,
+		width: winWidth(95),
+		height: winHeight(95),
 		close: function() {
-			reViewAll()
-			reViewStaffqueue()
+			refillstaffqueue()
+			refillall()
+            fillConsults()
+			$(".ui-dialog:visible").find(".ui-dialog-content").dialog("close");
+			$(".fixed").remove()
+			hideProfile()
+			$(window).off("resize", resizeDialog)
+			$dialogService.off("click", clickDialogService)
+			if ($("#editcell").data("pointing")) {
+				savePreviousCellService()
+			}
 			clearEditcell()
-			$(window).off("resize")
-			$("#fixheader").remove()
+			clearSelection()
 		}
 	})
-	getAdmitDischargeDate()
+	
+	if (/surgery\.rama/.test(location.hostname)) {
+		getAdmitDischargeDate(fromDate, toDate)
+	}
 	countAllServices()
-	$("#servicetbl").fixMe($("#dialogService"));
+	$servicetbl.fixMe($dialogService)
+	hoverService()
+
+	$dialogService.on("click", clickDialogService)
+
+	//for resizing dialogs in landscape / portrait view
+	$(window).on("resize", resizeDialog)
+
+	function clickDialogService(event)
+	{
+		resetTimer();
+		idleCounter = 0
+		event.stopPropagation()
+		let	target = event.target,
+			$target = $(target),
+			onProfile = $target.closest(".divRecord").length,
+			onNormalCell = (target.nodeName === "TD" && target.colSpan === 1),
+			pointed = $("#editcell").data("pointing"),
+			isHideColumn = target.cellIndex === PROFILESV,
+			onDivRecord = /divRecord/.test(target.className),
+			onImage = target.nodeName === "IMG"
+
+		if (isHideColumn || onDivRecord || onImage) {
+		  if ($servicetbl.find("th").eq(PROFILESV).width() < 200) {
+			showProfile()
+		  } else {
+			hideProfile()
+		  }
+		  $("#dialogService .fixed").refixMe($servicetbl)
+		}
+
+		// click a button on divRecord gives 2 events => first SPAN and then INPUT
+		// INPUT event comes after INPUT value was changed
+		if (onProfile) {
+			if (target.nodeName !== "INPUT") {
+				return
+			}
+			showInputColor($target, target)
+			target = $target.closest('td')[0]
+		}
+		if (pointed) {
+			if (target === pointed) {
+				return
+			}
+			savePreviousCellService()
+			if (onNormalCell || onProfile) {
+				editPresentCellService(event, target)
+			} else {
+				clearEditcell()
+			}
+		} else {
+			if (onNormalCell || onProfile) {
+				editPresentCellService(event, target)
+			}
+		}
+	}
+
+	function showProfile() {
+		$servicetbl.addClass("showColumn8")
+		$dialogService.find(".fixed").addClass("showColumn8")
+		$(".divRecord").show()
+		$imgopen.hide()
+		$imgclose.show()
+	}
+
+	function hideProfile() {
+		$servicetbl.removeClass("showColumn8")
+		$dialogService.find(".fixed").removeClass("showColumn8")
+		$(".divRecord").hide()
+		$imgopen.show()
+		$imgclose.hide()
+	}
+			
+	function resizeDialog()
+	{
+		$dialogService.dialog({
+			width: winWidth(95),
+			height: winHeight(95)
+		})
+		winResizeFix($servicetbl, $dialogService)
+	}
+}
+
+function calcSERVE()
+{
+	let gvserve = SERVICE.slice()
+
+	$.each(gvserve, function() {
+		let	treatment = this.treatment
+
+		if (!this.radiosurgery && isMatched(RADIOSURGERY, treatment)) {
+			this.radiosurgery = "Radiosurgery"
+		}
+
+		if (!this.endovascular && isMatched(ENDOVASCULAR, treatment)) {
+			this.endovascular = "Endovascular"
+		}
+
+		// If DB value is blank, calc the value
+		this.disease = this.disease || operationFor(this)
+
+		// "No" from DB or no matched
+		if (this.disease !== "No") {
+			if (!this.operated) { this.operated = "Operation" }
+			if (!this.doneby) { this.doneby = "Staff" }
+			if (!this.scale) { this.scale = "Major" }
+			if (!this.manner) { this.manner = "Elective" }
+		}
+	})
+
+	return gvserve
+}
+
+function operationFor(thisrow)
+{
+	let	KEYWORDS = {
+			"Brain Tumor": [ BRAINTUMORRX, BRAINTUMORRXNO, BRAINTUMORDX, BRAINTUMORDXNO ],
+			"Brain Vascular": [ BRAINVASCULARRX, BRAINVASCULARRXNO, BRAINVASCULARDX, BRAINVASCULARDXNO ],
+			"Trauma": [ TRAUMARX, TRAUMARXNO, TRAUMADX, TRAUMADXNO ],
+			"Spine": [ SPINERX, SPINERXNO, SPINEDX, SPINEDXNO.concat(BRAINDX) ],
+			"CSF related": [ CSFRX, CSFRXNO, CSFDX, CSFDXNO ],
+			"etc": [ ETCRX, ETCRXNO, ETCDX, ETCDXNO ]
+		},
+		Rx = 0, RxNo = 1, Dx = 2, DxNo = 3, 
+		opfor = Object.keys(KEYWORDS),
+		diagnosis = thisrow.diagnosis,
+		treatment = thisrow.treatment,
+		endovascular = thisrow.endovascular === "Endovascular",
+		opwhat
+	// "No" from match NOOPERATION
+	if (isMatched(NOOPERATION, treatment)) { return "No" }
+
+	// "No" from no match
+	opfor = isOpfor(KEYWORDS, opfor, Rx, treatment)
+	if (opfor.length === 0) { opwhat = "No" }
+	else if (opfor.length === 1) { opwhat = opfor[0] }
+	else {
+		opfor = isNotOpfor(KEYWORDS, opfor, RxNo, treatment)
+		if (opfor.length === 1) { opwhat = opfor[0] }
+		else {
+			opfor = isOpfor(KEYWORDS, opfor, Dx, diagnosis)
+			if (opfor.length === 0) { opwhat = "etc" }
+			else if (opfor.length === 1) { opwhat = opfor[0] }
+			else {
+				// in case all cancelled each other out
+				opwhat = opfor[0]
+				opfor = isNotOpfor(KEYWORDS, opfor, DxNo, diagnosis)
+				if (opfor.length > 0) { opwhat = opfor[0] }
+			}
+		}
+	}
+	if (opwhat === "Spine" && endovascular && !isMatched(SPINEOP, treatment)) {
+		opwhat = "No"
+	}
+	return opwhat
+}
+
+function isMatched(keyword, diagtreat)
+{
+	let test = false
+
+	$.each( keyword, function() {
+		return !(test = this.test(diagtreat))
+	})
+	return test
+}
+
+function isOpfor(keyword, opfor, RxDx, diagRx)
+{
+	for (let i=opfor.length-1; i>=0; i--) {
+		if (!isMatched(keyword[opfor[i]][RxDx], diagRx)) {
+			opfor.splice(i, 1)
+		}
+	}
+	return opfor
+}
+
+function isNotOpfor(keyword, opfor, RxDx, diagRx)
+{
+	for (let i=opfor.length-1; i>=0; i--) {
+		if (isMatched(keyword[opfor[i]][RxDx], diagRx)) {
+			opfor.splice(i, 1)
+		}
+	}
+	return opfor
 }
 
 // Use existing DOM table to refresh when editing
-function reViewService() {
-	let i = 0
-	$.each( STAFF, function() {
-		i++
-		let staffname = String(this),
-			$thisCase = $('#servicetbl tr').eq(i).children("td").eq(CASENUMSV),
+function reViewService(fromDate, toDate) {
+	let $servicetbl = $("#servicetbl"),
+		$rows = $servicetbl.find("tr"),
+		$servicecells = $("#servicecells"),
+		len = $rows.length
+		staffname = "",
+		i = 0, scase = 0,
+		classname = ""
+
+	$.each( SERVE, function() {
+		if (this.staffname !== staffname) {
+			staffname = this.staffname
 			scase = 0
-
-		$thisCase.prop("colSpan") === 1 &&
-			$thisCase.prop("colSpan", 8)
-				.addClass("serviceStaff")
-					.siblings().hide()
-
-		$thisCase.html(staffname)
-
-		$.each( SERVICE, function() {
-			if (this.staffname === staffname) {
-				i++
-				scase++
-				let color = countService(this),
-					$thisRow = $('#servicetbl tr').eq(i).children("td")
-				$thisRow.eq(CASENUMSV).prop("colSpan") > 1 &&
-					$thisRow.eq(CASENUMSV).prop("colSpan", 1)
-						.nextUntil($thisRow.eq(QNSV)).show()
-				$('#servicetbl tr').eq(i)
-					.filldataService(this, scase, color)
+			i++
+			$staff = $rows.eq(i).children("td").eq(CASENUMSV)
+			if ($staff.prop("colSpan") === 1) {
+				$staff.prop("colSpan", QNSV - CASENUMSV)
+					.addClass("serviceStaff")
+						.siblings().hide()
 			}
-		});
-	})
-	if (i < ($('#servicetbl tr').length - 1)) {
-		$('#servicetbl tr').slice(i+1).remove()
+			$staff.html(staffname)
+		}
+		i++
+		scase++
+		if (i === len) {
+			$("#servicecells").find("tr").clone()
+				.appendTo($("#servicetbl").find("tbody"))
+			len++
+		}
+		classname = countService(this, fromDate, toDate)
+		$row = $rows.eq(i)
+		$cells = $row.children("td")
+		if ($cells.eq(CASENUMSV).prop("colSpan") > 1) {
+			$cells.eq(CASENUMSV).prop("colSpan", 1)
+				.nextUntil($cells.eq(QNSV)).show()
+		}
+		$row.filldataService(this, scase, classname)
+	});
+	if (i < (len - 1)) {
+		$rows.slice(i+1).remove()
 	}
 	countAllServices()
 }
 
 jQuery.fn.extend({
-	filldataService : function(q, scase, color) {
-		let cells = this[0].cells
-		addColorService(this, color)
+	filldataService : function(bookq, scase, classes) {
+		let	row = this[0],
+			cells = row.cells
+
+		row.className = classes
+		if (bookq.hn && isPACS) { cells[HNSV].className = "pacs" }
+		if (bookq.hn) { cells[NAMESV].className = "upload" }
+
 		cells[CASENUMSV].innerHTML = scase
-		cells[HNSV].innerHTML = q.hn
-		q.hn && isPACS && (cells[HNSV].className = "pacs")
-		cells[NAMESV].innerHTML = q.patient
-			+ (q.dob ? ("<br>อายุ " + putAgeOpdate(q.dob, q.opdate)) : "")
-		cells[NAMESV].className = "camera"
-		cells[DIAGNOSISSV].innerHTML = q.diagnosis
-		cells[TREATMENTSV].innerHTML = q.treatment
-		cells[ADMISSIONSV].innerHTML = q.admission
-		cells[FINALSV].innerHTML = q.final
-		cells[ADMITSV].innerHTML = (q.admit ? q.admit : "")
-		cells[DISCHARGESV].innerHTML = (q.discharge ? q.discharge : "")
-		cells[QNSV].innerHTML = q.qn
+		cells[HNSV].innerHTML = bookq.hn
+		cells[NAMESV].innerHTML = putNameAge(bookq)
+		cells[DIAGNOSISSV].innerHTML = bookq.diagnosis
+		cells[TREATMENTSV].innerHTML = bookq.treatment
+		cells[ADMISSIONSV].innerHTML = bookq.admission
+		cells[FINALSV].innerHTML = bookq.final
+		while(cells[PROFILESV].firstChild) cells[PROFILESV].firstChild.remove()
+		cells[PROFILESV].appendChild(showRecord(bookq))
+		cells[ADMITSV].innerHTML = putThdate(bookq.admit)
+		cells[OPDATESV].innerHTML = putThdate(bookq.opdate)
+		cells[DISCHARGESV].innerHTML = putThdate(bookq.discharge)
+		cells[QNSV].innerHTML = bookq.qn
 	}
 })
 
-// add classes of morbid/mortal
-// 1. The cell producing the color class
-// 2. The row with all producing classes, row color is the last class
-let addColorService = function ($this, color) {
-	if (color) {
-		$this[0].className = color
-		let $cell = $this.children("td"),
-			$final = $cell.eq(FINALSV)
-		if (/Readmission/.test(color)) {
-			$cell.eq(ADMISSIONSV).addClass("Readmission")
-		}
-		if (/Reoperation/.test(color)) {
-			$cell.eq(TREATMENTSV).addClass("Reoperation")
-		}
-		if (/Infection/.test(color)) {
-			$final.addClass("Infection")
-		}
-		// still show Infection
-		if ($final.attr("class") !== "Infection") {
-			if (/Morbidity/.test(color)) {
-				$final.addClass("Morbidity")
+// Simulate hover on icon by changing background pics
+function hoverService()
+{
+	let	tdClass = "td.pacs, td.upload"
+
+	hoverCell(tdClass)
+}
+
+function hoverCell(tdClass)
+{
+	let	paleClasses = ["pacs", "upload"],
+		boldClasses = ["pacs2", "upload2"]
+
+	$(tdClass)
+		.mousemove(function(event) {
+			if (inPicArea(event, this)) {
+				getClass(this, paleClasses, boldClasses)
+			} else {
+				getClass(this, boldClasses, paleClasses)
 			}
-			if (/Dead/.test(color)) {
-				$final.addClass("Dead")
-			}
-		}
+		})
+		.mouseout(function (event) {
+			getClass(this, boldClasses, paleClasses)
+		})
+}
+
+function showInputColor($target, target)
+{
+	let	$row = $target.closest("tr"),
+		classname = target.title
+
+	if (target.checked) {
+		$row.addClass(classname)
+	} else {
+		$row.removeClass(classname)
 	}
 }
 
-let getAdmitDischargeDate = function () {
+let getAdmitDischargeDate = function (fromDate, toDate) {
 
 	modelGetIPD(fromDate, toDate).then(response => {
 		if (typeof response === "object") {
 			updateBOOK(response)
+			SERVICE = response.SERVICE
 			SERVE = calcSERVE()
 			fillAdmitDischargeDate()
 		}
@@ -335,150 +534,158 @@ let getAdmitDischargeDate = function () {
 }
 
 let fillAdmitDischargeDate = function () {
-	let i = 0
-	$.each( STAFF, function() {
-		let staffname = String(this)
+	let i = 0,
+		staffname = "",
+		$rows = $("#servicetbl tr")
+
+	$.each( SERVE, function() {
+		if (this.staffname !== staffname) {
+			staffname = this.staffname
+			i++
+		}
 		i++
-		$.each( SERVICE, function() {
-			if (this.staffname === staffname) {
-				i++
-				let $thisRow = $('#servicetbl tr').eq(i).children("td")
-				if (this.admit && !$thisRow.eq(ADMITSV).html()) {
-					document.getElementById("Admit").innerHTML++
-				}
-				$thisRow.eq(ADMITSV).html(this.admit)
-				if (this.discharge && !$thisRow.eq(DISCHARGESV).html()) {
-					document.getElementById("Discharge").innerHTML++
-				}
-				$thisRow.eq(DISCHARGESV).html(this.discharge)
+		let $thisRow = $rows.eq(i),
+			$cells = $thisRow.children("td")
+
+		if (this.admit && this.admit !== $cells.eq(ADMITSV).html()) {
+			$cells.eq(ADMITSV).html(putThdate(this.admit))
+			if (!/Admission/.test($cells.eq(ADMISSIONSV).className)) {
+				$cells.eq(ADMISSIONSV).addClass("Admission")
+				// for background pics
 			}
-		});
-	})
-}
-
-let countAllServices = function () {
-	resetcountService()
-
-	$.each( $('#servicetbl tr'), function() {
-		let counter = this.className.split(" ")
-
-		!!counter[0] &&
-		$.each(counter, function() {
-			document.getElementById(this).innerHTML++
-		})
-	})
-}
-
-let clickservice = function (clickedCell) {
-	savePreviousCellService()
-	editPresentCellService(clickedCell)
+			if (!/Admission|Readmission/.test($thisRow.className)) {
+				$thisRow.addClass("Admission")
+				// for counting
+			}
+		}
+		if (this.discharge && this.discharge !== $cells.eq(DISCHARGESV).html()) {
+			$cells.eq(DISCHARGESV).html(putThdate(this.discharge))
+			if (!/Discharge/.test($thisRow.className)) {
+				$thisRow.addClass("Discharge")
+				// for counting
+			}
+		}
+	});
 }
 
 function savePreviousCellService() {
 	let pointed = getPointer(),
 		oldcontent = getOldcontent(),
-		newcontent = getNewcontent(),
-		cell = function ()	{
-			switch(pointed.cellIndex)
-			{
-				case CASENUMSV:
-				case HNSV:
-				case NAMESV:
-					return false
-				case DIAGNOSISSV:
-					saveContentService(pointed, "diagnosis", newcontent)
-					return true
-				case TREATMENTSV:
-					saveContentService(pointed, "treatment", newcontent)
-					return true
-				case ADMISSIONSV:
-					saveContentService(pointed, "admission", newcontent)
-					return true
-				case FINALSV:
-					saveContentService(pointed, "final", newcontent)
-					return true
-				case ADMITSV:
-				case DISCHARGESV:
-					return false
-			}
-		}
+		newcontent = getNewcontent()
 
-	return pointed && (oldcontent !== newcontent) && cell()
+	if (!pointed || (oldcontent === newcontent)) {
+		return
+	}
+
+	switch(pointed.cellIndex)
+	{
+		case CASENUMSV:
+		case HNSV:
+		case NAMESV:
+			break
+		case DIAGNOSISSV:
+			saveContentService(pointed, "diagnosis", newcontent)
+			break
+		case TREATMENTSV:
+			saveContentService(pointed, "treatment", newcontent)
+			break
+		case ADMISSIONSV:
+			saveContentService(pointed, "admission", newcontent)
+			break
+		case FINALSV:
+			saveContentService(pointed, "final", newcontent)
+			break
+		case PROFILESV:
+			saveProfileService(pointed)
+			break
+		case ADMITSV:
+		case DISCHARGESV:
+			break
+	}
 }
 
-let modelSaveServ = function (pointed, column, content, oldcontent, rowi, $rowi, qn) {
-	modelSaveService(column, content, qn).then(response => {
-		let hasData = function () {
-			updateBOOK(response)
-
-			getServiceOneMonth().then(function (service) {
-				SERVICE = service
-				let bookq = getBOOKrowByQN(service, qn),
-					color = rowi.className,
-					newcolor = countService(bookq),
-					colorArray = color.split(" "),
-					newcolorArray = newcolor.split(" "),
-					counter,
-					updateCounter = function (classColors, count) {
-						$.each( classColors, function(i, each) {
-							let counter = document.getElementById(each)
-							counter.innerHTML = Number(counter.innerHTML) + count
-						})
-					};
-
-				// Not reViewService because it may make next editTD back to old value
-				// when fast entry, due to slow return from Ajax of previous input
-				!color && newcolor
-				? updateCounter(newcolorArray, 1)	
-				: color && !newcolor
-				? updateCounter(colorArray, -1)		
-				: color && newcolor && (color !== newcolor)
-					&& (updateCounter(colorArray, -1), updateCounter(newcolorArray, 1))
-
-				// Update tr.newclass, td.newclass
-				// Remove unused class
-				rowi.className = newcolor
-				$(pointed).removeClass(color)
-				addColorService($rowi, newcolor)
-			})
-		},
-		noData = function () {
-			Alert("saveContentService", response)
-			pointed.innerHTML = oldcontent		// return to previous content
-		};
-
-		typeof response === "object" ? hasData() : noData()
-	}).catch(error => {})
-}
-
+//column matches column name in MYSQL
 let saveContentService = function (pointed, column, content) {
-	let $rowi = $(pointed).closest('tr'),
-		rowi = $rowi[0],
-		qn = rowi.cells[QNSV].innerHTML,
-		oldcontent = getOldcontent()
 
+	// Not refillService because it may make next cell back to old value
+	// when fast entry, due to slow return from Ajax of previous input
 	pointed.innerHTML = content || ''
 
-	content = URIcomponent(content)	// take care of white space, double qoute, 
-												// single qoute, and back slash
-	modelSaveServ(pointed, column, content, oldcontent, rowi, $rowi, qn)
+	// take care of white space, double qoute, single qoute, and back slash
+	content = URIcomponent(content)
+
+	saveService(pointed, column, content)
+}
+
+let saveService = function (pointed, column, newcontent) {
+	let $row = $(pointed).closest("tr"),
+		row = $row[0],
+		qn = row.cells[QNSV].innerHTML,
+		oldcontent = getOldcontent(),
+		fromDate = $("#monthstart").val(),
+		toDate = $("#monthpicker").val()
+
+	saveServiceManager(newcontent, oldcontent)
 
 	// make undo-able
 	UndoManager.add({
 		undo: function() {
-			modelSaveServ(pointed, column, oldcontent, content, rowi, $rowi, qn)
+			saveServiceManager(oldcontent, newcontent)
 			pointed.innerHTML = oldcontent
 		},
 		redo: function() {
-			modelSaveServ(pointed, column, content, oldcontent, rowi, $rowi, qn)
-			pointed.innerHTML = content
+			saveServiceManager(newcontent, oldcontent)
+			pointed.innerHTML = newcontent
 		}
-	})		
+	})
+
+	let saveServiceManager = function (newdata, olddata) {
+		modelSaveService(column, newdata, qn, fromDate, toDate).then(response => {
+			let hasResponse = function () {
+				updateBOOK(response)
+				SERVICE = response.SERVICE
+
+				// other user may add a row
+				let servelen = SERVE.length
+				SERVE = calcSERVE()
+				if (SERVE.length !== servelen) {
+					reviewService(fromDate, toDate)
+				}
+
+				// Calc countService of this case only
+				let oldclass = row.className,
+					bookq = getBOOKrowByQN(SERVE, qn),
+					newclass = countService(bookq, fromDate, toDate),
+					oldclassArray = oldclass.split(" "),
+					newclassArray = newclass.split(" "),
+					counter,
+					updateCounter = function (classArray, add) {
+						$.each( classArray, function(i, each) {
+							let counter = document.getElementById(each)
+							counter.innerHTML = Number(counter.innerHTML) + add
+						})
+					};
+
+				if (oldclass !== newclass) {
+					updateCounter(oldclassArray, -1)
+					updateCounter(newclassArray, 1)
+					row.className = newclass
+				}
+			},
+			noResponse = function () {
+				Alert("saveService", response)
+				pointed.innerHTML = olddata
+				// return to previous content
+			};
+
+			typeof response === "object" ? hasResponse() : noResponse()
+		}).catch(error => {})
+	}
 }
 
 // Set up editcell for keyin
 // redirect click to openPACS or file upload
-function editPresentCellService(pointing) {
+function editPresentCellService(event, pointing) {
 	let cindex = pointing.cellIndex
 
 	switch(cindex)
@@ -486,23 +693,19 @@ function editPresentCellService(pointing) {
 		case CASENUMSV:
 			break
 		case HNSV:
-			clearEditcell()
-			pointing.className === "pacs" && PACS(pointing.innerHTML)
+			getHNSV(evt, pointing)
 			break
 		case NAMESV:
-			let hn = $(pointing).closest('tr').children("td").eq(HNSV).html(),
-				patient = pointing.innerHTML
-
-			clearEditcell()
-			hn && showUpload(hn, patient)
+			getNAMESV(evt, pointing)
 			break
 		case DIAGNOSISSV:
 		case TREATMENTSV:
 		case ADMISSIONSV:
 		case FINALSV:
-			editable
-			? createEditcell(pointing)
-			: clearEditcell()
+			editableSV && createEditcell(pointing)
+			break
+		case PROFILESV:
+			editableSV && editcellSaveData(pointing, getRecord(pointing))
 			break
 		case ADMITSV:
 		case DISCHARGESV:
@@ -510,220 +713,248 @@ function editPresentCellService(pointing) {
 			break
 	}
 }
-/*
+
+function getHNSV(evt, pointing)
+{
+	clearEditcell()
+	if (isPACS) {
+		if (inPicArea(evt, pointing)) {
+			PACS(pointing.innerHTML)
+		}
+	}
+}
+
+function getNAMESV(evt, pointing)
+{
+	let hn = $(pointing).closest("tr").children("td").eq(HNSV).html()
+	let patient = pointing.innerHTML
+
+	clearEditcell()
+	if (inPicArea(evt, pointing)) {
+		showUpload(hn, patient)
+	}
+}
+
+function showRecord(bookq)
+{
+	let $divRecord = $("#profileRecord > div").clone()
+
+	initRecord(bookq, $divRecord)
+	inputEditable($divRecord)
+	return $divRecord[0]
+}
+
+// this.name === column in Mysql
+// this.title === value of this item
+// add qn to this.name to make it unique
+// next sibling (span) right = wide pixels, to make it (span) contained in input box
+function initRecord(bookq, $divRecord)
+{
+	let $input = $divRecord.find("input"),
+		inputName = "",
+		wide = ""
+
+	$input.each(function() {
+		inputName = this.name
+		this.checked = this.title === bookq[inputName]
+		this.name = inputName + bookq.qn
+		wide = this.className.replace("w", "") + "px"
+		this.nextElementSibling.style.right = wide
+	})
+}
+
+function inputEditable($divRecord)
+{
+	if (editableSV) {
+		$divRecord.find("input").off("click", returnFalse)
+		$divRecord.find("input[type=text]").prop("disabled", false)
+	} else {
+		$divRecord.find("input").on("click", returnFalse)
+		$divRecord.find("input[type=text]").prop("disabled", true)
+	}
+}
+
+function getRecord(pointing)
+{
+	let	record = {},
+		$input = $(pointing).find(".divRecord input")
+
+	$input.each(function() {
+		if (this.type === "checkbox" && !this.checked) {
+			record[this.name] = ""
+		} else {
+			if (this.checked) {
+				record[this.name] = this.title
+			}
+		}
+	})
+
+	return record
+}
+
+function saveProfileService(pointed)
+{
+	let newRecord = getRecord(pointed),
+		oldRecord = getOldcontent(),
+		setRecord = {},
+		$pointing = $(pointed),
+		sql,
+		newkey
+
+	$.each(newRecord, function(key, val) {
+		if (val === oldRecord[key]) {
+			delete newRecord[key]
+		}
+	})
+	if ( Object.keys(newRecord).length ) {
+		$.each(newRecord, function(key, val) {
+		   newkey = key.replace(/\d+/g, "");
+		   setRecord[newkey] = newRecord[key];
+		})
+		sql = sqlRecord($pointing, setRecord)
+		saveService($pointing[0], sql)
+	}
+}
+
+function sqlRecord($pointing, setRecord)
+{
+	let qn = $pointing.closest("tr").find("td").eq(QNSV).html(),
+		sql = "sqlReturnService="
+
+	$.each(setRecord, function(column, content) {
+		if (column === "disease" && content === "No") {
+			sql += sqlDefaults(qn)			
+		}
+		sql += sqlItem(column, content, qn)
+	})
+
+	return sql
+}
+
+function showReportToDept(title)
+{
+	let sumColumn = [0, 0, 0, 0, 0, 0, 0, 0]
+
+	$("#dialogReview").dialog({
+		title: title,
+		closeOnEscape: true,
+		modal: true,
+		width: 550,
+		buttons: [{
+			text: "Export to Excel",
+			click: function() {
+				exportReportToExcel(title)
+				$( this ).dialog( "close" );
+			}
+		}]
+	})
+
+	$("#reviewtbl tr:not('th')").each(function() {
+		$.each($(this).find("td:not(:first-child)"), function() {
+			this.innerHTML = 0
+		})
+	})
+	$.each(SERVE, function() {
+		if (this.operated) { countOpCase(this, this.disease) }
+		if (this.radiosurgery) { countNonOpCase(this, this.radiosurgery) }
+		if (this.endovascular) { countNonOpCase(this, this.endovascular) }
+		if (!this.operated && !this.radiosurgery && !this.endovascular) {
+			countNonOpCase(this, "Conservative")
+		}
+	})
+	$("#reviewtbl tr:not('th, .notcount')").each(function(i) {
+		$.each($(this).find("td:not(:first-child)"), function(j) {
+			sumColumn[j] += Number(this.innerHTML)
+		})
+	})
+	$("#Total").find("td:not(:first-child)").each(function(i) {
+		this.innerHTML = sumColumn[i]
+	})
+	$("#Grand").find("td:not(:first-child)").each(function(i) {
+		i = i * 2
+		this.innerHTML = sumColumn[i] + sumColumn[i+1]
+	})
+}
+
+function countOpCase(thisrow, thisitem)
+{
+	let row = ROWREPORT[thisitem],
+		doneby = thisrow.doneby ? thisrow.doneby : "Staff",
+		scale = thisrow.scale ? thisrow.scale : "Major",
+		manner = thisrow.manner ? thisrow.manner : "Elective",
+		column = COLUMNREPORT[doneby]
+			   + COLUMNREPORT[scale]
+			   + COLUMNREPORT[manner]
+
+	if (row && column) {
+		$("#reviewtbl tr")[row].cells[column].innerHTML++
+	}
+}
+
+function countNonOpCase(thisrow, thisitem)
+{
+	let row = ROWREPORT[thisitem],
+		manner = thisrow.manner ? thisrow.manner : "Elective",
+		column = 1 + COLUMNREPORT[manner]
+
+	if (row && column) {
+		$("#reviewtbl tr")[row].cells[column].innerHTML++
+	}
+}
+
 let resetcountService = function () {
-	[ "Admit", "Discharge", "Operation", "Readmission",
+	[ "Admission", "Discharge", "Operation", "Readmission",
 	   "Reoperation", "Infection", "Morbidity", "Dead"
 	].forEach(function(item) {
 		document.getElementById(item).innerHTML = 0
 	})
 }
-*/
-let countService = function (thiscase) {
-	let color = "";
 
-	[ Admit, Discharge, Operation, Readmission, Reoperation,
-	   Infection, Morbidity, Dead
-	].forEach(function(func) {
-		if (func(thiscase)) {
-			let str = func.name
-			color += color ? " " + str : str
+let countService = function (thiscase, fromDate, toDate) {
+	let classname = "",
+		items = ["admitted", "operated", "radiosurgery", "endovascular", "infection", "morbid", "dead"]
+
+	$.each(items, function() {
+		if (thiscase[this]) {
+			classname += thiscase[this] + " "
 		}
 	})
-
-	return color
-}
-
-let Admit = function (thiscase) {
-	return ((thiscase.admit >= fromDate)
-			&& (thiscase.admit <= toDate)
-			&& (thiscase.waitnum > 0))
-}
-
-let Discharge = function (thiscase) {
-	return ((thiscase.discharge >= fromDate)
-			&& (thiscase.discharge <= toDate)
-			&& (thiscase.waitnum > 0))
-}
-
-let Operation = function (thiscase) {
-
-	let neuroSxOp = [
-		/ACDF/, /ALIF/, /[Aa]nast/, /[Aa]pproa/, /[Aa]spirat/, /advance/,
-		/[Bb]iop/, /[Bb]lock/, /[Bb]urr/, /[Bb]x/, /[Bb]ypass/, /[Cc]lip/, 
-		/[Dd]ecom/, /DBS/, /[Dd]rain/,
-		/[Ee]ctomy/, /[Ee]ndo/, /ESI/, /ETS/, /ETV/, /EVD/, /[Ee]xcis/,
-		/[Ff]ix/, /[Ff]usion/, /[Ii]nsert/, /[Ll]esion/, /[Ll]ysis/, 
-		/MIDLIF/, /MVD/, /OLIF/, /[Oo]cclu/, /[Oo]p/, /ostom/, /otom/,
-		/plast/, /PLF/, /PLIF/,
-		/[Rr]emov/, /[Rr]epa/, /[Rr]evis/, /[Rr]obot/,
-		/scope/, /[Ss]crew/, /[Ss]hunt/, /[Ss]tim/, /SNRB/, /TSP/,
-		/TLIF/, /[Tt]rans/, /[Uu]ntether/
-	]
-
-	return !!($.grep( neuroSxOp, function(each) {
-				return each.test(thiscase.treatment)
-			}))[0]
-}
-
-let Readmission = function (thiscase) {
-	return (/\b[Rr]e-ad/.test(thiscase.admission))
-}
-
-let Reoperation = function (thiscase) {
-	return (/\b[Rr]e-op/.test(thiscase.treatment))
-}
-
-let Infection = function (thiscase) {
-	return (/SSI/.test(thiscase.final)) || (/Infect/.test(thiscase.final))
-}
-
-let Morbidity = function (thiscase) {
-	return (/Morbid/.test(thiscase.final))
-}
-
-let Dead = function (thiscase) {
-	return (/Dead/.test(thiscase.final)) || (/passed away/i.test(thiscase.final))
-}
-
-// Copy servicetbl to exceltbl along the head (MM counter and color classes)
-let exportToExcel = function () {
-	// getting data from our table
-	// IE uses msSaveBlob
-	// Chrome, FF use data_type download
-	let data_type = 'data:application/vnd.ms-excel',
-		title = $('#dialogService').dialog( "option", "title" ),
-		style = '\
-		<style type="text/css">\
-			#exceltbl {\
-				border-right: solid 1px slategray;\
-				border-collapse: collapse;\
-			}\
-			#exceltbl th {\
-				font-size: 16px;\
-				font-weight: bold;\
-				height: 40px;\
-				background-color: #7799AA;\
-				color: white;\
-				border: solid 1px silver;\
-			}\
-			#exceltbl td {\
-				font-size: 14px;\
-				vertical-align: middle;\
-				padding-left: 3px;\
-				border-left: solid 1px silver;\
-				border-bottom: solid 1px silver;\
-			}\
-			#excelhead td {\
-				height: 30px; \
-				vertical-align: middle;\
-				font-size: 22px;\
-				text-align: center;\
-			}\
-			#excelhead td.Readmission,\
-			#exceltbl tr.Readmission,\
-			#exceltbl td.Readmission { background-color: #AACCCC; }\
-			#excelhead td.Reoperation,\
-			#exceltbl tr.Reoperation,\
-			#exceltbl td.Reoperation { background-color: #CCCCAA; }\
-			#excelhead td.Infection,\
-			#exceltbl tr.Infection,\
-			#exceltbl td.Infection { background-color: #CCAAAA; }\
-			#excelhead td.Morbidity,\
-			#exceltbl tr.Morbidity,\
-			#exceltbl td.Morbidity { background-color: #AAAACC; }\
-			#excelhead td.Dead,\
-			#exceltbl tr.Dead,\
-			#exceltbl td.Dead { background-color: #AAAAAA; }\
-		</style>',
-		head = '\
-		  <table id="excelhead">\
-			<tr>\
-			  <td></td>\
-			  <td></td>\
-			  <td colspan="4" style="font-weight:bold;font-size:24px">' + title + '</td>\
-			</tr>\
-			<tr></tr>\
-			<tr></tr>\
-			<tr>\
-			  <td></td>\
-			  <td></td>\
-			  <td>Admit : ' + $("#Admit").html() + '</td>\
-			  <td>Discharge : ' + $("#Discharge").html() + '</td>\
-			  <td>Operation : ' + $("#Operation").html() + '</td>\
-			  <td class="Morbidity">Morbidity : ' + $("#Morbidity").html() + '</td>\
-			</tr>\
-			<tr>\
-			  <td></td>\
-			  <td></td>\
-			  <td class="Readmission">Re-admission : ' + $("#Readmission").html() + '</td>\
-			  <td class="Infection">Infection SSI : ' + $("#Infection").html() + '</td>\
-			  <td class="Reoperation">Re-operation : ' + $("#Reoperation").html() + '</td>\
-			  <td class="Dead">Dead : ' + $("#Dead").html() + '</td>\
-			</tr>\
-			<tr></tr>\
-			<tr></tr>\
-		  </table>'
-
-	$("#exceltbl").length && $("#exceltbl").remove()
-
-	// Copy table and change id
-	$("#servicetbl").clone(true).attr("id", "exceltbl").appendTo("body")
-
-	// use only the last class because excel not accept multiple classes
-	$.each( $("#exceltbl tr"), function() {
-		let multiclass = this.className.split(" ")
-		if (multiclass.length > 1) {
-			this.className = multiclass[multiclass.length-1]
+	// Assume consult cases (waitnum < 0) are admitted in another service ???
+	if ((thiscase.waitnum > 0)
+		&& (thiscase.admit >= fromDate)
+		&& (thiscase.admit <= toDate)) {
+		if (!/Admission/.test(classname)) {
+			classname += "Admission "
 		}
-	})
+	}
+	if ((thiscase.discharge >= fromDate)
+		&& (thiscase.discharge <= toDate)
+		&& (thiscase.waitnum > 0)) {
+		classname += "Discharge "
+	}
 
-	// remove trailing hidden cells (QNSV, under colspan) in excel
-	$.each( $("#exceltbl tr td, #exceltbl tr th"), function() {
-		if ($(this).css("display") === "none") {
-			$(this).remove()
-		}
-	})
+	return $.trim(classname)
+}
 
-	let table = $("#exceltbl")[0].outerHTML
+let countAllServices = function () {
+	resetcountService()
 
-	// excel split <br> to multiple cells inside that cell 
-	table = table.replace(/<br>/g, " ")
+	$.each( $("#servicetbl tr"), function() {
+		let counter = this.className.split(" "),
+			id
 
-	let tableToExcel = '<!DOCTYPE html><HTML><HEAD><meta charset="utf-8"/>' + style + '</HEAD><BODY>'
-	tableToExcel += head + table
-	tableToExcel += '</BODY></HTML>'
-	let month = $("#monthpicking").val()
-	month = month.substring(0, month.lastIndexOf("-"))	// use yyyy-mm for filename
-	let filename = 'Service Neurosurgery ' + month + '.xls',
-		ua = window.navigator.userAgent,
-		msie = ua.indexOf("MSIE"),
-		edge = ua.indexOf("Edge"),
-		ie = function () {
-			if (typeof Blob !== "undefined") {
-				// use blobs if we can
-				tableToExcel = [tableToExcel];
-				// convert to array
-				let blob1 = new Blob(tableToExcel, {
-				  type: "text/html"
-				});
-				window.navigator.msSaveBlob(blob1, filename);
-			} else {
-				txtArea1.document.open("txt/html", "replace");
-				txtArea1.document.write(tableToExcel);
-				txtArea1.document.close();
-				txtArea1.focus();
-				sa = txtArea1.document.execCommand("SaveAs", true, filename);
-				return (sa);	// not tested
+		$.each(counter, function() {
+			if (id = String(this)) {
+				if (document.getElementById(id)) {
+					document.getElementById(id).innerHTML++
+				}
+				if (id === "Readmission") {
+					document.getElementById("Admission").innerHTML++
+				}
+				if (id === "Reoperation") {
+					document.getElementById("Operation").innerHTML++
+				}
 			}
-		},
-		chromeFF = function () {
-			let a = document.createElement('a');
-			document.body.appendChild(a);  // You need to add this line in FF
-			a.href = data_type + ', ' + encodeURIComponent(tableToExcel);
-			a.download = filename
-			a.click();		// tested with Chrome and FF
-		};
-
-	(msie > 0 || edge > 0 || !!navigator.userAgent.match(/Trident.*rv\:11\./)) ? ie() : chromeFF()
+		})
+	})
 }

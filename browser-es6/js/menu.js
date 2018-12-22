@@ -71,7 +71,7 @@ function addnewrow()
 	$clone.removeClass("selected")
 		.insertAfter($row)
 			.find("td").eq(HN).removeClass("pacs")
-			.parent().find("td").eq(PATIENT).removeClass("camera")
+			.parent().find("td").eq(PATIENT).removeClass("upload")
 			.parent().find("td").eq(keepcell)
 				.nextAll()
 					.html("")
@@ -114,7 +114,7 @@ async function postponeCase()
 	if (typeof response === "object") {
 		updateBOOK(response)
 		refillOneDay(opdate)
-		if ((isSplited()) && 
+		if ((isSplit()) && 
 			(isStaffname(staffname))) {
 			// changeDate of this staffname's case
 			refillstaffqueue()
@@ -229,7 +229,7 @@ async function clickDate(event)
 		if (moveOpdate !== thisOpdate) {
 			refillOneDay(thisOpdate)
 		}
-		if (isSplited()) {
+		if (isSplit()) {
 			let titlename = $('#titlename').html()
 			if ((titlename === staffname) ||
 				(titlename === "Consults")) {
@@ -291,7 +291,7 @@ async function delCase()
 		updateBOOK(response)
 		if (tableID === "tbl") {
 			refillOneDay(opdate)
-			if ((isSplited()) && 
+			if ((isSplit()) && 
 				(isStaffname(staffname))) {
 				refillstaffqueue()
 			}
@@ -325,27 +325,9 @@ function deleteRow($row, opdate)
 	} else {
 		$row.children("td").eq(OPDATE).siblings().html("")
 		$row.children("td").eq(HN).removeClass("pacs")
-		$row.children("td").eq(PATIENT).removeClass("camera")
+		$row.children("td").eq(PATIENT).removeClass("upload")
 		$row.children('td').eq(STAFFNAME).html(showStaffOnCall(opdate))
 	}
-}
-
-function fakeScrollAnimate(containerID, tableID, scrolledTop, offsetTop)
-{
-	let $container = $('#' + containerID)
-	let $table = $('#' + tableID)
-	let pixel = 300
-	if ((scrolledTop > offsetTop) || (offsetTop < 300)) {
-		pixel = -300
-	}
-	if ((offsetTop + $container.height()) < $table.height()) {
-		$container.scrollTop(offsetTop - pixel)
-		$container.animate({
-			scrollTop: $container.scrollTop() + pixel
-		}, 500);
-	} else {
-		$container.scrollTop(offsetTop)
-	}	// table end
 }
 
 function findVisibleHead(table)

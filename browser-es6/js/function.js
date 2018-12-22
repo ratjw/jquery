@@ -264,16 +264,6 @@ function getWaitingBOOKrowByHN(hn)
   return gv.BOOK.find(bookq => bookq.opdate > todate && bookq.hn === hn)
 }
 
-function getWaitingTableRowByHN(hn)
-{
-  let todate = new Date().ISOdate()
-
-  return $("#tbl tr:has(td)").filter(function() {
-    return this.cells[OPDATE].innerHTML.numDate() > todate
-      && this.cells[HN].innerHTML === hn
-  })
-}
-
 // main table (#tbl) only
 function getTableRowsByDate(opdateth)
 {
@@ -350,7 +340,7 @@ function createThisdateTableRow(opdate, opdateth)
   return $thisrow
 }
 
-function isSplited()
+function isSplit()
 {  
   return $("#queuewrapper").css("display") === "block"
 }
@@ -365,7 +355,7 @@ function isConsults()
   return $('#titlename').html() === "Consults"
 }
 
-function ConsultsTbl(tableID)
+function isConsultsTbl(tableID)
 {  
   let queuetbl = tableID === "queuetbl"
   let consult = $("#titlename").html() === "Consults"
@@ -389,7 +379,7 @@ function calcWaitnum(thisOpdate, $prevrow, $nextrow)
     prevOpdate = $prevRowCell.eq(OPDATE).html(),
     nextOpdate = $nextRowCell.eq(OPDATE).html(),
     tableID = $prevrow.closest("table").attr("id")
-    defaultWaitnum = (ConsultsTbl(tableID))? -1 : 1
+    defaultWaitnum = (isConsultsTbl(tableID))? -1 : 1
   //Consults cases have negative waitnum
 
   if (prevOpdate !== thisOpdate && thisOpdate !== nextOpdate) {
@@ -417,38 +407,6 @@ function decimalToTime(dec)
     (integer < 10) ? "0" + integer : "" + integer,
     decimal ? String(decimal * 60) : "00"
   ].join(".")
-}
-
-function strtoTime(value)
-{
-  let  time = value.split("."),
-    hour = time[0],
-    min = time[1] || "0",
-    val = Number(value)
-
-  if (isNaN(val) || val < 0 || val > 24) {
-    Alert("เวลาผ่าตัด", "<br>รูปแบบเวลา ไม่ถูกต้อง<br><br>ใช้<br><br>ตั้งแต่ 00.00 - 08.30 - 09.00 ถึง 24.00")
-    return false
-  }
-  else if (val === 0) {
-    return ""
-  }
-  else {
-    min = min.substr(0, 2)
-    return [
-      (Number(hour) < 10) ? "0" + hour : "" + hour,
-      (Number(min) < 10) ? min + "0" : "" + min
-    ].join(".")
-  }
-}
-
-function getNextDayOfWeek(date, dayOfWeek)
-{
-  let resultDate = new Date(date.getTime());
-
-  resultDate.setDate(date.getDate() + (7 + dayOfWeek - date.getDay()) % 7);
-
-  return resultDate;
 }
 
 function inPicArea(evt, pointing) {
@@ -500,51 +458,20 @@ function rowDecoration(row, date)
 
 function showEquip(equipString)
 {
-  if (equipString) {
-    return makeEquip(JSON.parse(equipString))
-  } else {
-    return ""
-  }
+  return equipString ? makeEquip(JSON.parse(equipString)) : ""
 }
 
 function makeEquip(equipJSON)
 {
-  let equipIcons = {
-      Fluoroscope: "Fluoroscope",
-      "Navigator_frameless": "Navigator",
-      "Navigator_frame-based": "Navigator",
-      Oarm: "Oarm",
-      Robotics: "Robotics",
-      Microscope: "Microscope",
-      ICG: "Microscope",
-      Endoscope: "Endoscope",
-      Excell: "CUSA",
-      Soring: "CUSA",
-      Sonar: "CUSA",
-      ultrasound: "Ultrasound",
-      Doppler: "Ultrasound",
-      Duplex: "Ultrasound",
-      CN5: "Monitor",
-      CN6: "Monitor",
-      CN7: "Monitor",
-      CN8: "Monitor",
-      CN9: "Monitor",
-      CN10: "Monitor",
-      CN11: "Monitor",
-      CN12: "Monitor",
-      SSEP: "Monitor",
-      EMG: "Monitor",
-      MEP: "Monitor"
-    },
-    equip = [],
+  let equip = [],
     monitor = [],
 	equipPics = []
 
   $.each(equipJSON, function(key, value) {
     if (value === "checked") {
-      if (key in equipIcons) {
-        equipPics.push(equipIcons[key])
-        if (equipIcons[key] === "Monitor") {
+      if (key in EQUIPICONS) {
+        equipPics.push(EQUIPICONS[key])
+        if (EQUIPICONS[key] === "Monitor") {
           monitor.push(key)
         } else {
           equip.push(key)

@@ -138,7 +138,7 @@ async function saveTheatre(pointed, newcontent)
 	if (typeof response === "object") {
 		updateBOOK(response)
 		refillOneDay(opdate)
-		if (isSplited() && (isStaffname(staffname) || isConsults())) {
+		if (isSplit() && (isStaffname(staffname) || isConsults())) {
 			refillstaffqueue()
 		}
 		// re-render editcell for keyin cell only
@@ -209,7 +209,7 @@ async function saveOpRoom(pointed, newcontent)
     if (typeof response === "object") {
 		updateBOOK(response)
 		refillOneDay(opdate)
-		if (isSplited() && (isStaffname(staffname) || isConsults())) {
+		if (isSplit() && (isStaffname(staffname) || isConsults())) {
 			refillstaffqueue()
 		}
 		// re-render editcell for keyin cell only
@@ -264,7 +264,7 @@ async function saveCaseNum(pointed, newcontent)
     if (typeof response === "object") {
 		updateBOOK(response)
 		refillOneDay(opdate)
-		if (isSplited() && (isStaffname(staffname) || isConsults())) {
+		if (isSplit() && (isStaffname(staffname) || isConsults())) {
 			refillstaffqueue()
 		}
 		// re-render editcell for keyin cell only
@@ -333,7 +333,7 @@ async function saveContentQN(pointed, column, content)
 			// 2. make change to the row which match titlename
 			//    (input is not staffname, but on staff that match titlename)
 			//    -> refill corresponding cell in another table
-			if (isSplited()) {
+			if (isSplit()) {
 				if ((oldcontent === titlename) || (pointed.innerHTML === titlename)) {
 					refillstaffqueue()
 				} else {
@@ -403,7 +403,7 @@ async function saveContentNoQN(pointed, column, content)
 		updateBOOK(response)
 
 		// find and fill qn of new case input in that row, either tbl or queuetbl
-		let book = (ConsultsTbl(tableID))? gv.CONSULT : gv.BOOK
+		let book = (isConsultsTbl(tableID))? gv.CONSULT : gv.BOOK
 		let qn = Math.max.apply(Math, $.map(book, function(bookq, i){
 					return bookq.qn
 				}))
@@ -414,7 +414,7 @@ async function saveContentNoQN(pointed, column, content)
 			if (/(<([^>]+)>)/i.test(staffname)) { $cells[STAFFNAME].innerHTML = "" }
 			// Remote effect from editing on tbl to queuetbl if Staffqueue is showing
 			// Create new case of staffname that match titlename -> refill queuetbl
-			if (isSplited()) {
+			if (isSplit()) {
 				if (pointed.innerHTML === titlename) {
 					refillstaffqueue()
 				}
@@ -643,7 +643,7 @@ function getCaseHN(pointed, waiting)
 
 function fillCellsHN(tableID, qn, $cells)
 {
-	let	book = (ConsultsTbl(tableID)) ? gv.CONSULT : gv.BOOK,
+	let	book = (isConsultsTbl(tableID)) ? gv.CONSULT : gv.BOOK,
 		bookq
 
 	// New case input
@@ -721,7 +721,7 @@ async function getNameHN(pointed, content)
 	if (typeof response === "object") {
 		updateBOOK(response)
 
-		let book = (ConsultsTbl(tableID)) ? gv.CONSULT : gv.BOOK
+		let book = (isConsultsTbl(tableID)) ? gv.CONSULT : gv.BOOK
 
 		// New case input
 		if (noqn) {
@@ -744,7 +744,7 @@ async function getNameHN(pointed, content)
 		// no need to refillall main table because new case row was already there
 		// Consults cases are not shown in main table
 		if (tableID === 'tbl') {
-			if (isSplited() && isStaffname(staffname)) {
+			if (isSplit() && isStaffname(staffname)) {
 				refillAnotherTableCell('queuetbl', cellindex, qn)
 			}
 		} else {
@@ -1034,7 +1034,7 @@ function getNAME(evt, pointing)
 function getEQUIP(pointing)
 {
 	let tableID = $(pointing).closest('table').attr('id'),
-		book = ConsultsTbl(tableID)? gv.CONSULT : gv.BOOK,
+		book = isConsultsTbl(tableID)? gv.CONSULT : gv.BOOK,
 		$row = $(pointing).closest('tr'),
 		qn = $row.find("td")[QN].innerHTML
 
@@ -1058,8 +1058,6 @@ function createEditcell(pointing)
 
 function editcellData($editcell, pointing, context)
 {
-	let qn = $(pointing).siblings(":last").html()
-
 	$editcell.data("pointing", pointing)
 	$editcell.data("oldcontent", context)
 }

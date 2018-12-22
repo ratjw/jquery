@@ -364,7 +364,7 @@ function initEquipment()
 {
   let equip = "", type = "", width = "", name = "", id = "", label = ""
 
-  equipSheet.forEach(function(item) {
+  EQUIPSHEET.forEach(function(item) {
     type = item[0]
     width = item[1]
     name = item[2]
@@ -434,16 +434,16 @@ function onChange()
       newcontent = getText($editcell),
       pointed = $editcell.data("pointing"),
       index = pointed.cellIndex,
-      whereisEditcell = $divEditcell.attr("id")
+      whereisEditcell = $divEditcell.attr("id"),
+	  qn = $(pointed).siblings(":last").html()
 
   if (oldcontent === newcontent) {
     return false
   }
+
   if (whereisEditcell === "dialogService") {
-    qn = $divEditcell.find("td")[QNSV].innerHTML
     return saveOnChangeService(pointed, index, newcontent, qn)
   } else {
-    qn = $divEditcell.find("td")[QN].innerHTML
     return saveOnChange(pointed, index, newcontent, qn)
   }
 }
@@ -475,20 +475,26 @@ async function getUpdate()
   let response = await postData(MYSQLIPHP, sql)
   if (typeof response === "object") {
     updateBOOK(response)
-    if ($("#dialogService").hasClass('ui-dialog-content')
-        && $("#dialogService").dialog('isOpen')) {
+    if (dialogServiceShowing()) {
       gv.SERVE = calcSERVE()
       refillService(fromDate, toDate)
     }
     refillall()
-//    fillConsults()
-    if (isSplited()) {
+    fillConsults()
+    if (isSplit()) {
       refillstaffqueue()
     }
     renewEditcell()
   } else {
     Alert ("getUpdate", response)
   }
+}
+
+function dialogServiceShowing()
+{
+  let $dialogService = $("#dialogService")
+
+  return $dialogService.hasClass('ui-dialog-content') && $dialogService.dialog('isOpen')
 }
 
 // after refillall, pointing remains in its row but parent is null

@@ -1,13 +1,14 @@
 
 import { QN, LARGESTDATE } from "./const.js"
-import { user, URIcomponent } from "./util.js"
+import { USER } from "./main.js"
+import { URIcomponent } from "./util.js"
 
 export {
 	modelSaveRoomTime, modelSaveContent, modelSaveNoQN, modelSaveByHN,
-	modelGetEquip, modelSaveEquip, modelChangeDate, modelAllCases,
-	modelDeleteCase, modelCaseHistory, modelAllDeletedCases, modelUndelete,
-	modelFind, modelGetfromServer, modelGetIPD, modelSaveService, modelStart,
-	modelIdling, modelSortable, modelSyncServer, modelFindLatestEntry
+	modelChangeOncall, modelGetEquip, modelSaveEquip, modelChangeDate, modelAllCases,
+	modelDeleteCase, modelCaseHistory, modelAllDeletedCases, modelUndelete, modelFind, 
+	modelGetServiceOneMonth, modelGetIPD, modelSaveService, modelStart, modelIdling,
+	modeldoUpdate, modelGetUpdate, modelSortable, modelSyncServer, modelFindLatestEntry
 }
 
 // const
@@ -26,10 +27,43 @@ function modelStart() {
 }
 
 function modelIdling(timestamp) {
-	return postData(MYSQLIPHP, "functionName=checkupdate&time=" + timestamp);
+	let sql = `functionName=checkupdate&time=${timestamp}`
+
+	return postData(MYSQLIPHP, sql);
 }
 
-function modelSortable(args) {
+function modelChangeOncall(pointing, opdate, staffname)
+{
+  let sql = "sqlReturnStaff=INSERT INTO oncall "
+      + "(dateoncall, staffname, edittime) "
+      + "VALUES ('" + opdate
+      + "','" + staffname
+      + "',NOW());"
+
+  return postData(MYSQLIPHP, sql);
+}
+
+function modeldoUpdate()
+{
+  let sql = "sqlReturnData=SELECT MAX(editdatetime) as timestamp from bookhistory;"
+
+  return postData(MYSQLIPHP, sql);
+}
+
+function modelGetUpdate(fromDate, toDate)
+{
+  let sql
+
+  if (fromDate) {
+	  sql = "sqlReturnService=" + sqlOneMonth(fromDate, toDate)
+  } else {
+	  sql = "nosqlReturnbook="
+  }
+  return postData(MYSQLIPHP, sql);
+}
+
+function modelSortable(args)
+{
 	let finalWaitnum = args.finalWaitnum,
 		roomtime = args.roomtime,
 		thisOpdate = args.thisOpdate,
@@ -39,7 +73,7 @@ function modelSortable(args) {
 			+ (roomtime.roomtime &&
 				("', oproom='" + roomtime.roomtime[0]
 				+"', optime='" + roomtime.roomtime[1]))
-			+ "', editor='"+ user
+			+ "', editor='"+ USER
 			+ "' WHERE qn="+ thisqn +";"
 
 	return postData(MYSQLIPHP, sql);
@@ -59,26 +93,53 @@ function modelSyncServer(book, consult) {
 	return postData(MYSQLIPHP, sql);
 }
 
-function modelSaveService(column, content, qn) {
-	let sql = "sqlReturnbook=UPDATE book SET "
-			+ column +"='"+ content
-			+ "', editor='"+ user
-			+ "' WHERE qn="+ qn +";"
+function modelGetServiceOneMonth(fromDate, toDate) {
+	let sql = "sqlReturnData=" + sqlOneMonth(fromDate, toDate)
+
+	return postData(MYSQLIPHP, sql)
+}
+
+function modelGetIPD(fromDate, toDate) {
+	let sql = "from=" + fromDate
+			+ "&to=" + toDate
+			+ "&sql=" + sqlOneMonth(fromDate, toDate)
+
+	return postData(GETIPD, sql)
+}
+
+function modelSaveService(column, content, qn, fromDate, toDate) {
+	let sql = "sqlReturnService=" + sqlItem(column, content, qn) + sqlOneMonth(fromDate, toDate)
 
 	return postData(MYSQLIPHP, sql);
 }
 
-function modelGetIPD(fromDate, toDate) {
-	return postData(GETIPD, "from=" + fromDate + "&to=" + toDate)
+function sqlOneMonth(fromDate, toDate)
+{
+	return "SELECT b.* FROM book b left join staff s on b.staffname=s.staffname "
+		  + "WHERE opdate BETWEEN '" + fromDate + "' AND '" + toDate
+		  + "' AND deleted=0 "
+		  + "AND waitnum<>0 "
+		  + "AND hn "
+		  + "ORDER BY s.number,opdate,oproom,casenum,waitnum;";
 }
 
-function modelGetfromServer(fromDate, toDate) {
-	let sql = "sqlReturnData=SELECT * FROM book "
-			  + "WHERE opdate BETWEEN '" + fromDate + "' AND '" + toDate
-			  + "' AND waitnum<>0 "
-			  + "ORDER BY opdate, oproom='', oproom, optime, waitnum;";
+function sqlDefaults(qn)
+{
+  return "UPDATE book SET "
+		+ "operated='',"
+		+ "doneby='',"
+		+ "scale='',"
+		+ "manner='',"
+		+ "editor='" + USER
+		+ "' WHERE qn=" + qn + ";"
+}
 
-	return postData(MYSQLIPHP, sql)
+function sqlItem(column, content, qn)
+{
+  return "UPDATE book SET "
+		+ column + "='" + content
+		+ "',editor='" + USER
+		+ "' WHERE qn=" + qn + ";"
 }
 
 function modelFind(hn, patient, diagnosis, treatment, contact) {
@@ -107,13 +168,22 @@ function modelFind(hn, patient, diagnosis, treatment, contact) {
 function modelUndelete(opdate, qn) {
 	let sql = "functionName=undelete&qn=" + qn
 			+ "&opdate=" + opdate
-			+ "&editor=" + user
+			+ "&editor=" + USER
 
 	return postData(MYSQLIPHP, sql);
 }
 
 function modelAllDeletedCases() {
-	return postData(MYSQLIPHP, "functionName=deletedCases")
+  let sql = `sqlReturnData=SELECT editdatetime, b.* 
+                             FROM book b 
+							   LEFT JOIN bookhistory bh ON b.qn = bh.qn 
+                             WHERE editdatetime>DATE_ADD(NOW(), INTERVAL -3 MONTH) 
+							   AND b.deleted>0 
+							   AND bh.action='delete' 
+							 GROUP BY b.qn 
+                             ORDER BY editdatetime DESC;`
+
+	return postData(MYSQLIPHP, sql)
 }
 
 function modelAllCases() {
@@ -124,9 +194,10 @@ function modelAllCases() {
 	return postData(MYSQLIPHP, sql)
 }
 
-function modelCaseHistory(qn) {
-	let sql = "sqlReturnData=SELECT * FROM bookhistory "
-			+ "WHERE qn="+ qn +" ORDER BY editdatetime DESC;"
+function modelCaseHistory(hn) {
+	let sql = `sqlReturnData=SELECT * FROM bookhistory 
+				WHERE qn in (SELECT qn FROM book WHERE hn='${hn}') 
+				ORDER BY editdatetime DESC;`
 
 	return postData(MYSQLIPHP, sql)
 }
@@ -134,7 +205,7 @@ function modelCaseHistory(qn) {
 function modelDeleteCase(waitnum, qn) {
 	// In database, not actually delete the case but SET waitnum=NULL
 	let sql = "sqlReturnbook=UPDATE book SET waitnum=" + waitnum + ", "
-			+ "editor='" + user + "' WHERE qn="+ qn + ";"
+			+ "editor='" + USER + "' WHERE qn="+ qn + ";"
 
 	return postData(MYSQLIPHP, sql)
 }
@@ -144,7 +215,7 @@ function modelChangeDate(args) {
 			+ (args.oproom
 				? ("oproom='" + args.oproom + "', optime='" + args.optime + "', ")
 				: "")
-			+ "editor='" + user + "' WHERE qn="+ args.qn + ";"
+			+ "editor='" + USER + "' WHERE qn="+ args.qn + ";"
 
 	return postData(MYSQLIPHP, sql)
 }
@@ -158,11 +229,11 @@ function modelSaveRoomTime(args) {
 		sql = qn ? "sqlReturnbook=UPDATE book SET "
 					+ "oproom='" + oproom + "', "
 					+ "optime='" + optime + "', "
-					+ "editor='" + user + "' WHERE qn="+ qn + ";"	
+					+ "editor='" + USER + "' WHERE qn="+ qn + ";"	
 				 : "sqlReturnbook=INSERT INTO book ("
 					+ "waitnum, opdate, oproom, optime, editor) VALUES ("
 					+ waitnum + ", '" + opdate +"','" + oproom +"','" + optime
-					+ "','"+ user +"');"
+					+ "','"+ USER +"');"
 
 	return postData(MYSQLIPHP, sql)
 }
@@ -173,7 +244,7 @@ function modelSaveContent(args) {
 		qn = args.qn,
 		sql = "sqlReturnbook=UPDATE book SET "
 				+ column +"='"+ content
-				+ "', editor='"+ user
+				+ "', editor='"+ USER
 				+ "' WHERE qn="+ qn +";"
 
 	return postData(MYSQLIPHP, sql);
@@ -197,11 +268,11 @@ function modelSaveNoQN(args) {
 			? "sqlReturnbook=INSERT INTO book ("
 				+ "waitnum,opdate,oproom,optime,staffname," + column + ",qn,editor) VALUES ("
 				+ waitnum + ",'" + opdate +"','" + oproom +"','" + optime + "','"
-				+ staffname + "','"+ content + "'," + qn + ",'" + user +"');"
+				+ staffname + "','"+ content + "'," + qn + ",'" + USER +"');"
 			: "sqlReturnbook=INSERT INTO book ("
 				+ "waitnum,opdate,oproom,optime," + column + ",qn,editor) VALUES ("
 				+ waitnum + ",'" + opdate + "','" + oproom + "','" + optime
-				+ "','" + content + "'," + qn + ",'" + user + "');"
+				+ "','" + content + "'," + qn + ",'" + USER + "');"
 	} else {
 		// argsold (passed as args) has no waitnum
 		sql = "sqlReturnbook=DELETE FROM book WHERE qn=" + qn + ";"
@@ -226,7 +297,7 @@ function modelSaveByHN(args) {
 		return postData(GETNAMEHN, "hn=" + content
 			+	"&opdate="+ opdate
 			+	"&qn="+ qn
-			+	"&username="+ user)
+			+	"&username="+ USER)
 	},
 
 	// new row: send waitnum, oproom, optime, no qn
@@ -238,7 +309,7 @@ function modelSaveByHN(args) {
 			+	"&oproom="+ oproom
 			+	"&optime="+ optime
 			+	((tableID === "queuetbl") ? ("&staffname="+ staffname) : "")
-			+	"&username="+ user)
+			+	"&username="+ USER)
 	},
 
 	// redo new case, use previous data *to conform with undo*
@@ -247,7 +318,7 @@ function modelSaveByHN(args) {
 			+ "waitnum,opdate,oproom,optime,staffname,hn,patient,dob,qn,editor) VALUES ("
 			+ waitnum + ",'" + opdate +"','" + oproom +"','" + optime + "','"
 			+ staffname + "','"+ content + "','" + args.patientnew + "','" + args.dobnew + "',"
-			+ qnnew + ",'" + user +"');")
+			+ qnnew + ",'" + USER +"');")
 	},
 
 	// redo existed case, revert to new input
@@ -305,17 +376,19 @@ function modelSaveByHN(args) {
 
 function modelGetEquip(qn)	{
 
-	let sql = "sqlReturnData=SELECT editor, editdatetime FROM bookhistory "
-			+ "WHERE qn="+ qn + " AND equipment <> '';"
+	let sql = `sqlReturnData=SELECT editor,editdatetime
+								FROM bookhistory
+								WHERE qn=${qn} AND equipment <> ''
+								ORDER BY editdatetime DESC;`
 
 	return postData(MYSQLIPHP, sql)
 }
 
 function modelSaveEquip(equipment, qn) {
-	let sql = "sqlReturnbook=UPDATE book SET "
-			+ "equipment='"+ equipment +"' ,"
-			+ "editor='"+ user +"' "
-			+ "WHERE qn="+ qn +";"
+	let sql = `sqlReturnbook=UPDATE book
+							SET equipment='${equipment}',
+								editor='${USER}'
+							WHERE qn='${qn}';`
 
 	return postData(MYSQLIPHP, sql);
 }

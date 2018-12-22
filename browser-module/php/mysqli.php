@@ -77,6 +77,16 @@ function returnService($mysqli, $sql)
 	}
 }
 
+function returnData($mysqli, $sql)
+{
+	$return = multiquery($mysqli, $sql);
+	if (is_string($return)) {
+		return $return;
+	} else {
+		return json_encode($return);
+	}
+}
+
 function returnStaff($mysqli, $sql)
 {
 	$data = array();
@@ -87,16 +97,6 @@ function returnStaff($mysqli, $sql)
 		$data["STAFF"] = getStaff($mysqli);
 		$data["ONCALL"] = getOncall($mysqli);
 		return json_encode($data);
-	}
-}
-
-function returnData($mysqli, $sql)
-{
-	$return = multiquery($mysqli, $sql);
-	if (is_string($return)) {
-		return $return;
-	} else {
-		return json_encode($return);
 	}
 }
 

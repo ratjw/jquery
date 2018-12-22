@@ -28,8 +28,7 @@ function fillupfinish()
 		month = today.getMonth(),
 		date = today.getDate(),
 		until = (new Date(nextyear, month, date)).ISOdate(),
-		book = gv.BOOK,
-		todate = today.ISOdate()
+		book = gv.BOOK
 	
 	fillall(book, table, start, until, table.rows.length-1)
 }
@@ -113,7 +112,7 @@ function refillall()
 	$tbody.html($tbody.find("tr:first").clone())
 	fillall(book, table, start, until)
 	hoverMain()
-	// For new HN added to this table
+	// For new row added to this table
 }
 
 // main table (#tbl) only
@@ -180,10 +179,10 @@ function makenextrow(table, date)
 {
 	let	tbody = table.getElementsByTagName("tbody")[0],
 		tblcells = document.getElementById("tblcells"),
-		row = tblcells.rows[0].cloneNode(true),
-		rowi = tbody.appendChild(row)
+		row = tblcells.rows[0].cloneNode(true)
 
-	rowDecoration(rowi, date)
+	row = tbody.appendChild(row)
+	rowDecoration(row, date)
 }
 
 function dayName(DAYNAME, date)
@@ -193,9 +192,9 @@ function dayName(DAYNAME, date)
 		: DAYNAME[(new Date(date)).getDay()]
 }
 
-function fillblank(rowi)
+function fillblank(row)
 {
-	let cells = rowi.cells
+	let cells = row.cells
 	cells[THEATRE].innerHTML = ""
 	cells[OPROOM].innerHTML = ""
 	cells[OPTIME].innerHTML = ""
@@ -241,12 +240,10 @@ function staffqueue(staffname)
 		consult = gv.CONSULT,
 		$queuetbl = $('#queuetbl'),
 		queuetbl = $queuetbl[0]
-		
 
 	$('#titlename').html(staffname)
 	
 	//delete previous queuetbl lest it accumulates
-	$('#queuetbl tr').slice(1).remove()
 	$queuetbl.find("tbody").html($("#tbl tbody tr:first").clone())
 
 	if (staffname === "Consults") {
@@ -268,7 +265,7 @@ function staffqueue(staffname)
 		});
 	}
 
-	if (!isSplited()) { splitPane() }
+	if (!isSplit()) { splitPane() }
 
 	clearEditcell()
 	hoverMain()
@@ -282,7 +279,7 @@ function refillstaffqueue()
 	let book = gv.BOOK
 	let consult = gv.CONSULT
 
-	if (!isSplited()) { return }
+	if (!isSplit()) { return }
 
 	if (staffname === "Consults") {
 		//Consults table is rendered same as fillall
@@ -360,8 +357,6 @@ function splitPane()
 
 	initResize($("#tblwrapper"))
 	$('.ui-resizable-e').css('height', $("#tbl").css("height"))
-
-//	fakeScrollAnimate("tblcontainer", "tbl", scrolledTop, tohead.offsetTop)
 }
 
 // remainSpace-margin-1 to prevent right pane disappear while resizing in Chrome 
@@ -408,8 +403,6 @@ function closequeue()
 		"height": "100%" - $("#cssmenu").height(),
 		"width": "100%"
 	})
-
-//	fakeScrollAnimate("tblcontainer", "tbl", scrolledTop, tohead.offsetTop)
 }
 
 // hover on background pics
@@ -693,7 +686,7 @@ function religiousHoliday(date)
 // Thai official holiday & Compensation
 function officialHoliday(date)
 {
-	const monthdate = date.substring(5),
+	let monthdate = date.substring(5),
 		dayofweek = (new Date(date)).getDay(),
 		Mon = (dayofweek === 1),
 		Tue = (dayofweek === 2),

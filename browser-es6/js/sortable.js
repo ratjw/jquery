@@ -168,7 +168,7 @@ async function stopSortable(sql, receiver, oldOpdateth, oldOpdate, thisOpdate) {
 				refillOneDay(oldOpdate)
 			}
 			refillOneDay(thisOpdate)
-			if (isSplited()) {
+			if (isSplit()) {
 				refillstaffqueue()
 			}
 		} else {

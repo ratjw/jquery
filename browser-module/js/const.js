@@ -92,7 +92,7 @@ SPECIALTY = [
 ],
 
 // ["type", "width", "name", "id" (also used in label for), "label"]
-equipSheet = [
+EQUIPSHEET = [
     ["spanInSpan", "w70", "", "oproom", "ห้อง "],
     ["spanInSpan", "w70", "", "casenum", "Case "],
     ["spanInSpan", "w120", "", "optime", "เวลา "],
@@ -324,6 +324,34 @@ equipSheet = [
     ["divend", "", "", "", ""],
     ["br", "", "", "", ""]
 ],
+
+EQUIPICONS = {
+    Fluoroscope: "Fluoroscope",
+    "Navigator_frameless": "Navigator",
+    "Navigator_frame-based": "Navigator",
+    Oarm: "Oarm",
+    Robotics: "Robotics",
+    Microscope: "Microscope",
+    ICG: "Microscope",
+    Endoscope: "Endoscope",
+    Excell: "CUSA",
+    Soring: "CUSA",
+    Sonar: "CUSA",
+    ultrasound: "Ultrasound",
+    Doppler: "Ultrasound",
+    Duplex: "Ultrasound",
+    CN5: "Monitor",
+    CN6: "Monitor",
+    CN7: "Monitor",
+    CN8: "Monitor",
+    CN9: "Monitor",
+    CN10: "Monitor",
+    CN11: "Monitor",
+    CN12: "Monitor",
+    SSEP: "Monitor",
+    EMG: "Monitor",
+    MEP: "Monitor"
+},
 
 //===========================================================================================
 // Keyword constants for program to guess the disease in Service Review from disease and treatment

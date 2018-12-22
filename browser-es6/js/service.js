@@ -70,8 +70,8 @@ function entireMonth(fromDate)
 	toDate = $.datepicker.formatDate("yy-mm-dd", toDate)
 	$monthpicker.val(toDate)
 
-	getServiceOneMonth(fromDate, toDate).then( function (SERVICE) {
-		gv.SERVICE = SERVICE
+	getServiceOneMonth(fromDate, toDate).then( function (service) {
+		gv.SERVICE = service
 		gv.SERVE = calcSERVE()
 		showService(fromDate, toDate)
 	}, function (title, message) {
@@ -414,13 +414,13 @@ function refillService(fromDate, toDate)
 			len++
 		}
 		classname = countService(this, fromDate, toDate)
-		$rowi = $rows.eq(i)
-		$cells = $rowi.children("td")
+		$row = $rows.eq(i)
+		$cells = $row.children("td")
 		if ($cells.eq(CASENUMSV).prop("colSpan") > 1) {
 			$cells.eq(CASENUMSV).prop("colSpan", 1)
 				.nextUntil($cells.eq(QNSV)).show()
 		}
-		$rowi.filldataService(this, scase, classname)
+		$row.filldataService(this, scase, classname)
 	});
 	if (i < (len - 1)) {
 		$rows.slice(i+1).remove()
@@ -456,15 +456,15 @@ jQuery.fn.extend({
 // Simulate hover on icon by changing background pics
 function hoverService()
 {
-	let	tdClass = "td.pacs, td.camera"
+	let	tdClass = "td.pacs, td.upload"
 
 	hoverCell(tdClass)
 }
 
 function hoverCell(tdClass)
 {
-	let	paleClasses = ["pacs", "camera"],
-		boldClasses = ["pacs2", "camera2"]
+	let	paleClasses = ["pacs", "upload"],
+		boldClasses = ["pacs2", "upload2"]
 
 	$(tdClass)
 		.mousemove(function(event) {
@@ -637,8 +637,8 @@ function saveContentService(pointed, column, content)
 async function saveService(pointed, sql)
 {
 	let $row = $(pointed).closest("tr"),
-		rowi = $row[0],
-		qn = rowi.cells[QNSV].innerHTML,
+		row = $row[0],
+		qn = row.cells[QNSV].innerHTML,
 		oldcontent = $("#editcell").data("oldcontent"),
 		fromDate = $("#monthstart").val(),
 		toDate = $("#monthpicker").val()
@@ -657,18 +657,17 @@ async function saveService(pointed, sql)
 		}
 
 		// Calc countService of this case only
-		let oldclass = rowi.className
+		let oldclass = row.className
 		let bookq = getBOOKrowByQN(gv.SERVE, qn)
 		let newclass = countService(bookq, fromDate, toDate)
 		let oldclassArray = oldclass.split(" ")
 		let newclassArray = newclass.split(" ")
 		let counter
-		let newcounter
 
 		if (oldclass !== newclass) {
 			updateCounter(oldclassArray, -1)
 			updateCounter(newclassArray, 1)
-			rowi.className = newclass
+			row.className = newclass
 		}
 	} else {
 		Alert("saveService", response)

@@ -1,14 +1,11 @@
 
 import {
-	OPDATE, OPROOM, CASENUM, STAFFNAME, HN, PATIENT, DIAGNOSIS, TREATMENT,
+	OPDATE, THEATRE, OPROOM, OPTIME, CASENUM, STAFFNAME, HN, PATIENT, DIAGNOSIS, TREATMENT,
 	CONTACT, QN, LARGESTDATE
 } from "./const.js"
-
-import { clearEditcell, reposition } from "./edit.js"
-import { makeEquipTable } from "./equip.js"
-import {
-	BOOK, updateBOOK, getOpdate, Alert, winWidth, winHeight, UndoManager
-} from "./util.js"
+import { showStaffOnCall, clearSelection, PACS } from "./control.js"
+import { createEditcell, clearEditcell, reposition } from "./edit.js"
+import { USER } from "./main.js"
 
 import {
 	modelChangeDate, modelAllCases, modelCaseHistory,
@@ -18,21 +15,26 @@ import {
 import {
 	viewChangeDate, viewDeleteCase, viewAllCases,
 	viewCaseHistory, viewDeletedCases, viewUndelete, viewFind,
-	viewStaffqueue
+	viewStaffqueue, viewEquip
 } from "./view.js"
 
-export { clearMouseoverTR }
+import {
+	getBOOK, getCONSULT, isPACS, updateBOOK, getOpdate, getTableRowByQN, Alert,
+	winWidth, winHeight, UndoManager, isSplit, winResizeFix
+} from "./util.js"
+
+export { oneRowMenu, clearMouseoverTR }
 
 let onclick = {
 	"clicksearchCases": searchCases,
 	"clickallCases": allCases,
 	"clickdeletedCases": deletedCases,
 	"clickreadme": readme,
-	"clickaddnewrow": addnewrow,
-	"clickpostponeCase": postponeCase,
-	"clickchangeDate": changeDate,
+	"addrow": addnewrow,
+	"postponecase": postponeCase,
+	"changedate": changeDate,
 	"clickeditHistory": editHistory,
-	"clickdelCase": delCase,
+	"delcase": delCase,
 	"clicksendtoExcel": sendtoExcel,
 	"clicksendtoLINE": sendtoLINE,
 	"buttonLINE": toLINE,
@@ -54,7 +56,7 @@ function oneRowMenu()
 	let	$selected = $(".selected"),
 		tableID = $selected.closest('table').attr('id'),
 		$row = $selected.closest('tr'),
-		prevDate = $row.prev().find("td").eq(OPDATE).html() || ""
+		prevDate = $row.prev().find("td").eq(OPDATE).html() || "",
 		$cell = $row.find("td"),
 		opdateth = $cell.eq(OPDATE).html(),
 		opdate = getOpdate(opdateth),
@@ -122,7 +124,7 @@ let addrow = function ($clone, $row, keepcell) {
 	$clone.removeClass("selected")
 		.insertAfter($row)
 			.find("td").eq(HN).removeClass("pacs")
-			.parent().find("td").eq(PATIENT).removeClass("camera")
+			.parent().find("td").eq(PATIENT).removeClass("upload")
 			.parent().find("td").eq(keepcell)
 				.nextAll()
 					.html("")
@@ -159,14 +161,14 @@ async function postponeCase(args) {
 	sql += "UPDATE book SET opdate='" + LARGESTDATE
 		+ "',waitnum=" + waitnum
 		+ ",theatre='',oproom=null,casenum=null,optime=''"
-		+ ",editor='" + user
+		+ ",editor='" + USER
         + "' WHERE qn="+ qn + ";"
 
 	let response = await postData(MYSQLIPHP, sql)
 	if (typeof response === "object") {
 		updateBOOK(response)
 		refillOneDay(opdate)
-		if ((isSplited()) && 
+		if ((isSplit()) && 
 			(isStaffname(staffname))) {
 			// changeDate of this staffname's case
 			refillstaffqueue()
@@ -358,7 +360,7 @@ async function clickDate(event)
 		if (moveOpdate !== thisOpdate) {
 			refillOneDay(thisOpdate)
 		}
-		if (isSplited()) {
+		if (isSplit()) {
 			let titlename = $('#titlename').html()
 			if ((titlename === staffname) ||
 				(titlename === "Consults")) {
@@ -386,7 +388,7 @@ function clearMouseoverTR()
 // not actually delete the case but set deleted = 1
 // Remove the row if more than one case on that date, or on staff table
 // Just blank the row if there is only one case
-async function delCase(args) {
+function delCase() {
 	let	$selected = $(".selected"),
 		tableID = $selected.closest('table').attr('id'),
 		$row = $selected.closest('tr'),
@@ -397,11 +399,14 @@ async function delCase(args) {
 		qn = $cell.eq(QN).html(),
 		theatre = $cell.eq(THEATRE).html(),
 		oproom = $cell.eq(OPROOM).html(),
-		allCases, index, sql
-
+		allCases, index, sql,
+		waitnum = null
+deleteCase(waitnum)
+return
+/*
 	sql = "sqlReturnbook=UPDATE book SET "
 		+ "deleted=1, "
-		+ "editor = '" + user
+		+ "editor = '" + USER
 		+ "' WHERE qn="+ qn + ";"
 
 	if (!qn) {
@@ -421,7 +426,7 @@ async function delCase(args) {
 		updateBOOK(response)
 		if (tableID === "tbl") {
 			refillOneDay(opdate)
-			if ((isSplited()) && 
+			if ((isSplit()) && 
 				(isStaffname(staffname))) {
 				refillstaffqueue()
 			}
@@ -438,16 +443,16 @@ async function delCase(args) {
 	}
 
 	clearSelection()
-/*
+//-----
 	let argsUndo = {}
 	argsUndo = $.extend(argsUndo, args)
 	args.waitnum = null
-	deleteCase(args)
+	deleteCase(waitnum)
 
 	UndoManager.add({
 		undo: function() {
 			if (!args.qn) {	
-				addrow(args.tableID, args.$rowi)
+				addrow(args.tableID, args.$row)
 				return
 			}
 			deleteCase(argsUndo)
@@ -474,22 +479,28 @@ function deleteRow($row, opdate)
 	} else {
 		$row.children("td").eq(OPDATE).siblings().html("")
 		$row.children("td").eq(HN).removeClass("pacs")
-		$row.children("td").eq(PATIENT).removeClass("camera")
+		$row.children("td").eq(PATIENT).removeClass("upload")
 		$row.children('td').eq(STAFFNAME).html(showStaffOnCall(opdate))
 	}
 }
 
-/*
-let deleteCase = function (args) {
-	let $rowi = args.$rowi,
-		waitnum = args.waitnum,
-		opdate= args.opdate,
-		staffname = args.staffname,
-		qn = args.qn
+let deleteCase = function (num) {
+	let	$selected = $(".selected"),
+		tableID = $selected.closest('table').attr('id'),
+		$row = $selected.closest('tr'),
+		$cell = $row.find("td"),
+		waitnum = num,
+		opdateth = $cell.eq(OPDATE).html(),
+		opdate = getOpdate(opdateth),
+		staffname = $cell.eq(STAFFNAME).html(),
+		qn = $cell.eq(QN).html(),
+		theatre = $cell.eq(THEATRE).html(),
+		oproom = $cell.eq(OPROOM).html(),
+		allCases, index, sql
 
 	// from add new row
 	if (!qn) {	
-		$rowi.remove()
+		$row.remove()
 		return
 	}
 
@@ -504,7 +515,7 @@ let deleteCase = function (args) {
 		: Alert ("delCase", response)
 	}).catch(error => {})
 }
-*/
+
 // All cases (exclude the deleted ones)
 async function allCases() {
   let sql = "sqlReturnData=SELECT * FROM book WHERE deleted=0 ORDER BY opdate;"
@@ -603,7 +614,7 @@ function pagination($dialog, $tbl, book, search)
       PACS(this.innerHTML)
     }
   })
-  $dialog.find('.camera').on("click", function() {
+  $dialog.find('.upload').on("click", function() {
     let hn = this.previousElementSibling.innerHTML
     let patient = this.innerHTML
 
@@ -614,10 +625,10 @@ function pagination($dialog, $tbl, book, search)
   {
     let  bookOneWeek, Sunday
 
-    firstday = Monday.nextdays(offset)
+    firstday = nextdays(Monday, offset)
     if (firstday < beginday) { firstday = getPrevMonday(beginday) }
     if (firstday > lastday) {
-      firstday = getPrevMonday(lastday).nextdays(7)
+      firstday = nextdays(getPrevMonday(lastday), 7)
       bookOneWeek = getBookNoDate(book)
       showAllCases(bookOneWeek)
     } else {
@@ -633,14 +644,14 @@ function pagination($dialog, $tbl, book, search)
           ? new Date(date.replace(/-/g, "/"))
           : new Date();
     today.setDate(today.getDate() - today.getDay() + 1);
-    return today.ISOdate();
+    return ISOdate(today);
   }
 
   function getNextSunday(date)
   {
     let today = new Date(date);
     today.setDate(today.getDate() - today.getDay() + 7);
-    return today.ISOdate();
+    return ISOdate(today);
   }
 
   function getBookOneWeek(book, Monday, Sunday)
@@ -659,8 +670,8 @@ function pagination($dialog, $tbl, book, search)
 
   function showAllCases(bookOneWeek, Monday, Sunday)
   {
-    let  Mon = Monday && Monday.thDate() || "",
-      Sun = Sunday && Sunday.thDate() || ""
+    let  Mon = Monday && thDate(Monday) || "",
+      Sun = Sunday && thDate(Sunday) || ""
 
     $dialog.dialog({
       title: search + " : " + Mon + " - " + Sun
@@ -669,7 +680,7 @@ function pagination($dialog, $tbl, book, search)
     $tbl.find('tr').slice(1).remove()
 
     if (Monday) {
-      let  $row, rowi, cells,
+      let  $row, row, cells,
         date = Monday,
         nocase = true
 
@@ -677,11 +688,11 @@ function pagination($dialog, $tbl, book, search)
         while (this.opdate > date) {
           if (nocase) {
             $row = $('#allcells tr').clone().appendTo($tbl.find('tbody'))
-            rowi = $row[0]
-            cells = rowi.cells
-            rowDecoration(rowi, date)
+            row = $row[0]
+            cells = row.cells
+            rowDecoration(row, date)
           }
-          date = date.nextdays(1)
+          date = nextdays(date, 1)
           nocase = true
         }
         $('#allcells tr').clone()
@@ -689,13 +700,13 @@ function pagination($dialog, $tbl, book, search)
             .filldataAllcases(this)
         nocase = false
       })
-      date = date.nextdays(1)
+      date = nextdays(date, 1)
       while (date <= Sunday) {
         $row = $('#allcells tr').clone().appendTo($tbl.find('tbody'))
-        rowi = $row[0]
-        cells = rowi.cells
-        rowDecoration(rowi, date)
-        date = date.nextdays(1)
+        row = $row[0]
+        cells = row.cells
+        rowDecoration(row, date)
+        date = nextdays(date, 1)
       }
     } else {
       $.each( bookOneWeek, function() {
@@ -717,8 +728,8 @@ function pagination($dialog, $tbl, book, search)
 
 jQuery.fn.extend({
   filldataAllcases : function(q) {
-    let rowi = this[0],
-      cells = rowi.cells,
+    let row = this[0],
+      cells = row.cells,
       date = q.opdate,
       data = [
         putThdate(date),
@@ -727,221 +738,59 @@ jQuery.fn.extend({
         q.patient,
         q.diagnosis,
         q.treatment,
-        showEquip(q.equipment),
+        viewEquip(q.equipment),
         q.admission,
         q.final,
         q.contact
       ]
 
-    rowDecoration(rowi, date)
+    rowDecoration(row, date)
     dataforEachCell(cells, data)
   }
 })
 
-async function editHistory()
+function editHistory()
 {
-  let  $selected = $(".selected"),
-    $row = $selected.closest('tr'),
-    hn = $row.find("td")[HN].innerHTML,
-    sql = "sqlReturnData=SELECT * FROM bookhistory "
-      + "WHERE qn in (SELECT qn FROM book WHERE hn='" + hn + "') "
-      + "ORDER BY editdatetime DESC;"
+	let	selected = document.querySelector(".selected"),
+		row = selected.closest('tr'),
+		hn = row.cells[HN].innerHTML
 
-  clearEditcell()
+	modelCaseHistory(hn).then(response => {
+		typeof response === "object"
+		? viewCaseHistory(row, hn, response)
+		: Alert("caseHistory", response)
+	}).catch(error => {})
 
-  let response = await postData(MYSQLIPHP, sql)
-  if (typeof response === "object") {
-    makehistory($row, hn, response)
-  } else {
-    Alert("editHistory", response)
-  }
+	clearEditcell()
 }
 
-function makehistory($row, hn, response)
+function deletedCases()
 {
-  let  $historytbl = $('#historytbl'),
-    nam = $row.find("td")[PATIENT].innerHTML,
-    name = nam && nam.replace('<br>', ' '),
-    $dialogHistory = $("#dialogHistory")
-  
-  // delete previous table lest it accumulates
-  $historytbl.find('tr').slice(1).remove()
-
-  $.each( response, function() {
-    $('#historycells tr').clone()
-      .appendTo($historytbl.find('tbody'))
-        .filldataHistory(this)
-  });
-
-  $dialogHistory.dialog({
-    title: hn +' '+ name,
-    closeOnEscape: true,
-    modal: true,
-    show: 200,
-    hide: 200,
-    width: winWidth(95),
-    height: winHeight(95),
-    close: function() {
-      $(window).off("resize", resizeHistory )
-      $(".fixed").remove()
-    }
-  })
-
-  $historytbl.fixMe($dialogHistory);
-
-  //for resizing dialogs in landscape / portrait view
-  $(window).on("resize", resizeHistory )
-
-  function resizeHistory() {
-    $dialogHistory.dialog({
-      width: winWidth(95),
-      height: winHeight(95)
-    })
-    winResizeFix($historytbl, $dialogHistory)
-  }
+	modelAllDeletedCases().then(response => {
+		if (typeof response === "object") {
+			viewDeletedCases(response)
+			$("#undel").off("click").on("click", function () {
+				toUndelete(this)
+			})
+		} else {
+			Alert("allDeletedCases", response)
+		}
+	}).catch(error => {})
 }
-
-jQuery.fn.extend({
-  filldataHistory : function(q) {
-    let  cells = this[0].cells,
-      data = [
-        putThdate(q.opdate) || "",
-        q.oproom || "",
-        q.casenum || "",
-        q.staffname,
-        q.diagnosis,
-        q.treatment,
-        showEquip(q.equipment),
-        q.admission,
-        q.final,
-        q.contact,
-        q.editor,
-        q.editdatetime
-      ]
-
-    // Define colors for deleted and undeleted rows
-    q.action === 'delete'
-    ? this.addClass("deleted")
-    : (q.action === 'undelete') && this.addClass("undelete")
-
-    dataforEachCell(cells, data)
-  }
-})
-
-async function deletedCases()
-{
-  let sql = `sqlReturnData=SELECT editdatetime, b.* 
-                             FROM book b 
-							   LEFT JOIN bookhistory bh ON b.qn = bh.qn 
-                             WHERE editdatetime>DATE_ADD(NOW(), INTERVAL -3 MONTH) 
-							   AND b.deleted>0 
-							   AND bh.action='delete' 
-							 GROUP BY b.qn 
-                             ORDER BY editdatetime DESC;`
-
-  let response = await postData(MYSQLIPHP, sql)
-  if (typeof response === "object") {
-    makedeletedCases(response)
-  } else {
-    Alert("deletedCases", response)
-  }
-}
-
-function makedeletedCases(deleted)
-{
-  let $deletedtbl = $('#deletedtbl')
-    $deletedtr = $('#deletedcells tr')
-
-  // delete previous table lest it accumulates
-  $deletedtbl.find('tr').slice(1).remove()
-
-  // display the first 20
-  $.each( deleted, function(i) {
-    $deletedtr.clone()
-      .appendTo($deletedtbl.find('tbody'))
-        .filldataDeleted(this)
-    return i < 20;
-  });
-
-  let $dialogDeleted = $("#dialogDeleted")
-  $dialogDeleted.dialog({
-    title: "All Deleted Cases",
-    closeOnEscape: true,
-    modal: true,
-    hide: 200,
-    width: winWidth(95),
-    height: winHeight(95),
-    close: function() {
-      $(window).off("resize", resizeDeleted )
-      $(".fixed").remove()
-    }
-  })
-  $deletedtbl.fixMe($dialogDeleted);
-
-  let $undelete = $("#undelete")
-  $undelete.hide()
-  $undelete.off("click").on("click", function () { closeUndel() }).hide()
-  $(".toUndelete").off("click").on("click", function () {
-    toUndelete(this, deleted)
-  })
-
-  //for resizing dialogs in landscape / portrait view
-  $(window).on("resize", resizeDeleted )
-
-  function resizeDeleted() {
-    $dialogDeleted.dialog({
-      width: winWidth(95),
-      height: winHeight(95)
-    })
-    winResizeFix($deletedtbl, $dialogDeleted)
-  }
-
-  // display the rest
-  setTimeout(function() {
-    $.each( deleted, function(i) {
-      if (i < 21) return
-      $deletedtr.clone()
-        .appendTo($deletedtbl.find('tbody'))
-          .filldataDeleted(this)
-    });
-  }, 100)
-}
-
-jQuery.fn.extend({
-  filldataDeleted : function(q) {
-    let  cells = this[0].cells,
-      data = [
-        putThdate(q.opdate),
-        q.staffname,
-        q.hn,
-        q.patient,
-        q.diagnosis,
-        q.treatment,
-        q.contact,
-        q.editor,
-        q.editdatetime,
-        q.qn
-      ]
-
-    rowDecoration(this[0], q.opdate)
-    dataforEachCell(cells, data)
-    cells[0].className += " toUndelete"
-  }
-})
 
 async function toUndelete(thisDate, deleted) 
 {
   let UNDELOPDATE      = 0;
-  let UNDELSTAFFNAME    = 1;
+  let UNDELSTAFFNAME   = 1;
 //  let UNDELHN        = 2;
-//  let UNDELPATIENT    = 3;
-//  let UNDELDIAGNOSIS    = 4;
-//  let UNDELTREATMENT    = 5;
-//  let UNDELCONTACT    = 6;
-//  let UNDELEDITOR      = 7;
+//  let UNDELPATIENT   = 3;
+//  let UNDELDIAGNOSIS = 4;
+//  let UNDELTREATMENT = 5;
+//  let UNDELCONTACT   = 6;
+//  let UNDELEDITOR    = 7;
 //  let UNDELEDITDATETIME  = 8;
-  let UNDELQN        = 9;
-  let $thisDate      = $(thisDate)
+  let UNDELQN         = 9;
+  let $thisDate = $(thisDate)
   let $undelete = $("#undelete")
 
   // jquery position not work in hidden elements
@@ -961,7 +810,7 @@ async function toUndelete(thisDate, deleted)
       oproom = delrow.oproom,
       casenum = delrow.casenum,
 
-      book = (waitnum < 0)? CONSULT : BOOK,
+      book = (waitnum < 0)? getCONSULT() : getBOOK(),
       allCases = sameDateRoomBookQN(book, opdate, oproom),
       alllen
 
@@ -972,7 +821,7 @@ async function toUndelete(thisDate, deleted)
       if (allCases[i] === qn) {
         sql += "UPDATE book SET "
             +  "deleted=0,"
-            +  "editor='" + user
+            +  "editor='" + USER
             +  "' WHERE qn="+ qn + ";"
       } else {
         sql += sqlCaseNum(i + 1, allCases[i])
@@ -986,7 +835,7 @@ async function toUndelete(thisDate, deleted)
       updateBOOK(response);
       refillOneDay(opdate)
       //undelete this staff's case or a Consults case
-      if (isSplited() && (isStaffname(staffname) || isConsults())) {
+      if (isSplit() && (isStaffname(staffname) || isConsults())) {
         refillstaffqueue()
       }
       scrolltoThisCase(qn)
@@ -999,18 +848,6 @@ async function toUndelete(thisDate, deleted)
 function closeUndel() 
 {
   $('#undelete').hide()
-}
-/*
-// Trace all data changes history of specified case
-// Sort edit datetime from newer to older
-let caseHistory = function (rowi, qn) {
-	modelCaseHistory(qn).then(response => {
-		typeof response === "object"
-		? viewCaseHistory(rowi, response)
-		: Alert("caseHistory", response)
-	}).catch(error => {})
-
-	clearEditcell()
 }
 
 // All deleted and still deleted cases (exclude the undeleted ones)
@@ -1029,18 +866,6 @@ let allDeletedCases = function () {
 	clearEditcell()
 }
 
-function doUndelete (thatcase) {
-//	let UNDELEDITDATETIME	= 0;
-	let UNDELOPDATE			= 1;
-	let UNDELSTAFFNAME		= 2;
-//	let UNDELHN				= 3;
-//	let UNDELPATIENT		= 4;
-//	let UNDELDIAGNOSIS		= 5;
-//	let UNDELTREATMENT		= 6;
-//	let UNDELCONTACT		= 7;
-//	let UNDELEDITOR			= 8;
-	let UNDELQN				= 9;
-
 	// .data("case", this) from viewDeletedCases
 	let thiscase = $(thatcase).data("case"),
 		$thiscase = $(thiscase).parent(),
@@ -1049,7 +874,7 @@ function doUndelete (thatcase) {
 		staffname = $thiscell.eq(UNDELSTAFFNAME).html(),
 		qn = $thiscell.eq(UNDELQN).html(),
 		args = {}
-	args.$rowi = $thiscase
+	args.$row = $thiscase
 	args.waitnum = null
 	args.opdate = opdate
 	args.staffname = staffname
@@ -1083,7 +908,6 @@ function doUndel (opdate, staffname, qn) {
 
 	$('#dialogDeleted').dialog("close")
 }
-*/
 
 function searchCases()
 {
@@ -1186,14 +1010,14 @@ function scrolltoThisCase(qn)
 {
   let showtbl, showqueuetbl
 
-  showtbl = showFind("tblcontainer", "tbl", qn)
-  if (isSplited()) {
-    showqueuetbl = showFind("queuecontainer", "queuetbl", qn)
+  showtbl = locateFound("tblcontainer", "tbl", qn)
+  if (isSplit()) {
+    showqueuetbl = locateFound("queuecontainer", "queuetbl", qn)
   }
   return showtbl || showqueuetbl
 }
 
-function showFind(containerID, tableID, qn)
+function locateFound(containerID, tableID, qn)
 {
   let container = document.getElementById(containerID),
     row = getTableRowByQN(tableID, qn),
@@ -1271,7 +1095,7 @@ function makeDialogFound($dialogFind, $findtbl, found, search)
       PACS(this.innerHTML)
     }
   })
-  $dialogFind.find('.camera').on("click", function() {
+  $dialogFind.find('.upload').on("click", function() {
     let patient = this.innerHTML
     let hn = this.previousElementSibling.innerHTML
 
@@ -1280,12 +1104,12 @@ function makeDialogFound($dialogFind, $findtbl, found, search)
 
   //scroll to todate when there many cases
   let today = new Date(),
-    todate = today.ISOdate(),
+    todate = ISOdate(today),
     thishead
 
   $findtbl.find("tr").each(function() {
     thishead = this
-    return this.cells[OPDATE].innerHTML.numDate() < todate
+    return numDate(this.cells[OPDATE].innerHTML) < todate
   })
   $dialogFind.animate({
     scrollTop: $(thishead).offset().top - $dialogFind.height()
@@ -1303,7 +1127,7 @@ jQuery.fn.extend({
         q.patient,
         q.diagnosis,
         q.treatment,
-        showEquip(q.equipment),
+        viewEquip(q.equipment),
         q.admission,
         q.final,
         q.contact
@@ -1321,47 +1145,11 @@ jQuery.fn.extend({
   }
 })
 
-function PACS(hn)
-{ 
-  let pacs = 'http://synapse/explore.asp?path=/All Patients/InternalPatientUID='+hn
-  let sql = 'PAC=http://synapse/explore.asp'
-  let ua = window.navigator.userAgent;
-  let msie = ua.indexOf("MSIE")
-  let edge = ua.indexOf("Edge")
-  let IE = !!navigator.userAgent.match(/Trident.*rv\:11\./)
-  let data_type = 'data:application/vnd.ms-internet explorer'
-
-  if (msie > 0 || edge > 0 || IE) { // If Internet Explorer
-    open(pacs);
-  } else {
-    let html = '<!DOCTYPE html><HTML><HEAD><script>function opener(){window.open("'
-    html += pacs + '", "_self")}</script><body onload="opener()"></body></HEAD></HTML>'
-    let a = document.createElement('a');
-    document.body.appendChild(a);  // You need to add this line in FF
-    a.href = data_type + ', ' + encodeURIComponent(html);
-    a.download = "index.html"
-    a.click();    //to test with Chrome and FF
-  }
-}
-
-function showUpload(hn, patient)
-{
-  let win = showUpload
-  if (hn) {
-    if (win && !win.closed) {
-      win.close();
-    }
-    showUpload = win = window.open("jQuery-File-Upload", "_blank")
-    win.hnName = {"hn": hn, "patient": patient}
-    //hnName is a pre-defined variable in child window (jQuery-File-Upload)
-  }
-}
-
 function sendtoLINE()
 {
     $('#dialogNotify').dialog({
       title: '<img src="css/pic/general/linenotify.png" width="40" style="float:left">'
-           + '<span style="font-size:20px">Qbook: ' + user + '</span>',
+           + '<span style="font-size:20px">Qbook: ' + USER + '</span>',
       closeOnEscape: true,
       modal: true,
       show: 200,
@@ -1402,7 +1190,7 @@ function toLINE()
 
   html2canvas(capture).then(function(canvas) {
     $.post(LINENOTIFY, {
-        'user': user,
+        'user': USER,
         'message': message,
         'image': canvas.toDataURL('image/png', 1.0)
     })
@@ -1454,69 +1242,3 @@ function readme()
     }
   }).fadeIn();
 }
-/*
-// Make dialog box find to get inputs for searching
-// This searches all cases in database
-// Intrinsic browser find (ctrl-F) search strings on current table only
-let find = function () {
-	let $find = $("#find")
-		$find.css("height", 0)
-	let findinput = $find.dialog({
-		title: "Find",
-		closeOnEscape: true,
-		modal: true,
-		hide: 200,
-		width: 350,
-		height: 350,
-		buttons: [
-			{
-				text: "OK",
-				click: function() {
-					let hn = $('input[name="hn"]').val()
-					let patient = $('input[name="patient"]').val()
-					let diagnosis = $('input[name="diagnosis"]').val()
-					let treatment = $('input[name="treatment"]').val()
-					let contact = $('input[name="contact"]').val()
-					if (!hn && !patient && !diagnosis && !treatment && !contact) {
-						return
-					}
-					sqlFind(hn, patient, diagnosis, treatment, contact)
-					$( this ).dialog( "close" );
-				}
-			}
-		]
-	})
-	// Make Enter key to immitate OK button click
-	$find.off("keydown").on("keydown", function(event) {
-		let buttons = findinput.dialog('option', 'buttons'),
-			keycode = event.which || window.event.keyCode;
-
-		(keycode === 13) && buttons[0].click.apply(findinput)
-	})
-}
-
-let sqlFind = function (hn, patient, diagnosis, treatment, contact) {
-
-	modelFind(hn, patient, diagnosis, treatment, contact).then(response => {
-		typeof response === "object"
-		? viewFind(response, hn)
-		: Alert("Find", "Not found " + response)
-	}).catch(error => {})
-
-	clearEditcell()
-}
-
-// Make dialog box dialogReadme containing <div id="dialogReadme"> Readme/Help
-let readme = function () {
-	$('#dialogReadme').show()
-	$('#dialogReadme').dialog({
-		title: "ReadMe",
-		closeOnEscape: true,
-		modal: true,
-		hide: 200,
-		width: winWidth() * 5 / 10,
-		minWidth: 400,
-		height: winHeight() * 9 / 10
-	}).fadeIn();
-}
-*/

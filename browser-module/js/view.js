@@ -1,59 +1,36 @@
 
 import {
-	OPDATE, OPROOM, CASENUM, STAFFNAME, HN, PATIENT, DIAGNOSIS, TREATMENT,
-	CONTACT, QN, LARGESTDATE,
-	NAMEOFDAYABBR, NAMEOFDAYFULL, HOLIDAYENGTHAI
+	OPDATE, THEATRE, OPROOM, OPTIME, CASENUM, STAFFNAME, HN, PATIENT, DIAGNOSIS, TREATMENT,
+	EQUIPMENT, CONTACT, QN, LARGESTDATE, THAIMONTH, HOLIDAYENGTHAI, NAMEOFDAYABBR,
+	NAMEOFDAYFULL, EQUIPICONS
 } from "./const.js"
 
-import { PACS } from "./control.js"
+import { showStaffOnCall, PACS } from "./control.js"
 import { reViewService } from "./serv.js"
 import { reposition, clearEditcell } from "./edit.js"
 import {
-	BOOK, CONSULT, isPACS, getBOOKrowByQN, ISOdate, thDate, nextdays,
-	numDate, getOpdate, putThdate, putAgeOpdate, winWidth, winHeight,
-	START, showUpload
+	getBOOK, getCONSULT, isPACS, getBOOKrowByQN, ISOdate, thDate, nextdays, dayName,
+	numDate, getOpdate, putThdate, putAgeOpdate, winWidth, winHeight, getTableRowByQN,
+	START, showUpload, isConsultsTbl, getBOOKrowsByDate, getTableRowsByDate,
+	putNameAge, rowDecoration, hoverMain, holiday, isSplit, winResizeFix
 } from "./util.js"
 
 export {
 	viewAll, reViewAll, viewStaffqueue, reViewStaffqueue, viewChangeDate,
 	viewAllCases, viewDeleteCase, viewDeletedCases, viewCaseHistory, viewFind,
 	viewIdling, viewLatestEntry, viewSaveByHN, viewSaveContent, viewSaveNoQN,
-	viewSaveRoomTime, viewSortable, viewUndelete, animateScroll,
-	isConsultsTbl, winResizeFix, setClickStaff
+	viewSaveRoomTime, viewSortable, viewUndelete,
+	isConsultsTbl, setClickStaff, viewEquip, makeEquip
 }
-
-document.getElementById("clickclosequeue").onclick = closequeue
 
 // function declaration (definition ) : public
 // function expression (literal) : local
 
-function setClickStaff()
-{
-	document.querySelectorAll(".clickStaff").forEach(function(item) {
-		item.onclick = function() {
-			let staffname = item.className.split(" ")[1]
-			viewStaffqueue(staffname)
-		}
-	})
-}
-
-function winResizeFix($this, $container) {
-	let $fix = $("#fixheader"),
-		hide = $fix.css("display") === "none",
-		pad = $container.css("paddingLeft")
-
-	$fix.find("th").each(function(index) {
-		$(this).css("width",$this.find("th").eq(index).width() + "px");
-	});
-	reposition($fix, "left top", "left+" + pad + " top", $container)
-	hide && $fix.hide()
-}
-
 // Render Main table
 // Consults and dialogAll tables use this too
-// START date imported from control.js
+// START date imported from util.js
 // until date is the last row of the table, not of the book
-function viewAll(book, table, start, until) {
+function viewAll(book, table, start, until, num=0) {
 	let tbody = table.getElementsByTagName("tbody")[0],
 		rows = table.rows,
 		head = table.rows[0],
@@ -63,10 +40,13 @@ function viewAll(book, table, start, until) {
 		k = findStartRowInBOOK(book, LARGESTDATE)
 
 	// Get rid of LARGESTDATE cases
-	book = book.slice(0, k)
+	// Consult cases have no LARGESTDATE, findStartRowInBOOK returns k = -1
+	if (k >= 0) {
+		book = book.slice(0, k)
+	}
 
 	// i for rows in table (with head as the first row)
-	let i = 0,
+	let i = num,
 		booklength = book.length
 	for (q; q < booklength; q++)
 	{	
@@ -119,13 +99,14 @@ function viewAll(book, table, start, until) {
 // Similar to viewAll but try to use existing DOM table
 function reViewAll() {
 	let	table = document.getElementById("tbl"),
-		tbody = table.getElementsByTagName("tbody")[0],
+		$tbody = $("#tbl tbody"),
 		start = numDate($('#tbl tr:has("td")').first().find('td').eq(OPDATE).html()),
 		until = numDate($('#tbl tr:has("td")').last().find('td').eq(OPDATE).html())
 
 	$tbody.html($tbody.find("tr:first").clone())
-	viewAll(BOOK, table, start, until)
-//	hoverMain()
+	viewAll(getBOOK(), table, start, until)
+	hoverMain()
+	// For new row added to this table
 }
 
 // Used for main table ("tbl") only, no LARGESTDATE
@@ -133,7 +114,7 @@ function reViewAll() {
 let reViewOneDay = function (opdate) {
 	if (opdate === LARGESTDATE) { return }
 	let	opdateth = putThdate(opdate),
-		opdateBOOKrows = getBOOKrowsByDate(BOOK, opdate),
+		opdateBOOKrows = getBOOKrowsByDate(getBOOK(), opdate),
 		$opdateTblRows = getTableRowsByDate(opdateth),
 		bookRows = opdateBOOKrows.length,
 		tblRows = $opdateTblRows.length,
@@ -148,26 +129,22 @@ let reViewOneDay = function (opdate) {
 
 	let hasCase = function () {
 		let lessCase = function () {
-			let i = tblRows - bookRows
-			while (i--) {
-				$opdateTblRows.eq(tblRows-1).remove()
+			while ($opdateTblRows.length > bookRows) {
+				$opdateTblRows.eq(0).remove()
+				$opdateTblRows = getTableRowsByDate(opdateth)
 			}
-			// Have to renew $opdateTblRows for filldata to correct rows
-			$opdateTblRows = getTableRowsByDate(opdateth)
 		},
 		moreCase = function () {
-			let i = tblRows - bookRows
-			while (i++) {
-				$opdateTblRows.eq(0).clone()
-					.insertAfter($opdateTblRows.eq(tblRows-1))
+			while ($opdateTblRows.length < bookRows) {
+				$opdateTblRows.eq(0).clone().insertAfter($opdateTblRows.eq(0))
 				$opdateTblRows = getTableRowsByDate(opdateth)
-			}	// Have to renew $opdateTblRows for filldata to correct rows
+			}
 		}
-		tblRows > bookRows
-			? lessCase()
-			: moreCase()
+
+		tblRows > bookRows ? lessCase() : moreCase()
+
 		$.each(opdateBOOKrows, function(key, val) {
-//			rowDecoration($opdateTblRows[key], this.opdate)
+			rowDecoration($opdateTblRows[key], this.opdate)
 			filldata(this, $opdateTblRows[key])
 			staff = $opdateTblRows[key].cells[STAFFNAME].innerHTML
 			// on call <p style..>staffname</p>
@@ -185,101 +162,70 @@ let reViewOneDay = function (opdate) {
 		$cells.eq(OPDATE).prop("class", dayName(NAMEOFDAYABBR, opdate))
 		$cells.eq(STAFFNAME).html(showStaffOnCall(opdate))
 		$cells.eq(HN).removeClass("pacs")
-		$cells.eq(PATIENT).removeClass("camera")
-		$cells.eq(TREATMENT).removeClass("equip")
+		$cells.eq(PATIENT).removeClass("upload")
 		$cells.eq(DIAGNOSIS).css("backgroundImage", holiday(opdate))
 	}
 
 	bookRows ? hasCase() : noCase()
 }
 
-let	getBOOKrowsByDate = function (book, opdate) {
-	return book.filter(function(q) {
-		return (q.opdate === opdate);
-	})
-}
-
-let	getTableRowsByDate = function (opdateth) {
-	if (!opdateth) { return [] }
-	return $('#tbl tr').filter(function() {
-		return $(this).cells[OPDATE].innerHTML === opdateth;
-	})
-}
-
 // create and decorate new row
 let makenextrow = function (table, date) {
 	let tbody = table.getElementsByTagName("tbody")[0],
 		tblcells = document.getElementById("tblcells"),
-		row = tblcells.rows[0].cloneNode(true),
-		rowi = tbody.appendChild(row)
+		row = tblcells.rows[0].cloneNode(true)
 
-	rowi.cells[OPDATE].innerHTML = thDate(date)
-	rowi.cells[OPDATE].className = NAMEOFDAYABBR[(new Date(date)).getDay()]
-	rowi.cells[DIAGNOSIS].style.backgroundImage = holiday(date)
-	rowi.className = NAMEOFDAYFULL[(new Date(date)).getDay()]
-}
-
-// renew and decorate existing row
-let fillrowdate = function (rows, i, date) {
-	let tblcells = document.getElementById("tblcells"),
-		rowi = rows[i]
-
-	if (rowi.cells[OPDATE].nodeName !== "TD") {
-		rowi.parentNode.replaceChild( tblcells.rows[0].cloneNode(true), rowi )
-	}
-	rowi.cells[OPDATE].innerHTML = thDate(date)
-	rowi.cells[OPDATE].className = NAMEOFDAYABBR[(new Date(date)).getDay()]
-	rowi.cells[DIAGNOSIS].style.backgroundImage = holiday(date)
-	rowi.className = NAMEOFDAYFULL[(new Date(date)).getDay()]
+	row = tbody.appendChild(row)
+	rowDecoration(row, date)
 }
 
 // Delete data in an existing row
-let fillblank = function (rowi) {
-	let cells = rowi.cells
+let fillblank = function (row) {
+	let cells = row.cells
 
-	rowi.title = ""
+	row.title = ""
 	cells[HN].className = ""
 	cells[PATIENT].className = ""
 
+	cells[THEATRE].innerHTML = ""
 	cells[OPROOM].innerHTML = ""
+	cells[OPTIME].innerHTML = ""
+	cells[CASENUM].innerHTML = ""
 	cells[STAFFNAME].innerHTML = ""
 	cells[HN].innerHTML = ""
 	cells[PATIENT].innerHTML = ""
 	cells[DIAGNOSIS].innerHTML = ""
 	cells[TREATMENT].innerHTML = ""
+	cells[EQUIPMENT].innerHTML = ""
 	cells[CONTACT].innerHTML = ""
 	cells[QN].innerHTML = ""
 }
 
-// q is a row of BOOK array
-let filldata = function (q, rowi) {
-	let cells = rowi.cells
+function filldata(bookq, row)
+{
+	let cells = row.cells
 
-	rowi.title = q.waitnum
-	q.hn && isPACS && (cells[HN].className = "pacs")
-	q.patient && (cells[PATIENT].className = "camera")
+	row.title = bookq.waitnum
+	if (bookq.hn && isPACS) { cells[HN].className = "pacs" }
+	if (bookq.patient) { cells[PATIENT].className = "upload" }
 
-	cells[OPROOM].innerHTML = putRoomTime(q)
-	cells[STAFFNAME].innerHTML = q.staffname
-	cells[HN].innerHTML = q.hn
-	cells[PATIENT].innerHTML = putNameAge(q)
-	cells[DIAGNOSIS].innerHTML = q.diagnosis
-	cells[TREATMENT].innerHTML = q.treatment
-	cells[CONTACT].innerHTML = q.contact
-	cells[QN].innerHTML = q.qn
-}
-
-let putNameAge = function (q) {
-	return q.patient + (q.dob ? ("<br>อายุ " + putAgeOpdate(q.dob, q.opdate)) : "")
-}
-
-let putRoomTime = function (q) {
-	return (q.oproom ? (q.oproom +"<br>"+ q.optime) : "")
+	cells[THEATRE].innerHTML = bookq.theatre
+	cells[OPROOM].innerHTML = bookq.oproom || ""
+	cells[OPTIME].innerHTML = bookq.optime
+	cells[CASENUM].innerHTML = bookq.casenum || ""
+	cells[STAFFNAME].innerHTML = bookq.staffname
+	cells[HN].innerHTML = bookq.hn
+	cells[PATIENT].innerHTML = putNameAge(bookq)
+	cells[DIAGNOSIS].innerHTML = bookq.diagnosis
+	cells[TREATMENT].innerHTML = bookq.treatment
+	cells[EQUIPMENT].innerHTML = viewEquip(bookq.equipment)
+	cells[CONTACT].innerHTML = bookq.contact
+	cells[QN].innerHTML = bookq.qn
 }
 
 function viewStaffqueue(staffname) {
 	let todate = ISOdate(new Date()),
-		consult = CONSULT,
+		consult = getCONSULT(),
 		queuetbl = document.getElementById("queuetbl")
 
 	// delete previous queuetbl lest it accumulates
@@ -294,7 +240,7 @@ function viewStaffqueue(staffname) {
 		viewAll(consult, table, START, todate)
 	}
 	let staffCases = function () {
-		$.each( BOOK, function() {	// each === this
+		$.each( getBOOK(), function() {
 			this.staffname === staffname && this.opdate >= todate &&
 				$('#tblcells tr').clone()
 					.appendTo($queuetbl)
@@ -303,17 +249,20 @@ function viewStaffqueue(staffname) {
 	}
 
 	// Not yet split window
-	!isStaffQueueShow() && splitPane()
+	!isSplit() && splitPane()
 	$('#titlename').html(staffname)
+
 	staffname === "Consults" ? staffConsults() : staffCases()
-	$queuecontainer.scrollTop($queuetbl.height())
+
+	clearEditcell()
+	hoverMain()
 }
 
 // Use existing DOM table
 function reViewStaffqueue() {
 	let todate = ISOdate(new Date()),
 		staffname = $('#titlename').html(),
-		book = BOOK,
+		book = getBOOK(),
 	staffConsults = function () {
 		let table = document.getElementById("queuetbl")
 
@@ -325,7 +274,7 @@ function reViewStaffqueue() {
 	},
 	staffCases = function () {
 		let i = 0
-		$.each( book, function(q, each) {	// each === this
+		$.each( book, function(q, each) {
 			if ((this.opdate >= todate) && (this.staffname === staffname)) {
 				i++
 				i >= $('#queuetbl tr').length
@@ -346,25 +295,19 @@ jQuery.fn.extend({
 		let cells = this[0].cells
 		
 		this[0].title = q.waitnum
-		if (q.opdate === LARGESTDATE) {
-			cells[OPDATE].className = ""
-		} else {
-			cells[OPDATE].className = NAMEOFDAYABBR[(new Date(q.opdate)).getDay()]
-		}
+		addColor(this, q.opdate)
 		q.hn && isPACS && (cells[HN].className = "pacs")
-		q.patient && (cells[PATIENT].className = "camera")
-		newRowColor(this, q.opdate)
-		? this.addClass("odd")
-		: this.removeClass("odd")
-		// clear colored row that is moved to non-color opdate
+		q.patient && (cells[PATIENT].className = "upload")
 
 		cells[OPDATE].innerHTML = putThdate(q.opdate)
-		cells[OPROOM].innerHTML = putRoomTime(q)
+		cells[OPROOM].innerHTML = q.oproom || ""
+		cells[CASENUM].innerHTML = q.casenum || ""
 		cells[STAFFNAME].innerHTML = q.staffname
 		cells[HN].innerHTML = q.hn
 		cells[PATIENT].innerHTML = putNameAge(q)
 		cells[DIAGNOSIS].innerHTML = q.diagnosis
 		cells[TREATMENT].innerHTML = q.treatment
+		cells[EQUIPMENT].innerHTML = viewEquip(q.equipment)
 		cells[CONTACT].innerHTML = q.contact
 		cells[QN].innerHTML = q.qn
 	}
@@ -372,28 +315,41 @@ jQuery.fn.extend({
 
 // Same date cases have same color
 // In LARGESTDATE, prevdate = "" but q.opdate = LARGESTDATE
-// So LARGESTDATE cases has alternate colors
-let newRowColor = function ($this, opdate) {
+// So LARGESTDATE cases are !samePrevDate, thus has alternate colors
+// clear the color of NAMEOFDAYFULL row that is moved to non-color opdate
+function addColor($this, bookqOpdate) 
+{
 	let prevdate = numDate($this.prev().children("td").eq(OPDATE).html()),
-		prevIsOdd = ($this.prev()[0].className.indexOf("odd") !== -1),
-		sameAsPrev = (opdate === prevdate)
+		prevIsOdd = /odd/.test($this.prev().prop("class")),
+		samePrevDate = bookqOpdate === prevdate
 
-	return	sameAsPrev ? prevIsOdd : !prevIsOdd
+	if ((!samePrevDate && !prevIsOdd) || (samePrevDate && prevIsOdd)) {
+		$this.addClass("odd")
+	} else {
+		$this.removeClass("odd")
+	}
 }
 
 let splitPane = function () {
 	let scrolledTop = document.getElementById("tblcontainer").scrollTop,
 		tohead = findVisibleHead('#tbl'),
-		width = screen.availWidth,
-		height = screen.availHeight
+		menuHeight = $("#cssmenu").height(),
+		titleHeight = $("#titlebar").height()
 
-	$("#queuewrapper").show()
-	$("#tblwrapper").css({"float":"left", "height":"100%", "width":"50%"})
-	$("#queuewrapper").css({"float":"right", "height":"100%", "width":"50%"})
+	$("#tblwrapper").css({
+		"height": "100%" - menuHeight,
+		"width": "50%"
+	})
+	$("#queuewrapper").show().css({
+		"height": "100%" - menuHeight,
+		"width": "50%"
+	})
+	$("#queuecontainer").css({
+		"height": $("#tblcontainer").height() - titleHeight
+	})
+
 	initResize($("#tblwrapper"))
 	$('.ui-resizable-e').css('height', $("#tbl").css("height"))
-
-	fakeScrollAnimate("tblcontainer", "tbl", scrolledTop, tohead.offsetTop)
 }
 
 let initResize = function ($wrapper) {
@@ -434,73 +390,9 @@ function closequeue() {
 	
 	$("#queuewrapper").hide()
 	$("#tblwrapper").css({
-		"height": "100%", "width": "100%"
+		"height": "100%" - $("#cssmenu").height(),
+		"width": "100%"
 	})
-
-	fakeScrollAnimate("tblcontainer", "tbl", scrolledTop, tohead.offsetTop)
-}
-
-// Both main and staff tables
-let scrolltoThisCase = function(qn) {
-	let onTbl = showFound("tblcontainer", "tbl", qn),
-		onQueue = false
-	if (isStaffQueueShow()) {
-		onQueue = showFound("queuecontainer", "queuetbl", qn)
-	}
-
-	return onTbl || onQueue
-}
-
-// Scroll to specified qn case and add a border
-let showFound = function (containerID, tableID, qn) {
-	let rowi = $("#" + tableID + " tr:has(td)").filter( function() {
-		return (this.cells[QN].innerHTML === qn);
-	})[0]
-
-	if (!rowi) {
-		return false
-	}
-
-	$("#" + tableID + " tr.borderfound").removeClass("borderfound")
-	$(rowi).addClass("borderfound")
-
-	let scrolledTop = document.getElementById(containerID).scrollTop,
-		offset = rowi.offsetTop,
-		divheight = winHeight()
-
-	if (containerID === "queuecontainer") {
-		divheight = divheight - 100
-	}
-
-	if ((offset < scrolledTop) || (offset > (scrolledTop + divheight))) {
-		do {
-			rowi = rowi.previousSibling
-		} while ((offset - rowi.offsetTop) < divheight / 2)
-
-		fakeScrollAnimate(containerID, tableID, scrolledTop, rowi.offsetTop)
-	}
-
-	return true
-}
-
-// Set position (fake position) to 300 px before or after the target position
-// then animate scroll to the target position
-let fakeScrollAnimate = function (containerID, tableID, scrolledTop, offsetTop) {
-	let $container = $('#' + containerID),
-		$table = $('#' + tableID),
-		pixel = (scrolledTop < offsetTop) && (offsetTop > 300) ? 300 : -300;
-
-	if ((offsetTop + $container.height()) < $table.height()) {
-		$container.scrollTop(offsetTop - pixel)
-		animateScroll($container, $container.scrollTop() + pixel, 500)
-	} else {
-		// Stay the same at table end
-		$container.scrollTop(offsetTop)
-	}
-}
-
-function animateScroll($container, pixel, ms) {
-	$container.animate({scrollTop: pixel}, ms);
 }
 
 // Find first row on screen to be the target position
@@ -514,6 +406,57 @@ let findVisibleHead = function (table) {
 	return tohead
 }
 
+function setClickStaff()
+{
+	document.querySelectorAll(".clickStaff").forEach(function(item) {
+		item.onclick = function() {
+			let staffname = item.className.split(" ")[1]
+			viewStaffqueue(staffname)
+		}
+	})
+
+	document.getElementById("clickclosequeue").onclick = closequeue
+}
+
+// Both main and staff tables
+let scrolltoThisCase = function(qn) {
+	let onTbl = locateFound("tblcontainer", "tbl", qn),
+		onQueue = false
+	if (isSplit()) {
+		onQueue = locateFound("queuecontainer", "queuetbl", qn)
+	}
+
+	return onTbl || onQueue
+}
+
+// Scroll to specified qn case and add a border
+let locateFound = function (containerID, tableID, qn) {
+  let container = document.getElementById(containerID),
+    row = getTableRowByQN(tableID, qn),
+    scrolledTop = container.scrollTop,
+    offset = row && row.offsetTop,
+    rowHeight = row && row.offsetHeight,
+    height = container.clientHeight - rowHeight,
+    bottom = scrolledTop + height,
+    $container = $("#" + containerID)
+
+  $("#" + tableID + " tr.marker").removeClass("marker")
+  if (row) {
+    $(row).addClass("marker")
+    if (offset < scrolledTop) {
+      $container.animate({
+        scrollTop: offset
+      }, 500);
+    }
+    else if (offset > bottom) {
+      $container.animate({
+        scrollTop: offset - height
+      }, 500);
+    }
+    return true
+  }
+}
+
 function viewChangeDate(args) {
 	let thisDate = args.thisDate,
 		opdate = args.opdate,
@@ -523,21 +466,21 @@ function viewChangeDate(args) {
 	reViewOneDay(opdate)
 	reViewOneDay(thisDate)
 							// changeDate of this staffname's case, re-render
-	isStaffQueueShow() && ($('#titlename').html() === staffname) && 
+	isSplit() && ($('#titlename').html() === staffname) && 
 		reViewStaffqueue()
 	scrolltoThisCase(qn)
 }
 
 function viewDeleteCase(opdate, staffname) {
 	reViewOneDay(opdate)
-	if (isStaffQueueShow() && ($('#titlename').html() === staffname)) {
+	if (isSplit() && ($('#titlename').html() === staffname)) {
 		reViewStaffqueue()
 	}
 }
 
 function viewSaveRoomTime(opdate) {
 	reViewOneDay(opdate)
-	isStaffQueueShow() && reViewStaffqueue()
+	isSplit() && reViewStaffqueue()
 	clearEditcell()
 }
 
@@ -555,7 +498,7 @@ function viewSaveContent(args) {
 
 		// Remote effect from editing on tbl to queuetbl
 		// Staffqueue is showing
-		if (isStaffQueueShow()) {
+		if (isSplit()) {
 
 			// this staffname is changed to another staff or to this staffname
 			if ((oldcontent === titlename)
@@ -602,7 +545,7 @@ function viewSaveNoQN(args) {
 		// find and view qn of new case input in that row, either tbl or queuetbl
 		// store waitnum in row title
 		// fill qn in the blank QN
-		qn = Math.max.apply(Math, $.map(BOOK, function(q, i){
+		qn = Math.max.apply(Math, $.map(getBOOK(), function(q, i){
 			return q.qn
 		}))
 	$row[0].title = waitnum
@@ -615,7 +558,7 @@ function viewSaveNoQN(args) {
 
 		// Remote effect from editing on tbl to queuetbl
 		// Staffqueue is showing, re-render to have new case of this staffname
-		isStaffQueueShow() && (staffname === titlename) && reViewStaffqueue()
+		isSplit() && (staffname === titlename) && reViewStaffqueue()
 	}
 
 	function onStafftableNoQN() {
@@ -634,7 +577,7 @@ function viewSaveByHN(args) {
 	let tableID = args.tableID,
 		waitnum = args.waitnum,
 		$cells = args.$cells,
-		rowi = args.rowi,
+		row = args.row,
 		qn = args.qn
 
 	// have waitnum = newCase, redo
@@ -643,15 +586,15 @@ function viewSaveByHN(args) {
 	if (waitnum || (!waitnum && qn)) {
 		// New case input
 		if (!qn) {
-			qn = Math.max.apply(Math, $.map(BOOK, function(row, i) {
+			qn = Math.max.apply(Math, $.map(getBOOK(), function(row, i) {
 					return row.qn
 				}))
 			qn = String(qn)
 			$cells.eq(QN).html(qn)
-			rowi.title = waitnum
+			row.title = waitnum
 		}
 
-		let q = $.grep(BOOK, function(each) {
+		let q = $.grep(getBOOK(), function(each) {
 			return each.qn === qn
 		})[0],
 		argsnew = {
@@ -675,7 +618,7 @@ function viewSaveByHN(args) {
 		$cells.eq(CONTACT).html(q.contact)
 
 		isPACS && $cells.eq(HN).addClass("pacs")
-		$cells.eq(PATIENT).addClass("camera")
+		$cells.eq(PATIENT).addClass("upload")
 	} else {
 		// argsold (passed as args by undo) has no waitnum
 		$cells.eq(HN).html("")
@@ -686,7 +629,7 @@ function viewSaveByHN(args) {
 		$cells.eq(QN).html("");
 
 		$cells.eq(HN).removeClass("pacs")
-		$cells.eq(PATIENT).removeClass("camera")
+		$cells.eq(PATIENT).removeClass("upload")
 
 	}
 
@@ -694,7 +637,7 @@ function viewSaveByHN(args) {
 
 			// Remote effect from tbl to queuetbl
 			// saveHN on this staffname row
-		? isStaffQueueShow() && ($('#titlename').html() === staffname) && 
+		? isSplit() && ($('#titlename').html() === staffname) && 
 			reViewAnotherTableCell('queuetbl', cellindex, qn)
 
 			// Consults cases are not shown in tbl
@@ -707,11 +650,11 @@ function viewSaveByHN(args) {
 
 // view corresponding cell in another table
 let reViewAnotherTableCell = function (tableID, cellindex, qn) {
-	let rowi = $.grep( $("#" + tableID + " tr:has(td)"), function (e) {
+	let row = $.grep( $("#" + tableID + " tr:has(td)"), function (e) {
 			return e.cells[QN].innerHTML === qn
 		})[0],
-		q = getBOOKrowByQN(BOOK, qn),
-		cells = rowi.cells,
+		q = getBOOKrowByQN(getBOOK(), qn),
+		cells = row.cells,
 		viewcell = {}
 
 	viewcell[OPROOM] = putRoomTime(q)
@@ -729,21 +672,21 @@ let reViewAnotherTableCell = function (tableID, cellindex, qn) {
 }
 
 // Method to remove or just blank the row, used in main and Consults tables
-let deleteRow = function ($rowi, opdate) {
-	let prevDate = $rowi.prev().children("td").eq(OPDATE).html(),
-		nextDate = $rowi.next().children("td").eq(OPDATE).html()
+let deleteRow = function ($row, opdate) {
+	let prevDate = $row.prev().children("td").eq(OPDATE).html(),
+		nextDate = $row.next().children("td").eq(OPDATE).html()
 
 	prevDate = getOpdate(prevDate)
 	nextDate = getOpdate(nextDate)
 
 	if (prevDate === opdate
 		|| nextDate === opdate
-		|| $rowi.closest("tr").is(":last-child")) {
-			$rowi.remove()
+		|| $row.closest("tr").is(":last-child")) {
+			$row.remove()
 	} else {
-		$rowi.children("td").eq(OPDATE).siblings().html("")
-		$rowi.children("td").eq(HN).removeClass("pacs")
-		$rowi.children("td").eq(PATIENT).removeClass("camera")
+		$row.children("td").eq(OPDATE).siblings().html("")
+		$row.children("td").eq(HN).removeClass("pacs")
+		$row.children("td").eq(PATIENT).removeClass("upload")
 	}
 }
 
@@ -784,7 +727,7 @@ function viewAllCases(response) {
 	$('#dialogAll .pacs').off("click").on("click", function() {
 			PACS(this.innerHTML)
 	})
-	$('#dialogAll .camera').off("click").on("click", function() {
+	$('#dialogAll .upload').off("click").on("click", function() {
 		let patient = this.innerHTML,
 			hn = $(this).prev().html()
 
@@ -801,42 +744,47 @@ function viewAllCases(response) {
 }
 
 // Make box dialog dialogHistory containing historytbl
-function viewCaseHistory(rowi, response) {
-	let tracing	= JSON.parse(response)
+function viewCaseHistory(row, hn, tracing)
+{
+	let  $historytbl = $('#historytbl'),
+		nam = row.cells[PATIENT].innerHTML,
+		name = nam && nam.replace('<br>', ' '),
+		$dialogHistory = $("#dialogHistory")
 	
 	// delete previous table lest it accumulates
 	$('#historytbl tr').slice(1).remove()
 
-	$.each( tracing, function() {
+	tracing.forEach(function(item) {
 		$('#historycells tr').clone()
 			.appendTo($('#historytbl tbody'))
-				.filldataHistory(this)
+				.filldataHistory(item)
 	});
 
-	let $dialogHistory = $("#dialogHistory")
-	$dialogHistory.css("height", 0)
 	$dialogHistory.dialog({
-		title: rowi.cells[HN].innerHTML +' '+ rowi.cells[PATIENT].innerHTML,
+		title: `${hn} ${name}`,
 		closeOnEscape: true,
 		modal: true,
+		show: 200,
 		hide: 200,
-		width: winWidth() * 95 / 100,
-		height: winHeight() * 95 / 100,
+		width: winWidth(95),
+		height: winHeight(95),
 		close: function() {
-			$(window).off("resize")
-			$("#fixheader").remove()
+			$(window).off("resize", resizeHistory )
+			$("#fixed").remove()
 		}
 	})
 	$("#historytbl").fixMe($("#dialogHistory"));
 
 	// for resizing dialogs in landscape / portrait view
-	$(window).resize(function() {
+	$(window).on("resize", resizeHistory )
+
+	function resizeHistory() {
 		$dialogHistory.dialog({
-			width: winWidth() * 95 / 100,
-			height: winHeight() * 95 / 100
+			width: winWidth(95),
+			height: winHeight(95)
 		})
-		winResizeFix($("#historytbl"), $dialogHistory)
-	})
+		winResizeFix($historytbl, $dialogHistory)
+	}
 }
 
 jQuery.fn.extend({
@@ -845,109 +793,160 @@ jQuery.fn.extend({
 
 		// Define colors for deleted and undeleted rows
 		q.action === 'delete'
-		? this.css("background-color", "#FFCCCC")
-		: (q.action === 'undelete') && this.css("background-color", "#CCFFCC")
+		? this.addClass("deleted")
+		: (q.action === 'undelete') && this.addClass("undelete")
 
-		cells[0].innerHTML = q.editdatetime
-		cells[1].innerHTML = putThdate(q.opdate)
-		cells[2].innerHTML = putRoomTime(q)
+		cells[0].innerHTML = putThdate(q.opdate) || ""
+		cells[1].innerHTML = q.oproom || ""
+		cells[2].innerHTML = q.casenum || ""
 		cells[3].innerHTML = q.staffname
 		cells[4].innerHTML = q.diagnosis
 		cells[5].innerHTML = q.treatment
-		cells[6].innerHTML = q.admission
-		cells[7].innerHTML = q.final
-		cells[8].innerHTML = showEquip(q.equipment)
+		cells[6].innerHTML = viewEquip(q.equipment)
+		cells[7].innerHTML = q.admission
+		cells[8].innerHTML = q.final
 		cells[9].innerHTML = q.contact
 		cells[10].innerHTML = q.editor
+		cells[11].innerHTML = q.editdatetime
 	}
 })
 
 // Add all equipments in one string to show in 1 cell
-let showEquip = function (equipString) {
-	let equipHistory = equipString && JSON.parse(equipString),
-		equipstr = function() {
-			let equip = ""
-			$.each( equipHistory, function(key, value) {
-				if (value === "checked") {
-					let itemname = $('#' + key).closest('div').prop("title")
-					equip += (equip && ", ") + (itemname + ":" + key)
-				} else {
-					equip += (equip && ", ") + (key + ":" + value)
-				}
-			})
-			return equip
+function viewEquip(equipString)
+{
+  return equipString ? makeEquip(JSON.parse(equipString)) : ""
+}
+
+function makeEquip(equipJSON)
+{
+  let equip = [],
+    monitor = [],
+	equipPics = []
+
+  $.each(equipJSON, function(key, value) {
+    if (value === "checked") {
+      if (key in EQUIPICONS) {
+        equipPics.push(EQUIPICONS[key])
+        if (EQUIPICONS[key] === "Monitor") {
+          monitor.push(key)
+        } else {
+          equip.push(key)
 		}
-	return equipString && equipstr()
+      } else {
+        equip.push(key)
+	  }
+    } else {
+      if (key === "Monitor") {
+        monitor.push(value)
+      } else {
+        equip.push(key + ":" + value)
+      }
+    }
+  })
+  // remove duplicated pics
+  equipPics = equipPics.filter(function(pic, pos) {
+    return equipPics.indexOf(pic) === pos;
+  })
+  // convert to string
+  equip = equip.length ? equip.join(', ') : ''
+  monitor = monitor.length ? ", Monitor:" + monitor.toString() : ''
+  
+  return equip + monitor + "<br>" + equipImg(equipPics)
+}
+
+function equipImg(equipPics)
+{
+  let img = ""
+
+  $.each(equipPics, function() {
+    img += '<img src="css/pic/equip/' + this + '.jpg"> '
+  })
+
+  return img
 }
 
 // Make dialog box dialogDeleted containing historytbl
-function viewDeletedCases(response) {
-	let deleted = JSON.parse(response)
-	
-	// delete previous table lest it accumulates
-	$('#deletedtbl tr').slice(1).remove()
+function viewDeletedCases(deleted) {
+  let $deletedtbl = $('#deletedtbl'),
+    $deletedtr = $('#deletedcells tr')
 
-	$.each( deleted, function() {
-		$('#deletedcells tr').clone()
-			.appendTo($('#deletedtbl tbody'))
-				.filldataDeleted(this)
-	});
+  // delete previous table lest it accumulates
+  $deletedtbl.find('tr').slice(1).remove()
 
-	let $dialogDeleted = $("#dialogDeleted")
-	$dialogDeleted.css("height", 0)
-	$dialogDeleted.dialog({
-		title: "All Deleted Cases",
-		closeOnEscape: true,
-		modal: true,
-		hide: 200,
-		width: winWidth() * 95 / 100,
-		height: winHeight() * 95 / 100,
-		close: function() {
-			$(window).off("resize")
-			$("#fixheader").remove()
-		}
-	})
-	$("#deletedtbl").fixMe($("#dialogDeleted"));
+  // display the first 20
+  $.each( deleted, function(i) {
+    $deletedtr.clone()
+      .appendTo($deletedtbl.find('tbody'))
+        .filldataDeleted(this)
+    return i < 20;
+  });
 
-	let $undelete = $("#undelete")
-	$undelete.off("click").on("click", function () { closeUndel() }).hide()
-	$(".undelete").off("click").on("click", function () {
-		reposition($undelete, "left center", "left center", this)
-		$("#undel").data("case", this)
-	})
+  let $dialogDeleted = $("#dialogDeleted")
+  $dialogDeleted.dialog({
+    title: "All Deleted Cases",
+    closeOnEscape: true,
+    modal: true,
+    hide: 200,
+    width: winWidth(95),
+    height: winHeight(95),
+    close: function() {
+      $(window).off("resize", resizeDeleted )
+      $(".fixed").remove()
+    }
+  })
+  $deletedtbl.fixMe($dialogDeleted);
 
-	// for resizing dialogs in landscape / portrait view
-	$(window).resize(function() {
-		$dialogDeleted.dialog({
-			width: winWidth() * 95 / 100,
-			height: winHeight() * 95 / 100
-		})
-		winResizeFix($("#deletedtbl"))
-	})
+  let $undelete = $("#undelete")
+  $undelete.hide()
+  $undelete.off("click").on("click", function () { closeUndel() }).hide()
+  $(".toUndelete").off("click").on("click", function () {
+    toUndelete(this, deleted)
+  })
+
+  //for resizing dialogs in landscape / portrait view
+  $(window).on("resize", resizeDeleted )
+
+  function resizeDeleted() {
+    $dialogDeleted.dialog({
+      width: winWidth(95),
+      height: winHeight(95)
+    })
+    winResizeFix($deletedtbl, $dialogDeleted)
+  }
+
+  // display the rest
+  setTimeout(function() {
+    $.each( deleted, function(i) {
+      if (i < 21) return
+      $deletedtr.clone()
+        .appendTo($deletedtbl.find('tbody'))
+          .filldataDeleted(this)
+    });
+  }, 100)
 }
 
 jQuery.fn.extend({
 	filldataDeleted : function(q) {
 		let cells = this[0].cells
 
-		cells[0].className = "undelete"
-		cells[0].innerHTML = q.editdatetime
-		cells[1].innerHTML = putThdate(q.opdate)
-		cells[2].innerHTML = q.staffname
-		cells[3].innerHTML = q.hn
-		cells[4].innerHTML = q.patient
-		cells[5].innerHTML = q.diagnosis
-		cells[6].innerHTML = q.treatment
-		cells[7].innerHTML = q.contact
-		cells[8].innerHTML = q.editor
+		rowDecoration(this[0], q.opdate)
+		cells[0].className += " toUndelete"
+		cells[0].innerHTML = putThdate(q.opdate)
+		cells[1].innerHTML = q.staffname
+		cells[2].innerHTML = q.hn
+		cells[3].innerHTML = q.patient
+		cells[4].innerHTML = q.diagnosis
+		cells[5].innerHTML = q.treatment
+		cells[6].innerHTML = q.contact
+		cells[7].innerHTML = q.editor
+		cells[8].innerHTML = q.editdatetime
 		cells[9].innerHTML = q.qn
-		cells[9].style.display = "none"
 	}
 })
 
 function viewUndelete(opdate, staffname, qn) {
 	reViewOneDay(opdate)
-	if (isStaffQueueShow() && 
+	if (isSplit() && 
 		(($('#titlename').html() === staffname) || isConsultsTbl())) {
 		reViewStaffqueue()
 	}
@@ -988,33 +987,44 @@ let makeDialogFind = function (found, hn) {
 		closeOnEscape: true,
 		modal: true,
 		hide: 200,
-		width: winWidth() * 95 / 100,
-		height: winHeight() * 95 / 100,
-		buttons: [],
+		width: winWidth(95),
+		height: winHeight(95),
+		buttons: [
+			{
+				text: "Export to xls",
+				click: function() {
+					exportFindToExcel(search)
+				}
+			}
+		],
 		close: function() {
-			$(window).off("resize")
-			$("#fixheader").remove()
+			$(window).off("resize", resizeFind )
+			$(".fixed").remove()
+			$("#dialogInput").dialog("close")
+			$(".marker").removeClass("marker")
 		}
 	})
 	$("#findtbl").fixMe($("#dialogFind"));
 	$('#dialogFind .pacs').off("click").on("click", function() {
 			PACS(this.innerHTML)
 	})
-	$('#dialogFind .camera').off("click").on("click", function() {
+	$('#dialogFind .upload').off("click").on("click", function() {
 		let patient = this.innerHTML
-		let hn = $(this).prev().html()
+		let hn = this.previousElementSibling.innerHTML
 
 		hn && showUpload(hn, patient)
 	})
 
 	// for resizing dialogs in landscape / portrait view
-	$(window).resize(function() {
+	$(window).on("resize", resizeFind )
+
+	function resizeFind() {
 		$dialogFind.dialog({
-			width: winWidth() * 95 / 100,
-			height: winHeight() * 95 / 100
+			width: window.innerWidth,
+			height: window.innerHeight
 		})
-		winResizeFix($("#findtbl"))
-	})
+		winResizeFix($findtbl, $dialogFind)
+	}
 }
 
 jQuery.fn.extend({
@@ -1023,7 +1033,7 @@ jQuery.fn.extend({
 
 		!q.waitnum && this.css("background-color", "#FFCCCC")
 		q.hn && isPACS && (cells[2].className = "pacs")
-		q.patient && (cells[3].className = "camera")
+		q.patient && (cells[3].className = "upload")
 
 		cells[0].innerHTML = putThdate(q.opdate)
 		cells[1].innerHTML = q.staffname
@@ -1046,7 +1056,7 @@ function viewSortable(argv) {
 	dropOnTbl = function () {
 		reViewOneDay(oldOpdate)
 		reViewOneDay(thisOpdate)
-		isStaffQueueShow() && (titlename === staffname) &&
+		isSplit() && (titlename === staffname) &&
 			reViewStaffqueue()
 			// dragging inside tbl of this staff's case
 	},
@@ -1067,7 +1077,7 @@ function viewIdling() {
 	}
 
 	reViewAll()
-	isStaffQueueShow() && reViewStaffqueue()
+	isSplit() && reViewStaffqueue()
 }
 
 function viewLatestEntry(latestCase) {
@@ -1115,124 +1125,4 @@ let findStartRowInBOOK = function (book, opdate) {
 		q++
 	}
 	return (q < book.length) ? q : -1
-}
-
-let isStaffQueueShow = function() {  
-	return $("#queuewrapper").css('display') === 'block';
-}
-
-function isConsultsTbl() {  
-	return $('#titlename').html() === "Consults"
-}
-
-let holiday = function (date) {
-	// Buddhist holiday and compensation for religious day on weekend
-	let Buddhist = {
-		"2018-03-01" : "url('css/pic/holiday/Magha.png')",
-		"2018-05-09" : "url('css/pic/holiday/Ploughing.png')",
-		"2018-05-29" : "url('css/pic/holiday/Vesak.png')",
-		"2018-07-27" : "url('css/pic/holiday/Asalha.png')",
-		"2018-07-28" : "url('css/pic/holiday/Vassa.png')",
-		"2019-02-19" : "url('css/pic/holiday/Magha.png')",
-		"2019-05-13" : "url('css/pic/holiday/Ploughing.png')",
-		"2019-05-18" : "url('css/pic/holiday/Vesak.png')",
-		"2019-05-20" : "url('css/pic/holiday/Vesaksub.png')",
-		"2019-07-16" : "url('css/pic/holiday/Asalha.png')",
-		"2019-07-17" : "url('css/pic/holiday/Vassa.png')",
-//		"2020-02-08" : "url('css/pic/holiday/Magha.png')",
-//		"2020-02-10" : "url('css/pic/holiday/Maghasub.png')",	// หยุดชดเชยวันมาฆบูชา
-//		"2020-05-06" : "url('css/pic/holiday/Vesak.png')",
-//		"2020-05-13" : "url('css/pic/holiday/Ploughing.png')",
-//		"2020-07-04" : "url('css/pic/holiday/Asalha.png')",
-//		"2020-07-05" : "url('css/pic/holiday/Vassa.png')",
-//		"2020-07-06" : "url('css/pic/holiday/Asalhasub.png')",	// หยุดชดเชยวันอาสาฬหบูชา
-//		"2020-07-07" : "url('css/pic/holiday/Vassasub.png')",
-//		"2021-02-25" : "url('css/pic/holiday/Magha.png')",
-//		"2021-05-13" : "url('css/pic/holiday/Ploughing.png')",
-//		"2021-05-25" : "url('css/pic/holiday/Vesak.png')",
-//		"2021-07-23" : "url('css/pic/holiday/Asalha.png')",
-//		"2021-07-24" : "url('css/pic/holiday/Vassa.png')",
-//		"2021-07-26" : "url('css/pic/holiday/Vassasub.png')",	// หยุดชดเชยวันเข้าพรรษา
-//		"2022-02-15" : "url('css/pic/holiday/Magha.png')",		// วันมาฆบูชา
-//		"2022-05-13" : "url('css/pic/holiday/Ploughing.png')",	// วันพืชมงคล
-//		"2022-05-14" : "url('css/pic/holiday/Vesak.png')",		// วันวิสาขบูชา
-//		"2022-05-16" : "url('css/pic/holiday/Vesaksub.png')",	// หยุดชดเชยวันวิสาขบูชา
-//		"2022-07-12" : "url('css/pic/holiday/Asalha.png')",		// วันอาสาฬหบูชา
-//		"2022-07-13" : "url('css/pic/holiday/Vassa.png')",		// วันเข้าพรรษา
-//		"2023-03-05" : "url('css/pic/holiday/Magha.png')",
-//		"2023-03-06" : "url('css/pic/holiday/Maghasub.png')",
-//		"2023-05-13" : "url('css/pic/holiday/Ploughing.png')",	// วันพืชมงคล???
-//		"2023-06-02" : "url('css/pic/holiday/Vesak.png')",
-//		"2023-07-31" : "url('css/pic/holiday/Asalha.png')",
-//		"2023-08-01" : "url('css/pic/holiday/Vassa.png')",
-//		"2024-02-24" : "url('css/pic/holiday/Magha.png')",
-//		"2024-05-13" : "url('css/pic/holiday/Ploughing.png')",	// วันพืชมงคล???
-//		"2024-05-22" : "url('css/pic/holiday/Vesak.png')",
-//		"2024-07-20" : "url('css/pic/holiday/Asalha.png')",
-//		"2024-07-21" : "url('css/pic/holiday/Vassa.png')",
-//		"2024-07-22" : "url('css/pic/holiday/Asalhasub.png')",
-//		"2024-07-23" : "url('css/pic/holiday/Vassasub.png')",
-//		"2025-02-12" : "url('css/pic/holiday/Magha.png')",
-//		"2025-05-11" : "url('css/pic/holiday/Vesak.png')",
-//		"2025-05-12" : "url('css/pic/holiday/Vesaksub.png')",
-//		"2025-05-13" : "url('css/pic/holiday/Ploughing.png')",	// วันพืชมงคล???
-//		"2025-07-10" : "url('css/pic/holiday/Asalha.png')",
-//		"2025-07-11" : "url('css/pic/holiday/Vassa.png')",
-//		"2026-03-03" : "url('css/pic/holiday/Magha.png')",
-//		"2026-05-13" : "url('css/pic/holiday/Ploughing.png')",	// วันพืชมงคล???
-//		"2026-05-31" : "url('css/pic/holiday/Vesak.png')",
-//		"2026-06-01" : "url('css/pic/holiday/Vesaksub.png')",
-//		"2026-07-29" : "url('css/pic/holiday/Asalha.png')",
-//		"2026-07-30" : "url('css/pic/holiday/Vassa.png')",
-//		"2027-02-21" : "url('css/pic/holiday/Magha.png')",
-//		"2027-02-22" : "url('css/pic/holiday/Maghasub.png')",
-//		"2027-05-13" : "url('css/pic/holiday/Ploughing.png')",	// วันพืชมงคล???
-//		"2027-05-20" : "url('css/pic/holiday/Vesak.png')",
-//		"2027-07-18" : "url('css/pic/holiday/Asalha.png')",
-//		"2027-07-19" : "url('css/pic/holiday/Vassa.png')",
-//		"2027-07-20" : "url('css/pic/holiday/Asalhasub.png')"
-	}
-
-	let monthdate = date.substring(5),
-		dayofweek = (new Date(date)).getDay(),
-		Mon = dayofweek === 1,
-		Tue = dayofweek === 2,
-		Wed = dayofweek === 3,
-
-	// Thai official holiday & Compensation
-	Thai = {
-		"12-31": "Yearend",
-		"01-01": "Newyear",
-		"01-02": (Mon || Tue) && "Yearendsub",
-		"01-03": (Mon || Tue) && "Newyearsub",
-		"04-06": "Chakri",
-		"04-07": Mon && "Chakrisub",
-		"04-08": Mon && "Chakrisub",
-		"04-13": "Songkran",
-		"04-14": "Songkran",
-		"04-15": "Songkran",
-		"04-16": (Mon || Tue || Wed) && "Songkransub",
-		"04-17": (Mon || Tue || Wed) && "Songkransub",
-		"07-28": "King10",
-		"07-29": Mon && "King10sub",
-		"07-30": Mon && "King10sub",
-		"08-12": "Queen",
-		"08-13": Mon && "Queensub",
-		"08-14": Mon && "Queensub",
-		"10-13": "King09",
-		"10-14": Mon && "King09sub",
-		"10-15": Mon && "King09sub",
-		"10-23": "Piya",
-		"10-24": Mon && "Piyasub",
-		"10-25": Mon && "Piyasub",
-		"12-05": "King9",
-		"12-06": Mon && "King9sub",
-		"12-07": Mon && "King9sub",
-		"12-10": "Constitution",
-		"12-11": Mon && "Constitutionsub",
-		"12-12": Mon && "Constitutionsub"
-	},
-	govHoliday = Thai[monthdate]
-
-	return Buddhist[date] || govHoliday && `url('css/pic/holiday/${govHoliday}.png')`
 }

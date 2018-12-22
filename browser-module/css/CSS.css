@@ -403,8 +403,8 @@ td.Sat:before { content: "เสาร์ "; }
 
 td.pacs { background-image: url(pic/general/pacs.png); }
 td.pacs2 { background-image: url(pic/general/pacs2.png); }
-td.camera { background-image: url(pic/general/camera.png); }
-td.camera2 { background-image: url(pic/general/camera2.png); }
+td.upload { background-image: url(pic/general/upload.png); }
+td.upload2 { background-image: url(pic/general/upload2.png); }
 
 .Reoperation td:nth-child(5),
 .Reoperation { background-color: #CCCCAA !important; }

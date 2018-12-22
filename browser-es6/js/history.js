@@ -247,7 +247,7 @@ function toUndelete(thisDate, deleted)
       updateBOOK(response);
       refillOneDay(opdate)
       //undelete this staff's case or a Consults case
-      if (isSplited() && (isStaffname(staffname) || isConsults())) {
+      if (isSplit() && (isStaffname(staffname) || isConsults())) {
         refillstaffqueue()
       }
       scrolltoThisCase(qn)
@@ -354,7 +354,7 @@ function pagination($dialog, $tbl, book, search)
       PACS(this.innerHTML)
     }
   })
-  $dialog.find('.camera').on("click", function() {
+  $dialog.find('.upload').on("click", function() {
     let hn = this.previousElementSibling.innerHTML
     let patient = this.innerHTML
 
@@ -420,7 +420,7 @@ function pagination($dialog, $tbl, book, search)
     $tbl.find('tr').slice(1).remove()
 
     if (Monday) {
-      let  $row, rowi, cells,
+      let  $row, row, cells,
         date = Monday,
         nocase = true
 
@@ -428,9 +428,9 @@ function pagination($dialog, $tbl, book, search)
         while (this.opdate > date) {
           if (nocase) {
             $row = $('#allcells tr').clone().appendTo($tbl.find('tbody'))
-            rowi = $row[0]
-            cells = rowi.cells
-            rowDecoration(rowi, date)
+            row = $row[0]
+            cells = row.cells
+            rowDecoration(row, date)
           }
           date = date.nextdays(1)
           nocase = true
@@ -443,9 +443,9 @@ function pagination($dialog, $tbl, book, search)
       date = date.nextdays(1)
       while (date <= Sunday) {
         $row = $('#allcells tr').clone().appendTo($tbl.find('tbody'))
-        rowi = $row[0]
-        cells = rowi.cells
-        rowDecoration(rowi, date)
+        row = $row[0]
+        cells = row.cells
+        rowDecoration(row, date)
         date = date.nextdays(1)
       }
     } else {
@@ -468,8 +468,8 @@ function pagination($dialog, $tbl, book, search)
 
 jQuery.fn.extend({
   filldataAllcases : function(q) {
-    let rowi = this[0],
-      cells = rowi.cells,
+    let row = this[0],
+      cells = row.cells,
       date = q.opdate,
       data = [
         putThdate(date),
@@ -484,7 +484,7 @@ jQuery.fn.extend({
         q.contact
       ]
 
-    rowDecoration(rowi, date)
+    rowDecoration(row, date)
     dataforEachCell(cells, data)
   }
 })
@@ -590,14 +590,14 @@ function scrolltoThisCase(qn)
 {
   let showtbl, showqueuetbl
 
-  showtbl = showFind("tblcontainer", "tbl", qn)
-  if (isSplited()) {
-    showqueuetbl = showFind("queuecontainer", "queuetbl", qn)
+  showtbl = locateFound("tblcontainer", "tbl", qn)
+  if (isSplit()) {
+    showqueuetbl = locateFound("queuecontainer", "queuetbl", qn)
   }
   return showtbl || showqueuetbl
 }
 
-function showFind(containerID, tableID, qn)
+function locateFound(containerID, tableID, qn)
 {
   let container = document.getElementById(containerID),
     row = getTableRowByQN(tableID, qn),
@@ -675,7 +675,7 @@ function makeDialogFound($dialogFind, $findtbl, found, search)
       PACS(this.innerHTML)
     }
   })
-  $dialogFind.find('.camera').on("click", function() {
+  $dialogFind.find('.upload').on("click", function() {
     let patient = this.innerHTML
     let hn = this.previousElementSibling.innerHTML
 
@@ -765,7 +765,7 @@ function showUpload(hn, patient)
     if (win && !win.closed) {
       win.close();
     }
-    gv.showUpload = win = window.open("jQuery-File-Upload", "_blank")
+    gv.showUpload = win = window.open("../jQuery-File-Upload", "_blank")
     win.hnName = {"hn": hn, "patient": patient}
     //hnName is a pre-defined variable in child window (jQuery-File-Upload)
   }

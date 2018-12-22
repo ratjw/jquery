@@ -1,39 +1,38 @@
 
 import {
-	OPDATE, THEATRE, OPROOM, OPTIME, CASENUM, STAFFNAME, HN, PATIENT,
-	DIAGNOSIS, TREATMENT, EQUIPMENT, CONTACT, QN, LARGESTDATE, equipSheet
+	OPDATE, THEATRE, OPROOM, OPTIME, CASENUM, STAFFNAME, HN, PATIENT, DIAGNOSIS, TREATMENT,
+	EQUIPMENT, CONTACT, QN, LARGESTDATE, THAIMONTH, HOLIDAYENGTHAI, EQUIPSHEET
 } from "./const.js"
 
 import {
-	createEditcellOpdate, createEditcellRoomtime, getPointer, getOldcontent,
-	getNewcontent, updateEditcellData, createEditcell, clearEditcell, reposition
+	editcellEvent, getPointer, getOldcontent, getNewcontent, updateEditcellContent,
+	createEditcell, renewEditcell, editcellLocation, clearEditcell, reposition
 } from "./edit.js"
 
-import { clearMouseoverTR } from "./menu.js"
-import { modelIdling } from "./model.js"
-import { sortable } from "./sort.js"
-import { savePreviousCellService } from "./serv.js"
-
+import { makeEquipTable } from "./equip.js"
+import { oneRowMenu, clearMouseoverTR } from "./menu.js"
 import {
-	modelStart, modelSyncServer, modelFindLatestEntry,
+	modelStart, modelIdling, modelChangeOncall, modeldoUpdate, modelGetUpdate,
 	modelSaveRoomTime, modelSaveContent, modelSaveNoQN, modelSaveByHN
 } from "./model.js"
 
-import {
-	BOOK, CONSULT, STAFF, ONCALL, HOLIDAY,isPACS, START,
-	getOpdate, ISOdate, thDate, calculateWaitnum, URIcomponent, Alert,
-	UndoManager, updateBOOK, showUpload, menustyle, timestamp
-} from "./util.js"
+import { sortable } from "./sort.js"
 
 import {
-	viewAll, viewLatestEntry, viewIdling, viewSaveRoomTime, viewSaveContent,
-	viewSaveNoQN, viewSaveByHN, animateScroll, setClickStaff
+	viewAll, viewIdling, reViewStaffqueue, reViewAll, viewSaveContent,
+	viewSaveNoQN, viewSaveByHN, setClickStaff, isConsultsTbl
 } from "./view.js"
+
+import {
+	getBOOK, getCONSULT, getSTAFF, getONCALL, getHOLIDAY, isPACS, gettimestamp, START,
+	getOpdate, ISOdate, thDate, numDate, nextdays, calculateWaitnum, URIcomponent, Alert,
+	UndoManager, updateBOOK, showUpload, menustyle, holiday, setONCALL, isSplit
+} from "./util.js"
 
 // Public functions
 export {
-	savePreviousCell, editPresentCell,
-	PACS, userStaff, clearTimer, resetTimer
+	savePreviousCell, editPresentCell, showStaffOnCall, dialogServiceShowing,
+	PACS, userStaff, clearTimer, resetTimer, clearSelection, fillConsults
 }
 
 // timer is just an id number of setTimeout, not the clock object
@@ -41,22 +40,8 @@ export {
 let timer = 0,
     idleCounter = 0
 
-//let onclick = {
-//	"clickaddStaff": addStaff,
-//	"clicksetHoliday": setHoliday,
-//	"clickdoadddata": doadddata,
-//	"clickdoupdatedata": doupdatedata,
-//	"clickdodeletedata": dodeletedata,
-//	"addholiday": addHoliday
-//}
-// id="staffmenu", onclick="delHoliday(this)"
-
-//$.each(onclick, function(key, val) {
-//	document.getElementById(key).onclick= val
-//})
-
-// function declaration (definition ) : public
-// function expression (literal) : local
+// function declaration (function definition ) : public
+// function expression (function literal) : local
 
 // For staff & residents with login id / password from Get_staff_detail
 function userStaff() {
@@ -87,13 +72,13 @@ function success(response) {
   scrolltoToday()
   setStafflist()
   fillConsults()
-
+  clickOnSetting()
   disableOneRowMenu()
   disableExcelLINE()
   overrideJqueryUI()
   resetTimer()
 
-  setTimeout( fillupfinish, 2000)
+  setTimeout( makeFinish, 2000)
 }
 
 // *** offline browsing by service worker ***
@@ -125,7 +110,24 @@ let makeStart = function() {
 	// Start with 1st date of last month
 	let	tableID = "tbl",
 		table = document.getElementById(tableID),
-		book = BOOK
+		book = getBOOK()
+
+	// No case from server
+	if (book.length === 0) { book.push({"opdate" : START}) }
+
+	// Fill until 20 days from now
+	let	end = new Date().setDate(new Date().getDate() + 20),
+		until = ISOdate(new Date(end))
+
+	viewAll(book, table, START, until)
+}
+
+// Display everyday on main table 1 month back, and 2 years ahead
+let makeFinish = function() {		
+	// Start with 1st date of last month
+	let	tableID = "tbl",
+		table = document.getElementById(tableID),
+		book = getBOOK()
 
 	// No case from server
 	if (book.length === 0) {
@@ -133,25 +135,22 @@ let makeStart = function() {
 	}
 
 	// Fill until 2 year from now
-	let	nextyear = new Date().getFullYear() + 2,
-		month = new Date().getMonth(),
-		todate = new Date().getDate(),
+	let	today = new Date(),
+		begin = today.setDate(today.getDate() + 21),
+		start = ISOdate(new Date(begin)),
+		nextyear = today.getFullYear() + 2,
+		month = today.getMonth(),
+		todate = today.getDate(),
 		until = ISOdate((new Date(nextyear, month, todate)))
 
-	viewAll(book, table, START, until)
-
-	// scroll to today
-	let	today = thDate(ISOdate(new Date())),
-		thishead = $("tr:contains(" + today + ")")[0]
-
-	animateScroll($('#tblcontainer'), thishead.offsetTop, 300)
+	viewAll(book, table, start, until, table.rows.length-1)
 }
 
 function initEquipment()
 {
   let equip = "", type = "", width = "", name = "", id = "", label = ""
 
-  equipSheet.forEach(function(item) {
+  EQUIPSHEET.forEach(function(item) {
     type = item[0]
     width = item[1]
     name = item[2]
@@ -184,53 +183,6 @@ function initEquipment()
   })
 
   document.getElementById("dialogEquip").innerHTML = equip
-}
-
-// stafflist for enter name in Staff column
-// staffmenu for dropdown sub-menu
-let setStafflist = function () {
-  let stafflist = '',
-      staffmenu = ''
-  STAFF.forEach(function(each) {
-    stafflist += `<li><div>${each.staffname}</div></li>`
-    staffmenu += `<li><a class="clickStaff ${each.staffname}">
-                 <span>${each.staffname}</span></a></li>`
-  })
-  staffmenu += `<li><a class="clickStaff Consults"><span>Consults</span></a></li>`
-  document.getElementById("stafflist").innerHTML = stafflist
-  document.getElementById("staffmenu").innerHTML = staffmenu
-  setClickStaff()
-}
-
-function editcellEvent()
-{
-  let $editcell = $("#editcell")
-
-  $editcell.on("keydown", event => {
-    let keyCode = event.which || window.event.keyCode
-    let pointing = $editcell.data("pointing")
-
-    if ($('#dialogService').is(':visible')) {
-      Skeyin(event, keyCode, pointing)
-    } else {
-      keyin(event, keyCode, pointing)
-    }
-    if (!$("#spin").length) {
-      resetTimer()
-      idleCounter = 0
-    }
-  })
-
-  // for resizing the editing cell
-  $editcell.on("keyup", event => {
-    let keyCode = event.which || window.event.keyCode
-    $editcell.height($editcell[0].scrollHeight)
-  })
-
-  $editcell.on("click", event => {
-    event.stopPropagation()
-    return
-  })
 }
 
 function wrapperEvent()
@@ -374,13 +326,164 @@ function documentEvent()
 function scrolltoToday()
 {
   let today = new Date(),
-    todate = today.ISOdate(),
-    todateth = todate.thDate()
+    todate = ISOdate(today),
+    todateth = thDate(todate)
   $('#tblcontainer').scrollTop(0)
   let thishead = $("#tbl tr:contains(" + todateth + ")")[0]
   $('#tblcontainer').animate({
     scrollTop: thishead.offsetTop
   }, 300);
+}
+
+// stafflist for enter name in Staff column
+// staffmenu for dropdown sub-menu
+let setStafflist = function () {
+  let stafflist = '',
+      staffmenu = ''
+  getSTAFF().forEach(function(each) {
+    stafflist += `<li><div>${each.staffname}</div></li>`
+    staffmenu += `<li><a class="clickStaff ${each.staffname}">
+                 <span>${each.staffname}</span></a></li>`
+  })
+  staffmenu += `<li><a class="clickStaff Consults"><span>Consults</span></a></li>`
+  document.getElementById("stafflist").innerHTML = stafflist
+  document.getElementById("staffmenu").innerHTML = staffmenu
+  setClickStaff()
+}
+
+// Only on main table
+function fillConsults()
+{
+  let table = document.getElementById("tbl")
+  let rows = table.rows
+  let tlen = rows.length
+  let today = ISOdate(new Date())
+  let lastopdate = numDate(rows[tlen-1].cells[OPDATE].innerHTML)
+  let staffoncall = getSTAFF().filter(staff => (staff.oncall === "1"))
+  let slen = staffoncall.length
+  let nextrow = 1
+  let index = 0
+  let start = staffoncall.filter(staff => staff.startoncall)
+      .reduce((a, b) => a.startoncall > b.startoncall ? a : b, 0)
+  let dateoncall = start.startoncall
+  let staffstart = start.staffname
+  let oncallRow = {}
+
+  // The staff who has latest startoncall date, is to start
+  while ((index < slen) && (staffoncall[index].staffname !== staffstart)) {
+    index++
+  }
+
+  // find first date immediately after today, to begin
+  while (dateoncall <= today) {
+    dateoncall = nextdays(dateoncall, 7)
+    index++
+  }
+
+  // write staffoncall if no patient
+  index = index % slen
+  while (dateoncall <= lastopdate) {
+    oncallRow = findOncallRow(rows, nextrow, tlen, dateoncall)
+    if (oncallRow && !oncallRow.cells[QN].innerHTML) {
+      oncallRow.cells[STAFFNAME].innerHTML = htmlwrap(staffoncall[index].staffname)
+    }
+    nextrow = oncallRow.rowIndex + 1
+    dateoncall = nextdays(dateoncall, 7)
+    index = (index + 1) % slen
+  }
+
+  // write substitute oncall
+  nextrow = 1
+  getONCALL().forEach(oncall => {
+    dateoncall = oncall.dateoncall
+    if (dateoncall > today) {
+      oncallRow = findOncallRow(rows, nextrow, tlen, dateoncall)
+      if (oncallRow && !oncallRow.cells[QN].innerHTML) {
+        oncallRow.cells[STAFFNAME].innerHTML = htmlwrap(oncall.staffname)
+      }
+      nextrow = oncallRow.rowIndex + 1
+    }
+  })
+}
+
+function findOncallRow(rows, nextrow, tlen, dateoncall)
+{
+  let opdateth = dateoncall && thDate(dateoncall)
+
+  for (let i = nextrow; i < tlen; i++) {
+    if (rows[i].cells[OPDATE].innerHTML === opdateth) {
+      return rows[i]
+    }
+  }
+}
+
+function htmlwrap(staffname)
+{
+  return '<p style="color:#999999;font-size:12px">Consult<br>' + staffname + '</p>'
+}
+
+// refill after deleted or written over
+function showStaffOnCall(opdate)
+{
+  if (new Date(opdate).getDay() === 6) {
+    fillConsults()
+  }
+}
+
+function exchangeOncall(pointing)
+{
+  let $stafflist = $("#stafflist")
+  let $pointing = $(pointing)
+
+  $stafflist.menu({
+    select: ( event, ui ) => {
+      let staffname = ui.item.text()
+      let opdateth = $pointing.closest('tr').find("td")[OPDATE].innerHTML
+      let opdate = getOpdate(opdateth)
+
+      changeOncall(pointing, opdate, staffname)
+      $stafflist.hide()
+    }
+  })
+
+  $stafflist.show()
+  reposition($stafflist, "left top", "left bottom", $pointing)
+  menustyle($stafflist, $pointing)
+  clearEditcell()
+}
+
+function changeOncall(pointing, opdate, staffname)
+{
+  modelChangeOncall(pointing, opdate, staffname).then(response => {
+    if (typeof response === "object") {
+      pointing.innerHTML = htmlwrap(staffname)
+      setONCALL(response)
+    } else {
+      Alert("changeOncall", response)
+    }
+  })
+}
+
+function clickOnSetting()
+{
+	let onclick = {
+		"clickaddStaff": addStaff,
+		"clicksetHoliday": setHoliday,
+		"clickdoadddata": doadddata,
+		"clickdoupdatedata": doupdatedata,
+		"clickdodeletedata": dodeletedata,
+		"addholiday": addHoliday
+	}
+
+	$.each(onclick, function(key, val) {
+		document.getElementById(key).onclick= val
+	})
+
+	document.querySelectorAll(".delholiday").forEach(function(item) {
+		item.addEventListener("click", function() {
+			delHoliday(this)
+		})
+	})
 }
 
 // allow the dialog title to contain HTML
@@ -412,24 +515,89 @@ function resetTimer() {
 //	1.2 Editcell not changed, check updated from another client
 // 2. Not visible editcell, get update from another client
 let updating = function () {
-	if ($("#editcell").is(":visible") && onChange()) {
+	if (onChange()) {
 		idleCounter = 0
-		updateEditcellData()
 	} else {
-		idling()
+		doUpdate()
 	}
 
-	resetTimer(true, false)
+	resetTimer()
 }
 
 // savePreviousCell and return with true (changed) or false (not changed)
 let onChange = function () {
-	let whereEditcell = $("#editcell").siblings("table").attr("id")
+  // When editcell is not pointing, there must be no change by this editor
+  if (!$("#editcell").data("pointing")) {
+    return false
+  }
 
-	// Service table : Main or Staffqueue tables
-	return (whereEditcell === "servicetbl")
-			? savePreviousCellService()
-			: savePreviousCell()
+  let oldcontent = getOldcontent(),
+      newcontent = getNewcontent(),
+      pointed = getPointer(),
+      index = pointed.cellIndex,
+      whereisEditcell = editcellLocation(),
+	  qn = $(pointer).siblings(":last").html()
+
+  if (oldcontent === newcontent) {
+    return false
+  }
+
+  if (whereisEditcell === "dialogService") {
+    return saveOnChangeService(pointed, index, newcontent, qn)
+  } else {
+    return saveOnChange(pointed, index, newcontent, qn)
+  }
+}
+
+// gettimestamp is this client last save to server
+function doUpdate()
+{
+  modeldoUpdate().then(response => {
+    if (typeof response === "object") {
+      if (gettimestamp() < response[0].timestamp) {
+        getUpdate()
+      } else {
+        onIdling()
+	  }
+    }
+  })
+}
+
+// There is some changes in database from other users
+function getUpdate()
+{
+  let fromDate = ""
+  let toDate = ""
+
+  if (dialogServiceShowing()) {
+    fromDate = $('#monthstart').val()
+    toDate = $('#monthpicker').val()
+  }	  
+  modelGetUpdate(fromDate, toDate).then(response => {
+    if (typeof response === "object") {
+      updateBOOK(response)
+      if (dialogServiceShowing()) {
+        SERVICE = response.SERVICE
+        SERVE = calcSERVE()
+        refillService(fromDate, toDate)
+      }
+      refillall()
+      fillConsults()
+      if (isSplit()) {
+        refillstaffqueue()
+      }
+      renewEditcell()
+    } else {
+      Alert ("getUpdate", response)
+    }
+  })
+}
+
+function dialogServiceShowing()
+{
+  let $dialogService = $("#dialogService")
+
+  return $dialogService.hasClass('ui-dialog-content') && $dialogService.dialog('isOpen')
 }
 
 // Check data in server changed from last loading timestamp
@@ -439,7 +607,7 @@ let onChange = function () {
 // then sync data of editcell with underlying table cell
 let idling = function () {
 
-	modelIdling(timestamp).then(response => {
+	modelIdling(gettimestamp()).then(response => {
 		idleCounter += 1
 		if (idleCounter === 5) {
 			clearMenu()
@@ -454,9 +622,81 @@ let idling = function () {
 		if (typeof response === "object") {
 			updateBOOK(response)
 			viewIdling()
-			$("#editcell").is(":visible") && updateEditcellData()
+			$("#editcell").is(":visible") && updateEditcellContent()
 		}
 	}).catch(error => {})
+}
+
+// idling every 6*10 = 1 minute, refillall
+// idling (59+1)*10 = 10 minutes, logout
+function onIdling()
+{
+    if (idleCounter && !(idleCounter % 6)) {
+      clearAllEditing()
+      reViewStaffqueue()
+      reViewAll()
+      fillConsults()
+    } else if (idleCounter > 59) {
+      history.back()
+    }
+
+    idleCounter += 1
+}
+
+function saveOnChange(pointed, index, content, qn)
+{
+  let column = index === DIAGNOSIS
+                ? "diagnosis"
+                : index === TREATMENT
+                ? "treatment"
+                : index === CONTACT
+                ? "contact"
+                : ""
+
+  if (!column) { return false }
+
+  let sql = "sqlReturnbook=UPDATE book SET "
+          + column + "='" + URIcomponent(content)
+          + "',editor='"+ USER
+          + "' WHERE qn="+ qn +";"
+
+  updateOnChange(sql)
+  pointed.innerHTML = content
+  return true
+}
+
+function saveOnChangeService(pointed, index, content, qn)
+{
+  let column = index === DIAGNOSISSV
+                ? "diagnosis"
+                : index === TREATMENTSV
+                ? "treatment"
+                : index === ADMISSIONSV
+                ? "admission"
+                : index === FINALSV
+                ? "final"
+                : ""
+
+  if (index === PROFILESV) { saveProfileService(pointed) }
+  if (!column) { return false }
+
+  let sql = sqlColumn(pointed, column, URIcomponent(content)),
+      fromDate = $("#monthstart").val(),
+      toDate = $("#monthpicker").val()
+
+  sql  += sqlOneMonth(fromDate, toDate)
+
+  updateOnChange(sql)
+  pointed.innerHTML = content
+  return true
+}
+
+async function updateOnChange(sql)
+{
+  let response = await postData(MYSQLIPHP, sql)
+  if (typeof response === "object") {
+    updateBOOK(response)
+  }
 }
 
 function clearAllEditing()
@@ -472,9 +712,9 @@ function clearAllEditing()
 }
 
 // Click on main or staff table
-function clicktable(clickedCell) {
+function clicktable(evt, clickedCell) {
 	savePreviousCell()
-	editPresentCell(clickedCell)
+	editPresentCell(evt, clickedCell)
 }
 
 function savePreviousCell() {
@@ -517,7 +757,7 @@ function savePreviousCell() {
 // negative waitnum in Consults cases
 let saveOpRoom = function (pointed, newcontent) {
 	let tableID = $(pointed).closest("table").attr("id"),
-		waitnum = (ConsultsTbl(tableID)) ? -1 : 1,
+		waitnum = (isConsultsTbl(tableID)) ? -1 : 1,
 		$cells = $(pointed).closest('tr').children("td"),
 		opdate = getOpdate($cells[OPDATE].innerHTML),
 		oproom = $cell[OPROOM].innerHTML,
@@ -700,7 +940,6 @@ function getCaseHN(pointed, waiting)
 	let	argsnew = {
 		tableID: $(pointed).closest("table").attr("id"),
 		$row: $(pointed).closest('tr'),
-		rowi: argsnew.$row[0],
 		$cells: argsnew.$row.find("td"),
 		opdateth: argsnew.$cells[OPDATE].innerHTML,
 		opdate: getOpdate(opdateth),
@@ -782,7 +1021,7 @@ let modelSaveHN = function (argsnew) {
 
 // Set up editcell for keyin or menu/spinner selection
 // redirect click to openPACS or file upload
-function editPresentCell(pointing) {
+function editPresentCell(evt, pointing) {
 	let cell = pointing && pointing.cellIndex,
 		store = {}
 
@@ -939,7 +1178,7 @@ function getROOMCASE(pointing)
 		}
 	})
 	$spin.focus()
-	clearTimeout(gv.timer)
+	clearTimeout(timer)
 }
 
 function getOPTIME(pointing)
@@ -976,7 +1215,7 @@ function getOPTIME(pointing)
 		}
 	})
 	$spin.focus()
-	clearTimeout(gv.timer)
+	clearTimeout(timer)
 }
 
 function getSTAFFNAME(pointing)
@@ -1005,7 +1244,7 @@ function getHN(evt, pointing)
 {
 	if (pointing.innerHTML) {
 		clearEditcell()
-		if (gv.isPACS) {
+		if (isPACS) {
 			if (inPicArea(evt, pointing)) {
 				PACS(pointing.innerHTML)
 			}
@@ -1029,25 +1268,13 @@ function getNAME(evt, pointing)
 function getEQUIP(pointing)
 {
 	let tableID = $(pointing).closest('table').attr('id'),
-		book = ConsultsTbl(tableID)? gv.CONSULT : gv.BOOK,
+		book = isConsultsTbl(tableID)? getCONSULT() : getBOOK(),
 		$row = $(pointing).closest('tr'),
 		qn = $row.find("td")[QN].innerHTML
 
 	if (qn) {
-		fillEquipTable(book, $row, qn)
+		makeEquipTable(book, $row, qn)
 	}
-}
- 
-function getText($cell)
-{
-	// TRIM excess spaces at begin, mid, end
-	// remove html tags except <br>
-	let HTMLTRIM		= /^(\s*<[^>]*>)*\s*|\s*(<[^>]*>\s*)*$/g
-	let HTMLNOTBR		= /(<((?!br)[^>]+)>)/ig
-
-	return $cell.length && $cell.html()
-							.replace(HTMLTRIM, '')
-							.replace(HTMLNOTBR, '')
 }
 
 function PACS(hn) { 
@@ -1073,7 +1300,171 @@ function PACS(hn) {
 
 	(msie > 0 || edge > 0 || IE) ? window.open(pacs) : openMSIE()
 }
-/*
+
+function decimalToTime(dec)
+{
+  if (dec === 0) { return "" }
+
+  let  integer = Math.floor(dec),
+    decimal = dec - integer
+
+  return [
+    (integer < 10) ? "0" + integer : "" + integer,
+    decimal ? String(decimal * 60) : "00"
+  ].join(".")
+}
+
+function inPicArea(evt, pointing) {
+  let $pointing = $(pointing),
+    x = evt.pageX,
+    y = evt.pageY,
+    square = picArea(pointing),
+    top = square.top,
+    right = square.right,
+    bottom = square.bottom,
+    left = square.left,
+    inX = (left < x) && (x < right),
+    inY = (top < y) && (y < bottom)
+
+  return inX && inY
+}
+
+function picArea(pointing) {
+  let $pointing = $(pointing),
+    right = $pointing.offset().left + $pointing.width(),
+    bottom = $pointing.offset().top + $pointing.height(),
+    left = right - 25,
+    top = bottom - 25
+
+  return {
+    top: top,
+    bottom: bottom,
+    left: left,
+    right: right
+  }
+}
+
+function addStaff()
+{
+  let scbb = document.getElementById("scbb")
+  let $dialogStaff = $("#dialogStaff")
+  let $stafftbl = $("#stafftbl")
+
+  for (let each=0; each<SPECIALTY.length; each++) {
+    scbb.innerHTML += "<option value=" + SPECIALTY[each]+ ">"
+            + SPECIALTY[each] + "</option>"
+  }
+
+  clearval()
+  $stafftbl.find('tr').slice(3).remove()
+
+  $.each( getSTAFF(), (i, item) => {
+    $('#staffcells tr').clone()
+      .appendTo($stafftbl.find('tbody'))
+        .filldataStaff(i, item)
+  });
+
+  $dialogStaff.dialog({
+    title: "Subspecialty Staff",
+    closeOnEscape: true,
+    modal: true,
+    show: 200,
+    hide: 200,
+    width: 600,
+    height: 400
+  })
+}
+
+jQuery.fn.extend({
+  filldataStaff : function (i, q) {
+    let cells = this[0].cells
+    let data = [
+        "<a href=\"javascript:getval('" + i + "')\">"
+        + q.staffname + "</a>",
+        q.specialty,
+        q.startoncall
+      ]
+
+    dataforEachCell(cells, data)
+  }
+})
+
+function getval(each)
+{  
+  let staff = getSTAFF()
+  document.getElementById("sname").value = staff[each].staffname;
+  document.getElementById("scbb").value = staff[each].specialty;
+  document.getElementById("sdate").value = staff[each].startoncall; 
+  document.getElementById("shidden").value = staff[each].number;
+}
+
+function clearval()
+{  
+  document.getElementById("sname").value = ""
+  document.getElementById("scbb").value = ""
+  document.getElementById("sdate").value = ""
+  document.getElementById("shidden").value = ""
+}
+
+function doadddata()
+{
+  let vname = document.getElementById("sname").value
+  let vspecialty = document.getElementById("scbb").value
+  let vdate = document.getElementById("sdate").value
+  let vnum = Math.max.apply(Math, getSTAFF().map(staff => staff.number)) + 1
+  let sql = "sqlReturnStaff="
+      + "INSERT INTO staff (number,staffname,specialty) VALUES("
+      + vnum + ",'"+ vname  +"','"+ vspecialty
+      + "');"
+
+  dodata(sql)
+}
+
+function doupdatedata()
+{
+  if (confirm("ต้องการแก้ไขข้อมูลนี้หรือไม่")) {
+    let vname = document.getElementById("sname").value
+    let vspecialty = document.getElementById("scbb").value
+    let vdate = document.getElementById("sdate").value
+    let vshidden = document.getElementById("shidden").value
+    let sql = "sqlReturnStaff=UPDATE staff SET "
+        + ", staffname='" + vname
+        + "', specialty='" + vspecialty
+        + "' WHERE number=" + vshidden
+        + ";"
+
+  dodata(sql)
+  }
+} // end of function doupdatedata
+
+function dodeletedata()
+{
+  if (confirm("ต้องการลบข้อมูลนี้หรือไม่")) {
+    let vshidden = document.getElementById("shidden").value
+    let sql = "sqlReturnStaff=DELETE FROM staff WHERE number=" + vshidden + ";"
+
+    dodata(sql)
+  }
+}
+
+async function dodata(sql)
+{
+  let response = await postData(MYSQLIPHP, sql)
+  if (typeof response === "object") {
+    showAddStaff(response)
+  } else {
+    alert(response)
+  }
+}
+
+function showAddStaff(response)
+{
+  STAFF = response.STAFF
+  setStafflist()
+  fillConsults()
+  addStaff()
+}
+
 function setHoliday()
 {
 	let	$dialogHoliday = $("#dialogHoliday"),
@@ -1200,12 +1591,6 @@ function addHoliday()
 	}
 }
 
-document.querySelectorAll("delholiday").forEach(function(item) {
-	item.addEventListener("click", function() {
-		delHoliday(this)
-	})
-})
-
 async function delHoliday(that)
 {
 	let	$row = $(that).closest("tr")
@@ -1215,7 +1600,7 @@ async function delHoliday(that)
 	} else {
 		let	$cell = $row.find("td"),
 			vdateth = $cell[0].innerHTML,
-			vdate = vdateth.numDate(),
+			vdate = numDate(vdateth),
 			vname = $cell[1].innerHTML.replace(/<button.*$/, ""),
 			rows = getTableRowsByDate(vdateth),
 			holidayEng = getHolidayEng(vname),
@@ -1237,11 +1622,11 @@ async function delHoliday(that)
 		}
 	}
 }
-/*
+
 async function saveHoliday()
 {
 	let	vdateth = document.getElementById("holidateth").value,
-		vdate = vdateth.numDate(),
+		vdate = numDate(vdateth),
 		vname = document.getElementById("holidayname").value,
 		rows = getTableRowsByDate(vdateth),
 
@@ -1277,67 +1662,3 @@ function holidayInputBack($inputRow)
 	$("#holidayname").val("")
 	$('#holidayInput tbody').append($inputRow)
 }
-
-function holiday(date)
-{
-	if (date !== LARGESTDATE) {
-		return religiousHoliday(date) || officialHoliday(date)
-	}
-}
-
-// Thai official holiday & Compensation
-function religiousHoliday(date)
-{
-	let relHoliday = HOLIDAY.find(day => day.holidate === date)
-	if (relHoliday) {
-		return `url('css/pic/holiday/${relHoliday.dayname}.png')`
-	}
-}
-
-// Thai official holiday & Compensation
-function officialHoliday(date)
-{
-	const monthdate = date.substring(5),
-		dayofweek = (new Date(date)).getDay(),
-		Mon = (dayofweek === 1),
-		Tue = (dayofweek === 2),
-		Wed = (dayofweek === 3),
-		Thai = {
-			"12-31": "Yearend",
-			"01-01": "Newyear",
-			"01-02": (Mon || Tue) && "Yearendsub",
-			"01-03": (Mon || Tue) && "Newyearsub",
-			"04-06": "Chakri",
-			"04-07": Mon && "Chakrisub",
-			"04-08": Mon && "Chakrisub",
-			"04-13": "Songkran",
-			"04-14": "Songkran",
-			"04-15": "Songkran",
-			"04-16": (Mon || Tue || Wed) && "Songkransub",
-			"04-17": (Mon || Tue || Wed) && "Songkransub",
-			"07-28": "King10",
-			"07-29": Mon && "King10sub",
-			"07-30": Mon && "King10sub",
-			"08-12": "Queen",
-			"08-13": Mon && "Queensub",
-			"08-14": Mon && "Queensub",
-			"10-13": "King09",
-			"10-14": Mon && "King09sub",
-			"10-15": Mon && "King09sub",
-			"10-23": "Piya",
-			"10-24": Mon && "Piyasub",
-			"10-25": Mon && "Piyasub",
-			"12-05": "King9",
-			"12-06": Mon && "King9sub",
-			"12-07": Mon && "King9sub",
-			"12-10": "Constitution",
-			"12-11": Mon && "Constitutionsub",
-			"12-12": Mon && "Constitutionsub"
-		},
-		govHoliday = Thai[monthdate]
-
-	if (govHoliday) {
-		return `url('css/pic/holiday/${govHoliday}.png')`
-	}
-}
-*/

@@ -1,16 +1,20 @@
 
 import {
 	OPDATE, STAFFNAME, HN, PATIENT, DIAGNOSIS, TREATMENT, CONTACT, QN,
-	LARGESTDATE, THAIMONTH
+	LARGESTDATE, THAIMONTH, NAMEOFDAYFULL, NAMEOFDAYABBR
 } from "./const.js"
-import { isConsultsTbl } from "./view.js"
 
 export {
-	updateBOOK, showUpload, getBOOKrowByQN,
-	ISOdate, thDate, numDate, nextdays, getOpdate,
-	putThdate, putAgeOpdate, calculateWaitnum, URIcomponent, Alert,
-	winWidth, winHeight, menustyle, setuser, UndoManager
+	getBOOK, getCONSULT, getSTAFF, getONCALL, getHOLIDAY, gettimestamp,
+	updateBOOK, showUpload, getBOOKrowByQN, getTableRowByQN, isConsultsTbl,
+	getBOOKrowsByDate, getTableRowsByDate, putNameAge, rowDecoration, dayName,
+	ISOdate, thDate, numDate, nextdays, getOpdate, hoverMain, getClass,
+	putThdate, putAgeOpdate, calculateWaitnum, URIcomponent, Alert, isSplit,
+	winWidth, winHeight, menustyle, UndoManager, holiday, setONCALL, winResizeFix
 }
+
+export const isPACS = true,
+	START = ISOdate(new Date(new Date().getFullYear(), new Date().getMonth()-1, 1))
 
 //--- global variables --------------
 // BOOK is for main table and individual staff's cases table
@@ -19,18 +23,6 @@ export {
 // HOLIDAY is for Buddhist holiday entry of every year
 // timestamp is the last time access from this client to the server
 // can't check PACS (always unauthorized 401 with Firefox)
-export let BOOK = [],
-	CONSULT = [],
-	STAFF = [],
-	ONCALL = [],
-	HOLIDAY = [],
-	timestamp = "",
-	isPACS = true,
-	user = "",
-
-	// get 1st of last month, the first date of main table
-	START = ISOdate(new Date(new Date().getFullYear(),
-			new Date().getMonth()-1, 1))
 
 ;(function($) {
 	$.fn.fixMe = function($container) {
@@ -42,7 +34,7 @@ export let BOOK = [],
 
 		function init() {
 			$t_fixed = $this.clone();
-			$t_fixed.attr("id", "fixheader")
+			$t_fixed.attr("id", "fixed")
 			$t_fixed.find("tbody").remove().end()
 					.addClass("fixed").insertBefore($this);
 			$container.scrollTop(0)
@@ -69,9 +61,47 @@ export let BOOK = [],
 	};
 })(jQuery);
 
-// from login.js
-function setuser() {
-	user = sessionStorage.getItem("userid")
+let BOOK = [],
+	CONSULT = [],
+	STAFF = [],
+	ONCALL = [],
+	HOLIDAY = [],
+	timestamp = ""
+
+function getBOOK() { return BOOK }
+function getCONSULT() { return CONSULT }
+function getSTAFF() { return STAFF }
+function getONCALL() { return ONCALL }
+function getHOLIDAY() { return HOLIDAY }
+function gettimestamp() { return timestamp }
+function setONCALL(oncall) { ONCALL = oncall }
+
+$.fn.refixMe = function($original) {
+  let $fix = $original.find("thead tr").clone();
+
+  resizeFixed($fix, $original);
+  $(this).html($fix)
+}
+
+function resizeFixed($fix, $this)
+{
+  $fix.find("th").each(function(index) {
+    let wide = $this.find("th").eq(index).width()
+
+    $(this).css("width", wide + "px")
+  });
+}
+
+function winResizeFix($this, $container) {
+	let $fix = $("#fixed"),
+		hide = $fix.css("display") === "none",
+		pad = $container.css("paddingLeft")
+
+	$fix.find("th").each(function(index) {
+		$(this).css("width",$this.find("th").eq(index).width() + "px");
+	});
+	reposition($fix, "left top", "left+" + pad + " top", $container)
+	hide && $fix.hide()
 }
 
 // Save data got from server
@@ -208,7 +238,7 @@ function getAge (birth, toDate) {
 // thisOpdate was set by caller
 // queue within each day is sorted by waitnum only, not staffname
 function calculateWaitnum(tableID, $thisrow, thisOpdate) {
-	let defaultWaitnum = (ConsultsTbl(tableID)) ? -1 : 1,
+	let defaultWaitnum = (isConsultsTbl(tableID)) ? -1 : 1,
 		prevWaitnum = $thisrow.prev()[0],
 		nextWaitnum = $thisrow.next()[0]
 	prevWaitnum = prevWaitnum && Number(prevWaitnum.title)
@@ -231,11 +261,15 @@ function calculateWaitnum(tableID, $thisrow, thisOpdate) {
 
 // necessary when passing to http, not when export to excel
 function URIcomponent(qoute) {
-	qoute = qoute && qoute.replace(/\s+$/,'')
-							   .replace(/\"/g, "&#34;")
-							   .replace(/\'/g, "&#39;")
-							   .replace(/\\/g, "\\\\")
-	return encodeURIComponent(qoute)
+  if (/\W/.test(content)) {
+    content = content.replace(/\s+$/,'')
+    content = content.replace(/\"/g, "&#34;")  // double quotes
+    content = content.replace(/\'/g, "&#39;")  // single quotes
+    content = content.replace(/%/g, "&#37;")   // per cent, mysql: like "%...%"
+    content = content.replace(/\\/g, "\\\\")
+    content = encodeURIComponent(content)
+  }
+  return content
 }
 
 function getMaxQN(book)
@@ -247,32 +281,25 @@ function getMaxQN(book)
 }
 
 function getBOOKrowByQN(book, qn) {  
-	return ( $.grep( book, function (e) { return e.qn === qn } ) )[0]
+	return book.find(row => row.qn === qn )
 }
 
 function getTableRowByQN(tableID, qn)
 {
-	return $("#" + tableID + " tr:has(td)").filter(function() {
-		return this.cells[QN].innerHTML === qn
-	})[0]
+	return $("#"+tableID+" tr:has(td)").toArray().find(row => row.cells[QN].innerHTML === qn)
 }
 
 function getWaitingBOOKrowByHN(hn)
 {  
-	var	todate = new Date().ISOdate()
+	var	todate = ISOdate(new Date())
 
-	return $.grep(BOOK, function(bookq) {
-		return bookq.opdate > todate && bookq.hn === hn
-	})
+	return BOOK.find(bookq => bookq.opdate > todate && bookq.hn === hn)
 }
 
-function getWaitingTableRowByHN(hn)
+function getBOOKrowsByDate(book, opdate)
 {
-	var	todate = new Date().ISOdate()
-
-	return $("#tbl tr:has(td)").filter(function() {
-		return this.cells[OPDATE].innerHTML.numDate() > todate
-			&& this.cells[HN].innerHTML === hn
+	return book.filter(function(q) {
+		return (q.opdate === opdate);
 	})
 }
 
@@ -282,13 +309,6 @@ function getTableRowsByDate(opdateth)
 	if (!opdateth) { return [] }
 	return $("#tbl tr").filter(function() {
 		return this.cells[OPDATE].innerHTML === opdateth;
-	})
-}
-
-function getBOOKrowsByDate(book, opdate)
-{
-	return book.filter(function(row) {
-		return (row.opdate === opdate);
 	})
 }
 
@@ -317,6 +337,7 @@ function sameDateRoomTableQN(opdateth, room)
 
 	var sameRoom = $('#tbl tr').filter(function() {
 		return this.cells[OPDATE].innerHTML === opdateth
+			&& this.cells[THEATRE].innerHTML === theatre
 			&& this.cells[OPROOM].innerHTML === room;
 	})
 	$.each(sameRoom, function(i) {
@@ -342,7 +363,7 @@ function sameDateRoomBookQN(book, opdate, room)
 function createThisdateTableRow(opdate, opdateth)
 {
 	if (opdate === LARGESTDATE) { return null }
-	var rows = getTableRowsByDate(opdate.nextdays(-1).thDate()),
+	var rows = getTableRowsByDate(thDate(nextdays(opdate, -1))),
 		$row = $(rows[rows.length-1]),
 		$thisrow = $row && $row.clone().insertAfter($row)
 
@@ -351,7 +372,7 @@ function createThisdateTableRow(opdate, opdateth)
 	return $thisrow
 }
 
-function isSplited()
+function isSplit()
 {  
 	return $("#queuewrapper").css("display") === "block"
 }
@@ -366,12 +387,145 @@ function isConsults()
 	return $('#titlename').html() === "Consults"
 }
 
-function ConsultsTbl(tableID)
+function isConsultsTbl(tableID)
 {  
 	var queuetbl = tableID === "queuetbl"
 	var consult = $("#titlename").html() === "Consults"
 
 	return queuetbl && consult
+}
+
+function returnFalse()
+{
+  return false
+}
+
+// waitnum is for ordering where there is no oproom, casenum
+function calcWaitnum(thisOpdate, $prevrow, $nextrow)
+{
+  let prevWaitNum = Number($prevrow.prop("title")),
+    nextWaitNum = Number($nextrow.prop("title")),
+
+    $prevRowCell = $prevrow.children("td"),
+    $nextRowCell = $nextrow.children("td"),
+    prevOpdate = $prevRowCell.eq(OPDATE).html(),
+    nextOpdate = $nextRowCell.eq(OPDATE).html(),
+    tableID = $prevrow.closest("table").attr("id")
+    defaultWaitnum = (isConsultsTbl(tableID))? -1 : 1
+  //Consults cases have negative waitnum
+
+  if (prevOpdate !== thisOpdate && thisOpdate !== nextOpdate) {
+    return defaultWaitnum
+  }
+  else if (prevOpdate === thisOpdate && thisOpdate !== nextOpdate) {
+    return prevWaitNum + defaultWaitnum
+  }
+  else if (prevOpdate !== thisOpdate && thisOpdate === nextOpdate) {
+    return nextWaitNum? (nextWaitNum / 2) : defaultWaitnum
+  }
+  else if (prevOpdate === thisOpdate && thisOpdate === nextOpdate) {
+    return nextWaitNum? ((prevWaitNum + nextWaitNum) / 2) : (prevWaitNum + defaultWaitnum)
+  }  // nextWaitNum is undefined in case of new blank row
+}
+
+function inPicArea(evt, pointing) {
+  let $pointing = $(pointing),
+    x = evt.pageX,
+    y = evt.pageY,
+    square = picArea(pointing),
+    top = square.top,
+    right = square.right,
+    bottom = square.bottom,
+    left = square.left,
+    inX = (left < x) && (x < right),
+    inY = (top < y) && (y < bottom)
+
+  return inX && inY
+}
+
+function picArea(pointing) {
+  let $pointing = $(pointing),
+    right = $pointing.offset().left + $pointing.width(),
+    bottom = $pointing.offset().top + $pointing.height(),
+    left = right - 25,
+    top = bottom - 25
+
+  return {
+    top: top,
+    bottom: bottom,
+    left: left,
+    right: right
+  }
+}
+
+function dataforEachCell(cells, data)
+{
+  data.forEach(function(item, i) {
+    cells[i].innerHTML = item
+  })
+}
+
+function rowDecoration(row, date)
+{
+  let  cells = row.cells
+
+  row.className = dayName(NAMEOFDAYFULL, date) || "nodate"
+  cells[OPDATE].innerHTML = putThdate(date)
+  cells[OPDATE].className = dayName(NAMEOFDAYABBR, date)
+  cells[DIAGNOSIS].style.backgroundImage = holiday(date)
+}
+
+function dayName(DAYNAME, date)
+{
+	return date === LARGESTDATE
+		? ""
+		: DAYNAME[(new Date(date)).getDay()]
+}
+
+let putNameAge = function (q) {
+	return q.patient + (q.dob ? ("<br>อายุ " + putAgeOpdate(q.dob, q.opdate)) : "")
+}
+
+// hover on background pics
+function hoverMain()
+{
+	let	paleClasses = ["pacs", "upload"],
+		boldClasses = ["pacs2", "upload2"]
+
+	$("td.pacs, td.upload").mousemove(function(event) {
+		if (inPicArea(event, this)) {
+			getClass(this, paleClasses, boldClasses)
+		} else {
+			getClass(this, boldClasses, paleClasses)
+		}
+	})
+	.mouseout(function (event) {
+		getClass(this, boldClasses, paleClasses)
+	})
+}
+
+function getClass(thiscell, fromClass, toClass)
+{
+	let	classname = thiscell.className,
+		classes = classname.split(" "),
+		oldClass = checkMatch(classes, fromClass)
+
+	if (oldClass) {
+		let hasIndex = fromClass.indexOf(oldClass),
+			newClass = toClass[hasIndex]
+		thiscell.className = classname.replace(oldClass, newClass)
+	}
+}
+
+function checkMatch(classes, oldClasses)
+{
+	for (let i=0; i<classes.length; i++) {
+		for (let j=0; j<oldClasses.length; j++) {
+			if (classes[i] === oldClasses[j]) {
+				return classes[i]
+			}
+		}
+	}
 }
 
 // Make dialog box dialogAlert containing error message
@@ -403,12 +557,11 @@ function winHeight(container) {
 
 // Shadow down when menu is below target row (high on screen)
 // Shadow up when menu is higher than target row (low on screen)
-let menustyle = function ($me, target, width) {
-	let shadow = ($me.position().top > $(target).position().top)
+let menustyle = function ($me, target) {
+	let shadow = ($me.offset().top > $(target).offset().top)
 					? '10px 20px 30px slategray'
 					: '10px -20px 30px slategray'
 	$me.css({
-		width: width,
 		boxShadow: shadow
 	})
 }
@@ -522,89 +675,383 @@ let UndoManager = (function () {
 		}
 	};
 })();
-/*
-// Sync data in localStorage with server
-// update if timestamp > max. editdatetime
-function latestEntry() {
-	findLatestEntry().then((qn) => {
-		let latestqn = function(anybook) {
-				return $.grep(anybook, function(each) {
-					return each.qn === qn
-				})
-			},
-			local = localStorage.getItem("ALLBOOK"),
-			temp = JSON.parse(local),
-			localbook = temp.BOOK ? temp.BOOK : [],
-			localconsult = temp.CONSULT ? temp.CONSULT : [],
-			latestLocal = latestqn(localbook)[0]
 
-		if (!latestLocal) {
-			latestLocal = latestqn(localconsult)[0]
-			if (!latestLocal) {
-				return
-			}
-		}
+function holiday(date)
+{
+	// Buddhist holiday and compensation for religious day on weekend
+	let Buddhist = HOLIDAY.find(day => day.holidate === date)
+	if (Buddhist) {
+		return `url('css/pic/holiday/${Buddhist.dayname}.png')`
+	}
 
-		let	latestServer = latestqn(BOOK)[0]
-		if (!latestServer) {
-			latestServer = latestqn(CONSULT)[0]
-			if (!latestServer) {
-				return
-			}
-		}
+	let monthdate = date.substring(5),
+		dayofweek = (new Date(date)).getDay(),
+		Mon = dayofweek === 1,
+		Tue = dayofweek === 2,
+		Wed = dayofweek === 3,
 
-		viewLatestEntry( [ latestLocal, latestServer ] )
-	})
+	// Thai official holiday & Compensation
+	Thai = {
+		"12-31": "Yearend",
+		"01-01": "Newyear",
+		"01-02": (Mon || Tue) && "Yearendsub",
+		"01-03": (Mon || Tue) && "Newyearsub",
+		"04-06": "Chakri",
+		"04-07": Mon && "Chakrisub",
+		"04-08": Mon && "Chakrisub",
+		"04-13": "Songkran",
+		"04-14": "Songkran",
+		"04-15": "Songkran",
+		"04-16": (Mon || Tue || Wed) && "Songkransub",
+		"04-17": (Mon || Tue || Wed) && "Songkransub",
+		"07-28": "King10",
+		"07-29": Mon && "King10sub",
+		"07-30": Mon && "King10sub",
+		"08-12": "Queen",
+		"08-13": Mon && "Queensub",
+		"08-14": Mon && "Queensub",
+		"10-13": "King09",
+		"10-14": Mon && "King09sub",
+		"10-15": Mon && "King09sub",
+		"10-23": "Piya",
+		"10-24": Mon && "Piyasub",
+		"10-25": Mon && "Piyasub",
+		"12-05": "King9",
+		"12-06": Mon && "King9sub",
+		"12-07": Mon && "King9sub",
+		"12-10": "Constitution",
+		"12-11": Mon && "Constitutionsub",
+		"12-12": Mon && "Constitutionsub"
+	},
+	govHoliday = Thai[monthdate]
 
-	$("#latesttbl").on("click", function (event) {
-		event.stopPropagation()
-		// row 0 : header
-		// row 1 : local
-		// row 2 : server
-		if (event.target.parentNode.rowIndex === 1) {
-			syncServer()
-		}
-		$("#dialogLatestEntry").dialog("close")
-	})
+	return govHoliday && `url('css/pic/holiday/${govHoliday}.png')`
 }
 
-let syncServer = function() {
-	let book = JSON.stringify(BOOK),
-		consult = JSON.stringify(CONSULT)
+function exportQbookToExcel()
+{
+  //getting data from our table
+  let data_type = 'data:application/vnd.ms-excel';  //Chrome, FF, not IE
+  let title = 'Qbook Selected '
+  let style = '\
+    <style type="text/css">\
+      #exceltbl {\
+        border-right: solid 1px gray;\
+        border-collapse: collapse;\
+      }\
+      #exceltbl th {\
+        font-size: 16px;\
+        font-weight: bold;\
+        height: 40px;\
+        background-color: #7799AA;\
+        color: white;\
+        border: solid 1px silver;\
+      }\
+      #exceltbl td {\
+        font-size: 14px;\
+        vertical-align: middle;\
+        padding-left: 3px;\
+        border-left: solid 1px silver;\
+        border-bottom: solid 1px silver;\
+      }\
+      #exceltbl tr.Sunday { background-color: #FFDDEE; }\
+      #exceltbl tr.Monday { background-color: #FFFFE0; }\
+      #exceltbl tr.Tuesday { background-color: #FFF0F9; }\
+      #exceltbl tr.Wednesday { background-color: #EEFFEE; }\
+      #exceltbl tr.Thursday { background-color: #FFF7EE; }\
+      #exceltbl tr.Friday { background-color: #E7F7FF; }\
+      #exceltbl tr.Saturday { background-color: #E7E7FF; }\
+\
+      #exceltbl td.Sun { background-color: #F099BB; }\
+      #exceltbl td.Mon { background-color: #F0F0BB; }\
+      #exceltbl td.Tue { background-color: #F0CCEE; }\
+      #exceltbl td.Wed { background-color: #CCF0CC; }\
+      #exceltbl td.Thu { background-color: #F0DDBB; }\
+      #exceltbl td.Fri { background-color: #BBDDF0; }\
+      #exceltbl td.Sat { background-color: #CCBBF0; }\
+\
+    </style>'
+  let head = '\
+      <table id="excelhead">\
+      <tr></tr>\
+      <tr>\
+        <td></td>\
+        <td></td>\
+        <td colspan="4" style="font-weight:bold;font-size:24px">' + title + '</td>\
+      </tr>\
+      <tr></tr>\
+      </table>'
+  let filename = title + Date.now() + '.xls'
 
-	modelSyncServer(book, consult).then(response => {
-		let syncSuccess = function () {
-			updateBOOK(response)
-			viewIdling()
-
-			// To sync data of editcell with underlying table cell
-			$("#editcell").is(":visible") && updateEditcellData()
-		}
-
-		typeof response === "object"
-		? syncSuccess()
-		: Alert ("syncServer", response)
-	}).catch(error => {})
+  exportToExcel("capture", data_type, title, style, head, filename)    
 }
 
-let findLatestEntry = () => {
-	return new Promise((resolve, reject) => {
-		modelFindLatestEntry().then(response => {
-			if (response.indexOf('"qn"') !== -1) {
-				response = JSON.parse(response)
-				resolve(response[0].qn)
-			} else {
-				Alert ("findLatestEntry", response)
-				reject()
-			}
-		}).catch(error => {})
-	})
-}*/
-/* Mysql file length
-SELECT 
-table_name AS `Table`, 
-round(((data_length + index_length) / 1024 / 1024), 2) `Size in MB` 
-FROM information_schema.TABLES 
-WHERE table_schema = "neurosurgery"
-AND table_name = "bookhistory";
-*/
+function exportServiceToExcel()
+{
+  //getting data from our table
+  let data_type = 'data:application/vnd.ms-excel';  //Chrome, FF, not IE
+  let title = $('#dialogService').dialog( "option", "title" )
+  let style = '\
+    <style type="text/css">\
+      #exceltbl {\
+        border-right: solid 1px gray;\
+        border-collapse: collapse;\
+      }\
+      #exceltbl tr:nth-child(odd) {\
+        background-color: #E0FFE0;\
+      }\
+      #exceltbl th {\
+        font-size: 16px;\
+        font-weight: bold;\
+        height: 40px;\
+        background-color: #7799AA;\
+        color: white;\
+        border: solid 1px silver;\
+      }\
+      #exceltbl td {\
+        font-size: 14px;\
+        vertical-align: middle;\
+        padding-left: 3px;\
+        border-left: solid 1px silver;\
+        border-bottom: solid 1px silver;\
+      }\
+      #excelhead td {\
+        height: 30px; \
+        vertical-align: middle;\
+        font-size: 22px;\
+        text-align: center;\
+      }\
+      #excelhead td.Readmission,\
+      #exceltbl tr.Readmission,\
+      #exceltbl td.Readmission { background-color: #AACCCC; }\
+      #excelhead td.Reoperation,\
+      #exceltbl tr.Reoperation,\
+      #exceltbl td.Reoperation { background-color: #CCCCAA; }\
+      #excelhead td.Infection,\
+      #exceltbl tr.Infection,\
+      #exceltbl td.Infection { background-color: #CCAAAA; }\
+      #excelhead td.Morbidity,\
+      #exceltbl tr.Morbidity,\
+      #exceltbl td.Morbidity { background-color: #AAAACC; }\
+      #excelhead td.Dead,\
+      #exceltbl tr.Dead,\
+      #exceltbl td.Dead { background-color: #AAAAAA; }\
+    </style>'
+  let head = '\
+      <table id="excelhead">\
+      <tr>\
+        <td></td>\
+        <td></td>\
+        <td colspan="4" style="font-weight:bold;font-size:24px">' + title + '</td>\
+      </tr>\
+      <tr></tr>\
+      <tr></tr>\
+      <tr>\
+        <td></td>\
+        <td></td>\
+        <td>Admission : ' + $("#Admission").html() + '</td>\
+        <td>Discharge : ' + $("#Discharge").html() + '</td>\
+        <td>Operation : ' + $("#Operation").html() + '</td>\
+        <td class="Morbidity">Morbidity : ' + $("#Morbidity").html() + '</td>\
+      </tr>\
+      <tr>\
+        <td></td>\
+        <td></td>\
+        <td class="Readmission">Re-admission : ' + $("#Readmission").html() + '</td>\
+        <td class="Infection">Infection SSI : ' + $("#Infection").html() + '</td>\
+        <td class="Reoperation">Re-operation : ' + $("#Reoperation").html() + '</td>\
+        <td class="Dead">Dead : ' + $("#Dead").html() + '</td>\
+      </tr>\
+      <tr></tr>\
+      <tr></tr>\
+      </table>'
+  let month = $("#monthstart").val()
+  month = month.substring(0, month.lastIndexOf("-"))  //use yyyy-mm for filename
+  let filename = 'Service Neurosurgery ' + month + '.xls'
+
+  exportToExcel("servicetbl", data_type, title, style, head, filename)    
+}
+
+function exportFindToExcel(search)
+{
+  // getting data from our table
+  // data_type is for Chrome, FF
+  // IE uses "txt/html", "replace" with blob
+  let data_type = 'data:application/vnd.ms-excel'
+  let title = $('#dialogFind').dialog( "option", "title" )
+  let style = '\
+    <style type="text/css">\
+      #exceltbl {\
+        border-right: solid 1px gray;\
+        border-collapse: collapse;\
+      }\
+      #exceltbl tr:nth-child(odd) {\
+        background-color: #E0FFE0;\
+      }\
+      #exceltbl th {\
+        font-size: 16px;\
+        font-weight: bold;\
+        height: 40px;\
+        background-color: #7799AA;\
+        color: white;\
+        border: solid 1px silver;\
+      }\
+      #exceltbl td {\
+        font-size: 14px;\
+        vertical-align: middle;\
+        padding-left: 3px;\
+        border-left: solid 1px silver;\
+        border-bottom: solid 1px silver;\
+      }\
+      #excelhead td {\
+        height: 30px; \
+        vertical-align: middle;\
+        font-size: 22px;\
+        text-align: center;\
+      }\
+    </style>'
+  let head = '\
+      <table id="excelhead">\
+      <tr></tr>\
+      <tr>\
+        <td></td>\
+        <td></td>\
+        <td colspan="4" style="font-weight:bold;font-size:24px">' + title + '</td>\
+      </tr>\
+      <tr></tr>\
+      </table>'
+  let filename = 'Search ' + search + '.xls'
+
+  exportToExcel("findtbl", data_type, title, style, head, filename)    
+}
+
+function exportReportToExcel(title)
+{
+  // getting data from our table
+  // data_type is for Chrome, FF
+  // IE uses "txt/html", "replace" with blob
+  let data_type = 'data:application/vnd.ms-excel'
+  let style = '\
+    <style type="text/css">\
+      #exceltbl {\
+        border-right: solid 1px gray;\
+        border-collapse: collapse;\
+      }\
+      #exceltbl tr:nth-child(odd) {\
+        background-color: #E0FFE0;\
+      }\
+      #exceltbl th {\
+        font-size: 16px;\
+        font-weight: bold;\
+        height: 40px;\
+        background-color: #7799AA;\
+        color: white;\
+        border: solid 1px silver;\
+      }\
+      #exceltbl td {\
+        font-size: 14px;\
+        text-align: center;\
+        vertical-align: middle;\
+        padding-left: 3px;\
+        border-left: solid 1px silver;\
+        border-bottom: solid 1px silver;\
+      }\
+      #exceltbl td:first-child {\
+        text-align: left;\
+      }\
+      #exceltbl tr.nonsurgical {\
+        background-color: LightGrey;\
+      }\
+      #exceltbl tr#total {\
+        background-color: BurlyWood;\
+      }\
+      #exceltbl tr#grand {\
+        background-color: Turquoise;\
+      }\
+      #excelhead td {\
+        height: 30px; \
+        vertical-align: middle;\
+        font-size: 22px;\
+        text-align: center;\
+      }\
+    </style>'
+  let head = '\
+      <table id="excelhead">\
+      <tr></tr>\
+      <tr>\
+        <td colspan="9" style="font-weight:bold;font-size:24px">' + title + '</td>\
+      </tr>\
+      <tr></tr>\
+      </table>'
+  let filename = 'Report ' + title + '.xls'
+
+  exportToExcel("reviewtbl", data_type, title, style, head, filename)    
+}
+
+function exportToExcel(id, data_type, title, style, head, filename)
+{
+  if ($("#exceltbl").length) {
+    $("#exceltbl").remove()
+  }
+
+  $("#" + id).clone(true).attr("id", "exceltbl").appendTo("body")
+
+  // use only the last class because Excel does not accept multiple classes
+  $.each( $("#exceltbl tr"), function() {
+    let multiclass = this.className.split(" ")
+    if (multiclass.length > 1) {
+      this.className = multiclass[multiclass.length-1]
+    }
+  })
+
+  // remove blank cells in Excel caused by hidden cells
+  $.each( $("#exceltbl tr td, #exceltbl tr th"), function() {
+    if ($(this).css("display") === "none") {
+      $(this).remove()
+    }
+  })
+
+  let $exceltbl = $("#exceltbl")
+
+  // make line breaks show in single cell
+  $exceltbl.find('br').attr('style', "mso-data-placement:same-cell");
+
+  //remove img in equipment
+  $exceltbl.find('img').remove();
+
+  let table = $exceltbl[0].outerHTML
+  let tableToExcel = '<!DOCTYPE html><HTML><HEAD><meta charset="utf-8"/>'
+                    + style + '</HEAD><BODY>'
+      tableToExcel += head + table
+      tableToExcel += '</BODY></HTML>'
+
+  let ua = window.navigator.userAgent;
+  let msie = ua.indexOf("MSIE")
+  let edge = ua.indexOf("Edge"); 
+
+  if (msie > 0 || edge > 0 || navigator.userAgent.match(/Trident.*rv\:11\./)) // If Internet Explorer
+  {
+    if (typeof Blob !== "undefined") {
+    //use blobs if we can
+    tableToExcel = [tableToExcel];
+    //convert to array
+    let blob1 = new Blob(tableToExcel, {
+      type: "text/html"
+    });
+    window.navigator.msSaveBlob(blob1, filename);
+    } else {
+    txtArea1.document.open("txt/html", "replace");
+    txtArea1.document.write(tableToExcel);
+    txtArea1.document.close();
+    txtArea1.focus();
+    sa = txtArea1.document.execCommand("SaveAs", true, filename);
+    return (sa);  //not tested
+    }
+  } else {
+    let a = document.createElement('a');
+    document.body.appendChild(a);  // You need to add this line in FF
+    a.href = data_type + ', ' + encodeURIComponent(tableToExcel);
+    a.download = filename
+    a.click();    //tested with Chrome and FF
+  }
+}

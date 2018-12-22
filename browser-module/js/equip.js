@@ -1,201 +1,241 @@
 
-import { QN } from "./const.js"
+import { EQUIPMENT, QN } from "./const.js"
+import { clearEditcell } from "./edit.js"
+import { USER } from "./main.js"
 import { modelStart, modelGetEquip, modelSaveEquip } from "./model.js"
 import {
-	BOOK, updateBOOK, getBOOKrowByQN, putAgeOpdate,
+	updateBOOK, getBOOKrowByQN, getTableRowByQN, putAgeOpdate,
 	putThdate, ISOdate, nextdays, Alert
 } from "./util.js"
 
-import { viewAll } from "./view.js"
+import { viewAll, makeEquip } from "./view.js"
 
 export { makeEquipTable }
 
 // function declaration (definition ) : public
 // function expression (literal) : local
 
-function success(response) {
-	updateBOOK(response)
-	makeOneWeekTable()
-
-	// Limit click to only one function makeEquipTable
-	$("#wrapper").on("click", function (event) {
-		event.preventDefault()
-		event.stopPropagation()
-		let target = event.target,
-			$rowi = $(target).closest('tr'),
-			qn = $rowi.children('td').eq(QN).html(),
-			openEquip = function () {
-				makeEquipTable($rowi, qn)
-				$('#dialogEquip').dialog("option", "buttons", {})
-				$('#dialogEquip input').prop("disabled", true)
-				$('#dialogEquip textarea').prop('disabled', true)
-				$('#clearPosition').off('click')
-				$('#clearShunt').off('click')
-			}
-
-		target.nodeName === "TD" && !!qn && openEquip()
-	})
-
-	// Block all key input
-	$("#wrapper").keydown(function(e) {
-		e.preventDefault();
-	})
-}
-
-// main table 1 week starting today
-function makeOneWeekTable() {
-	let tableID = "tbl",
-		table = document.getElementById(tableID),
-		start = ISOdate(new Date()),
-		until = nextdays(start, 6)
-
-	viewAll(BOOK, table, start, until)
-}
-
 // Make dialog box containing equiptment check list <div id="dialogEquip">
-function makeEquipTable($rowi, qn) {
-	let q = getBOOKrowByQN(BOOK, qn),
-		bookqEquip = q.equipment,
-		NAMEOFDAYTHAI	= ["อาทิตย์", "จันทร์", "อังคาร", "พุธ", "พฤหัส", "ศุกร์", "เสาร์"],
+function makeEquipTable(book, $row, qn) {
+	let NAMEOFDAYTHAI	= ["อาทิตย์", "จันทร์", "อังคาร", "พุธ", "พฤหัส", "ศุกร์", "เสาร์"],
+		bookq = getBOOKrowByQN(book, qn),
+		bookqEquip = bookq.equipment,
+		JsonEquip = bookqEquip? JSON.parse(bookqEquip) : {},
+		$dialogEquip = $('#dialogEquip'),
+		height = window.innerHeight,
 		profile = {
-		"oproom": q.oproom,
-		"optime": q.optime,
-		"opday": NAMEOFDAYTHAI[(new Date(q.opdate)).getDay()],
-		"opdate": putThdate(q.opdate),
-		"staffname": q.staffname,
-		"hn": q.hn,
-		"patientname": q.patient,
-		"age": putAgeOpdate(q.dob, q.opdate),
-		"diagnosis": q.diagnosis,
-		"treatment": q.treatment
-	}
+			"oproom": bookq.oproom || "",
+			"casenum": bookq.casenum || "",
+			"optime": bookq.optime,
+			"opday": NAMEOFDAYTHAI[(new Date(bookq.opdate)).getDay()],
+			"opdate": putThdate(bookq.opdate),
+			"staffname": bookq.staffname,
+			"hn": bookq.hn,
+			"patientname": bookq.patient,
+			"age": putAgeOpdate(bookq.dob, bookq.opdate),
+			"diagnosis": bookq.diagnosis,
+			"treatment": bookq.treatment
+		}
 
 	for (let key in profile) {
 		document.getElementById(key).innerHTML = profile[key]
 	}
 
-	$rowi.addClass("borderfound")
-	$('#dialogEquip').show()
-	$('#dialogEquip input').prop('checked', false)
-	$('#dialogEquip input').val('')
-	$('#dialogEquip textarea').val('')
-	$('#dialogEquip input[type=text]').prop('disabled', false)//make it easier to see
-	$('#dialogEquip textarea').prop('disabled', false)//make it easier to see
-	$('#clearPosition').click(function() {	// uncheck radio button of all Positions
-		$('#dialogEquip input[name=pose]').prop('checked', false)
-	})
-	$('#clearShunt').click(function() {	// uncheck radio button of all Shunts
-		$('#dialogEquip input[name=head]').prop('checked', false)
-		$('#dialogEquip input[name=peritoneum]').prop('checked', false)
-		$('#dialogEquip input[name=program]').prop('checked', false)
-	})
-
-	let hasEquip = function () {			// If any, fill checked & others' text
-		$.each(JSON.parse(bookqEquip), function(key, val) {
-			val === 'checked'
-			? $("#"+ key).prop("checked", true)	// radio and checkbox
-			: $("#"+ key).val(val)	// Fill <input> && <textarea>
-		});
-		showNonEditableEquip(qn, bookqEquip)
-		modelGetEquip(qn).then(response => {
-			let hasData = function () {
-				let Editedby = ""
-				$.each(JSON.parse(response), function(key, val) {
-					Editedby += (val.editor + " : " + val.editdatetime + "<br>")
-				});
-				$('#editedby').html(Editedby)
-			};
-
-			typeof response === "object"
-			? hasData()
-			: Alert("callbackgetEditedby", response)
-		}).catch(error => {})
-	},
-	noEquip = function () {
-		showEditableEquip(qn, bookqEquip)
-		$('#editedby').html("")
-	}
-
-	bookqEquip ? hasEquip() : noEquip()	
-
-	let height = winHeight()
-	if (height > 800) { height = 800 }
-
-	$('#dialogEquip').dialog({
+	// mark table row
+	// clear all previous dialog values
+	$row.addClass("marker")
+	$dialogEquip.show()
+	$dialogEquip.find('input').val('')
+	$dialogEquip.find('textarea').val('')
+	$dialogEquip.find('input').prop('checked', false)
+	$dialogEquip.dialog({
 		title: "เครื่องมือผ่าตัด",
 		closeOnEscape: true,
 		modal: true,
-		width: 750,
-		height: height,
-		hide: 200,
-		open: function(event, ui) {
-			$("input").blur();	// disable default autofocus on text input
-		},
+		width: 700,
+		height: height > 1000 ? 1000 : height,
 		close: function(event, ui) {
-			$rowi.removeClass("borderfound")
+			$row.removeClass("marker")
 		}
 	})
+
+	// If ever filled, show checked equips & texts
+	// .prop("checked", true) shown in radio and checkbox
+	// .val(val) shown in <input text> && <textarea>
+	if ( Object.keys(JsonEquip).length ) {
+		$.each(JsonEquip, function(key, val) {
+			if (val === 'checked') {
+				$("#"+ key).prop("checked", true)
+			} else {
+				$("#"+ key).val(val)
+			}
+		})
+		showNonEditableEquip()
+		getEditedBy(qn)
+ 	} else {
+		showEditableEquip()
+		$('#editedby').html("")
+	}
+	$dialogEquip.data("bookqEquip", bookqEquip)
+	$dialogEquip.data("JsonEquip", JsonEquip)
+	$dialogEquip.data("$row", $row)
+	$dialogEquip.data("qn", qn)
+	clearEditcell()
 }
 
-let showNonEditableEquip = function (qn, bookqEquip) {
+function showNonEditableEquip()
+{
 	$('#dialogEquip').dialog("option", "buttons", [
 		{
-			text: "แก้ไข",
-			width: "100",
+			text: "ยกเลิกทุกรายการ",
+			style: "margin-right:450px",
 			click: function () {
-				showEditableEquip(qn, bookqEquip)
+				if (confirm("ลบออกทั้งหมด และกลับคืนไม่ได้")) {
+					cancelAll()
+				}
 			}
 		},
 		{
-			text: "Print",
-			width: "100",
+			text: "แก้ไข",
 			click: function () {
-				printpaper(qn);
+				showEditableEquip()
 			}
 		}
-	]);
-	$('#dialogEquip input').prop("disabled", true)
-	$('#dialogEquip textarea').prop('disabled', true)
+	])
+	disableInput()
 }
 
-let showEditableEquip = function (qn, bookqEquip) {
+// having any equip must have copay. if no copay, ->alert
+// having no equip, cancel copay
+let showEditableEquip = function () {
 	$('#dialogEquip').dialog("option", "buttons", [
 		{
 			text: "Save",
-			width: "100",
 			click: function () {
-				Checklistequip(qn, bookqEquip)
-				showNonEditableEquip(qn, bookqEquip)
-			}
-		},
-		{
-			text: "Print",
-			width: "100",
-			click: function () {
-				printpaper(qn);
+				if (checkEquip()) {
+					if ($('#copay').val()) {
+						Checklistequip()
+						showNonEditableEquip()
+					} else {
+						Alert("Checklistequip", "<br>ต้องระบุจำนวนเงิน<br>จ่ายไม่ได้เลย = 0")
+					}
+				} else {
+					cancelAll()
+				}
 			}
 		}
-	]);
-	$('#dialogEquip input').prop('disabled', false)
-	$('#dialogEquip textarea').prop('disabled', false)
+	])
+	enableInput()
 }
 
-let Checklistequip = function (qn, bookqEquip) {
-	let equipment = {}
-	$( "#dialogEquip input, #dialogEquip textarea" ).each( function() {
-		this.checked && (equipment[this.id] = "checked")
-		this.value && (equipment[this.id] = this.value)
+function disableInput()
+{
+	$('#dialogEquip input').on("click", returnFalse)
+	$('#dialogEquip input[type=text]').prop('disabled', true)
+	$('#dialogEquip textarea').prop('disabled', true)
+	$('#clearPosition').off('click', clearPosition)
+	$('#clearShunt').off('click', clearShunt)
+}
+
+// clearPosition : uncheck radio button of Positions
+// clearShunt : uncheck radio button of Shunts
+function enableInput()
+{
+	$('#dialogEquip input').off("click", returnFalse)
+	$('#dialogEquip input[type=text]').prop('disabled', false)
+	$('#dialogEquip textarea').prop('disabled', false)
+	$('#clearPosition').on('click', clearPosition)
+	$('#clearShunt').on('click', clearShunt)
+}
+
+function returnFalse()
+{
+  return false
+}
+
+function clearPosition()
+{
+	$('#dialogEquip input[name=pose]').prop('checked', false)
+}
+
+function clearShunt()
+{
+	$('#dialogEquip input[name=head]').prop('checked', false)
+	$('#dialogEquip input[name=peritoneum]').prop('checked', false)
+	$('#dialogEquip input[name=program]').prop('checked', false)
+}
+
+function getEditedBy(qn)
+{
+	modelGetEquip(qn).then(response => {
+		let hasData = function () {
+			let Editedby = ""
+			$.each(response, function(key, val) {
+				Editedby += (val.editor + " : " + val.editdatetime + "<br>")
+			});
+			$('#editedby').html(Editedby)
+		};
+
+		typeof response === "object"
+		? hasData()
+		: Alert("getEditedby", response)
+	}).catch(error => {})
+}
+
+function checkEquip()
+{
+	let equip = false
+
+	$( "#dialogEquip input:not(#copay), #dialogEquip textarea" ).each( function() {
+		if (this.checked) {
+			equip = true
+			return false
+		} else if (this.type === "text" || this.type === "textarea") {
+			if (this.value) {
+				equip = true
+				return false
+			}
+		}
 	})
 
-	equipment = JSON.stringify(equipment)
+	return equip
+}
+
+let Checklistequip = function () {
+	let	$dialogEquip = $("#dialogEquip"),
+		bookqEquip = $dialogEquip.data("bookqEquip"),
+		JsonEquip = $dialogEquip.data("JsonEquip"),
+		$row = $dialogEquip.data("$row"),
+		qn = $dialogEquip.data("qn"),
+		equipJSON = {},
+		equipment = "",
+		sql = ""
+
+	$( "#dialogEquip input, #dialogEquip textarea" ).each( function() {
+		if (this.checked) {
+			equipJSON[this.id] = "checked"
+		} else if (this.type === "text" || this.type === "textarea") {
+			if (this.value) {
+				equipJSON[this.id] = this.value
+			}
+		}
+	})
+
+	equipment = JSON.stringify(equipJSON)
 	if (equipment === bookqEquip) {
 		return
 	}
+
 	// escape the \ (escape) and ' (single quote) for sql string, not for JSON
 	equipment = equipment.replace(/\\/g,"\\\\").replace(/'/g,"\\'")
 	modelSaveEquip(equipment, qn).then(response => {
+		let showup = function () {
+			updateBOOK(response)
+			$row = $(getTableRowByQN("tbl", qn))
+			$row.find("td").eq(EQUIPMENT).html(makeEquip(equipJSON))
+			$dialogEquip.dialog('close')
+		}
 		let rollback = function () {
-
 			// Error update server
 			Alert("Checklistequip", response)
 
@@ -210,103 +250,44 @@ let Checklistequip = function (qn, bookqEquip) {
 				});
 		};
 
-		typeof response === "object" ? updateBOOK(response) : rollback()
+		typeof response === "object" ? showup() : rollback()
 	}).catch(error => {})
 }
 
-//*** have to set equip padding to top:70px; bottom:70px
-let printpaper = function (qn) {
-	let temp = {},
-		closestSPAN = function () {
-		while (temp.nodeName !== "SPAN") {
-			temp = temp.parentNode
+async function cancelAll()
+{
+	let	$dialogEquip = $("#dialogEquip"),
+		bookqEquip = $dialogEquip.data("bookqEquip"),
+		JsonEquip = $dialogEquip.data("JsonEquip"),
+		$row = $dialogEquip.data("$row"),
+		qn = $dialogEquip.data("qn"),
+
+	sql = `sqlReturnbook=UPDATE book SET equipment='',editor='${USER}' WHERE qn='${qn}';`
+
+	let response = await postData(MYSQLIPHP, sql)
+	if (typeof response === "object") {
+		updateBOOK(response)
+		if ($row.find("td").eq(QN).html() !== qn) {
+			$row = getTableRowByQN("tbl", qn)
 		}
-	},
-	msie = function () {
-		let orgEquip = document.getElementById('dialogEquip');
-		orgEquip.style.paddingLeft = 0 + "px"
-		orgEquip.style.marginLeft = 0 + "px"
-		let win = window.open();
-		win.document.open();
-		win.document.write('<LINK type="text/css" rel="stylesheet" href="css/print.css">');
-		win.document.writeln(orgEquip.outerHTML);
-		win.document.getElementById('dialogEquip').id = "printEquip" 
-
-		let	originInput = orgEquip.getElementsByTagName("INPUT"),
-			printInput = win.document.getElementById('printEquip').getElementsByTagName("INPUT");
-		for (let i = 0; i < originInput.length; i++) 
-		{
-			originInput[i].checked
-			? printInput[i].checked = originInput[i].checked
-			: originInput[i].value
-				? printInput[i].value = originInput[i].value
-					// pale color for no input items
-				: (temp = printInput[i],
-					closestSPAN(),
-					temp.className = "pale")
+		$row.find("td").eq(EQUIPMENT).html('')
+		$dialogEquip.dialog('close')
+	} else {
+		// Error update server
+		// Roll back. If old form has equips, fill checked & texts
+		// prop("checked", true) : radio and checkbox
+		// .val(val) : <input text> && <textarea>
+		Alert("Checklistequip", response)
+		$('#dialogEquip input').val('')
+		$('#dialogEquip textarea').val('')
+		if ( bookqEquip ) {
+			$.each(JsonEquip, function(key, val) {
+				if (val === 'checked') {
+					$("#"+ key).prop("checked", true)
+				} else {
+					$("#"+ key).val(val)
+				}
+			})
 		}
-
-		let	originText = orgEquip.getElementsByTagName("TEXTAREA"),
-			printText = dialogEquip.getElementsByTagName("TEXTAREA");
-
-		for (let i = 0; i < originText.length; i++) 
-		{
-			originText[i].value
-			? printText[i].value = originText[i].value
-				// pale color for no input items
-			: (temp = printText[i],
-				closestSPAN(),
-				temp.className = "pale")
-		}
-
-		win.document.close();
-		win.focus();
-		win.print();
-		win.close();
-	},
-	chromeFF = function () {
-		let original = document.body.innerHTML,
-			orgEquip = document.getElementById('dialogEquip');
-		orgEquip.style.height = orgEquip.offsetHeight + 200 + "px"
-		orgEquip.style.width = orgEquip.offsetWidth + 100 + "px"
-		orgEquip.style.paddingLeft = 0 + "px"
-		orgEquip.style.marginLeft = 0 + "px"
-		document.body.innerHTML = orgEquip.outerHTML;
-		let dialogEquip = document.getElementById('dialogEquip'),
-			originInput = orgEquip.getElementsByTagName("INPUT"),
-			printInput = dialogEquip.getElementsByTagName("INPUT");
-
-		for (let i = 0; i < originInput.length; i++) 
-		{
-			originInput[i].checked
-			? printInput[i].checked = originInput[i].checked
-			: originInput[i].value
-				? printInput[i].value = originInput[i].value
-					// pale color for no input items
-				: (temp = printInput[i],
-					closestSPAN(),
-					temp.className = "pale")
-		}
-
-		let originText = orgEquip.getElementsByTagName("TEXTAREA"),
-			printText = dialogEquip.getElementsByTagName("TEXTAREA");
-
-		for (let i = 0; i < originText.length; i++) 
-		{
-			originText[i].value
-			? printText[i].value = originText[i].value
-				// pale color for no input items
-			: (temp = printText[i],
-				closestSPAN(),
-				temp.className = "pale")
-		}
-
-		window.focus();
-		window.print();
-		document.body.innerHTML = original;
-		document.getElementById('dialogEquip').scrollIntoView(true);
-		location.reload();
-	};
-
-	/Edge|MS/.test(navigator.userAgent) ? msie() : chromeFF()
+	}
 }

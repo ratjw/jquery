@@ -4,16 +4,14 @@ import {
 	DIAGNOSISSV, TREATMENTSV, ADMISSIONSV, FINALSV
 } from "./const.js"
 
-import { savePreviousCell, editPresentCell, resetTimer } from "./control.js"
+import { savePreviousCell, editPresentCell, resetTimer, dialogServiceShowing } from "./control.js"
 import { savePreviousCellService, editPresentCellService } from "./serv.js"
-export {
-	createEditcellOpdate, createEditcellRoomtime, createEditcell,
-	updateEditcellData, clearEditcell, reposition,
-	getPointer, getOldcontent, getNewcontent
-}
+import { getTableRowByQN } from "./util.js"
 
-// Store $("#editcell") instance for use in this entire module
-let $editcell = {}
+export {
+	editcellEvent, createEditcell, updateEditcellContent, renewEditcell, clearEditcell,
+	editcellLocation, getPointer, getOldcontent, getNewcontent, reposition
+}
 
 // pointer is the current position
 // pointing is new coming position to update to
@@ -23,23 +21,29 @@ let pointer = null
 let oldcontent = ""
 
 // newcontent is the content currently in editcell
-// and must be fetched from editcell every time when wanted
-
-// to check the pointer still points to same case after reViewAll while idling
-let qn = 0
+// and must be fetched from editcell itself every time when wanted
 
 // Initialize $editcell
 // Attach events to editcell all the time
-$(function() {
-	$editcell = $("#editcell")
+function editcellEvent()
+{
+	let $editcell = $("#editcell")
+
 	$editcell.on("click", function (event) {
 		resetTimer();
 		event.stopPropagation()
 	}).on("keydown", function (event) {
 		let keycode = event.which || window.event.keyCode
 
-		resetTimer();
-		keyin(event, keycode)
+		if (dialogServiceShowing) {
+		  Skeyin(event, keyCode, pointer)
+		} else {
+		  keyin(event, keyCode, pointer)
+		}
+		if (!$("#spin").length) {
+		  resetTimer()
+		  idleCounter = 0
+		}
 	
 	// resize editcell along with underlying td
 	}).on("keyup", function (event) {
@@ -52,17 +56,13 @@ $(function() {
 		let keycode = event.which || window.event.keyCode
 
 		// not resize after non-char was pressed
-		if (keycode < 32)	{
-			return
-		}
+		if (keycode < 32)	{ return }
 
 		pointer.innerHTML = $editcell.html()
-		$editcell.css({
-			height: $(pointer).height() + "px"
-		})
+		$editcell.height($(pointer).height())
 		reposition($editcell, "center", "center", pointer)
 	})
-})
+}
 
 // function declaration (definition ) : public
 // function expression (literal) : local
@@ -93,7 +93,7 @@ let keyin = function (event, keycode) {
 					? findPrevcell(EDITABLE, pointer)
 					: findNextcell(EDITABLE, pointer)
 			thiscell
-				? editPresentCell(thiscell)
+				? editPresentCell(event, thiscell)
 				: clearEditcell()
 		},
 		serviceTable = function () {
@@ -102,7 +102,7 @@ let keyin = function (event, keycode) {
 					? findPrevcell(EDITABLE, pointer)
 					: findNextcell(EDITABLE, pointer)
 			thiscell
-				? editPresentCellService(thiscell)
+				? editPresentCellService(event, thiscell)
 				: clearEditcell()
 		}
 
@@ -117,7 +117,7 @@ let keyin = function (event, keycode) {
 			savePreviousCell()
 			thiscell = findNextRow(EDITABLE, pointer)
 			thiscell
-				? editPresentCell(thiscell)
+				? editPresentCell(event, thiscell)
 				: clearEditcell()
 		},
 		serviceTable = function () {
@@ -125,22 +125,13 @@ let keyin = function (event, keycode) {
 			savePreviousCellService()
 			thiscell = findNextRow(EDITABLE, pointer)
 			thiscell
-				? editPresentCellService(thiscell)
+				? editPresentCellService(event, thiscell)
 				: clearEditcell()
 		}
 
 		servicetbl ? serviceTable() : mainTable()
 		event.preventDefault()
 		return false
-	}
-
-	let	anyOthers = function () {
-		// no keyin on date
-		if (pointer.cellIndex === 0) {
-			event.preventDefault()
-			return false
-		}
-		return true
 	}
 
 	return (code[keycode] || anyOthers)()
@@ -197,55 +188,27 @@ let findNextRow = function (editable, pointing) {
 	return $nextcell.length && $nextcell[0]
 }
 
-// On first column, editcell include CSS:before Thai name of day
-function createEditcellOpdate(pointing) {
-	let $pointing = $(pointing),
-		height = $pointing.height() + "px",
-		width = $pointing.width() + "px",
-		context = ""
-
-	// to show Thai name of day in editcell div
-	context = window.getComputedStyle(pointing,':before').content
-	context = context.replace(/\"/g, "")
-	context = context + pointing.innerHTML
-	$editcell.html(context)
-	editcellSaveData(pointing, context)
-	showEditcell($pointing, height, width)
-}
-
-// Make editcell for selectRoomTime spinner
-function createEditcellRoomtime(pointing) {
-	let $pointing = $(pointing),
-		height = "",
-		width = 77 + "px",
-		context = pointing.innerHTML
-
-	editcellSaveData(pointing, context)
-	showEditcell($pointing, height, width)
-}
-
 function createEditcell(pointing)
 {
 	let $pointing = $(pointing)
 	let height = $pointing.height() + "px"
 	let width = $pointing.width() + "px"
-	let context = getText($pointing).replace(/Consult<br>.*$/, "")
+	let context = getHtmlText($pointing).replace(/Consult<br>.*$/, "")
 
-	editcellData($editcell, pointing, context)
-	$editcell.html(context)
-	showEditcell($editcell, $pointing, height, width)
+	$("#editcell").html(context)
+	showEditcell($pointing, height, width)
+	editcellSaveData(pointing, context)
 }
 
 // Update module variables
-// Include qn to check if editcell stay on same case
 // after update from other user while idling
-let editcellSaveData = function (pointing, context) {
+let editcellSaveData = function (pointing, content) {
 	pointer = pointing
-	oldcontent = context
-	qn = $(pointing).closest('tr').find("td")[QN].innerHTML
+	oldcontent = content
 }
 
 let showEditcell = function ($pointing, height, width) {
+	let $editcell = $("#editcell")
 
 	$editcell.css({
 		height: height,
@@ -259,21 +222,46 @@ let showEditcell = function ($pointing, height, width) {
 
 // Another client updated table while this is idling with visible editcell
 // Update editcell content to the same as underlying table cell
-function updateEditcellData() {
+function updateEditcellContent() {
 	let $pointer = $(pointer),
-		data = getHtmlText($pointer),
-		newqn = $pointer.length
-			&& $pointer.closest('tr').find("td")[QN].innerHTML
+		content = getHtmlText($pointer)
 
-	qn === newqn
-	? oldcontent !== data && (oldcontent = data, $editcell.html(data))
-	: clearEditcell()
+	oldcontent = content
+	$("#editcell").html(content)
+}
+
+// after DOM refresh by refillall, pointer remains in its row but its parent is null
+// must get qn to find current row position
+function renewEditcell()
+{
+  let whereisEditcell = editcellLocation()
+  let id = (whereisEditcell === "tblcontainer")
+         ? "tbl"
+		 : (whereisEditcell === "queuecontainer")
+		 ? "queuetbl"
+		 : (whereisEditcell === "dialogService")
+		 ? "servicetbl"
+		 : ""
+  let qn = $(pointer).siblings(":last").html()
+  let row = id && getTableRowByQN(id, qn)
+  let cell = pointer.cellIndex
+
+  if (row) {
+    let pointing = row.cells[cell]
+    createEditcell(pointing)
+  }
+}
+
+function editcellLocation()
+{
+	return $("#editcell").parent("div").attr("id")
 }
 
 function clearEditcell() {
+	let $editcell = $("#editcell")
+
 	pointer = ""
 	oldcontent = ""
-	qn = ""
 	$editcell.html("")
 	$editcell.hide()
 }
@@ -288,10 +276,11 @@ function getOldcontent() {
 }
 
 function getNewcontent() {
-	return getHtmlText($editcell)
+	return getHtmlText($("#editcell"))
 }
 
-// Strip html to text
+// TRIM excess spaces at begin, mid, end
+// remove html tags except <br>
 let getHtmlText = function ($cell) {
 	let HTMLTRIM		= /^(\s*<[^>]*>)*\s*|\s*(<[^>]*>\s*)*$/g,
 		HTMLNOBR		= /(<((?!br)[^>]+)>)/ig

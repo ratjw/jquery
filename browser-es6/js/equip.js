@@ -218,9 +218,7 @@ async function Checklistequip()
 	let response = await postData(MYSQLIPHP, sql)
 	if (typeof response === "object") {
 		updateBOOK(response)
-		if ($row.find("td").eq(QN).html() !== qn) {
-			$row = $(getTableRowByQN("tbl", qn))
-		}
+		$row = $(getTableRowByQN("tbl", qn))
 		$row.find("td").eq(EQUIPMENT).html(makeEquip(equipJSON))
 		$dialogEquip.dialog('close')
 	} else {
