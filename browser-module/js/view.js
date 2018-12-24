@@ -226,10 +226,11 @@ function filldata(bookq, row)
 function viewStaffqueue(staffname) {
 	let todate = ISOdate(new Date()),
 		consult = getCONSULT(),
-		queuetbl = document.getElementById("queuetbl")
+		$queuetbl = $('#queuetbl'),
+		queuetbl = $queuetbl[0]
 
 	// delete previous queuetbl lest it accumulates
-	$('#queuetbl tr').slice(1).remove()
+	$queuetbl.find('tr').slice(1).remove()
 
 	let staffConsults = function () {
 
@@ -237,7 +238,7 @@ function viewStaffqueue(staffname) {
 		!consult.length && consult.push({"opdate" : START})
 
 		// render as main table, not as staff table
-		viewAll(consult, table, START, todate)
+		viewAll(consult, queuetbl, START, todate)
 	}
 	let staffCases = function () {
 		$.each( getBOOK(), function() {
@@ -898,10 +899,7 @@ function viewDeletedCases(deleted) {
 
   let $undelete = $("#undelete")
   $undelete.hide()
-  $undelete.off("click").on("click", function () { closeUndel() }).hide()
-  $(".toUndelete").off("click").on("click", function () {
-    toUndelete(this, deleted)
-  })
+  $undelete.off("click").on("click", closeUndel )
 
   //for resizing dialogs in landscape / portrait view
   $(window).on("resize", resizeDeleted )
@@ -930,7 +928,8 @@ jQuery.fn.extend({
 		let cells = this[0].cells
 
 		rowDecoration(this[0], q.opdate)
-		cells[0].className += " toUndelete"
+		cells[0].classList.add("toUndelete")
+
 		cells[0].innerHTML = putThdate(q.opdate)
 		cells[1].innerHTML = q.staffname
 		cells[2].innerHTML = q.hn
@@ -946,8 +945,7 @@ jQuery.fn.extend({
 
 function viewUndelete(opdate, staffname, qn) {
 	reViewOneDay(opdate)
-	if (isSplit() && 
-		(($('#titlename').html() === staffname) || isConsultsTbl())) {
+	if (isSplit() && (isStaffname(staffname) || isConsults())) {
 		reViewStaffqueue()
 	}
 	scrolltoThisCase(qn)
@@ -1050,15 +1048,12 @@ function viewSortable(argv) {
 	let receiver = argv.receiver,
 		oldOpdate = argv.oldOpdate,
 		thisOpdate = argv.thisOpdate,
-		titlename = argv.titlename,
-		staffname = argv.staffname,
 
 	dropOnTbl = function () {
 		reViewOneDay(oldOpdate)
 		reViewOneDay(thisOpdate)
-		isSplit() && (titlename === staffname) &&
-			reViewStaffqueue()
-			// dragging inside tbl of this staff's case
+		isSplit() && reViewStaffqueue()
+		// While splitting, dragging inside tbl of this staff's case
 	},
 	dropOnStaff = function () {
 		reViewStaffqueue()

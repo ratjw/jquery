@@ -88,16 +88,6 @@ function serviceReview() {
 	$dialogService.off("click").on("click", ".ui-datepicker-title", function() {
 		entireMonth($monthstart.val())
 	})
-
-	document.getElementById("dialogService").addEventListener("wheel", function (event) {
-		resetTimer();
-		idleCounter = 0
-	})
-	
-	document.getElementById("dialogService").addEventListener("mousemove", function (event) {
-		resetTimer();
-		idleCounter = 0
-	})
 }
 
 // new Date(yyyy, mm+1, 0) is the day before 1st date of next month === last date of this month

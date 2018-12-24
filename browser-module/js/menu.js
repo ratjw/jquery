@@ -20,7 +20,7 @@ import {
 
 import {
 	getBOOK, getCONSULT, isPACS, updateBOOK, getOpdate, getTableRowByQN, Alert,
-	winWidth, winHeight, UndoManager, isSplit, winResizeFix
+	winWidth, winHeight, UndoManager, isSplit, winResizeFix, calcWaitnum
 } from "./util.js"
 
 export { oneRowMenu, clearMouseoverTR }
@@ -134,7 +134,8 @@ let addrow = function ($clone, $row, keepcell) {
 
 // Undefined date booking has opdate = LARGESTDATE
 // but was shown blank date on screen
-async function postponeCase(args) {
+function postponeCase()
+{
 	let	$selected = $(".selected"),
 		tableID = $selected.closest('table').attr('id'),
 		$row = $selected.closest('tr'),
@@ -164,7 +165,7 @@ async function postponeCase(args) {
 		+ ",editor='" + USER
         + "' WHERE qn="+ qn + ";"
 
-	let response = await postData(MYSQLIPHP, sql)
+	let response = postData(MYSQLIPHP, sql)
 	if (typeof response === "object") {
 		updateBOOK(response)
 		refillOneDay(opdate)
@@ -769,8 +770,8 @@ function deletedCases()
 	modelAllDeletedCases().then(response => {
 		if (typeof response === "object") {
 			viewDeletedCases(response)
-			$("#undel").off("click").on("click", function () {
-				toUndelete(this)
+			$(".toUndelete").off("click").on("click", function () {
+				toUndelete(this, response)
 			})
 		} else {
 			Alert("allDeletedCases", response)
@@ -793,8 +794,6 @@ async function toUndelete(thisDate, deleted)
   let $thisDate = $(thisDate)
   let $undelete = $("#undelete")
 
-  // jquery position not work in hidden elements
-  $undelete.show()
   reposition($undelete, "left center", "left center", $thisDate)
 
   $("#undel").off().on("click", async function() {
@@ -830,18 +829,17 @@ async function toUndelete(thisDate, deleted)
 
     $('#dialogDeleted').dialog("close")
 
-    let response = await postData(MYSQLIPHP, sql)
-    if (typeof response === "object") {
-      updateBOOK(response);
-      refillOneDay(opdate)
-      //undelete this staff's case or a Consults case
-      if (isSplit() && (isStaffname(staffname) || isConsults())) {
-        refillstaffqueue()
-      }
-      scrolltoThisCase(qn)
-    } else {
-      Alert("toUndelete", response)
-    }
+	doUndel(opdate, staffname, qn)
+
+	UndoManager.add({
+		undo: function() {
+			deleteCase()
+			allDeletedCases()
+		},
+		redo: function() {
+			doUndel(opdate, staffname, qn)
+		}
+	})
   })
 }
 
@@ -850,23 +848,7 @@ function closeUndel()
   $('#undelete').hide()
 }
 
-// All deleted and still deleted cases (exclude the undeleted ones)
-let allDeletedCases = function () {
-	modelAllDeletedCases().then(response => {
-		if (typeof response === "object") {
-			viewDeletedCases(response)
-			$("#undel").off("click").on("click", function () {
-				doUndelete(this)
-			})
-		} else {
-			Alert("allDeletedCases", response)
-		}
-	}).catch(error => {})
-
-	clearEditcell()
-}
-
-	// .data("case", this) from viewDeletedCases
+/*	// .data("case", this) from viewDeletedCases
 	let thiscase = $(thatcase).data("case"),
 		$thiscase = $(thiscase).parent(),
 		$thiscell = $thiscase.children("td"),
@@ -891,9 +873,9 @@ let allDeletedCases = function () {
 			doUndel(opdate, staffname, qn)
 		}
 	})		
-}
+*/
 
-function doUndel (opdate, staffname, qn) {
+function doUndel(opdate, staffname, qn) {
 
 	modelUndelete(opdate, qn).then(response => {
 		let hasData = function () {
@@ -903,7 +885,7 @@ function doUndel (opdate, staffname, qn) {
 
 		typeof response === "object"
 		? hasData()
-		: Alert("undelete", response)
+		: Alert("doUndel", response)
 	}).catch(error => {})
 
 	$('#dialogDeleted').dialog("close")

@@ -1,13 +1,13 @@
 
 import {
-	OPDATE, STAFFNAME, HN, PATIENT, DIAGNOSIS, TREATMENT, CONTACT, QN,
-	LARGESTDATE
+	OPDATE, THEATRE, OPROOM, CASENUM, STAFFNAME, HN, PATIENT,
+	DIAGNOSIS, TREATMENT, CONTACT, QN, LARGESTDATE
 } from "./const.js"
-import { clearTimer, resetTimer } from "./control.js"
+import { clearTimer, resetTimer, resetTimerCounter } from "./control.js"
 import { clearEditcell } from "./edit.js"
 import { clearMouseoverTR } from "./menu.js"
 import { modelSortable } from "./model.js"
-import { getOpdate, calculateWaitnum, Alert, UndoManager, 
+import { getOpdate, calcWaitnum, Alert, UndoManager, 
 	updateBOOK, showUpload
 } from "./util.js"
 import { viewSortable } from "./view.js"
@@ -25,15 +25,13 @@ export function sortable () {
 		forceHelperSize: true,
 		forcePlaceholderSize: true,
 		revert: true,
-		delay: 300,
+		delay: 150,
 		cancel: "tr:has('th')",
 		start: function(e, ui){
-
 			clearTimer()
-			clearMenu()
+			$('#stafflist').hide()
 			clearEditcell()
 			clearMouseoverTR()
-			$(".borderfound").removeClass("borderfound")
 			ui.placeholder.innerHeight(ui.item.outerHeight())
 			prevplace = ui.placeholder.index()
 			thisplace = ui.placeholder.index()
@@ -49,110 +47,160 @@ export function sortable () {
 			prevplace = thisplace
 			thisplace = ui.placeholder.index()
 		},
-		stop: function(e, ui){
-			let $item = ui.item
-			let $itemcell = $item.children("td")
-			let receiver = $item.closest('table').attr('id')
-			let oldOpdate = getOpdate($itemcell.eq(OPDATE).html())
-			let staffname = $itemcell.eq(STAFFNAME).html()
-			let titlename = $('#titlename').html()
+		stop: function(e, ui) {
+			let $item = ui.item,
+				$itemcell = $item.children("td"),
+				receiver = $item.closest('table').attr('id'),
+				oldWaitnum = $item[0].title,
+				oldOpdateth = $itemcell.eq(OPDATE).html(),
+				oldOpdate = getOpdate(oldOpdateth),
+				oldtheatre = $itemcell.eq(THEATRE).html(),
+				oldroom = $itemcell.eq(OPROOM).html(),
+				staffname = $itemcell.eq(STAFFNAME).html(),
+				oldqn = $itemcell.eq(QN).html()
 
 			// Allow drag to Consults, or same staff name
 			// That is (titlename === "Consults") is allowed
 			// To another staff name is not allowed
-			//(titlename !== staffname, when titlename is not Consults)
+			// Not allow to drag a blank line
 			let illegal = ((sender === "tbl")
 						&& (receiver === "queuetbl")
 						&& (titlename !== "Consults")
 						&& (titlename !== staffname))
-			let noQN = !$itemcell.eq(QN).html()
+						|| (!$itemcell.eq(QN).html())
 
-			if (illegal || noQN) {
-					stopsorting()
-					return false
-			}
-
-			// Find nearest row by dropping position
-			let $previtem = $item.prev()
-			let $nextitem = $item.next()
-			let helperpos = ui.offset.top		// ui.offset (no '()') = helper position
-			let prevpos = $previtem.length && $previtem.offset().top
-			let thispos = $item.offset().top
-			let nextpos = $nextitem.length && $nextitem.offset().top
-			let nearprev = Math.abs(helperpos - prevpos)
-			let nearplace = Math.abs(helperpos - thispos)
-			let nearnext = Math.abs(helperpos - nextpos)
-			let nearest = Math.min(nearprev, nearplace, nearnext)
-
-			// same place as before sorting
-			if ((nearest === nearplace) && (prevplace === thisplace) && (sender === receiver)) {
-					stopsorting()
-					return false
-			}
-			let place = {}
-				place[nearprev] = $previtem
-				place[nearnext] = $nextitem
-				place[nearplace] = (prevplace < thisplace) ? $previtem : $nextitem
-
-			// Determine that the user intend to drop on prev or next row
-			let $thisdrop = (!$previtem.length || $previtem.has('th').length)
-							? $nextitem
-							: (!$nextitem.length || $nextitem.has('th').length)
-								? $previtem
-								: place[nearest]
-
-			let newOpdate = getOpdate($thisdrop.children("td").eq(OPDATE).html())
-			let thisqn = $itemcell.eq(QN).html()
-
-			// Check conflict, if no, get roomtime
-			let roomtime = checkRoomTime($item, newOpdate, oldOpdate)
-			if (roomtime.conflict) {
-				Alert("Cancel Sorting", roomtime.conflict)
+			if (illegal) {
 				stopsorting()
 				return false
 			}
 
-			let oldWaitnum = $item[0].title
-			let oldroomtime = {}
-			let room = $item.children("td").eq(OPROOM).html()
-				oldroomtime.roomtime = room ? room.split("<br>") : ""
-			let finalWaitnum = calculateWaitnum( receiver, $item, newOpdate )
-			let argmold = {
-				finalWaitnum: oldWaitnum,
-				thisOpdate: oldOpdate,
-				roomtime: oldroomtime,
-				thisqn: thisqn
-			}
-			let argmnew = {
-				finalWaitnum: finalWaitnum,
-				thisOpdate: newOpdate,
-				roomtime: roomtime,
-				thisqn: thisqn
-			}
-			let argvold = {
-				receiver: sender,
-				oldOpdate: newOpdate,
-				thisOpdate: oldOpdate,
-				titlename: titlename,
-				staffname: staffname
-			}
-			let argvnew = {
-				receiver: sender,
-				oldOpdate: oldOpdate,
-				thisOpdate: newOpdate,
-				titlename: titlename,
-				staffname: staffname
+			// Find nearest row by dropping position
+			let $thisdrop
+			let before
+			let $previtem = $item.prev()
+			let $nextitem = $item.next()
+
+			if (!$previtem.length || $previtem.has('th').length) {
+				$thisdrop = $nextitem
+				before = 1
+			} else {
+				if (!$nextitem.length || $nextitem.has('th').length) {
+					$thisdrop = $previtem
+					before = 0
+				} else {
+					// Determine that the user intend to drop on which row
+					//ui.offset (without '()') = helper position
+					let helperpos = ui.offset.top
+					let prevpos = $previtem.length && $previtem.offset().top
+					let thispos = $item.offset().top
+					let nextpos = $nextitem.length && $nextitem.offset().top
+					let nearprev = Math.abs(helperpos - prevpos)
+					let nearplace = Math.abs(helperpos - thispos)
+					let nearnext = Math.abs(helperpos - nextpos)
+					let nearest = Math.min(nearprev, nearplace, nearnext)
+
+					if (nearest === nearprev) {
+						$thisdrop = $previtem
+						before = 0
+					} 
+					if (nearest === nearnext) {
+						$thisdrop = $nextitem
+						before = 1
+					}
+					if (nearest === nearplace) {
+						if ((prevplace === thisplace) && (sender === receiver)) {
+							stopSorting()
+							return false
+						}
+						if (prevplace < thisplace) {
+							$thisdrop = $previtem
+							before = 0
+						} else {
+							$thisdrop = $nextitem
+							before = 1
+						}
+					}
+				}
 			}
 
-			modelSort(argmnew, argvnew)
+			let $thiscell = $thisdrop.children("td"),
+				thisOpdateth = $thisdrop.children("td").eq(OPDATE).html(),
+				thisOpdate = getOpdate(thisOpdateth),
+				thistheatre = $thiscell.eq(THEATRE).html(),
+				thisroom = $thiscell.eq(OPROOM).html(),
+				thisqn = $thiscell.eq(QN).html(),
+
+				newWaitnum = calcWaitnum(thisOpdateth, $previtem, $nextitem),
+				allNewCases = [],
+				allOldCases = [],
+				index,
+				sql = ""
+
+			// old = mover
+			// this = dropping place
+			// drop on the same case
+			if (thisqn === oldqn) { return }
+
+			// no room specified and waitnum not changed
+			if (!oldroom && !thisroom && newWaitnum === oldWaitnum) {
+				return
+			}
+
+			// sameDateRoomTableQN is of tbl only, the mover must be removed manually
+			if (oldroom) {
+				allOldCases = sameDateRoomTableQN(oldOpdateth, oldroom, oldtheatre)
+				if (sender === "queuetbl") {
+					index = allOldCases.indexOf(oldqn)
+					allOldCases.splice(index, 1)
+				}
+			}
+
+			if (thisroom) {
+				allNewCases = sameDateRoomTableQN(thisOpdateth, thisroom, thistheatre)
+				if (receiver === "queuetbl") {
+					index = allNewCases.indexOf(thisqn)
+					before
+					? allNewCases.splice(index, 0, oldqn)
+					: allNewCases.splice(index + 1, 0, oldqn)
+				}
+			}
+
+			let argModelDo = {
+				oldlist: allOldCases,
+				newlist: allNewCases,
+				waitnum: newWaitnum,
+				opdate: thisOpdate,
+				room: thisroom,
+				qn: oldqn
+			}
+			let argViewDo = {
+				receiver: receiver,
+				oldOpdate: oldOpdate,
+				thisOpdate: thisOpdate
+			}
+			let argModelUndo = {
+				oldlist: allNewCases,
+				newlist: allOldCases,
+				waitnum: oldWaitnum,
+				opdate: oldOpdate,
+				room: oldroom,
+				qn: oldqn
+			}
+			let argViewUndo = {
+				receiver: sender,
+				oldOpdate: thisOpdate,
+				thisOpdate: oldOpdate
+			}
+
+			doSorting(argModelDo, argViewDo)
 
 			// make undo-able
 			UndoManager.add({
 				undo: function() {
-					modelSort(argmold, argvold)
+					doSorting(argModelUndo, argViewUndo)
 				},
 				redo: function() {
-					modelSort(argmnew, argvnew)
+					doSorting(argModelDo, argViewDo)
 				}
 			})		
 
@@ -161,11 +209,11 @@ export function sortable () {
 	})
 }
 
-function modelSort(argm, argv) {
-	modelSortable(argm).then(response => {
+function doSorting(argModel, argView) {
+	modelSortable(argModel).then(response => {
 		let hasData = function () {
 			updateBOOK(response)
-			viewSortable(argv)
+			viewSortable(argView)
 		}
 
 		typeof response === "object"
@@ -179,17 +227,10 @@ let stopsorting = function () {
 	// will not render this row in wrong position
 	$("#tbl tbody, #queuetbl tbody").sortable( "cancel" )
 
-	// setTimeout 10 sec
-	//  Editcell hide after 1 min (5 cycles) idling
-	//  Logout after 10 min (50 cycles) idling
-	resetTimer()
+	// before sorting, timer was stopped by clearTimer
+	resetTimerCounter()
 
 	//  after sorting, editcell was placed at row 0 column 1
 	//  and display at placeholder position in entire width
 	$('#editcell').hide()
-}
-
-let clearMenu = function() {
-	$('#menu').hide();
-	$('#stafflist').hide();
 }

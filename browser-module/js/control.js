@@ -25,14 +25,15 @@ import {
 
 import {
 	getBOOK, getCONSULT, getSTAFF, getONCALL, getHOLIDAY, isPACS, gettimestamp, START,
-	getOpdate, ISOdate, thDate, numDate, nextdays, calculateWaitnum, URIcomponent, Alert,
-	UndoManager, updateBOOK, showUpload, menustyle, holiday, setONCALL, isSplit
+	getOpdate, ISOdate, thDate, numDate, nextdays, calcWaitnum, URIcomponent, Alert,
+	UndoManager, updateBOOK, showUpload, menustyle, holiday, setONCALL, isSplit, hoverMain
 } from "./util.js"
 
 // Public functions
 export {
 	savePreviousCell, editPresentCell, showStaffOnCall, dialogServiceShowing,
-	PACS, userStaff, clearTimer, resetTimer, clearSelection, fillConsults
+	PACS, userStaff, clearTimer, resetTimer, clearSelection, fillConsults,
+	resetTimerCounter
 }
 
 // timer is just an id number of setTimeout, not the clock object
@@ -67,6 +68,7 @@ function success(response) {
 
   // make the document editable
   editcellEvent()
+  dialogServiceEvent()
   wrapperEvent()
   documentEvent()
   scrolltoToday()
@@ -144,6 +146,7 @@ let makeFinish = function() {
 		until = ISOdate((new Date(nextyear, month, todate)))
 
 	viewAll(book, table, start, until, table.rows.length-1)
+	hoverMain()
 }
 
 function initEquipment()
@@ -185,25 +188,42 @@ function initEquipment()
   document.getElementById("dialogEquip").innerHTML = equip
 }
 
+// poke server every 10 sec.
+function clearTimer() {
+	clearTimeout(timer)
+}
+function resetTimer() {
+	clearTimer()
+	timer = setTimeout( updating, 10000)
+}
+
+function resetTimerCounter()
+{
+	resetTimer();
+	idleCounter = 0
+}
+
+function dialogServiceEvent()
+{
+	document.getElementById("dialogService").addEventListener("wheel", resetTimerCounter)
+	
+	document.getElementById("dialogService").addEventListener("mousemove", resetTimerCounter)
+}
+
 function wrapperEvent()
 {
-  document.getElementById("wrapper").addEventListener("wheel", event => {
-    resetTimer();
-    idleCounter = 0
+  document.getElementById("wrapper").addEventListener("wheel", () => {
+    resetTimerCounter()
     $(".marker").removeClass("marker")
   })
   
-  document.getElementById("wrapper").addEventListener("mousemove", event => {
-    resetTimer();
-    idleCounter = 0
-  })
+  document.getElementById("wrapper").addEventListener("mousemove", resetTimerCounter)
 
   $("#wrapper").on("click", event => {
     let target = event.target
     let $stafflist = $('#stafflist')
 
-    resetTimer();
-    idleCounter = 0
+    resetTimerCounter()
     $(".marker").removeClass("marker")
 
     if ($(target).closest('#cssmenu').length) {
@@ -500,15 +520,6 @@ function overrideJqueryUI()
   }))
 }
 
-// poke server every 10 sec.
-function clearTimer() {
-	clearTimeout(timer)
-}
-function resetTimer() {
-	clearTimer()
-	timer = setTimeout( updating, 10000)
-}
-
 // While idling every 10 sec., get updated by itself and another clients
 // 1. Visible editcell
 // 	1.1 Editcell changed (update itself and from another client on the way)
@@ -526,10 +537,9 @@ let updating = function () {
 
 // savePreviousCell and return with true (changed) or false (not changed)
 let onChange = function () {
+
   // When editcell is not pointing, there must be no change by this editor
-  if (!$("#editcell").data("pointing")) {
-    return false
-  }
+  if (!getPointer()) { return false }
 
   let oldcontent = getOldcontent(),
       newcontent = getNewcontent(),
@@ -874,7 +884,7 @@ let saveConQN = function (args) {
 let saveContentNoQN = function (args, argsold) {
 
 	// new case, calculate waitnum
-	args.waitnum = calculateWaitnum(args.tableID, args.$row, args.opdate)
+	args.waitnum = calcWaitnum(args.tableID, args.$row, args.opdate)
 
 	saveNoQN(args).then(qn => {
 
@@ -951,7 +961,7 @@ function getCaseHN(pointed, waiting)
 		patient: waiting.patient,
 		dob: waiting.dob,
 
-		oldcontent: $("#editcell").data("oldcontent"),
+		oldcontent: getOldcontent(),
 		sql: "sqlReturnbook=",
 
 		$dialogMoveCase: $("#dialogMoveCase"),
@@ -965,7 +975,7 @@ function getCaseHN(pointed, waiting)
 	argsold = $.extend(argsold, argsnew)
 	argsold.content = ""
 
-	!qn && (argsnew.waitnum = calculateWaitnum(tableID, $row, opdate))
+	!qn && (argsnew.waitnum = calcWaitnum(tableID, $row, opdate))
 
 	modelSaveHN(argsnew).then(argsreturn => {
 

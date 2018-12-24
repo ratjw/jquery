@@ -111,10 +111,6 @@ function sortable()
 			// drop on the same case
 			if (thisqn === oldqn) { return }
 
-			// assimilate into receiver
-			$itemcell.eq(OPDATE).html(thisOpdateth)
-			$itemcell.eq(OPROOM).html(thisroom)
-
 			if (oldroom) {
 				allOldCases = sameDateRoomTableQN(oldOpdateth, oldroom, oldtheatre)
 				if (sender === "queuetbl") {
@@ -153,20 +149,17 @@ function sortable()
 				sql += sqlMover(newWaitnum, thisOpdate, null, null, oldqn)
 			}
 			sql = "sqlReturnbook=" + sql
-			stopSortable(sql, receiver, oldOpdateth, oldOpdate, thisOpdate)
-
+			stopSortable(sql, receiver, oldOpdate, thisOpdate)
 		}
 	})
 }
 
-async function stopSortable(sql, receiver, oldOpdateth, oldOpdate, thisOpdate) {
+async function stopSortable(sql, receiver, oldOpdate, thisOpdate) {
 	let response = await postData(MYSQLIPHP, sql)
 	if (typeof response === "object") {
 		updateBOOK(response)
 		if (receiver === "tbl") {
-			if (oldOpdateth) {
-				refillOneDay(oldOpdate)
-			}
+			refillOneDay(oldOpdate)
 			refillOneDay(thisOpdate)
 			if (isSplit()) {
 				refillstaffqueue()

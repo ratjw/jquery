@@ -9,11 +9,11 @@ export {
 	updateBOOK, showUpload, getBOOKrowByQN, getTableRowByQN, isConsultsTbl,
 	getBOOKrowsByDate, getTableRowsByDate, putNameAge, rowDecoration, dayName,
 	ISOdate, thDate, numDate, nextdays, getOpdate, hoverMain, getClass,
-	putThdate, putAgeOpdate, calculateWaitnum, URIcomponent, Alert, isSplit,
+	putThdate, putAgeOpdate, calcWaitnum, URIcomponent, Alert, isSplit,
 	winWidth, winHeight, menustyle, UndoManager, holiday, setONCALL, winResizeFix
 }
 
-export const isPACS = true,
+export const isPACS = /10.6./.test(window.location),
 	START = ISOdate(new Date(new Date().getFullYear(), new Date().getMonth()-1, 1))
 
 //--- global variables --------------
@@ -121,7 +121,7 @@ function updateBOOK(response) {
 let uploadWindow = null
 function showUpload(hn, patient) {
 	uploadWindow && !uploadWindow.closed && uploadWindow.close();
-	uploadWindow = window.open("jQuery-File-Upload/index.html", "_blank")
+	uploadWindow = window.open("../jQuery-File-Upload/index.html", "_blank")
 	uploadWindow.hnName = {"hn": hn, "patient": patient}
 }
 
@@ -233,30 +233,6 @@ function getAge (birth, toDate) {
 		agedays = days ? days + " ว." : "";
 
 	return years ? ageyears : months ? agemonths : agedays;
-}
-
-// thisOpdate was set by caller
-// queue within each day is sorted by waitnum only, not staffname
-function calculateWaitnum(tableID, $thisrow, thisOpdate) {
-	let defaultWaitnum = (isConsultsTbl(tableID)) ? -1 : 1,
-		prevWaitnum = $thisrow.prev()[0],
-		nextWaitnum = $thisrow.next()[0]
-	prevWaitnum = prevWaitnum && Number(prevWaitnum.title)
-	nextWaitnum = nextWaitnum && Number(nextWaitnum.title)
-	let $prevRowCell = $thisrow.prev().children("td"),
-		$nextRowCell = $thisrow.next().children("td"),
-		prevOpdate = getOpdate($prevRowCell.eq(OPDATE).html()),
-		nextOpdate = getOpdate($nextRowCell.eq(OPDATE).html())
-	// Consults cases have negative waitnum
-
-	return (prevOpdate !== thisOpdate && thisOpdate !== nextOpdate)
-			? defaultWaitnum
-			: (prevOpdate === thisOpdate && thisOpdate !== nextOpdate)
-			? prevWaitnum + defaultWaitnum
-			: (prevOpdate !== thisOpdate && thisOpdate === nextOpdate)
-			? nextWaitnum ? nextWaitnum / 2 : defaultWaitnum
-			: (prevWaitnum + nextWaitnum) / 2
-				// (prevOpdate === thisOpdate && thisOpdate === nextOpdate)
 }
 
 // necessary when passing to http, not when export to excel
@@ -382,17 +358,18 @@ function isStaffname(staffname)
 	return $('#titlename').html() === staffname
 }
 
+// The table is Consults table
 function isConsults()
 {  
 	return $('#titlename').html() === "Consults"
 }
 
+// This is on the split table and is Consults table
 function isConsultsTbl(tableID)
 {  
 	var queuetbl = tableID === "queuetbl"
-	var consult = $("#titlename").html() === "Consults"
 
-	return queuetbl && consult
+	return queuetbl && isConsults()
 }
 
 function returnFalse()
@@ -401,6 +378,8 @@ function returnFalse()
 }
 
 // waitnum is for ordering where there is no oproom, casenum
+// nextWaitNum is undefined in case of new blank row
+//Consults cases have negative waitnum
 function calcWaitnum(thisOpdate, $prevrow, $nextrow)
 {
   let prevWaitNum = Number($prevrow.prop("title")),
@@ -410,22 +389,18 @@ function calcWaitnum(thisOpdate, $prevrow, $nextrow)
     $nextRowCell = $nextrow.children("td"),
     prevOpdate = $prevRowCell.eq(OPDATE).html(),
     nextOpdate = $nextRowCell.eq(OPDATE).html(),
-    tableID = $prevrow.closest("table").attr("id")
+    tableID = $prevrow.closest("table").attr("id"),
     defaultWaitnum = (isConsultsTbl(tableID))? -1 : 1
-  //Consults cases have negative waitnum
 
-  if (prevOpdate !== thisOpdate && thisOpdate !== nextOpdate) {
-    return defaultWaitnum
-  }
-  else if (prevOpdate === thisOpdate && thisOpdate !== nextOpdate) {
-    return prevWaitNum + defaultWaitnum
-  }
-  else if (prevOpdate !== thisOpdate && thisOpdate === nextOpdate) {
-    return nextWaitNum? (nextWaitNum / 2) : defaultWaitnum
-  }
-  else if (prevOpdate === thisOpdate && thisOpdate === nextOpdate) {
-    return nextWaitNum? ((prevWaitNum + nextWaitNum) / 2) : (prevWaitNum + defaultWaitnum)
-  }  // nextWaitNum is undefined in case of new blank row
+	return (prevOpdate !== thisOpdate && thisOpdate !== nextOpdate)
+			? defaultWaitnum
+			: (prevOpdate === thisOpdate && thisOpdate !== nextOpdate)
+			? prevWaitNum + defaultWaitnum
+			: (prevOpdate !== thisOpdate && thisOpdate === nextOpdate)
+			? nextWaitNum ? nextWaitNum / 2 : defaultWaitnum
+			: nextWaitNum
+			? ((prevWaitNum + nextWaitNum) / 2)
+			: (prevWaitNum + defaultWaitnum)
 }
 
 function inPicArea(evt, pointing) {

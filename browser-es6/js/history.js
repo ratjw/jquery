@@ -141,7 +141,7 @@ function makedeletedCases(deleted)
 
   let $undelete = $("#undelete")
   $undelete.hide()
-  $undelete.off("click").on("click", function () { closeUndel() }).hide()
+  $undelete.off("click").on("click", function () { closeUndel() })
   $(".toUndelete").off("click").on("click", function () {
     toUndelete(this, deleted)
   })
@@ -186,7 +186,7 @@ jQuery.fn.extend({
 
     rowDecoration(this[0], q.opdate)
     dataforEachCell(cells, data)
-    cells[0].className += " toUndelete"
+    cells[0].classList.add("toUndelete")
   }
 })
 

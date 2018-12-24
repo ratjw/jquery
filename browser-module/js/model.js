@@ -62,21 +62,64 @@ function modelGetUpdate(fromDate, toDate)
   return postData(MYSQLIPHP, sql);
 }
 
-function modelSortable(args)
+function modelSortable(arg)
 {
-	let finalWaitnum = args.finalWaitnum,
-		roomtime = args.roomtime,
-		thisOpdate = args.thisOpdate,
-		thisqn = args.thisqn,
-		sql = "sqlReturnbook=UPDATE book SET Waitnum="+ finalWaitnum
-			+ ", opdate='" + thisOpdate
-			+ (roomtime.roomtime &&
-				("', oproom='" + roomtime.roomtime[0]
-				+"', optime='" + roomtime.roomtime[1]))
-			+ "', editor='"+ USER
-			+ "' WHERE qn="+ thisqn +";"
+	let allOldCases = arg.oldlist,
+		allNewCases = arg.newlist,
+		newWaitnum = arg.waitnum,
+		thisOpdate = arg.opdate,
+		thisroom = arg.room,
+		oldqn = arg.qn,
+		sql = "sqlReturnbook="
+
+	// sameDateRoomTableQN is of tbl only, the mover must be removed manually
+	if (allOldCases.length) {
+		sql += updateCasenum(allOldCases)
+	}
+
+	if (allNewCases.length) {
+		for (let i=0; i<allNewCases.length; i++) {
+			sql += (allNewCases[i] === oldqn)
+				? sqlMover(newWaitnum, thisOpdate, thisroom, i + 1, oldqn)
+				: sqlCaseNum(i + 1, allNewCases[i])
+		}
+	} else {
+		sql += sqlMover(newWaitnum, thisOpdate, null, null, oldqn)
+	}
+
+	if (!allOldCases.length && !allNewCases.length) {
+		sql += sqlMover(newWaitnum, thisOpdate, null, null, oldqn)
+	}
 
 	return postData(MYSQLIPHP, sql);
+}
+
+function updateCasenum(allCases)
+{
+	let sql = ""
+	for (let i=0; i<allCases.length; i++) {
+		sql += sqlCaseNum(i + 1, allCases[i])
+	}
+	return sql
+}
+
+function sqlCaseNum(casenum, qn)
+{	
+  return "UPDATE book SET "
+		+  "casenum=" + casenum
+		+  ",editor='" + USER
+		+  "' WHERE qn="+ qn + ";";
+}
+
+function sqlMover(waitnum, opdate, oproom, casenum, qn)
+{
+  return "UPDATE book SET "
+		+  "waitnum=" + waitnum
+		+  ", opdate='" + opdate
+		+  "',oproom=" + oproom
+		+  ",casenum=" + casenum
+		+  ",editor='" + USER
+		+  "' WHERE qn="+ qn + ";";
 }
 
 function modelFindLatestEntry() {
@@ -211,11 +254,9 @@ function modelDeleteCase(waitnum, qn) {
 }
 
 function modelChangeDate(args) {
-	let sql = "sqlReturnbook=UPDATE book SET opdate='" + args.thisDate + "', "
-			+ (args.oproom
-				? ("oproom='" + args.oproom + "', optime='" + args.optime + "', ")
-				: "")
-			+ "editor='" + USER + "' WHERE qn="+ args.qn + ";"
+	let sql = `sqlReturnbook=UPDATE book SET opdate='${args.thisDate}',
+				waitnum=${waitnum},theatre='',oproom=null,casenum=null,
+				optime='',editor='${USER}' WHERE qn=${args.qn};`
 
 	return postData(MYSQLIPHP, sql)
 }

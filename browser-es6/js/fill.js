@@ -13,8 +13,6 @@ function fillupstart()
 	if (book.length === 0) { book.push({"opdate" : todate}) }
 	
 	fillall(book, table, start, until)
-
-	hoverMain()
 }
 
 // Display from fillupstart to 2 year from now
@@ -31,6 +29,8 @@ function fillupfinish()
 		book = gv.BOOK
 	
 	fillall(book, table, start, until, table.rows.length-1)
+
+	hoverMain()
 }
 
 function fillall(book, table, start, until, num=0)
