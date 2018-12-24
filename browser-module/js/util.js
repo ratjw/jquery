@@ -4,15 +4,6 @@ import {
 	LARGESTDATE, THAIMONTH, NAMEOFDAYFULL, NAMEOFDAYABBR
 } from "./const.js"
 
-export {
-	getBOOK, getCONSULT, getSTAFF, getONCALL, getHOLIDAY, gettimestamp,
-	updateBOOK, showUpload, getBOOKrowByQN, getTableRowByQN, isConsultsTbl,
-	getBOOKrowsByDate, getTableRowsByDate, putNameAge, rowDecoration, dayName,
-	ISOdate, thDate, numDate, nextdays, getOpdate, hoverMain, getClass,
-	putThdate, putAgeOpdate, calcWaitnum, URIcomponent, Alert, isSplit,
-	winWidth, winHeight, menustyle, UndoManager, holiday, setONCALL, winResizeFix
-}
-
 export const isPACS = /10.6./.test(window.location),
 	START = ISOdate(new Date(new Date().getFullYear(), new Date().getMonth()-1, 1))
 
@@ -68,13 +59,13 @@ let BOOK = [],
 	HOLIDAY = [],
 	timestamp = ""
 
-function getBOOK() { return BOOK }
-function getCONSULT() { return CONSULT }
-function getSTAFF() { return STAFF }
-function getONCALL() { return ONCALL }
-function getHOLIDAY() { return HOLIDAY }
-function gettimestamp() { return timestamp }
-function setONCALL(oncall) { ONCALL = oncall }
+export function getBOOK() { return BOOK }
+export function getCONSULT() { return CONSULT }
+export function getSTAFF() { return STAFF }
+export function getONCALL() { return ONCALL }
+export function getHOLIDAY() { return HOLIDAY }
+export function gettimestamp() { return timestamp }
+export function setONCALL(oncall) { ONCALL = oncall }
 
 $.fn.refixMe = function($original) {
   let $fix = $original.find("thead tr").clone();
@@ -83,7 +74,7 @@ $.fn.refixMe = function($original) {
   $(this).html($fix)
 }
 
-function resizeFixed($fix, $this)
+export function resizeFixed($fix, $this)
 {
   $fix.find("th").each(function(index) {
     let wide = $this.find("th").eq(index).width()
@@ -92,7 +83,7 @@ function resizeFixed($fix, $this)
   });
 }
 
-function winResizeFix($this, $container) {
+export function winResizeFix($this, $container) {
 	let $fix = $("#fixed"),
 		hide = $fix.css("display") === "none",
 		pad = $container.css("paddingLeft")
@@ -104,10 +95,20 @@ function winResizeFix($this, $container) {
 	hide && $fix.hide()
 }
 
+export function reposition($me, mypos, atpos, target, within) {
+	$me.show()
+	$me.position({
+		my: mypos,
+		at: atpos,
+		of: target,
+		within: within
+	})
+}
+
 // Save data got from server
 // Two main data for tables (BOOK, CONSULT) and a timestamp
 // QTIME = datetime of last fetching : $mysqli->query("SELECT now();")
-function updateBOOK(response) {
+export function updateBOOK(response) {
 	if (response.BOOK) { BOOK = response.BOOK }
 	if (response.CONSULT) { CONSULT = response.CONSULT }
 	if (response.STAFF) { STAFF = response.STAFF }
@@ -119,14 +120,14 @@ function updateBOOK(response) {
 // hnName is a pre-defined letiable in child window (jQuery-File-Upload)
 // uploadWindow is to be replaced by new window, used for showUpload only
 let uploadWindow = null
-function showUpload(hn, patient) {
+export function showUpload(hn, patient) {
 	uploadWindow && !uploadWindow.closed && uploadWindow.close();
 	uploadWindow = window.open("../jQuery-File-Upload/index.html", "_blank")
 	uploadWindow.hnName = {"hn": hn, "patient": patient}
 }
 
 // Javascript Date Object to MySQL date (ISOdate 2014-05-11)
-function ISOdate(date) {
+export function ISOdate(date) {
 	if (!date) { return date }
 
 	let mm = date.getMonth() + 1,
@@ -139,7 +140,7 @@ function ISOdate(date) {
 } 
 
 // ISOdate (2014-05-11) to Thai date (11 พค. 2557) 
-function thDate(opdate) {
+export function thDate(opdate) {
 	if (!opdate) { return opdate }
 
 	// LARGESTDATE (9999-12-31)
@@ -157,7 +158,7 @@ function thDate(opdate) {
 }
 
 // Thai date (11 พค. 2557) to ISOdate (2014-05-11)
-function numDate(opdate) {
+export function numDate(opdate) {
 	if (!opdate) { return "" }
 
 	let date = opdate.split(" "),
@@ -172,7 +173,7 @@ function numDate(opdate) {
 
 // Date Object or ISOdate to be added or substracted by days
 // Result in ISOdate (2014-05-11)
-function nextdays(date, days) {
+export function nextdays(date, days) {
 	if (!date) { return date }
 
 	let next = new Date(date);
@@ -182,25 +183,25 @@ function nextdays(date, days) {
 }
 
 // change Thai date from table to ISO date
-function getOpdate (date) {
+export function getOpdate (date) {
 	// Undefined date will be taken care by numDate
 	return (String(date) === "") ? LARGESTDATE : numDate(date)
 }
 
 // change date in book to show on table taking care of LARGESTDATE
-function putThdate (date) {
+export function putThdate (date) {
 	if (!date) { return date }
 
 	return (String(date) === LARGESTDATE) ? "" : thDate(date)
 }
 
-function putAgeOpdate(dob, date)
+export function putAgeOpdate(dob, date)
 {
 	return (!date || !dob) ? "" : getAge(dob, date)
 }
 
 // Calculate age at (toDate) (iso format) from birth date
-function getAge (birth, toDate) {
+export function getAge (birth, toDate) {
 	// with LARGESTDATE as today
 	if (!birth) { return "" }
 
@@ -236,7 +237,7 @@ function getAge (birth, toDate) {
 }
 
 // necessary when passing to http, not when export to excel
-function URIcomponent(qoute) {
+export function URIcomponent(qoute) {
   if (/\W/.test(content)) {
     content = content.replace(/\s+$/,'')
     content = content.replace(/\"/g, "&#34;")  // double quotes
@@ -256,23 +257,23 @@ function getMaxQN(book)
 	return String(qn)
 }
 
-function getBOOKrowByQN(book, qn) {  
+export function getBOOKrowByQN(book, qn) {  
 	return book.find(row => row.qn === qn )
 }
 
-function getTableRowByQN(tableID, qn)
+export function getTableRowByQN(tableID, qn)
 {
 	return $("#"+tableID+" tr:has(td)").toArray().find(row => row.cells[QN].innerHTML === qn)
 }
 
-function getWaitingBOOKrowByHN(hn)
+export function getWaitingBOOKrowByHN(hn)
 {  
 	var	todate = ISOdate(new Date())
 
 	return BOOK.find(bookq => bookq.opdate > todate && bookq.hn === hn)
 }
 
-function getBOOKrowsByDate(book, opdate)
+export function getBOOKrowsByDate(book, opdate)
 {
 	return book.filter(function(q) {
 		return (q.opdate === opdate);
@@ -280,7 +281,7 @@ function getBOOKrowsByDate(book, opdate)
 }
 
 // main table (#tbl) only
-function getTableRowsByDate(opdateth)
+export function getTableRowsByDate(opdateth)
 {
 	if (!opdateth) { return [] }
 	return $("#tbl tr").filter(function() {
@@ -288,7 +289,7 @@ function getTableRowsByDate(opdateth)
 	})
 }
 
-function findStartRowInBOOK(book, opdate)
+export function findStartRowInBOOK(book, opdate)
 {
 	var q = 0
 	while ((q < book.length) && (book[q].opdate < opdate)) {
@@ -297,7 +298,7 @@ function findStartRowInBOOK(book, opdate)
 	return (q < book.length)? q : -1
 }
 
-function findLastDateInBOOK(book)
+export function findLastDateInBOOK(book)
 {
 	var q = 0
 	while ((q < book.length) && (book[q].opdate < LARGESTDATE)) {
@@ -307,7 +308,7 @@ function findLastDateInBOOK(book)
 }
 
 // main table (#tbl) only
-function sameDateRoomTableQN(opdateth, room)
+export function sameDateRoomTableQN(opdateth, room)
 {
 	if (!room) { return [] }
 
@@ -322,7 +323,7 @@ function sameDateRoomTableQN(opdateth, room)
 	return $.makeArray(sameRoom)
 }
 
-function sameDateRoomBookQN(book, opdate, room)
+export function sameDateRoomBookQN(book, opdate, room)
 {
 	if (!room) { return [] }
 
@@ -336,7 +337,7 @@ function sameDateRoomBookQN(book, opdate, room)
 }
 
 // for main table (#tbl) only
-function createThisdateTableRow(opdate, opdateth)
+export function createThisdateTableRow(opdate, opdateth)
 {
 	if (opdate === LARGESTDATE) { return null }
 	var rows = getTableRowsByDate(thDate(nextdays(opdate, -1))),
@@ -348,39 +349,41 @@ function createThisdateTableRow(opdate, opdateth)
 	return $thisrow
 }
 
-function isSplit()
+export function isSplit()
 {  
 	return $("#queuewrapper").css("display") === "block"
 }
 
-function isStaffname(staffname)
+export function isStaffname(staffname)
 {  
 	return $('#titlename').html() === staffname
 }
 
 // The table is Consults table
-function isConsults()
+export function isConsults()
 {  
 	return $('#titlename').html() === "Consults"
 }
 
 // This is on the split table and is Consults table
-function isConsultsTbl(tableID)
+export function isConsultsTbl(tableID)
 {  
 	var queuetbl = tableID === "queuetbl"
 
 	return queuetbl && isConsults()
 }
 
-function returnFalse()
+export function dialogServiceShowing()
 {
-  return false
+  let $dialogService = $("#dialogService")
+
+  return $dialogService.hasClass('ui-dialog-content') && $dialogService.dialog('isOpen')
 }
 
 // waitnum is for ordering where there is no oproom, casenum
 // nextWaitNum is undefined in case of new blank row
 //Consults cases have negative waitnum
-function calcWaitnum(thisOpdate, $prevrow, $nextrow)
+export function calcWaitnum(thisOpdate, $prevrow, $nextrow)
 {
   let prevWaitNum = Number($prevrow.prop("title")),
     nextWaitNum = Number($nextrow.prop("title")),
@@ -403,7 +406,7 @@ function calcWaitnum(thisOpdate, $prevrow, $nextrow)
 			: (prevWaitNum + defaultWaitnum)
 }
 
-function inPicArea(evt, pointing) {
+export function inPicArea(evt, pointing) {
   let $pointing = $(pointing),
     x = evt.pageX,
     y = evt.pageY,
@@ -418,7 +421,7 @@ function inPicArea(evt, pointing) {
   return inX && inY
 }
 
-function picArea(pointing) {
+export function picArea(pointing) {
   let $pointing = $(pointing),
     right = $pointing.offset().left + $pointing.width(),
     bottom = $pointing.offset().top + $pointing.height(),
@@ -433,14 +436,14 @@ function picArea(pointing) {
   }
 }
 
-function dataforEachCell(cells, data)
+export function dataforEachCell(cells, data)
 {
   data.forEach(function(item, i) {
     cells[i].innerHTML = item
   })
 }
 
-function rowDecoration(row, date)
+export function rowDecoration(row, date)
 {
   let  cells = row.cells
 
@@ -450,36 +453,19 @@ function rowDecoration(row, date)
   cells[DIAGNOSIS].style.backgroundImage = holiday(date)
 }
 
-function dayName(DAYNAME, date)
+export function dayName(DAYNAME, date)
 {
 	return date === LARGESTDATE
 		? ""
 		: DAYNAME[(new Date(date)).getDay()]
 }
 
-let putNameAge = function (q) {
+export function putNameAge(q)
+{
 	return q.patient + (q.dob ? ("<br>อายุ " + putAgeOpdate(q.dob, q.opdate)) : "")
 }
 
-// hover on background pics
-function hoverMain()
-{
-	let	paleClasses = ["pacs", "upload"],
-		boldClasses = ["pacs2", "upload2"]
-
-	$("td.pacs, td.upload").mousemove(function(event) {
-		if (inPicArea(event, this)) {
-			getClass(this, paleClasses, boldClasses)
-		} else {
-			getClass(this, boldClasses, paleClasses)
-		}
-	})
-	.mouseout(function (event) {
-		getClass(this, boldClasses, paleClasses)
-	})
-}
-
-function getClass(thiscell, fromClass, toClass)
+export function getClass(thiscell, fromClass, toClass)
 {
 	let	classname = thiscell.className,
 		classes = classname.split(" "),
@@ -492,7 +478,7 @@ function getClass(thiscell, fromClass, toClass)
 	}
 }
 
-function checkMatch(classes, oldClasses)
+export function checkMatch(classes, oldClasses)
 {
 	for (let i=0; i<classes.length; i++) {
 		for (let j=0; j<oldClasses.length; j++) {
@@ -504,7 +490,7 @@ function checkMatch(classes, oldClasses)
 }
 
 // Make dialog box dialogAlert containing error message
-function Alert(title, message) {
+export function Alert(title, message) {
 	let $dialogAlert = $("#dialogAlert")
 
 	$dialogAlert.css({
@@ -522,17 +508,18 @@ function Alert(title, message) {
 	}).fadeIn();
 }
 
-function winWidth() {
+export function winWidth() {
 	return window.innerWidth
 }
 
-function winHeight(container) {
+export function winHeight(container) {
 	return window.innerHeight
 }
 
 // Shadow down when menu is below target row (high on screen)
 // Shadow up when menu is higher than target row (low on screen)
-let menustyle = function ($me, target) {
+export function menustyle($me, target)
+{
 	let shadow = ($me.offset().top > $(target).offset().top)
 					? '10px 20px 30px slategray'
 					: '10px -20px 30px slategray'
@@ -541,7 +528,7 @@ let menustyle = function ($me, target) {
 	})
 }
 
-let UndoManager = (function () {
+export let UndoManager = (function () {
 
 	let commands = [],
 		index = -1,
@@ -651,7 +638,7 @@ let UndoManager = (function () {
 	};
 })();
 
-function holiday(date)
+export function holiday(date)
 {
 	// Buddhist holiday and compensation for religious day on weekend
 	let Buddhist = HOLIDAY.find(day => day.holidate === date)
@@ -703,7 +690,7 @@ function holiday(date)
 	return govHoliday && `url('css/pic/holiday/${govHoliday}.png')`
 }
 
-function exportQbookToExcel()
+export function exportQbookToExcel()
 {
   //getting data from our table
   let data_type = 'data:application/vnd.ms-excel';  //Chrome, FF, not IE
@@ -761,7 +748,7 @@ function exportQbookToExcel()
   exportToExcel("capture", data_type, title, style, head, filename)    
 }
 
-function exportServiceToExcel()
+export function exportServiceToExcel()
 {
   //getting data from our table
   let data_type = 'data:application/vnd.ms-excel';  //Chrome, FF, not IE
@@ -847,7 +834,7 @@ function exportServiceToExcel()
   exportToExcel("servicetbl", data_type, title, style, head, filename)    
 }
 
-function exportFindToExcel(search)
+export function exportFindToExcel(search)
 {
   // getting data from our table
   // data_type is for Chrome, FF
@@ -900,7 +887,7 @@ function exportFindToExcel(search)
   exportToExcel("findtbl", data_type, title, style, head, filename)    
 }
 
-function exportReportToExcel(title)
+export function exportReportToExcel(title)
 {
   // getting data from our table
   // data_type is for Chrome, FF
@@ -963,7 +950,7 @@ function exportReportToExcel(title)
   exportToExcel("reviewtbl", data_type, title, style, head, filename)    
 }
 
-function exportToExcel(id, data_type, title, style, head, filename)
+export function exportToExcel(id, data_type, title, style, head, filename)
 {
   if ($("#exceltbl").length) {
     $("#exceltbl").remove()

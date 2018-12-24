@@ -6,11 +6,11 @@ import {
 
 import {
 	editcellEvent, getPointer, getOldcontent, getNewcontent, updateEditcellContent,
-	createEditcell, renewEditcell, editcellLocation, clearEditcell, reposition
+	createEditcell, renewEditcell, editcellLocation, clearEditcell
 } from "./edit.js"
 
 import { makeEquipTable } from "./equip.js"
-import { oneRowMenu, clearMouseoverTR } from "./menu.js"
+import { setClickMenu, oneRowMenu, clearMouseoverTR } from "./menu.js"
 import {
 	modelStart, modelIdling, modelChangeOncall, modeldoUpdate, modelGetUpdate,
 	modelSaveRoomTime, modelSaveContent, modelSaveNoQN, modelSaveByHN
@@ -26,12 +26,13 @@ import {
 import {
 	getBOOK, getCONSULT, getSTAFF, getONCALL, getHOLIDAY, isPACS, gettimestamp, START,
 	getOpdate, ISOdate, thDate, numDate, nextdays, calcWaitnum, URIcomponent, Alert,
-	UndoManager, updateBOOK, showUpload, menustyle, holiday, setONCALL, isSplit, hoverMain
+	UndoManager, updateBOOK, showUpload, menustyle, holiday, setONCALL, isSplit, reposition,
+	dialogServiceShowing
 } from "./util.js"
 
 // Public functions
 export {
-	savePreviousCell, editPresentCell, showStaffOnCall, dialogServiceShowing,
+	savePreviousCell, editPresentCell, showStaffOnCall,
 	PACS, userStaff, clearTimer, resetTimer, clearSelection, fillConsults,
 	resetTimerCounter
 }
@@ -74,7 +75,8 @@ function success(response) {
   scrolltoToday()
   setStafflist()
   fillConsults()
-  clickOnSetting()
+  setClickMenu()
+  setClickSetting()
   disableOneRowMenu()
   disableExcelLINE()
   overrideJqueryUI()
@@ -146,7 +148,6 @@ let makeFinish = function() {
 		until = ISOdate((new Date(nextyear, month, todate)))
 
 	viewAll(book, table, start, until, table.rows.length-1)
-	hoverMain()
 }
 
 function initEquipment()
@@ -484,7 +485,7 @@ function changeOncall(pointing, opdate, staffname)
   })
 }
 
-function clickOnSetting()
+function setClickSetting()
 {
 	let onclick = {
 		"clickaddStaff": addStaff,
@@ -601,13 +602,6 @@ function getUpdate()
       Alert ("getUpdate", response)
     }
   })
-}
-
-function dialogServiceShowing()
-{
-  let $dialogService = $("#dialogService")
-
-  return $dialogService.hasClass('ui-dialog-content') && $dialogService.dialog('isOpen')
 }
 
 // Check data in server changed from last loading timestamp

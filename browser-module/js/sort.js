@@ -7,8 +7,9 @@ import { clearTimer, resetTimer, resetTimerCounter } from "./control.js"
 import { clearEditcell } from "./edit.js"
 import { clearMouseoverTR } from "./menu.js"
 import { modelSortable } from "./model.js"
-import { getOpdate, calcWaitnum, Alert, UndoManager, 
-	updateBOOK, showUpload
+import {
+	getOpdate, calcWaitnum, Alert, UndoManager, updateBOOK, showUpload,
+	sameDateRoomTableQN
 } from "./util.js"
 import { viewSortable } from "./view.js"
 

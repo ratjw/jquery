@@ -208,10 +208,14 @@ function modelFind(hn, patient, diagnosis, treatment, contact) {
 	return postData(MYSQLIPHP, sql)
 }
 
-function modelUndelete(opdate, qn) {
-	let sql = "functionName=undelete&qn=" + qn
-			+ "&opdate=" + opdate
-			+ "&editor=" + USER
+function modelUndelete(allCases, qn, del) {
+    let sql = "sqlReturnbook="
+
+    allCases.forEach((item, i) => {
+      sql += item === qn
+          ? `UPDATE book SET deleted=${del},editor='${USER}' WHERE qn=${qn};`
+          : sqlCaseNum(i + 1, item)
+    })
 
 	return postData(MYSQLIPHP, sql);
 }
@@ -230,9 +234,7 @@ function modelAllDeletedCases() {
 }
 
 function modelAllCases() {
-	let sql = "sqlReturnData=SELECT * FROM book "
-			+ "WHERE waitnum > 0 "
-			+ "ORDER BY opdate;"
+	let sql = `sqlReturnData=SELECT * FROM book WHERE deleted=0 ORDER BY opdate;`
 
 	return postData(MYSQLIPHP, sql)
 }
@@ -245,18 +247,46 @@ function modelCaseHistory(hn) {
 	return postData(MYSQLIPHP, sql)
 }
 
-function modelDeleteCase(waitnum, qn) {
-	// In database, not actually delete the case but SET waitnum=NULL
-	let sql = "sqlReturnbook=UPDATE book SET waitnum=" + waitnum + ", "
-			+ "editor='" + USER + "' WHERE qn="+ qn + ";"
+// In database, not actually delete the case but SET deleted=1
+function modelDeleteCase(allCases, qn, del) {
+	let sql = `sqlReturnbook=UPDATE book SET deleted=${del},editor='${USER}' WHERE qn=${qn};`
+
+	if (allCases.length) {
+		if (del) {
+			index = allCases.indexOf(qn)
+			allCases.splice(index, 1)
+		}
+		sql += updateCasenum(allCases)
+	}
 
 	return postData(MYSQLIPHP, sql)
 }
 
-function modelChangeDate(args) {
-	let sql = `sqlReturnbook=UPDATE book SET opdate='${args.thisDate}',
+function modelPosttponeCase(allCases, waitnum, thisdate, qn) {
+	let sql = `sqlReturnbook=UPDATE book SET opdate='${thisDate}',
 				waitnum=${waitnum},theatre='',oproom=null,casenum=null,
-				optime='',editor='${USER}' WHERE qn=${args.qn};`
+				optime='',editor='${USER}' WHERE qn=${qn};`
+
+	if (allCases.length) {
+		index = allCases.indexOf(qn)
+		allCases.splice(index, 1)
+		sql += updateCasenum(allCases)
+	}
+
+	return postData(MYSQLIPHP, sql)
+}
+
+function modelChangeDate(allOldCases, allNewCases, waitnum, thisdate, room, qn) {
+	let sql = "sqlReturnbook=" + updateCasenum(allOldCases)
+
+	for (let i=0; i<allNewCases.length; i++) {
+		if (allNewCases[i] === qn) {
+			let casenum = room? (i + 1) : null
+			sql += sqlMover(waitnum, thisdate, room || null, casenum, qn)
+		} else {
+			sql += sqlCaseNum(i + 1, allNewCases[i])
+		}
+	}
 
 	return postData(MYSQLIPHP, sql)
 }

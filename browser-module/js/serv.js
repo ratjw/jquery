@@ -756,11 +756,9 @@ function initRecord(bookq, $divRecord)
 function inputEditable($divRecord)
 {
 	if (editableSV) {
-		$divRecord.find("input").off("click", returnFalse)
-		$divRecord.find("input[type=text]").prop("disabled", false)
+		$divRecord.find("input").prop("disabled", false)
 	} else {
-		$divRecord.find("input").on("click", returnFalse)
-		$divRecord.find("input[type=text]").prop("disabled", true)
+		$divRecord.find("input").prop("disabled", true)
 	}
 }
 

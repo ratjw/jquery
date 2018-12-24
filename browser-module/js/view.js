@@ -7,12 +7,12 @@ import {
 
 import { showStaffOnCall, PACS } from "./control.js"
 import { reViewService } from "./serv.js"
-import { reposition, clearEditcell } from "./edit.js"
+import { clearEditcell } from "./edit.js"
 import {
 	getBOOK, getCONSULT, isPACS, getBOOKrowByQN, ISOdate, thDate, nextdays, dayName,
 	numDate, getOpdate, putThdate, putAgeOpdate, winWidth, winHeight, getTableRowByQN,
-	START, showUpload, isConsultsTbl, getBOOKrowsByDate, getTableRowsByDate,
-	putNameAge, rowDecoration, hoverMain, holiday, isSplit, winResizeFix
+	START, showUpload, isConsultsTbl, getBOOKrowsByDate, getTableRowsByDate, reposition,
+	putNameAge, rowDecoration, holiday, isSplit, winResizeFix, inPicArea, getClass
 } from "./util.js"
 
 export {
@@ -93,6 +93,7 @@ function viewAll(book, table, start, until, num=0) {
 		// make a blank row
 		makenextrow(table, date)	// insertRow
 	}
+	hoverMain()
 }
 
 // Used after serviceReview and in idling update
@@ -331,6 +332,24 @@ function addColor($this, bookqOpdate)
 	}
 }
 
+// hover on background pics
+function hoverMain()
+{
+	let	paleClasses = ["pacs", "upload"],
+		boldClasses = ["pacs2", "upload2"]
+
+	$("td.pacs, td.upload").mousemove(function(event) {
+		if (inPicArea(event, this)) {
+			getClass(this, paleClasses, boldClasses)
+		} else {
+			getClass(this, boldClasses, paleClasses)
+		}
+	})
+	.mouseout(function (event) {
+		getClass(this, boldClasses, paleClasses)
+	})
+}
+
 let splitPane = function () {
 	let scrolledTop = document.getElementById("tblcontainer").scrollTop,
 		tohead = findVisibleHead('#tbl'),
@@ -458,25 +477,46 @@ let locateFound = function (containerID, tableID, qn) {
   }
 }
 
-function viewChangeDate(args) {
-	let thisDate = args.thisDate,
-		opdate = args.opdate,
-		staffname = args.staffname,
-		qn = args.qn
-	
+function viewPostponeCase(opdate, thisdate, staffname, qn)
+{
 	reViewOneDay(opdate)
-	reViewOneDay(thisDate)
-							// changeDate of this staffname's case, re-render
-	isSplit() && ($('#titlename').html() === staffname) && 
-		reViewStaffqueue()
+	if (thisdate !== LARGESTDATE) { reViewOneDay(thisdate) }
+
+	// changeDate of this staffname's case, re-render
+	isSplit() && isStaffname(staffname) && reViewStaffqueue()
+
 	scrolltoThisCase(qn)
 }
 
-function viewDeleteCase(opdate, staffname) {
-	reViewOneDay(opdate)
-	if (isSplit() && ($('#titlename').html() === staffname)) {
-		reViewStaffqueue()
+function viewChangeDate(movedateth, movedate, thisdate, staffname, qn)
+{
+	if (movedateth) {
+		reViewOneDay(movedate)
 	}
+	if (movedate !== thisdate) {
+		reViewOneDay(thisdate)
+	}
+	if (isSplit()) {
+		let titlename = $('#titlename').html()
+		if ((titlename === staffname) || (titlename === "Consults")) {
+			// changeDate of this staffname's case
+			reViewStaffqueue()
+		}
+	} 
+
+	// changeDate of this staffname's case, re-render
+	isSplit() && isStaffname(staffname) && reViewStaffqueue()
+
+	scrolltoThisCase(qn)
+}
+
+function viewDeleteCase(tableID, $row, opdate, staffname) {
+	reViewOneDay(opdate)
+	tableID === "tbl"
+	? isSplit() && isStaffname(staffname) && reViewStaffqueue()
+	: isConsults()
+	? deleteRow($row, opdate)
+	: $row.remove()
 }
 
 function viewSaveRoomTime(opdate) {
@@ -693,56 +733,222 @@ let deleteRow = function ($row, opdate) {
 
 // Make box dialog dialogAll containing alltbl
 function viewAllCases(response) {
-	let book = JSON.parse(response),
-		start = book[0].opdate,
-		k = findStartRowInBOOK(book, LARGESTDATE),
-		//Stop row in book
-		until = book[k-1].opdate,
-		alltbl = document.getElementById("alltbl")
-
-	// Delete all rows except first
-	alltbl.querySelector("tbody").innerHTML = alltbl.rows[0].outerHTML;
-
-	viewAll(book, alltbl, start, until)
-
-	let $dialogAll = $("#dialogAll")
-	$dialogAll.css("height", 0)
-	$dialogAll.dialog({
-		title: "All Cases",
-		closeOnEscape: true,
-		modal: true,
-		hide: 200,
-		width: window.innerWidth * 95 / 100,
-		height: window.innerHeight * 95 / 100,
-		close: function() {
-			$(window).off("resize")
-		}
-	})
-
-	//scroll to today
-	let today = thDate(ISOdate(new Date())),
-		thishead = $("#alltbl tr:contains(" + today + ")")[0]
-	$('#dialogAll').animate({
-		scrollTop: thishead.offsetTop
-	}, 300);
-	$('#dialogAll .pacs').off("click").on("click", function() {
-			PACS(this.innerHTML)
-	})
-	$('#dialogAll .upload').off("click").on("click", function() {
-		let patient = this.innerHTML,
-			hn = $(this).prev().html()
-
-		hn && showUpload(hn, patient)
-	})
-
-	// for resizing dialogs in landscape / portrait view
-	$(window).resize(function() {
-		$dialogAll.dialog({
-			width: winWidth() * 95 / 100,
-			height: winHeight() * 95 / 100
-		})
-	})
+    // Make paginated dialog box containing alltbl
+    pagination($("#dialogAll"), $("#alltbl"), response, "All Saved Cases")
 }
+
+function pagination($dialog, $tbl, book, search)
+{
+  let  beginday = book[0].opdate,
+    lastday = findLastDateInBOOK(book),
+    firstday = getPrevMonday()
+
+  $dialog.dialog({
+    title: search,
+    closeOnEscape: true,
+    modal: true,
+    show: 200,
+    hide: 200,
+    width: winWidth(95),
+    height: winHeight(95),
+    close: function() {
+      $(window).off("resize", resizeDialog )
+      $(".fixed").remove()
+    },
+    buttons: [
+      {
+        text: "<<< Year",
+        class: "yearbut",
+        click: function () {
+          showOneWeek(book, firstday, -364)
+        }
+      },
+      {
+        text: "<< Month",
+        class: "monthbut",
+        click: function () {
+          offset = firstday.slice(-2) > 28 ? -35 : -28
+          showOneWeek(book, firstday, offset)
+        }
+      },
+      {
+        text: "< Week",
+        click: function () {
+          showOneWeek(book, firstday, -7)
+        }
+      },
+      {
+        click: function () { return }
+      },
+      {
+        text: "Week >",
+        click: function () {
+          showOneWeek(book, firstday, 7)
+        }
+      },
+      {
+        text: "Month >>",
+        class: "monthbut",
+        click: function () {
+          offset = firstday.slice(-2) > 28 ? 35 : 28
+          showOneWeek(book, firstday, offset)
+        }
+      },
+      {
+        text: "Year >>>",
+        class: "yearbut",
+        click: function () {
+          showOneWeek(book, firstday, 364)
+        }
+      }
+    ]
+  })
+
+  showOneWeek(book, firstday, 0)
+  $tbl.fixMe($dialog)
+
+  //for resizing dialogs in landscape / portrait view
+  $(window).on("resize", resizeDialog )
+
+  $dialog.find('.pacs').on("click", function() {
+    if (isPACS) {
+      PACS(this.innerHTML)
+    }
+  })
+  $dialog.find('.upload').on("click", function() {
+    let hn = this.previousElementSibling.innerHTML
+    let patient = this.innerHTML
+
+    showUpload(hn, patient)
+  })
+
+  function showOneWeek(book, Monday, offset)
+  {
+    let  bookOneWeek, Sunday
+
+    firstday = nextdays(Monday, offset)
+    if (firstday < beginday) { firstday = getPrevMonday(beginday) }
+    if (firstday > lastday) {
+      firstday = nextdays(getPrevMonday(lastday), 7)
+      bookOneWeek = getBookNoDate(book)
+      showAllCases(bookOneWeek)
+    } else {
+      Sunday = getNextSunday(firstday)
+      bookOneWeek = getBookOneWeek(book, firstday, Sunday)
+      showAllCases(bookOneWeek, firstday, Sunday)
+    }
+  }
+
+  function getPrevMonday(date)
+  {
+    let today = date
+          ? new Date(date.replace(/-/g, "/"))
+          : new Date();
+    today.setDate(today.getDate() - today.getDay() + 1);
+    return ISOdate(today);
+  }
+
+  function getNextSunday(date)
+  {
+    let today = new Date(date);
+    today.setDate(today.getDate() - today.getDay() + 7);
+    return ISOdate(today);
+  }
+
+  function getBookOneWeek(book, Monday, Sunday)
+  {
+    return $.grep(book, function(bookq) {
+      return bookq.opdate >= Monday && bookq.opdate <= Sunday
+    })
+  }
+
+  function getBookNoDate(book)
+  {
+    return $.grep(book, function(bookq) {
+      return bookq.opdate === LARGESTDATE
+    })
+  }
+
+  function showAllCases(bookOneWeek, Monday, Sunday)
+  {
+    let  Mon = Monday && thDate(Monday) || "",
+      Sun = Sunday && thDate(Sunday) || ""
+
+    $dialog.dialog({
+      title: search + " : " + Mon + " - " + Sun
+    })
+    // delete previous table lest it accumulates
+    $tbl.find('tr').slice(1).remove()
+
+    if (Monday) {
+      let  $row, row, cells,
+        date = Monday,
+        nocase = true
+
+      $.each( bookOneWeek, function() {
+        while (this.opdate > date) {
+          if (nocase) {
+            $row = $('#allcells tr').clone().appendTo($tbl.find('tbody'))
+            row = $row[0]
+            cells = row.cells
+            rowDecoration(row, date)
+          }
+          date = nextdays(date, 1)
+          nocase = true
+        }
+        $('#allcells tr').clone()
+          .appendTo($tbl.find('tbody'))
+            .filldataAllcases(this)
+        nocase = false
+      })
+      date = nextdays(date, 1)
+      while (date <= Sunday) {
+        $row = $('#allcells tr').clone().appendTo($tbl.find('tbody'))
+        row = $row[0]
+        cells = row.cells
+        rowDecoration(row, date)
+        date = nextdays(date, 1)
+      }
+    } else {
+      $.each( bookOneWeek, function() {
+        $('#allcells tr').clone()
+          .appendTo($tbl.find('tbody'))
+            .filldataAllcases(this)
+      });
+    }
+  }
+
+  function resizeDialog() {
+    $dialog.dialog({
+      width: winWidth(95),
+      height: winHeight(95)
+    })
+    winResizeFix($tbl, $dialog)
+  }
+}
+
+jQuery.fn.extend({
+  filldataAllcases : function(q) {
+    let row = this[0],
+      cells = row.cells,
+      date = q.opdate,
+      data = [
+        putThdate(date),
+        q.staffname,
+        q.hn,
+        q.patient,
+        q.diagnosis,
+        q.treatment,
+        viewEquip(q.equipment),
+        q.admission,
+        q.final,
+        q.contact
+      ]
+
+    rowDecoration(row, date)
+    dataforEachCell(cells, data)
+  }
+})
 
 // Make box dialog dialogHistory containing historytbl
 function viewCaseHistory(row, hn, tracing)
@@ -1062,6 +1268,9 @@ function viewSortable(argv) {
 	}
 
 	receiver === "tbl" ? dropOnTbl() : dropOnStaff()
+
+	// attach hover to changed DOM elements
+	hoverMain()
 }
 
 function viewIdling() {

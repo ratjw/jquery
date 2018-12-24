@@ -4,13 +4,13 @@ import {
 	DIAGNOSISSV, TREATMENTSV, ADMISSIONSV, FINALSV
 } from "./const.js"
 
-import { savePreviousCell, editPresentCell, resetTimer, dialogServiceShowing } from "./control.js"
+import { savePreviousCell, editPresentCell, resetTimer } from "./control.js"
 import { savePreviousCellService, editPresentCellService } from "./serv.js"
-import { getTableRowByQN } from "./util.js"
+import { getTableRowByQN, reposition, dialogServiceShowing } from "./util.js"
 
 export {
 	editcellEvent, createEditcell, updateEditcellContent, renewEditcell, clearEditcell,
-	editcellLocation, getPointer, getOldcontent, getNewcontent, reposition
+	editcellLocation, getPointer, getOldcontent, getNewcontent
 }
 
 // pointer is the current position
@@ -293,14 +293,4 @@ let getHtmlText = function ($cell) {
 let clearMenu = function() {
 	$('#menu').hide();
 	$('#stafflist').hide();
-}
-
-function reposition($me, mypos, atpos, target, within) {
-	$me.show()
-	$me.position({
-		my: mypos,
-		at: atpos,
-		of: target,
-		within: within
-	})
 }

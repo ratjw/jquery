@@ -154,7 +154,7 @@ EQUIPSHEET = [
     ["divbegin", "", "", "", "Imaging"],
     ["span", "w110", "", "", "Imaging"],
     ["checkbox", "w170", "", "Navigator_frameless", "Navigator frameless"],
-    ["checkbox", "w170", "", "Navigator_frame-based", "Navigator frame-based"],
+    ["checkbox", "w170", "", "Navigator_with-frame", "Navigator with frame"],
     ["checkbox", "", "", "Stereotactic_frame-based", "Stereotactic frame-based"],
     ["br", "", "", "", ""],
     ["span", "w110", "", "", ""],

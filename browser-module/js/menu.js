@@ -4,7 +4,7 @@ import {
 	CONTACT, QN, LARGESTDATE
 } from "./const.js"
 import { showStaffOnCall, clearSelection, PACS } from "./control.js"
-import { createEditcell, clearEditcell, reposition } from "./edit.js"
+import { createEditcell, clearEditcell } from "./edit.js"
 import { USER } from "./main.js"
 
 import {
@@ -19,8 +19,9 @@ import {
 } from "./view.js"
 
 import {
-	getBOOK, getCONSULT, isPACS, updateBOOK, getOpdate, getTableRowByQN, Alert,
-	winWidth, winHeight, UndoManager, isSplit, winResizeFix, calcWaitnum
+	getBOOK, getCONSULT, isPACS, updateBOOK, getOpdate, getBOOKrowByQN, getTableRowByQN,
+	Alert, reposition, winWidth, winHeight, UndoManager, isSplit, winResizeFix, calcWaitnum,
+	sameDateRoomBookQN, sameDateRoomTableQN
 } from "./util.js"
 
 export { oneRowMenu, clearMouseoverTR }
@@ -41,9 +42,12 @@ let onclick = {
 	"clicksearchDB": searchDB
 }
 
-$.each(onclick, function(key, val) {
-	document.getElementById(key).onclick = val
-})
+export function setClickMenu()
+{
+	$.each(onclick, function(key, val) {
+		document.getElementById(key).onclick = val
+	})
+}
 
 // function declaration (definition ) : public
 // function expression (literal) : local
@@ -104,6 +108,20 @@ function addnewrow() {
 		keepcell = tableID === "tbl" ? OPDATE : STAFFNAME,
 		$clone = $row.clone()
 
+	// "tbl" copy title, Date, Room Time
+	// "queuetbl" copy title, Date, Room Time, Staff
+	let addrow = function ($clone, $row, keepcell) {
+		$clone.removeClass("selected")
+			.insertAfter($row)
+				.find("td").eq(HN).removeClass("pacs")
+				.parent().find("td").eq(PATIENT).removeClass("upload")
+				.parent().find("td").eq(keepcell)
+					.nextAll()
+						.html("")
+		clearSelection()
+		createEditcell($clone.find("td")[HN])
+	}
+
 	addrow($clone, $row, keepcell)
 
 	UndoManager.add({
@@ -114,22 +132,6 @@ function addnewrow() {
 			addrow($clone, $row, keepcell)
 		}
 	})		
-}
-
-// Only 2 tables :
-// "tbl" copy title, Date, Room Time
-// "queuetbl" copy title, Date, Room Time, Staff
-let addrow = function ($clone, $row, keepcell) {
-
-	$clone.removeClass("selected")
-		.insertAfter($row)
-			.find("td").eq(HN).removeClass("pacs")
-			.parent().find("td").eq(PATIENT).removeClass("upload")
-			.parent().find("td").eq(keepcell)
-				.nextAll()
-					.html("")
-    clearSelection()
-	createEditcell($clone.find("td")[HN])
 }
 
 // Undefined date booking has opdate = LARGESTDATE
@@ -146,54 +148,51 @@ function postponeCase()
 		qn = $cell.eq(QN).html(),
 		theatre = $cell.eq(THEATRE).html(),
 		oproom = $cell.eq(OPROOM).html(),
-		allCases,
+		oldwaitnum = $row[0].title,
+		newwaitnum = getLargestWaitnum(staffname) + 1,
+		allCases = [],
 		index,
 		sql = "sqlReturnbook="
 
 	if (oproom) {
 		allCases = sameDateRoomTableQN(opdateth, oproom, theatre)
-		index = allCases.indexOf(qn)
-		allCases.splice(index, 1)
-		sql += updateCasenum(allCases)
 	}
 
-	waitnum = getLargestWaitnum(staffname) + 1
+	let doPostponeCase = function (waitnum, thisdate) {
+		modelPostponeCase(allCases, waitnum, thisdate, qn).then(response => {
+			let hasData = function () {
+				updateBOOK(response)
+				viewPostponeCase(opdate, thisDate, staffname, qn)
+			}
 
-	sql += "UPDATE book SET opdate='" + LARGESTDATE
-		+ "',waitnum=" + waitnum
-		+ ",theatre='',oproom=null,casenum=null,optime=''"
-		+ ",editor='" + USER
-        + "' WHERE qn="+ qn + ";"
-
-	let response = postData(MYSQLIPHP, sql)
-	if (typeof response === "object") {
-		updateBOOK(response)
-		refillOneDay(opdate)
-		if ((isSplit()) && 
-			(isStaffname(staffname))) {
-			// changeDate of this staffname's case
-			refillstaffqueue()
-		}
-		scrolltoThisCase(qn)
-	} else {
-		Alert ("postpone", response)
+			typeof response === "object"
+			? hasData()
+			: Alert ("postponeCase", response)
+		}).catch(error => {})
 	}
 
     clearSelection()
-/*
-	args.thisDate = LARGESTDATE
-	doChangeDate(args)
+
+	doPostponeCase(newwaitnum, LARGESTDATE)
 
 	UndoManager.add({
 		undo: function() {
-			args.thisDate = args.opdate
-			doChangeDate(args)
+			doPostponeCase(oldwaitnum, opdate)
 		},
 		redo: function() {
-			args.thisDate = LARGESTDATE
-			doChangeDate(args)
+			doPostponeCase(newwaitnum, LARGESTDATE)
 		}
-	})	*/	
+	})
+}
+
+// The second parameter (, 0) ensure a default value if arrayAfter.map is empty
+function getLargestWaitnum(staffname)
+{
+	let dateStaff = BOOK.filter(function(patient) {
+		return patient.staffname === staffname && patient.opdate === LARGESTDATE
+	})
+
+	return Math.max(...dateStaff.map(patient => patient.waitnum), 0)
 }
 /*
 // Mark the case and initiate mouseoverTR, a line on the date to move to
@@ -245,68 +244,38 @@ let changeDate = function (args) {
 	})
 }
 */
-let doChangeDate = function (args) {
-
-	modelChangeDate(args).then(response => {
-		let hasData = function () {
-			updateBOOK(response)
-			viewChangeDate(args)
-		}
-
-		typeof response === "object"
-		? hasData()
-		: Alert ("changeDate", response)
-	}).catch(error => {})
-}
-
-// The second parameter (, 0) ensure a default value if arrayAfter.map is empty
-function getLargestWaitnum(staffname)
-{
-	let dateStaff = BOOK.filter(function(patient) {
-		return patient.staffname === staffname && patient.opdate === LARGESTDATE
-	})
-
-	return Math.max(...dateStaff.map(patient => patient.waitnum), 0)
-}
-
+// Mark the case and initiate mouseoverTR underline the date to move to
 function changeDate()
 {
-	let	$selected = $(".selected"),
-		$row = $selected.closest('tr'),
-		$cell = $row.find("td"),
-		args = [
-			$row,
-			opdateth = $cell.eq(OPDATE).html(),
-			opdate = getOpdate(opdateth),
-			staffname = $cell.eq(STAFFNAME).html(),
-			qn = $cell.eq(QN).html()
-		],
-		$allRows = $("#tbl tr:has('td'), #queuetbl tr:has('td')")
+	let $allRows = $("#tbl tr:has('td'), #queuetbl tr:has('td')")
+	let	$selected = $(".selected")
 
-	$allRows.on("mouseover", overDate)
-	$allRows.on("mouseout", outDate)
-	$allRows.on("click", args, clickDate)
+	$allRows.mouseover(function() {
+		$(this).addClass("pasteDate")
+	})
+	$allRows.mouseout(function() {
+		$(this).removeClass("pasteDate")
+	})
+	$allRows.click(function(event) {
+		clickDate(event, $selected, this)
+	})
 
-	$row.removeClass("selected").addClass("changeDate")
+	$(".selected").removeClass("selected").addClass("changeDate")
 }
 
-function overDate() { $(this).addClass("pasteDate") }
-
-function outDate() { $(this).removeClass("pasteDate") }
-
-// args = [$row, opdateth, opdate, staffname, qn]
-async function clickDate(event)
+function clickDate(event, $selected, cell)
 {
-	let args = event.data,
-		$moverow = args[0],
-		moveOpdateth = args[1],
-		moveOpdate = args[2],
-		staffname = args[3],
-		moveQN = args[4],
+	let	$moverow = $selected.closest('tr'),
+		$movecell = $moverow.find("td"),
+		moveOpdateth = $movecell.eq(OPDATE).html(),
+		moveOpdate = getOpdate(moveOpdateth),
+		staffname = $movecell.eq(STAFFNAME).html(),
+		moveQN = $movecell.eq(QN).html(),
+		moveWaitnum = $moverow[0].title,
 		movetheatre = $moverow.find("td").eq(THEATRE).html(),
 		moveroom = $moverow.find("td").eq(OPROOM).html(),
 
-		$thisrow = $(this),
+		$thisrow = $(cell).closest("tr"),
 		$thiscell = $thisrow.children("td"),
 		thisOpdateth = $thiscell.eq(OPDATE).html(),
 		thisOpdate = getOpdate(thisOpdateth),
@@ -316,7 +285,7 @@ async function clickDate(event)
 		thisWaitnum = calcWaitnum(thisOpdateth, $thisrow, $thisrow.next()),
 		allSameDate,
 		allOldCases, moveindex,
-		allNewCases, index, thisindex, casenum,
+		allNewCases, thisindex, casenum,
 		sql = ""
 
 	// remove itself from old sameDateRoom
@@ -331,57 +300,44 @@ async function clickDate(event)
 	thisindex = allNewCases.indexOf(thisqn)
 	allNewCases.splice(thisindex + 1, 0, moveQN)
 
+	let doChangeDate = function (waitnum, movedate, thisdate, room, qn) {
+		modelChangeDate(allOldCases, allNewCases, waitnum, thisdate, room, qn).then(response => {
+			let hasData = function () {
+				updateBOOK(response)
+				viewChangeDate(movedate, thisdate, staffname, qn)
+			}
+
+			typeof response === "object"
+			? hasData()
+			: Alert ("changeDate", response)
+		}).catch(error => {})
+	}
+
 	event.stopPropagation()
 	clearMouseoverTR()
+    clearSelection()
+
 	// click the same case
 	if (thisqn === moveQN) { return }
 
-	sql += updateCasenum(allOldCases)
+	doChangeDate(thisWaitnum, moveOpdate, thisOpdate, thisroom, thisqn)
 
-	for (let i=0; i<allNewCases.length; i++) {
-		if (allNewCases[i] === moveQN) {
-			casenum = thisroom? (i + 1) : null
-			sql += sqlMover(thisWaitnum, thisOpdate, thisroom || null, casenum, moveQN)
-		} else {
-			sql += sqlCaseNum(i + 1, allNewCases[i])
+	UndoManager.add({
+		undo: function() {
+			doChangeDate(moveWaitnum, thisOpdate, moveOpdate, moveroom, moveQN)
+		},
+		redo: function() {
+			doChangeDate(thisWaitnum, moveOpdate, thisOpdate, thisroom, thisqn)
 		}
-	}
-
-	if (!sql) { return }
-	sql = "sqlReturnbook=" + sql
-
-    clearSelection()
-
-	let response = await postData(MYSQLIPHP, sql)
-	if (typeof response === "object") {
-		updateBOOK(response);
-		if (moveOpdateth) {
-			refillOneDay(moveOpdate)
-		}
-		if (moveOpdate !== thisOpdate) {
-			refillOneDay(thisOpdate)
-		}
-		if (isSplit()) {
-			let titlename = $('#titlename').html()
-			if ((titlename === staffname) ||
-				(titlename === "Consults")) {
-				// changeDate of this staffname's case
-				refillstaffqueue()
-			}
-		} 
-		scrolltoThisCase(moveQN)
-	} else {
-		Alert ("changeDate", response)
-	}
+	})		
 }
 
 function clearMouseoverTR()
 {
-	$("#tbl tr:has('td'), #queuetbl tr:has('td')").off({
-		"mouseover": overDate,
-		"mouseout": outDate,
-		"click": clickDate
-	})
+	$("#tbl tr:has('td'), #queuetbl tr:has('td')")
+		.off("mouseover")
+		.off("mouseout")
+		.off("click")
 	$(".pasteDate").removeClass("pasteDate")
 	$(".changeDate").removeClass("changeDate")
 }
@@ -400,15 +356,7 @@ function delCase() {
 		qn = $cell.eq(QN).html(),
 		theatre = $cell.eq(THEATRE).html(),
 		oproom = $cell.eq(OPROOM).html(),
-		allCases, index, sql,
-		waitnum = null
-deleteCase(waitnum)
-return
-/*
-	sql = "sqlReturnbook=UPDATE book SET "
-		+ "deleted=1, "
-		+ "editor = '" + USER
-		+ "' WHERE qn="+ qn + ";"
+		allCases = []
 
 	if (!qn) {
 		$row.remove()
@@ -417,38 +365,23 @@ return
 
 	if (oproom) {
 		allCases = sameDateRoomTableQN(opdateth, oproom, theatre)
-		index = allCases.indexOf(qn)
-		allCases.splice(index, 1)
-		sql += updateCasenum(allCases)
 	}
 
-	let response = await postData(MYSQLIPHP, sql)
-	if (typeof response === "object") {
-		updateBOOK(response)
-		if (tableID === "tbl") {
-			refillOneDay(opdate)
-			if ((isSplit()) && 
-				(isStaffname(staffname))) {
-				refillstaffqueue()
+	let deleteCase = function (del) {
+		modelDeleteCase(allCases, qn, del).then(response => {
+			let hasData = function () {
+				updateBOOK(response)
+				viewDeleteCase(tableID, $row, opdate, staffname)
 			}
-		} else {
-			if (isConsults()) {
-				deleteRow($row, opdate)
-			} else {
-				$row.remove()
-			}
-			refillOneDay(opdate)
-		}
-	} else {
-		Alert ("delCase", response)
+
+			typeof response === "object"
+			? hasData()
+			: Alert ("delCase", response)
+		}).catch(error => {})
 	}
 
 	clearSelection()
-//-----
-	let argsUndo = {}
-	argsUndo = $.extend(argsUndo, args)
-	args.waitnum = null
-	deleteCase(waitnum)
+	deleteCase(1)
 
 	UndoManager.add({
 		undo: function() {
@@ -456,13 +389,13 @@ return
 				addrow(args.tableID, args.$row)
 				return
 			}
-			deleteCase(argsUndo)
+			deleteCase(0)
 		},
 		redo: function() {
 			args.waitnum = null
-			deleteCase(args)
+			deleteCase(1)
 		}
-	})		*/
+	})
 }
 
 function deleteRow($row, opdate)
@@ -485,270 +418,16 @@ function deleteRow($row, opdate)
 	}
 }
 
-let deleteCase = function (num) {
-	let	$selected = $(".selected"),
-		tableID = $selected.closest('table').attr('id'),
-		$row = $selected.closest('tr'),
-		$cell = $row.find("td"),
-		waitnum = num,
-		opdateth = $cell.eq(OPDATE).html(),
-		opdate = getOpdate(opdateth),
-		staffname = $cell.eq(STAFFNAME).html(),
-		qn = $cell.eq(QN).html(),
-		theatre = $cell.eq(THEATRE).html(),
-		oproom = $cell.eq(OPROOM).html(),
-		allCases, index, sql
-
-	// from add new row
-	if (!qn) {	
-		$row.remove()
-		return
-	}
-
-	modelDeleteCase(waitnum, qn).then(response => {
-		let hasData = function () {
-			updateBOOK(response)
-			viewDeleteCase(opdate, staffname)
-		}
-
-		typeof response === "object"
-		? hasData()
-		: Alert ("delCase", response)
-	}).catch(error => {})
-}
-
 // All cases (exclude the deleted ones)
 async function allCases() {
-  let sql = "sqlReturnData=SELECT * FROM book WHERE deleted=0 ORDER BY opdate;"
-
-  let response = await postData(MYSQLIPHP, sql)
-  if (typeof response === "object") {
-    // Make paginated dialog box containing alltbl
-    pagination($("#dialogAll"), $("#alltbl"), response, "All Saved Cases")
-  } else {
-    Alert("allCases", response)
-  }
-/*	modelAllCases().then(response => {
+	modelAllCases().then(response => {
 		typeof response === "object"
 		? viewAllCases(response)
 		: Alert("allCases", response)
 	}).catch(error => {})
 
-	clearEditcell()*/
+	clearEditcell()
 }
-
-function pagination($dialog, $tbl, book, search)
-{
-  let  beginday = book[0].opdate,
-    lastday = findLastDateInBOOK(book),
-    firstday = getPrevMonday()
-
-  $dialog.dialog({
-    title: search,
-    closeOnEscape: true,
-    modal: true,
-    show: 200,
-    hide: 200,
-    width: winWidth(95),
-    height: winHeight(95),
-    close: function() {
-      $(window).off("resize", resizeDialog )
-      $(".fixed").remove()
-    },
-    buttons: [
-      {
-        text: "<<< Year",
-        class: "yearbut",
-        click: function () {
-          showOneWeek(book, firstday, -364)
-        }
-      },
-      {
-        text: "<< Month",
-        class: "monthbut",
-        click: function () {
-          offset = firstday.slice(-2) > 28 ? -35 : -28
-          showOneWeek(book, firstday, offset)
-        }
-      },
-      {
-        text: "< Week",
-        click: function () {
-          showOneWeek(book, firstday, -7)
-        }
-      },
-      {
-        click: function () { return }
-      },
-      {
-        text: "Week >",
-        click: function () {
-          showOneWeek(book, firstday, 7)
-        }
-      },
-      {
-        text: "Month >>",
-        class: "monthbut",
-        click: function () {
-          offset = firstday.slice(-2) > 28 ? 35 : 28
-          showOneWeek(book, firstday, offset)
-        }
-      },
-      {
-        text: "Year >>>",
-        class: "yearbut",
-        click: function () {
-          showOneWeek(book, firstday, 364)
-        }
-      }
-    ]
-  })
-
-  showOneWeek(book, firstday, 0)
-  $tbl.fixMe($dialog)
-
-  //for resizing dialogs in landscape / portrait view
-  $(window).on("resize", resizeDialog )
-
-  $dialog.find('.pacs').on("click", function() {
-    if (isPACS) {
-      PACS(this.innerHTML)
-    }
-  })
-  $dialog.find('.upload').on("click", function() {
-    let hn = this.previousElementSibling.innerHTML
-    let patient = this.innerHTML
-
-    showUpload(hn, patient)
-  })
-
-  function showOneWeek(book, Monday, offset)
-  {
-    let  bookOneWeek, Sunday
-
-    firstday = nextdays(Monday, offset)
-    if (firstday < beginday) { firstday = getPrevMonday(beginday) }
-    if (firstday > lastday) {
-      firstday = nextdays(getPrevMonday(lastday), 7)
-      bookOneWeek = getBookNoDate(book)
-      showAllCases(bookOneWeek)
-    } else {
-      Sunday = getNextSunday(firstday)
-      bookOneWeek = getBookOneWeek(book, firstday, Sunday)
-      showAllCases(bookOneWeek, firstday, Sunday)
-    }
-  }
-
-  function getPrevMonday(date)
-  {
-    let today = date
-          ? new Date(date.replace(/-/g, "/"))
-          : new Date();
-    today.setDate(today.getDate() - today.getDay() + 1);
-    return ISOdate(today);
-  }
-
-  function getNextSunday(date)
-  {
-    let today = new Date(date);
-    today.setDate(today.getDate() - today.getDay() + 7);
-    return ISOdate(today);
-  }
-
-  function getBookOneWeek(book, Monday, Sunday)
-  {
-    return $.grep(book, function(bookq) {
-      return bookq.opdate >= Monday && bookq.opdate <= Sunday
-    })
-  }
-
-  function getBookNoDate(book)
-  {
-    return $.grep(book, function(bookq) {
-      return bookq.opdate === LARGESTDATE
-    })
-  }
-
-  function showAllCases(bookOneWeek, Monday, Sunday)
-  {
-    let  Mon = Monday && thDate(Monday) || "",
-      Sun = Sunday && thDate(Sunday) || ""
-
-    $dialog.dialog({
-      title: search + " : " + Mon + " - " + Sun
-    })
-    // delete previous table lest it accumulates
-    $tbl.find('tr').slice(1).remove()
-
-    if (Monday) {
-      let  $row, row, cells,
-        date = Monday,
-        nocase = true
-
-      $.each( bookOneWeek, function() {
-        while (this.opdate > date) {
-          if (nocase) {
-            $row = $('#allcells tr').clone().appendTo($tbl.find('tbody'))
-            row = $row[0]
-            cells = row.cells
-            rowDecoration(row, date)
-          }
-          date = nextdays(date, 1)
-          nocase = true
-        }
-        $('#allcells tr').clone()
-          .appendTo($tbl.find('tbody'))
-            .filldataAllcases(this)
-        nocase = false
-      })
-      date = nextdays(date, 1)
-      while (date <= Sunday) {
-        $row = $('#allcells tr').clone().appendTo($tbl.find('tbody'))
-        row = $row[0]
-        cells = row.cells
-        rowDecoration(row, date)
-        date = nextdays(date, 1)
-      }
-    } else {
-      $.each( bookOneWeek, function() {
-        $('#allcells tr').clone()
-          .appendTo($tbl.find('tbody'))
-            .filldataAllcases(this)
-      });
-    }
-  }
-
-  function resizeDialog() {
-    $dialog.dialog({
-      width: winWidth(95),
-      height: winHeight(95)
-    })
-    winResizeFix($tbl, $dialog)
-  }
-}
-
-jQuery.fn.extend({
-  filldataAllcases : function(q) {
-    let row = this[0],
-      cells = row.cells,
-      date = q.opdate,
-      data = [
-        putThdate(date),
-        q.staffname,
-        q.hn,
-        q.patient,
-        q.diagnosis,
-        q.treatment,
-        viewEquip(q.equipment),
-        q.admission,
-        q.final,
-        q.contact
-      ]
-
-    rowDecoration(row, date)
-    dataforEachCell(cells, data)
-  }
-})
 
 function editHistory()
 {
@@ -811,33 +490,18 @@ async function toUndelete(thisDate, deleted)
 
       book = (waitnum < 0)? getCONSULT() : getBOOK(),
       allCases = sameDateRoomBookQN(book, opdate, oproom),
-      alllen
+	  del
 
     allCases.splice(casenum, 0, qn)
-    alllen = allCases.length
 
-    for (let i=0; i<alllen; i++) {
-      if (allCases[i] === qn) {
-        sql += "UPDATE book SET "
-            +  "deleted=0,"
-            +  "editor='" + USER
-            +  "' WHERE qn="+ qn + ";"
-      } else {
-        sql += sqlCaseNum(i + 1, allCases[i])
-      }
-    }
-
-    $('#dialogDeleted').dialog("close")
-
-	doUndel(opdate, staffname, qn)
+	doUndel(allCases, opdate, staffname, qn, 0)
 
 	UndoManager.add({
 		undo: function() {
-			deleteCase()
-			allDeletedCases()
+			doUndel(allCases, opdate, staffname, qn, 1)
 		},
 		redo: function() {
-			doUndel(opdate, staffname, qn)
+			doUndel(allCases, opdate, staffname, qn, 0)
 		}
 	})
   })
@@ -848,36 +512,9 @@ function closeUndel()
   $('#undelete').hide()
 }
 
-/*	// .data("case", this) from viewDeletedCases
-	let thiscase = $(thatcase).data("case"),
-		$thiscase = $(thiscase).parent(),
-		$thiscell = $thiscase.children("td"),
-		opdate = getOpdate($thiscell.eq(UNDELOPDATE).html()),
-		staffname = $thiscell.eq(UNDELSTAFFNAME).html(),
-		qn = $thiscell.eq(UNDELQN).html(),
-		args = {}
-	args.$row = $thiscase
-	args.waitnum = null
-	args.opdate = opdate
-	args.staffname = staffname
-	args.qn = qn
+function doUndel(allCases, opdate, staffname, qn, del) {
 
-	doUndel(opdate, staffname, qn)
-
-	UndoManager.add({
-		undo: function() {
-			delCase(args)
-			allDeletedCases()
-		},
-		redo: function() {
-			doUndel(opdate, staffname, qn)
-		}
-	})		
-*/
-
-function doUndel(opdate, staffname, qn) {
-
-	modelUndelete(opdate, qn).then(response => {
+	modelUndelete(allCases, qn, del).then(response => {
 		let hasData = function () {
 			updateBOOK(response)
 			viewUndelete(opdate, staffname, qn)

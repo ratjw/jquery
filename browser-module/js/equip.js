@@ -130,27 +130,20 @@ let showEditableEquip = function () {
 
 function disableInput()
 {
-	$('#dialogEquip input').on("click", returnFalse)
-	$('#dialogEquip input[type=text]').prop('disabled', true)
+	$('#dialogEquip input').prop('disabled', true)
 	$('#dialogEquip textarea').prop('disabled', true)
-	$('#clearPosition').off('click', clearPosition)
-	$('#clearShunt').off('click', clearShunt)
+	$('#clearPosition').off('click')
+	$('#clearShunt').off('click')
 }
 
 // clearPosition : uncheck radio button of Positions
 // clearShunt : uncheck radio button of Shunts
 function enableInput()
 {
-	$('#dialogEquip input').off("click", returnFalse)
-	$('#dialogEquip input[type=text]').prop('disabled', false)
+	$('#dialogEquip input').prop('disabled', false)
 	$('#dialogEquip textarea').prop('disabled', false)
-	$('#clearPosition').on('click', clearPosition)
-	$('#clearShunt').on('click', clearShunt)
-}
-
-function returnFalse()
-{
-  return false
+	$('#clearPosition').click( clearPosition )
+	$('#clearShunt').click( clearShunt )
 }
 
 function clearPosition()
