@@ -39,9 +39,6 @@ let SERVICE = [],
 
 document.getElementById("clickserviceReview").onclick = serviceReview
 
-// function declaration (definition ) : public
-// function expression (literal) : local
-
 // Includes all serviced cases, operated or not (consulted)
 // Then count complications and morbid/mortal
 // Button click Export to Excel

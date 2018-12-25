@@ -8,13 +8,13 @@ import { createEditcell, clearEditcell } from "./edit.js"
 import { USER } from "./main.js"
 
 import {
-	modelChangeDate, modelAllCases, modelCaseHistory,
-	modelAllDeletedCases, modelUndelete, modelFind, modelDeleteCase
+	modelPostponeCase, modelChangeDate, modelAllCases, modelCaseHistory,
+	modelAllDeletedCases, modelUndelete, modelSearchDB, modelDeleteCase
 } from "./model.js"
 
 import {
-	viewChangeDate, viewDeleteCase, viewAllCases,
-	viewCaseHistory, viewDeletedCases, viewUndelete, viewFind,
+	viewPostponeCase, viewChangeDate, viewDeleteCase, viewAllCases,
+	viewCaseHistory, viewDeletedCases, viewUndelete, viewSearchDB,
 	viewStaffqueue, viewEquip
 } from "./view.js"
 
@@ -48,9 +48,6 @@ export function setClickMenu()
 		document.getElementById(key).onclick = val
 	})
 }
-
-// function declaration (definition ) : public
-// function expression (literal) : local
 
 // disabled some menu-items for the current row
 // Menu for the current row -> addrow, postpone, changedate, equip, history of editing, del
@@ -150,9 +147,7 @@ function postponeCase()
 		oproom = $cell.eq(OPROOM).html(),
 		oldwaitnum = $row[0].title,
 		newwaitnum = getLargestWaitnum(staffname) + 1,
-		allCases = [],
-		index,
-		sql = "sqlReturnbook="
+		allCases = []
 
 	if (oproom) {
 		allCases = sameDateRoomTableQN(opdateth, oproom, theatre)
@@ -162,7 +157,7 @@ function postponeCase()
 		modelPostponeCase(allCases, waitnum, thisdate, qn).then(response => {
 			let hasData = function () {
 				updateBOOK(response)
-				viewPostponeCase(opdate, thisDate, staffname, qn)
+				viewPostponeCase(opdate, thisdate, staffname, qn)
 			}
 
 			typeof response === "object"
@@ -188,62 +183,13 @@ function postponeCase()
 // The second parameter (, 0) ensure a default value if arrayAfter.map is empty
 function getLargestWaitnum(staffname)
 {
-	let dateStaff = BOOK.filter(function(patient) {
+	let dateStaff = getBOOK().filter(function(patient) {
 		return patient.staffname === staffname && patient.opdate === LARGESTDATE
 	})
 
 	return Math.max(...dateStaff.map(patient => patient.waitnum), 0)
 }
-/*
-// Mark the case and initiate mouseoverTR, a line on the date to move to
-let changeDate = function (args) {
-	let $mouseoverTR = $("#tbl tr, #queuetbl tr"),
-		$pointing = $(args.pointing)
 
-	$pointing.closest('tr').addClass("changeDate")
-	$mouseoverTR.on({
-		"mouseover": function() { $(this).addClass("pasteDate") },
-		"mouseout": function() { $(this).removeClass("pasteDate") },
-		"click": function(event) {
-			event.stopPropagation()
-			clearMouseoverTR()
-
-			let thisDate = getOpdate($(this).children("td").eq(OPDATE).html())
-
-			//!thisDate = click on th
-			if (!thisDate || (args.opdate === thisDate)) {
-				return false
-			}
-
-			let RoomTime = getRoomTime($pointing.closest('tr'), $(this))
-			args.oproom = RoomTime[0]
-			args.optime = RoomTime[1]
-			args.thisDate = thisDate
-
-			let argsUndo = {}
-			argsUndo = $.extend(argsUndo, args)
-			argsUndo.thisDate = args.opdate
-
-			doChangeDate(args)
-
-			UndoManager.add({
-				undo: function() {
-					doChangeDate(argsUndo)
-				},
-				redo: function() {
-					doChangeDate(args)
-				}
-			})		
-		}
-	});
-	$(document).off("keydown").on("keydown", function(event) {
-		let keycode = event.which || window.event.keyCode
-		if (keycode === 27)	{
-			clearMouseoverTR()
-		}
-	})
-}
-*/
 // Mark the case and initiate mouseoverTR underline the date to move to
 function changeDate()
 {
@@ -437,7 +383,7 @@ function deletedCases()
 	}).catch(error => {})
 }
 
-async function toUndelete(thisDate, deleted) 
+function toUndelete(thisdate, deleted) 
 {
   let UNDELOPDATE      = 0;
   let UNDELSTAFFNAME   = 1;
@@ -449,18 +395,17 @@ async function toUndelete(thisDate, deleted)
 //  let UNDELEDITOR    = 7;
 //  let UNDELEDITDATETIME  = 8;
   let UNDELQN         = 9;
-  let $thisDate = $(thisDate)
+  let $thisdate = $(thisdate)
   let $undelete = $("#undelete")
 
-  reposition($undelete, "left center", "left center", $thisDate)
+  reposition($undelete, "left center", "left center", $thisdate)
 
-  $("#undel").off().on("click", async function() {
-    let $thiscase = $thisDate.closest("tr").children("td"),
+  $("#undel").off().on("click", function() {
+    let $thiscase = $thisdate.closest("tr").children("td"),
       opdateth = $thiscase.eq(UNDELOPDATE).html(),
       opdate = getOpdate(opdateth),
       staffname = $thiscase.eq(UNDELSTAFFNAME).html(),
       qn = $thiscase.eq(UNDELQN).html(),
-      sql = "sqlReturnbook=",
 
       delrow = getBOOKrowByQN(deleted, qn),
       waitnum = delrow.waitnum || 1,
@@ -558,7 +503,7 @@ function getSaffName(pointing)
   menustyle($stafflist, $pointing)
 }
 
-async function searchDB()
+function searchDB()
 {
   let hn = $('input[name="hn"]').val(),
     staffname = $('input[name="staffname"]').val(),
@@ -573,175 +518,15 @@ async function searchDB()
   search += (search && staffname ? ", " : "") + staffname
   search += (search && others ? ", " : "") + others
   if (search) {
-    sql = "hn=" + hn
-      + "&staffname=" + staffname
-      + "&others=" + others
-
-    let response = await postData(SEARCH, sql)
-    if (typeof response === "object") {
-      makeFind(response, search)
-    } else {
-      Alert("Search: " + search, response)
-    }
+	modelSearchDB(hn).then(response => {
+		typeof response === "object"
+		? viewSearchDB(row, hn, response)
+		: Alert("Search: " + search, response)
+	}).catch(error => {})
   } else {
     Alert("Search: ''", "<br><br>No Result")
   }
 }
-
-function makeFind(found, search)
-{
-  let flen = found.length,
-    $dialogFind = $("#dialogFind"),
-    $findtbl = $("#findtbl"),
-    show = scrolltoThisCase(found[flen-1].qn)
-
-  if (!show || (flen > 1)) {
-    if (flen > 100) {
-      pagination($dialogFind, $findtbl, found, search)
-    } else {
-      makeDialogFound($dialogFind, $findtbl, found, search)
-    }
-  }
-}
-
-function scrolltoThisCase(qn)
-{
-  let showtbl, showqueuetbl
-
-  showtbl = locateFound("tblcontainer", "tbl", qn)
-  if (isSplit()) {
-    showqueuetbl = locateFound("queuecontainer", "queuetbl", qn)
-  }
-  return showtbl || showqueuetbl
-}
-
-function locateFound(containerID, tableID, qn)
-{
-  let container = document.getElementById(containerID),
-    row = getTableRowByQN(tableID, qn),
-    scrolledTop = container.scrollTop,
-    offset = row && row.offsetTop,
-    rowHeight = row && row.offsetHeight,
-    height = container.clientHeight - rowHeight,
-    bottom = scrolledTop + height,
-    $container = $("#" + containerID)
-
-  $("#" + tableID + " tr.marker").removeClass("marker")
-  if (row) {
-    $(row).addClass("marker")
-    if (offset < scrolledTop) {
-      $container.animate({
-        scrollTop: offset
-      }, 500);
-    }
-    else if (offset > bottom) {
-      $container.animate({
-        scrollTop: offset - height
-      }, 500);
-    }
-    return true
-  }
-}
-
-function makeDialogFound($dialogFind, $findtbl, found, search)
-{
-  $dialogFind.dialog({
-    title: "Search: " + search,
-    closeOnEscape: true,
-    modal: true,
-    width: winWidth(95),
-    height: winHeight(95),
-    buttons: [
-      {
-        text: "Export to xls",
-        click: function() {
-          exportFindToExcel(search)
-        }
-      }
-    ],
-    close: function() {
-      $(window).off("resize", resizeFind )
-      $(".fixed").remove()
-      $("#dialogInput").dialog("close")
-      $(".marker").removeClass("marker")
-    }
-  })
-
-  // delete previous table lest it accumulates
-  $findtbl.find('tr').slice(1).remove()
-
-  $.each( found, function() {  // each === this
-    $('#findcells tr').clone()
-      .appendTo($findtbl.find('tbody'))
-        .filldataFind(this)
-  });
-  $findtbl.fixMe($dialogFind);
-
-  //for resizing dialogs in landscape / portrait view
-  $(window).on("resize", resizeFind )
-
-  function resizeFind() {
-    $dialogFind.dialog({
-      width: window.innerWidth,
-      height: window.innerHeight
-    })
-    winResizeFix($findtbl, $dialogFind)
-  }
-
-  $dialogFind.find('.pacs').on("click", function() {
-    if (isPACS) {
-      PACS(this.innerHTML)
-    }
-  })
-  $dialogFind.find('.upload').on("click", function() {
-    let patient = this.innerHTML
-    let hn = this.previousElementSibling.innerHTML
-
-    showUpload(hn)
-  })
-
-  //scroll to todate when there many cases
-  let today = new Date(),
-    todate = ISOdate(today),
-    thishead
-
-  $findtbl.find("tr").each(function() {
-    thishead = this
-    return numDate(this.cells[OPDATE].innerHTML) < todate
-  })
-  $dialogFind.animate({
-    scrollTop: $(thishead).offset().top - $dialogFind.height()
-  }, 300);
-}
-
-jQuery.fn.extend({
-  filldataFind : function(q) {
-    let  row = this[0],
-      cells = row.cells,
-      data = [
-        putThdate(q.opdate),
-        q.staffname,
-        q.hn,
-        q.patient,
-        q.diagnosis,
-        q.treatment,
-        viewEquip(q.equipment),
-        q.admission,
-        q.final,
-        q.contact
-      ]
-
-    if (Number(q.deleted)) {
-      this.addClass("deleted")
-    } else {
-      rowDecoration(row, q.opdate)
-    }
-    q.hn && isPACS && (cells[2].className = "pacs")
-    q.patient && (cells[3].className = "upload")
-
-    dataforEachCell(cells, data)
-  }
-})
 
 function sendtoLINE()
 {

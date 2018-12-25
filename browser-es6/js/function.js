@@ -492,8 +492,8 @@ function makeEquip(equipJSON)
     return equipPics.indexOf(pic) === pos;
   })
   // convert to string
-  equip = equip.length ? equip.join(', ') : ''
-  monitor = monitor.length ? ", Monitor:" + monitor.toString() : ''
+  equip = equip.length ? equip.join('; ') : ''
+  monitor = monitor.length ? "; Monitor:" + monitor.toString() : ''
   
   return equip + monitor + "<br>" + equipImg(equipPics)
 }

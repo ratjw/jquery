@@ -1,6 +1,6 @@
 
 import {
-	OPDATE, STAFFNAME, HN, PATIENT, DIAGNOSIS, TREATMENT, CONTACT, QN,
+	OPDATE, THEATRE, OPROOM, STAFFNAME, HN, PATIENT, DIAGNOSIS, TREATMENT, CONTACT, QN,
 	LARGESTDATE, THAIMONTH, NAMEOFDAYFULL, NAMEOFDAYABBR
 } from "./const.js"
 
@@ -308,7 +308,7 @@ export function findLastDateInBOOK(book)
 }
 
 // main table (#tbl) only
-export function sameDateRoomTableQN(opdateth, room)
+export function sameDateRoomTableQN(opdateth, room, theatre)
 {
 	if (!room) { return [] }
 
@@ -434,13 +434,6 @@ export function picArea(pointing) {
     left: left,
     right: right
   }
-}
-
-export function dataforEachCell(cells, data)
-{
-  data.forEach(function(item, i) {
-    cells[i].innerHTML = item
-  })
 }
 
 export function rowDecoration(row, date)

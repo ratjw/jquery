@@ -3,14 +3,6 @@ import { QN, LARGESTDATE } from "./const.js"
 import { USER } from "./main.js"
 import { URIcomponent } from "./util.js"
 
-export {
-	modelSaveRoomTime, modelSaveContent, modelSaveNoQN, modelSaveByHN,
-	modelChangeOncall, modelGetEquip, modelSaveEquip, modelChangeDate, modelAllCases,
-	modelDeleteCase, modelCaseHistory, modelAllDeletedCases, modelUndelete, modelFind, 
-	modelGetServiceOneMonth, modelGetIPD, modelSaveService, modelStart, modelIdling,
-	modeldoUpdate, modelGetUpdate, modelSortable, modelSyncServer, modelFindLatestEntry
-}
-
 // const
 const GETIPD	= "php/getipd.php",
 	GETNAMEHN	= "php/getnamehn.php",
@@ -19,20 +11,17 @@ const GETIPD	= "php/getipd.php",
 	LINEBOT		= "line/lineBot.php",
 	LINENOTIFY	= "line/lineNotify.php"
 
-// function declaration (definition ) : public
-// function expression (literal) : local
-
-function modelStart() {
+export function modelStart() {
 	return postData(MYSQLIPHP, "start=''");
 }
 
-function modelIdling(timestamp) {
+export function modelIdling(timestamp) {
 	let sql = `functionName=checkupdate&time=${timestamp}`
 
 	return postData(MYSQLIPHP, sql);
 }
 
-function modelChangeOncall(pointing, opdate, staffname)
+export function modelChangeOncall(pointing, opdate, staffname)
 {
   let sql = "sqlReturnStaff=INSERT INTO oncall "
       + "(dateoncall, staffname, edittime) "
@@ -43,14 +32,14 @@ function modelChangeOncall(pointing, opdate, staffname)
   return postData(MYSQLIPHP, sql);
 }
 
-function modeldoUpdate()
+export function modeldoUpdate()
 {
   let sql = "sqlReturnData=SELECT MAX(editdatetime) as timestamp from bookhistory;"
 
   return postData(MYSQLIPHP, sql);
 }
 
-function modelGetUpdate(fromDate, toDate)
+export function modelGetUpdate(fromDate, toDate)
 {
   let sql
 
@@ -62,7 +51,7 @@ function modelGetUpdate(fromDate, toDate)
   return postData(MYSQLIPHP, sql);
 }
 
-function modelSortable(arg)
+export function modelSortable(arg)
 {
 	let allOldCases = arg.oldlist,
 		allNewCases = arg.newlist,
@@ -72,7 +61,6 @@ function modelSortable(arg)
 		oldqn = arg.qn,
 		sql = "sqlReturnbook="
 
-	// sameDateRoomTableQN is of tbl only, the mover must be removed manually
 	if (allOldCases.length) {
 		sql += updateCasenum(allOldCases)
 	}
@@ -136,13 +124,13 @@ function modelSyncServer(book, consult) {
 	return postData(MYSQLIPHP, sql);
 }
 
-function modelGetServiceOneMonth(fromDate, toDate) {
+export function modelGetServiceOneMonth(fromDate, toDate) {
 	let sql = "sqlReturnData=" + sqlOneMonth(fromDate, toDate)
 
 	return postData(MYSQLIPHP, sql)
 }
 
-function modelGetIPD(fromDate, toDate) {
+export function modelGetIPD(fromDate, toDate) {
 	let sql = "from=" + fromDate
 			+ "&to=" + toDate
 			+ "&sql=" + sqlOneMonth(fromDate, toDate)
@@ -150,7 +138,7 @@ function modelGetIPD(fromDate, toDate) {
 	return postData(GETIPD, sql)
 }
 
-function modelSaveService(column, content, qn, fromDate, toDate) {
+export function modelSaveService(column, content, qn, fromDate, toDate) {
 	let sql = "sqlReturnService=" + sqlItem(column, content, qn) + sqlOneMonth(fromDate, toDate)
 
 	return postData(MYSQLIPHP, sql);
@@ -185,30 +173,13 @@ function sqlItem(column, content, qn)
 		+ "' WHERE qn=" + qn + ";"
 }
 
-function modelFind(hn, patient, diagnosis, treatment, contact) {
-	let sql = "sqlReturnData=SELECT * FROM book WHERE "
-		sql += hn && ("hn='" + hn + "' ")
-		sql += patient &&
-				(hn ? ("AND patient like '%" + patient + "%' ")
-					: ("patient like '%" + patient + "%' "))
-		sql += diagnosis &&
-				((hn || patient)
-				? ("AND diagnosis like '%" + diagnosis + "%' ")
-				: ("diagnosis like '%" + diagnosis + "%' "))
-		sql += treatment &&
-				((hn || patient || diagnosis)
-				? ("AND treatment like '%" + treatment + "%' ")
-				: ("treatment like '%" + treatment + "%' "))
-		sql += contact &&
-				((hn || patient || diagnosis || treatment)
-				? ("AND contact like '%" + contact + "%' ")
-				: ("contact like '%" + contact + "%' "))
-		sql += "ORDER BY opdate DESC;"
+export function modelSearchDB(hn, staffname, others) {
+	let sql = `hn=${hn}&staffname=${staffname}&others=${others}`
 
 	return postData(MYSQLIPHP, sql)
 }
 
-function modelUndelete(allCases, qn, del) {
+export function modelUndelete(allCases, qn, del) {
     let sql = "sqlReturnbook="
 
     allCases.forEach((item, i) => {
@@ -220,7 +191,7 @@ function modelUndelete(allCases, qn, del) {
 	return postData(MYSQLIPHP, sql);
 }
 
-function modelAllDeletedCases() {
+export function modelAllDeletedCases() {
   let sql = `sqlReturnData=SELECT editdatetime, b.* 
                              FROM book b 
 							   LEFT JOIN bookhistory bh ON b.qn = bh.qn 
@@ -233,13 +204,13 @@ function modelAllDeletedCases() {
 	return postData(MYSQLIPHP, sql)
 }
 
-function modelAllCases() {
+export function modelAllCases() {
 	let sql = `sqlReturnData=SELECT * FROM book WHERE deleted=0 ORDER BY opdate;`
 
 	return postData(MYSQLIPHP, sql)
 }
 
-function modelCaseHistory(hn) {
+export function modelCaseHistory(hn) {
 	let sql = `sqlReturnData=SELECT * FROM bookhistory 
 				WHERE qn in (SELECT qn FROM book WHERE hn='${hn}') 
 				ORDER BY editdatetime DESC;`
@@ -248,12 +219,12 @@ function modelCaseHistory(hn) {
 }
 
 // In database, not actually delete the case but SET deleted=1
-function modelDeleteCase(allCases, qn, del) {
+export function modelDeleteCase(allCases, qn, del) {
 	let sql = `sqlReturnbook=UPDATE book SET deleted=${del},editor='${USER}' WHERE qn=${qn};`
 
 	if (allCases.length) {
 		if (del) {
-			index = allCases.indexOf(qn)
+			let index = allCases.indexOf(qn)
 			allCases.splice(index, 1)
 		}
 		sql += updateCasenum(allCases)
@@ -262,13 +233,13 @@ function modelDeleteCase(allCases, qn, del) {
 	return postData(MYSQLIPHP, sql)
 }
 
-function modelPosttponeCase(allCases, waitnum, thisdate, qn) {
-	let sql = `sqlReturnbook=UPDATE book SET opdate='${thisDate}',
+export function modelPostponeCase(allCases, waitnum, thisdate, qn) {
+	let sql = `sqlReturnbook=UPDATE book SET opdate='${thisdate}',
 				waitnum=${waitnum},theatre='',oproom=null,casenum=null,
 				optime='',editor='${USER}' WHERE qn=${qn};`
 
 	if (allCases.length) {
-		index = allCases.indexOf(qn)
+		let index = allCases.indexOf(qn)
 		allCases.splice(index, 1)
 		sql += updateCasenum(allCases)
 	}
@@ -276,7 +247,7 @@ function modelPosttponeCase(allCases, waitnum, thisdate, qn) {
 	return postData(MYSQLIPHP, sql)
 }
 
-function modelChangeDate(allOldCases, allNewCases, waitnum, thisdate, room, qn) {
+export function modelChangeDate(allOldCases, allNewCases, waitnum, thisdate, room, qn) {
 	let sql = "sqlReturnbook=" + updateCasenum(allOldCases)
 
 	for (let i=0; i<allNewCases.length; i++) {
@@ -291,7 +262,7 @@ function modelChangeDate(allOldCases, allNewCases, waitnum, thisdate, room, qn) 
 	return postData(MYSQLIPHP, sql)
 }
 
-function modelSaveRoomTime(args) {
+export function modelSaveRoomTime(args) {
 	let waitnum = args.waitnum,
 		opdate = args.opdate,
 		oproom = args.oproom,
@@ -309,7 +280,7 @@ function modelSaveRoomTime(args) {
 	return postData(MYSQLIPHP, sql)
 }
 
-function modelSaveContent(args) {
+export function modelSaveContent(args) {
 	let column = args.column,
 		content = args.content,
 		qn = args.qn,
@@ -321,7 +292,7 @@ function modelSaveContent(args) {
 	return postData(MYSQLIPHP, sql);
 }
 
-function modelSaveNoQN(args) {
+export function modelSaveNoQN(args) {
 	let tableID = args.tableID,
 		column = args.column,
 		waitnum = args.waitnum,
@@ -352,7 +323,7 @@ function modelSaveNoQN(args) {
 	return postData(MYSQLIPHP, sql);
 }
 
-function modelSaveByHN(args) {
+export function modelSaveByHN(args) {
 	let tableID = args.tableID,
 		waitnum = args.waitnum,
 		opdate = args.opdate,
@@ -445,7 +416,7 @@ function modelSaveByHN(args) {
 				: undoNew()
 }
 
-function modelGetEquip(qn)	{
+export function modelGetEquip(qn)	{
 
 	let sql = `sqlReturnData=SELECT editor,editdatetime
 								FROM bookhistory
@@ -455,7 +426,7 @@ function modelGetEquip(qn)	{
 	return postData(MYSQLIPHP, sql)
 }
 
-function modelSaveEquip(equipment, qn) {
+export function modelSaveEquip(equipment, qn) {
 	let sql = `sqlReturnbook=UPDATE book
 							SET equipment='${equipment}',
 								editor='${USER}'
@@ -464,7 +435,7 @@ function modelSaveEquip(equipment, qn) {
 	return postData(MYSQLIPHP, sql);
 }
 
-function modelCancelAllEquip(qn)
+export function modelCancelAllEquip(qn)
 {
 	sql = `sqlReturnbook=UPDATE book SET equipment='',editor='${USER}' WHERE qn='${qn}';`
 

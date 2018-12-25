@@ -12,25 +12,15 @@ import {
 	getBOOK, getCONSULT, isPACS, getBOOKrowByQN, ISOdate, thDate, nextdays, dayName,
 	numDate, getOpdate, putThdate, putAgeOpdate, winWidth, winHeight, getTableRowByQN,
 	START, showUpload, isConsultsTbl, getBOOKrowsByDate, getTableRowsByDate, reposition,
-	putNameAge, rowDecoration, holiday, isSplit, winResizeFix, inPicArea, getClass
+	putNameAge, rowDecoration, holiday, isSplit, winResizeFix, inPicArea, getClass,
+	isStaffname
 } from "./util.js"
-
-export {
-	viewAll, reViewAll, viewStaffqueue, reViewStaffqueue, viewChangeDate,
-	viewAllCases, viewDeleteCase, viewDeletedCases, viewCaseHistory, viewFind,
-	viewIdling, viewLatestEntry, viewSaveByHN, viewSaveContent, viewSaveNoQN,
-	viewSaveRoomTime, viewSortable, viewUndelete,
-	isConsultsTbl, setClickStaff, viewEquip, makeEquip
-}
-
-// function declaration (definition ) : public
-// function expression (literal) : local
 
 // Render Main table
 // Consults and dialogAll tables use this too
 // START date imported from util.js
 // until date is the last row of the table, not of the book
-function viewAll(book, table, start, until, num=0) {
+export function viewAll(book, table, start, until, num=0) {
 	let tbody = table.getElementsByTagName("tbody")[0],
 		rows = table.rows,
 		head = table.rows[0],
@@ -98,7 +88,7 @@ function viewAll(book, table, start, until, num=0) {
 
 // Used after serviceReview and in idling update
 // Similar to viewAll but try to use existing DOM table
-function reViewAll() {
+export function reViewAll() {
 	let	table = document.getElementById("tbl"),
 		$tbody = $("#tbl tbody"),
 		start = numDate($('#tbl tr:has("td")').first().find('td').eq(OPDATE).html()),
@@ -224,7 +214,7 @@ function filldata(bookq, row)
 	cells[QN].innerHTML = bookq.qn
 }
 
-function viewStaffqueue(staffname) {
+export function viewStaffqueue(staffname) {
 	let todate = ISOdate(new Date()),
 		consult = getCONSULT(),
 		$queuetbl = $('#queuetbl'),
@@ -261,7 +251,7 @@ function viewStaffqueue(staffname) {
 }
 
 // Use existing DOM table
-function reViewStaffqueue() {
+export function reViewStaffqueue() {
 	let todate = ISOdate(new Date()),
 		staffname = $('#titlename').html(),
 		book = getBOOK(),
@@ -333,7 +323,7 @@ function addColor($this, bookqOpdate)
 }
 
 // hover on background pics
-function hoverMain()
+export function hoverMain()
 {
 	let	paleClasses = ["pacs", "upload"],
 		boldClasses = ["pacs2", "upload2"]
@@ -426,7 +416,7 @@ let findVisibleHead = function (table) {
 	return tohead
 }
 
-function setClickStaff()
+export function setClickStaff()
 {
 	document.querySelectorAll(".clickStaff").forEach(function(item) {
 		item.onclick = function() {
@@ -438,48 +428,9 @@ function setClickStaff()
 	document.getElementById("clickclosequeue").onclick = closequeue
 }
 
-// Both main and staff tables
-let scrolltoThisCase = function(qn) {
-	let onTbl = locateFound("tblcontainer", "tbl", qn),
-		onQueue = false
-	if (isSplit()) {
-		onQueue = locateFound("queuecontainer", "queuetbl", qn)
-	}
-
-	return onTbl || onQueue
-}
-
-// Scroll to specified qn case and add a border
-let locateFound = function (containerID, tableID, qn) {
-  let container = document.getElementById(containerID),
-    row = getTableRowByQN(tableID, qn),
-    scrolledTop = container.scrollTop,
-    offset = row && row.offsetTop,
-    rowHeight = row && row.offsetHeight,
-    height = container.clientHeight - rowHeight,
-    bottom = scrolledTop + height,
-    $container = $("#" + containerID)
-
-  $("#" + tableID + " tr.marker").removeClass("marker")
-  if (row) {
-    $(row).addClass("marker")
-    if (offset < scrolledTop) {
-      $container.animate({
-        scrollTop: offset
-      }, 500);
-    }
-    else if (offset > bottom) {
-      $container.animate({
-        scrollTop: offset - height
-      }, 500);
-    }
-    return true
-  }
-}
-
-function viewPostponeCase(opdate, thisdate, staffname, qn)
+export function viewPostponeCase(opdate, thisdate, staffname, qn)
 {
-	reViewOneDay(opdate)
+	if (opdate !== LARGESTDATE) { reViewOneDay(opdate) }
 	if (thisdate !== LARGESTDATE) { reViewOneDay(thisdate) }
 
 	// changeDate of this staffname's case, re-render
@@ -488,7 +439,7 @@ function viewPostponeCase(opdate, thisdate, staffname, qn)
 	scrolltoThisCase(qn)
 }
 
-function viewChangeDate(movedateth, movedate, thisdate, staffname, qn)
+export function viewChangeDate(movedateth, movedate, thisdate, staffname, qn)
 {
 	if (movedateth) {
 		reViewOneDay(movedate)
@@ -510,7 +461,7 @@ function viewChangeDate(movedateth, movedate, thisdate, staffname, qn)
 	scrolltoThisCase(qn)
 }
 
-function viewDeleteCase(tableID, $row, opdate, staffname) {
+export function viewDeleteCase(tableID, $row, opdate, staffname) {
 	reViewOneDay(opdate)
 	tableID === "tbl"
 	? isSplit() && isStaffname(staffname) && reViewStaffqueue()
@@ -539,13 +490,13 @@ let deleteRow = function ($row, opdate) {
 	}
 }
 
-function viewSaveRoomTime(opdate) {
+export function viewSaveRoomTime(opdate) {
 	reViewOneDay(opdate)
 	isSplit() && reViewStaffqueue()
 	clearEditcell()
 }
 
-function viewSaveContent(args) {
+export function viewSaveContent(args) {
 	let tableID = args.tableID,
 		titlename = args.titlename,
 		staffname = args.staffname,
@@ -593,7 +544,7 @@ function viewSaveContent(args) {
 	tableID === 'tbl' ? onMaintable() : onStafftable()
 }
 
-function viewSaveNoQN(args) {
+export function viewSaveNoQN(args) {
 	let tableID = args.tableID,
 		waitnum = args.waitnum,
 		$cells = args.$cells,
@@ -634,7 +585,7 @@ function viewSaveNoQN(args) {
 	}
 }
 
-function viewSaveByHN(args) {
+export function viewSaveByHN(args) {
 	let tableID = args.tableID,
 		waitnum = args.waitnum,
 		$cells = args.$cells,
@@ -733,12 +684,12 @@ let reViewAnotherTableCell = function (tableID, cellindex, qn) {
 }
 
 // Make box dialog dialogAll containing alltbl
-function viewAllCases(response) {
+export function viewAllCases(response) {
     // Make paginated dialog box containing alltbl
     pagination($("#dialogAll"), $("#alltbl"), response, "All Saved Cases")
 }
 
-function pagination($dialog, $tbl, book, search)
+export function pagination($dialog, $tbl, book, search)
 {
   let  beginday = book[0].opdate,
     lastday = findLastDateInBOOK(book),
@@ -931,28 +882,25 @@ function pagination($dialog, $tbl, book, search)
 jQuery.fn.extend({
   filldataAllcases : function(q) {
     let row = this[0],
-      cells = row.cells,
-      date = q.opdate,
-      data = [
-        putThdate(date),
-        q.staffname,
-        q.hn,
-        q.patient,
-        q.diagnosis,
-        q.treatment,
-        viewEquip(q.equipment),
-        q.admission,
-        q.final,
-        q.contact
-      ]
+      cells = row.cells
+
+	cells[0].innerHTML = putThdate(q.opdate)
+	cells[1].innerHTML = q.staffname
+	cells[2].innerHTML = q.hn
+	cells[3].innerHTML = q.patient
+	cells[4].innerHTML = q.diagnosis
+	cells[5].innerHTML = q.treatment
+	cells[6].innerHTML = viewEquip(q.equipment)
+	cells[7].innerHTML = q.admission
+	cells[8].innerHTML = q.final
+	cells[9].innerHTML = q.contact
 
     rowDecoration(row, date)
-    dataforEachCell(cells, data)
   }
 })
 
 // Make box dialog dialogHistory containing historytbl
-function viewCaseHistory(row, hn, tracing)
+export function viewCaseHistory(row, hn, tracing)
 {
 	let  $historytbl = $('#historytbl'),
 		nam = row.cells[PATIENT].innerHTML,
@@ -1020,12 +968,12 @@ jQuery.fn.extend({
 })
 
 // Add all equipments in one string to show in 1 cell
-function viewEquip(equipString)
+export function viewEquip(equipString)
 {
   return equipString ? makeEquip(JSON.parse(equipString)) : ""
 }
 
-function makeEquip(equipJSON)
+export function makeEquip(equipJSON)
 {
   let equip = [],
     monitor = [],
@@ -1056,8 +1004,8 @@ function makeEquip(equipJSON)
     return equipPics.indexOf(pic) === pos;
   })
   // convert to string
-  equip = equip.length ? equip.join(', ') : ''
-  monitor = monitor.length ? ", Monitor:" + monitor.toString() : ''
+  equip = equip.length ? equip.join('; ') : ''
+  monitor = monitor.length ? "; Monitor:" + monitor.toString() : ''
   
   return equip + monitor + "<br>" + equipImg(equipPics)
 }
@@ -1073,15 +1021,15 @@ function equipImg(equipPics)
   return img
 }
 
-function viewCancelAllEquip(qn)
+export function viewCancelAllEquip(qn)
 {
 	let $row = getTableRowByQN("tbl", qn)
 
 	$row.find("td").eq(EQUIPMENT).html('')
-	$("#dialogEquip).dialog('close')
+	$("#dialogEquip").dialog('close')
 }
 
-function viewRestoreAllEquip(response, bookqEquip, JsonEquip)
+export function viewRestoreAllEquip(response, bookqEquip, JsonEquip)
 {
 	// Error update server
 	// Roll back. If old form has equips, fill checked & texts
@@ -1102,7 +1050,7 @@ function viewRestoreAllEquip(response, bookqEquip, JsonEquip)
 }
 
 // Make dialog box dialogDeleted containing historytbl
-function viewDeletedCases(deleted) {
+export function viewDeletedCases(deleted) {
   let $deletedtbl = $('#deletedtbl'),
     $deletedtr = $('#deletedcells tr')
 
@@ -1178,7 +1126,7 @@ jQuery.fn.extend({
 	}
 })
 
-function viewUndelete(opdate, staffname, qn) {
+export function viewUndelete(opdate, staffname, qn) {
 	reViewOneDay(opdate)
 	if (isSplit() && (isStaffname(staffname) || isConsults())) {
 		reViewStaffqueue()
@@ -1190,81 +1138,143 @@ let closeUndel = function () {
 	$('#undelete').hide()
 }
 
-function viewFind (response, hn) {
-	let found = JSON.parse(response),
-		findrow = scrolltoThisCase(found[0].qn)
+export function viewSearchDB(found, search)
+{
+  let flen = found.length,
+    $dialogFind = $("#dialogFind"),
+    $findtbl = $("#findtbl"),
+    show = scrolltoThisCase(found[flen-1].qn)
 
-	// Scroll to the first found case
-	// Dialog box shows not found on screen or more than 1 case
-	if (!findrow || (found.length > 1)) {
-		makeDialogFind(found, hn )
-	}
+  if (!show || (flen > 1)) {
+    if (flen > 100) {
+      pagination($dialogFind, $findtbl, found, search)
+    } else {
+      makeDialogFound($dialogFind, $findtbl, found, search)
+    }
+  }
 }
 
-// Make dialog box dialogFind containing historytbl
-let makeDialogFind = function (found, hn) {
-	
-	// delete previous table lest it accumulates
-	$('#findtbl tr').slice(1).remove()
+// Both main and staff tables
+function scrolltoThisCase(qn)
+{
+  let showtbl, showqueuetbl
 
-	$.each( found, function() {	// each === this
-		$('#findcells tr').clone()
-			.appendTo($('#findtbl tbody'))
-				.filldataFind(this)
-	});
+  showtbl = locateFound("tblcontainer", "tbl", qn)
+  if (isSplit()) {
+    showqueuetbl = locateFound("queuecontainer", "queuetbl", qn)
+  }
+  return showtbl || showqueuetbl
+}
 
-	let $dialogFind = $("#dialogFind")
-	$dialogFind.css("height", 0)
-	$dialogFind.dialog({
-		title: "HN " + hn,
-		closeOnEscape: true,
-		modal: true,
-		hide: 200,
-		width: winWidth(95),
-		height: winHeight(95),
-		buttons: [
-			{
-				text: "Export to xls",
-				click: function() {
-					exportFindToExcel(search)
-				}
-			}
-		],
-		close: function() {
-			$(window).off("resize", resizeFind )
-			$(".fixed").remove()
-			$("#dialogInput").dialog("close")
-			$(".marker").removeClass("marker")
-		}
-	})
-	$("#findtbl").fixMe($("#dialogFind"));
-	$('#dialogFind .pacs').off("click").on("click", function() {
-			PACS(this.innerHTML)
-	})
-	$('#dialogFind .upload').off("click").on("click", function() {
-		let patient = this.innerHTML
-		let hn = this.previousElementSibling.innerHTML
+// Scroll to specified qn case and add a border
+let locateFound = function (containerID, tableID, qn) {
+  let container = document.getElementById(containerID),
+    row = getTableRowByQN(tableID, qn),
+    scrolledTop = container.scrollTop,
+    offset = row && row.offsetTop,
+    rowHeight = row && row.offsetHeight,
+    height = container.clientHeight - rowHeight,
+    bottom = scrolledTop + height,
+    $container = $("#" + containerID)
 
-		hn && showUpload(hn, patient)
-	})
+  $("#" + tableID + " tr.marker").removeClass("marker")
+  if (row) {
+    $(row).addClass("marker")
+    if (offset < scrolledTop) {
+      $container.animate({
+        scrollTop: offset
+      }, 500);
+    }
+    else if (offset > bottom) {
+      $container.animate({
+        scrollTop: offset - height
+      }, 500);
+    }
+    return true
+  }
+}
 
-	// for resizing dialogs in landscape / portrait view
-	$(window).on("resize", resizeFind )
+function makeDialogFound($dialogFind, $findtbl, found, search)
+{
+  $dialogFind.dialog({
+    title: "Search: " + search,
+    closeOnEscape: true,
+    modal: true,
+    width: winWidth(95),
+    height: winHeight(95),
+    buttons: [
+      {
+        text: "Export to xls",
+        click: function() {
+          exportFindToExcel(search)
+        }
+      }
+    ],
+    close: function() {
+      $(window).off("resize", resizeFind )
+      $(".fixed").remove()
+      $("#dialogInput").dialog("close")
+      $(".marker").removeClass("marker")
+    }
+  })
 
-	function resizeFind() {
-		$dialogFind.dialog({
-			width: window.innerWidth,
-			height: window.innerHeight
-		})
-		winResizeFix($findtbl, $dialogFind)
-	}
+  // delete previous table lest it accumulates
+  $findtbl.find('tr').slice(1).remove()
+
+  $.each( found, function() {  // each === this
+    $('#findcells tr').clone()
+      .appendTo($findtbl.find('tbody'))
+        .filldataFind(this)
+  });
+  $findtbl.fixMe($dialogFind);
+
+  //for resizing dialogs in landscape / portrait view
+  $(window).on("resize", resizeFind )
+
+  function resizeFind() {
+    $dialogFind.dialog({
+      width: window.innerWidth,
+      height: window.innerHeight
+    })
+    winResizeFix($findtbl, $dialogFind)
+  }
+
+  $dialogFind.find('.pacs').click(function() {
+    if (isPACS) {
+      PACS(this.innerHTML)
+    }
+  })
+  $dialogFind.find('.upload').click(function() {
+    let patient = this.innerHTML
+    let hn = this.previousElementSibling.innerHTML
+
+    hn && showUpload(hn, patient)
+  })
+
+  //scroll to todate when there many cases
+  let today = new Date(),
+    todate = ISOdate(today),
+    thishead
+
+  $findtbl.find("tr").each(function() {
+    thishead = this
+    return numDate(this.cells[OPDATE].innerHTML) < todate
+  })
+  $dialogFind.animate({
+    scrollTop: $(thishead).offset().top - $dialogFind.height()
+  }, 300);
 }
 
 jQuery.fn.extend({
 	filldataFind : function(q) {
 		let cells = this[0].cells
 
-		!q.waitnum && this.css("background-color", "#FFCCCC")
+
+		if (Number(q.deleted)) {
+		  this.addClass("deleted")
+		} else {
+		  rowDecoration(this[0], q.opdate)
+		}
 		q.hn && isPACS && (cells[2].className = "pacs")
 		q.patient && (cells[3].className = "upload")
 
@@ -1274,12 +1284,14 @@ jQuery.fn.extend({
 		cells[3].innerHTML = q.patient
 		cells[4].innerHTML = q.diagnosis
 		cells[5].innerHTML = q.treatment
-		cells[6].innerHTML = q.contact
-		cells[7].innerHTML = q.editor
+        cells[6].innerHTML = viewEquip(q.equipment),
+        cells[7].innerHTML = q.admission,
+        cells[8].innerHTML = q.final,
+		cells[9].innerHTML = q.contact
 	}
 })
 
-function viewSortable(argv) {
+export function viewSortable(argv) {
 	let receiver = argv.receiver,
 		oldOpdate = argv.oldOpdate,
 		thisOpdate = argv.thisOpdate,
@@ -1302,7 +1314,7 @@ function viewSortable(argv) {
 	hoverMain()
 }
 
-function viewIdling() {
+export function viewIdling() {
 	if ($('#dialogService').hasClass('ui-dialog-content')
 		&& $('#dialogService').dialog('isOpen')) {
 
@@ -1312,44 +1324,6 @@ function viewIdling() {
 	reViewAll()
 	isSplit() && reViewStaffqueue()
 }
-
-function viewLatestEntry(latestCase) {
-
-	// delete previous table lest it accumulates
-	$('#latesttbl tr').slice(1).remove()
-	$.each( latestCase, function() {	// each === this
-		$('#latestcells tr').clone()
-			.appendTo($('#latesttbl tbody'))
-				.filldataLatest(this)
-	});
-
-	let $dialogLatestEntry = $("#dialogLatestEntry")
-	$dialogLatestEntry.css("height", 0)
-	$dialogLatestEntry.dialog({
-		title: "THE Latest Entry Case",
-		closeOnEscape: true,
-		modal: true,
-		hide: 200,
-		width: winWidth() * 95 / 100,
-		height: winHeight() * 70 / 100
-	})
-}
-
-jQuery.fn.extend({
-	filldataLatest : function(q) {
-		let cells = this[0].cells
-
-		cells[0].innerHTML = putThdate(q.opdate)
-		cells[1].innerHTML = q.staffname
-		cells[2].innerHTML = q.hn
-		cells[3].innerHTML = q.patient
-		cells[4].innerHTML = q.diagnosis
-		cells[5].innerHTML = q.treatment
-		cells[6].innerHTML = q.contact
-		cells[7].innerHTML = q.admission
-		cells[8].innerHTML = q.final
-	}
-})
 
 // Find first row in the book that have same or later date than start date
 let findStartRowInBOOK = function (book, opdate) {

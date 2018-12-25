@@ -20,14 +20,14 @@ import { sortable } from "./sort.js"
 
 import {
 	viewAll, viewIdling, reViewStaffqueue, reViewAll, viewSaveContent,
-	viewSaveNoQN, viewSaveByHN, setClickStaff, isConsultsTbl
+	viewSaveNoQN, viewSaveByHN, setClickStaff
 } from "./view.js"
 
 import {
 	getBOOK, getCONSULT, getSTAFF, getONCALL, getHOLIDAY, isPACS, gettimestamp, START,
 	getOpdate, ISOdate, thDate, numDate, nextdays, calcWaitnum, URIcomponent, Alert,
 	UndoManager, updateBOOK, showUpload, menustyle, holiday, setONCALL, isSplit, reposition,
-	dialogServiceShowing
+	dialogServiceShowing, isConsultsTbl
 } from "./util.js"
 
 // Public functions
@@ -41,9 +41,6 @@ export {
 // idleCounter is number of cycles of idle setTimeout
 let timer = 0,
     idleCounter = 0
-
-// function declaration (function definition ) : public
-// function expression (function literal) : local
 
 // For staff & residents with login id / password from Get_staff_detail
 function userStaff() {
@@ -85,28 +82,12 @@ function success(response) {
   setTimeout( makeFinish, 2000)
 }
 
-// *** offline browsing by service worker ***
+// *** plan -> offline browsing by service worker ***
 function failed(response) {
 	let title = "Server Error",
-		error = error + "<br><br>Response from server has no data",
+		error = error + "<br><br>Response from server has no data"
 
-	// no data from server, load from localStorage
-		local = localStorage.getItem('ALLBOOK')
-	if (/BOOK/.test(local)) {
-		let temp = JSON.parse(local)
-		BOOK = temp.BOOK ? temp.BOOK : []
-		CONSULT = temp.CONSULT ? temp.CONSULT : []
-
-		makeStart()
-		Alert(title, error + "<br><br>Use localStorage instead<br><br>Read Only mode")
-
-		// add 7 days to QTIME in localStorage so that it will not be
-		// overrided with backward data after access with failed server
-		let date = nextdays(new Date(), 7)
-		localStorage.setItem('localQTIME', date)
-	} else {
-		Alert(title, error + "No localStorage backup")
-	}
+	Alert(title, error + "No localStorage backup")
 }
 
 // Display everyday on main table 1 month back, and 2 years ahead
@@ -1382,14 +1363,10 @@ function addStaff()
 jQuery.fn.extend({
   filldataStaff : function (i, q) {
     let cells = this[0].cells
-    let data = [
-        "<a href=\"javascript:getval('" + i + "')\">"
-        + q.staffname + "</a>",
-        q.specialty,
-        q.startoncall
-      ]
 
-    dataforEachCell(cells, data)
+	cells[0].innerHTML = `<a href="javascript:getval('${i}')">${q.staffname}</a>`
+	cells[1].innerHTML = `<a href="javascript:getval('${i}')">${q.specialty}</a>`
+	cells[2].innerHTML = `<a href="javascript:getval('${i}')">${q.startoncall}</a>`
   }
 })
 
@@ -1426,7 +1403,7 @@ function doadddata()
 
 function doupdatedata()
 {
-  if (confirm("ต้องการแก้ไขข้อมูลนี้หรือไม่")) {
+  if (confirm("ต้องการแก้ไขข้อมูลนี้")) {
     let vname = document.getElementById("sname").value
     let vspecialty = document.getElementById("scbb").value
     let vdate = document.getElementById("sdate").value
@@ -1567,13 +1544,10 @@ function fillHoliday($holidaytbl)
 
 jQuery.fn.extend({
 	filldataHoliday : function(q) {
-		let	cells = this[0].cells,
-			data = [
-				putThdate(q.holidate),
-				HOLIDAYENGTHAI[q.dayname]
-			]
+		let	cells = this[0].cells
 
-		dataforEachCell(cells, data)
+		cells[0].innerHTML = putThdate(q.holidate)
+		cells[1].innerHTML = HOLIDAYENGTHAI[q.dayname]
 	}
 })
 

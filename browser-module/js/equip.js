@@ -9,18 +9,14 @@ import {
 } from "./util.js"
 
 import { viewAll, makeEquip } from "./view.js"
-
 export { makeEquipTable }
 
-const NAMEOFDAYTHAI	= ["อาทิตย์", "จันทร์", "อังคาร", "พุธ", "พฤหัส", "ศุกร์", "เสาร์"],
+const NAMEOFDAYTHAI	= ["อาทิตย์", "จันทร์", "อังคาร", "พุธ", "พฤหัส", "ศุกร์", "เสาร์"]
 
 let bookqEquip,
 	JsonEquip,
 	thisqn,
 	$dialogEquip = $('#dialogEquip')
-
-// function declaration (definition ) : public
-// function expression (literal) : local
 
 // Make dialog box containing equiptment check list <div id="dialogEquip">
 function makeEquipTable(book, $row, qn) {
@@ -94,7 +90,7 @@ function showNonEditableEquip()
 			text: "ยกเลิกทุกรายการ",
 			style: "margin-right:450px",
 			click: function () {
-				if (confirm("ลบออกทั้งหมด และกลับคืนไม่ได้")) {
+				if (confirm("ลบออกทั้งหมด")) {
 					cancelAllEquip()
 				}
 			}

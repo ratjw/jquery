@@ -73,7 +73,7 @@ function showNonEditableEquip()
 			text: "ยกเลิกทุกรายการ",
 			style: "margin-right:450px",
 			click: function () {
-				if (confirm("ลบออกทั้งหมด และกลับคืนไม่ได้")) {
+				if (confirm("ลบออกทั้งหมด")) {
 					cancelAll()
 				}
 			}
