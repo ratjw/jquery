@@ -283,10 +283,9 @@ function clickDate(event, $selected, cell)
 		thisroom = $thiscell.eq(OPROOM).html(),
 		thisqn = $thiscell.eq(QN).html(),
 		thisWaitnum = calcWaitnum(thisOpdateth, $thisrow, $thisrow.next()),
-		allSameDate,
-		allOldCases, moveindex,
-		allNewCases, thisindex, casenum,
-		sql = ""
+		allOldCases,
+		allNewCases,
+		thisindex
 
 	// remove itself from old sameDateRoom
 	allOldCases = sameDateRoomTableQN(moveOpdateth, moveroom, movetheatre)
@@ -300,11 +299,11 @@ function clickDate(event, $selected, cell)
 	thisindex = allNewCases.indexOf(thisqn)
 	allNewCases.splice(thisindex + 1, 0, moveQN)
 
-	let doChangeDate = function (waitnum, movedate, thisdate, room, qn) {
-		modelChangeDate(allOldCases, allNewCases, waitnum, thisdate, room, qn).then(response => {
+	let doChangeDate = function (waitnum, movedateth, movedate, thisdate, room) {
+		modelChangeDate(allOldCases, allNewCases, waitnum, thisdate, room, moveQN).then(response => {
 			let hasData = function () {
 				updateBOOK(response)
-				viewChangeDate(movedate, thisdate, staffname, qn)
+				viewChangeDate(movedateth, movedate, thisdate, staffname, moveQN)
 			}
 
 			typeof response === "object"
@@ -320,14 +319,14 @@ function clickDate(event, $selected, cell)
 	// click the same case
 	if (thisqn === moveQN) { return }
 
-	doChangeDate(thisWaitnum, moveOpdate, thisOpdate, thisroom, thisqn)
+	doChangeDate(thisWaitnum, moveOpdateth, moveOpdate, thisOpdate, thisroom)
 
 	UndoManager.add({
 		undo: function() {
-			doChangeDate(moveWaitnum, thisOpdate, moveOpdate, moveroom, moveQN)
+			doChangeDate(moveWaitnum, thisOpdateth, thisOpdate, moveOpdate, moveroom)
 		},
 		redo: function() {
-			doChangeDate(thisWaitnum, moveOpdate, thisOpdate, thisroom, thisqn)
+			doChangeDate(thisWaitnum, moveOpdateth, moveOpdate, thisOpdate, thisroom)
 		}
 	})		
 }
@@ -398,28 +397,8 @@ function delCase() {
 	})
 }
 
-function deleteRow($row, opdate)
-{
-	let prevDate = $row.prev().children("td").eq(OPDATE).html()
-	let nextDate = $row.next().children("td").eq(OPDATE).html()
-
-	prevDate = getOpdate(prevDate)
-	nextDate = getOpdate(nextDate)
-
-	if ((prevDate === opdate)
-	|| (nextDate === opdate)
-	|| $row.closest("tr").is(":last-child")) {
-		$row.remove()
-	} else {
-		$row.children("td").eq(OPDATE).siblings().html("")
-		$row.children("td").eq(HN).removeClass("pacs")
-		$row.children("td").eq(PATIENT).removeClass("upload")
-		$row.children('td').eq(STAFFNAME).html(showStaffOnCall(opdate))
-	}
-}
-
 // All cases (exclude the deleted ones)
-async function allCases() {
+function allCases() {
 	modelAllCases().then(response => {
 		typeof response === "object"
 		? viewAllCases(response)

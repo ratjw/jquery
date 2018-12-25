@@ -464,6 +464,13 @@ function modelSaveEquip(equipment, qn) {
 	return postData(MYSQLIPHP, sql);
 }
 
+function modelCancelAllEquip(qn)
+{
+	sql = `sqlReturnbook=UPDATE book SET equipment='',editor='${USER}' WHERE qn='${qn}';`
+
+	return postData(MYSQLIPHP, sql)
+}
+
 async function postData(url = ``, data) {
     const response = await fetch(url, {
         method: "POST",

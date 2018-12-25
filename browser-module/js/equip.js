@@ -12,18 +12,21 @@ import { viewAll, makeEquip } from "./view.js"
 
 export { makeEquipTable }
 
+const NAMEOFDAYTHAI	= ["อาทิตย์", "จันทร์", "อังคาร", "พุธ", "พฤหัส", "ศุกร์", "เสาร์"],
+
+let bookqEquip,
+	JsonEquip,
+	thisqn,
+	$dialogEquip = $('#dialogEquip')
+
 // function declaration (definition ) : public
 // function expression (literal) : local
 
 // Make dialog box containing equiptment check list <div id="dialogEquip">
 function makeEquipTable(book, $row, qn) {
-	let NAMEOFDAYTHAI	= ["อาทิตย์", "จันทร์", "อังคาร", "พุธ", "พฤหัส", "ศุกร์", "เสาร์"],
-		bookq = getBOOKrowByQN(book, qn),
-		bookqEquip = bookq.equipment,
-		JsonEquip = bookqEquip? JSON.parse(bookqEquip) : {},
-		$dialogEquip = $('#dialogEquip'),
+	let bookq = getBOOKrowByQN(book, qn),
 		height = window.innerHeight,
-		profile = {
+		thisEquip = {
 			"oproom": bookq.oproom || "",
 			"casenum": bookq.casenum || "",
 			"optime": bookq.optime,
@@ -37,9 +40,13 @@ function makeEquipTable(book, $row, qn) {
 			"treatment": bookq.treatment
 		}
 
-	for (let key in profile) {
-		document.getElementById(key).innerHTML = profile[key]
+	for (let key in thisEquip) {
+		document.getElementById(key).innerHTML = thisEquip[key]
 	}
+
+	bookqEquip = bookq.equipment
+	JsonEquip = bookqEquip? JSON.parse(bookqEquip) : {}
+	thisqn = qn
 
 	// mark table row
 	// clear all previous dialog values
@@ -71,15 +78,12 @@ function makeEquipTable(book, $row, qn) {
 			}
 		})
 		showNonEditableEquip()
-		getEditedBy(qn)
+		getEditedBy(thisqn)
  	} else {
 		showEditableEquip()
 		$('#editedby').html("")
 	}
-	$dialogEquip.data("bookqEquip", bookqEquip)
-	$dialogEquip.data("JsonEquip", JsonEquip)
-	$dialogEquip.data("$row", $row)
-	$dialogEquip.data("qn", qn)
+
 	clearEditcell()
 }
 
@@ -91,7 +95,7 @@ function showNonEditableEquip()
 			style: "margin-right:450px",
 			click: function () {
 				if (confirm("ลบออกทั้งหมด และกลับคืนไม่ได้")) {
-					cancelAll()
+					cancelAllEquip()
 				}
 			}
 		},
@@ -120,7 +124,7 @@ let showEditableEquip = function () {
 						Alert("Checklistequip", "<br>ต้องระบุจำนวนเงิน<br>จ่ายไม่ได้เลย = 0")
 					}
 				} else {
-					cancelAll()
+					cancelAllEquip()
 				}
 			}
 		}
@@ -158,9 +162,9 @@ function clearShunt()
 	$('#dialogEquip input[name=program]').prop('checked', false)
 }
 
-function getEditedBy(qn)
+function getEditedBy()
 {
-	modelGetEquip(qn).then(response => {
+	modelGetEquip(thisqn).then(response => {
 		let hasData = function () {
 			let Editedby = ""
 			$.each(response, function(key, val) {
@@ -195,12 +199,7 @@ function checkEquip()
 }
 
 let Checklistequip = function () {
-	let	$dialogEquip = $("#dialogEquip"),
-		bookqEquip = $dialogEquip.data("bookqEquip"),
-		JsonEquip = $dialogEquip.data("JsonEquip"),
-		$row = $dialogEquip.data("$row"),
-		qn = $dialogEquip.data("qn"),
-		equipJSON = {},
+	let equipJSON = {},
 		equipment = "",
 		sql = ""
 
@@ -221,10 +220,10 @@ let Checklistequip = function () {
 
 	// escape the \ (escape) and ' (single quote) for sql string, not for JSON
 	equipment = equipment.replace(/\\/g,"\\\\").replace(/'/g,"\\'")
-	modelSaveEquip(equipment, qn).then(response => {
+	modelSaveEquip(equipment, thisqn).then(response => {
 		let showup = function () {
 			updateBOOK(response)
-			$row = $(getTableRowByQN("tbl", qn))
+			$row = $(getTableRowByQN("tbl", thisqn))
 			$row.find("td").eq(EQUIPMENT).html(makeEquip(equipJSON))
 			$dialogEquip.dialog('close')
 		}
@@ -247,40 +246,17 @@ let Checklistequip = function () {
 	}).catch(error => {})
 }
 
-async function cancelAll()
+function cancelAllEquip()
 {
-	let	$dialogEquip = $("#dialogEquip"),
-		bookqEquip = $dialogEquip.data("bookqEquip"),
-		JsonEquip = $dialogEquip.data("JsonEquip"),
-		$row = $dialogEquip.data("$row"),
-		qn = $dialogEquip.data("qn"),
-
-	sql = `sqlReturnbook=UPDATE book SET equipment='',editor='${USER}' WHERE qn='${qn}';`
-
-	let response = await postData(MYSQLIPHP, sql)
-	if (typeof response === "object") {
-		updateBOOK(response)
-		if ($row.find("td").eq(QN).html() !== qn) {
-			$row = getTableRowByQN("tbl", qn)
+	modelCancelAllEquip(thisqn).then(response => {
+		let hasData = function () {
+			updateBOOK(response)
+			viewCancelAllEquip(response)
 		}
-		$row.find("td").eq(EQUIPMENT).html('')
-		$dialogEquip.dialog('close')
-	} else {
-		// Error update server
-		// Roll back. If old form has equips, fill checked & texts
-		// prop("checked", true) : radio and checkbox
-		// .val(val) : <input text> && <textarea>
-		Alert("Checklistequip", response)
-		$('#dialogEquip input').val('')
-		$('#dialogEquip textarea').val('')
-		if ( bookqEquip ) {
-			$.each(JsonEquip, function(key, val) {
-				if (val === 'checked') {
-					$("#"+ key).prop("checked", true)
-				} else {
-					$("#"+ key).val(val)
-				}
-			})
-		}
-	}
+
+		typeof response === "object"
+		? hasData()
+		: viewRestoreAllEquip(response, bookqEquip, JsonEquip)
+
+	}).catch(error => {})
 }

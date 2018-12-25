@@ -519,6 +519,26 @@ function viewDeleteCase(tableID, $row, opdate, staffname) {
 	: $row.remove()
 }
 
+// Method to remove or just blank the row, used in main and Consults tables
+let deleteRow = function ($row, opdate) {
+	let prevDate = $row.prev().children("td").eq(OPDATE).html(),
+		nextDate = $row.next().children("td").eq(OPDATE).html()
+
+	prevDate = getOpdate(prevDate)
+	nextDate = getOpdate(nextDate)
+
+	if (prevDate === opdate
+		|| nextDate === opdate
+		|| $row.closest("tr").is(":last-child")) {
+			$row.remove()
+	} else {
+		$row.children("td").eq(OPDATE).siblings().html("")
+		$row.children("td").eq(HN).removeClass("pacs")
+		$row.children("td").eq(PATIENT).removeClass("upload")
+		$row.children('td').eq(STAFFNAME).html(showStaffOnCall(opdate))
+	}
+}
+
 function viewSaveRoomTime(opdate) {
 	reViewOneDay(opdate)
 	isSplit() && reViewStaffqueue()
@@ -710,25 +730,6 @@ let reViewAnotherTableCell = function (tableID, cellindex, qn) {
 		? cells[cellindex].innerHTML = viewcell[cellindex]
 		: (cells[HN].innerHTML = viewcell[HN],
 		  cells[PATIENT].innerHTML = viewcell[PATIENT]))
-}
-
-// Method to remove or just blank the row, used in main and Consults tables
-let deleteRow = function ($row, opdate) {
-	let prevDate = $row.prev().children("td").eq(OPDATE).html(),
-		nextDate = $row.next().children("td").eq(OPDATE).html()
-
-	prevDate = getOpdate(prevDate)
-	nextDate = getOpdate(nextDate)
-
-	if (prevDate === opdate
-		|| nextDate === opdate
-		|| $row.closest("tr").is(":last-child")) {
-			$row.remove()
-	} else {
-		$row.children("td").eq(OPDATE).siblings().html("")
-		$row.children("td").eq(HN).removeClass("pacs")
-		$row.children("td").eq(PATIENT).removeClass("upload")
-	}
 }
 
 // Make box dialog dialogAll containing alltbl
@@ -1070,6 +1071,34 @@ function equipImg(equipPics)
   })
 
   return img
+}
+
+function viewCancelAllEquip(qn)
+{
+	let $row = getTableRowByQN("tbl", qn)
+
+	$row.find("td").eq(EQUIPMENT).html('')
+	$("#dialogEquip).dialog('close')
+}
+
+function viewRestoreAllEquip(response, bookqEquip, JsonEquip)
+{
+	// Error update server
+	// Roll back. If old form has equips, fill checked & texts
+	// prop("checked", true) : radio and checkbox
+	// .val(val) : <input text> && <textarea>
+	Alert("cancelAllEquip", response)
+	$('#dialogEquip input').val('')
+	$('#dialogEquip textarea').val('')
+	if ( bookqEquip ) {
+		$.each(JsonEquip, function(key, val) {
+			if (val === 'checked') {
+				$("#"+ key).prop("checked", true)
+			} else {
+				$("#"+ key).val(val)
+			}
+		})
+	}
 }
 
 // Make dialog box dialogDeleted containing historytbl
