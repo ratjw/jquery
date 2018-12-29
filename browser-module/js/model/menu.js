@@ -1,27 +1,26 @@
-
+import { clearSelection, PACS } from "../control/click.js"
 import {
 	OPDATE, THEATRE, OPROOM, OPTIME, CASENUM, STAFFNAME, HN, PATIENT, DIAGNOSIS, TREATMENT,
 	CONTACT, QN, LARGESTDATE
 } from "./const.js"
-import { showStaffOnCall, clearSelection, PACS } from "./control.js"
-import { createEditcell, clearEditcell } from "./edit.js"
-import { USER } from "./main.js"
+import { createEditcell, clearEditcell } from "../control/edit.js"
+import { USER } from "../main.js"
 
 import {
 	modelPostponeCase, modelChangeDate, modelAllCases, modelCaseHistory,
 	modelAllDeletedCases, modelUndelete, modelSearchDB, modelDeleteCase
 } from "./model.js"
 
+import { viewStaffqueue, showStaffOnCall } from "../view/view.js"
 import {
 	viewPostponeCase, viewChangeDate, viewDeleteCase, viewAllCases,
-	viewCaseHistory, viewDeletedCases, viewUndelete, viewSearchDB,
-	viewStaffqueue, viewEquip
-} from "./view.js"
+	viewCaseHistory, viewDeletedCases, viewUndelete, viewSearchDB
+} from "../view/viewmenu.js"
 
 import {
 	getBOOK, getCONSULT, isPACS, updateBOOK, getOpdate, getBOOKrowByQN, getTableRowByQN,
 	Alert, reposition, winWidth, winHeight, UndoManager, isSplit, winResizeFix, calcWaitnum,
-	sameDateRoomBookQN, sameDateRoomTableQN
+	sameDateRoomBookQN, sameDateRoomTableQN, menustyle
 } from "./util.js"
 
 export { oneRowMenu, clearMouseoverTR }
@@ -102,31 +101,30 @@ function addnewrow() {
 	let	$selected = $(".selected"),
 		tableID = $selected.closest('table').attr('id'),
 		$row = $selected.closest('tr'),
-		keepcell = tableID === "tbl" ? OPDATE : STAFFNAME,
 		$clone = $row.clone()
 
 	// "tbl" copy title, Date, Room Time
 	// "queuetbl" copy title, Date, Room Time, Staff
-	let addrow = function ($clone, $row, keepcell) {
+	let addrow = function ($clone, $row, OPDATE) {
 		$clone.removeClass("selected")
 			.insertAfter($row)
 				.find("td").eq(HN).removeClass("pacs")
 				.parent().find("td").eq(PATIENT).removeClass("upload")
-				.parent().find("td").eq(keepcell)
+				.parent().find("td").eq(OPDATE)
 					.nextAll()
 						.html("")
 		clearSelection()
 		createEditcell($clone.find("td")[HN])
 	}
 
-	addrow($clone, $row, keepcell)
+	addrow($clone, $row, OPDATE)
 
 	UndoManager.add({
 		undo: function() {
 			$row.next().remove()
 		},
 		redo: function() {
-			addrow($clone, $row, keepcell)
+			addrow($clone, $row, OPDATE)
 		}
 	})		
 }

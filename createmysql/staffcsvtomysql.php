@@ -5,7 +5,7 @@
 	$dbname = "neurosurgery";
 
 	$mysqli = new mysqli($servername, $username, $password, $dbname);
-	$mysqli->query("SET CHARACTER SET utf8");
+	$mysqli->query("SET CHARACTER SET utf8mb4");
 
 	if ($mysqli->connect_errno)
 		exit("Connect failed: %s\n". $mysqli->connect_error);
@@ -27,12 +27,13 @@
 		$data = array_map("trim", $data);
 		if (!array_filter($data))
 			continue;
-		$sql = 'INSERT INTO staff
-					(number, staffname, specialty, oncall, startoncall)
-				VALUES ('
-					.$data[0].',"'.$data[1]
-					.'","'.$data[2].'","'.$data[3]
-					.'","'.$data[4].'");';
+		$sql = "INSERT INTO staff (number, staffname, specialty, oncall, startoncall)
+					VALUES ($data[0],'$data[1]','$data[2]','$data[3]',";
+		if ($data[4]) {
+			$sql .= "'$data[4]');";
+		} else {
+			$sql .= "null);";
+		}
 		$result = $mysqli->query($sql);
 		if (!$result) {
 			return $mysqli->error;

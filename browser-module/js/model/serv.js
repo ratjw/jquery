@@ -1,33 +1,28 @@
-
-import { CASENUMSV, HNSV, NAMESV, DIAGNOSISSV, TREATMENTSV, ADMISSIONSV,
+import { PACS, clearSelection } from "../control/click.js"
+import {
+  CASENUMSV, HNSV, NAMESV, DIAGNOSISSV, TREATMENTSV, ADMISSIONSV,
   FINALSV, PROFILESV, ADMITSV, OPDATESV, DISCHARGESV, QNSV,
-
   BRAINDX, BRAINTUMORDX, BRAINVASCULARDX, CSFDX, TRAUMADX, SPINEDX, ETCDX,
   BRAINTUMORDXNO, BRAINVASCULARDXNO, CSFDXNO, TRAUMADXNO, SPINEDXNO, ETCDXNO,
   BRAINTUMORRX, BRAINVASCULARRX, CSFRX, TRAUMARX, SPINERX, SPINEOP, ETCRX,
   BRAINTUMORRXNO, BRAINVASCULARRXNO, CSFRXNO, TRAUMARXNO, SPINERXNO, ETCRXNO,
-  NOOPERATION, RADIOSURGERY, ENDOVASCULAR,
-
-  ROWREPORT, COLUMNREPORT, SPECIALTY
+  NOOPERATION, RADIOSURGERY, ENDOVASCULAR, ROWREPORT, COLUMNREPORT, SPECIALTY
 } from "./const.js"
 
-import { PACS, resetTimer, fillConsults } from "./control.js"
+import { resetTimer, resetTimerCounter } from "../control/control.js"
 import {
 	getPointer, getOldcontent, getNewcontent, clearEditcell, createEditcell
-} from "./edit.js"
+} from "../control/edit.js"
 
 import { modelGetServiceOneMonth, modelGetIPD, modelSaveService } from "./model.js"
 
 import {
-	getSTAFF, isPACS, START,
-	putAgeOpdate, getBOOKrowByQN, URIcomponent,
-	updateBOOK, showUpload, getClass,
+	getSTAFF, isPACS, START, putAgeOpdate, getBOOKrowByQN, URIcomponent,
+	updateBOOK, showUpload, getClass, inPicArea, putThdate, putNameAge,
 	Alert, winWidth, winHeight, UndoManager, winResizeFix
 } from "./util.js"
 
-import { reViewAll, reViewStaffqueue } from "./view.js"
-
-export { reViewService, savePreviousCellService, editPresentCellService }
+import { reViewAll, reViewStaffqueue, fillConsults } from "../view/view.js"
 
 // SERVICE is retrieved from DB by getServiceOneMonth
 // SERVE is calculated from SERVICE by calcSERVE
@@ -145,7 +140,7 @@ function entireMonth(fromDate)
 // infection : "", "Infection"					<- user-defined only
 // morbid : "", "Morbidity"						<- user-defined only
 // dead : "", "Dead"							<- user-defined only
-let showService = function () {
+let showService = function (fromDate, toDate) {
 	let	$dialogService = $("#dialogService"),
 		$servicetbl = $("#servicetbl"),
 		$servicecells = $("#servicecells"),
@@ -159,15 +154,10 @@ let showService = function () {
 	$("#monthpicker").hide()
 	$("#servicehead").show()
 
-	// delete previous servicetbl lest it accumulates
-	$('#servicetbl tr').slice(1).remove()
-	$('#servicetbl').show()
-	editableSV = fromDate >= START
-
 	//delete previous servicetbl lest it accumulates
 	$servicetbl.find("tr").slice(1).remove()
 	$servicetbl.show()
-	editableSV = fromDate >= getStart()
+	editableSV = fromDate >= START
 
 	$.each( SERVE, function() {
 		if (this.staffname !== staffname) {
@@ -193,8 +183,8 @@ let showService = function () {
 		width: winWidth(95),
 		height: winHeight(95),
 		close: function() {
-			refillstaffqueue()
-			refillall()
+			reViewStaffqueue()
+			reViewAll()
             fillConsults()
 			$(".ui-dialog:visible").find(".ui-dialog-content").dialog("close");
 			$(".fixed").remove()
@@ -223,14 +213,13 @@ let showService = function () {
 
 	function clickDialogService(event)
 	{
-		resetTimer();
-		idleCounter = 0
+		resetTimerCounter();
 		event.stopPropagation()
 		let	target = event.target,
 			$target = $(target),
 			onProfile = $target.closest(".divRecord").length,
 			onNormalCell = (target.nodeName === "TD" && target.colSpan === 1),
-			pointed = $("#editcell").data("pointing"),
+			pointed = getPointer(),
 			isHideColumn = target.cellIndex === PROFILESV,
 			onDivRecord = /divRecord/.test(target.className),
 			onImage = target.nodeName === "IMG"
@@ -401,7 +390,7 @@ function isNotOpfor(keyword, opfor, RxDx, diagRx)
 }
 
 // Use existing DOM table to refresh when editing
-function reViewService(fromDate, toDate) {
+export function reViewService(fromDate, toDate) {
 	let $servicetbl = $("#servicetbl"),
 		$rows = $servicetbl.find("tr"),
 		$servicecells = $("#servicecells"),
@@ -555,7 +544,7 @@ let fillAdmitDischargeDate = function () {
 	});
 }
 
-function savePreviousCellService() {
+export function savePreviousCellService() {
 	let pointed = getPointer(),
 		oldcontent = getOldcontent(),
 		newcontent = getNewcontent()
@@ -583,7 +572,7 @@ function savePreviousCellService() {
 			saveContentService(pointed, "final", newcontent)
 			break
 		case PROFILESV:
-			saveProfileService(pointed)
+			saveProfileService(pointed, )
 			break
 		case ADMITSV:
 		case DISCHARGESV:
@@ -612,22 +601,8 @@ let saveService = function (pointed, column, newcontent) {
 		fromDate = $("#monthstart").val(),
 		toDate = $("#monthpicker").val()
 
-	saveServiceManager(newcontent, oldcontent)
-
-	// make undo-able
-	UndoManager.add({
-		undo: function() {
-			saveServiceManager(oldcontent, newcontent)
-			pointed.innerHTML = oldcontent
-		},
-		redo: function() {
-			saveServiceManager(newcontent, oldcontent)
-			pointed.innerHTML = newcontent
-		}
-	})
-
-	let saveServiceManager = function (newdata, olddata) {
-		modelSaveService(column, newdata, qn, fromDate, toDate).then(response => {
+	let doSaveService = function (newdata, olddata) {
+		modelSaveService(pointed, column, newdata, qn, fromDate, toDate).then(response => {
 			let hasResponse = function () {
 				updateBOOK(response)
 				SERVICE = response.SERVICE
@@ -636,7 +611,7 @@ let saveService = function (pointed, column, newcontent) {
 				let servelen = SERVE.length
 				SERVE = calcSERVE()
 				if (SERVE.length !== servelen) {
-					reviewService(fromDate, toDate)
+					reViewService(fromDate, toDate)
 				}
 
 				// Calc countService of this case only
@@ -668,11 +643,25 @@ let saveService = function (pointed, column, newcontent) {
 			typeof response === "object" ? hasResponse() : noResponse()
 		}).catch(error => {})
 	}
+
+	doSaveService(newcontent, oldcontent)
+
+	// make undo-able
+	UndoManager.add({
+		undo: function() {
+			doSaveService(oldcontent, newcontent)
+			pointed.innerHTML = oldcontent
+		},
+		redo: function() {
+			doSaveService(newcontent, oldcontent)
+			pointed.innerHTML = newcontent
+		}
+	})
 }
 
 // Set up editcell for keyin
 // redirect click to openPACS or file upload
-function editPresentCellService(event, pointing) {
+export function editPresentCellService(event, pointing) {
 	let cindex = pointing.cellIndex
 
 	switch(cindex)
@@ -777,13 +766,14 @@ function getRecord(pointing)
 	return record
 }
 
-function saveProfileService(pointed)
+// each key is of different column in database
+// select only the changed columns to save
+export function saveProfileService(pointed)
 {
 	let newRecord = getRecord(pointed),
 		oldRecord = getOldcontent(),
 		setRecord = {},
 		$pointing = $(pointed),
-		sql,
 		newkey
 
 	$.each(newRecord, function(key, val) {
@@ -796,24 +786,8 @@ function saveProfileService(pointed)
 		   newkey = key.replace(/\d+/g, "");
 		   setRecord[newkey] = newRecord[key];
 		})
-		sql = sqlRecord($pointing, setRecord)
-		saveService($pointing[0], sql)
+		saveService($pointing[0], "", setRecord)
 	}
-}
-
-function sqlRecord($pointing, setRecord)
-{
-	let qn = $pointing.closest("tr").find("td").eq(QNSV).html(),
-		sql = "sqlReturnService="
-
-	$.each(setRecord, function(column, content) {
-		if (column === "disease" && content === "No") {
-			sql += sqlDefaults(qn)			
-		}
-		sql += sqlItem(column, content, qn)
-	})
-
-	return sql
 }
 
 function showReportToDept(title)

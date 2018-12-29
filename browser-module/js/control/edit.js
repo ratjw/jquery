@@ -1,31 +1,31 @@
-
+import { savePreviousCell, editPresentCell } from "./clicktable.js"
 import {
 	HN, DIAGNOSIS, TREATMENT, CONTACT, QN,
 	DIAGNOSISSV, TREATMENTSV, ADMISSIONSV, FINALSV
-} from "./const.js"
+} from "../model/const.js"
 
-import { savePreviousCell, editPresentCell, resetTimer } from "./control.js"
-import { savePreviousCellService, editPresentCellService } from "./serv.js"
-import { getTableRowByQN, reposition, dialogServiceShowing } from "./util.js"
-
-export {
-	editcellEvent, createEditcell, updateEditcellContent, renewEditcell, clearEditcell,
-	editcellLocation, getPointer, getOldcontent, getNewcontent
-}
+import { resetTimer, resetTimerCounter } from "./control.js"
+import { savePreviousCellService, editPresentCellService } from "../model/serv.js"
+import { getTableRowByQN, reposition, dialogServiceShowing } from "../model/util.js"
 
 // pointer is the current position
 // pointing is new coming position to update to
-let pointer = null
+export let pointer = null
 
 // oldcontent is the content before keyin
-let oldcontent = ""
+export let oldcontent = ""
+
+// get current content in the editing cell
+export function getNewcontent() {
+	return getHtmlText($("#editcell"))
+}
 
 // newcontent is the content currently in editcell
 // and must be fetched from editcell itself every time when wanted
 
 // Initialize $editcell
 // Attach events to editcell all the time
-function editcellEvent()
+export function editcellEvent()
 {
 	let $editcell = $("#editcell")
 
@@ -35,14 +35,10 @@ function editcellEvent()
 	}).on("keydown", function (event) {
 		let keycode = event.which || window.event.keyCode
 
-		if (dialogServiceShowing) {
-		  Skeyin(event, keyCode, pointer)
-		} else {
-		  keyin(event, keyCode, pointer)
-		}
+		keyin(event, keycode, pointer)
+
 		if (!$("#spin").length) {
-		  resetTimer()
-		  idleCounter = 0
+		  resetTimerCounter()
 		}
 	
 	// resize editcell along with underlying td
@@ -134,7 +130,7 @@ let keyin = function (event, keycode) {
 		return false
 	}
 
-	return (code[keycode] || anyOthers)()
+	return code[keycode] && code[keycode]()
 }
 
 let findPrevcell = function (editable, pointing) {
@@ -188,7 +184,7 @@ let findNextRow = function (editable, pointing) {
 	return $nextcell.length && $nextcell[0]
 }
 
-function createEditcell(pointing)
+export function createEditcell(pointing)
 {
 	let $pointing = $(pointing)
 	let height = $pointing.height() + "px"
@@ -222,7 +218,7 @@ let showEditcell = function ($pointing, height, width) {
 
 // Another client updated table while this is idling with visible editcell
 // Update editcell content to the same as underlying table cell
-function updateEditcellContent() {
+export function updateEditcellContent() {
 	let $pointer = $(pointer),
 		content = getHtmlText($pointer)
 
@@ -232,7 +228,7 @@ function updateEditcellContent() {
 
 // after DOM refresh by refillall, pointer remains in its row but its parent is null
 // must get qn to find current row position
-function renewEditcell()
+export function renewEditcell()
 {
   let whereisEditcell = editcellLocation()
   let id = (whereisEditcell === "tblcontainer")
@@ -252,31 +248,18 @@ function renewEditcell()
   }
 }
 
-function editcellLocation()
+export function editcellLocation()
 {
 	return $("#editcell").parent("div").attr("id")
 }
 
-function clearEditcell() {
+export function clearEditcell() {
 	let $editcell = $("#editcell")
 
 	pointer = ""
 	oldcontent = ""
 	$editcell.html("")
 	$editcell.hide()
-}
-
-// Retrieve data stored in edit module
-function getPointer() {
-	return pointer
-}
-
-function getOldcontent() {
-	return oldcontent
-}
-
-function getNewcontent() {
-	return getHtmlText($("#editcell"))
 }
 
 // TRIM excess spaces at begin, mid, end

@@ -280,7 +280,8 @@ function pagination($dialog, $tbl, book, search)
 {
   let  beginday = book[0].opdate,
     lastday = findLastDateInBOOK(book),
-    firstday = getPrevMonday()
+    firstday = getPrevMonday(),
+	offset = 0
 
   $dialog.dialog({
     title: search,

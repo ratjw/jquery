@@ -805,6 +805,8 @@ function getRecord(pointing)
 	return record
 }
 
+// each key is of different column in database
+// select only the changed columns to save
 function saveProfileService(pointed)
 {
 	let newRecord = getRecord(pointed),

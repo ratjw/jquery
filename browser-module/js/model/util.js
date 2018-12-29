@@ -15,43 +15,6 @@ export const isPACS = /10.6./.test(window.location),
 // timestamp is the last time access from this client to the server
 // can't check PACS (always unauthorized 401 with Firefox)
 
-;(function($) {
-	$.fn.fixMe = function($container) {
-		let $this = $(this),
-			$t_fixed,
-			pad = $container.css("paddingLeft")
-		init();
-		$container.off("scroll").on("scroll", scrollFixed);
-
-		function init() {
-			$t_fixed = $this.clone();
-			$t_fixed.attr("id", "fixed")
-			$t_fixed.find("tbody").remove().end()
-					.addClass("fixed").insertBefore($this);
-			$container.scrollTop(0)
-			resizeFixed();
-			reposition($t_fixed, "left top", "left+" + pad + " top", $container)
-			$t_fixed.hide()
-		}
-		function resizeFixed() {
-			$t_fixed.find("th").each(function(index) {
-				$(this).css("width",$this.find("th").eq(index).width() + "px");
-			});
-		}
-		function scrollFixed() {
-			let offset = $(this).scrollTop(),
-			tableTop = $this[0].offsetTop,
-			tableBottom = tableTop + $this.height() - $this.find("thead").height();
-			if(offset < tableTop || offset > tableBottom) {
-				$t_fixed.hide();
-			}
-			else if (offset >= tableTop && offset <= tableBottom && $t_fixed.is(":hidden")) {
-				$t_fixed.show();
-			}
-		}
-	};
-})(jQuery);
-
 let BOOK = [],
 	CONSULT = [],
 	STAFF = [],
@@ -66,6 +29,42 @@ export function getONCALL() { return ONCALL }
 export function getHOLIDAY() { return HOLIDAY }
 export function gettimestamp() { return timestamp }
 export function setONCALL(oncall) { ONCALL = oncall }
+export function setSTAFF(staff) { STAFF = staff }
+
+$.fn.fixMe = function($container) {
+	let $this = $(this),
+		$t_fixed,
+		pad = $container.css("paddingLeft")
+	init();
+	$container.off("scroll").on("scroll", scrollFixed);
+
+	function init() {
+		$t_fixed = $this.clone();
+		$t_fixed.attr("id", "fixed")
+		$t_fixed.find("tbody").remove().end()
+				.addClass("fixed").insertBefore($this);
+		$container.scrollTop(0)
+		resizeFixed();
+		reposition($t_fixed, "left top", "left+" + pad + " top", $container)
+		$t_fixed.hide()
+	}
+	function resizeFixed() {
+		$t_fixed.find("th").each(function(index) {
+			$(this).css("width",$this.find("th").eq(index).width() + "px");
+		});
+	}
+	function scrollFixed() {
+		let offset = $(this).scrollTop(),
+		tableTop = $this[0].offsetTop,
+		tableBottom = tableTop + $this.height() - $this.find("thead").height();
+		if(offset < tableTop || offset > tableBottom) {
+			$t_fixed.hide();
+		}
+		else if (offset >= tableTop && offset <= tableBottom && $t_fixed.is(":hidden")) {
+			$t_fixed.show();
+		}
+	}
+};
 
 $.fn.refixMe = function($original) {
   let $fix = $original.find("thead tr").clone();
@@ -237,7 +236,7 @@ export function getAge (birth, toDate) {
 }
 
 // necessary when passing to http, not when export to excel
-export function URIcomponent(qoute) {
+export function URIcomponent(content) {
   if (/\W/.test(content)) {
     content = content.replace(/\s+$/,'')
     content = content.replace(/\"/g, "&#34;")  // double quotes
@@ -287,24 +286,6 @@ export function getTableRowsByDate(opdateth)
 	return $("#tbl tr").filter(function() {
 		return this.cells[OPDATE].innerHTML === opdateth;
 	})
-}
-
-export function findStartRowInBOOK(book, opdate)
-{
-	var q = 0
-	while ((q < book.length) && (book[q].opdate < opdate)) {
-		q++
-	}
-	return (q < book.length)? q : -1
-}
-
-export function findLastDateInBOOK(book)
-{
-	var q = 0
-	while ((q < book.length) && (book[q].opdate < LARGESTDATE)) {
-		q++
-	}
-	return book[q-1].opdate
 }
 
 // main table (#tbl) only
@@ -501,12 +482,12 @@ export function Alert(title, message) {
 	}).fadeIn();
 }
 
-export function winWidth() {
-	return window.innerWidth
+export function winWidth(percent) {
+	return window.innerWidth * percent / 100
 }
 
-export function winHeight(container) {
-	return window.innerHeight
+export function winHeight(percent) {
+	return window.innerHeight * percent / 100
 }
 
 // Shadow down when menu is below target row (high on screen)

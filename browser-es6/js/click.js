@@ -170,13 +170,11 @@ async function saveOpRoom(pointed, newcontent)
 		casenum = $cell[CASENUM].innerHTML,
 		qn = $cell[QN].innerHTML,
 		allSameDate = allOldCases = allNewCases = [],
-		index,
 		sql = ""
 
 	if (oproom) {
 		allOldCases = sameDateRoomTableQN(opdateth, oproom, theatre)
-		index = allOldCases.indexOf(qn)
-		allOldCases.splice(index, 1)
+		allOldCases = allOldCases.filter(e => e !== qn)
 
 		sql += updateCasenum(allOldCases)
 
@@ -219,6 +217,7 @@ async function saveOpRoom(pointed, newcontent)
 		}
 	} else {
 		Alert ("saveOpRoom", response)
+		clearEditcell()
 	}
 }
 
@@ -274,8 +273,8 @@ async function saveCaseNum(pointed, newcontent)
 		}
 	} else {
 		Alert ("saveCaseNum", response)
+		clearEditcell()
 	}
-	clearEditcell()
 }
 
 // use only "pointed" to save data
@@ -814,48 +813,43 @@ function storePresentCell(evt, pointing)
 	switch(pointing.cellIndex)
 	{
 		case OPDATE:
-			clearEditcell()
-			clearMouseoverTR()
 			selectRow(evt, pointing)
 			break
 		case THEATRE:
 			createEditcell(pointing)
-			clearSelection()
 			break
 		case OPROOM:
 			getROOMCASE(pointing)
-			clearSelection()
 			break
 		case OPTIME:
 			getOPTIME(pointing)
-			clearSelection()
 			break
 		case CASENUM:
 			getROOMCASE(pointing)
-			clearSelection()
 			break
 		case STAFFNAME:
 			getSTAFFNAME(pointing)
-			clearSelection()
 			break
 		case HN:
 			getHN(evt, pointing)
-			clearSelection()
 			break
 		case PATIENT:
 			getNAME(evt, pointing)
-			clearSelection()
 			break
 		case DIAGNOSIS:
 		case TREATMENT:
 		case CONTACT:
 			createEditcell(pointing)
-			clearSelection()
 			break
 		case EQUIPMENT:
 			getEQUIP(pointing)
-			clearSelection()
 			break
+	}
+	if (cell === OPDATE) {
+		clearEditcell()
+		clearMouseoverTR()
+	} else {
+		clearSelection()
 	}
 }
 

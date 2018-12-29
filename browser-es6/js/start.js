@@ -43,7 +43,7 @@ function loading(response)
   overrideJqueryUI()
   resetTimer()
 
-  setTimeout( fillupfinish, 2000)
+  setTimeout( fillupfinish, 1000)
 }
 
 function updateBOOK(response)
@@ -664,12 +664,12 @@ function doupdatedata()
 {
   if (confirm("ต้องการแก้ไขข้อมูลนี้หรือไม่")) {
     let vname = document.getElementById("sname").value    let vspecialty = document.getElementById("scbb").value    let vdate = document.getElementById("sdate").value    let vshidden = document.getElementById("shidden").value    let sql = "sqlReturnStaff=UPDATE staff SET "
-        + ", staffname='" + vname
+        + "staffname='" + vname
         + "', specialty='" + vspecialty
         + "' WHERE number=" + vshidden
         + ";"
 
-  dodata(sql)
+    dodata(sql)
   }
 } // end of function doupdatedata
 

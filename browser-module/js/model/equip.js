@@ -1,15 +1,14 @@
 
 import { EQUIPMENT, QN } from "./const.js"
-import { clearEditcell } from "./edit.js"
-import { USER } from "./main.js"
+import { clearEditcell } from "../control/edit.js"
+import { USER } from "../main.js"
 import { modelStart, modelGetEquip, modelSaveEquip } from "./model.js"
 import {
 	updateBOOK, getBOOKrowByQN, getTableRowByQN, putAgeOpdate,
 	putThdate, ISOdate, nextdays, Alert
 } from "./util.js"
-
-import { viewAll, makeEquip } from "./view.js"
-export { makeEquipTable }
+import { viewAll } from "../view/view.js"
+import { makeEquip } from "../view/viewmenu.js"
 
 const NAMEOFDAYTHAI	= ["อาทิตย์", "จันทร์", "อังคาร", "พุธ", "พฤหัส", "ศุกร์", "เสาร์"]
 
@@ -19,7 +18,7 @@ let bookqEquip,
 	$dialogEquip = $('#dialogEquip')
 
 // Make dialog box containing equiptment check list <div id="dialogEquip">
-function makeEquipTable(book, $row, qn) {
+export function makeEquipTable(book, $row, qn) {
 	let bookq = getBOOKrowByQN(book, qn),
 		height = window.innerHeight,
 		thisEquip = {

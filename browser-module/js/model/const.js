@@ -1,11 +1,7 @@
 
 //--- constants ---------------------
 
-export const GETIPD = "php/getipd.php", 
-GETNAMEHN	= "php/getnamehn.php",
-MYSQLIPHP	= "php/mysqli.php",
-SEARCH		= "php/search.php",
-LINEBOT		= "line/lineBot.php",
+export const LINEBOT = "line/lineBot.php",
 LINENOTIFY	= "line/lineNotify.php",
 
 //tbl, queuetbl

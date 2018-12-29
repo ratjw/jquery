@@ -3,15 +3,15 @@ import {
 	OPDATE, THEATRE, OPROOM, CASENUM, STAFFNAME, HN, PATIENT,
 	DIAGNOSIS, TREATMENT, CONTACT, QN, LARGESTDATE
 } from "./const.js"
-import { clearTimer, resetTimer, resetTimerCounter } from "./control.js"
-import { clearEditcell } from "./edit.js"
+import { clearTimer, resetTimer, resetTimerCounter } from "../control/control.js"
+import { clearEditcell } from "../control/edit.js"
 import { clearMouseoverTR } from "./menu.js"
 import { modelSortable } from "./model.js"
 import {
 	getOpdate, calcWaitnum, Alert, UndoManager, updateBOOK, showUpload,
 	sameDateRoomTableQN
 } from "./util.js"
-import { viewSortable } from "./view.js"
+import { viewSortable } from "../view/view.js"
 
 // Sortable 2 windows connected with each other
 // Trace placeholder to determine moving up or down
@@ -134,7 +134,6 @@ export function sortable () {
 				newWaitnum = calcWaitnum(thisOpdateth, $previtem, $nextitem),
 				allNewCases = [],
 				allOldCases = [],
-				index,
 				sql = ""
 
 			// old = mover
@@ -151,15 +150,14 @@ export function sortable () {
 			if (oldroom) {
 				allOldCases = sameDateRoomTableQN(oldOpdateth, oldroom, oldtheatre)
 				if (sender === "queuetbl") {
-					index = allOldCases.indexOf(oldqn)
-					allOldCases.splice(index, 1)
+					allOldCases = allOldCases.filter(e => e !== oldqn)
 				}
 			}
 
 			if (thisroom) {
 				allNewCases = sameDateRoomTableQN(thisOpdateth, thisroom, thistheatre)
 				if (receiver === "queuetbl") {
-					index = allNewCases.indexOf(thisqn)
+					let index = allNewCases.indexOf(thisqn)
 					before
 					? allNewCases.splice(index, 0, oldqn)
 					: allNewCases.splice(index + 1, 0, oldqn)

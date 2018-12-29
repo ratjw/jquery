@@ -1,6 +1,6 @@
 
-import { userStaff } from "./control.js"
-import { Alert } from "./util.js"
+import { userStaff } from "./control/control.js"
+import { Alert } from "./model/util.js"
 
 // from login.js
 export const USER = sessionStorage.getItem("userid")
