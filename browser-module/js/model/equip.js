@@ -135,8 +135,8 @@ function enableInput()
 {
 	$('#dialogEquip input').prop('disabled', false)
 	$('#dialogEquip textarea').prop('disabled', false)
-	$('#clearPosition').click( clearPosition )
-	$('#clearShunt').click( clearShunt )
+	$('#clearPosition').off("click").on("click", clearPosition )
+	$('#clearShunt').off("click").on("click", clearShunt )
 }
 
 function clearPosition()

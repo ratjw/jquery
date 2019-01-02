@@ -163,7 +163,7 @@ function wrapperEvent()
   
   document.getElementById("wrapper").addEventListener("mousemove", resetTimerCounter)
 
-  $("#wrapper").click(event => {
+  $("#wrapper").off("click").on("click", (event) => {
     let target = event.target
     let $stafflist = $('#stafflist')
 
@@ -183,17 +183,20 @@ function wrapperEvent()
       target = $(target).closest('td')[0]
     }
     if (target.cellIndex === THEATRE) {
-	  let $tbl = $("#tbl")
-      if ($tbl.find("th").eq(THEATRE).width() < 10) {
-        $tbl.addClass("showColumn2")
+      if (tbl.querySelectorAll("th")[THEATRE].offsetWidth < 10) {
+        tbl.classList.add("showColumn2")
       }
 	  else if (target.nodeName === "TH") {
-        $tbl.removeClass("showColumn2")
+        tbl.classList.remove("showColumn2")
       }
+    }
+    if (target.nodeName === "IMG") {
+      target = target.closest("td")
     }
     if (target.nodeName === "TD") {
       clicktable(event, target)
-    } else {
+    }
+    else {
       clearAllEditing()
     }
 

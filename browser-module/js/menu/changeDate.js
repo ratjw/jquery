@@ -21,7 +21,7 @@ export function changeDate()
 	$allRows.mouseout(function() {
 		$(this).removeClass("pasteDate")
 	})
-	$allRows.click(function(event) {
+	$allRows.off("click").on("click", function(event) {
 		clickDate(event, $selected, this)
 	})
 

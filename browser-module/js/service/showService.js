@@ -24,25 +24,24 @@ export function showService() {
 	let	$dialogService = $("#dialogService"),
 		$servicetbl = $("#servicetbl"),
 		$servicecells = $("#servicecells"),
-		$imgopen = document.querySelector("#servicetbl th #imgopen"),
-		$imgclose = document.querySelector("#servicetbl th #imgclose"),
+		$imgopen = $("#servicetbl th .imgopen"),
+		$imgclose = $("#servicetbl th .imgclose"),
 		$divRecord = $("#servicetbl .divRecord"),
 		staffname = "",
 		scase = 0,
 		classname = ""
 
-	monthpicker.style.display = "none"
-	servicehead.style.display = "block"
+	$("#monthpicker").hide()
+	$("#servicehead").show()
 
 	//delete previous servicetbl lest it accumulates
-	let tr = servicetbl.querySelectorAll("tr")
-	if (tr.length > 1) tr.slice(1).remove()
-	servicetbl.style.display = "block"
+	$servicetbl.find("tr").slice(1).remove()
+	$servicetbl.show()
 	seteditableSV(serviceFromDate >= START)
 
-	SERVICE.forEach((item) => {
-		if (item.staffname !== staffname) {
-			staffname = item.staffname
+	$.each( SERVICE, function() {
+		if (this.staffname !== staffname) {
+			staffname = this.staffname
 			scase = 0
 			$servicecells.find("tr").clone()
 				.appendTo($servicetbl.find("tbody"))
@@ -52,14 +51,14 @@ export function showService() {
 								.html(staffname)
 									.siblings().hide()
 		}
-		classname = countService(item)
+		classname = countService(this)
 		scase++
 		$servicecells.find("tr").clone()
-			.appendTo(servicetbl.querySelector("tbody"))
-				.filldataService(item, scase, classname)
+			.appendTo($servicetbl.find("tbody"))
+				.filldataService(this, scase, classname)
 	});
 
-	dialogService.dialog({
+	$dialogService.dialog({
 		hide: 200,
 		width: winWidth(95),
 		height: winHeight(95),
@@ -87,10 +86,10 @@ export function showService() {
 	$servicetbl.fixMe($dialogService)
 	hoverService()
 
-	dialogService.onclick = clickDialogService
+	$dialogService.on("click", clickDialogService)
 
 	//for resizing dialogs in landscape / portrait view
-	window.onresize =  resizeDialog
+	$(window).on("resize", resizeDialog)
 
 	function clickDialogService(event)
 	{
@@ -141,21 +140,19 @@ export function showService() {
 	}
 
 	function showProfile() {
-		servicetbl.classList.add("showColumn8")
-		dialogService.querySelector(".fixed").classList.add("showColumn8")
-		document.querySelectorAll(".divRecord")
-			.forEach(e => e.style.display = "block")
-		$imgopen.style.display = "none"
-		$imgclose.style.display = "block"
+		$servicetbl.addClass("showColumn8")
+		$dialogService.find(".fixed").addClass("showColumn8")
+		$(".divRecord").show()
+		$imgopen.hide()
+		$imgclose.show()
 	}
 
 	function hideProfile() {
-		servicetbl.classList.remove("showColumn8")
-		dialogService.querySelector(".fixed").classList.remove("showColumn8")
-		document.querySelectorAll(".divRecord")
-			.forEach(e => e.style.display = "none")
-		$imgopen.style.display = "block"
-		$imgclose.style.display = "none"
+		$servicetbl.removeClass("showColumn8")
+		$dialogService.find(".fixed").removeClass("showColumn8")
+		$(".divRecord").hide()
+		$imgopen.show()
+		$imgclose.hide()
 	}
 			
 	function resizeDialog()
@@ -224,7 +221,7 @@ export function reViewService() {
 			$staff = $rows.eq(i).children("td").eq(CASENUMSV)
 			if ($staff.prop("colSpan") === 1) {
 				$staff.prop("colSpan", QNSV - CASENUMSV)
-					.classList.add("serviceStaff")
+					.addClass("serviceStaff")
 						.siblings().hide()
 			}
 			$staff.html(staffname)

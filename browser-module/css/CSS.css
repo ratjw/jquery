@@ -257,7 +257,7 @@ td img.imgpale {
 #monthpicker button.ui-datepicker-current,
 #monthpicker .ui-datepicker-calendar,
 #monthstart,
-#imgclose,
+.imgclose,
 #dialogReview,
 #dialogEquip,
 #dialogAll, #allcells,
@@ -593,8 +593,8 @@ td.upload2 { background-image: url(pic/general/upload2.png); }
 
 #monthpicker { margin-left:5px }
 
-#imgopen,
-#imgclose {
+.imgopen,
+.imgclose {
 	float: left;
 	width: 20px;
 }
@@ -611,7 +611,7 @@ td.upload2 { background-image: url(pic/general/upload2.png); }
 #stafflist {
 	font-size: 14px;
 	width: 110px;
-	position: fixed;
+	position: fixed !important;
 }
 
 #staffmenu {

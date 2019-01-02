@@ -31,7 +31,7 @@ export function editcellEvent()
 {
 	let $editcell = $("#editcell")
 
-	$editcell.click(event => {
+	$editcell.off("click").on("click", (event) => {
 		resetTimer();
 		event.stopPropagation()
 	}).keydown(event => {

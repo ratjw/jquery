@@ -339,7 +339,7 @@ export function viewDeletedCases(deleted) {
 
   let $undelete = $("#undelete")
   $undelete.hide()
-  $undelete.click( () => $('#undelete').hide() )
+  $undelete.off("click").on("click", () => $('#undelete').hide() )
 
   //for resizing dialogs in landscape / portrait view
   $(window).on("resize", resizeDeleted )
@@ -485,12 +485,12 @@ function makeDialogFound($dialogFind, $findtbl, found, search)
     winResizeFix($findtbl, $dialogFind)
   }
 
-  $dialogFind.find('.pacs').click(function() {
+  $dialogFind.find('.pacs').off("click").on("click", function() {
     if (isPACS) {
       PACS(this.innerHTML)
     }
   })
-  $dialogFind.find('.upload').click(function() {
+  $dialogFind.find('.upload').off("click").on("click", function() {
     let patient = this.innerHTML
     let hn = this.previousElementSibling.innerHTML
 

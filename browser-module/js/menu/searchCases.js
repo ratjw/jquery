@@ -22,7 +22,7 @@ export function searchCases()
     }
   })
 
-  $dialogInput.click(event => {
+  $dialogInput.off("click").on("click", (event) => {
     let target = event.target
 
     if ($stafflist.is(":visible")) {
