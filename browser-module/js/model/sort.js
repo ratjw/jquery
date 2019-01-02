@@ -1,17 +1,16 @@
 
-import {
-	OPDATE, THEATRE, OPROOM, CASENUM, STAFFNAME, HN, PATIENT,
-	DIAGNOSIS, TREATMENT, CONTACT, QN, LARGESTDATE
-} from "./const.js"
-import { clearTimer, resetTimer, resetTimerCounter } from "../control/control.js"
+import { OPDATE, THEATRE, OPROOM, STAFFNAME, QN } from "./const.js"
+import { clearTimer, resetTimer, resetTimerCounter } from "../control/updating.js"
 import { clearEditcell } from "../control/edit.js"
-import { clearMouseoverTR } from "./menu.js"
-import { modelSortable } from "./model.js"
-import {
-	getOpdate, calcWaitnum, Alert, UndoManager, updateBOOK, showUpload,
-	sameDateRoomTableQN
-} from "./util.js"
-import { viewSortable } from "../view/view.js"
+import { clearMouseoverTR } from "../menu/changeDate.js"
+import { fetchSortable } from "./fetch.js"
+import { calcWaitnum } from "../util/calcWaitnum.js"
+import { getOpdate } from "../util/date.js"
+import { sameDateRoomTableQN } from "../util/getrows.js"
+import { Alert, updateBOOK, isConsults, isStaffname } from "../util/util.js"
+import { viewSortable } from "../view/fill.js"
+import { showUpload } from "../get/showUpload.js"
+import { UndoManager } from "../model/UndoManager.js"
 
 // Sortable 2 windows connected with each other
 // Trace placeholder to determine moving up or down
@@ -66,8 +65,8 @@ export function sortable () {
 			// Not allow to drag a blank line
 			let illegal = ((sender === "tbl")
 						&& (receiver === "queuetbl")
-						&& (titlename !== "Consults")
-						&& (titlename !== staffname))
+						&& !isConsults()
+						&& !isStaffname(staffname))
 						|| (!$itemcell.eq(QN).html())
 
 			if (illegal) {
@@ -209,7 +208,7 @@ export function sortable () {
 }
 
 function doSorting(argModel, argView) {
-	modelSortable(argModel).then(response => {
+	fetchSortable(argModel).then(response => {
 		let hasData = function () {
 			updateBOOK(response)
 			viewSortable(argView)
@@ -222,7 +221,7 @@ function doSorting(argModel, argView) {
 }
 
 let stopsorting = function () {
-	// Return to original place so that reViewOneDay(oldOpdate)
+	// Return to original place so that refillOneDay(oldOpdate)
 	// will not render this row in wrong position
 	$("#tbl tbody, #queuetbl tbody").sortable( "cancel" )
 

@@ -1,12 +1,14 @@
 import { savePreviousCell, editPresentCell } from "./clicktable.js"
 import {
-	HN, DIAGNOSIS, TREATMENT, CONTACT, QN,
+	STAFFNAME, HN, DIAGNOSIS, TREATMENT, CONTACT, QN,
 	DIAGNOSISSV, TREATMENTSV, ADMISSIONSV, FINALSV
 } from "../model/const.js"
-
-import { resetTimer, resetTimerCounter } from "./control.js"
-import { savePreviousCellService, editPresentCellService } from "../model/serv.js"
-import { getTableRowByQN, reposition, dialogServiceShowing } from "../model/util.js"
+import { resetTimer, resetTimerCounter } from "./updating.js"
+import { getTableRowByQN } from "../util/getrows.js"
+import { reposition } from "../util/util.js"
+import { savePreviousCellService } from "../service/savePreviousCellService.js"
+import { editPresentCellService } from "../service/editPresentCellService.js"
+import { clearAllEditing } from "./clearAllEditing.js"
 
 // pointer is the current position
 // pointing is new coming position to update to
@@ -29,10 +31,10 @@ export function editcellEvent()
 {
 	let $editcell = $("#editcell")
 
-	$editcell.on("click", function (event) {
+	$editcell.click(event => {
 		resetTimer();
 		event.stopPropagation()
-	}).on("keydown", function (event) {
+	}).keydown(event => {
 		let keycode = event.which || window.event.keyCode
 
 		keyin(event, keycode, pointer)
@@ -40,9 +42,15 @@ export function editcellEvent()
 		if (!$("#spin").length) {
 		  resetTimerCounter()
 		}
-	
+		if (editcellLocation() === "tblcontainer" && pointer.cellIndex === STAFFNAME) {
+		  return false
+		}
+		if (keycode === 27) {
+			clearAllEditing()
+			return false
+		}
 	// resize editcell along with underlying td
-	}).on("keyup", function (event) {
+	}).keyup(event => {
 
 		// not resize opdate & roomtime cells
 		if (pointer.cellIndex < 2) {
@@ -64,14 +72,14 @@ export function editcellEvent()
 // function expression (literal) : local
 
 // Key on main or staff table
-let keyin = function (event, keycode) {
+let keyin = function (evt, keycode) {
 	let	tableID = $(pointer).closest('table').attr('id'),
 		servicetbl = tableID === "servicetbl",
 		EDITABLE = servicetbl
 				? [DIAGNOSISSV, TREATMENTSV, ADMISSIONSV, FINALSV]
 				: [DIAGNOSIS, TREATMENT, CONTACT],
-		Shift = event.shiftKey,
-		Ctrl = event.ctrlKey,
+		Shift = evt.shiftKey,
+		Ctrl = evt.ctrlKey,
 		thiscell,
 		code = {}
 
@@ -89,7 +97,7 @@ let keyin = function (event, keycode) {
 					? findPrevcell(EDITABLE, pointer)
 					: findNextcell(EDITABLE, pointer)
 			thiscell
-				? editPresentCell(event, thiscell)
+				? editPresentCell(evt, thiscell)
 				: clearEditcell()
 		},
 		serviceTable = function () {
@@ -98,12 +106,12 @@ let keyin = function (event, keycode) {
 					? findPrevcell(EDITABLE, pointer)
 					: findNextcell(EDITABLE, pointer)
 			thiscell
-				? editPresentCellService(event, thiscell)
+				? editPresentCellService(evt, thiscell)
 				: clearEditcell()
 		}
 
 		servicetbl ? serviceTable() : mainTable()
-		event.preventDefault()
+		evt.preventDefault()
 		return false
 	}
 	code[13] = function () {
@@ -113,7 +121,7 @@ let keyin = function (event, keycode) {
 			savePreviousCell()
 			thiscell = findNextRow(EDITABLE, pointer)
 			thiscell
-				? editPresentCell(event, thiscell)
+				? editPresentCell(evt, thiscell)
 				: clearEditcell()
 		},
 		serviceTable = function () {
@@ -121,12 +129,12 @@ let keyin = function (event, keycode) {
 			savePreviousCellService()
 			thiscell = findNextRow(EDITABLE, pointer)
 			thiscell
-				? editPresentCellService(event, thiscell)
+				? editPresentCellService(evt, thiscell)
 				: clearEditcell()
 		}
 
 		servicetbl ? serviceTable() : mainTable()
-		event.preventDefault()
+		evt.preventDefault()
 		return false
 	}
 
@@ -198,7 +206,7 @@ export function createEditcell(pointing)
 
 // Update module variables
 // after update from other user while idling
-let editcellSaveData = function (pointing, content) {
+export function editcellSaveData(pointing, content) {
 	pointer = pointing
 	oldcontent = content
 }

@@ -845,7 +845,7 @@ function storePresentCell(evt, pointing)
 			getEQUIP(pointing)
 			break
 	}
-	if (cell === OPDATE) {
+	if (pointing.cellIndex === OPDATE) {
 		clearEditcell()
 		clearMouseoverTR()
 	} else {

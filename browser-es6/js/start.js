@@ -249,7 +249,7 @@ function setStafflist()
   let stafflist = ''  let staffmenu = ''
 
   gv.STAFF.forEach(function(each) {
-    stafflist += `<li><span>${each.staffname}</span></li>`
+    stafflist += `<li><div>${each.staffname}</div></li>`
     staffmenu += `<li><a onclick="staffqueue('${each.staffname}')"><span>${each.staffname}</span></a></li>`
   })
   staffmenu += `<li><a onclick="staffqueue('Consults')"><span>Consults</span></a></li>`

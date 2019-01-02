@@ -1,11 +1,11 @@
 
-import { EQUIPMENT, QN } from "./const.js"
+import { EQUIPMENT, QN } from "../model/const.js"
 import { clearEditcell } from "../control/edit.js"
 import { USER } from "../main.js"
-import { fetchStart, fetchGetEquip, fetchSaveEquip } from "./fetch.js"
+import { fetchStart, fetchGetEquip, fetchSaveEquip } from "../model/fetch.js"
 import { putAgeOpdate, putThdate } from "../util/date.js"
 import { getBOOKrowByQN, getTableRowByQN } from "../util/getrows.js"
-import { updateBOOK, Alert } from "../util/util.js"
+import { BOOK, CONSULT, isConsultsTbl, updateBOOK, Alert } from "../util/util.js"
 import { fillall } from "../view/fill.js"
 import { viewEquipJSON } from "../view/viewEquip.js"
 
@@ -16,9 +16,15 @@ let bookqEquip,
 	thisqn,
 	$dialogEquip = $('#dialogEquip')
 
-// Make dialog box containing equiptment check list <div id="dialogEquip">
-export function makeEquipTable(book, qn) {
-	let bookq = getBOOKrowByQN(book, qn),
+export function getEQUIP(pointing)
+{
+	let qn = pointing.closest('tr').cells[QN].innerHTML
+
+	if (!qn) { return }
+
+	let tableID = pointing.closest('table').id,
+		book = isConsultsTbl(tableID)? CONSULT : BOOK,
+		bookq = getBOOKrowByQN(book, qn),
 		height = window.innerHeight,
 		thisEquip = {
 			"oproom": bookq.oproom || "",

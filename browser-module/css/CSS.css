@@ -58,6 +58,9 @@ td img {
 	height: 32px;
 	width: 40px;
 }
+td img.imgpale {
+	filter: opacity(30%);
+}
 
 #queuewrapper {
 	float: right;
@@ -608,6 +611,7 @@ td.upload2 { background-image: url(pic/general/upload2.png); }
 #stafflist {
 	font-size: 14px;
 	width: 110px;
+	position: fixed;
 }
 
 #staffmenu {

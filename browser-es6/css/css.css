@@ -608,6 +608,7 @@ td.upload2 { background-image: url(pic/general/upload2.png); }
 #stafflist {
 	font-size: 14px;
 	width: 110px;
+	position: fixed;
 }
 
 #staffmenu {

@@ -1,13 +1,26 @@
 import {
+	OPDATE, THEATRE, OPROOM, OPTIME, CASENUM, STAFFNAME, HN, PATIENT, DIAGNOSIS,
+	TREATMENT, EQUIPMENT, CONTACT, QN
+} from "../model/const.js"
+import {
 	pointer, oldcontent, getNewcontent, createEditcell, clearEditcell
 } from "./edit.js"
-import { clearMouseoverTR } from "../model/menu.js"
+import { clearMouseoverTR } from "../menu/changeDate.js"
+import { clearSelection } from "./clearSelection.js"
 
-import {
-	saveTheatre, saveOpRoom, saveContent, saveCaseNum, saveHN, selectRow,
-	getROOMCASE, getOPTIME, getSTAFFNAME, getHN, getNAME, getEQUIP,
-	clearSelection
-} from "./click.js"
+import { saveTheatre } from "../save/saveTheatre.js"
+import { saveOpRoom } from "../save/saveOpRoom.js"
+import { saveContent } from "../save/saveContent.js"
+import { saveCaseNum } from "../save/saveCaseNum.js"
+import { saveHN } from "../save/saveHN.js"
+
+import { selectRow } from "../get/selectRow.js"
+import { getROOMCASE } from "../get/getROOMCASE.js"
+import { getOPTIME } from "../get/getOPTIME.js"
+import { getSTAFFNAME } from "../get/getSTAFFNAME.js"
+import { getHN } from "../get/getHN.js"
+import { getNAME } from "../get/getNAME.js"
+import { getEQUIP } from "../get/getEQUIP.js"
 
 // Click on main or staff table
 export function clicktable(evt, clickedCell) {
