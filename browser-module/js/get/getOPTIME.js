@@ -1,6 +1,5 @@
 
 import { createEditcell } from "../control/edit.js"
-import { clearTimer } from "../control/updating.js"
 
 export function getOPTIME(pointing)
 {
@@ -16,7 +15,7 @@ export function getOPTIME(pointing)
 	$editcell.css("width", 65)
 	$editcell.html(html)
 
-	$spin = $("#spin")
+	let $spin = $("#spin")
 	$spin.css("width", 60)
 	$spin.spinner({
 		min: 0,
@@ -36,7 +35,6 @@ export function getOPTIME(pointing)
 		}
 	})
 	$spin.focus()
-	clearTimer(timer)
 }
 
 function decimalToTime(dec)

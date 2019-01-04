@@ -1,8 +1,9 @@
 
 import { ADMISSIONSV, ADMITSV, DISCHARGESV } from "../model/const.js"
 import { fetchGetIPD } from "../model/fetchService.js"
-import { updateBOOK } from "../util/util.js"
+import { updateBOOK } from "../util/variables.js"
 import { setSERVICE, SERVICE } from "./setSERVICE.js"
+import { putThdate } from "../util/date.js"
 
 export function getAdmitDischargeDate() {
 

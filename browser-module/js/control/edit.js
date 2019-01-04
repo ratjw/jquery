@@ -1,6 +1,6 @@
 import { savePreviousCell, editPresentCell } from "./clicktable.js"
 import {
-	STAFFNAME, HN, DIAGNOSIS, TREATMENT, CONTACT, QN,
+	DIAGNOSIS, TREATMENT, CONTACT,
 	DIAGNOSISSV, TREATMENTSV, ADMISSIONSV, FINALSV
 } from "../model/const.js"
 import { resetTimer, resetTimerCounter } from "./updating.js"
@@ -10,16 +10,18 @@ import { savePreviousCellService } from "../service/savePreviousCellService.js"
 import { editPresentCellService } from "../service/editPresentCellService.js"
 import { clearAllEditing } from "./clearAllEditing.js"
 
-// pointer is the current position
-// pointing is new coming position to update to
-export let pointer = null
+// the current position
+export let POINTER = null
 
-// oldcontent is the content before keyin
-export let oldcontent = ""
+// the content before keyin
+export let OLDCONTENT = ""
 
 // get current content in the editing cell
 export function getNewcontent() {
-	return getHtmlText($("#editcell"))
+	let editcell = document.getElementById("editcell")
+	let spin = document.getElementById("spin")
+	if (spin && editcell.contains(spin)) { return spin.value }
+	return getHtmlText(editcell)
 }
 
 // newcontent is the content currently in editcell
@@ -37,23 +39,13 @@ export function editcellEvent()
 	}).keydown(event => {
 		let keycode = event.which || window.event.keyCode
 
-		keyin(event, keycode, pointer)
-
-		if (!$("#spin").length) {
-		  resetTimerCounter()
-		}
-		if (editcellLocation() === "tblcontainer" && pointer.cellIndex === STAFFNAME) {
-		  return false
-		}
-		if (keycode === 27) {
-			clearAllEditing()
-			return false
-		}
+		keyin(event, keycode, POINTER)
+		resetTimerCounter()
 	// resize editcell along with underlying td
 	}).keyup(event => {
 
 		// not resize opdate & roomtime cells
-		if (pointer.cellIndex < 2) {
+		if (POINTER.cellIndex < 2) {
 			return
 		}
 
@@ -62,9 +54,9 @@ export function editcellEvent()
 		// not resize after non-char was pressed
 		if (keycode < 32)	{ return }
 
-		pointer.innerHTML = $editcell.html()
-		$editcell.height($(pointer).height())
-		reposition($editcell, "center", "center", pointer)
+		POINTER.innerHTML = $editcell.html()
+		$editcell.height($(POINTER).height())
+		reposition($editcell, "center", "center", POINTER)
 	})
 }
 
@@ -73,72 +65,78 @@ export function editcellEvent()
 
 // Key on main or staff table
 let keyin = function (evt, keycode) {
-	let	tableID = $(pointer).closest('table').attr('id'),
-		servicetbl = tableID === "servicetbl",
-		EDITABLE = servicetbl
-				? [DIAGNOSISSV, TREATMENTSV, ADMISSIONSV, FINALSV]
-				: [DIAGNOSIS, TREATMENT, CONTACT],
-		Shift = evt.shiftKey,
-		Ctrl = evt.ctrlKey,
-		thiscell,
-		code = {}
+  let tableID = $(POINTER).closest('table').attr('id'),
+    servicetbl = tableID === "servicetbl",
+    EDITABLE = servicetbl
+               ? [DIAGNOSISSV, TREATMENTSV, ADMISSIONSV, FINALSV]
+               : [DIAGNOSIS, TREATMENT, CONTACT],
+    Shift = evt.shiftKey,
+    Ctrl = evt.ctrlKey
 
-	code[27] = function () {
-		// Restore oldcontent
-		pointer.innerHTML = oldcontent
-		clearMenu()
-		clearEditcell()
-	}
-	code[9] = function () {
-		let mainTable = function () {
-			clearMenu()
-			savePreviousCell()
-			thiscell = Shift
-					? findPrevcell(EDITABLE, pointer)
-					: findNextcell(EDITABLE, pointer)
-			thiscell
-				? editPresentCell(evt, thiscell)
-				: clearEditcell()
-		},
-		serviceTable = function () {
-			savePreviousCellService()
-			thiscell = Shift
-					? findPrevcell(EDITABLE, pointer)
-					: findNextcell(EDITABLE, pointer)
-			thiscell
-				? editPresentCellService(evt, thiscell)
-				: clearEditcell()
-		}
-
-		servicetbl ? serviceTable() : mainTable()
-		evt.preventDefault()
-		return false
-	}
-	code[13] = function () {
-		let mainTable = function () {
-			clearMenu()
-			if (Shift || Ctrl) { return }
-			savePreviousCell()
-			thiscell = findNextRow(EDITABLE, pointer)
-			thiscell
-				? editPresentCell(evt, thiscell)
-				: clearEditcell()
-		},
-		serviceTable = function () {
-			if (Shift || Ctrl) { return }
-			savePreviousCellService()
-			thiscell = findNextRow(EDITABLE, pointer)
-			thiscell
-				? editPresentCellService(evt, thiscell)
-				: clearEditcell()
-		}
-
-		servicetbl ? serviceTable() : mainTable()
-		evt.preventDefault()
-		return false
+	switch(keycode)
+	{
+		case 27: 
+			clearAllEditing()
+			evt.preventDefault()
+			return false
+		case 9: 
+			servicetbl
+			? serviceTable9(evt, EDITABLE, Shift)
+			: mainTable9(evt, EDITABLE, Shift)
+			evt.preventDefault()
+			return false
+		case 13: 
+			servicetbl
+			? serviceTable13(evt, EDITABLE, Shift, Ctrl)
+			: mainTable13(evt, EDITABLE, Shift, Ctrl)
+			evt.preventDefault()
+			return false
 	}
 
-	return code[keycode] && code[keycode]()
+	if ($("#stafflist").is(":visible")) {
+      evt.preventDefault()
+	  return false
+	}
+}
+
+let mainTable9 = function (evt, EDITABLE, Shift) {
+	clearMenu()
+	savePreviousCell()
+	let thiscell = Shift
+			? findPrevcell(EDITABLE, POINTER)
+			: findNextcell(EDITABLE, POINTER)
+	thiscell
+		? editPresentCell(evt, thiscell)
+		: clearEditcell()
+}
+
+let serviceTable9 = function (evt, EDITABLE, Shift) {
+	savePreviousCellService()
+	let thiscell = Shift
+			? findPrevcell(EDITABLE, POINTER)
+			: findNextcell(EDITABLE, POINTER)
+	thiscell
+		? editPresentCellService(evt, thiscell)
+		: clearEditcell()
+}
+
+let mainTable13 = function (evt, EDITABLE, Shift, Ctrl) {
+	clearMenu()
+	if (Shift || Ctrl) { return }
+	savePreviousCell()
+	let thiscell = findNextRow(EDITABLE, POINTER)
+	thiscell && !$("#spin").is(":visible")
+		? editPresentCell(evt, thiscell)
+		: clearEditcell()
+}
+
+let serviceTable13 = function (evt, EDITABLE, Shift, Ctrl) {
+	if (Shift || Ctrl) { return }
+	savePreviousCellService()
+	let thiscell = findNextRow(EDITABLE, POINTER)
+	thiscell
+		? editPresentCellService(evt, thiscell)
+		: clearEditcell()
 }
 
 let findPrevcell = function (editable, pointing) {
@@ -197,7 +195,7 @@ export function createEditcell(pointing)
 	let $pointing = $(pointing)
 	let height = $pointing.height() + "px"
 	let width = $pointing.width() + "px"
-	let context = getHtmlText($pointing).replace(/Consult<br>.*$/, "")
+	let context = getHtmlText(pointing).replace(/Consult<br>.*$/, "")
 
 	$("#editcell").html(context)
 	showEditcell($pointing, height, width)
@@ -207,8 +205,8 @@ export function createEditcell(pointing)
 // Update module variables
 // after update from other user while idling
 export function editcellSaveData(pointing, content) {
-	pointer = pointing
-	oldcontent = content
+	POINTER = pointing
+	OLDCONTENT = content
 }
 
 let showEditcell = function ($pointing, height, width) {
@@ -226,15 +224,14 @@ let showEditcell = function ($pointing, height, width) {
 
 // Another client updated table while this is idling with visible editcell
 // Update editcell content to the same as underlying table cell
-export function updateEditcellContent() {
-	let $pointer = $(pointer),
-		content = getHtmlText($pointer)
+function updateEditcellContent() {
+	let content = getHtmlText(POINTER)
 
-	oldcontent = content
+	OLDCONTENT = content
 	$("#editcell").html(content)
 }
 
-// after DOM refresh by refillall, pointer remains in its row but its parent is null
+// after DOM refresh by refillall, POINTER remains in its row but its parent is null
 // must get qn to find current row position
 export function renewEditcell()
 {
@@ -246,9 +243,9 @@ export function renewEditcell()
 		 : (whereisEditcell === "dialogService")
 		 ? "servicetbl"
 		 : ""
-  let qn = $(pointer).siblings(":last").html()
+  let qn = $(POINTER).siblings(":last").html()
   let row = id && getTableRowByQN(id, qn)
-  let cell = pointer.cellIndex
+  let cell = POINTER.cellIndex
 
   if (row) {
     let pointing = row.cells[cell]
@@ -264,21 +261,19 @@ export function editcellLocation()
 export function clearEditcell() {
 	let $editcell = $("#editcell")
 
-	pointer = ""
-	oldcontent = ""
+	POINTER = ""
+	OLDCONTENT = ""
 	$editcell.html("")
 	$editcell.hide()
 }
 
 // TRIM excess spaces at begin, mid, end
 // remove html tags except <br>
-let getHtmlText = function ($cell) {
+let getHtmlText = function (cell) {
 	let HTMLTRIM		= /^(\s*<[^>]*>)*\s*|\s*(<[^>]*>\s*)*$/g,
 		HTMLNOBR		= /(<((?!br)[^>]+)>)/ig
 
-	return $cell.length && $cell.html()
-							.replace(HTMLTRIM, '')
-							.replace(HTMLNOBR, '')
+	return cell && cell.innerHTML.replace(HTMLTRIM, '').replace(HTMLNOBR, '')
 }
 
 let clearMenu = function() {

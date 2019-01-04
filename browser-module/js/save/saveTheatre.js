@@ -3,7 +3,8 @@ import { OPDATE, THEATRE, OPROOM, CASENUM, QN } from "../model/const.js"
 import { fetchSaveTheatre } from "../model/fetch.js"
 import { getOpdate } from "../util/date.js"
 import { sameDateRoomTableQN } from "../util/getrows.js"
-import { Alert, updateBOOK } from "../util/util.js"
+import { updateBOOK } from "../util/variables.js"
+import { Alert } from "../util/util.js"
 import { viewSaveTheatre } from "../view/fill.js"
 
 export function saveTheatre(pointed, newcontent)
@@ -19,7 +20,7 @@ export function saveTheatre(pointed, newcontent)
 		allNewCases = []
 
 	allOldCases = sameDateRoomTableQN(opdateth, oproom, theatre)
-	allOldCases.filter(e => e !== qn)
+	allOldCases = allOldCases.filter(e => e !== qn)
 
 	allNewCases = sameDateRoomTableQN(opdateth, oproom, newcontent)
 	if (casenum) {
@@ -27,8 +28,6 @@ export function saveTheatre(pointed, newcontent)
 	} else {
 		allNewCases.push(qn)
 	}
-
-	if (!allOldCases.length && !allNewCases.length) { return }
 
 	fetchSaveTheatre(allOldCases, allNewCases, newcontent, qn).then(response => {
 		let hasData = function () {

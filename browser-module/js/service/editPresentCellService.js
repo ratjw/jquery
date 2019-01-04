@@ -4,9 +4,10 @@ import {
   FINALSV, PROFILESV, ADMITSV, OPDATESV, DISCHARGESV, QNSV
 } from "../model/const.js"
 import {
-	oldcontent, clearEditcell, createEditcell, editcellSaveData
+	OLDCONTENT, clearEditcell, createEditcell, editcellSaveData
 } from "../control/edit.js"
-import { isPACS, inPicArea } from "../util/util.js"
+import { isPACS } from "../util/variables.js"
+import { inPicArea } from "../util/util.js"
 import { showUpload } from "../get/showUpload.js"
 import { saveService } from "./savePreviousCellService.js"
 import { editableSV } from "./setSERVICE.js"

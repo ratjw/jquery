@@ -5,8 +5,9 @@ import {
 import { USER } from "../main.js"
 import { calcWaitnum } from "../util/calcWaitnum.js"
 import { getOpdate } from "../util/date.js"
+import { STAFF } from "../util/variables.js"
 import { URIcomponent } from "../util/util.js"
-import { oldcontent } from "../control/edit.js"
+import { OLDCONTENT } from "../control/edit.js"
 
 // const
 export const MYSQLIPHP	= "php/mysqli.php"
@@ -31,12 +32,6 @@ export async function postData(url = ``, data) {
 
 export function fetchStart() {
 	return postData(MYSQLIPHP, "start=''");
-}
-
-export function fetchIdling(timestamp) {
-	let sql = `functionName=checkupdate&time=${timestamp}`
-
-	return postData(MYSQLIPHP, sql);
 }
 
 export function fetchChangeOncall(pointing, opdate, staffname)
@@ -80,10 +75,6 @@ export function fetchSaveOpRoom(allOldCases, allNewCases, content, qn)
 
 	if (allOldCases.length) {
 		sql += updateCasenum(allOldCases)
-
-		if (content === "") {
-			sql += sqlNewRoom(null, null, qn)
-		}
 	}
 
 	if (allNewCases.length) {
@@ -99,7 +90,22 @@ export function fetchSaveOpRoom(allOldCases, allNewCases, content, qn)
 	return postData(MYSQLIPHP, sql)
 }
 
-export function fetchSaveCaseNum(allOldCases, allNewCases, content, qn)
+export function fetchSaveOpTime(allCases, content, qn)
+{
+	let sql = "sqlReturnbook="
+
+	for (let i=0; i<allCases.length; i++) {
+		if (allCases[i] === qn) {
+			sql += sqlNewTime(content, i + 1, qn)
+		} else {
+			sql += sqlCaseNum(i + 1, allCases[i])
+		}
+	}
+
+	return postData(MYSQLIPHP, sql)
+}
+
+export function fetchSaveCaseNum(allCases, content, qn)
 {
 	let sql = "sqlReturnbook="
 
@@ -295,12 +301,12 @@ export function fetchCancelAllEquip(qn)
 
 export function fetchSortable(arg)
 {
-	let allOldCases = arg.oldlist,
+	let allOldCases = arg.movelist,
 		allNewCases = arg.newlist,
 		newWaitnum = arg.waitnum,
 		thisOpdate = arg.opdate,
 		thisroom = arg.room,
-		oldqn = arg.qn,
+		moveqn = arg.qn,
 		sql = "sqlReturnbook="
 
 	if (allOldCases.length) {
@@ -309,16 +315,16 @@ export function fetchSortable(arg)
 
 	if (allNewCases.length) {
 		for (let i=0; i<allNewCases.length; i++) {
-			sql += (allNewCases[i] === oldqn)
-				? sqlMover(newWaitnum, thisOpdate, thisroom, i + 1, oldqn)
+			sql += (allNewCases[i] === moveqn)
+				? sqlMover(newWaitnum, thisOpdate, thisroom, i + 1, moveqn)
 				: sqlCaseNum(i + 1, allNewCases[i])
 		}
 	} else {
-		sql += sqlMover(newWaitnum, thisOpdate, null, null, oldqn)
+		sql += sqlMover(newWaitnum, thisOpdate, null, null, moveqn)
 	}
 
 	if (!allOldCases.length && !allNewCases.length) {
-		sql += sqlMover(newWaitnum, thisOpdate, null, null, oldqn)
+		sql += sqlMover(newWaitnum, thisOpdate, null, null, moveqn)
 	}
 
 	return postData(MYSQLIPHP, sql);
@@ -393,7 +399,7 @@ export function fetchPostponeCase(allCases, waitnum, thisdate, qn) {
 	return postData(MYSQLIPHP, sql)
 }
 
-export function fetchChangeDate(allOldCases, allNewCases, waitnum, thisdate, room, qn) {
+export function fetchmoveCase(allOldCases, allNewCases, waitnum, thisdate, room, qn) {
 	let sql = "sqlReturnbook=" + updateCasenum(allOldCases)
 
 	for (let i=0; i<allNewCases.length; i++) {
@@ -478,5 +484,30 @@ function sqlMover(waitnum, opdate, oproom, casenum, qn)
 
 function sqlNewRoom(oproom, casenum, qn)
 {
+	if (oproom === "") {
+		return `UPDATE book SET oproom=null,casenum=null,editor='${USER}' WHERE qn=${qn};`
+	}
+	
 	return `UPDATE book SET oproom=${oproom},casenum=${casenum},editor='${USER}' WHERE qn=${qn};`
+}
+
+function sqlNewTime(optime, casenum, qn)
+{
+	return `UPDATE book SET optime=${optime},casenum=${casenum},editor='${USER}' WHERE qn=${qn};`
+}
+
+export function fetchSaveHoliday(vdate, vname)
+{
+	let sql = `sqlReturnData=INSERT INTO holiday (holidate,dayname) VALUES('${vdate}','${vname}');
+							  SELECT * FROM holiday ORDER BY holidate;`
+
+	return postData(MYSQLIPHP, sql)
+}
+
+export function fetchDelHoliday(vdate, holidayEng)
+{
+	let sql = `sqlReturnData=DELETE FROM holiday WHERE holidate='${vdate}' AND dayname='${holidayEng}');
+							  SELECT * FROM holiday ORDER BY holidate;`
+
+	return postData(MYSQLIPHP, sql)
 }

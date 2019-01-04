@@ -5,9 +5,9 @@ import { OPDATE, PATIENT, LARGESTDATE } from "../model/const.js"
 import { viewEquip } from "./viewEquip.js"
 import { ISOdate, thDate, nextdays, numDate, putThdate } from "../util/date.js"
 import { getTableRowByQN } from "../util/getrows.js"
-import {
-	isPACS,  winWidth, winHeight, winResizeFix, isSplit, isStaffname, isConsults
-} from "../util/util.js"
+import { winWidth, winHeight, winResizeFix, isSplit } from "../util/util.js"
+import { isPACS } from "../util/variables.js"
+import { exportFindToExcel } from "../util/excel.js"
 
 // Make box dialog dialogAll containing alltbl
 export function viewAllCases(response) {
@@ -15,7 +15,7 @@ export function viewAllCases(response) {
     pagination($("#dialogAll"), $("#alltbl"), response, "All Saved Cases")
 }
 
-export function pagination($dialog, $tbl, book, search)
+function pagination($dialog, $tbl, book, search)
 {
   let  beginday = book[0].opdate,
     lastday = findLastDateInBOOK(book),

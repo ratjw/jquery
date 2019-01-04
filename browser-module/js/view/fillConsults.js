@@ -1,7 +1,7 @@
 
 import { OPDATE, STAFFNAME, QN } from "../model/const.js"
 import { ISOdate, nextdays, numDate, thDate } from "../util/date.js"
-import { ONCALL, STAFF } from "../util/util.js"
+import { ONCALL, STAFF } from "../util/variables.js"
 
 // Only on main table
 export function fillConsults()

@@ -1,8 +1,10 @@
 
-import { HOLIDAYENGTHAI } from "../model/const.js"
+import { DIAGNOSIS, HOLIDAYENGTHAI, THAIMONTH } from "../model/const.js"
 import { numDate, putThdate } from "../util/date.js"
 import { getTableRowsByDate } from "../util/getrows.js"
-import { HOLIDAY, setHOLIDAY } from "../util/util.js"
+import { HOLIDAY, setHOLIDAY } from "../util/variables.js"
+import { holiday } from "../view/holiday.js"
+import { fetchSaveHoliday, fetchDelHoliday } from "../model/fetch.js"
 
 export function inputHoliday()
 {
@@ -139,23 +141,21 @@ export function delHoliday(that)
 			vdate = numDate(vdateth),
 			vname = $cell[1].innerHTML.replace(/<button.*$/, ""),
 			rows = getTableRowsByDate(vdateth),
-			holidayEng = getHolidayEng(vname),
+			holidayEng = getHolidayEng(vname)
 
-			sql = "sqlReturnData=DELETE FROM holiday WHERE "
-				+ "holidate='" + vdate
-				+ "' AND dayname='" + holidayEng
-				+ "';SELECT * FROM holiday ORDER BY holidate;"
+		fetchDelHoliday(vdate, holidayEng).then(response => {
+			let hasData = function () {
+				setHOLIDAY(response)
+				$(rows).each(function() {
+					this.cells[DIAGNOSIS].style.backgroundImage = ""
+				})
+				$row.remove()
+			}
 
-//		let response = await postData(MYSQLIPHP, sql)
-		if (typeof response === "object") {
-			setHOLIDAY(response)
-			$(rows).each(function() {
-				this.cells[DIAGNOSIS].style.backgroundImage = ""
-			})
-			$row.remove()
-		} else {
-			alert(response)
-		}
+			typeof response === "object"
+			? hasData()
+			: Alert ("delHoliday", response)
+		})
 	}
 }
 
@@ -164,27 +164,25 @@ async function saveHoliday()
 	let	vdateth = document.getElementById("holidateth").value,
 		vdate = numDate(vdateth),
 		vname = document.getElementById("holidayname").value,
-		rows = getTableRowsByDate(vdateth),
-
-		sql = "sqlReturnData="
-			+ "INSERT INTO holiday (holidate,dayname) VALUES('"
-			+ vdate + "','"+ vname
-			+ "');SELECT * FROM holiday ORDER BY holidate;"
+		rows = getTableRowsByDate(vdateth)
 
 	if (!vdate || !vname) { return }
 
-//	let response = await postData(MYSQLIPHP, sql)
-	if (typeof response === "object") {
-		setHOLIDAY(response)
-		holidayInputBack($("#holidateth").closest("tr"))
-		fillHoliday($("#holidaytbl"))
-		$("#buttonHoliday").hide()
-		$(rows).each(function() {
-			this.cells[DIAGNOSIS].style.backgroundImage = holiday(vdate)
-		})
-	} else {
-		alert(response)
-	}
+	fetchSaveHoliday(vdate, vname).then(response => {
+		let hasData = function () {
+			setHOLIDAY(response)
+			holidayInputBack($("#holidateth").closest("tr"))
+			fillHoliday($("#holidaytbl"))
+			$("#buttonHoliday").hide()
+			$(rows).each(function() {
+				this.cells[DIAGNOSIS].style.backgroundImage = holiday(vdate)
+			})
+		}
+
+		typeof response === "object"
+		? hasData()
+		: Alert ("saveHoliday", response)
+	})
 }
 
 function getHolidayEng(vname) {

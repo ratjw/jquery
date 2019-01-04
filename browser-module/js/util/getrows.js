@@ -31,7 +31,7 @@ export function getTableRowsByDate(opdateth)
 // main table (#tbl) only
 export function sameDateRoomTableQN(opdateth, room, theatre)
 {
-	if (!room) { return [] }
+	if (!opdateth) { return [] }
 
 	var sameRoom = $('#tbl tr').filter(function() {
 		return this.cells[OPDATE].innerHTML === opdateth

@@ -2,10 +2,11 @@ import {
   CASENUMSV, HNSV, NAMESV, DIAGNOSISSV, TREATMENTSV, ADMISSIONSV,
   FINALSV, PROFILESV, ADMITSV, OPDATESV, DISCHARGESV, QNSV
 } from "../model/const.js"
-import { pointer, oldcontent, getNewcontent } from "../control/edit.js"
+import { POINTER, OLDCONTENT, getNewcontent } from "../control/edit.js"
 import { fetchSaveService } from "../model/fetchService.js"
 import { getBOOKrowByQN } from "../util/getrows.js"
-import { URIcomponent, updateBOOK, Alert } from "../util/util.js"
+import { updateBOOK } from "../util/variables.js"
+import { URIcomponent, Alert } from "../util/util.js"
 import { reViewService } from "./showService.js"
 import { countService } from "./countService.js"
 import { setSERVICE, SERVICE } from "./setSERVICE.js"
@@ -15,30 +16,30 @@ import { getRecord } from "./editPresentCellService.js"
 export function savePreviousCellService() {
 	let newcontent = getNewcontent()
 
-	if (!pointer || (oldcontent === newcontent)) {
+	if (!POINTER || (OLDCONTENT === newcontent)) {
 		return
 	}
 
-	switch(pointer.cellIndex)
+	switch(POINTER.cellIndex)
 	{
 		case CASENUMSV:
 		case HNSV:
 		case NAMESV:
 			break
 		case DIAGNOSISSV:
-			saveContentService(pointer, "diagnosis", newcontent)
+			saveContentService(POINTER, "diagnosis", newcontent)
 			break
 		case TREATMENTSV:
-			saveContentService(pointer, "treatment", newcontent)
+			saveContentService(POINTER, "treatment", newcontent)
 			break
 		case ADMISSIONSV:
-			saveContentService(pointer, "admission", newcontent)
+			saveContentService(POINTER, "admission", newcontent)
 			break
 		case FINALSV:
-			saveContentService(pointer, "final", newcontent)
+			saveContentService(POINTER, "final", newcontent)
 			break
 		case PROFILESV:
-			saveProfileService(pointer)
+			saveProfileService(POINTER)
 			break
 		case ADMITSV:
 		case DISCHARGESV:
@@ -107,16 +108,16 @@ export function saveService(pointed, column, newcontent) {
 		}).catch(error => {})
 	}
 
-	doSaveService(newcontent, oldcontent)
+	doSaveService(newcontent, OLDCONTENT)
 
 	// make undo-able
 	UndoManager.add({
 		undo: function() {
-			doSaveService(oldcontent, newcontent)
-			pointed.innerHTML = oldcontent
+			doSaveService(OLDCONTENT, newcontent)
+			pointed.innerHTML = OLDCONTENT
 		},
 		redo: function() {
-			doSaveService(newcontent, oldcontent)
+			doSaveService(newcontent, OLDCONTENT)
 			pointed.innerHTML = newcontent
 		}
 	})
@@ -127,7 +128,7 @@ export function saveService(pointed, column, newcontent) {
 export function saveProfileService(pointed)
 {
 	let newRecord = getRecord(pointed),
-		oldRecord = oldcontent,
+		oldRecord = OLDCONTENT,
 		setRecord = {},
 		$pointing = $(pointed),
 		newkey

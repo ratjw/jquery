@@ -2,7 +2,8 @@
 import { clearEditcell } from "../control/edit.js"
 import { fetchChangeOncall } from "../model/fetch.js"
 import { getOpdate } from "../util/date.js"
-import { setONCALL, reposition, menustyle } from "../util/util.js"
+import { setONCALL } from "../util/variables.js"
+import { reposition, menustyle, Alert } from "../util/util.js"
 
 export function exchangeOncall(pointing)
 {

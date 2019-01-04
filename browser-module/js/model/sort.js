@@ -2,12 +2,13 @@
 import { OPDATE, THEATRE, OPROOM, STAFFNAME, QN } from "./const.js"
 import { clearTimer, resetTimer, resetTimerCounter } from "../control/updating.js"
 import { clearEditcell } from "../control/edit.js"
-import { clearMouseoverTR } from "../menu/changeDate.js"
+import { clearMouseoverTR } from "../menu/moveCase.js"
 import { fetchSortable } from "./fetch.js"
 import { calcWaitnum } from "../util/calcWaitnum.js"
 import { getOpdate } from "../util/date.js"
 import { sameDateRoomTableQN } from "../util/getrows.js"
-import { Alert, updateBOOK, isConsults, isStaffname } from "../util/util.js"
+import { updateBOOK } from "../util/variables.js"
+import { Alert, isConsults, isStaffname } from "../util/util.js"
 import { viewSortable } from "../view/fill.js"
 import { showUpload } from "../get/showUpload.js"
 import { UndoManager } from "../model/UndoManager.js"
@@ -51,13 +52,13 @@ export function sortable () {
 			let $item = ui.item,
 				$itemcell = $item.children("td"),
 				receiver = $item.closest('table').attr('id'),
-				oldWaitnum = $item[0].title,
-				oldOpdateth = $itemcell.eq(OPDATE).html(),
-				oldOpdate = getOpdate(oldOpdateth),
-				oldtheatre = $itemcell.eq(THEATRE).html(),
-				oldroom = $itemcell.eq(OPROOM).html(),
+				moveWaitnum = $item[0].title,
+				moveOpdateth = $itemcell.eq(OPDATE).html(),
+				moveOpdate = getOpdate(moveOpdateth),
+				movetheatre = $itemcell.eq(THEATRE).html(),
+				moveroom = $itemcell.eq(OPROOM).html(),
 				staffname = $itemcell.eq(STAFFNAME).html(),
-				oldqn = $itemcell.eq(QN).html()
+				moveqn = $itemcell.eq(QN).html()
 
 			// Allow drag to Consults, or same staff name
 			// That is (titlename === "Consults") is allowed
@@ -138,56 +139,52 @@ export function sortable () {
 			// old = mover
 			// this = dropping place
 			// drop on the same case
-			if (thisqn === oldqn) { return }
+			if (thisqn === moveqn) { return }
 
 			// no room specified and waitnum not changed
-			if (!oldroom && !thisroom && newWaitnum === oldWaitnum) {
+			if (!moveroom && !thisroom && newWaitnum === moveWaitnum) {
 				return
 			}
 
-			// sameDateRoomTableQN is of tbl only, the mover must be removed manually
-			if (oldroom) {
-				allOldCases = sameDateRoomTableQN(oldOpdateth, oldroom, oldtheatre)
-				if (sender === "queuetbl") {
-					allOldCases = allOldCases.filter(e => e !== oldqn)
-				}
-			}
+			// remove itself from old sameDateRoom
+			allOldCases = sameDateRoomTableQN(moveOpdateth, moveroom, movetheatre)
+							.filter(e => e !== moveqn);
 
-			if (thisroom) {
-				allNewCases = sameDateRoomTableQN(thisOpdateth, thisroom, thistheatre)
-				if (receiver === "queuetbl") {
-					let index = allNewCases.indexOf(thisqn)
-					before
-					? allNewCases.splice(index, 0, oldqn)
-					: allNewCases.splice(index + 1, 0, oldqn)
-				}
-			}
+			// remove itself in new sameDateRoom, in case new === old
+			allNewCases = sameDateRoomTableQN(thisOpdateth, thisroom, thistheatre)
+							.filter(e => e !== moveqn);
+
+			// insert itself into new sameDateRoom after the clicked row
+			let index = allNewCases.indexOf(thisqn)
+			before
+			? allNewCases.splice(index, 0, moveqn)
+			: allNewCases.splice(index + 1, 0, moveqn)
 
 			let argModelDo = {
-				oldlist: allOldCases,
+				movelist: allOldCases,
 				newlist: allNewCases,
 				waitnum: newWaitnum,
 				opdate: thisOpdate,
 				room: thisroom,
-				qn: oldqn
+				qn: moveqn
 			}
 			let argViewDo = {
 				receiver: receiver,
-				oldOpdate: oldOpdate,
+				moveOpdate: moveOpdate,
 				thisOpdate: thisOpdate
 			}
 			let argModelUndo = {
-				oldlist: allNewCases,
+				movelist: allNewCases,
 				newlist: allOldCases,
-				waitnum: oldWaitnum,
-				opdate: oldOpdate,
-				room: oldroom,
-				qn: oldqn
+				waitnum: moveWaitnum,
+				opdate: moveOpdate,
+				room: moveroom,
+				qn: moveqn
 			}
 			let argViewUndo = {
 				receiver: sender,
-				oldOpdate: thisOpdate,
-				thisOpdate: oldOpdate
+				moveOpdate: thisOpdate,
+				thisOpdate: moveOpdate
 			}
 
 			doSorting(argModelDo, argViewDo)
@@ -221,7 +218,7 @@ function doSorting(argModel, argView) {
 }
 
 let stopsorting = function () {
-	// Return to original place so that refillOneDay(oldOpdate)
+	// Return to original place so that refillOneDay(moveOpdate)
 	// will not render this row in wrong position
 	$("#tbl tbody, #queuetbl tbody").sortable( "cancel" )
 

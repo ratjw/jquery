@@ -15,7 +15,7 @@ require_once "book.php";
 
 	// click.js (saveRoomTime 2 ways, saveContentQN, saveContentNoQN 2 ways)
 	// equip.js (Checklistequip)
-	// menu.js (changeDate - $datepicker, changeDate - $trNOth, deleteCase)
+	// menu.js (moveCase, deleteCase)
 	// sortable.js (sortable)
 	else if (isset($_POST['sqlReturnbook'])) {
 		echo returnbook($mysqli, $_POST['sqlReturnbook']);

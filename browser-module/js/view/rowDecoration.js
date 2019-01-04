@@ -15,7 +15,7 @@ export function rowDecoration(row, date)
   cells[DIAGNOSIS].style.backgroundImage = holiday(date)
 }
 
-export function dayName(DAYNAME, date)
+function dayName(DAYNAME, date)
 {
 	return date === LARGESTDATE
 		? ""

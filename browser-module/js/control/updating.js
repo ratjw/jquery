@@ -3,20 +3,21 @@ import {
 	DIAGNOSISSV, TREATMENTSV, ADMISSIONSV, FINALSV, PROFILESV
 } from "../model/const.js"
 import {
-	pointer, oldcontent, getNewcontent, editcellLocation
+	POINTER, OLDCONTENT, getNewcontent, editcellLocation
 } from "./edit.js"
 import { fetchdoUpdate, fetchGetUpdate, fetchSaveOnChange } from "../model/fetch.js"
 import { fetchGetUpdateWithService, fetchSaveOnChangeService } from "../model/fetchService.js"
-import { timestamp, dialogServiceShowing, updateBOOK, Alert } from "../util/util.js"
+import { timestamp, updateBOOK } from "../util/variables.js"
+import { dialogServiceShowing, Alert } from "../util/util.js"
 import { clearAllEditing } from "./clearAllEditing.js"
-import { viewGetUpdate, viewOnIdling } from "../view/fill.js"
+import { viewGetUpdate, viewGetUpdateWithService, viewOnIdling } from "../view/fill.js"
 import { saveProfileService } from "../service/savePreviousCellService.js"
 import { setSERVICE } from "../service/setSERVICE.js"
 
 // timer is just an id number of setTimeout, not the clock object
 // idleCounter is number of cycles of idle setTimeout
-let timer = 0,
-    idleCounter = 0
+let timer = 0
+let idleCounter = 0
 
 // poke server every 10 sec.
 export function clearTimer() {
@@ -52,21 +53,21 @@ export function updating() {
 let onChange = function () {
 
   // When editcell is not pointing, there must be no change by this editor
-  if (!pointer) { return false }
+  if (!POINTER) { return false }
 
   let newcontent = getNewcontent(),
-      index = pointer.cellIndex,
+      index = POINTER.cellIndex,
       whereisEditcell = editcellLocation(),
-	  qn = $(pointer).siblings(":last").html()
+	  qn = $(POINTER).siblings(":last").html()
 
-  if (oldcontent === newcontent) {
+  if (OLDCONTENT === newcontent) {
     return false
   }
 
   if (whereisEditcell === "dialogService") {
-    return saveOnChangeService(pointer, index, newcontent, qn)
+    return saveOnChangeService(POINTER, index, newcontent, qn)
   } else {
-    return saveOnChange(pointer, index, newcontent, qn)
+    return saveOnChange(POINTER, index, newcontent, qn)
   }
 }
 
@@ -126,7 +127,7 @@ function onIdling()
     idleCounter += 1
 }
 
-function saveOnChange(pointer, index, content, qn)
+function saveOnChange(POINTER, index, content, qn)
 {
   let column = index === DIAGNOSIS
                 ? "diagnosis"
@@ -146,11 +147,11 @@ function saveOnChange(pointer, index, content, qn)
     }
   })
 
-  pointer.innerHTML = content
+  POINTER.innerHTML = content
   return true
 }
 
-function saveOnChangeService(pointer, index, content, qn)
+function saveOnChangeService(POINTER, index, content, qn)
 {
   let column = index === DIAGNOSISSV
                 ? "diagnosis"
@@ -162,7 +163,7 @@ function saveOnChangeService(pointer, index, content, qn)
                 ? "final"
                 : ""
 
-  if (index === PROFILESV) { saveProfileService(pointer) }
+  if (index === PROFILESV) { saveProfileService(POINTER) }
   if (!column) { return false }
 
   fetchSaveOnChangeService(column, content, qn).then(response => {
@@ -173,6 +174,6 @@ function saveOnChangeService(pointer, index, content, qn)
     }
   })
 
-  pointer.innerHTML = content
+  POINTER.innerHTML = content
   return true
 }

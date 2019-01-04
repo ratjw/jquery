@@ -5,11 +5,10 @@ import {
   FINALSV, PROFILESV, ADMITSV, OPDATESV, DISCHARGESV, QNSV
 } from "../model/const.js"
 import { resetTimerCounter } from "../control/updating.js"
-import { pointer, clearEditcell } from "../control/edit.js"
+import { POINTER, clearEditcell } from "../control/edit.js"
 import { START, putThdate, putNameAge } from "../util/date.js"
-import {
-	isPACS, getClass, inPicArea,  winWidth, winHeight, winResizeFix
-} from "../util/util.js"
+import { getClass, inPicArea,  winWidth, winHeight, winResizeFix } from "../util/util.js"
+import { isPACS } from "../util/variables.js"
 import { refillall, refillstaffqueue } from "../view/fill.js"
 import { fillConsults } from "../view/fillConsults.js"
 import { countService, countAllServices } from "./countService.js"
@@ -58,6 +57,8 @@ export function showService() {
 				.filldataService(this, scase, classname)
 	});
 
+	// close: it is necessary NOT to close the non-visible jQuery dialogs,
+	// because these may not have yet been initialized (which results in an error)
 	$dialogService.dialog({
 		hide: 200,
 		width: winWidth(95),
@@ -66,7 +67,7 @@ export function showService() {
 			refillstaffqueue()
 			refillall()
             fillConsults()
-			$(".ui-dialog:visible").find(".ui-dialog-content").dialog("close");
+			$(".ui-dialog:visible").find(".ui-dialog-content").dialog("close")
 			$(".fixed").remove()
 			hideProfile()
 			$(window).off("resize", resizeDialog)
@@ -122,8 +123,8 @@ export function showService() {
 				target = target.closest('td')
 			}
 		}
-		if (pointer) {
-			if (target === pointer) {
+		if (POINTER) {
+			if (target === POINTER) {
 				return
 			}
 			savePreviousCellService()

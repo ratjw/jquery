@@ -1,7 +1,8 @@
 
 import { setStafflist } from "./start.js"
 import { fetchDoadddata, fetchDoupdatedata, fetchDodeletedata } from "../model/fetch.js"
-import { updateBOOK, Alert, setSTAFF } from "../util/util.js"
+import { updateBOOK, setSTAFF } from "../util/variables.js"
+import { Alert } from "../util/util.js"
 import { viewAddStaff } from "../view/viewAddStaff.js"
 import { fillConsults } from "../view/fillConsults.js"
 

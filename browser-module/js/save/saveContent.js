@@ -1,10 +1,11 @@
 
 import { UndoManager } from "../model/UndoManager.js"
 import { OPDATE, OPROOM, CASENUM, STAFFNAME, QN } from "../model/const.js"
-import { oldcontent } from "../control/edit.js"
+import { OLDCONTENT } from "../control/edit.js"
 import { fetchSaveContentQN, fetchSaveContentNoQN } from "../model/fetch.js"
 import { getOpdate } from "../util/date.js"
-import { Alert, updateBOOK, URIcomponent } from "../util/util.js"
+import { updateBOOK } from "../util/variables.js"
+import { Alert, URIcomponent } from "../util/util.js"
 import { viewSaveContentQN, viewSaveContentNoQN } from "../view/fill.js"
 
 // use only "pointed" to save data
@@ -49,11 +50,11 @@ function saveContentQN(pointed, column, newcontent)
 		fetchSaveContentQN(column, newcontent, qn).then(response => {
 			let hasData = function () {
 				updateBOOK(response)
-				viewSaveContentQN(pointed, oldcontent)
+				viewSaveContentQN(pointed, OLDCONTENT)
 			}
 			let noData = function () {
 				Alert("saveContentQN", response)
-				pointed.innerHTML = oldcontent
+				pointed.innerHTML = OLDCONTENT
 				// return to previous content
 			}
 
@@ -61,7 +62,7 @@ function saveContentQN(pointed, column, newcontent)
 		}).catch(error => {})
 	}
 	let undoSaveContentQN = function () {
-		fetchSaveContentQN(column, oldcontent, qn).then(response => {
+		fetchSaveContentQN(column, OLDCONTENT, qn).then(response => {
 			let hasData = function () {
 				updateBOOK(response)
 				viewSaveContentQN(pointed, newcontent)
@@ -103,7 +104,7 @@ function saveContentNoQN(pointed, column, newcontent)
 			Alert("saveContentNoQN", response)
 
 			// return to previous content
-			pointed.innerHTML = oldcontent
+			pointed.innerHTML = OLDCONTENT
 		};
 
 		typeof response === "object" ? hasData() : noData()

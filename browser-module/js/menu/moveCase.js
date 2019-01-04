@@ -1,16 +1,17 @@
 
 import { UndoManager } from "../model/UndoManager.js"
 import { OPDATE, THEATRE, OPROOM, STAFFNAME, QN } from "../model/const.js"
-import { fetchChangeDate } from "../model/fetch.js"
+import { fetchmoveCase } from "../model/fetch.js"
 import { calcWaitnum } from "../util/calcWaitnum.js"
 import { getOpdate } from "../util/date.js"
 import { sameDateRoomTableQN } from "../util/getrows.js"
-import { Alert, updateBOOK } from "../util/util.js"
-import { viewChangeDate } from "../view/fill.js"
+import { updateBOOK } from "../util/variables.js"
+import { Alert } from "../util/util.js"
+import { viewmoveCase } from "../view/fill.js"
 import { clearSelection } from "../control/clearSelection.js"
 
 // Mark the case and initiate mouseoverTR underline the date to move to
-export function changeDate()
+export function moveCase()
 {
 	let $allRows = $("#tbl tr:has('td'), #queuetbl tr:has('td')")
 	let	$selected = $(".selected")
@@ -25,7 +26,7 @@ export function changeDate()
 		clickDate(event, $selected, this)
 	})
 
-	$(".selected").removeClass("selected").addClass("changeDate")
+	$(".selected").removeClass("selected").addClass("moveCase")
 }
 
 function clickDate(event, $selected, cell)
@@ -64,16 +65,16 @@ function clickDate(event, $selected, cell)
 	thisindex = allNewCases.indexOf(thisqn)
 	allNewCases.splice(thisindex + 1, 0, moveQN)
 
-	let doChangeDate = function (waitnum, movedateth, movedate, thisdate, room) {
-		fetchChangeDate(allOldCases, allNewCases, waitnum, thisdate, room, moveQN).then(response => {
+	let domoveCase = function (waitnum, movedate, thisdate, room) {
+		fetchmoveCase(allOldCases, allNewCases, waitnum, thisdate, room, moveQN).then(response => {
 			let hasData = function () {
 				updateBOOK(response)
-				viewChangeDate(movedateth, movedate, thisdate, staffname, moveQN)
+				viewmoveCase(movedate, thisdate, staffname, moveQN)
 			}
 
 			typeof response === "object"
 			? hasData()
-			: Alert ("changeDate", response)
+			: Alert ("moveCase", response)
 		}).catch(error => {})
 	}
 
@@ -84,14 +85,14 @@ function clickDate(event, $selected, cell)
 	// click the same case
 	if (thisqn === moveQN) { return }
 
-	doChangeDate(thisWaitnum, moveOpdateth, moveOpdate, thisOpdate, thisroom)
+	domoveCase(thisWaitnum, moveOpdate, thisOpdate, thisroom)
 
 	UndoManager.add({
 		undo: function() {
-			doChangeDate(moveWaitnum, thisOpdateth, thisOpdate, moveOpdate, moveroom)
+			domoveCase(moveWaitnum, thisOpdate, moveOpdate, moveroom)
 		},
 		redo: function() {
-			doChangeDate(thisWaitnum, moveOpdateth, moveOpdate, thisOpdate, thisroom)
+			domoveCase(thisWaitnum, moveOpdate, thisOpdate, thisroom)
 		}
 	})		
 }
@@ -103,5 +104,5 @@ export function clearMouseoverTR()
 		.off("mouseout")
 		.off("click")
 	$(".pasteDate").removeClass("pasteDate")
-	$(".changeDate").removeClass("changeDate")
+	$(".moveCase").removeClass("moveCase")
 }

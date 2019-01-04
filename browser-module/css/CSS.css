@@ -74,22 +74,25 @@ td img.imgpale {
 	border-left: solid 2px snow;
 }
 
-#tbl.showColumn2 th:nth-child(2),
-#tbl.showColumn2 td:nth-child(2) { width: 30px; font-size: 10px; }
-#tbl th:nth-child(2), td:nth-child(2) { width: 0px; font-size: 0px; }
+#tbl.showColumn2 th:nth-child(2){ width: 30px; font-size: xx-small; }
+#tbl th:nth-child(2) { width: 0px; font-size: 0px; }
 #tbl th:nth-child(3),
-#tbl td:nth-child(3),
 #tbl th:nth-child(4),
 #tbl td:nth-child(4),
 #tbl th:nth-child(5),
-#tbl td:nth-child(5),
 #queuetbl th:nth-child(3),
-#queuetbl td:nth-child(3),
 #queuetbl th:nth-child(4),
-#queuetbl td:nth-child(4),
-#queuetbl th:nth-child(5),
-#queuetbl td:nth-child(5) {
+#queuetbl th:nth-child(5) {
 	font-size: xx-small;
+}
+#tbl.showColumn2 td:nth-child(2) { width: 30px; font-size: xx-small; }
+#tbl td:nth-child(2) { width: 0px; font-size: 0px; }
+#tbl td:nth-child(3),
+#tbl td:nth-child(5),
+#queuetbl td:nth-child(3),
+#queuetbl td:nth-child(4),
+#queuetbl td:nth-child(5) {
+	font-size: 12px;
 }
 #tbl td:first-child,
 #tbl td:nth-child(6),
@@ -264,7 +267,7 @@ td img.imgpale {
 #dialogDeleted, #deletedcells,
 #dialogHistory, #historycells,
 #dialogFind, #findcells,
-#dialogMoveCase,
+#dialogMoveCaseHN,
 #movetbl td:nth-child(2),
 #movetbl td:nth-child(3),
 #movetbl td:nth-child(10),
@@ -348,7 +351,7 @@ tr#moveto td {
     right: 0;
 }
 
-/* mark the row of fillEquipTable, tracking, find, and pasted row after changeDate */
+/* mark the row of fillEquipTable, tracking, find, and pasted row after moveCase */
 tr.marker {
 	border: solid 3px skyblue !important;
 }
@@ -357,7 +360,7 @@ tr.marker {
    50% { border-color: skyblue; } 
 }
 
-tr.changeDate {
+tr.moveCase {
 	animation: blink1 .5s step-end infinite alternate;
 	border: dashed 3px lightblue;
 }
@@ -366,7 +369,7 @@ tr.changeDate {
    50% { border-color: royalblue; } 
 }
 
-/* mark where changeDate will be pasted */
+/* mark where moveCase will be pasted */
 tr.pasteDate {
 	animation: blink2 .5s step-end infinite alternate;
 	border-bottom: solid 3px skyblue;

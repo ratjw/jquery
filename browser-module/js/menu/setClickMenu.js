@@ -5,7 +5,7 @@ import { deletedCases } from "./deletedCases.js"
 import { readme } from "./readme.js"
 import { addnewrow } from "./addnewrow.js"
 import { postponeCase } from "./postponeCase.js"
-import { changeDate } from "./changeDate.js"
+import { moveCase } from "./moveCase.js"
 import { editHistory } from "./editHistory.js"
 import { delCase } from "./delCase.js"
 import { sendtoExcel } from "./sendtoExcel.js"
@@ -20,7 +20,7 @@ let onclick = {
 	"clickreadme": readme,
 	"addrow": addnewrow,
 	"postponecase": postponeCase,
-	"changedate": changeDate,
+	"moveCase": moveCase,
 	"clickeditHistory": editHistory,
 	"delcase": delCase,
 	"clicksendtoExcel": sendtoExcel,

@@ -4,10 +4,12 @@ import { OPDATE, THEATRE, OPROOM, STAFFNAME, QN } from "../model/const.js"
 import { fetchDeleteCase } from "../model/fetch.js"
 import { getOpdate } from "../util/date.js"
 import { sameDateRoomTableQN } from "../util/getrows.js"
-import { Alert, updateBOOK } from "../util/util.js"
+import { updateBOOK } from "../util/variables.js"
+import { Alert } from "../util/util.js"
 import { viewDeleteCase } from "../view/fill.js"
 import { clearSelection } from "../control/clearSelection.js"
 import { doUndel } from "./deletedCases.js"
+import { addrow } from "./addnewrow.js"
 
 // not actually delete the case but set deleted = 1
 // Remove the row if more than one case on that date, or on staff table

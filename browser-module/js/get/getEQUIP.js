@@ -2,11 +2,11 @@
 import { EQUIPMENT, QN } from "../model/const.js"
 import { clearEditcell } from "../control/edit.js"
 import { USER } from "../main.js"
-import { fetchStart, fetchGetEquip, fetchSaveEquip } from "../model/fetch.js"
+import { fetchGetEquip, fetchSaveEquip, fetchCancelAllEquip } from "../model/fetch.js"
 import { putAgeOpdate, putThdate } from "../util/date.js"
 import { getBOOKrowByQN, getTableRowByQN } from "../util/getrows.js"
-import { BOOK, CONSULT, isConsultsTbl, updateBOOK, Alert } from "../util/util.js"
-import { fillall } from "../view/fill.js"
+import { BOOK, CONSULT, updateBOOK } from "../util/variables.js"
+import { Alert, isConsultsTbl } from "../util/util.js"
 import { viewEquipJSON } from "../view/viewEquip.js"
 
 const NAMEOFDAYTHAI	= ["อาทิตย์", "จันทร์", "อังคาร", "พุธ", "พฤหัส", "ศุกร์", "เสาร์"]
@@ -256,7 +256,7 @@ function cancelAllEquip()
 	}).catch(error => {})
 }
 
-export function delelteAllEquip(qn)
+function delelteAllEquip(qn)
 {
 	let $row = getTableRowByQN("tbl", qn)
 
@@ -264,7 +264,7 @@ export function delelteAllEquip(qn)
 	$("#dialogEquip").dialog('close')
 }
 
-export function restoreAllEquip(response, bookqEquip, JsonEquip)
+function restoreAllEquip(response, bookqEquip, JsonEquip)
 {
 	// Error update server
 	// Roll back. If old form has equips, fill checked & texts

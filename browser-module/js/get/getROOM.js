@@ -1,20 +1,16 @@
 
-import { OPROOM, CASENUM } from "../model/const.js"
 import { createEditcell, clearEditcell } from "../control/edit.js"
 import { savePreviousCell } from "../control/clicktable.js"
-import { clearTimer } from "../control/updating.js"
 
-export function getROOMCASE(pointing)
+export function getROOM(pointing)
 {
-	let	noPatient = !$(pointing).siblings(":last").html(),
-		noRoom = !$(pointing).closest("tr").find("td").eq(OPROOM).html(),
-		getCasenum = pointing.cellIndex === CASENUM,
+	let	patient = pointing.parentElement.lastElementChild.innerHTML,
 		oldval = pointing.innerHTML,
 		$editcell = $("#editcell"),
 		newval = null,
 		html = '<input id="spin">'
 
-	if ( noPatient || getCasenum && noRoom ) {
+	if ( !patient ) {
 		savePreviousCell()
 		clearEditcell()
 		return
@@ -43,5 +39,4 @@ export function getROOMCASE(pointing)
 		}
 	})
 	$spin.focus()
-	clearTimer(timer)
 }

@@ -1,5 +1,6 @@
 
 import { SPECIALTY } from "../model/const.js"
+import { STAFF } from "../util/variables.js"
 
 export function viewAddStaff()
 {
@@ -18,25 +19,34 @@ export function viewAddStaff()
       .appendTo($stafftbl.find('tbody'))
         .filldataStaff(i, item)
   });
+
+  $(".clickgetval").off("click").on("click", function() {
+	  let num = this.closest("tr").title
+
+	  getval(num)
+  })
 }
 
 jQuery.fn.extend({
   filldataStaff : function (i, q) {
-    let cells = this[0].cells
+    let row = this[0]
+	let cells = row.cells
 
-	cells[0].innerHTML = `<a onclick="getval('${i}')">${q.staffname}</a>`
-	cells[1].innerHTML = `<a onclick="getval('${i}')">${q.specialty}</a>`
-	cells[2].innerHTML = `<a onclick="getval('${i}')">${q.startoncall}</a>`
+	cells[0].innerHTML = `<a class="clickgetval">${q.staffname}</a>`
+	cells[1].innerHTML = `<a class="clickgetval">${q.specialty}</a>`
+	cells[2].innerHTML = `<a class="clickgetval">${q.startoncall}</a>`
+
+	row.title = i
   }
 })
 
 function getval(each)
 {  
-  let staff = STAFF
-  document.getElementById("sname").value = staff[each].staffname;
-  document.getElementById("scbb").value = staff[each].specialty;
-  document.getElementById("sdate").value = staff[each].startoncall; 
-  document.getElementById("shidden").value = staff[each].number;
+  let staff = STAFF[each]
+  document.getElementById("sname").value = staff.staffname;
+  document.getElementById("scbb").value = staff.specialty;
+  document.getElementById("sdate").value = staff.startoncall; 
+  document.getElementById("shidden").value = staff.number;
 }
 
 function clearval()

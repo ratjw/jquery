@@ -2,10 +2,11 @@
 import {
 	OPDATE, STAFFNAME, HN, PATIENT, DIAGNOSIS, TREATMENT, CONTACT, QN
 } from "../model/const.js"
-import { oldcontent, clearEditcell } from "../control/edit.js"
+import { OLDCONTENT, clearEditcell } from "../control/edit.js"
 import { fetchMoveCaseHN, fetchCopyCaseHN } from "../model/fetch.js"
 import { getOpdate, putThdate, putNameAge } from "../util/date.js"
-import { Alert, updateBOOK, winWidth } from "../util/util.js"
+import { updateBOOK } from "../util/variables.js"
+import { Alert, winWidth } from "../util/util.js"
 import { viewMoveCaseHN, viewCopyCaseHN } from "../view/fill.js"
 import { rowDecoration } from "../view/rowDecoration.js"
 
@@ -28,7 +29,7 @@ export function saveCaseHN(pointed, waiting)
 		patient = waiting.patient,
 		dob = waiting.dob,
 
-		$dialogMoveCase = $("#dialogMoveCase"),
+		$dialogMoveCaseHN = $("#dialogMoveCaseHN"),
 		$movetbl = $("#movetbl"),
 		$movefrom = $("#movefrom").next(),
 		$moveto = $("#moveto").next(),
@@ -53,7 +54,7 @@ export function saveCaseHN(pointed, waiting)
 		  ? 800
 		  : width
 
-	$dialogMoveCase.dialog({
+	$dialogMoveCaseHN.dialog({
 		title: "เคสซ้ำ",
 		closeOnEscape: true,
 		modal: true,
@@ -79,8 +80,8 @@ export function saveCaseHN(pointed, waiting)
 			{
 				text: "ยกเลิก ไม่ทำอะไร",
 				click: function() {
-					$dialogMoveCase.dialog("close")
-					$cells[HN].innerHTML = oldcontent
+					$dialogMoveCaseHN.dialog("close")
+					$cells[HN].innerHTML = OLDCONTENT
 				}
 			}
 		],
@@ -98,14 +99,14 @@ export function saveCaseHN(pointed, waiting)
 			}
 			let noData = function () {
 				Alert("saveCaseHN", response)
-				pointed.innerHTML = oldcontent
+				pointed.innerHTML = OLDCONTENT
 				// unsuccessful entry
 			};
 
 			typeof response === "object" ? hasData() : noData()
 		}).catch(error => { })
 
-		$dialogMoveCase.dialog("close")
+		$dialogMoveCaseHN.dialog("close")
 	}
 
 	function copyCaseHN()
@@ -117,14 +118,14 @@ export function saveCaseHN(pointed, waiting)
 			}
 			let noData = function () {
 				Alert("saveCaseHN", response)
-				pointed.innerHTML = oldcontent
+				pointed.innerHTML = OLDCONTENT
 				// unsuccessful entry
 			};
 
 			typeof response === "object" ? hasData() : noData()
 		}).catch(error => { })
 
-		$dialogMoveCase.dialog("close")
+		$dialogMoveCaseHN.dialog("close")
 	}
 }
 

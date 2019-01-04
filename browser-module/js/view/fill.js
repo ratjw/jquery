@@ -1,23 +1,23 @@
 import {
 	OPDATE, THEATRE, OPROOM, OPTIME, CASENUM, STAFFNAME, HN, PATIENT, DIAGNOSIS,
-	TREATMENT, EQUIPMENT, CONTACT, QN, LARGESTDATE, NAMEOFDAYABBR, NAMEOFDAYFULL
+	TREATMENT, EQUIPMENT, CONTACT, QN, LARGESTDATE
 } from "../model/const.js"
-import { pointer, clearEditcell, renewEditcell } from "../control/edit.js"
-import { reViewService } from "../service/showService.js"
+import {
+	POINTER, OLDCONTENT, createEditcell, clearEditcell, renewEditcell
+} from "../control/edit.js"
 import {
 	START, ISOdate, nextdays, numDate, thDate, getOpdate, putThdate, putNameAge
 } from "../util/date.js"
 import {
 	getBOOKrowByQN, getTableRowByQN, getBOOKrowsByDate, getTableRowsByDate
 } from "../util/getrows.js"
+import { BOOK, CONSULT, ONCALL, STAFF, isPACS } from "../util/variables.js"
 import {
-	BOOK, CONSULT, ONCALL, STAFF, isPACS, isConsults, isConsultsTbl,
-	isSplit, isStaffname, getClass, dialogServiceShowing, inPicArea
+	isConsults, isConsultsTbl, isSplit, isStaffname, getClass, inPicArea
 } from "../util/util.js"
 import { rowDecoration } from "./rowDecoration.js"
 import { viewEquip } from "./viewEquip.js"
-import { fillConsults } from "./fillConsults.js"
-import { setSERVICE } from "../service/setSERVICE.js"
+import { fillConsults, showStaffOnCall } from "./fillConsults.js"
 
 // Render Main table
 // Consults and dialogAll tables use this too
@@ -114,7 +114,7 @@ let findStartRowInBOOK = function (book, opdate) {
 
 // Used for main table ("tbl") only, no LARGESTDATE
 // others would refill entire table
-export function refillOneDay(opdate) {
+function refillOneDay(opdate) {
 	if (opdate === LARGESTDATE) { return }
 	let	opdateth = putThdate(opdate),
 		opdateBOOKrows = getBOOKrowsByDate(BOOK, opdate),
@@ -123,29 +123,19 @@ export function refillOneDay(opdate) {
 		tblRows = $opdateTblRows.length,
 		$cells, staff
 
-	// Occur when dragging the only row of a date to somewhere else
-	if (!tblRows) {
-		createThisdateTableRow(opdate, opdateth)
-		$opdateTblRows = getTableRowsByDate(opdateth)
-		tblRows = $opdateTblRows.length
-	}
-
-	let hasCase = function () {
-		let lessCase = function () {
+	if (bookRows) {
+		if (tblRows > bookRows) {
 			while ($opdateTblRows.length > bookRows) {
 				$opdateTblRows.eq(0).remove()
 				$opdateTblRows = getTableRowsByDate(opdateth)
 			}
-		},
-		moreCase = function () {
+		}
+		else if (tblRows < bookRows) {
 			while ($opdateTblRows.length < bookRows) {
 				$opdateTblRows.eq(0).clone().insertAfter($opdateTblRows.eq(0))
 				$opdateTblRows = getTableRowsByDate(opdateth)
 			}
 		}
-
-		tblRows > bookRows ? lessCase() : moreCase()
-
 		$.each(opdateBOOKrows, function(key, val) {
 			rowDecoration($opdateTblRows[key], this.opdate)
 			filldata(this, $opdateTblRows[key])
@@ -155,9 +145,11 @@ export function refillOneDay(opdate) {
 				$opdateTblRows[key].cells[STAFFNAME].innerHTML = ""
 			}
 		})
-	}
-	let noCase = function () {
-		tblRows > 1 && $opdateTblRows.slice(1).remove()
+	} else {
+		while ($opdateTblRows.length > 1) {
+			$opdateTblRows.eq(0).remove()
+			$opdateTblRows = getTableRowsByDate(opdateth)
+		}
 		$opdateTblRows.attr("title", "")
 		$cells = $opdateTblRows.eq(0).children("td")
 		$cells.eq(OPDATE).siblings().html("")
@@ -166,8 +158,6 @@ export function refillOneDay(opdate) {
 		$cells.eq(PATIENT).removeClass("upload")
 		rowDecoration($opdateTblRows[0], opdate)
 	}
-
-	bookRows ? hasCase() : noCase()
 }
 
 // in main table (#tbl) only
@@ -346,7 +336,7 @@ function addColor($this, bookqOpdate)
 }
 
 // hover on background pics
-export function hoverMain()
+function hoverMain()
 {
 	let	paleClasses = ["pacs", "upload"],
 		boldClasses = ["pacs2", "upload2"]
@@ -451,26 +441,6 @@ export function setClickStaff()
 	document.getElementById("clickclosequeue").onclick = closequeue
 }
 
-// Method to remove or just blank the row, used in main and Consults tables
-let deleteRow = function ($row, opdate) {
-	let prevDate = $row.prev().children("td").eq(OPDATE).html(),
-		nextDate = $row.next().children("td").eq(OPDATE).html()
-
-	prevDate = getOpdate(prevDate)
-	nextDate = getOpdate(nextDate)
-
-	if (prevDate === opdate
-		|| nextDate === opdate
-		|| $row.closest("tr").is(":last-child")) {
-			$row.remove()
-	} else {
-		$row.children("td").eq(OPDATE).siblings().html("")
-		$row.children("td").eq(HN).removeClass("pacs")
-		$row.children("td").eq(PATIENT).removeClass("upload")
-		$row.children('td').eq(STAFFNAME).html(showStaffOnCall(opdate))
-	}
-}
-
 export function viewSaveTheatre(opdate, staffname)
 {
 	refillOneDay(opdate)
@@ -478,8 +448,8 @@ export function viewSaveTheatre(opdate, staffname)
 		refillstaffqueue()
 	}
 	// re-render editcell for keyin cell only
-	if (pointer.cellIndex > PATIENT) {
-		createEditcell(pointer)
+	if (POINTER.cellIndex > PATIENT) {
+		createEditcell(POINTER)
 	}
 }
 
@@ -489,8 +459,19 @@ export function viewSaveOpRoom(opdate, staffname) {
 		refillstaffqueue()
 	}
 	// re-render editcell for keyin cell only
-	if (pointer.cellIndex > PATIENT) {
-		createEditcell(pointer)
+	if (POINTER.cellIndex > PATIENT) {
+		createEditcell(POINTER)
+	}
+}
+
+export function viewSaveOpTime(opdate, staffname) {
+	refillOneDay(opdate)
+	if (isSplit() && (isStaffname(staffname) || isConsults())) {
+		refillstaffqueue()
+	}
+	// re-render editcell for keyin cell only
+	if (POINTER.cellIndex > PATIENT) {
+		createEditcell(POINTER)
 	}
 }
 
@@ -500,12 +481,12 @@ export function viewSaveCaseNum(opdate, staffname) {
 		refillstaffqueue()
 	}
 	// re-render editcell for keyin cell only
-	if (pointer.cellIndex > PATIENT) {
-		createEditcell(pointer)
+	if (POINTER.cellIndex > PATIENT) {
+		createEditcell(POINTER)
 	}
 }
 
-export function viewSaveContentQN(pointed, oldcontent) {
+export function viewSaveContentQN(pointed, OLDCONTENT) {
 	let	cellindex = pointed.cellIndex,
 		tableID = $(pointed).closest("table").attr("id"),
 		$cells = $(pointed).closest('tr').children("td"),
@@ -521,7 +502,7 @@ export function viewSaveContentQN(pointed, oldcontent) {
 		if (isSplit()) {
 
 			// this staffname is changed to another staff or to this staffname
-			if ((oldcontent === titlename) || (pointed.innerHTML === titlename)) {
+			if ((OLDCONTENT === titlename) || (pointed.innerHTML === titlename)) {
 					refillstaffqueue()
 			} else {
 				// input is not staffname, but on this titlename row
@@ -554,8 +535,8 @@ export function viewSaveContentQN(pointed, oldcontent) {
 	tableID === 'tbl' ? onMaintable() : onStafftable()
 
 	// re-render editcell for keyin cell only
-	if (pointer.cellIndex > PATIENT) {
-		createEditcell(pointer)
+	if (POINTER.cellIndex > PATIENT) {
+		createEditcell(POINTER)
 	}
 }
 
@@ -701,8 +682,8 @@ export function viewGetNameHN(pointed) {
 		}
 	}
 	// re-render editcell for keyin cell only
-	if (pointer.cellIndex > PATIENT) {
-		createEditcell(pointer)
+	if (POINTER.cellIndex > PATIENT) {
+		createEditcell(POINTER)
 	}
 }
 
@@ -733,18 +714,18 @@ let refillAnotherTableCell = function (tableID, cellindex, qn) {
 
 export function viewSortable(argView) {
 	let receiver = argView.receiver,
-		oldOpdate = argView.oldOpdate,
+		moveOpdate = argView.moveOpdate,
 		thisOpdate = argView.thisOpdate,
 
 	dropOnTbl = function () {
-		refillOneDay(oldOpdate)
+		refillOneDay(moveOpdate)
 		refillOneDay(thisOpdate)
 		isSplit() && refillstaffqueue()
 		// While splitting, dragging inside tbl of this staff's case
 	},
 	dropOnStaff = function () {
 		refillstaffqueue()
-		refillOneDay(oldOpdate)
+		refillOneDay(moveOpdate)
 		refillOneDay(thisOpdate)
 	}
 
@@ -752,17 +733,6 @@ export function viewSortable(argView) {
 
 	// attach hover to changed DOM elements
 	hoverMain()
-}
-
-export function viewIdling() {
-	if ($('#dialogService').hasClass('ui-dialog-content')
-		&& $('#dialogService').dialog('isOpen')) {
-
-		reViewService()
-	}
-
-	refillall()
-	isSplit() && refillstaffqueue()
 }
 
 export function viewGetUpdate(response)
@@ -794,29 +764,28 @@ export function viewPostponeCase(opdate, thisdate, staffname, qn)
 	if (opdate !== LARGESTDATE) { refillOneDay(opdate) }
 	if (thisdate !== LARGESTDATE) { refillOneDay(thisdate) }
 
-	// changeDate of this staffname's case, re-render
+	// moveCase of this staffname's case, re-render
 	isSplit() && isStaffname(staffname) && refillstaffqueue()
 
 	scrolltoThisCase(qn)
 }
 
-export function viewChangeDate(movedateth, movedate, thisdate, staffname, qn)
+export function viewmoveCase(movedate, thisdate, staffname, qn)
 {
-	if (movedateth) {
-		refillOneDay(movedate)
-	}
+	refillOneDay(movedate)
+
 	if (movedate !== thisdate) {
 		refillOneDay(thisdate)
 	}
 	if (isSplit()) {
 		let titlename = $('#titlename').html()
 		if ((titlename === staffname) || (titlename === "Consults")) {
-			// changeDate of this staffname's case
+			// moveCase of this staffname's case
 			refillstaffqueue()
 		}
 	} 
 
-	// changeDate of this staffname's case, re-render
+	// moveCase of this staffname's case, re-render
 	isSplit() && isStaffname(staffname) && refillstaffqueue()
 
 	scrolltoThisCase(qn)
@@ -837,4 +806,24 @@ export function viewUndelete(opdate, staffname, qn) {
 		refillstaffqueue()
 	}
 	scrolltoThisCase(qn)
+}
+
+// Method to remove or just blank the row, used in main and Consults tables
+let deleteRow = function ($row, opdate) {
+	let prevDate = $row.prev().children("td").eq(OPDATE).html(),
+		nextDate = $row.next().children("td").eq(OPDATE).html()
+
+	prevDate = getOpdate(prevDate)
+	nextDate = getOpdate(nextDate)
+
+	if (prevDate === opdate
+		|| nextDate === opdate
+		|| $row.closest("tr").is(":last-child")) {
+			$row.remove()
+	} else {
+		$row.children("td").eq(OPDATE).siblings().html("")
+		$row.children("td").eq(HN).removeClass("pacs")
+		$row.children("td").eq(PATIENT).removeClass("upload")
+		$row.children('td').eq(STAFFNAME).html(showStaffOnCall(opdate))
+	}
 }

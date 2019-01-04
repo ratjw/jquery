@@ -259,7 +259,7 @@ export function exportReportToExcel(title)
   exportToExcel("reviewtbl", data_type, title, style, head, filename)    
 }
 
-export function exportToExcel(id, data_type, title, style, head, filename)
+function exportToExcel(id, data_type, title, style, head, filename)
 {
   if ($("#exceltbl").length) {
     $("#exceltbl").remove()
