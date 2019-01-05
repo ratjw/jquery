@@ -1,8 +1,6 @@
 
 import { clearEditcell } from "../control/edit.js"
-
 import { inPicArea } from "../util/util.js"
-
 import { showUpload } from "./showUpload.js"
 
 export function getNAME(evt, pointing)

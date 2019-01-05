@@ -6,10 +6,68 @@ import {
 	POINTER, OLDCONTENT, createEditcell, renewEditcell
 } from "../control/edit.js"
 import { getOpdate, putNameAge } from "../util/date.js"
-import { getBOOKrowByQN, getTableRowByQN } from "../util/getrows.js"
+import {
+	getBOOKrowByQN, getTableRowByQN, getTableRowsByDate
+} from "../util/getrows.js"
 import { BOOK, CONSULT, isPACS } from "../util/variables.js"
 import { isConsults, isConsultsTbl, isSplit, isStaffname } from "../util/util.js"
 import { fillConsults, showStaffOnCall } from "./fillConsults.js"
+import { refillall, refillstaffqueue } from "./fill.js"
+
+// Used for main table ("tbl") only, no LARGESTDATE
+// others would refill entire table
+function refillOneDay(opdate) {
+	if (opdate === LARGESTDATE) { return }
+	let	opdateth = putThdate(opdate),
+		opdateBOOKrows = getBOOKrowsByDate(BOOK, opdate),
+		$opdateTblRows = getTableRowsByDate(opdateth),
+		bookRows = opdateBOOKrows.length,
+		tblRows = $opdateTblRows.length,
+		$cells, staff
+
+	if (bookRows) {
+		if (tblRows > bookRows) {
+			while ($opdateTblRows.length > bookRows) {
+				$opdateTblRows.eq(0).remove()
+				$opdateTblRows = getTableRowsByDate(opdateth)
+			}
+		}
+		else if (tblRows < bookRows) {
+			while ($opdateTblRows.length < bookRows) {
+				$opdateTblRows.eq(0).clone().insertAfter($opdateTblRows.eq(0))
+				$opdateTblRows = getTableRowsByDate(opdateth)
+			}
+		}
+		$.each(opdateBOOKrows, function(key, val) {
+			rowDecoration($opdateTblRows[key], this.opdate)
+			filldata(this, $opdateTblRows[key])
+			staff = $opdateTblRows[key].cells[STAFFNAME].innerHTML
+			// on call <p style..>staffname</p>
+			if (staff && /<p[^>]*>.*<\/p>/.test(staff)) {
+				$opdateTblRows[key].cells[STAFFNAME].innerHTML = ""
+			}
+		})
+	} else {
+		while ($opdateTblRows.length > 1) {
+			$opdateTblRows.eq(0).remove()
+			$opdateTblRows = getTableRowsByDate(opdateth)
+		}
+		$opdateTblRows.attr("title", "")
+		$cells = $opdateTblRows.eq(0).children("td")
+		$cells.eq(OPDATE).siblings().html("")
+		$cells.eq(STAFFNAME).html(showStaffOnCall(opdate))
+		$cells.eq(HN).removeClass("pacs")
+		$cells.eq(PATIENT).removeClass("upload")
+		rowDecoration($opdateTblRows[0], opdate)
+	}
+}
+
+function getBOOKrowsByDate(book, opdate)
+{
+	return book.filter(function(q) {
+		return (q.opdate === opdate);
+	})
+}
 
 export function viewSaveTheatre(opdate, staffname)
 {

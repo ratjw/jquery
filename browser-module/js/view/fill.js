@@ -5,7 +5,6 @@ import {
 import {
 	START, ISOdate, nextdays, numDate, thDate, putThdate, putNameAge
 } from "../util/date.js"
-import { getBOOKrowsByDate, getTableRowsByDate } from "../util/getrows.js"
 import { BOOK, CONSULT, STAFF, isPACS } from "../util/variables.js"
 import { isConsultsTbl, isSplit, getClass, inPicArea } from "../util/util.js"
 import { rowDecoration } from "./rowDecoration.js"
@@ -104,67 +103,6 @@ let findStartRowInBOOK = function (book, opdate) {
 		q++
 	}
 	return (q < book.length) ? q : -1
-}
-
-// Used for main table ("tbl") only, no LARGESTDATE
-// others would refill entire table
-function refillOneDay(opdate) {
-	if (opdate === LARGESTDATE) { return }
-	let	opdateth = putThdate(opdate),
-		opdateBOOKrows = getBOOKrowsByDate(BOOK, opdate),
-		$opdateTblRows = getTableRowsByDate(opdateth),
-		bookRows = opdateBOOKrows.length,
-		tblRows = $opdateTblRows.length,
-		$cells, staff
-
-	if (bookRows) {
-		if (tblRows > bookRows) {
-			while ($opdateTblRows.length > bookRows) {
-				$opdateTblRows.eq(0).remove()
-				$opdateTblRows = getTableRowsByDate(opdateth)
-			}
-		}
-		else if (tblRows < bookRows) {
-			while ($opdateTblRows.length < bookRows) {
-				$opdateTblRows.eq(0).clone().insertAfter($opdateTblRows.eq(0))
-				$opdateTblRows = getTableRowsByDate(opdateth)
-			}
-		}
-		$.each(opdateBOOKrows, function(key, val) {
-			rowDecoration($opdateTblRows[key], this.opdate)
-			filldata(this, $opdateTblRows[key])
-			staff = $opdateTblRows[key].cells[STAFFNAME].innerHTML
-			// on call <p style..>staffname</p>
-			if (staff && /<p[^>]*>.*<\/p>/.test(staff)) {
-				$opdateTblRows[key].cells[STAFFNAME].innerHTML = ""
-			}
-		})
-	} else {
-		while ($opdateTblRows.length > 1) {
-			$opdateTblRows.eq(0).remove()
-			$opdateTblRows = getTableRowsByDate(opdateth)
-		}
-		$opdateTblRows.attr("title", "")
-		$cells = $opdateTblRows.eq(0).children("td")
-		$cells.eq(OPDATE).siblings().html("")
-		$cells.eq(STAFFNAME).html(showStaffOnCall(opdate))
-		$cells.eq(HN).removeClass("pacs")
-		$cells.eq(PATIENT).removeClass("upload")
-		rowDecoration($opdateTblRows[0], opdate)
-	}
-}
-
-// in main table (#tbl) only
-let createThisdateTableRow = function (opdate, opdateth)
-{
-	if (opdate === LARGESTDATE) { return null }
-	var rows = getTableRowsByDate(thDate(nextdays(opdate, -1))),
-		$row = $(rows[rows.length-1]),
-		$thisrow = $row && $row.clone().insertAfter($row)
-
-	$thisrow && $thisrow.find("td").eq(OPDATE).html(opdateth)
-
-	return $thisrow
 }
 
 // create and decorate new row
