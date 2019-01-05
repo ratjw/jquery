@@ -7,7 +7,7 @@ import { fetchMoveCaseHN, fetchCopyCaseHN } from "../model/fetch.js"
 import { getOpdate, putThdate, putNameAge } from "../util/date.js"
 import { updateBOOK } from "../util/variables.js"
 import { Alert, winWidth } from "../util/util.js"
-import { viewMoveCaseHN, viewCopyCaseHN } from "../view/fill.js"
+import { viewMoveCaseHN, viewCopyCaseHN } from "../view/view.js"
 import { rowDecoration } from "../view/rowDecoration.js"
 
 // May have other columns before, thus has qn already

@@ -5,7 +5,7 @@ import { getOpdate } from "../util/date.js"
 import { getBOOKrowByQN } from "../util/getrows.js"
 import { BOOK, CONSULT, updateBOOK } from "../util/variables.js"
 import { Alert, reposition } from "../util/util.js"
-import { viewUndelete } from "../view/fill.js"
+import { viewUndelete } from "../view/view.js"
 import { viewDeletedCases } from "../view/history.js"
 
 export function deletedCases()

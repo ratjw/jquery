@@ -9,7 +9,7 @@ import { getOpdate } from "../util/date.js"
 import { sameDateRoomTableQN } from "../util/getrows.js"
 import { BOOK, updateBOOK } from "../util/variables.js"
 import { Alert } from "../util/util.js"
-import { viewPostponeCase } from "../view/fill.js"
+import { viewPostponeCase } from "../view/view.js"
 import { clearSelection } from "../control/clearSelection.js"
 
 // Undefined date booking has opdate = LARGESTDATE

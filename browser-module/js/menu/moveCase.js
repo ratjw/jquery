@@ -7,7 +7,7 @@ import { getOpdate } from "../util/date.js"
 import { sameDateRoomTableQN } from "../util/getrows.js"
 import { updateBOOK } from "../util/variables.js"
 import { Alert } from "../util/util.js"
-import { viewmoveCase } from "../view/fill.js"
+import { viewmoveCase } from "../view/view.js"
 import { clearSelection } from "../control/clearSelection.js"
 
 // Mark the case and initiate mouseoverTR underline the date to move to

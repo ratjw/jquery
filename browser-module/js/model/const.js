@@ -356,6 +356,38 @@ EQUIPSHEET = [
     ["br", "", "", "", ""]
 ],
 
+// [record, labelwidth, inputwidth, type, name, title, label]
+RECORDSHEET = [
+	["w70", "w40", "radio", "doneby", "Staff", "Staff"],
+	["", "w55", "radio", "doneby", "Resident", "Resident"],
+	["br", "", "", "", "", ""],
+	["w70", "w50", "radio", "manner", "Elective", "Elective"],
+	["", "w70", "radio", "manner", "Emergency", "Emergency"],
+	["br", "", "", "", "", ""],
+	["w70", "w40", "radio", "scale", "Major", "Major"],
+	["", "w40", "radio", "scale", "Minor", "Minor"],
+	["hr", "", "", "", "", ""],
+	["w70", "w55", "radio", "disease", "Brain Tumor", "BTumor"],
+	["", "w60", "radio", "disease", "Brain Vascular", "BVascular"],
+	["", "w30", "radio", "disease", "CSF related", "CSF"],
+	["br", "", "", "", "", ""],
+	["w70", "w55", "radio", "disease", "Trauma", "Trauma"],
+	["w70", "w40", "radio", "disease", "Spine", "Spine"],
+	["", "w30", "radio", "disease", "etc", "etc"],
+	["br", "", "", "", "", ""],
+	["", "w40", "radio", "disease", "NoOp", "NoOp"],
+	["hr", "", "", "", "", ""],
+	["", "w80", "checkbox", "radiosurgery", "Radiosurgery", "RadioSurgery"],
+	["", "w80", "checkbox", "endovascular", "Endovascular", "Endovascular"],
+	["br", "", "", "", "", ""],
+	["", "w80", "checkbox", "admitted", "Readmission", "ReAdmission"],
+	["", "w80", "checkbox", "operated", "Reoperation", "ReOperation"],
+	["br", "", "", "", "", ""],
+	["", "w55", "checkbox", "infection", "Infection", "Infection"],
+	["", "w50", "checkbox", "morbid", "Morbidity", "Morbid"],
+	["", "w50", "checkbox", "dead", "Dead", "Mortal"]
+],
+
 //===========================================================================================
 // Keyword constants for program to guess the disease in Service Review from disease and treatment
 

@@ -1,5 +1,4 @@
 
-import { THEATRE, EQUIPSHEET } from "../model/const.js"
 import { addStaff } from "./addStaff.js"
 import { clicktable } from "./clicktable.js"
 import { exchangeOncall } from "./exchangeOncall.js"
@@ -13,12 +12,13 @@ import { clearMouseoverTR } from "../menu/moveCase.js"
 import { fetchStart } from "../model/fetch.js"
 import { sortable } from "../model/sort.js"
 import { clearSelection } from "./clearSelection.js"
-import { fillall, setClickStaff } from "../view/fill.js"
+import { fillall } from "../view/fill.js"
 import { fillConsults } from "../view/fillConsults.js"
 import { START, ISOdate, thDate } from "../util/date.js"
-import { BOOK, STAFF, updateBOOK } from "../util/variables.js"
+import { BOOK, updateBOOK } from "../util/variables.js"
 import { Alert } from "../util/util.js"
 import { UndoManager } from "../model/UndoManager.js"
+import { htmlStafflist, htmlEquipment, htmldivRecord } from "../view/html.js"
 
 // For staff & residents with login id / password from Get_staff_detail
 export function userStaff() {
@@ -38,17 +38,18 @@ function success(response) {
   // call sortable before render, otherwise it renders very slowly
   sortable()
   makeStart()
+  scrolltoToday()
 
-  // setting up equipments
-  initEquipment()
+  // setting up html
+  htmlEquipment()
+  htmldivRecord()
+  htmlStafflist()
 
   // make the document editable
   editcellEvent()
   dialogServiceEvent()
   wrapperEvent()
   documentEvent()
-  scrolltoToday()
-  setStafflist()
   fillConsults()
   setClickMenu()
   setClickSetting()
@@ -109,45 +110,6 @@ let makeFinish = function() {
 	fillall(book, table, start, until, table.rows.length-1)
 }
 
-function initEquipment()
-{
-  let equip = "", type = "", width = "", name = "", id = "", label = ""
-
-  EQUIPSHEET.forEach(function(item) {
-    type = item[0]
-    width = item[1]
-    name = item[2]
-    id = item[3]
-    label = item[4]
-    if (type === "divbegin") {
-	  equip += `<div title="${name}">`
-    } else if (type === "divend") {
-	  equip += `</div>`
-    } else if (type === "span") {
-	  equip += `<span class="${width}" id="${id}">${label}</span>`
-    } else if (type === "spanInSpan") {
-	  equip += `<span class="${width}">${label}<span id="${id}"></span></span>`
-	} else if (type === "br") {
-	  equip += `<br>`
-	} else if (type === "radio" || type === "checkbox") {
-	  equip += `<span class="${width}">
-                  <input type="${type}" name="${name}" id="${id}">
-                  <label for="${id}">${label}</label>
-                </span>`
-	} else if (type === "text") {
-	  equip += `<span>
-                  <input type="${type}" class="${name}" id="${id}" placeholder="${label}">
-                </span>`
-	} else if (type === "textarea") {
-	  equip += `<span>
-                  <textarea id="${id}" placeholder="${label}"></textarea>
-                </span>`
-	}
-  })
-
-  document.getElementById("dialogEquip").innerHTML = equip
-}
-
 function dialogServiceEvent()
 {
 	document.getElementById("dialogService").addEventListener("wheel", resetTimerCounter)
@@ -181,20 +143,12 @@ function wrapperEvent()
       }
     }
     if (target.nodeName === "P") {
-      target = $(target).closest('td')[0]
+      target = target.closest('td')
     }
-    if (target.cellIndex === THEATRE) {
-      if (tbl.querySelectorAll("th")[THEATRE].offsetWidth < 10) {
-        tbl.classList.add("showColumn2")
-      }
-	  else if (target.nodeName === "TH") {
-        tbl.classList.remove("showColumn2")
-      }
-    }
-    if (target.nodeName === "IMG") {
+    else if (target.nodeName === "IMG") {
       target = target.closest("td")
     }
-    if (target.nodeName === "TD") {
+    else if (target.nodeName === "TD") {
       clicktable(event, target)
     }
     else {
@@ -220,26 +174,7 @@ function documentEvent()
       z = keycode === 90
 
     if (backspace) {
-      let doPrevent = true
-      let types = ["text", "password", "file", "number", "date", "time"]
-      let d = $(event.srcElement || event.target)
-      let disabled = d.prop("readonly") || d.prop("disabled")
-      if (!disabled) {
-        if (d[0].isContentEditable) {
-          doPrevent = false
-        } else if (d.is("input")) {
-          let type = d.attr("type")
-          if (type) {
-            type = type.toLowerCase()
-          }
-          if (types.indexOf(type) > -1) {
-            doPrevent = false
-          }
-        } else if (d.is("textarea")) {
-          doPrevent = false
-        }
-      }
-      if (doPrevent) {
+      if (doPrevent(event)) {
         event.preventDefault()
         return false
       }
@@ -288,6 +223,31 @@ function documentEvent()
   })
 }
 
+// prevent browser go back in history
+function doPrevent(evt)
+{
+  let doPrevent = true
+  let types = ["text", "password", "file", "number", "date", "time"]
+  let d = $(evt.srcElement || evt.target)
+  let disabled = d.prop("readonly") || d.prop("disabled")
+  if (!disabled) {
+    if (d[0].isContentEditable) {
+      doPrevent = false
+    } else if (d.is("input")) {
+      let type = d.attr("type")
+      if (type) {
+        type = type.toLowerCase()
+      }
+      if (types.indexOf(type) > -1) {
+        doPrevent = false
+      }
+    } else if (d.is("textarea")) {
+      doPrevent = false
+    }
+  }
+  return doPrevent
+}
+
 function scrolltoToday()
 {
   let today = new Date(),
@@ -298,22 +258,6 @@ function scrolltoToday()
   $('#tblcontainer').animate({
     scrollTop: thishead.offsetTop
   }, 300);
-}
-
-// stafflist for enter name in Staff column
-// staffmenu for dropdown sub-menu
-export function setStafflist() {
-  let stafflist = '',
-      staffmenu = ''
-  STAFF.forEach(each => {
-    stafflist += `<li><div>${each.staffname}</div></li>`
-    staffmenu += `<li><a class="clickStaff ${each.staffname}">
-                 <span>${each.staffname}</span></a></li>`
-  })
-  staffmenu += `<li><a class="clickStaff Consults"><span>Consults</span></a></li>`
-  document.getElementById("stafflist").innerHTML = stafflist
-  document.getElementById("staffmenu").innerHTML = staffmenu
-  setClickStaff()
 }
 
 // allow the dialog title to contain HTML

@@ -3,7 +3,7 @@ import { OLDCONTENT } from "../control/edit.js"
 import { fetchGetNameHN } from "../model/fetch.js"
 import { updateBOOK } from "../util/variables.js"
 import { Alert } from "../util/util.js"
-import { viewGetNameHN } from "../view/fill.js"
+import { viewGetNameHN } from "../view/view.js"
 
 export function saveNameHN(pointed, content)
 {

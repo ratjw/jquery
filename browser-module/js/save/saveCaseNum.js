@@ -6,7 +6,7 @@ import { getOpdate } from "../util/date.js"
 import { sameDateRoomTableQN } from "../util/getrows.js"
 import { updateBOOK } from "../util/variables.js"
 import { Alert } from "../util/util.js"
-import { viewSaveCaseNum } from "../view/fill.js"
+import { viewSaveCaseNum } from "../view/view.js"
 import { UndoManager } from "../model/UndoManager.js"
 
 export function saveCaseNum(pointed, newcontent)

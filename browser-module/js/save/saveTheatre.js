@@ -5,7 +5,7 @@ import { getOpdate } from "../util/date.js"
 import { sameDateRoomTableQN } from "../util/getrows.js"
 import { updateBOOK } from "../util/variables.js"
 import { Alert } from "../util/util.js"
-import { viewSaveTheatre } from "../view/fill.js"
+import { viewSaveTheatre } from "../view/view.js"
 
 export function saveTheatre(pointed, newcontent)
 {

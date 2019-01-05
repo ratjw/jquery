@@ -9,7 +9,7 @@ import { getOpdate } from "../util/date.js"
 import { sameDateRoomTableQN } from "../util/getrows.js"
 import { updateBOOK } from "../util/variables.js"
 import { Alert, isConsults, isStaffname } from "../util/util.js"
-import { viewSortable } from "../view/fill.js"
+import { viewSortable } from "../view/view.js"
 import { showUpload } from "../get/showUpload.js"
 import { UndoManager } from "../model/UndoManager.js"
 

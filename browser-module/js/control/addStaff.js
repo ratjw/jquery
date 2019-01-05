@@ -1,5 +1,5 @@
 
-import { setStafflist } from "./start.js"
+import { htmlStafflist } from "../view/html.js"
 import { fetchDoadddata, fetchDoupdatedata, fetchDodeletedata } from "../model/fetch.js"
 import { updateBOOK, setSTAFF } from "../util/variables.js"
 import { Alert } from "../util/util.js"
@@ -69,7 +69,7 @@ export function dodeletedata()
 function showAddStaff(response)
 {
 	setSTAFF(response.STAFF)
-	setStafflist()
+	htmlStafflist()
 	fillConsults()
 	addStaff()
 }

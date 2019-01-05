@@ -1,8 +1,6 @@
 
 import { fetchAllCases } from "../model/fetch.js"
-
 import { Alert } from "../util/util.js"
-
 import { viewAllCases } from "../view/history.js"
 
 // All cases (exclude the deleted ones)

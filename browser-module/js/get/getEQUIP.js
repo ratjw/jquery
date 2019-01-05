@@ -27,17 +27,17 @@ export function getEQUIP(pointing)
 		bookq = getBOOKrowByQN(book, qn),
 		height = window.innerHeight,
 		thisEquip = {
-			"oproom": bookq.oproom || "",
-			"casenum": bookq.casenum || "",
-			"optime": bookq.optime,
-			"opday": NAMEOFDAYTHAI[(new Date(bookq.opdate)).getDay()],
-			"opdate": putThdate(bookq.opdate),
-			"staffname": bookq.staffname,
-			"hn": bookq.hn,
-			"patientname": bookq.patient,
-			"age": putAgeOpdate(bookq.dob, bookq.opdate),
-			"diagnosis": bookq.diagnosis,
-			"treatment": bookq.treatment
+			oproom: bookq.oproom || "",
+			casenum: bookq.casenum || "",
+			optime: bookq.optime,
+			opday: NAMEOFDAYTHAI[(new Date(bookq.opdate)).getDay()],
+			opdate: putThdate(bookq.opdate),
+			staffname: bookq.staffname,
+			hn: bookq.hn,
+			patientname: bookq.patient,
+			age: putAgeOpdate(bookq.dob, bookq.opdate),
+			diagnosis: bookq.diagnosis,
+			treatment: bookq.treatment
 		}
 
 	for (let key in thisEquip) {

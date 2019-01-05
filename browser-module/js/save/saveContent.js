@@ -6,7 +6,7 @@ import { fetchSaveContentQN, fetchSaveContentNoQN } from "../model/fetch.js"
 import { getOpdate } from "../util/date.js"
 import { updateBOOK } from "../util/variables.js"
 import { Alert, URIcomponent } from "../util/util.js"
-import { viewSaveContentQN, viewSaveContentNoQN } from "../view/fill.js"
+import { viewSaveContentQN, viewSaveContentNoQN } from "../view/view.js"
 
 // use only "pointed" to save data
 export function saveContent(pointed, column, newcontent) {

@@ -10,7 +10,7 @@ import { fetchGetUpdateWithService, fetchSaveOnChangeService } from "../model/fe
 import { timestamp, updateBOOK } from "../util/variables.js"
 import { dialogServiceShowing, Alert } from "../util/util.js"
 import { clearAllEditing } from "./clearAllEditing.js"
-import { viewGetUpdate, viewGetUpdateWithService, viewOnIdling } from "../view/fill.js"
+import { viewGetUpdate, viewGetUpdateWithService, viewOnIdling } from "../view/view.js"
 import { saveProfileService } from "../service/savePreviousCellService.js"
 import { setSERVICE } from "../service/setSERVICE.js"
 

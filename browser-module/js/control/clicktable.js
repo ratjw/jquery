@@ -16,6 +16,7 @@ import { saveCaseNum } from "../save/saveCaseNum.js"
 import { saveHN } from "../save/saveHN.js"
 
 import { selectRow } from "../get/selectRow.js"
+import { getTHEATRE } from "../get/getTHEATRE.js"
 import { getROOM } from "../get/getROOM.js"
 import { getOPTIME } from "../get/getOPTIME.js"
 import { getCASENUM } from "../get/getCASENUM.js"
@@ -62,7 +63,7 @@ export function editPresentCell(evt, pointing) {
 	switch(column)
 	{
 		case OPDATE: selectRow(evt, pointing); break
-		case THEATRE: createEditcell(pointing); break
+		case THEATRE: getTHEATRE(evt, pointing); break
 		case OPROOM: getROOM(pointing); break
 		case OPTIME: getOPTIME(pointing); break
 		case CASENUM: getCASENUM(pointing); break
