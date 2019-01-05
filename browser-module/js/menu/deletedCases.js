@@ -57,22 +57,22 @@ function toUndelete(thisdate, deleted)
 
     allCases.splice(casenum, 0, qn)
 
-	doUndel(allCases, opdate, staffname, qn, 0)
+	doUndel(allCases, opdate, oproom, staffname, qn, 0)
 
 	UndoManager.add({
 		undo: function() {
-			doUndel(allCases, opdate, staffname, qn, 1)
+			doUndel(allCases, opdate, oproom, staffname, qn, 1)
 		},
 		redo: function() {
-			doUndel(allCases, opdate, staffname, qn, 0)
+			doUndel(allCases, opdate, oproom, staffname, qn, 0)
 		}
 	})
   })
 }
 
-export function doUndel(allCases, opdate, staffname, qn, del) {
+export function doUndel(allCases, opdate, oproom, staffname, qn, del) {
 
-	fetchUndelete(allCases, qn, del).then(response => {
+	fetchUndelete(allCases, oproom, qn, del).then(response => {
 		let hasData = function () {
 			updateBOOK(response)
 			viewUndelete(opdate, staffname, qn)

@@ -19,18 +19,14 @@ export function saveOpRoom(pointed, newcontent) {
 		allOldCases = [],
 		allNewCases = []
 
-	if (oproom) {
-		allOldCases = sameDateRoomTableQN(opdateth, oproom, theatre)
-		allOldCases = allOldCases.filter(e => e !== qn)
-	}
+	allOldCases = sameDateRoomTableQN(opdateth, oproom, theatre)
+	allOldCases = allOldCases.filter(e => e !== qn)
 
-	if (newcontent) {
-		allNewCases = sameDateRoomTableQN(opdateth, newcontent, theatre)
-		allNewCases.push(qn)
-	}
+	allNewCases = sameDateRoomTableQN(opdateth, newcontent, theatre)
+	allNewCases.push(qn)
 
 	let doSaveOpRoom = function() {
-		fetchSaveOpRoom(allOldCases, allNewCases, newcontent, qn).then(response => {
+		fetchSaveOpRoom(allOldCases, allNewCases, oproom, newcontent, qn).then(response => {
 			let hasData = function () {
 				updateBOOK(response)
 				viewSaveOpRoom(opdate, staffname)

@@ -29,7 +29,7 @@ export function saveTheatre(pointed, newcontent)
 		allNewCases.push(qn)
 	}
 
-	fetchSaveTheatre(allOldCases, allNewCases, newcontent, qn).then(response => {
+	fetchSaveTheatre(allOldCases, allNewCases, newcontent, oproom, qn).then(response => {
 		let hasData = function () {
 			updateBOOK(response)
 			viewSaveTheatre(opdate, staffname)

@@ -56,47 +56,61 @@ export function fetchGetUpdate()
   return postData(MYSQLIPHP, sql);
 }
 
-export function fetchSaveTheatre(allOldCases, allNewCases, theatre, qn)
+export function fetchSaveTheatre(allOldCases, allNewCases, theatre, oproom, qn)
 {
-	let sql = "sqlReturnbook=" + updateCasenum(allOldCases)
+	let sql = "sqlReturnbook="
+
+	if (oproom) {
+		sql += updateCasenum(allOldCases)
+	}
 
 	allNewCases.forEach((item, i) => {
-		sql += item === qn
-				? sqlNewTheatre(theatre, i + 1, qn)
-				: sqlCaseNum(i + 1, item)
+		if (item === qn) {
+			if (oproom) {
+				sql += sqlNewTheatre(theatre, i + 1, qn)
+			} else {
+				sql += sqlNewTheatre(theatre, null, qn)
+			}
+		} else {
+			if (oproom) { sql += sqlCaseNum(i + 1, item) }
+		}
 	})
 
 	return postData(MYSQLIPHP, sql);
 }
 
-export function fetchSaveOpRoom(allOldCases, allNewCases, content, qn)
+export function fetchSaveOpRoom(allOldCases, allNewCases, oldoproom, newoproom, qn)
 {
 	let sql = "sqlReturnbook="
 
-	if (allOldCases.length) {
+	if (allOldCases.length && oldoproom) {
 		sql += updateCasenum(allOldCases)
 	}
 
 	if (allNewCases.length) {
-		for (let i=0; i<allNewCases.length; i++) {
-			if (allNewCases[i] === qn) {
-				sql += sqlNewRoom(content, i + 1, qn)
+		allNewCases.forEach((item, i) => {
+			if (item === qn) {
+				if (newoproom) {
+					sql += sqlNewRoom(newoproom, i + 1, qn)
+				} else {
+					sql += sqlNewRoom(null, null, qn)
+				}
 			} else {
-				sql += sqlCaseNum(i + 1, allNewCases[i])
+				if (newoproom) { sql += sqlCaseNum(i + 1, item) }
 			}
-		}
+		})
 	}
 
 	return postData(MYSQLIPHP, sql)
 }
 
-export function fetchSaveOpTime(allCases, content, qn)
+export function fetchSaveOpTime(allCases, time, qn)
 {
 	let sql = "sqlReturnbook="
 
 	for (let i=0; i<allCases.length; i++) {
 		if (allCases[i] === qn) {
-			sql += sqlNewTime(content, i + 1, qn)
+			sql += sqlNewTime(time, i + 1, qn)
 		} else {
 			sql += sqlCaseNum(i + 1, allCases[i])
 		}
@@ -105,19 +119,19 @@ export function fetchSaveOpTime(allCases, content, qn)
 	return postData(MYSQLIPHP, sql)
 }
 
-export function fetchSaveCaseNum(allCases, content, qn)
+export function fetchSaveCaseNum(allCases, casenum, qn)
 {
 	let sql = "sqlReturnbook="
 
-	if (content === "") {
+	if (casenum === "") {
 		sql += sqlCaseNum(null, qn)
 	} else {
-		allCases.splice(content - 1, 0, qn)
+		allCases.splice(casenum - 1, 0, qn)
 	}
 
 	allCases.forEach((item, i) => {
 		if (item === qn) {
-			sql += sqlCaseNum(content, qn)
+			sql += sqlCaseNum(casenum, qn)
 		} else {
 			sql += sqlCaseNum(i + 1, item)
 		}
@@ -294,7 +308,8 @@ export function fetchSaveEquip(equipment, qn) {
 
 export function fetchCancelAllEquip(qn)
 {
-	sql = `sqlReturnbook=UPDATE book SET equipment='',editor='${USER}' WHERE qn='${qn}';`
+	sql = `sqlReturnbook=UPDATE book SET equipment='',editor='${USER}'
+							WHERE qn='${qn}';`
 
 	return postData(MYSQLIPHP, sql)
 }
@@ -305,26 +320,32 @@ export function fetchSortable(arg)
 		allNewCases = arg.newlist,
 		newWaitnum = arg.waitnum,
 		thisOpdate = arg.opdate,
-		thisroom = arg.room,
+		theatre = arg.theatre,
+		moveroom = arg. moveroom,
+		thisroom = arg.thisroom,
 		moveqn = arg.qn,
 		sql = "sqlReturnbook="
 
-	if (allOldCases.length) {
+	if (allOldCases.length && moveroom) {
 		sql += updateCasenum(allOldCases)
 	}
 
 	if (allNewCases.length) {
-		for (let i=0; i<allNewCases.length; i++) {
-			sql += (allNewCases[i] === moveqn)
-				? sqlMover(newWaitnum, thisOpdate, thisroom, i + 1, moveqn)
-				: sqlCaseNum(i + 1, allNewCases[i])
+	  for (let i=0; i<allNewCases.length; i++) {
+	    sql += (allNewCases[i] === moveqn)
+	      ? thisroom
+	        ? sqlMover(newWaitnum, thisOpdate, theatre, thisroom, i + 1, moveqn)
+	        : sqlMover(newWaitnum, thisOpdate, theatre, null, null, moveqn)
+	      : thisroom
+	        ? sqlCaseNum(i + 1, allNewCases[i])
+	        : sqlCaseNum(null, allNewCases[i])
 		}
 	} else {
-		sql += sqlMover(newWaitnum, thisOpdate, null, null, moveqn)
+		sql += sqlMover(newWaitnum, thisOpdate, theatre, null, null, moveqn)
 	}
 
 	if (!allOldCases.length && !allNewCases.length) {
-		sql += sqlMover(newWaitnum, thisOpdate, null, null, moveqn)
+		sql += sqlMover(newWaitnum, thisOpdate, theatre, null, null, moveqn)
 	}
 
 	return postData(MYSQLIPHP, sql);
@@ -336,16 +357,20 @@ export function fetchSearchDB(hn, staffname, others) {
 	return postData(SEARCH, sql)
 }
 
-export function fetchUndelete(allCases, qn, del) {
-    let sql = "sqlReturnbook="
+export function fetchUndelete(allCases, oproom, qn, del) {
+  let sql = "sqlReturnbook="
 
-    allCases.forEach((item, i) => {
-      sql += item === qn
-          ? `UPDATE book SET deleted=${del},editor='${USER}' WHERE qn=${qn};`
-          : sqlCaseNum(i + 1, item)
-    })
+  allCases.forEach((item, i) => {
+    if (item === qn) {
+      sql += `UPDATE book SET deleted=${del},editor='${USER}' WHERE qn=${qn};`
+    } else {
+      if (oproom) {
+        sql += sqlCaseNum(i + 1, item)
+      }
+    }
+  })
 
-	return postData(MYSQLIPHP, sql);
+  return postData(MYSQLIPHP, sql);
 }
 
 export function fetchAllDeletedCases() {
@@ -376,10 +401,10 @@ export function fetchCaseHistory(hn) {
 }
 
 // In database, not actually delete the case but SET deleted=1
-export function fetchDeleteCase(allCases, qn, del) {
+export function fetchDeleteCase(allCases, oproom, qn, del) {
 	let sql = `sqlReturnbook=UPDATE book SET deleted=${del},editor='${USER}' WHERE qn=${qn};`
 
-	if (allCases.length) {
+	if (allCases.length && oproom) {
 		if (del) { allCases = allCases.filter(e !== qn) }
 		sql += updateCasenum(allCases)
 	}
@@ -387,27 +412,40 @@ export function fetchDeleteCase(allCases, qn, del) {
 	return postData(MYSQLIPHP, sql)
 }
 
-export function fetchPostponeCase(allCases, waitnum, thisdate, qn) {
+export function fetchPostponeCase(allCases, waitnum, thisdate, oproom, qn) {
 	let sql = `sqlReturnbook=UPDATE book SET opdate='${thisdate}',
 				waitnum=${waitnum},theatre='',oproom=null,casenum=null,
 				optime='',editor='${USER}' WHERE qn=${qn};`
 
-	if (allCases.length) {
+	if (allCases.length && oproom) {
 		sql += updateCasenum(allCases.filter(e !== qn))
 	}
 
 	return postData(MYSQLIPHP, sql)
 }
 
-export function fetchmoveCase(allOldCases, allNewCases, waitnum, thisdate, room, qn) {
-	let sql = "sqlReturnbook=" + updateCasenum(allOldCases)
+export function fetchmoveCase(arg) {
+	let sql = "sqlReturnbook=",
+		allOldCases = arg.allOldCases,
+		allNewCases = arg.allNewCases,
+		waitnum = arg.waitnum,
+		thisdate = arg.thisdate,
+		thistheatre = arg.thistheatre,
+		moveroom = arg.moveroom,
+		thisroom = arg.thisroom,
+		moveQN = arg.moveQN
+
+	if (moveroom) { sql += updateCasenum(allOldCases) }
 
 	for (let i=0; i<allNewCases.length; i++) {
 		if (allNewCases[i] === qn) {
-			let casenum = room? (i + 1) : null
-			sql += sqlMover(waitnum, thisdate, room || null, casenum, qn)
+			thisroom
+			? sql += sqlMover(waitnum, thisdate, theatre, thisroom, i + 1, qn)
+			: sql += sqlMover(waitnum, thisdate, theatre, null, null, qn)
 		} else {
-			sql += sqlCaseNum(i + 1, allNewCases[i])
+			thisroom
+			? sql += sqlCaseNum(i + 1, allNewCases[i])
+			: sql += sqlCaseNum(null, allNewCases[i])
 		}
 	}
 
@@ -476,38 +514,46 @@ function sqlCaseNum(casenum, qn)
   return `UPDATE book SET casenum=${casenum},editor='${USER}' WHERE qn=${qn};`
 }
 
-function sqlMover(waitnum, opdate, oproom, casenum, qn)
+// if no oproom, will have no casenum too
+function sqlMover(waitnum, opdate, theatre, oproom, casenum, qn)
 {
-  return `UPDATE book SET waitnum=${waitnum},opdate='${opdate}',oproom=${oproom},
-			casenum=${casenum},editor='${USER}' WHERE qn=${qn};`
+  return `UPDATE book SET
+			waitnum=${waitnum},
+			opdate='${opdate}',
+			theatre='${theatre}',
+			oproom=${oproom},
+			casenum=${casenum},
+			editor='${USER}'
+		  WHERE qn=${qn};`
 }
 
+// if no oproom, will have no casenum too
 function sqlNewRoom(oproom, casenum, qn)
 {
-	if (oproom === "") {
-		return `UPDATE book SET oproom=null,casenum=null,editor='${USER}' WHERE qn=${qn};`
-	}
-	
-	return `UPDATE book SET oproom=${oproom},casenum=${casenum},editor='${USER}' WHERE qn=${qn};`
+  return `UPDATE book SET oproom=${oproom},casenum=${casenum},editor='${USER}'
+				WHERE qn=${qn};`
 }
 
 function sqlNewTime(optime, casenum, qn)
 {
-	return `UPDATE book SET optime=${optime},casenum=${casenum},editor='${USER}' WHERE qn=${qn};`
+  return `UPDATE book SET optime=${optime},casenum=${casenum},editor='${USER}'
+				WHERE qn=${qn};`
 }
 
 export function fetchSaveHoliday(vdate, vname)
 {
-	let sql = `sqlReturnData=INSERT INTO holiday (holidate,dayname) VALUES('${vdate}','${vname}');
-							  SELECT * FROM holiday ORDER BY holidate;`
+  let sql=`sqlReturnData=INSERT INTO holiday (holidate,dayname)
+							VALUES('${vdate}','${vname}');
+						  SELECT * FROM holiday ORDER BY holidate;`
 
-	return postData(MYSQLIPHP, sql)
+  return postData(MYSQLIPHP, sql)
 }
 
 export function fetchDelHoliday(vdate, holidayEng)
 {
-	let sql = `sqlReturnData=DELETE FROM holiday WHERE holidate='${vdate}' AND dayname='${holidayEng}');
-							  SELECT * FROM holiday ORDER BY holidate;`
+  let sql=`sqlReturnData=DELETE FROM holiday
+						  WHERE holidate='${vdate}' AND dayname='${holidayEng}');
+						 SELECT * FROM holiday ORDER BY holidate;`
 
-	return postData(MYSQLIPHP, sql)
+  return postData(MYSQLIPHP, sql)
 }

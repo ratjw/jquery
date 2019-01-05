@@ -38,7 +38,7 @@ export function delCase() {
 	}
 
 	let deleteCase = function (del) {
-		fetchDeleteCase(allCases, qn, del).then(response => {
+		fetchDeleteCase(allCases, oproom, qn, del).then(response => {
 			let hasData = function () {
 				updateBOOK(response)
 				viewDeleteCase(tableID, $row, opdate, staffname)

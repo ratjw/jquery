@@ -165,7 +165,9 @@ export function sortable () {
 				newlist: allNewCases,
 				waitnum: newWaitnum,
 				opdate: thisOpdate,
-				room: thisroom,
+				theatre: thistheatre,
+				moveroom: moveroom,
+				thisroom: thisroom,
 				qn: moveqn
 			}
 			let argViewDo = {
@@ -178,7 +180,9 @@ export function sortable () {
 				newlist: allOldCases,
 				waitnum: moveWaitnum,
 				opdate: moveOpdate,
-				room: moveroom,
+				theatre: movetheatre,
+				moveroom: thisroom,
+				thisroom: moveroom,
 				qn: moveqn
 			}
 			let argViewUndo = {

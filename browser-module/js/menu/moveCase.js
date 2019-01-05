@@ -64,9 +64,19 @@ function clickDate(event, $selected, cell)
 	// insert itself into new sameDateRoom after the clicked row
 	thisindex = allNewCases.indexOf(thisqn)
 	allNewCases.splice(thisindex + 1, 0, moveQN)
+	let arg = {
+		allOldCases: allOldCases,
+		allNewCases: allNewCases,
+		waitnum: waitnum,
+		thisdate: thisdate,
+		thistheatre: thistheatre,
+		moveroom: moveroom,
+		thisroom: thisroom,
+		moveQN: moveQN
+	}
 
-	let domoveCase = function (waitnum, movedate, thisdate, room) {
-		fetchmoveCase(allOldCases, allNewCases, waitnum, thisdate, room, moveQN).then(response => {
+	let domoveCase = function (waitnum, movedate, thisdate, oproom) {
+		fetchmoveCase(arg).then(response => {
 			let hasData = function () {
 				updateBOOK(response)
 				viewmoveCase(movedate, thisdate, staffname, moveQN)
