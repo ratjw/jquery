@@ -6,7 +6,8 @@ import { getOpdate } from "../util/date.js"
 import { sameDateRoomTableQN } from "../util/getrows.js"
 import { updateBOOK } from "../util/variables.js"
 import { Alert } from "../util/util.js"
-import { viewSaveCaseNum } from "../view/view.js"
+import { viewOneDay } from "../view/viewOneDay.js"
+import { viewSplit } from "../view/viewSplit.js"
 import { UndoManager } from "../model/UndoManager.js"
 
 export function saveCaseNum(pointed, newcontent)
@@ -27,7 +28,8 @@ export function saveCaseNum(pointed, newcontent)
 		fetchSaveCaseNum(allCases, newcontent, qn).then(response => {
 			let hasData = function () {
 				updateBOOK(response)
-				viewSaveCaseNum(opdate, staffname)
+				viewOneDay(opdate)
+				viewSplit(staffname)
 			}
 			let noData = function() {
 				Alert ("saveCaseNum", response)
@@ -43,7 +45,8 @@ export function saveCaseNum(pointed, newcontent)
 		fetchSaveCaseNum(allCases, OLDCONTENT, qn).then(response => {
 			let hasData = function () {
 				updateBOOK(response)
-				viewSaveCaseNum(opdate, staffname)
+				viewOneDay(opdate)
+				viewSplit(staffname)
 			}
 			let noData = function() {
 				Alert ("saveCaseNum", response)
@@ -59,12 +62,12 @@ export function saveCaseNum(pointed, newcontent)
 	doSaveCaseNum()
 
 	// make undo-able
-	UndoManager.add({
+/*	UndoManager.add({
 		undo: function() {
 			undoSaveCaseNum()
 		},
 		redo: function() {
 			doSaveCaseNum()
 		}
-	})		
+	})*/
 }

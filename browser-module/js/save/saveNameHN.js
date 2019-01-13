@@ -1,9 +1,8 @@
 
-import { OLDCONTENT } from "../control/edit.js"
 import { fetchGetNameHN } from "../model/fetch.js"
 import { updateBOOK } from "../util/variables.js"
 import { Alert } from "../util/util.js"
-import { viewGetNameHN } from "../view/view.js"
+import { viewGetNameHN } from "../view/viewGetNameHN.js"
 
 export function saveNameHN(pointed, content)
 {
@@ -14,7 +13,7 @@ export function saveNameHN(pointed, content)
 		}
 		let noData = function () {
 			Alert("saveNameHN", response)
-			pointed.innerHTML = OLDCONTENT
+			pointed.innerHTML = ""
 			// unsuccessful entry
 		};
 

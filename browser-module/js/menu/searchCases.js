@@ -1,7 +1,7 @@
 
 import { fetchSearchDB } from "../model/fetch.js"
 import { Alert, reposition, menustyle } from "../util/util.js"
-import { viewSearchDB } from "../view/history.js"
+import { viewSearchDB } from "../view/viewSearchDB.js"
 import { clearAllEditing } from "../control/clearAllEditing.js"
 
 export function searchCases()

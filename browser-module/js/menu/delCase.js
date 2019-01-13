@@ -6,7 +6,7 @@ import { getOpdate } from "../util/date.js"
 import { sameDateRoomTableQN } from "../util/getrows.js"
 import { updateBOOK } from "../util/variables.js"
 import { Alert } from "../util/util.js"
-import { viewDeleteCase } from "../view/view.js"
+import { viewDeleteCase } from "../view/viewDeleteCase.js"
 import { clearSelection } from "../control/clearSelection.js"
 import { doUndel } from "./deletedCases.js"
 import { addrow } from "./addnewrow.js"
@@ -53,7 +53,7 @@ export function delCase() {
 	clearSelection()
 	deleteCase(1)
 
-	UndoManager.add({
+/*	UndoManager.add({
 		undo: function() {
 			if (qn) {
 				doUndel(allCases, opdate, staffname, qn, 0)
@@ -64,5 +64,5 @@ export function delCase() {
 		redo: function() {
 			deleteCase(1)
 		}
-	})
+	})*/
 }

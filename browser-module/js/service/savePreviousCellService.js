@@ -111,7 +111,7 @@ export function saveService(pointed, column, newcontent) {
 	doSaveService(newcontent, OLDCONTENT)
 
 	// make undo-able
-	UndoManager.add({
+/*	UndoManager.add({
 		undo: function() {
 			doSaveService(OLDCONTENT, newcontent)
 			pointed.innerHTML = OLDCONTENT
@@ -120,7 +120,7 @@ export function saveService(pointed, column, newcontent) {
 			doSaveService(newcontent, OLDCONTENT)
 			pointed.innerHTML = newcontent
 		}
-	})
+	})*/
 }
 
 // each key is of different column in database

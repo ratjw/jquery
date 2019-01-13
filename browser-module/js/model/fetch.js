@@ -274,15 +274,7 @@ export function fetchGetNameHN(pointed, content)
 		$row[0].title = waitnum	
 	}
 
-	let sql = `hn=${content}
-			&waitnum=${waitnum}
-			&opdate=${opdate}
-			&staffname=${staffname}
-			&diagnosis=${diagnosis}
-			&treatment=${treatment}
-			&contact=${contact}
-			&qn=${qn}
-			&editor=${USER}`
+	let sql = `hn=${content}&waitnum=${waitnum}&opdate=${opdate}&staffname=${staffname}&diagnosis=${diagnosis}&treatment=${treatment}&contact=${contact}&qn=${qn}&editor=${USER}`
 
 	return postData(GETNAMEHN, sql)
 }
@@ -430,10 +422,10 @@ export function fetchmoveCase(arg) {
 		allNewCases = arg.allNewCases,
 		waitnum = arg.waitnum,
 		thisdate = arg.thisdate,
-		thistheatre = arg.thistheatre,
+		theatre = arg.thistheatre,
 		moveroom = arg.moveroom,
 		thisroom = arg.thisroom,
-		moveQN = arg.moveQN
+		qn = arg.moveQN
 
 	if (moveroom) { sql += updateCasenum(allOldCases) }
 
@@ -455,8 +447,8 @@ export function fetchmoveCase(arg) {
 export function fetchDoadddata()
 {
 	let vname = document.getElementById("sname").value
-	let vspecialty = document.getElementById("scbb").value
-	let vdate = document.getElementById("sdate").value
+	let vspecialty = document.getElementById("specialty").value
+	let vdate = document.getElementById("soncall").value
 	let vnum = Math.max.apply(Math, STAFF.map(staff => staff.number)) + 1
 	let sql = `sqlReturnStaff=INSERT INTO staff (number,staffname,specialty)
 				VALUES(${vnum},'${vname}','${vspecialty}');`
@@ -467,19 +459,19 @@ export function fetchDoadddata()
 export function fetchDoupdatedata()
 {
     let vname = document.getElementById("sname").value
-    let vspecialty = document.getElementById("scbb").value
-    let vdate = document.getElementById("sdate").value
-    let vshidden = document.getElementById("shidden").value
+    let vspecialty = document.getElementById("specialty").value
+    let vdate = document.getElementById("soncall").value
+    let vsnumber = document.getElementById("snumber").value
     let sql = `sqlReturnStaff=UPDATE staff SET staffname='${vname}',
-				specialty='${vspecialty}' WHERE number=${vshidden};`
+				specialty='${vspecialty}' WHERE number=${vsnumber};`
 
 	return postData(MYSQLIPHP, sql)
 }
 
 export function fetchDodeletedata()
 {
-    let vshidden = document.getElementById("shidden").value
-	let sql = `sqlReturnStaff=DELETE FROM staff WHERE number=${vshidden};`
+    let vsnumber = document.getElementById("snumber").value
+	let sql = `sqlReturnStaff=DELETE FROM staff WHERE number=${vsnumber};`
 
 	return postData(MYSQLIPHP, sql)
 }
@@ -536,7 +528,7 @@ function sqlNewRoom(oproom, casenum, qn)
 
 function sqlNewTime(optime, casenum, qn)
 {
-  return `UPDATE book SET optime=${optime},casenum=${casenum},editor='${USER}'
+  return `UPDATE book SET optime='${optime}',casenum=${casenum},editor='${USER}'
 				WHERE qn=${qn};`
 }
 

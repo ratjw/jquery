@@ -11,7 +11,7 @@ export function saveHN(pointed, content) {
 	}
 
 	let	todate = ISOdate(new Date())
-	let waiting = BOOK.find(bookq => bookq.opdate > todate && bookq.hn === content)
+	let waiting = BOOK.find(q => (q.opdate > todate) && (q.hn === content))
 
 	if (waiting) {
 		saveCaseHN(pointed, waiting)

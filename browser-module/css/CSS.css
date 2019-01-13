@@ -82,17 +82,18 @@ td img.imgpale {
 #tbl th:nth-child(5),
 #queuetbl th:nth-child(3),
 #queuetbl th:nth-child(4),
-#queuetbl th:nth-child(5) {
+#queuetbl th:nth-child(5),
+#queuetbl td:nth-child(3),
+#queuetbl td:nth-child(4),
+#queuetbl td:nth-child(5) {
 	font-size: xx-small;
 }
 #tbl.showColumn2 td:nth-child(2) { width: 30px; font-size: xx-small; }
 #tbl td:nth-child(2) { width: 0px; font-size: 0px; }
+
 #tbl td:nth-child(3),
-#tbl td:nth-child(5),
-#queuetbl td:nth-child(3),
-#queuetbl td:nth-child(4),
-#queuetbl td:nth-child(5) {
-	font-size: 12px;
+#tbl td:nth-child(5) {
+	font-size: 14px;
 }
 #tbl td:first-child,
 #tbl td:nth-child(6),

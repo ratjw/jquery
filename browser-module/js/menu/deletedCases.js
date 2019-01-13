@@ -1,12 +1,13 @@
 
-import { UndoManager } from "../model/UndoManager.js"
 import { fetchAllDeletedCases, fetchUndelete } from "../model/fetch.js"
 import { getOpdate } from "../util/date.js"
 import { getBOOKrowByQN } from "../util/getrows.js"
 import { BOOK, CONSULT, updateBOOK } from "../util/variables.js"
 import { Alert, reposition } from "../util/util.js"
-import { viewUndelete } from "../view/view.js"
-import { viewDeletedCases } from "../view/history.js"
+import { viewOneDay } from "../view/viewOneDay.js"
+import { viewSplit } from "../view/viewSplit.js"
+import { viewDeletedCases } from "../view/viewDeletedCases.js"
+import { scrolltoThisCase } from "../view/scrolltoThisCase.js"
 
 export function deletedCases()
 {
@@ -59,14 +60,14 @@ function toUndelete(thisdate, deleted)
 
 	doUndel(allCases, opdate, oproom, staffname, qn, 0)
 
-	UndoManager.add({
+/*	UndoManager.add({
 		undo: function() {
 			doUndel(allCases, opdate, oproom, staffname, qn, 1)
 		},
 		redo: function() {
 			doUndel(allCases, opdate, oproom, staffname, qn, 0)
 		}
-	})
+	})*/
   })
 }
 
@@ -75,7 +76,9 @@ export function doUndel(allCases, opdate, oproom, staffname, qn, del) {
 	fetchUndelete(allCases, oproom, qn, del).then(response => {
 		let hasData = function () {
 			updateBOOK(response)
-			viewUndelete(opdate, staffname, qn)
+			viewOneDay(opdate)
+			viewSplit(staffname)
+			scrolltoThisCase(qn)
 		};
 
 		typeof response === "object"

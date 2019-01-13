@@ -9,7 +9,7 @@ import { getOpdate } from "../util/date.js"
 import { sameDateRoomTableQN } from "../util/getrows.js"
 import { BOOK, updateBOOK } from "../util/variables.js"
 import { Alert } from "../util/util.js"
-import { viewPostponeCase } from "../view/view.js"
+import { viewPostponeCase } from "../view/viewPostponeCase.js"
 import { clearSelection } from "../control/clearSelection.js"
 
 // Undefined date booking has opdate = LARGESTDATE
@@ -51,14 +51,14 @@ export function postponeCase()
 
 	doPostponeCase(newwaitnum, LARGESTDATE)
 
-	UndoManager.add({
+/*	UndoManager.add({
 		undo: function() {
 			doPostponeCase(oldwaitnum, opdate)
 		},
 		redo: function() {
 			doPostponeCase(newwaitnum, LARGESTDATE)
 		}
-	})
+	})*/
 }
 
 // The second parameter (, 0) ensure a default value if arrayAfter.map is empty

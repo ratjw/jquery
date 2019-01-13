@@ -3,16 +3,18 @@ import {
 	DIAGNOSISSV, TREATMENTSV, ADMISSIONSV, FINALSV, PROFILESV
 } from "../model/const.js"
 import {
-	POINTER, OLDCONTENT, getNewcontent, editcellLocation
+	POINTER, OLDCONTENT, getNewcontent, editcellLocation, renewEditcell
 } from "./edit.js"
 import { fetchdoUpdate, fetchGetUpdate, fetchSaveOnChange } from "../model/fetch.js"
 import { fetchGetUpdateWithService, fetchSaveOnChangeService } from "../model/fetchService.js"
 import { timestamp, updateBOOK } from "../util/variables.js"
 import { dialogServiceShowing, Alert } from "../util/util.js"
 import { clearAllEditing } from "./clearAllEditing.js"
-import { viewGetUpdate, viewGetUpdateWithService, viewOnIdling } from "../view/view.js"
 import { saveProfileService } from "../service/savePreviousCellService.js"
 import { setSERVICE } from "../service/setSERVICE.js"
+import { isSplit } from "../util/util.js"
+import { refillall, refillstaffqueue } from "../view/fill.js"
+import { fillConsults } from "../view/fillConsults.js"
 
 // timer is just an id number of setTimeout, not the clock object
 // idleCounter is number of cycles of idle setTimeout
@@ -39,7 +41,7 @@ export function resetTimerCounter()
 // 	1.1 Editcell changed (update itself and from another client on the way)
 //	1.2 Editcell not changed, check updated from another client
 // 2. Not visible editcell, get update from another client
-export function updating() {
+function updating() {
 	if (onChange()) {
 		idleCounter = 0
 	} else {
@@ -96,7 +98,8 @@ function getUpdate()
       if (typeof response === "object") {
         updateBOOK(response)
 		setSERVICE(response.SERVICE)
-        viewGetUpdateWithService(response)
+		refillService()
+		viewGetUpdate()
       } else {
         Alert ("getUpdateWithService", response)
       }
@@ -105,7 +108,7 @@ function getUpdate()
     fetchGetUpdate().then(response => {
       if (typeof response === "object") {
         updateBOOK(response)
-        viewGetUpdate(response)
+        viewGetUpdate()
       } else {
         Alert ("getUpdate", response)
       }
@@ -119,12 +122,20 @@ function onIdling()
 {
     if (idleCounter && !(idleCounter % 6)) {
       clearAllEditing()
-	  viewOnIdling()
+      viewGetUpdate()
     } else if (idleCounter > 59) {
       history.back()
     }
 
     idleCounter += 1
+}
+
+function viewGetUpdate()
+{
+	refillall()
+	fillConsults()
+	if (isSplit()) { refillstaffqueue() }
+	renewEditcell()
 }
 
 function saveOnChange(POINTER, index, content, qn)

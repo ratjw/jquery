@@ -1,3 +1,4 @@
+
 import {
 	OPDATE, THEATRE, OPROOM, OPTIME, CASENUM, STAFFNAME, HN, PATIENT, DIAGNOSIS,
 	TREATMENT, EQUIPMENT, CONTACT, QN, LARGESTDATE
@@ -5,12 +6,12 @@ import {
 import {
 	START, ISOdate, nextdays, numDate, thDate, putThdate, putNameAge
 } from "../util/date.js"
-import { BOOK, CONSULT, STAFF, isPACS } from "../util/variables.js"
-import { isConsultsTbl, isSplit, getClass, inPicArea } from "../util/util.js"
+import { BOOK, CONSULT, isPACS } from "../util/variables.js"
+import { isSplit, isConsults } from "../util/util.js"
 import { rowDecoration } from "./rowDecoration.js"
 import { viewEquip } from "./viewEquip.js"
-import { showStaffOnCall } from "./fillConsults.js"
 import { splitPane } from "./splitPane.js"
+import { hoverMain } from "./hoverMain.js"
 
 // Render Main table
 // Consults and dialogAll tables use this too
@@ -22,19 +23,22 @@ export function fillall(book, table, start, until, num=0) {
 		head = table.rows[0],
 		date = start,
 		madedate,
-		q = findStartRowInBOOK(book, start),
-		k = findStartRowInBOOK(book, LARGESTDATE)
+		bookq = book.find(e => e.opdate >= start),
+		bookx = book.find(e => e.opdate >= LARGESTDATE),
+		q = book.indexOf(bookq),
+		x = book.indexOf(bookx)
 
 	// Get rid of LARGESTDATE cases
-	// Consult cases have no LARGESTDATE, findStartRowInBOOK returns k = -1
-	if (k >= 0) {
-		book = book.slice(0, k)
+	// Consult cases have no LARGESTDATE, findStartRowInBOOK returns x = -1
+	if (x >= 0) {
+		book = book.slice(0, x)
 	}
 
 	// i for rows in table (with head as the first row)
 	let i = num,
-		booklength = book.length
-	for (q; q < booklength; q++)
+		blen = book.length
+
+	for (q; q < blen; q++)
 	{	
 		// step over each day that is not in QBOOK
 		while (date < book[q].opdate)
@@ -87,22 +91,13 @@ export function fillall(book, table, start, until, num=0) {
 export function refillall() {
 	let	table = document.getElementById("tbl"),
 		$tbody = $("#tbl tbody"),
-		start = numDate($('#tbl tr:has("td")').first().find('td').eq(OPDATE).html()),
-		until = numDate($('#tbl tr:has("td")').last().find('td').eq(OPDATE).html())
+		start = numDate($('#tbl tr:has("td"):first').find('td').eq(OPDATE).html()),
+		until = numDate($('#tbl tr:has("td"):last').find('td').eq(OPDATE).html())
 
 	$tbody.html($tbody.find("tr:first").clone())
 	fillall(BOOK, table, start, until)
 	hoverMain()
 	// For new row added to this table
-}
-
-// Find first row in the book that have same or later date than start date
-let findStartRowInBOOK = function (book, opdate) {
-	let q = 0
-	while ((q < book.length) && (book[q].opdate < opdate)) {
-		q++
-	}
-	return (q < book.length) ? q : -1
 }
 
 // create and decorate new row
@@ -115,29 +110,7 @@ let makenextrow = function (table, date) {
 	rowDecoration(row, date)
 }
 
-// Delete data in an existing row
-let fillblank = function (row) {
-	let cells = row.cells
-
-	row.title = ""
-	cells[HN].className = ""
-	cells[PATIENT].className = ""
-
-	cells[THEATRE].innerHTML = ""
-	cells[OPROOM].innerHTML = ""
-	cells[OPTIME].innerHTML = ""
-	cells[CASENUM].innerHTML = ""
-	cells[STAFFNAME].innerHTML = ""
-	cells[HN].innerHTML = ""
-	cells[PATIENT].innerHTML = ""
-	cells[DIAGNOSIS].innerHTML = ""
-	cells[TREATMENT].innerHTML = ""
-	cells[EQUIPMENT].innerHTML = ""
-	cells[CONTACT].innerHTML = ""
-	cells[QN].innerHTML = ""
-}
-
-function filldata(bookq, row)
+export function filldata(bookq, row)
 {
 	let cells = row.cells
 
@@ -186,7 +159,7 @@ export function staffqueue(staffname) {
 	}
 
 	// Not yet split window
-	!isSplit() && splitPane()
+	if (!isSplit()) { splitPane() }
 	$('#titlename').html(staffname)
 
 	staffname === "Consults" ? staffConsults() : staffCases()
@@ -223,7 +196,7 @@ export function refillstaffqueue() {
 		i < ($('#queuetbl tr').length - 1) && $('#queuetbl tr').slice(i+1).remove()
 	}
 
-	isConsultsTbl() ? staffConsults() : staffCases()
+	isConsults() ? staffConsults() : staffCases()
 }
 
 jQuery.fn.extend({
@@ -264,22 +237,4 @@ function addColor($this, bookqOpdate)
 	} else {
 		$this.removeClass("odd")
 	}
-}
-
-// hover on background pics
-function hoverMain()
-{
-	let	paleClasses = ["pacs", "upload"],
-		boldClasses = ["pacs2", "upload2"]
-
-	$("td.pacs, td.upload").mousemove(function(event) {
-		if (inPicArea(event, this)) {
-			getClass(this, paleClasses, boldClasses)
-		} else {
-			getClass(this, boldClasses, paleClasses)
-		}
-	})
-	.mouseout(function (event) {
-		getClass(this, boldClasses, paleClasses)
-	})
 }

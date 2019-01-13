@@ -5,7 +5,8 @@ import { getOpdate } from "../util/date.js"
 import { sameDateRoomTableQN } from "../util/getrows.js"
 import { BOOK, updateBOOK } from "../util/variables.js"
 import { Alert } from "../util/util.js"
-import { viewSaveOpTime } from "../view/view.js"
+import { viewOneDay } from "../view/viewOneDay.js"
+import { viewSplit } from "../view/viewSplit.js"
 import { saveContent } from "./saveContent.js"
 
 export function saveOpTime(pointed, newcontent)
@@ -37,7 +38,8 @@ export function saveOpTime(pointed, newcontent)
 	fetchSaveOpTime(allQNs, newcontent, qn).then(response => {
 		let hasData = function () {
 			updateBOOK(response)
-			viewSaveOpTime(opdate, staffname)
+			viewOneDay(opdate)
+			viewSplit(staffname)
 		}
 
 		typeof response === "object"

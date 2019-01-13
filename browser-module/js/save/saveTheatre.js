@@ -5,7 +5,8 @@ import { getOpdate } from "../util/date.js"
 import { sameDateRoomTableQN } from "../util/getrows.js"
 import { updateBOOK } from "../util/variables.js"
 import { Alert } from "../util/util.js"
-import { viewSaveTheatre } from "../view/view.js"
+import { viewOneDay } from "../view/viewOneDay.js"
+import { viewSplit } from "../view/viewSplit.js"
 
 export function saveTheatre(pointed, newcontent)
 {
@@ -32,7 +33,8 @@ export function saveTheatre(pointed, newcontent)
 	fetchSaveTheatre(allOldCases, allNewCases, newcontent, oproom, qn).then(response => {
 		let hasData = function () {
 			updateBOOK(response)
-			viewSaveTheatre(opdate, staffname)
+			viewOneDay(opdate)
+			viewSplit(staffname)
 		}
 
 		typeof response === "object"

@@ -4,7 +4,7 @@ import { clicktable } from "./clicktable.js"
 import { exchangeOncall } from "./exchangeOncall.js"
 import { clearAllEditing } from "./clearAllEditing.js"
 import { editcellEvent, clearEditcell } from "./edit.js"
-import { resetTimer, resetTimerCounter } from "./updating.js"
+import { resetTimer, resetTimerCounter } from "./timer.js"
 import { setClickMenu } from "../menu/setClickMenu.js"
 import { setClickSetting } from "./setClickSetting.js"
 import { setClickService } from "../service/serviceReview.js"
@@ -183,11 +183,11 @@ function documentEvent()
       clearAllEditing()
     }
     // ctrl+shift+Home to see last entries of local and server
-//    else if (home && ctrl && shift) {
+/*    else if (home && ctrl && shift) {
       // Merge data to server
-//      latestEntry()
-//      event.preventDefault()
-//    }
+      latestEntry()
+      event.preventDefault()
+    }
     else if (y && ctrl) {
       UndoManager.redo()
       event.preventDefault()
@@ -196,7 +196,7 @@ function documentEvent()
       UndoManager.undo()
       event.preventDefault()
     }
-
+*/
     resetTimerCounter()
   });
 

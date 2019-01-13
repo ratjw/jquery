@@ -1,9 +1,10 @@
+
 import { savePreviousCell, editPresentCell } from "./clicktable.js"
 import {
-	DIAGNOSIS, TREATMENT, CONTACT,
+	PATIENT, DIAGNOSIS, TREATMENT, CONTACT,
 	DIAGNOSISSV, TREATMENTSV, ADMISSIONSV, FINALSV
 } from "../model/const.js"
-import { resetTimer, resetTimerCounter } from "./updating.js"
+import { resetTimer, resetTimerCounter } from "./timer.js"
 import { getTableRowByQN } from "../util/getrows.js"
 import { reposition } from "../util/util.js"
 import { savePreviousCellService } from "../service/savePreviousCellService.js"
@@ -20,7 +21,9 @@ export let OLDCONTENT = ""
 export function getNewcontent() {
 	let editcell = document.getElementById("editcell")
 	let spin = document.getElementById("spin")
-	if (spin && editcell.contains(spin)) { return spin.value }
+
+	if (!!spin) { return spin.value }
+
 	return getHtmlText(editcell)
 }
 
@@ -200,6 +203,14 @@ export function createEditcell(pointing)
 	$("#editcell").html(context)
 	showEditcell($pointing, height, width)
 	editcellSaveData(pointing, context)
+}
+
+// re-render editcell for keyin cell only
+export function reCreateEditcell()
+{
+	if (POINTER.cellIndex > PATIENT) {
+		createEditcell(POINTER)
+	}
 }
 
 // Update module variables

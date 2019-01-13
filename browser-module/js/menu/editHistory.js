@@ -2,7 +2,7 @@
 import { HN } from "../model/const.js"
 import { fetchCaseHistory } from "../model/fetch.js"
 import { Alert } from "../util/util.js"
-import { viewCaseHistory } from "../view/history.js"
+import { viewCaseHistory } from "../view/viewCaseHistory.js"
 
 export function editHistory()
 {

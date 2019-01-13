@@ -7,7 +7,7 @@ import { getOpdate } from "../util/date.js"
 import { sameDateRoomTableQN } from "../util/getrows.js"
 import { updateBOOK } from "../util/variables.js"
 import { Alert } from "../util/util.js"
-import { viewmoveCase } from "../view/view.js"
+import { viewmoveCase } from "../view/viewmoveCase.js"
 import { clearSelection } from "../control/clearSelection.js"
 
 // Mark the case and initiate mouseoverTR underline the date to move to
@@ -36,7 +36,7 @@ function clickDate(event, $selected, cell)
 		moveOpdateth = $movecell.eq(OPDATE).html(),
 		moveOpdate = getOpdate(moveOpdateth),
 		staffname = $movecell.eq(STAFFNAME).html(),
-		moveQN = $movecell.eq(QN).html(),
+		moveqn = $movecell.eq(QN).html(),
 		moveWaitnum = $moverow[0].title,
 		movetheatre = $moverow.find("td").eq(THEATRE).html(),
 		moveroom = $moverow.find("td").eq(OPROOM).html(),
@@ -55,31 +55,36 @@ function clickDate(event, $selected, cell)
 
 	// remove itself from old sameDateRoom
 	allOldCases = sameDateRoomTableQN(moveOpdateth, moveroom, movetheatre)
-					.filter(e => e !== moveQN);
+					.filter(e => e !== moveqn)
 
 	// remove itself in new sameDateRoom, in case new === old
 	allNewCases = sameDateRoomTableQN(thisOpdateth, thisroom, thistheatre)
-					.filter(e => e !== moveQN);
+
+	// new === old
+	if (!!allNewCases.find(e => e === moveqn)) {
+		allNewCases = allOldCases
+		allOldCases = []
+	}
 
 	// insert itself into new sameDateRoom after the clicked row
 	thisindex = allNewCases.indexOf(thisqn)
-	allNewCases.splice(thisindex + 1, 0, moveQN)
+	allNewCases.splice(thisindex + 1, 0, moveqn)
 	let arg = {
 		allOldCases: allOldCases,
 		allNewCases: allNewCases,
-		waitnum: waitnum,
-		thisdate: thisdate,
+		waitnum: thisWaitnum,
+		thisdate: thisOpdate,
 		thistheatre: thistheatre,
 		moveroom: moveroom,
 		thisroom: thisroom,
-		moveQN: moveQN
+		moveqn: moveqn
 	}
 
 	let domoveCase = function (waitnum, movedate, thisdate, oproom) {
 		fetchmoveCase(arg).then(response => {
 			let hasData = function () {
 				updateBOOK(response)
-				viewmoveCase(movedate, thisdate, staffname, moveQN)
+				viewmoveCase(movedate, thisdate, staffname, moveqn)
 			}
 
 			typeof response === "object"
@@ -93,18 +98,18 @@ function clickDate(event, $selected, cell)
     clearSelection()
 
 	// click the same case
-	if (thisqn === moveQN) { return }
+	if (thisqn === moveqn) { return }
 
 	domoveCase(thisWaitnum, moveOpdate, thisOpdate, thisroom)
 
-	UndoManager.add({
+/*	UndoManager.add({
 		undo: function() {
 			domoveCase(moveWaitnum, thisOpdate, moveOpdate, moveroom)
 		},
 		redo: function() {
 			domoveCase(thisWaitnum, moveOpdate, thisOpdate, thisroom)
 		}
-	})		
+	})*/
 }
 
 export function clearMouseoverTR()

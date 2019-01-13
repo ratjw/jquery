@@ -14,14 +14,14 @@ export function addnewrow() {
 
 	addrow($row)
 
-	UndoManager.add({
+/*	UndoManager.add({
 		undo: function() {
 			$row.next().remove()
 		},
 		redo: function() {
 			addrow($row)
 		}
-	})	
+	})*/
 }
 
 // "tbl" copy title, Date, Room Time

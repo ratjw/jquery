@@ -1,17 +1,17 @@
 
 import { OPDATE, THEATRE, OPROOM, STAFFNAME, QN } from "./const.js"
-import { clearTimer, resetTimer, resetTimerCounter } from "../control/updating.js"
+import { clearTimer, resetTimer, resetTimerCounter } from "../control/timer.js"
 import { clearEditcell } from "../control/edit.js"
 import { clearMouseoverTR } from "../menu/moveCase.js"
 import { fetchSortable } from "./fetch.js"
 import { calcWaitnum } from "../util/calcWaitnum.js"
 import { getOpdate } from "../util/date.js"
 import { sameDateRoomTableQN } from "../util/getrows.js"
-import { updateBOOK } from "../util/variables.js"
+import { BOOK, updateBOOK } from "../util/variables.js"
 import { Alert, isConsults, isStaffname } from "../util/util.js"
-import { viewSortable } from "../view/view.js"
+import { viewmoveCase } from "../view/viewmoveCase.js"
 import { showUpload } from "../get/showUpload.js"
-import { UndoManager } from "../model/UndoManager.js"
+import { hoverMain } from "../view/hoverMain.js"
 
 // Sortable 2 windows connected with each other
 // Trace placeholder to determine moving up or down
@@ -91,13 +91,18 @@ export function sortable () {
 				} else {
 					// Determine that the user intend to drop on which row
 					//ui.offset (without '()') = helper position
-					let helperpos = ui.offset.top
-					let prevpos = $previtem.length && $previtem.offset().top
-					let thispos = $item.offset().top
-					let nextpos = $nextitem.length && $nextitem.offset().top
-					let nearprev = Math.abs(helperpos - prevpos)
-					let nearplace = Math.abs(helperpos - thispos)
-					let nearnext = Math.abs(helperpos - nextpos)
+					let helpertop = ui.offset.top
+					let helperheight = $item.height()
+					let helpercenter = helpertop + helperheight/2
+
+					let placeholdertop = $item.offset().top
+					let placeholderheight = ui.placeholder.height()
+					let placeholdercenter = placeholdertop + placeholderheight/2
+					let placeholderbottom = placeholdertop + placeholderheight
+
+					let nearprev = Math.abs(helpercenter - placeholdertop)
+					let nearplace = Math.abs(helpercenter - placeholdercenter)
+					let nearnext = Math.abs(helpercenter - placeholderbottom)
 					let nearest = Math.min(nearprev, nearplace, nearnext)
 
 					if (nearest === nearprev) {
@@ -110,7 +115,7 @@ export function sortable () {
 					}
 					if (nearest === nearplace) {
 						if ((prevplace === thisplace) && (sender === receiver)) {
-							stopSorting()
+							stopsorting()
 							return false
 						}
 						if (prevplace < thisplace) {
@@ -150,9 +155,13 @@ export function sortable () {
 			allOldCases = sameDateRoomTableQN(moveOpdateth, moveroom, movetheatre)
 							.filter(e => e !== moveqn);
 
-			// remove itself in new sameDateRoom, in case new === old
 			allNewCases = sameDateRoomTableQN(thisOpdateth, thisroom, thistheatre)
-							.filter(e => e !== moveqn);
+
+			// new === old
+			if (!!allNewCases.find(e => e === moveqn)) {
+				allNewCases = allOldCases
+				allOldCases = []
+			}
 
 			// insert itself into new sameDateRoom after the clicked row
 			let index = allNewCases.indexOf(thisqn)
@@ -170,12 +179,7 @@ export function sortable () {
 				thisroom: thisroom,
 				qn: moveqn
 			}
-			let argViewDo = {
-				receiver: receiver,
-				moveOpdate: moveOpdate,
-				thisOpdate: thisOpdate
-			}
-			let argModelUndo = {
+/*			let argModelUndo = {
 				movelist: allNewCases,
 				newlist: allOldCases,
 				waitnum: moveWaitnum,
@@ -185,44 +189,41 @@ export function sortable () {
 				thisroom: moveroom,
 				qn: moveqn
 			}
-			let argViewUndo = {
-				receiver: sender,
-				moveOpdate: thisOpdate,
-				thisOpdate: moveOpdate
+*/
+			// after sorting, must attach hover to the changed DOM elements
+			let doSorting = function(argModelDo) {
+				fetchSortable(argModelDo).then(response => {
+					let hasData = function () {
+						updateBOOK(response)
+						viewmoveCase(moveOpdate, thisOpdate, staffname)
+						hoverMain()
+					}
+
+					typeof response === "object"
+					? hasData()
+					: Alert("Sortable", response)
+				}).catch(error => {})
 			}
 
-			doSorting(argModelDo, argViewDo)
-
+			doSorting(argModelDo)
+/*
 			// make undo-able
 			UndoManager.add({
 				undo: function() {
-					doSorting(argModelUndo, argViewUndo)
+					doSorting(argModelUndo)
 				},
 				redo: function() {
-					doSorting(argModelDo, argViewDo)
+					doSorting(argModelDo)
 				}
-			})		
-
+			})
+*/
 			stopsorting()
 		}
 	})
 }
 
-function doSorting(argModel, argView) {
-	fetchSortable(argModel).then(response => {
-		let hasData = function () {
-			updateBOOK(response)
-			viewSortable(argView)
-		}
-
-		typeof response === "object"
-		? hasData()
-		: Alert("Sortable", response)
-	}).catch(error => {})
-}
-
 let stopsorting = function () {
-	// Return to original place so that refillOneDay(moveOpdate)
+	// Return to original place so that viewOneDay(moveOpdate)
 	// will not render this row in wrong position
 	$("#tbl tbody, #queuetbl tbody").sortable( "cancel" )
 

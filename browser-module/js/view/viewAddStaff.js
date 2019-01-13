@@ -2,13 +2,20 @@
 import { SPECIALTY } from "../model/const.js"
 import { STAFF } from "../util/variables.js"
 
+let staffprofile = {
+	sname: "staffname",
+	specialty: "specialty",
+	soncall: "startoncall",
+	snumber: "number"
+}
+
 export function viewAddStaff()
 {
   let $stafftbl = $("#stafftbl")
-  let scbb = document.getElementById("scbb")
+  let specialty = document.getElementById("specialty")
 
   SPECIALTY.forEach(function(each) {
-    scbb.innerHTML += `<option value=${each}>${each}</option>`
+    specialty.innerHTML += `<option value=${each}>${each}</option>`
   })
 
   clearval()
@@ -21,9 +28,7 @@ export function viewAddStaff()
   });
 
   $(".clickgetval").off("click").on("click", function() {
-	  let num = this.closest("tr").title
-
-	  getval(num)
+	  getval(this.title)
   })
 }
 
@@ -32,27 +37,27 @@ jQuery.fn.extend({
     let row = this[0]
 	let cells = row.cells
 
-	cells[0].innerHTML = `<a class="clickgetval">${q.staffname}</a>`
-	cells[1].innerHTML = `<a class="clickgetval">${q.specialty}</a>`
-	cells[2].innerHTML = `<a class="clickgetval">${q.startoncall}</a>`
-
 	row.title = i
+	row.className = "clickgetval"
+
+	cells[0].innerHTML = q.staffname
+	cells[1].innerHTML = q.specialty
+	cells[2].innerHTML = q.startoncall
   }
 })
 
 function getval(each)
 {  
   let staff = STAFF[each]
-  document.getElementById("sname").value = staff.staffname;
-  document.getElementById("scbb").value = staff.specialty;
-  document.getElementById("sdate").value = staff.startoncall; 
-  document.getElementById("shidden").value = staff.number;
+
+  Object.entries(staffprofile).forEach(([key, val]) => {
+    document.getElementById(key).value = staff[val];
+  })
 }
 
 function clearval()
 {  
-  document.getElementById("sname").value = ""
-  document.getElementById("scbb").value = ""
-  document.getElementById("sdate").value = ""
-  document.getElementById("shidden").value = ""
+  Object.entries(staffprofile).forEach(([key, val]) => {
+    document.getElementById(key).value = "";
+  })
 }

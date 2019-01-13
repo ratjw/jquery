@@ -1,5 +1,5 @@
 
-import { resetTimer, resetTimerCounter } from "../control/updating.js"
+import { resetTimer, resetTimerCounter } from "../control/timer.js"
 import { winWidth, winHeight } from "../util/util.js"
 import { oneMonth } from "./oneMonth.js"
 

@@ -4,7 +4,7 @@ import {
   CASENUMSV, HNSV, NAMESV, DIAGNOSISSV, TREATMENTSV, ADMISSIONSV,
   FINALSV, PROFILESV, ADMITSV, OPDATESV, DISCHARGESV, QNSV
 } from "../model/const.js"
-import { resetTimerCounter } from "../control/updating.js"
+import { resetTimerCounter } from "../control/timer.js"
 import { POINTER, clearEditcell } from "../control/edit.js"
 import { START, putThdate, putNameAge } from "../util/date.js"
 import { getClass, inPicArea,  winWidth, winHeight, winResizeFix } from "../util/util.js"

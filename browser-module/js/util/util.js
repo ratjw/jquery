@@ -43,6 +43,14 @@ export function dialogServiceShowing()
   return $dialogService.hasClass('ui-dialog-content') && $dialogService.dialog('isOpen')
 }
 
+export function getMaxQN(book)
+{
+	var qn = Math.max.apply(Math, $.map(book, function(row, i) {
+			return row.qn
+		}))
+	return String(qn)
+}
+
 export function getClass(thiscell, fromClass, toClass)
 {
 	let	classname = thiscell.className,
