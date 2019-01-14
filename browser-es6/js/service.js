@@ -231,26 +231,31 @@ function showService(fromDate, toDate)
 		// INPUT event comes after INPUT value was changed
 		if (onProfile) {
 			if (target.nodeName !== "INPUT") {
+		    if (pointed && (target !== pointed)) {
+			    savePreviousCellService()
+			  }
 				return
 			}
 			showInputColor($target, target)
 			target = $target.closest('td')[0]
-		}
-		if (pointed) {
-			if (target === pointed) {
-				return
-			}
-			savePreviousCellService()
-			if (onNormalCell || onProfile) {
-				storePresentCellService(event, target)
-			} else {
-				clearEditcell()
-			}
+			storePresentCellService(event, target)
 		} else {
-			if (onNormalCell || onProfile) {
-				storePresentCellService(event, target)
-			}
-		}
+		  if (pointed) {
+			  if (target === pointed) {
+				  return
+			  }
+			  savePreviousCellService()
+			  if (onNormalCell) {
+				  storePresentCellService(event, target)
+			  } else {
+				  clearEditcell()
+			  }
+		  } else {
+			  if (onNormalCell) {
+				  storePresentCellService(event, target)
+			  }
+		  }
+    }
 	}
 
 	function showProfile() {
