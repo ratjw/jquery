@@ -12,6 +12,11 @@ export function getTableRowByQN(tableID, qn)
 				.find(row => row.cells[QN].innerHTML === qn)
 }
 
+export function getBOOKRowsByDate(book, opdate)
+{
+	return book.filter(q => q.opdate === opdate)
+}
+
 // main table (#tbl) only
 export function getTableRowsByDate(opdateth)
 {
@@ -21,6 +26,14 @@ export function getTableRowsByDate(opdateth)
 	})
 }
 
+export function sameDateRoomBOOKRows(book, opdate, oproom, theatre)
+{
+	return book.filter(q => {
+		return q.opdate === opdate
+			 &&	q.theatre === theatre
+			 &&	q.oproom === oproom
+	})
+}
 // main table (#tbl) only
 export function sameDateRoomTableQN(opdateth, room, theatre)
 {

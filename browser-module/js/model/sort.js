@@ -6,7 +6,7 @@ import { clearMouseoverTR } from "../menu/moveCase.js"
 import { fetchSortable } from "./fetch.js"
 import { calcWaitnum } from "../util/calcWaitnum.js"
 import { getOpdate } from "../util/date.js"
-import { sameDateRoomTableQN } from "../util/getrows.js"
+import { sameDateRoomBOOKRows } from "../util/getrows.js"
 import { BOOK, updateBOOK } from "../util/variables.js"
 import { Alert, isConsults, isStaffname } from "../util/util.js"
 import { viewmoveCase } from "../view/viewmoveCase.js"
@@ -151,14 +151,16 @@ export function sortable () {
 				return
 			}
 
-			// remove itself from old sameDateRoom
-			allOldCases = sameDateRoomTableQN(moveOpdateth, moveroom, movetheatre)
-							.filter(e => e !== moveqn);
+			allOldCases = sameDateRoomBOOKRows(BOOK, moveOpdate, moveroom, movetheatre)
+			allNewCases = sameDateRoomBOOKRows(BOOK, thisOpdate, thisroom, thistheatre)
 
-			allNewCases = sameDateRoomTableQN(thisOpdateth, thisroom, thistheatre)
+			let moverow = allOldCases.find(e => e.qn === moveqn)
+
+			// remove itself from old sameDateRoom
+			allOldCases = allOldCases.filter(e => e.qn !== moveqn);
 
 			// new === old
-			if (!!allNewCases.find(e => e === moveqn)) {
+			if (!!allNewCases.find(e => e.qn === moveqn)) {
 				allNewCases = allOldCases
 				allOldCases = []
 			}

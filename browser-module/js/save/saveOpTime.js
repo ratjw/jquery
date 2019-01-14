@@ -2,7 +2,7 @@
 import { OPDATE, THEATRE, OPROOM, STAFFNAME, QN } from "../model/const.js"
 import { fetchSaveOpTime } from "../model/fetch.js"
 import { getOpdate } from "../util/date.js"
-import { sameDateRoomTableQN } from "../util/getrows.js"
+import { sameDateRoomBOOKRows } from "../util/getrows.js"
 import { BOOK, updateBOOK } from "../util/variables.js"
 import { Alert } from "../util/util.js"
 import { viewOneDay } from "../view/viewOneDay.js"
@@ -45,14 +45,5 @@ export function saveOpTime(pointed, newcontent)
 		typeof response === "object"
 		? hasData()
 		: Alert ("saveOpTime", response)
-	})
-}
-
-function sameDateRoomBOOKRows(opdate, oproom, theatre)
-{
-	return BOOK.filter(q => {
-		return q.opdate === opdate
-			 &&	q.theatre === theatre
-			 &&	q.oproom === oproom
 	})
 }

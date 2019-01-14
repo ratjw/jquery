@@ -1,18 +1,18 @@
 
 import { OPDATE, STAFFNAME, HN, PATIENT, LARGESTDATE } from "../model/const.js"
 import { putThdate } from "../util/date.js"
-import { BOOK } from "../util/variables.js"
 import { rowDecoration } from "./rowDecoration.js"
-import { getTableRowsByDate } from "../util/getrows.js"
+import { getBOOKRowsByDate, getTableRowsByDate } from "../util/getrows.js"
 import { showStaffOnCall } from "./fillConsults.js"
 import { filldata } from "./fill.js"
+import { BOOK } from "../util/variables.js"
 
 // Used for main table ("tbl") only, no LARGESTDATE
 // others would refill entire table
 export function viewOneDay(opdate) {
 	if (opdate === LARGESTDATE) { return }
 	let	opdateth = putThdate(opdate),
-		opdateBOOKrows = BOOK.filter(q => q.opdate === opdate),
+		opdateBOOKrows = getBOOKRowsByDate(BOOK, opdate),
 		$opdateTblRows = getTableRowsByDate(opdateth),
 		bookRows = opdateBOOKrows.length,
 		tblRows = $opdateTblRows.length,

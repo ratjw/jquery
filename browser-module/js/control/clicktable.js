@@ -27,8 +27,14 @@ import { getEQUIP } from "../get/getEQUIP.js"
 
 // Click on main or staff table
 export function clicktable(evt, clickedCell) {
-	savePreviousCell()
-	editPresentCell(evt, clickedCell)
+	if (!!POINTER) {
+		savePreviousCell()
+	}
+	if (!POINTER || POINTER.cellIndex > 7) {
+		editPresentCell(evt, clickedCell)
+	} else {
+		clearEditcell()
+	}
 }
 
 export function savePreviousCell() {
