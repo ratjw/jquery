@@ -255,7 +255,7 @@ export function renewEditcell()
 		 ? "servicetbl"
 		 : ""
   let qn = $(POINTER).siblings(":last").html()
-  let row = id && getTableRowByQN(id, qn)
+  let row = id && qn && getTableRowByQN(id, qn)
   let cell = POINTER.cellIndex
 
   if (row) {

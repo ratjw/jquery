@@ -1,5 +1,40 @@
 
-import { EQUIPICONS, EQUIPICONSHOWN } from "../model/const.js"
+const EQUIPICONS = {
+    Fluoroscope: "Fluoroscope",
+    "Navigator_frameless": "Navigator",
+    "Navigator_with-frame": "Navigator",
+    Oarm: "Oarm",
+    Robotics: "Robotics",
+    Microscope: "Microscope",
+    ICG: "Microscope",
+    Endoscope: "Endoscope",
+    Excell: "CUSA",
+    Soring: "CUSA",
+    Sonar: "CUSA",
+    ultrasound: "Ultrasound",
+    Doppler: "Ultrasound",
+    Duplex: "Ultrasound",
+    CN5: "Monitor",
+    CN6: "Monitor",
+    CN7: "Monitor",
+    CN8: "Monitor",
+    CN9: "Monitor",
+    CN10: "Monitor",
+    CN11: "Monitor",
+    CN12: "Monitor",
+    SSEP: "Monitor",
+    EMG: "Monitor",
+    MEP: "Monitor"
+}
+
+const EQUIPICONSHOWN = [
+	"Fluoroscope",
+	"Navigator",
+	"Microscope",
+	"CUSA",
+	"Endoscope",
+	"Monitor"
+]
 
 // Add all equipments in one string to show in 1 cell
 export function viewEquip(equipString)

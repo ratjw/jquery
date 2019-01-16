@@ -1,6 +1,6 @@
 import {
 	OPDATE, THEATRE, OPROOM, OPTIME, CASENUM, STAFFNAME, HN, PATIENT, DIAGNOSIS,
-	TREATMENT, EQUIPMENT, CONTACT, QN
+	TREATMENT, EQUIPMENT, CONTACT
 } from "../model/const.js"
 import {
 	POINTER, OLDCONTENT, getNewcontent, createEditcell, clearEditcell
@@ -56,8 +56,6 @@ export function savePreviousCell() {
 		case DIAGNOSIS: saveContent(POINTER, "diagnosis", newcontent); break
 		case TREATMENT: saveContent(POINTER, "treatment", newcontent); break
 		case CONTACT: saveContent(POINTER, "contact", newcontent); break
-		case CONTACT: saveContent(POINTER, "contact", newcontent); break
-
 	}
 }
 
@@ -80,7 +78,6 @@ export function editPresentCell(evt, pointing) {
 		case TREATMENT: createEditcell(pointing); break
 		case EQUIPMENT: getEQUIP(pointing); break
 		case CONTACT: createEditcell(pointing); break
-
 	}
 	if (column === OPDATE) {
 		clearEditcell()

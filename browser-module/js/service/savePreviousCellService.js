@@ -11,7 +11,6 @@ import { reViewService } from "./showService.js"
 import { countService } from "./countService.js"
 import { setSERVICE, SERVICE } from "./setSERVICE.js"
 import { UndoManager } from "../model/UndoManager.js"
-import { getRecord } from "./editPresentCellService.js"
 
 export function savePreviousCellService() {
 	let newcontent = getNewcontent()
@@ -42,6 +41,7 @@ export function savePreviousCellService() {
 			saveProfileService(POINTER)
 			break
 		case ADMITSV:
+		case OPDATESV:
 		case DISCHARGESV:
 			break
 	}
@@ -60,7 +60,7 @@ let saveContentService = function (pointed, column, content) {
 	saveService(pointed, column, content)
 }
 
-export function saveService(pointed, column, newcontent) {
+function saveService(pointed, column, newcontent) {
 	let $row = $(pointed).closest("tr"),
 		row = $row[0],
 		qn = row.cells[QNSV].innerHTML
@@ -127,22 +127,47 @@ export function saveService(pointed, column, newcontent) {
 // select only the changed columns to save
 export function saveProfileService(pointed)
 {
-	let newRecord = getRecord(pointed),
-		oldRecord = OLDCONTENT,
-		setRecord = {},
-		$pointing = $(pointed),
-		newkey
+	let newRecord = getNewRecord(pointed)
 
-	$.each(newRecord, function(key, val) {
-		if (val === oldRecord[key]) {
-			delete newRecord[key]
+	newRecord = getDiff(pointed, newRecord)
+
+	if ( Object.keys(newRecord).length ) {
+		saveService(pointed, "", newRecord)
+	}
+}
+
+function getNewRecord(pointing)
+{
+	let	$input = $(pointing).find(".divRecord input"),
+		record = {}
+
+	$input.each(function() {
+		let newkey = this.name.replace(/\d+/g, "")
+		if (this.type === "checkbox" && !this.checked) {
+			record[newkey] = ""
+		} else {
+			if (this.checked) {
+				record[newkey] = this.title
+			} else {
+				record[newkey] = this.value
+			}
 		}
 	})
-	if ( Object.keys(newRecord).length ) {
-		$.each(newRecord, function(key, val) {
-		   newkey = key.replace(/\d+/g, "");
-		   setRecord[newkey] = newRecord[key];
-		})
-		saveService($pointing[0], "", setRecord)
-	}
+
+	return record
+}
+
+function getDiff(pointing, newRecord)
+{
+	let qn = pointing.parentNode.lastElementChild.innerHTML,
+		bookq = getBOOKrowByQN(SERVICE, qn),
+		record = {}
+
+	Object.entries(newRecord).forEach(([key, val]) => {
+		if (bookq[key] != val) {
+			record[key] = val
+		}
+	})
+
+	return record
 }

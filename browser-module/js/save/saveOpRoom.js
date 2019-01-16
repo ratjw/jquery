@@ -1,5 +1,5 @@
 
-import { OPDATE, THEATRE, OPROOM, CASENUM, QN } from "../model/const.js"
+import { OPDATE, THEATRE, OPROOM, QN } from "../model/const.js"
 import { OLDCONTENT } from "../control/edit.js"
 import { fetchSaveOpRoom } from "../model/fetch.js"
 import { getOpdate } from "../util/date.js"

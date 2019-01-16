@@ -1,4 +1,5 @@
 
+import { OPDATE } from "../model/const.js"
 import { clearEditcell } from "../control/edit.js"
 import { fetchChangeOncall } from "../model/fetch.js"
 import { getOpdate } from "../util/date.js"

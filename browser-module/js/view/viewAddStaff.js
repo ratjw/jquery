@@ -1,8 +1,20 @@
 
-import { SPECIALTY } from "../model/const.js"
 import { STAFF } from "../util/variables.js"
 
-let staffprofile = {
+const SPECIALTY = [
+	"breast",
+	"cvt",
+	"general",
+	"hepatobiliary",
+	"neurosurgery",
+	"pediatrics",
+	"plastic",
+	"trauma",
+	"urology",
+	"vascular"
+]
+
+const STAFFPROFILE = {
 	sname: "staffname",
 	specialty: "specialty",
 	soncall: "startoncall",
@@ -50,14 +62,14 @@ function getval(each)
 {  
   let staff = STAFF[each]
 
-  Object.entries(staffprofile).forEach(([key, val]) => {
+  Object.entries(STAFFPROFILE).forEach(([key, val]) => {
     document.getElementById(key).value = staff[val];
   })
 }
 
 function clearval()
 {  
-  Object.entries(staffprofile).forEach(([key, val]) => {
+  Object.entries(STAFFPROFILE).forEach(([key, val]) => {
     document.getElementById(key).value = "";
   })
 }

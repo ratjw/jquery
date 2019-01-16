@@ -1,10 +1,25 @@
 
-import { DIAGNOSIS, HOLIDAYENGTHAI, THAIMONTH } from "../model/const.js"
+import { DIAGNOSIS, THAIMONTH } from "../model/const.js"
 import { numDate, putThdate } from "../util/date.js"
 import { getTableRowsByDate } from "../util/getrows.js"
 import { HOLIDAY, setHOLIDAY } from "../util/variables.js"
 import { holiday } from "../view/holiday.js"
 import { fetchSaveHoliday, fetchDelHoliday } from "../model/fetch.js"
+
+const HOLIDAYENGTHAI = {
+	"Magha": "วันมาฆบูชา",
+	"Maghasub": "ชดเชยวันมาฆบูชา",
+	"Ploughing": "วันพืชมงคล",
+	"Ploughingsub": "ชดเชยวันพืชมงคล",
+	"Vesak": "วันวิสาขบูชา",
+	"Vesaksub": "ชดเชยวันวิสาขบูชา",
+	"Asalha": "วันอาสาฬหบูชา",
+	"Asalhasub": "ชดเชยวันอาสาฬหบูชา",
+	"Vassa": "วันเข้าพรรษา",
+	"Vassasub": "ชดเชยวันเข้าพรรษา",
+	"special": "วันหยุดพิเศษ",
+	"no": "ไม่หยุด"
+}
 
 export function inputHoliday()
 {

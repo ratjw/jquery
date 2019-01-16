@@ -430,20 +430,35 @@ td.upload2 { background-image: url(pic/general/upload2.png); }
   display: inline-block;
 }
 
+.divRecord label.border {
+  position: relative;
+  top: -2px;
+  height: 17px;
+  background-color: white;
+  border-radius: 5px;
+  border: 1px solid #19adc4;
+  padding-left: 4px;
+  margin-left: 4px;
+}
+
+/* -webkit: to disable the default appearance of radio button*/
 .divRecord input {
   height: 17px;
   border-radius: 5px;
   border: 1px solid #19adc4;
   background-color: white;
-  -webkit-appearance: none; /*to disable the default appearance of radio button*/
+  -webkit-appearance: none;
   -moz-appearance: none;
 }
 
-.divRecord input:focus { /*no need, if you don't disable default appearance*/
-  outline-color: transparent; /*to remove the square border on focus*/
+/*no need, if you don't disable default appearance*/
+/*to remove the square border on focus*/
+.divRecord input:focus {
+  outline-color: transparent;
 }
 
-.divRecord input:checked { /*no need, if you don't disable default appearance*/
+/*no need, if you don't disable default appearance*/
+.divRecord input:checked {
   background-color: #19adc4;
 }
 
@@ -451,12 +466,25 @@ td.upload2 { background-image: url(pic/general/upload2.png); }
   color: white;
 }
 
+.divRecord input[type="number"] {
+  height: 12px;
+  font-size: 12px;
+  position: relative;
+  top: -1px;
+  border: none;
+}
+
 .divRecord label span {
+  display: inline-block;
   position: relative;
   font-size: 11px;
   color: #19adc4;
   top: -4.5px;
   width: 0px;
+}
+
+.divRecord label.border span {
+  top: -1px;
 }
 
 .divRecord label input[type="checkbox"] + span {

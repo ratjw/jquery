@@ -109,6 +109,8 @@ SPECIALTY = [
 	"vascular"
 ],
 
+SERVICECOLOR = ["Readmission", "Reoperation", "Infection", "Morbidity", "Dead"],
+
 // ["type", "width", "name", "id" (also used in label for), "label"]
 EQUIPSHEET = [
     ["spanInSpan", "w70", "", "oproom", "ห้อง "],

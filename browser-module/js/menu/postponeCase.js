@@ -1,8 +1,7 @@
 
 import { UndoManager } from "../model/UndoManager.js"
 import {
-	OPDATE, THEATRE, OPROOM, OPTIME, CASENUM, STAFFNAME, HN, PATIENT,
-	DIAGNOSIS, TREATMENT, EQUIPMENT, CONTACT, QN, LARGESTDATE
+	OPDATE, THEATRE, OPROOM, STAFFNAME, QN, LARGESTDATE
 } from "../model/const.js"
 import { fetchPostponeCase } from "../model/fetch.js"
 import { getOpdate } from "../util/date.js"

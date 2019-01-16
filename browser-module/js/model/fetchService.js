@@ -40,7 +40,7 @@ export function fetchSaveService(pointed, column, content, qn) {
 	return postData(MYSQLIPHP, sql);
 }
 
-export function fetchGetUpdateWithService()
+export function fetchGetUpdateService()
 {
   let sql = "sqlReturnService=" + sqlOneMonth()
 

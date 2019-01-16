@@ -77,16 +77,24 @@ export function htmldivRecord()
 	  label = ""
 
   RECORDSHEET.forEach(function(item) {
-    labelwidth = item[0]
-    inputwidth = item[1]
-    type = item[2]
-    name = item[3]
-    title = item[4]
-    label = item[5]
+    let labelwidth = item[0],
+        inputwidth = item[1],
+        type = item[2],
+        name = item[3],
+        title = item[4],
+        label = item[5],
+        min = item[6] || "",
+        max = item[7] || ""
+
     if (labelwidth === "br") {
 	  record += `<br>`
     } else if (labelwidth === "hr") {
 	  record += `<hr>`
+    } else if (type === "number") {
+	  record += `<label class="${labelwidth}">
+				   <span>${label}</span>
+				   <input class="${inputwidth}" type="${type}" name="${name}" min="${min}" max="${max}" style="left:${title}">
+				 </label>`
 	} else {
 	  record += `<label class="${labelwidth}">
 				   <input class="${inputwidth}" type="${type}" name="${name}" title="${title}">

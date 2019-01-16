@@ -1,9 +1,6 @@
 
 import { UndoManager } from "../model/UndoManager.js"
-import {
-	OPDATE, THEATRE, OPROOM, OPTIME, CASENUM, STAFFNAME, HN, PATIENT,
-	DIAGNOSIS, TREATMENT, EQUIPMENT, CONTACT, QN
-} from "../model/const.js"
+import { OPDATE, HN, PATIENT } from "../model/const.js"
 import { clearSelection } from "../control/clearSelection.js"
 import { createEditcell } from "../control/edit.js"
 

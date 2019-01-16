@@ -1,7 +1,7 @@
 
 import {
   CASENUMSV, HNSV, NAMESV, DIAGNOSISSV, TREATMENTSV, ADMISSIONSV,
-  FINALSV, PROFILESV, ADMITSV, OPDATESV, DISCHARGESV, QNSV
+  FINALSV, PROFILESV, ADMITSV, OPDATESV, DISCHARGESV
 } from "../model/const.js"
 import {
 	OLDCONTENT, clearEditcell, createEditcell, editcellSaveData
@@ -9,7 +9,6 @@ import {
 import { isPACS } from "../util/variables.js"
 import { inPicArea } from "../util/util.js"
 import { showUpload } from "../get/showUpload.js"
-import { saveService } from "./savePreviousCellService.js"
 import { editableSV } from "./setSERVICE.js"
 import { PACS } from "../get/PACS.js"
 
@@ -35,9 +34,10 @@ export function editPresentCellService(evt, pointing) {
 			editableSV && createEditcell(pointing)
 			break
 		case PROFILESV:
-			editableSV && editcellSaveData(pointing, getRecord(pointing))
+			editableSV && editcellSaveData(pointing, "edited")
 			break
 		case ADMITSV:
+		case OPDATESV:
 		case DISCHARGESV:
 			clearEditcell()
 			break
@@ -63,22 +63,4 @@ function getNAMESV(evt, pointing)
 	if (inPicArea(evt, pointing)) {
 		showUpload(hn, patient)
 	}
-}
-
-export function getRecord(pointing)
-{
-	let	record = {},
-		$input = $(pointing).find(".divRecord input")
-
-	$input.each(function() {
-		if (this.type === "checkbox" && !this.checked) {
-			record[this.name] = ""
-		} else {
-			if (this.checked) {
-				record[this.name] = this.title
-			}
-		}
-	})
-
-	return record
 }

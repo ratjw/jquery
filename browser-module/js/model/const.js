@@ -31,96 +31,8 @@ OPDATESV	= 9,
 DISCHARGESV	= 10,
 QNSV		= 11,
 
-// NAMEOFDAYABBR for 1st column color
-// NAMEOFDAYFULL for row color
-NAMEOFDAYABBR	= ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
-NAMEOFDAYFULL	= ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
 THAIMONTH		= ["มค.", "กพ.", "มีค.", "เมย.", "พค.", "มิย.", "กค.", "สค.", "กย.", "ตค.", "พย.", "ธค."],
 LARGESTDATE		= "9999-12-31",
-
-HOLIDAYENGTHAI = {
-	"Magha": "วันมาฆบูชา",
-	"Maghasub": "ชดเชยวันมาฆบูชา",
-	"Ploughing": "วันพืชมงคล",
-	"Ploughingsub": "ชดเชยวันพืชมงคล",
-	"Vesak": "วันวิสาขบูชา",
-	"Vesaksub": "ชดเชยวันวิสาขบูชา",
-	"Asalha": "วันอาสาฬหบูชา",
-	"Asalhasub": "ชดเชยวันอาสาฬหบูชา",
-	"Vassa": "วันเข้าพรรษา",
-	"Vassasub": "ชดเชยวันเข้าพรรษา",
-	"special": "วันหยุดพิเศษ",
-	"no": "ไม่หยุด"
-},
-
-ROWREPORT = {
-	"Brain Tumor": 3,
-	"Brain Vascular": 4,
-	"CSF related": 5,
-	"Trauma": 6,
-	"Spine": 7,
-	"etc": 8,
-	"Radiosurgery": 10,
-	"Endovascular": 11,
-	"Conservative": 12
-},
-COLUMNREPORT = {
-	"Staff": 1,
-	"Resident": 5,
-	"Major": 0,
-	"Minor": 2,
-	"Elective": 0,
-	"Emergency": 1
-},
-SPECIALTY = [
-	"breast",
-	"cvt",
-	"general",
-	"hepatobiliary",
-	"neurosurgery",
-	"pediatrics",
-	"plastic",
-	"trauma",
-	"urology",
-	"vascular"
-],
-
-EQUIPICONS = {
-    Fluoroscope: "Fluoroscope",
-    "Navigator_frameless": "Navigator",
-    "Navigator_with-frame": "Navigator",
-    Oarm: "Oarm",
-    Robotics: "Robotics",
-    Microscope: "Microscope",
-    ICG: "Microscope",
-    Endoscope: "Endoscope",
-    Excell: "CUSA",
-    Soring: "CUSA",
-    Sonar: "CUSA",
-    ultrasound: "Ultrasound",
-    Doppler: "Ultrasound",
-    Duplex: "Ultrasound",
-    CN5: "Monitor",
-    CN6: "Monitor",
-    CN7: "Monitor",
-    CN8: "Monitor",
-    CN9: "Monitor",
-    CN10: "Monitor",
-    CN11: "Monitor",
-    CN12: "Monitor",
-    SSEP: "Monitor",
-    EMG: "Monitor",
-    MEP: "Monitor"
-},
-
-EQUIPICONSHOWN = [
-	"Fluoroscope",
-	"Navigator",
-	"Microscope",
-	"CUSA",
-	"Endoscope",
-	"Monitor"
-],
 
 // ["type", "width", "name", "id" (also used in label for), "label"]
 EQUIPSHEET = [
@@ -356,7 +268,7 @@ EQUIPSHEET = [
     ["br", "", "", "", ""]
 ],
 
-// [record, labelwidth, inputwidth, type, name, title, label]
+// [labelwidth, inputwidth, type, name, title, label]
 RECORDSHEET = [
 	["w70", "w40", "radio", "doneby", "Staff", "Staff"],
 	["", "w55", "radio", "doneby", "Resident", "Resident"],
@@ -380,8 +292,8 @@ RECORDSHEET = [
 	["", "w80", "checkbox", "radiosurgery", "Radiosurgery", "RadioSurgery"],
 	["", "w80", "checkbox", "endovascular", "Endovascular", "Endovascular"],
 	["br", "", "", "", "", ""],
-	["", "w80", "checkbox", "admitted", "Readmission", "ReAdmission"],
-	["", "w80", "checkbox", "operated", "Reoperation", "ReOperation"],
+	["border w90", "w30", "number", "admitted", "55px", "Admission", "0", "99"],
+	["border w90", "w30", "number", "operated", "55px", "Operation", "0", "99"],
 	["br", "", "", "", "", ""],
 	["", "w55", "checkbox", "infection", "Infection", "Infection"],
 	["", "w50", "checkbox", "morbid", "Morbidity", "Morbid"],
@@ -733,4 +645,13 @@ RADIOSURGERY = [
 ENDOVASCULAR = [
 	/\bcoil/i, /emboli[zs]/i, /\bendovasc/i, /\bintervention/i,
 	/\bstent/i, /\btransart/i, /\btransvenous/i
-]
+],
+
+KEYWORDS = {
+	"Brain Tumor": [ BRAINTUMORRX, BRAINTUMORRXNO, BRAINTUMORDX, BRAINTUMORDXNO ],
+	"Brain Vascular": [ BRAINVASCULARRX, BRAINVASCULARRXNO, BRAINVASCULARDX, BRAINVASCULARDXNO ],
+	"Trauma": [ TRAUMARX, TRAUMARXNO, TRAUMADX, TRAUMADXNO ],
+	"Spine": [ SPINERX, SPINERXNO, SPINEDX, SPINEDXNO.concat(BRAINDX) ],
+	"CSF related": [ CSFRX, CSFRXNO, CSFDX, CSFDXNO ],
+	"etc": [ ETCRX, ETCRXNO, ETCDX, ETCDXNO ]
+}

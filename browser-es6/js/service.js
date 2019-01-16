@@ -137,12 +137,17 @@ function showService(fromDate, toDate)
 	let	$dialogService = $("#dialogService"),
 		$servicetbl = $("#servicetbl"),
 		$servicecells = $("#servicecells"),
-		$imgopen = $("#servicetbl th #imgopen"),
-		$imgclose = $("#servicetbl th #imgclose"),
-		$divRecord = $("#servicetbl .divRecord"),
 		staffname = "",
 		scase = 0,
 		classname = ""
+			
+	let resizeDialog = () => {
+		$dialogService.dialog({
+			width: winWidth(95),
+			height: winHeight(95)
+		})
+		winResizeFix($servicetbl, $dialogService)
+	}
 
 	$("#monthpicker").hide()
 	$("#servicehead").show()
@@ -201,87 +206,99 @@ function showService(fromDate, toDate)
 
 	$dialogService.on("click", clickDialogService)
 
+	$('label:has(input[type=radio])').on('mousedown', function(e){
+	  var radio = $(this).find('input[type=radio]');
+	  var wasChecked = radio.prop('checked');
+	  radio[0].turnOff = wasChecked;
+	  radio.prop('checked', !wasChecked);
+	});
+
+	$('label:has(input[type=radio])').on('click', function(e){
+	  var radio = $(this).find('input[type=radio]');
+	  radio.prop('checked', !radio[0].turnOff);
+	  radio[0]['turning-off'] = !radio[0].turnOff;
+	});
+
 	//for resizing dialogs in landscape / portrait view
 	$(window).on("resize", resizeDialog)
+}
 
-	function clickDialogService(event)
-	{
-		resetTimer();
-		gv.idleCounter = 0
-		event.stopPropagation()
-		let	target = event.target,
-			$target = $(target),
-			onProfile = $target.closest(".divRecord").length,
-			onNormalCell = (target.nodeName === "TD" && target.colSpan === 1),
-			pointed = $("#editcell").data("pointing"),
-			isHideColumn = target.cellIndex === PROFILESV,
-			onDivRecord = /divRecord/.test(target.className),
-			onImage = target.nodeName === "IMG"
+function clickDialogService(event)
+{
+	let	$dialogService = $("#dialogService"),
+		$servicetbl = $("#servicetbl")
 
-		if (isHideColumn || onDivRecord || onImage) {
-		  if ($servicetbl.find("th").eq(PROFILESV).width() < 200) {
-			showProfile()
-		  } else {
-			hideProfile()
+	let	target = event.target,
+		inCell = target.closest("td"),
+		onProfile = !!target.closest(".divRecord"),
+		onNormalCell = (target.nodeName === "TD" && target.colSpan === 1),
+		pointed = $("#editcell").data("pointing"),
+		isHideColumn = target.cellIndex === PROFILESV,
+		onDivRecord = /divRecord/.test(target.className),
+		onImage = target.nodeName === "IMG"
+
+	resetTimer();
+	gv.idleCounter = 0
+	event.stopPropagation()
+
+	if (isHideColumn || onDivRecord || onImage) {
+	  if ($servicetbl.find("th").eq(PROFILESV).width() < 200) {
+		showProfile()
+	  } else {
+		hideProfile()
+	  }
+	  $("#dialogService .fixed").refixMe($servicetbl)
+	}
+
+	// click a button on divRecord gives 2 events => first SPAN and then INPUT
+	// INPUT event comes after INPUT value was changed
+	if (onProfile) {
+		if (target.nodeName !== "INPUT") {
+		  if (!!pointed && (inCell !== pointed)) {
+			savePreviousCellService()
 		  }
-		  $("#dialogService .fixed").refixMe($servicetbl)
+		  if (inCell !== pointed) {
+		    storePresentCellService(event, inCell)
+		  }
 		}
-
-		// click a button on divRecord gives 2 events => first SPAN and then INPUT
-		// INPUT event comes after INPUT value was changed
-		if (onProfile) {
-			if (target.nodeName !== "INPUT") {
-		    if (pointed && (target !== pointed)) {
-			    savePreviousCellService()
-			  }
-				return
-			}
-			showInputColor($target, target)
-			target = $target.closest('td')[0]
-			storePresentCellService(event, target)
-		} else {
-		  if (pointed) {
-			  if (target === pointed) {
-				  return
-			  }
-			  savePreviousCellService()
-			  if (onNormalCell) {
-				  storePresentCellService(event, target)
-			  } else {
-				  clearEditcell()
-			  }
-		  } else {
-			  if (onNormalCell) {
-				  storePresentCellService(event, target)
-			  }
+		else if (SERVICECOLOR.includes(target.title)) {
+		  showInputColor(target)
+		}
+	} else {
+	  if (pointed) {
+		  if (target === pointed) {
+			  return
 		  }
+		  savePreviousCellService()
+		  if (onNormalCell) {
+			  storePresentCellService(event, target)
+		  } else {
+			  clearEditcell()
+		  }
+	  } else {
+		  if (onNormalCell) {
+			  storePresentCellService(event, target)
+		  }
+	  }
     }
-	}
+}
 
-	function showProfile() {
-		$servicetbl.addClass("showColumn8")
-		$dialogService.find(".fixed").addClass("showColumn8")
-		$(".divRecord").show()
-		$imgopen.hide()
-		$imgclose.show()
-	}
+function showProfile()
+{
+	$("#servicetbl").addClass("showColumn8")
+	$("#dialogService .fixed").addClass("showColumn8")
+	$("#servicetbl .divRecord").show()
+	$("#servicetbl th #imgopen").hide()
+	$("#servicetbl th #imgclose").show()
+}
 
-	function hideProfile() {
-		$servicetbl.removeClass("showColumn8")
-		$dialogService.find(".fixed").removeClass("showColumn8")
-		$(".divRecord").hide()
-		$imgopen.show()
-		$imgclose.hide()
-	}
-			
-	function resizeDialog()
-	{
-		$dialogService.dialog({
-			width: winWidth(95),
-			height: winHeight(95)
-		})
-		winResizeFix($servicetbl, $dialogService)
-	}
+function hideProfile()
+{
+	$("#servicetbl").removeClass("showColumn8")
+	$("#dialogService .fixed").removeClass("showColumn8")
+	$("#servicetbl .divRecord").hide()
+	$("#servicetbl th #imgopen").show()
+	$("#servicetbl th #imgclose").hide()
 }
 
 function calcSERVE()
@@ -461,14 +478,8 @@ jQuery.fn.extend({
 // Simulate hover on icon by changing background pics
 function hoverService()
 {
-	let	tdClass = "td.pacs, td.upload"
-
-	hoverCell(tdClass)
-}
-
-function hoverCell(tdClass)
-{
-	let	paleClasses = ["pacs", "upload"],
+	let	tdClass = "td.pacs, td.upload",
+		paleClasses = ["pacs", "upload"],
 		boldClasses = ["pacs2", "upload2"]
 
 	$(tdClass)
@@ -484,15 +495,15 @@ function hoverCell(tdClass)
 		})
 }
 
-function showInputColor($target, target)
+function showInputColor(target)
 {
-	let	$row = $target.closest("tr"),
+	let	row = target.closest("tr"),
 		classname = target.title
 
 	if (target.checked) {
-		$row.addClass(classname)
+		row.classList.add(classname)
 	} else {
-		$row.removeClass(classname)
+		row.classList.remove(classname)
 	}
 }
 

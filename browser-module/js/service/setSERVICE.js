@@ -1,10 +1,6 @@
 
 import {
-  BRAINDX, BRAINTUMORDX, BRAINVASCULARDX, CSFDX, TRAUMADX, SPINEDX, ETCDX,
-  BRAINTUMORDXNO, BRAINVASCULARDXNO, CSFDXNO, TRAUMADXNO, SPINEDXNO, ETCDXNO,
-  BRAINTUMORRX, BRAINVASCULARRX, CSFRX, TRAUMARX, SPINERX, SPINEOP, ETCRX,
-  BRAINTUMORRXNO, BRAINVASCULARRXNO, CSFRXNO, TRAUMARXNO, SPINERXNO, ETCRXNO,
-  NOOPERATION, RADIOSURGERY, ENDOVASCULAR
+	KEYWORDS, SPINEOP, NOOPERATION, RADIOSURGERY, ENDOVASCULAR
 } from "../model/const.js"
 
 // SERVICE is retrieved from DB by getServiceOneMonth
@@ -59,7 +55,7 @@ function calcSERVE(service)
 
 		// "No" from DB or no matched
 		if (this.disease !== "No") {
-			if (!this.operated) { this.operated = "Operation" }
+			if (!this.operated) { this.operated = "" }
 			if (!this.doneby) { this.doneby = "Staff" }
 			if (!this.scale) { this.scale = "Major" }
 			if (!this.manner) { this.manner = "Elective" }
@@ -71,15 +67,7 @@ function calcSERVE(service)
 
 function operationFor(thisrow)
 {
-	let	KEYWORDS = {
-			"Brain Tumor": [ BRAINTUMORRX, BRAINTUMORRXNO, BRAINTUMORDX, BRAINTUMORDXNO ],
-			"Brain Vascular": [ BRAINVASCULARRX, BRAINVASCULARRXNO, BRAINVASCULARDX, BRAINVASCULARDXNO ],
-			"Trauma": [ TRAUMARX, TRAUMARXNO, TRAUMADX, TRAUMADXNO ],
-			"Spine": [ SPINERX, SPINERXNO, SPINEDX, SPINEDXNO.concat(BRAINDX) ],
-			"CSF related": [ CSFRX, CSFRXNO, CSFDX, CSFDXNO ],
-			"etc": [ ETCRX, ETCRXNO, ETCDX, ETCDXNO ]
-		},
-		Rx = 0, RxNo = 1, Dx = 2, DxNo = 3, 
+	let	Rx = 0, RxNo = 1, Dx = 2, DxNo = 3, 
 		opfor = Object.keys(KEYWORDS),
 		diagnosis = thisrow.diagnosis,
 		treatment = thisrow.treatment,

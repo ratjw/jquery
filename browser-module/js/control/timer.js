@@ -5,14 +5,14 @@ import {
 import {
 	POINTER, OLDCONTENT, getNewcontent, editcellLocation, renewEditcell
 } from "./edit.js"
-import { fetchdoUpdate, fetchGetUpdate, fetchSaveOnChange } from "../model/fetch.js"
-import { fetchGetUpdateWithService, fetchSaveOnChangeService } from "../model/fetchService.js"
-import { timestamp, updateBOOK } from "../util/variables.js"
-import { dialogServiceShowing, Alert } from "../util/util.js"
 import { clearAllEditing } from "./clearAllEditing.js"
+import { fetchdoUpdate, fetchGetUpdate, fetchSaveOnChange } from "../model/fetch.js"
+import { fetchGetUpdateService, fetchSaveOnChangeService } from "../model/fetchService.js"
 import { saveProfileService } from "../service/savePreviousCellService.js"
 import { setSERVICE } from "../service/setSERVICE.js"
-import { isSplit } from "../util/util.js"
+import { reViewService } from "../service/showService.js"
+import { timestamp, updateBOOK } from "../util/variables.js"
+import { dialogServiceShowing, Alert, isSplit } from "../util/util.js"
 import { refillall, refillstaffqueue } from "../view/fill.js"
 import { fillConsults } from "../view/fillConsults.js"
 
@@ -21,10 +21,11 @@ import { fillConsults } from "../view/fillConsults.js"
 let timer = 0
 let idleCounter = 0
 
-// poke server every 10 sec.
 export function clearTimer() {
 	clearTimeout(timer)
 }
+
+// poke server every 10 sec.
 export function resetTimer() {
 	clearTimeout(timer)
 	timer = setTimeout( updating, 10000)
@@ -94,11 +95,11 @@ function doUpdate()
 function getUpdate()
 {
   if (dialogServiceShowing()) {
-    fetchGetUpdateWithService().then(response => {
+    fetchGetUpdateService().then(response => {
       if (typeof response === "object") {
         updateBOOK(response)
 		setSERVICE(response.SERVICE)
-		refillService()
+		reViewService()
 		viewGetUpdate()
       } else {
         Alert ("getUpdateWithService", response)
