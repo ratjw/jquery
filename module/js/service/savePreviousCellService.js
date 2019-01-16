@@ -143,13 +143,19 @@ function getNewRecord(pointing)
 
 	$input.each(function() {
 		let newkey = this.name.replace(/\d+/g, "")
-		if (this.type === "checkbox" && !this.checked) {
-			record[newkey] = ""
-		} else {
+
+		if (this.type === "radio" || this.type === "checkbox") {
 			if (this.checked) {
 				record[newkey] = this.title
 			} else {
+				record[newkey] = ""
+			}
+		}
+		else if (this.type === "number") {
+			if (this.value) {
 				record[newkey] = this.value
+			} else {
+				record[newkey] = ""
 			}
 		}
 	})

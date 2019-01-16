@@ -6,7 +6,7 @@
 
 		$location = "location:";
 		$browserDoctor = $location . $browser;
-		$browserNurse = $location . "browser-nurse";
+		$browserNurse = $location . "nurse";
 
 		$servername = "surgery.rama.mahidol.ac.th";
 		$wsdl="http://appcenter/webservice/patientservice.wsdl";

@@ -28,15 +28,15 @@ function login()
 							: false
 	var browser = /rvpn/.test(window.origin)
 				? isMobile
-					? "browser-vpn-mobile"
-					: "browser-vpn-es5"
+					? "mobilevpn"
+					: "es5"
 				: checkES6()
 					? isMobile
-						? "browser-mobile"
+						? "mobile"
 						: module
-							? "browser-module"
-							: "browser-es6"
-					: "browser-es5"
+							? "module"
+							: "es6"
+					: "es5"
 					
 	document.getElementById("browser").value = browser
 	sessionStorage.setItem('userid', document.getElementById("userid").value)

@@ -25,18 +25,19 @@ export function seteditableSV(editable) { editableSV = editable }
 // Operation is determined by operationFor() in JS
 // Admission is updated by getAdmitDischargeDate in PHP
 // Values in DB are user-defined to override runtime-calc values
-// admitted : "", "No", "Readmission"			<- admit
-// operated : "", "No", "Reoperation"			<- treatment
-// doneby : "", "Staff", "Resident"				<- default "Staff"
-// manner : "", "Elective", "Emergency"			<- default "Elective"
-// scale : "", "Major", "Minor"					<- default "Major"
-// disease : "", "No", "Brain Tumor", "Brain Vascular",
-//		"CSF related", "Trauma", "Spine", "etc" <- treatment + diagnosis
+// admitted : "", "1", "2", ...					<- admit
+// operated : "", "1", "2",	...					<- treatment
+// doneby : "", "Staff", "Resident"				<- user-defined
+// manner : "", "Elective", "Emergency"			<- user-defined
+// scale : "", "Major", "Minor"					<- user-defined
+// disease : "", "No", "Brain Tumor",
+// 		"Brain Vascular", "CSF related", 
+//		"Trauma", "Spine", "etc"				<- treatment + diagnosis
 // radiosurgery : "", "No", "Radiosurgery"		<- treatment
 // endovascular : "", "No", "Endovascular"		<- treatment
-// infection : "", "Infection"					<- user-defined only
-// morbid : "", "Morbidity"						<- user-defined only
-// dead : "", "Dead"							<- user-defined only
+// infection : "", "Infection"					<- user-defined
+// morbid : "", "Morbidity"						<- user-defined
+// dead : "", "Dead"							<- user-defined
 function calcSERVE(service)
 {
 	$.each(service, function() {
@@ -52,14 +53,6 @@ function calcSERVE(service)
 
 		// If DB value is blank, calc the value
 		this.disease = this.disease || operationFor(this)
-
-		// "No" from DB or no matched
-		if (this.disease !== "No") {
-			if (!this.operated) { this.operated = "" }
-			if (!this.doneby) { this.doneby = "Staff" }
-			if (!this.scale) { this.scale = "Major" }
-			if (!this.manner) { this.manner = "Elective" }
-		}
 	})
 
 	return service

@@ -32,21 +32,9 @@ let fillAdmitDischargeDate = function () {
 
 		if (this.admit && this.admit !== $cells.eq(ADMITSV).html()) {
 			$cells.eq(ADMITSV).html(putThdate(this.admit))
-			if (!/Admission/.test($cells.eq(ADMISSIONSV).className)) {
-				$cells.eq(ADMISSIONSV).addClass("Admission")
-				// for background pics
-			}
-			if (!/Admission|Readmission/.test($thisRow.className)) {
-				$thisRow.addClass("Admission")
-				// for counting
-			}
 		}
 		if (this.discharge && this.discharge !== $cells.eq(DISCHARGESV).html()) {
 			$cells.eq(DISCHARGESV).html(putThdate(this.discharge))
-			if (!/Discharge/.test($thisRow.className)) {
-				$thisRow.addClass("Discharge")
-				// for counting
-			}
 		}
 	});
 }

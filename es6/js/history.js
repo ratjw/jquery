@@ -1,30 +1,26 @@
 
-function editHistory()
+async function editHistory()
 {
-  var  $selected = $(".selected"),
+  let  $selected = $(".selected"),
     $row = $selected.closest('tr'),
     hn = $row.find("td")[HN].innerHTML,
     sql = "sqlReturnData=SELECT * FROM bookhistory "
       + "WHERE qn in (SELECT qn FROM book WHERE hn='" + hn + "') "
       + "ORDER BY editdatetime DESC;"
 
-  Ajax(MYSQLIPHP, sql, callbackeditHistory)
-
   clearEditcell()
 
-  function callbackeditHistory(response)
-  {
-    if (typeof response === "object") {
-      makehistory($row, hn, response)
-    } else {
-      Alert("editHistory", response)
-    }
+  let response = await postData(MYSQLIPHP, sql)
+  if (typeof response === "object") {
+    makehistory($row, hn, response)
+  } else {
+    Alert("editHistory", response)
   }
 }
 
 function makehistory($row, hn, response)
 {
-  var  $historytbl = $('#historytbl'),
+  let  $historytbl = $('#historytbl'),
     nam = $row.find("td")[PATIENT].innerHTML,
     name = nam && nam.replace('<br>', ' '),
     $dialogHistory = $("#dialogHistory")
@@ -44,8 +40,8 @@ function makehistory($row, hn, response)
     modal: true,
     show: 200,
     hide: 200,
-    width: window.innerWidth * 95 / 100,
-    height: window.innerHeight * 95 / 100,
+    width: winWidth(95),
+    height: winHeight(95),
     close: function() {
       $(window).off("resize", resizeHistory )
       $(".fixed").remove()
@@ -59,8 +55,8 @@ function makehistory($row, hn, response)
 
   function resizeHistory() {
     $dialogHistory.dialog({
-      width: window.innerWidth * 95 / 100,
-      height: window.innerHeight * 95 / 100
+      width: winWidth(95),
+      height: winHeight(95)
     })
     winResizeFix($historytbl, $dialogHistory)
   }
@@ -68,7 +64,7 @@ function makehistory($row, hn, response)
 
 jQuery.fn.extend({
   filldataHistory : function(q) {
-    var  cells = this[0].cells,
+    let  cells = this[0].cells,
       data = [
         putThdate(q.opdate) || "",
         q.oproom || "",
@@ -93,47 +89,49 @@ jQuery.fn.extend({
   }
 })
 
-function deletedCases()
+async function deletedCases()
 {
-  var sql = "sqlReturnData=SELECT editdatetime, b.* "
-          + "FROM book b INNER JOIN bookhistory bh ON b.qn = bh.qn "
-          + "WHERE b.deleted > 0 AND b.opdate>DATE_ADD(NOW(), INTERVAL -3 MONTH) AND bh.action = 'delete' "
-		  + "GROUP BY b.qn "
-          + "ORDER BY a.editdatetime DESC;"
+  let sql = `sqlReturnData=SELECT editdatetime, b.* 
+                             FROM book b 
+							   LEFT JOIN bookhistory bh ON b.qn = bh.qn 
+                             WHERE editdatetime>DATE_ADD(NOW(), INTERVAL -3 MONTH) 
+							   AND b.deleted>0 
+							   AND bh.action='delete' 
+							 GROUP BY b.qn 
+                             ORDER BY editdatetime DESC;`
 
-  Ajax(MYSQLIPHP, sql, callbackdeletedCases)
-
-  function callbackdeletedCases(response)
-  {
-    if (typeof response === "object") {
-      makedeletedCases(response)
-    } else {
-      Alert("deletedCases", response)
-    }
+  let response = await postData(MYSQLIPHP, sql)
+  if (typeof response === "object") {
+    makedeletedCases(response)
+  } else {
+    Alert("deletedCases", response)
   }
 }
 
 function makedeletedCases(deleted)
 {
-  var $deletedtbl = $('#deletedtbl')
+  let $deletedtbl = $('#deletedtbl')
+    $deletedtr = $('#deletedcells tr')
 
   // delete previous table lest it accumulates
   $deletedtbl.find('tr').slice(1).remove()
 
-  $.each( deleted, function() {
-    $('#deletedcells tr').clone()
+  // display the first 20
+  $.each( deleted, function(i) {
+    $deletedtr.clone()
       .appendTo($deletedtbl.find('tbody'))
         .filldataDeleted(this)
+    return i < 20;
   });
 
-  var $dialogDeleted = $("#dialogDeleted")
+  let $dialogDeleted = $("#dialogDeleted")
   $dialogDeleted.dialog({
     title: "All Deleted Cases",
     closeOnEscape: true,
     modal: true,
     hide: 200,
-    width: window.innerWidth * 95 / 100,
-    height: window.innerHeight * 95 / 100,
+    width: winWidth(95),
+    height: winHeight(95),
     close: function() {
       $(window).off("resize", resizeDeleted )
       $(".fixed").remove()
@@ -141,9 +139,9 @@ function makedeletedCases(deleted)
   })
   $deletedtbl.fixMe($dialogDeleted);
 
-  var $undelete = $("#undelete")
+  let $undelete = $("#undelete")
   $undelete.hide()
-  $undelete.off("click").on("click", function () { closeUndel() }).hide()
+  $undelete.off("click").on("click", function () { closeUndel() })
   $(".toUndelete").off("click").on("click", function () {
     toUndelete(this, deleted)
   })
@@ -153,16 +151,26 @@ function makedeletedCases(deleted)
 
   function resizeDeleted() {
     $dialogDeleted.dialog({
-      width: window.innerWidth * 95 / 100,
-      height: window.innerHeight * 95 / 100
+      width: winWidth(95),
+      height: winHeight(95)
     })
     winResizeFix($deletedtbl, $dialogDeleted)
   }
+
+  // display the rest
+  setTimeout(function() {
+    $.each( deleted, function(i) {
+      if (i < 21) return
+      $deletedtr.clone()
+        .appendTo($deletedtbl.find('tbody'))
+          .filldataDeleted(this)
+    });
+  }, 100)
 }
 
 jQuery.fn.extend({
   filldataDeleted : function(q) {
-    var  cells = this[0].cells,
+    let  cells = this[0].cells,
       data = [
         putThdate(q.opdate),
         q.staffname,
@@ -178,27 +186,31 @@ jQuery.fn.extend({
 
     rowDecoration(this[0], q.opdate)
     dataforEachCell(cells, data)
-    cells[0].className += " toUndelete"
+    cells[0].classList.add("toUndelete")
   }
 })
 
-function toUndelete(thisWhen, deleted) 
+function toUndelete(thisDate, deleted) 
 {
-  var UNDELOPDATE      = 0;
-  var UNDELSTAFFNAME    = 1;
-//  var UNDELHN        = 2;
-//  var UNDELPATIENT    = 3;
-//  var UNDELDIAGNOSIS    = 4;
-//  var UNDELTREATMENT    = 5;
-//  var UNDELCONTACT    = 6;
-//  var UNDELEDITOR      = 7;
-//  var UNDELEDITDATETIME  = 8;
-  var UNDELQN        = 9;
-  var $thisWhen      = $(thisWhen)
+  let UNDELOPDATE      = 0;
+  let UNDELSTAFFNAME    = 1;
+//  let UNDELHN        = 2;
+//  let UNDELPATIENT    = 3;
+//  let UNDELDIAGNOSIS    = 4;
+//  let UNDELTREATMENT    = 5;
+//  let UNDELCONTACT    = 6;
+//  let UNDELEDITOR      = 7;
+//  let UNDELEDITDATETIME  = 8;
+  let UNDELQN        = 9;
+  let $thisDate      = $(thisDate)
+  let $undelete = $("#undelete")
 
-  reposition($("#undelete"), "left center", "left center", $thisWhen)
-  $("#undel").on("click", function() {
-    var $thiscase = $thisWhen.closest("tr").children("td"),
+  // jquery position not work in hidden elements
+  $undelete.show()
+  reposition($undelete, "left center", "left center", $thisDate)
+
+  $("#undel").off().on("click", async function() {
+    let $thiscase = $thisDate.closest("tr").children("td"),
       opdateth = $thiscase.eq(UNDELOPDATE).html(),
       opdate = getOpdate(opdateth),
       staffname = $thiscase.eq(UNDELSTAFFNAME).html(),
@@ -217,36 +229,31 @@ function toUndelete(thisWhen, deleted)
     allCases.splice(casenum, 0, qn)
     alllen = allCases.length
 
-    for (var i=0; i<alllen; i++) {
+    for (let i=0; i<alllen; i++) {
       if (allCases[i] === qn) {
         sql += "UPDATE book SET "
-          +  "deleted=0,"
-          +  "editor='" + gv.user
-          +  "' WHERE qn="+ qn + ";"
+            +  "deleted=0,"
+            +  "editor='" + gv.user
+            +  "' WHERE qn="+ qn + ";"
       } else {
         sql += sqlCaseNum(i + 1, allCases[i])
       }
     }
 
-    Ajax(MYSQLIPHP, sql, callbacktoUndelete);
-
     $('#dialogDeleted').dialog("close")
 
-    function callbacktoUndelete(response)
-    {
-      if (typeof response === "object") {
-        updateBOOK(response);
-        refillOneDay(opdate)
-        //undelete this staff's case or a Consults case
-        if (isSplited() && (isStaffname(staffname) || isConsults())) {
-          refillstaffqueue()
-        }
-        scrolltoThisCase(qn)
-      } else {
-        Alert("toUndelete", response)
+    let response = await postData(MYSQLIPHP, sql)
+    if (typeof response === "object") {
+      updateBOOK(response);
+      refillOneDay(opdate)
+      //undelete this staff's case or a Consults case
+      if (isSplit() && (isStaffname(staffname) || isConsults())) {
+        refillstaffqueue()
       }
+      scrolltoThisCase(qn)
+    } else {
+      Alert("toUndelete", response)
     }
-    
   })
 }
 
@@ -256,35 +263,25 @@ function closeUndel()
 }
 
 // All cases (include consult cases, exclude deleted ones)
-function allCases()
+async function allCases()
 {
-  var sql = "sqlReturnData=SELECT * FROM book WHERE deleted=0 ORDER BY opdate;"
+  let sql = "sqlReturnData=SELECT * FROM book WHERE deleted=0 ORDER BY opdate;"
 
-  Ajax(MYSQLIPHP, sql, callbackAllCases)
-
-  function callbackAllCases(response)
-  {
-    if (typeof response === "object") {
-      // Make paginated dialog box containing alltbl
-      pagination(
-        $("#dialogAll"),
-        $("#alltbl"),
-        response,
-        "All Saved Cases"
-      )
-    } else {
-      Alert("allCases", response)
-    }
+  let response = await postData(MYSQLIPHP, sql)
+  if (typeof response === "object") {
+    // Make paginated dialog box containing alltbl
+    pagination($("#dialogAll"), $("#alltbl"), response, "All Saved Cases")
+  } else {
+    Alert("allCases", response)
   }
 }
 
 function pagination($dialog, $tbl, book, search)
 {
-  var  beginday = book[0].opdate,
+  let  beginday = book[0].opdate,
     lastday = findLastDateInBOOK(book),
-    width = window.innerWidth * 95 / 100,
-    height = window.innerHeight * 95 / 100,
-    firstday = getPrevMonday()
+    firstday = getPrevMonday(),
+	offset = 0
 
   $dialog.dialog({
     title: search,
@@ -292,8 +289,8 @@ function pagination($dialog, $tbl, book, search)
     modal: true,
     show: 200,
     hide: 200,
-    width: width,
-    height: height,
+    width: winWidth(95),
+    height: winHeight(95),
     close: function() {
       $(window).off("resize", resizeDialog )
       $(".fixed").remove()
@@ -301,14 +298,14 @@ function pagination($dialog, $tbl, book, search)
     buttons: [
       {
         text: "<<< Year",
-        class: "Aqua",
+        class: "yearbut",
         click: function () {
           showOneWeek(book, firstday, -364)
         }
       },
       {
         text: "<< Month",
-        class: "lightAqua",
+        class: "monthbut",
         click: function () {
           offset = firstday.slice(-2) > 28 ? -35 : -28
           showOneWeek(book, firstday, offset)
@@ -316,7 +313,6 @@ function pagination($dialog, $tbl, book, search)
       },
       {
         text: "< Week",
-        class: "marginright",
         click: function () {
           showOneWeek(book, firstday, -7)
         }
@@ -332,7 +328,7 @@ function pagination($dialog, $tbl, book, search)
       },
       {
         text: "Month >>",
-        class: "lightAqua",
+        class: "monthbut",
         click: function () {
           offset = firstday.slice(-2) > 28 ? 35 : 28
           showOneWeek(book, firstday, offset)
@@ -340,7 +336,7 @@ function pagination($dialog, $tbl, book, search)
       },
       {
         text: "Year >>>",
-        class: "Aqua",
+        class: "yearbut",
         click: function () {
           showOneWeek(book, firstday, 364)
         }
@@ -359,16 +355,16 @@ function pagination($dialog, $tbl, book, search)
       PACS(this.innerHTML)
     }
   })
-  $dialog.find('.camera').on("click", function() {
-    var hn = this.previousElementSibling.innerHTML
-    var patient = this.innerHTML
+  $dialog.find('.upload').on("click", function() {
+    let hn = this.previousElementSibling.innerHTML
+    let patient = this.innerHTML
 
     showUpload(hn, patient)
   })
 
   function showOneWeek(book, Monday, offset)
   {
-    var  bookOneWeek, Sunday
+    let  bookOneWeek, Sunday
 
     firstday = Monday.nextdays(offset)
     if (firstday < beginday) { firstday = getPrevMonday(beginday) }
@@ -385,7 +381,7 @@ function pagination($dialog, $tbl, book, search)
 
   function getPrevMonday(date)
   {
-    var today = date
+    let today = date
           ? new Date(date.replace(/-/g, "/"))
           : new Date();
     today.setDate(today.getDate() - today.getDay() + 1);
@@ -394,7 +390,7 @@ function pagination($dialog, $tbl, book, search)
 
   function getNextSunday(date)
   {
-    var today = new Date(date);
+    let today = new Date(date);
     today.setDate(today.getDate() - today.getDay() + 7);
     return today.ISOdate();
   }
@@ -415,7 +411,7 @@ function pagination($dialog, $tbl, book, search)
 
   function showAllCases(bookOneWeek, Monday, Sunday)
   {
-    var  Mon = Monday && Monday.thDate() || "",
+    let  Mon = Monday && Monday.thDate() || "",
       Sun = Sunday && Sunday.thDate() || ""
 
     $dialog.dialog({
@@ -425,7 +421,7 @@ function pagination($dialog, $tbl, book, search)
     $tbl.find('tr').slice(1).remove()
 
     if (Monday) {
-      var  $row, rowi, cells,
+      let  $row, row, cells,
         date = Monday,
         nocase = true
 
@@ -433,9 +429,9 @@ function pagination($dialog, $tbl, book, search)
         while (this.opdate > date) {
           if (nocase) {
             $row = $('#allcells tr').clone().appendTo($tbl.find('tbody'))
-            rowi = $row[0]
-            cells = rowi.cells
-            rowDecoration(rowi, date)
+            row = $row[0]
+            cells = row.cells
+            rowDecoration(row, date)
           }
           date = date.nextdays(1)
           nocase = true
@@ -448,9 +444,9 @@ function pagination($dialog, $tbl, book, search)
       date = date.nextdays(1)
       while (date <= Sunday) {
         $row = $('#allcells tr').clone().appendTo($tbl.find('tbody'))
-        rowi = $row[0]
-        cells = rowi.cells
-        rowDecoration(rowi, date)
+        row = $row[0]
+        cells = row.cells
+        rowDecoration(row, date)
         date = date.nextdays(1)
       }
     } else {
@@ -464,8 +460,8 @@ function pagination($dialog, $tbl, book, search)
 
   function resizeDialog() {
     $dialog.dialog({
-      width: window.innerWidth * 95 / 100,
-      height: window.innerHeight * 95 / 100
+      width: winWidth(95),
+      height: winHeight(95)
     })
     winResizeFix($tbl, $dialog)
   }
@@ -473,8 +469,8 @@ function pagination($dialog, $tbl, book, search)
 
 jQuery.fn.extend({
   filldataAllcases : function(q) {
-    var rowi = this[0],
-      cells = rowi.cells,
+    let row = this[0],
+      cells = row.cells,
       date = q.opdate,
       data = [
         putThdate(date),
@@ -489,14 +485,14 @@ jQuery.fn.extend({
         q.contact
       ]
 
-    rowDecoration(rowi, date)
+    rowDecoration(row, date)
     dataforEachCell(cells, data)
   }
 })
 
 function searchCases()
 {
-  var $dialogInput = $("#dialogInput"),
+  let $dialogInput = $("#dialogInput"),
     $stafflist = $('#stafflist')
 
   $dialogInput.dialog({
@@ -511,7 +507,7 @@ function searchCases()
   })
 
   $dialogInput.off("click").on("click", function(event) {
-    var target = event.target
+    let target = event.target
 
     if ($stafflist.is(":visible")) {
       $stafflist.hide();
@@ -522,17 +518,17 @@ function searchCases()
     }
   })
   .off("keydown").on("keydown", function(event) {
-    var keycode = event.which || window.event.keyCode
+    let keycode = event.which || window.event.keyCode
     if (keycode === 13) { searchDB() }
   })
 }
 
 function getSaffName(pointing)
 {
-  var $stafflist = $("#stafflist"),
+  let $stafflist = $("#stafflist"),
     $pointing = $(pointing)
 
-  $stafflist.appendTo($pointing.closest('div'))
+  $stafflist.appendTo($pointing.closest('div')).show()
   $stafflist.menu({
     select: function( event, ui ) {
       pointing.value = ui.item.text()
@@ -545,12 +541,15 @@ function getSaffName(pointing)
   menustyle($stafflist, $pointing)
 }
 
-function searchDB()
+async function searchDB()
 {
-  var hn = $('input[name="hn"]').val(),
+  let hn = $('input[name="hn"]').val(),
     staffname = $('input[name="staffname"]').val(),
     others = $('input[name="others"]').val(),
     sql = "", search = ""
+
+  // Close before open another dialog
+  $("#dialogInput").dialog("close")
 
   // for dialog title
   search += hn
@@ -561,26 +560,20 @@ function searchDB()
       + "&staffname=" + staffname
       + "&others=" + others
 
-    Ajax(SEARCH, sql, callbackfind)
-
-  } else {
-    Alert("Search: ''", "<br><br>No Result")
-  }
-  $("#dialogInput").dialog("close")
-
-  function callbackfind(response)
-  {
+    let response = await postData(SEARCH, sql)
     if (typeof response === "object") {
       makeFind(response, search)
     } else {
       Alert("Search: " + search, response)
     }
+  } else {
+    Alert("Search: ''", "<br><br>No Result")
   }
 }
 
 function makeFind(found, search)
 {
-  var flen = found.length,
+  let flen = found.length,
     $dialogFind = $("#dialogFind"),
     $findtbl = $("#findtbl"),
     show = scrolltoThisCase(found[flen-1].qn)
@@ -596,18 +589,18 @@ function makeFind(found, search)
 
 function scrolltoThisCase(qn)
 {
-  var showtbl, showqueuetbl
+  let showtbl, showqueuetbl
 
-  showtbl = showFind("tblcontainer", "tbl", qn)
-  if (isSplited()) {
-    showqueuetbl = showFind("queuecontainer", "queuetbl", qn)
+  showtbl = locateFound("tblcontainer", "tbl", qn)
+  if (isSplit()) {
+    showqueuetbl = locateFound("queuecontainer", "queuetbl", qn)
   }
   return showtbl || showqueuetbl
 }
 
-function showFind(containerID, tableID, qn)
+function locateFound(containerID, tableID, qn)
 {
-  var container = document.getElementById(containerID),
+  let container = document.getElementById(containerID),
     row = getTableRowByQN(tableID, qn),
     scrolledTop = container.scrollTop,
     offset = row && row.offsetTop,
@@ -639,8 +632,8 @@ function makeDialogFound($dialogFind, $findtbl, found, search)
     title: "Search: " + search,
     closeOnEscape: true,
     modal: true,
-    width: window.innerWidth*95/100,
-    height: window.innerHeight*95/100,
+    width: winWidth(95),
+    height: winHeight(95),
     buttons: [
       {
         text: "Export to xls",
@@ -683,15 +676,15 @@ function makeDialogFound($dialogFind, $findtbl, found, search)
       PACS(this.innerHTML)
     }
   })
-  $dialogFind.find('.camera').on("click", function() {
-    var patient = this.innerHTML
-    var hn = this.previousElementSibling.innerHTML
+  $dialogFind.find('.upload').on("click", function() {
+    let patient = this.innerHTML
+    let hn = this.previousElementSibling.innerHTML
 
     showUpload(hn)
   })
 
   //scroll to todate when there many cases
-  var today = new Date(),
+  let today = new Date(),
     todate = today.ISOdate(),
     thishead
 
@@ -706,7 +699,7 @@ function makeDialogFound($dialogFind, $findtbl, found, search)
 
 jQuery.fn.extend({
   filldataFind : function(q) {
-    var  row = this[0],
+    let  row = this[0],
       cells = row.cells,
       data = [
         putThdate(q.opdate),
@@ -727,28 +720,38 @@ jQuery.fn.extend({
       rowDecoration(row, q.opdate)
     }
     q.hn && gv.isPACS && (cells[2].className = "pacs")
-    q.patient && gv.isMobile && (cells[3].className = "camera")
+    q.patient && (cells[3].className = "upload")
 
     dataforEachCell(cells, data)
   }
 })
 
+function winWidth(percent)
+{
+  return window.innerWidth * percent / 100
+}
+
+function winHeight(percent)
+{
+  return window.innerHeight * percent / 100
+}
+
 function PACS(hn)
 { 
-  var pacs = 'http://synapse/explore.asp?path=/All Patients/InternalPatientUID='+hn
-  var sql = 'PAC=http://synapse/explore.asp'
-  var ua = window.navigator.userAgent;
-  var msie = ua.indexOf("MSIE")
-  var edge = ua.indexOf("Edge")
-  var IE = !!navigator.userAgent.match(/Trident.*rv\:11\./)
-  var data_type = 'data:application/vnd.ms-internet explorer'
+  let pacs = 'http://synapse/explore.asp?path=/All Patients/InternalPatientUID='+hn
+  let sql = 'PAC=http://synapse/explore.asp'
+  let ua = window.navigator.userAgent;
+  let msie = ua.indexOf("MSIE")
+  let edge = ua.indexOf("Edge")
+  let IE = !!navigator.userAgent.match(/Trident.*rv\:11\./)
+  let data_type = 'data:application/vnd.ms-internet explorer'
 
   if (msie > 0 || edge > 0 || IE) { // If Internet Explorer
     open(pacs);
   } else {
-    var html = '<!DOCTYPE html><HTML><HEAD><script>function opener(){window.open("'
+    let html = '<!DOCTYPE html><HTML><HEAD><script>function opener(){window.open("'
     html += pacs + '", "_self")}</script><body onload="opener()"></body></HEAD></HTML>'
-    var a = document.createElement('a');
+    let a = document.createElement('a');
     document.body.appendChild(a);  // You need to add this line in FF
     a.href = data_type + ', ' + encodeURIComponent(html);
     a.download = "index.html"
@@ -758,41 +761,41 @@ function PACS(hn)
 
 function showUpload(hn, patient)
 {
-  var win = gv.uploadWindow
+  let win = gv.showUpload
   if (hn) {
     if (win && !win.closed) {
       win.close();
     }
-    gv.uploadWindow = win = window.open("jQuery-File-Upload", "_blank")
+    gv.showUpload = win = window.open("../Upload", "_blank")
     win.hnName = {"hn": hn, "patient": patient}
-    //hnName is a pre-defined variable in child window (jQuery-File-Upload)
+    //hnName is a pre-defined variable in child window (Upload)
   }
 }
 
 function sendtoLINE()
 {
-  $('#dialogNotify').dialog({
-    title: '<img src="css/pic/general/linenotify.png" width="40" style="float:left">'
-         + '<span style="font-size:20px">Qbook: ' + gv.user + '</span>',
-    closeOnEscape: true,
-    modal: true,
-    show: 200,
-    hide: 200,
-    width: 270,
-    height: 300
-  })
+    $('#dialogNotify').dialog({
+      title: '<img src="css/pic/general/linenotify.png" width="40" style="float:left">'
+           + '<span style="font-size:20px">Qbook: ' + gv.user + '</span>',
+      closeOnEscape: true,
+      modal: true,
+      show: 200,
+      hide: 200,
+      width: 270,
+      height: 300
+    })
 }
 
 function toLINE()
 {
-  var capture = document.querySelector("#capture")
-  var $capture = $("#capture")
-  var $captureTRs = $capture.find('tr')
-  var $selected = $(".selected")
-  var row = ""
-  var hide = [1, 3, 4, 12]
-  var $dialogNotify = $('#dialogNotify')
-  var message
+  let capture = document.querySelector("#capture")
+  let $capture = $("#capture")
+  let $captureTRs = $capture.find('tr')
+  let $selected = $(".selected")
+  let row = ""
+  let hide = [1, 3, 4, 12]
+  let $dialogNotify = $('#dialogNotify')
+  let message
 
 
   message = $dialogNotify.find('textarea').val()
@@ -814,9 +817,9 @@ function toLINE()
 
   html2canvas(capture).then(function(canvas) {
     $.post(LINENOTIFY, {
-      'user': gv.user,
-      'message': message,
-      'image': canvas.toDataURL('image/png', 1.0)
+        'user': gv.user,
+        'message': message,
+        'image': canvas.toDataURL('image/png', 1.0)
     })
     $capture.hide()
   })
@@ -824,12 +827,12 @@ function toLINE()
 
 function sendtoExcel()
 {
-  var capture = document.querySelector("#capture")
-  var $capture = $("#capture")
-  var $captureTRs = $capture.find('tr')
-  var $selected = $(".selected")
-  var row = ""
-  var hide = [1, 3, 4, 12]
+  let capture = document.querySelector("#capture")
+  let $capture = $("#capture")
+  let $captureTRs = $capture.find('tr')
+  let $selected = $(".selected")
+  let row = ""
+  let hide = [1, 3, 4, 12]
 
   $captureTRs.slice(1).remove()
 
@@ -850,7 +853,7 @@ function sendtoExcel()
 
 function readme()
 {
-  var $dialogReadme = $('#dialogReadme'),
+  let $dialogReadme = $('#dialogReadme'),
     object = "<object data='.\\readme.pdf' type='application/pdf' "
            + "width='400px' height='500px'>"
            + "</object>"
@@ -869,7 +872,7 @@ function readme()
 
 function Alert(title, message)
 {
-  var $dialogAlert = $("#dialogAlert")
+  let $dialogAlert = $("#dialogAlert")
   $dialogAlert.css({
     "fontSize":" 14px",
     "textAlign" : "center"

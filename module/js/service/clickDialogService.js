@@ -9,14 +9,8 @@ const SERVICECOLOR = ["Readmission", "Reoperation", "Infection", "Morbidity", "D
 
 export function clickDialogService(event)
 {
-let	$dialogService = $("#dialogService"),
-	$servicetbl = $("#servicetbl"),
-	$servicecells = $("#servicecells"),
-	$imgopen = $("#servicetbl th .imgopen"),
-	$imgclose = $("#servicetbl th .imgclose"),
-	$divRecord = $("#servicetbl .divRecord")
-
-	let	target = event.target,
+	let $servicetbl = $("#servicetbl"),
+		target = event.target,
 		inCell = target.closest("td"),
 		onProfile = !!target.closest(".divRecord"),
 		onNormalCell = (target.nodeName === "TD" && target.colSpan === 1),
@@ -41,29 +35,32 @@ let	$dialogService = $("#dialogService"),
 	// INPUT event comes after INPUT value was changed, just show colors
 	if (onProfile) {
 	  if (target.nodeName === "INPUT") {
-		savePreviousCellService()
-		editPresentCellService(event, inCell)
-	    if (SERVICECOLOR.includes(target.title)) {
-		  showInputColor(target)
-	    }
+		if (inCell !== POINTER) {
+	      if (POINTER) {
+		    savePreviousCellService()
+		  }
+		  editPresentCellService(event, inCell)
+	      if (SERVICECOLOR.includes(target.title)) {
+		    showInputColor(target)
+	      }
+		}
 	  }
 	} else {
 	  if (POINTER) {
-		if (target === POINTER) {
-		  return
+		if (inCell !== POINTER) {
+		  savePreviousCellService()
+		  if (onNormalCell) {
+		    editPresentCellService(event, inCell)
+		  } else {
+		    clearEditcell()
+		  }
 		}
-		savePreviousCellService()
-		if (onNormalCell) {
-		  editPresentCellService(event, target)
-		} else {
-		  clearEditcell()
-		}
-	} else {
-	  if (onNormalCell) {
-		  editPresentCellService(event, target)
+	  } else {
+	    if (onNormalCell) {
+		  editPresentCellService(event, inCell)
+	    }
 	  }
-	}
-  }
+    }
 }
 
 function showProfile() {

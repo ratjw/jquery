@@ -744,9 +744,9 @@ function showUpload(hn, patient)
     if (win && !win.closed) {
       win.close();
     }
-    gv.uploadWindow = win = window.open("jQuery-File-Upload", "_blank")
+    gv.uploadWindow = win = window.open("Upload", "_blank")
     win.hnName = {"hn": hn, "patient": patient}
-    //hnName is a pre-defined variable in child window (jQuery-File-Upload)
+    //hnName is a pre-defined variable in child window (Upload)
   }
 }
 
