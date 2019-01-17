@@ -11,7 +11,7 @@ export function showRecord(bookq)
 }
 
 // this.name === column in Mysql
-// this.title === value of this item
+// this.value === value of this item
 // add qn to this.name to make it unique
 // next sibling (span) right = wide pixels, to make it (span) contained in input box
 function initRecord(bookq, $divRecord)
@@ -22,7 +22,7 @@ function initRecord(bookq, $divRecord)
 
 	$input.each(function() {
 		inputName = this.name
-		this.checked = this.title === bookq[inputName]
+		this.checked = this.value === bookq[inputName]
 		this.name = inputName + bookq.qn
 		wide = this.className.replace("w", "") + "px"
 		if (this.type === "number") {

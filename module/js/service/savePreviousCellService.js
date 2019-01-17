@@ -146,7 +146,7 @@ function getNewRecord(pointing)
 
 		if (this.type === "radio" || this.type === "checkbox") {
 			if (this.checked) {
-				record[newkey] = this.title
+				record[newkey] = this.value
 			} else {
 				record[newkey] = ""
 			}

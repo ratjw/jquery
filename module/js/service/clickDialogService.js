@@ -35,14 +35,14 @@ export function clickDialogService(event)
 	// INPUT event comes after INPUT value was changed, just show colors
 	if (onProfile) {
 	  if (target.nodeName === "INPUT") {
+	    if (SERVICECOLOR.includes(target.title)) {
+		  showInputColor(target)
+	    }
 		if (inCell !== POINTER) {
 	      if (POINTER) {
 		    savePreviousCellService()
 		  }
 		  editPresentCellService(event, inCell)
-	      if (SERVICECOLOR.includes(target.title)) {
-		    showInputColor(target)
-	      }
 		}
 	  }
 	} else {
@@ -84,7 +84,7 @@ function showInputColor(target)
 	let	row = target.closest("tr"),
 		classname = target.title
 
-	if (target.checked) {
+	if (target.checked || target.value > 1) {
 		row.classList.add(classname)
 	} else {
 		row.classList.remove(classname)

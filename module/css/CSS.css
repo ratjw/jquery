@@ -104,9 +104,9 @@ td img.imgpale {
 #queuetbl td:nth-child(7),
 #queuetbl td:nth-child(8),
 #servicetbl td:nth-child(2),
-#servicetbl td:nth-child(8),
 #servicetbl td:nth-child(9),
 #servicetbl td:nth-child(10),
+#servicetbl td:nth-child(11),
 #deletedtbl td:nth-child(1),
 #deletedtbl td:nth-child(2),
 #deletedtbl td:nth-child(3),
@@ -470,6 +470,7 @@ td.upload2 { background-image: url(pic/general/upload2.png); }
   height: 12px;
   font-size: 12px;
   position: relative;
+  left: 55px;
   top: -1px;
   border: none;
 }

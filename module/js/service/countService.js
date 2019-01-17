@@ -6,7 +6,7 @@ const COMPLICATION = {
 	"morbid": "Morbidity",
 	"dead": "Dead"
 }
-const COUNTER = [ "Operation", "Readmission",
+const COUNTER = [ "Admission", "Discharge", "Operation", "Readmission",
    "Reoperation", "Infection", "Morbidity", "Dead"
 ]
 
@@ -34,24 +34,31 @@ export function countAllServices() {
 		document.getElementById(item).innerHTML = 0
 	})
 
+	let x = ""
 	SERVICE.forEach(thiscase => {
 
-		// Assume consult cases (waitnum < 0) are admitted in another service ???
+		// Assume consult cases (waitnum < 0) are admitted in another service
 		if (thiscase.waitnum > 0) {
-			document.getElementById("Admission").innerHTML += Number(thiscase.admitted)
+			x = document.getElementById("Admission").innerHTML
+			document.getElementById("Admission").innerHTML = Number(thiscase.admitted) + Number(x)
 		}
 		if (thiscase.waitnum > 0) {
 			if ((thiscase.discharge >= serviceFromDate)
 			 && (thiscase.discharge <= serviceToDate)) {
-				document.getElementById("Discharge").innerHTML += 1
+				document.getElementById("Discharge").innerHTML++
 			}
 		}
 		if (thiscase.admitted > 1) {
-			document.getElementById("Readmission").innerHTML += (Number(thiscase.admitted) - 1)
+			x = document.getElementById("Readmission").innerHTML
+			document.getElementById("Readmission").innerHTML = (Number(thiscase.admitted) - 1) + Number(x)
 		}
 		if (thiscase.operated) {
-			document.getElementById("Operation").innerHTML += Number(thiscase.operated)
-			document.getElementById("Reoperation").innerHTML += (Number(thiscase.operated) - 1)
+			x = document.getElementById("Operation").innerHTML
+			document.getElementById("Operation").innerHTML = Number(thiscase.operated) + Number(x)
+		}
+		if (thiscase.operated > 1) {
+			x = document.getElementById("Reoperation").innerHTML
+			document.getElementById("Reoperation").innerHTML = (Number(thiscase.operated) - 1) + Number(x)
 		}
 
 		$.each(COMPLICATION, function(key, val) {

@@ -40,7 +40,7 @@ require_once "mysqli.php";
 				$discharge = "discharge='$newDischarge',";
 		}
 		if ($admit || $discharge) {
-			$mysqli->query("UPDATE book SET $admit$discharge WHERE qn=$qn;");
+			$mysqli->query("UPDATE book SET $admit$discharge editor='getipd' WHERE qn=$qn;");
 			$update = true;
 		}
 	}

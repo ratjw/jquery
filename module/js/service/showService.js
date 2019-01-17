@@ -83,9 +83,9 @@ export function showService() {
 		}
 	})
 	
-	if (/surgery\.rama/.test(location.hostname)) {
+//	if (/surgery\.rama/.test(location.hostname)) {
 		getAdmitDischargeDate()
-	}
+//	}
 	countAllServices()
 	$servicetbl.fixMe($dialogService)
 	hoverService()
