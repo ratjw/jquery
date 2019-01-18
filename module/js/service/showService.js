@@ -26,7 +26,7 @@ export function showService() {
 		scase = 0,
 		classname = ""
 			
-	let resizeDialog = () => {
+	let resizeDialogSV = () => {
 		$dialogService.dialog({
 			width: winWidth(95),
 			height: winHeight(95)
@@ -73,7 +73,7 @@ export function showService() {
 			$(".ui-dialog:visible").find(".ui-dialog-content").dialog("close")
 			$(".fixed").remove()
 			hideProfile()
-			$(window).off("resize", resizeDialog)
+			$(window).off("resize", resizeDialogSV)
 			$dialogService.off("click", clickDialogService)
 			if (!!POINTER) {
 				savePreviousCellService()
@@ -105,7 +105,7 @@ export function showService() {
 	});
 
 	//for resizing dialogs in landscape / portrait view
-	$(window).on("resize", resizeDialog)
+	$(window).on("resize", resizeDialogSV)
 }
 
 // Use existing DOM table to refresh when editing

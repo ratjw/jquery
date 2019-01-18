@@ -5,6 +5,7 @@ import { getTableRowsByDate } from "../util/getrows.js"
 import { HOLIDAY, setHOLIDAY } from "../util/variables.js"
 import { holiday } from "../view/holiday.js"
 import { fetchSaveHoliday, fetchDelHoliday } from "../model/fetch.js"
+import { Alert } from "../util/util.js"
 
 const HOLIDAYENGTHAI = {
 	"Magha": "วันมาฆบูชา",
@@ -174,7 +175,7 @@ export function delHoliday(that)
 	}
 }
 
-async function saveHoliday()
+function saveHoliday()
 {
 	let	vdateth = document.getElementById("holidateth").value,
 		vdate = numDate(vdateth),

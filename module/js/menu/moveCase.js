@@ -84,7 +84,7 @@ function clickDate(event, $selected, cell)
 		fetchmoveCase(arg).then(response => {
 			let hasData = function () {
 				updateBOOK(response)
-				viewmoveCase(movedate, thisdate, staffname, moveqn)
+				viewmoveCase(movedate, thisdate, staffname)
 			}
 
 			typeof response === "object"

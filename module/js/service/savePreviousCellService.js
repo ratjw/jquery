@@ -10,7 +10,7 @@ import { URIcomponent, Alert } from "../util/util.js"
 import { reViewService } from "./showService.js"
 import { coloring } from "./coloring.js"
 import { setSERVICE, SERVICE } from "./setSERVICE.js"
-import { UndoManager } from "../model/UndoManager.js"
+import { countAllServices } from "./countAllServices.js"
 
 export function savePreviousCellService() {
 	let newcontent = getNewcontent()
@@ -78,25 +78,8 @@ function saveService(pointed, column, newcontent) {
 					reViewService()
 				}
 
-				// Calc coloring of this case only
-				let oldclass = row.className,
-					bookq = getBOOKrowByQN(SERVICE, qn),
-					newclass = coloring(bookq),
-					oldclassArray = oldclass.split(" "),
-					newclassArray = newclass.split(" "),
-					counter,
-					updateCounter = function (classArray, add) {
-						$.each( classArray, function(i, each) {
-							let counter = document.getElementById(each)
-							counter.innerHTML = Number(counter.innerHTML) + add
-						})
-					};
-
-				if (oldclass !== newclass) {
-					updateCounter(oldclassArray, -1)
-					updateCounter(newclassArray, 1)
-					row.className = newclass
-				}
+				coloring(bookq)
+				countAllServices()
 			},
 			noResponse = function () {
 				Alert("saveService", response)

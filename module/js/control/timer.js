@@ -12,7 +12,7 @@ import { saveProfileService } from "../service/savePreviousCellService.js"
 import { setSERVICE } from "../service/setSERVICE.js"
 import { reViewService } from "../service/showService.js"
 import { timestamp, updateBOOK } from "../util/variables.js"
-import { dialogServiceShowing, Alert, isSplit } from "../util/util.js"
+import { Alert, isSplit } from "../util/util.js"
 import { refillall, refillstaffqueue } from "../view/fill.js"
 import { fillConsults } from "../view/fillConsults.js"
 
@@ -188,4 +188,11 @@ function saveOnChangeService(POINTER, index, content, qn)
 
   POINTER.innerHTML = content
   return true
+}
+
+function dialogServiceShowing()
+{
+  let $dialogService = $("#dialogService")
+
+  return $dialogService.hasClass('ui-dialog-content') && $dialogService.dialog('isOpen')
 }

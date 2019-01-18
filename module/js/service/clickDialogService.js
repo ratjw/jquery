@@ -110,11 +110,3 @@ function showInputColor(target)
 		row.classList.remove(classname)
 	}
 }
-
-function updateSERVICE(inCell, target)
-{
-	let qn = inCell.parentElement.lastElementChild.innerHTML
-	let bookq = getBOOKrowByQN(book, qn)
-
-	bookq[target.name] = target.value // saveProfileService will not work
-}

@@ -7,7 +7,6 @@ import { BOOK, updateBOOK } from "../util/variables.js"
 import { Alert } from "../util/util.js"
 import { viewOneDay } from "../view/viewOneDay.js"
 import { viewSplit } from "../view/viewSplit.js"
-import { saveContent } from "./saveContent.js"
 
 export function saveOpTime(pointed, newcontent)
 {
@@ -22,7 +21,7 @@ export function saveOpTime(pointed, newcontent)
 	// valid time 00.00 - 23.59 or ""
 	if (newcontent && !/^([0-1][0-9]|2[0-3])\.([0-5][0-9])$/.test(newcontent)) { return }
 
-	let allCases = sameDateRoomBOOKRows(opdate, oproom, theatre)
+	let allCases = sameDateRoomBOOKRows(BOOK, opdate, oproom, theatre)
 	allCases.find(e => e.qn === qn).optime = newcontent
 	let timeCases = allCases.filter(e => e.optime !== "")
 	let notimeCases = allCases.filter(e => e.optime === "")

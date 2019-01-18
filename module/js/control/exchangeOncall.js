@@ -1,10 +1,11 @@
 
 import { OPDATE } from "../model/const.js"
-import { clearEditcell } from "../control/edit.js"
+import { clearEditcell } from "./edit.js"
 import { fetchChangeOncall } from "../model/fetch.js"
 import { getOpdate } from "../util/date.js"
 import { setONCALL } from "../util/variables.js"
 import { reposition, menustyle, Alert } from "../util/util.js"
+import { htmlwrap } from "../view/fillConsults.js"
 
 export function exchangeOncall(pointing)
 {

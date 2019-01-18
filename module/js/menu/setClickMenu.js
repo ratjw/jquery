@@ -1,6 +1,6 @@
 
-import { searchCases } from "./searchCases.js"
-import { allCases } from "./allCases.js"
+import { searchCases, searchDB } from "./searchCases.js"
+import { caseAll } from "./caseAll.js"
 import { deletedCases } from "./deletedCases.js"
 import { readme } from "./readme.js"
 import { addnewrow } from "./addnewrow.js"
@@ -9,13 +9,11 @@ import { moveCase } from "./moveCase.js"
 import { editHistory } from "./editHistory.js"
 import { delCase } from "./delCase.js"
 import { sendtoExcel } from "./sendtoExcel.js"
-import { sendtoLINE } from "./sendtoLINE.js"
-import { toLINE } from "./sendtoLINE.js"
-import { searchDB } from "./searchCases.js"
+import { sendtoLINE, toLINE } from "./sendtoLINE.js"
 
 let onclick = {
 	"clicksearchCases": searchCases,
-	"clickallCases": allCases,
+	"clickcaseAll": caseAll,
 	"clickdeletedCases": deletedCases,
 	"clickreadme": readme,
 	"addrow": addnewrow,

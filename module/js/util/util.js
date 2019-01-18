@@ -36,13 +36,6 @@ export function isConsultsTbl(tableID)
 	return queuetbl && isConsults()
 }
 
-export function dialogServiceShowing()
-{
-  let $dialogService = $("#dialogService")
-
-  return $dialogService.hasClass('ui-dialog-content') && $dialogService.dialog('isOpen')
-}
-
 export function getMaxQN(book)
 {
 	var qn = Math.max.apply(Math, $.map(book, function(row, i) {

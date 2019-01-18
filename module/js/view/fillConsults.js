@@ -69,7 +69,7 @@ function findOncallRow(rows, nextrow, tlen, dateoncall)
   }
 }
 
-function htmlwrap(staffname)
+export function htmlwrap(staffname)
 {
   return '<p style="color:#999999;font-size:12px">Consult<br>' + staffname + '</p>'
 }

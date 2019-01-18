@@ -1,6 +1,6 @@
 
 import { OPDATE, THEATRE, OPROOM, STAFFNAME, QN } from "./const.js"
-import { clearTimer, resetTimer, resetTimerCounter } from "../control/timer.js"
+import { clearTimer, resetTimerCounter } from "../control/timer.js"
 import { clearEditcell } from "../control/edit.js"
 import { clearMouseoverTR } from "../menu/moveCase.js"
 import { fetchSortable } from "./fetch.js"
@@ -10,7 +10,6 @@ import { sameDateRoomBOOKRows } from "../util/getrows.js"
 import { BOOK, updateBOOK } from "../util/variables.js"
 import { Alert, isConsults, isStaffname } from "../util/util.js"
 import { viewmoveCase } from "../view/viewmoveCase.js"
-import { showUpload } from "../get/showUpload.js"
 import { hoverMain } from "../view/hoverMain.js"
 
 // Sortable 2 windows connected with each other

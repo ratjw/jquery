@@ -11,6 +11,9 @@ import { savePreviousCellService } from "../service/savePreviousCellService.js"
 import { editPresentCellService } from "../service/editPresentCellService.js"
 import { clearAllEditing } from "./clearAllEditing.js"
 
+const EDITABLESV = [DIAGNOSISSV, TREATMENTSV, ADMISSIONSV, FINALSV]
+const EDITABLETBL = [DIAGNOSIS, TREATMENT, CONTACT]
+
 // the current position
 export let POINTER = null
 
@@ -70,9 +73,7 @@ export function editcellEvent()
 let keyin = function (evt, keycode) {
   let tableID = $(POINTER).closest('table').attr('id'),
     servicetbl = tableID === "servicetbl",
-    EDITABLE = servicetbl
-               ? [DIAGNOSISSV, TREATMENTSV, ADMISSIONSV, FINALSV]
-               : [DIAGNOSIS, TREATMENT, CONTACT],
+    editable = servicetbl ? EDITABLESV : EDITABLETBL,
     Shift = evt.shiftKey,
     Ctrl = evt.ctrlKey
 
@@ -84,14 +85,14 @@ let keyin = function (evt, keycode) {
 			return false
 		case 9: 
 			servicetbl
-			? serviceTable9(evt, EDITABLE, Shift)
-			: mainTable9(evt, EDITABLE, Shift)
+			? serviceTable9(evt, editable, Shift)
+			: mainTable9(evt, editable, Shift)
 			evt.preventDefault()
 			return false
 		case 13: 
 			servicetbl
-			? serviceTable13(evt, EDITABLE, Shift, Ctrl)
-			: mainTable13(evt, EDITABLE, Shift, Ctrl)
+			? serviceTable13(evt, editable, Shift, Ctrl)
+			: mainTable13(evt, editable, Shift, Ctrl)
 			evt.preventDefault()
 			return false
 	}
@@ -102,41 +103,41 @@ let keyin = function (evt, keycode) {
 	}
 }
 
-let mainTable9 = function (evt, EDITABLE, Shift) {
+let mainTable9 = function (evt, editable, Shift) {
 	clearMenu()
 	savePreviousCell()
 	let thiscell = Shift
-			? findPrevcell(EDITABLE, POINTER)
-			: findNextcell(EDITABLE, POINTER)
+			? findPrevcell(editable, POINTER)
+			: findNextcell(editable, POINTER)
 	thiscell
 		? editPresentCell(evt, thiscell)
 		: clearEditcell()
 }
 
-let serviceTable9 = function (evt, EDITABLE, Shift) {
+let serviceTable9 = function (evt, editable, Shift) {
 	savePreviousCellService()
 	let thiscell = Shift
-			? findPrevcell(EDITABLE, POINTER)
-			: findNextcell(EDITABLE, POINTER)
+			? findPrevcell(editable, POINTER)
+			: findNextcell(editable, POINTER)
 	thiscell
 		? editPresentCellService(evt, thiscell)
 		: clearEditcell()
 }
 
-let mainTable13 = function (evt, EDITABLE, Shift, Ctrl) {
+let mainTable13 = function (evt, editable, Shift, Ctrl) {
 	clearMenu()
 	if (Shift || Ctrl) { return }
 	savePreviousCell()
-	let thiscell = findNextRow(EDITABLE, POINTER)
+	let thiscell = findNextRow(editable, POINTER)
 	thiscell && !$("#spin").is(":visible")
 		? editPresentCell(evt, thiscell)
 		: clearEditcell()
 }
 
-let serviceTable13 = function (evt, EDITABLE, Shift, Ctrl) {
+let serviceTable13 = function (evt, editable, Shift, Ctrl) {
 	if (Shift || Ctrl) { return }
 	savePreviousCellService()
-	let thiscell = findNextRow(EDITABLE, POINTER)
+	let thiscell = findNextRow(editable, POINTER)
 	thiscell
 		? editPresentCellService(evt, thiscell)
 		: clearEditcell()
@@ -231,15 +232,6 @@ let showEditcell = function ($pointing, height, width) {
 	$editcell.appendTo($pointing.closest('div'))
 	reposition($editcell, "left center", "left center", $pointing)
 	$editcell.focus()
-}
-
-// Another client updated table while this is idling with visible editcell
-// Update editcell content to the same as underlying table cell
-function updateEditcellContent() {
-	let content = getHtmlText(POINTER)
-
-	OLDCONTENT = content
-	$("#editcell").html(content)
 }
 
 // after DOM refresh by refillall, POINTER remains in its row but its parent is null
