@@ -65,7 +65,7 @@ export function htmlEquipment()
 }
 
 // name is the column in Mysql
-// title is the value
+// title is the value except Readmission and Reoperation
 export function htmldivRecord()
 {
   let record = "",

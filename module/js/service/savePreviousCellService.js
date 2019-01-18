@@ -8,7 +8,7 @@ import { getBOOKrowByQN } from "../util/getrows.js"
 import { updateBOOK } from "../util/variables.js"
 import { URIcomponent, Alert } from "../util/util.js"
 import { reViewService } from "./showService.js"
-import { countService } from "./countService.js"
+import { coloring } from "./coloring.js"
 import { setSERVICE, SERVICE } from "./setSERVICE.js"
 import { UndoManager } from "../model/UndoManager.js"
 
@@ -78,10 +78,10 @@ function saveService(pointed, column, newcontent) {
 					reViewService()
 				}
 
-				// Calc countService of this case only
+				// Calc coloring of this case only
 				let oldclass = row.className,
 					bookq = getBOOKrowByQN(SERVICE, qn),
-					newclass = countService(bookq),
+					newclass = coloring(bookq),
 					oldclassArray = oldclass.split(" "),
 					newclassArray = newclass.split(" "),
 					counter,

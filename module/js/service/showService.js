@@ -9,7 +9,8 @@ import { getClass, inPicArea,  winWidth, winHeight, winResizeFix } from "../util
 import { isPACS } from "../util/variables.js"
 import { refillall, refillstaffqueue } from "../view/fill.js"
 import { fillConsults } from "../view/fillConsults.js"
-import { countService, countAllServices } from "./countService.js"
+import { coloring } from "./coloring.js"
+import { countAllServices } from "./countAllServices.js"
 import { getAdmitDischargeDate } from "./getAdmitDischargeDate.js"
 import { savePreviousCellService } from "./savePreviousCellService.js"
 import { SERVICE, seteditableSV, serviceFromDate } from "./setSERVICE.js"
@@ -53,11 +54,10 @@ export function showService() {
 								.html(staffname)
 									.siblings().hide()
 		}
-		classname = countService(this)
 		scase++
 		$servicecells.find("tr").clone()
 			.appendTo($servicetbl.find("tbody"))
-				.filldataService(this, scase, classname)
+				.filldataService(this, scase)
 	});
 
 	// close: it is necessary NOT to close the non-visible jQuery dialogs,
@@ -83,23 +83,23 @@ export function showService() {
 		}
 	})
 	
-//	if (/surgery\.rama/.test(location.hostname)) {
+	if (/surgery\.rama/.test(location.hostname)) {
 		getAdmitDischargeDate()
-//	}
+	}
 	countAllServices()
 	$servicetbl.fixMe($dialogService)
 	hoverService()
 
 	$dialogService.on("click", clickDialogService)
 
-	$('#servicetbl label:has(input[type=radio])').on('mousedown', function(e){
+	$('#servicetbl label.radio').on('mousedown', function(e){
 	  var radios = $(this).find('input[type=radio]');
 	  var wasChecked = radios.prop('checked');
 	  radios[0].turnOff = wasChecked;
 	  radios.prop('checked', !wasChecked);
 	});
 
-	$('#servicetbl label:has(input[type=radio])').on('click', function(e){
+	$('#servicetbl label.radio').on('click', function(e){
 	  var radios = $(this).find('input[type=radio]');
 	  radios.prop('checked', !radios[0].turnOff);
 	});
@@ -138,14 +138,13 @@ export function reViewService() {
 				.appendTo($("#servicetbl").find("tbody"))
 			len++
 		}
-		classname = countService(this)
 		$row = $rows.eq(i)
 		$cells = $row.children("td")
 		if ($cells.eq(CASENUMSV).prop("colSpan") > 1) {
 			$cells.eq(CASENUMSV).prop("colSpan", 1)
 				.nextUntil($cells.eq(QNSV)).show()
 		}
-		$row.filldataService(this, scase, classname)
+		$row.filldataService(this, scase)
 	});
 	if (i < (len - 1)) {
 		$rows.slice(i+1).remove()
@@ -155,11 +154,10 @@ export function reViewService() {
 }
 
 jQuery.fn.extend({
-	filldataService : function(bookq, scase, classes) {
+	filldataService : function(bookq, scase) {
 		let	row = this[0],
 			cells = row.cells
 
-		row.className = classes
 		if (bookq.hn && isPACS) { cells[HNSV].className = "pacs" }
 		if (bookq.hn) { cells[NAMESV].className = "upload" }
 
@@ -176,6 +174,8 @@ jQuery.fn.extend({
 		cells[OPDATESV].innerHTML = putThdate(bookq.opdate)
 		cells[DISCHARGESV].innerHTML = putThdate(bookq.discharge)
 		cells[QNSV].innerHTML = bookq.qn
+
+		coloring(row)
 	}
 })
 

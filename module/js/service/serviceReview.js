@@ -28,6 +28,7 @@ function serviceReview() {
 	$dialogService.dialog({
 		title: "Service Neurosurgery",
 		closeOnEscape: true,
+		closeText: "Save and Close",
 		modal: true,
 		width: winWidth(95),
 		height: winHeight(95)

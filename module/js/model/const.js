@@ -34,6 +34,8 @@ QNSV		= 11,
 THAIMONTH		= ["มค.", "กพ.", "มีค.", "เมย.", "พค.", "มิย.", "กค.", "สค.", "กย.", "ตค.", "พย.", "ธค."],
 LARGESTDATE		= "9999-12-31",
 
+COMPLICATION = ["Readmission", "Reoperation", "Infection", "Morbidity", "Dead"],
+
 // ["type", "width", "name", "id" (also used in label for), "label"]
 EQUIPSHEET = [
     ["spanInSpan", "w70", "", "oproom", "ห้อง "],
@@ -268,16 +270,16 @@ EQUIPSHEET = [
     ["br", "", "", "", ""]
 ],
 
-// [labelwidth, inputwidth, type, name, title, label]
+// [labelwidth, inputwidth, type, name, title, label, min, max]
 RECORDSHEET = [
-	["w70", "w40", "radio", "doneby", "Staff", "Staff"],
-	["", "w55", "radio", "doneby", "Resident", "Resident"],
+	["radio w70", "w40", "radio", "doneby", "Staff", "Staff"],
+	["radio", "w55", "radio", "doneby", "Resident", "Resident"],
 	["br", "", "", "", "", ""],
-	["w70", "w50", "radio", "manner", "Elective", "Elective"],
-	["", "w70", "radio", "manner", "Emergency", "Emergency"],
+	["radio w70", "w50", "radio", "manner", "Elective", "Elective"],
+	["radio", "w70", "radio", "manner", "Emergency", "Emergency"],
 	["br", "", "", "", "", ""],
-	["w70", "w40", "radio", "scale", "Major", "Major"],
-	["", "w40", "radio", "scale", "Minor", "Minor"],
+	["radio w70", "w40", "radio", "scale", "Major", "Major"],
+	["radio", "w40", "radio", "scale", "Minor", "Minor"],
 	["hr", "", "", "", "", ""],
 	["w70", "w55", "radio", "disease", "Brain Tumor", "BTumor"],
 	["", "w60", "radio", "disease", "Brain Vascular", "BVascular"],

@@ -62,7 +62,7 @@ function sqlRecord(pointing, setRecord, qn)
 	let sql = ""
 
 	$.each(setRecord, function(column, content) {
-		if (column === "disease" && content === "No") {
+		if (column === "disease" && content === "NoOp") {
 			sql += sqlDefaults(qn)			
 		}
 		sql += sqlItem(column, content, qn)
@@ -79,11 +79,14 @@ function sqlColumn(column, content, qn)
 function sqlDefaults(qn)
 {
   return `UPDATE book
-			SET operated='',doneby='',scale='',manner='',editor='${USER}'
+			SET doneby='',scale='',manner='',editor='${USER}'
 			WHERE qn=${qn};`
 }
 
 function sqlItem(column, content, qn)
 {
+  if ((column === "admitted") || (column === "operated")) {
+    if (!content) { content = 0 }
+  }
   return `UPDATE book SET ${column}='${content}',editor='${USER}' WHERE qn=${qn};`
 }

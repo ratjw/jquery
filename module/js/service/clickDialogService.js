@@ -4,16 +4,17 @@ import { resetTimerCounter } from "../control/timer.js"
 import { POINTER, clearEditcell } from "../control/edit.js"
 import { savePreviousCellService } from "./savePreviousCellService.js"
 import { editPresentCellService } from "./editPresentCellService.js"
+import { countAllServices } from "./countAllServices.js"
+import { getBOOKrowByQN } from "../util/getrows.js"
 
+const UPDATECOUNTER = ["disease", "admitted", "operated", "infection", "morbid", "dead"]
 const SERVICECOLOR = ["Readmission", "Reoperation", "Infection", "Morbidity", "Dead"]
 
 export function clickDialogService(event)
 {
 	let $servicetbl = $("#servicetbl"),
 		target = event.target,
-		inCell = target.closest("td"),
 		onProfile = !!target.closest(".divRecord"),
-		onNormalCell = (target.nodeName === "TD" && target.colSpan === 1),
 		isHideColumn = target.cellIndex === PROFILESV,
 		onDivRecord = /divRecord/.test(target.className),
 		onImage = target.nodeName === "IMG"
@@ -31,35 +32,12 @@ export function clickDialogService(event)
 	}
 
 	// click a button on divRecord gives 2 events => first SPAN and then INPUT
-	// Before INPUT value was changed, get the old record content
-	// INPUT event comes after INPUT value was changed, just show colors
+	// SPAN event is ignored
+	// INPUT event comes after INPUT value was changed
 	if (onProfile) {
-	  if (target.nodeName === "INPUT") {
-	    if (SERVICECOLOR.includes(target.title)) {
-		  showInputColor(target)
-	    }
-		if (inCell !== POINTER) {
-	      if (POINTER) {
-		    savePreviousCellService()
-		  }
-		  editPresentCellService(event, inCell)
-		}
-	  }
+	  clickProfile(event, target)
 	} else {
-	  if (POINTER) {
-		if (inCell !== POINTER) {
-		  savePreviousCellService()
-		  if (onNormalCell) {
-		    editPresentCellService(event, inCell)
-		  } else {
-		    clearEditcell()
-		  }
-		}
-	  } else {
-	    if (onNormalCell) {
-		  editPresentCellService(event, inCell)
-	    }
-	  }
+	  clickCell(event, target)
     }
 }
 
@@ -79,6 +57,48 @@ export function hideProfile() {
 	$("#servicetbl th .imgclose").hide()
 }
 
+function clickProfile(evt, target)
+{
+  let inCell = target.closest("td")
+
+  if (target.nodeName === "INPUT") {
+    let name = target.name.replace(/\d+/g, "")
+    if (UPDATECOUNTER.includes(name)) {
+	  if (SERVICECOLOR.includes(target.title)) {
+	    showInputColor(target)
+	  }
+      countAllServices()
+	}
+	if (inCell !== POINTER) {
+	  if (POINTER) {
+		savePreviousCellService()
+	  }
+	  editPresentCellService(evt, inCell)
+	}
+  }
+}
+
+function clickCell(evt, target)
+{
+  let inCell = target.closest("td"),
+	onNormalCell = (target.nodeName === "TD" && target.colSpan === 1)
+
+  if (POINTER) {
+	if (inCell !== POINTER) {
+	  savePreviousCellService()
+	  if (onNormalCell) {
+		editPresentCellService(evt, inCell)
+	  } else {
+		clearEditcell()
+	  }
+	}
+  } else {
+	if (onNormalCell) {
+	  editPresentCellService(evt, inCell)
+	}
+  }
+}
+
 function showInputColor(target)
 {
 	let	row = target.closest("tr"),
@@ -89,4 +109,12 @@ function showInputColor(target)
 	} else {
 		row.classList.remove(classname)
 	}
+}
+
+function updateSERVICE(inCell, target)
+{
+	let qn = inCell.parentElement.lastElementChild.innerHTML
+	let bookq = getBOOKrowByQN(book, qn)
+
+	bookq[target.name] = target.value // saveProfileService will not work
 }
