@@ -22,11 +22,15 @@ function initRecord(bookq, $divRecord)
 
 	$input.each(function() {
 		inputName = this.name
-		this.checked = this.value === bookq[inputName]
+		this.checked = (this.value && (this.value === bookq[inputName]))
 		this.name = inputName + bookq.qn
 		wide = this.className.replace("w", "") + "px"
 		if (this.type === "number") {
-			this.value = bookq[inputName]
+			if ((inputName === "operated") && (bookq.disease) && (!bookq.operated)) {
+				this.value = 1
+			} else {
+				this.value = bookq[inputName]
+			}
 		} else {
 			this.nextElementSibling.style.right = wide
 		}

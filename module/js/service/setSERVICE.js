@@ -4,21 +4,25 @@ import {
 } from "../model/const.js"
 
 // SERVICE is retrieved from DB by getServiceOneMonth
+// calSERVE modifies SERVICE at run time, if no user-defined value in DB
+
 // admit : "date"							<- updated by getAdmitDischargeDate in PHP
 // discharge : "date"						<- updated by getAdmitDischargeDate in PHP
-// admitted : "", "1", "2", ...				<- from admit
-// operated : "", "1", "2",	...				<- from disease
-// doneby : "", "Staff", "Resident"			<- user-defined
-// manner : "", "Elective", "Emergency"		<- user-defined
-// scale : "", "Major", "Minor"				<- user-defined
-// disease : "", "No", "Brain Tumor",
-// 		"Brain Vascular", "CSF related", 
-//		"Trauma", "Spine", "etc"			<- from treatment + diagnosis by operationFor
-// radiosurgery : "", "No", "Radiosurgery"	<- from treatment by operationFor
-// endovascular : "", "No", "Endovascular"	<- from treatment by operationFor
-// infection : "", "Infection"				<- user-defined
-// morbid : "", "Morbidity"					<- user-defined
-// dead : "", "Dead"						<- user-defined
+// admitted : "", "1", "2", ...				<- updated by getAdmitDischargeDate in PHP
+// doneby : "", "Staff", "Resident"			<- user-defined only
+// manner : "", "Elective", "Emergency"		<- user-defined only
+// scale : "", "Major", "Minor"				<- user-defined only
+// infection : "", "Infection"				<- user-defined only
+// morbid : "", "Morbidity"					<- user-defined only
+// dead : "", "Dead"						<- user-defined only
+
+// operated : "", "0", "1", "2", ...		<- user-defined "0" is NoOp
+// disease : "", "No", "Brain Tumor",		\
+// 		"Brain Vascular", "CSF related",	 |	if "", will be calc by operationFor
+//		"Trauma", "Spine", "etc"			  > other value is user-defined
+// radiosurgery : "", "No", "Radiosurgery"	 |
+// endovascular : "", "No", "Endovascular"	/
+
 export let SERVICE = [],
   serviceFromDate = "",
   serviceToDate = "",
@@ -32,19 +36,14 @@ export function settoDate(todate) { serviceToDate = todate }
 
 export function seteditableSV(editable) { editableSV = editable }
 
-// By calSERVE, SERVICE contains some calculated values at run time
-//    i.e. - disease, radiosurgery, endovascular
-// only when there is no user-defined value in DB
 function calcSERVE(service)
 {
 	$.each(service, function() {
-		let	treatment = this.treatment
-
-		if (!this.radiosurgery && isMatched(RADIOSURGERY, treatment)) {
+		if (!this.radiosurgery && isMatched(RADIOSURGERY, this.treatment)) {
 			this.radiosurgery = "Radiosurgery"
 		}
 
-		if (!this.endovascular && isMatched(ENDOVASCULAR, treatment)) {
+		if (!this.endovascular && isMatched(ENDOVASCULAR, this.treatment)) {
 			this.endovascular = "Endovascular"
 		}
 
@@ -52,7 +51,7 @@ function calcSERVE(service)
 			let opwhat = operationFor(this)
 
 			this.disease = opwhat
-			if ((opwhat !== "NoOp") && (this.operated === "0")) {
+			if (opwhat && !this.operated) {
 				this.operated = 1
 			}
 		}
@@ -61,7 +60,8 @@ function calcSERVE(service)
 	return service
 }
 
-// "NoOp" is from matched NOOPERATION, or no other match
+// matched NOOPERATION or no other match, return ""
+// not return "NoOp" which is user-defined and saved into DB
 function operationFor(thisrow)
 {
 	let	Rx = 0, RxNo = 1, Dx = 2, DxNo = 3, 
@@ -69,12 +69,12 @@ function operationFor(thisrow)
 		diagnosis = thisrow.diagnosis,
 		treatment = thisrow.treatment,
 		endovascular = thisrow.endovascular === "Endovascular",
-		opwhat
+		opwhat = ""
 
-	if (isMatched(NOOPERATION, treatment)) { return "NoOp" }
+	if (isMatched(NOOPERATION, treatment)) { return "" }
 
 	opfor = isOpfor(KEYWORDS, opfor, Rx, treatment)
-	if (opfor.length === 0) { opwhat = "NoOp" }
+	if (opfor.length === 0) { opwhat = "" }
 	else if (opfor.length === 1) { opwhat = opfor[0] }
 	else {
 		opfor = isNotOpfor(KEYWORDS, opfor, RxNo, treatment)
@@ -92,7 +92,7 @@ function operationFor(thisrow)
 		}
 	}
 	if (opwhat === "Spine" && endovascular && !isMatched(SPINEOP, treatment)) {
-		opwhat = "NoOp"
+		opwhat = ""
 	}
 	return opwhat
 }

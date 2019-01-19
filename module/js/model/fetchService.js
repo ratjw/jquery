@@ -85,8 +85,5 @@ function sqlDefaults(qn)
 
 function sqlItem(column, content, qn)
 {
-  if ((column === "admitted") || (column === "operated")) {
-    if (!content) { content = 0 }
-  }
   return `UPDATE book SET ${column}='${content}',editor='${USER}' WHERE qn=${qn};`
 }

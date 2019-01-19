@@ -274,7 +274,15 @@ export function fetchGetNameHN(pointed, content)
 		$row[0].title = waitnum	
 	}
 
-	let sql = `hn=${content}&waitnum=${waitnum}&opdate=${opdate}&staffname=${staffname}&diagnosis=${diagnosis}&treatment=${treatment}&contact=${contact}&qn=${qn}&editor=${USER}`
+	let sql = `hn=${content}\
+				&waitnum=${waitnum}\
+				&opdate=${opdate}\
+				&staffname=${staffname}\
+				&diagnosis=${diagnosis}\
+				&treatment=${treatment}\
+				&contact=${contact}\
+				&qn=${qn}\
+				&editor=${USER}`
 
 	return postData(GETNAMEHN, sql)
 }

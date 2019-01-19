@@ -130,11 +130,14 @@ function getNewRecord(pointing)
 		if (this.type === "radio" || this.type === "checkbox") {
 			if (this.checked) {
 				record[newkey] = this.value
+			} else if ((newkey === "disease")
+				|| (newkey === "radiosurgery")
+				|| (newkey === "endovascular")) {
+				record[newkey] = "No"
 			} else {
 				record[newkey] = ""
 			}
-		}
-		else if (this.type === "number") {
+		} else if (this.type === "number") {
 			if (this.value) {
 				record[newkey] = this.value
 			} else {

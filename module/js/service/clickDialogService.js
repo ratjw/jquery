@@ -1,14 +1,8 @@
 
 import { PROFILESV } from "../model/const.js"
 import { resetTimerCounter } from "../control/timer.js"
-import { POINTER, clearEditcell } from "../control/edit.js"
-import { savePreviousCellService } from "./savePreviousCellService.js"
-import { editPresentCellService } from "./editPresentCellService.js"
-import { countAllServices } from "./countAllServices.js"
-import { getBOOKrowByQN } from "../util/getrows.js"
-
-const UPDATECOUNTER = ["disease", "admitted", "operated", "infection", "morbid", "dead"]
-const SERVICECOLOR = ["Readmission", "Reoperation", "Infection", "Morbidity", "Dead"]
+import { clickProfile } from "./clickProfile.js"
+import { clickCellSV } from "./clickCellSV.js"
 
 export function clickDialogService(event)
 {
@@ -37,7 +31,7 @@ export function clickDialogService(event)
 	if (onProfile) {
 	  clickProfile(event, target)
 	} else {
-	  clickCell(event, target)
+	  clickCellSV(event, target)
     }
 }
 
@@ -55,58 +49,4 @@ export function hideProfile() {
 	$("#servicetbl .divRecord").hide()
 	$("#servicetbl th .imgopen").show()
 	$("#servicetbl th .imgclose").hide()
-}
-
-function clickProfile(evt, target)
-{
-  let inCell = target.closest("td")
-
-  if (target.nodeName === "INPUT") {
-    let name = target.name.replace(/\d+/g, "")
-    if (UPDATECOUNTER.includes(name)) {
-	  if (SERVICECOLOR.includes(target.title)) {
-	    showInputColor(target)
-	  }
-      countAllServices()
-	}
-	if (inCell !== POINTER) {
-	  if (POINTER) {
-		savePreviousCellService()
-	  }
-	  editPresentCellService(evt, inCell)
-	}
-  }
-}
-
-function clickCell(evt, target)
-{
-  let inCell = target.closest("td"),
-	onNormalCell = (target.nodeName === "TD" && target.colSpan === 1)
-
-  if (POINTER) {
-	if (inCell !== POINTER) {
-	  savePreviousCellService()
-	  if (onNormalCell) {
-		editPresentCellService(evt, inCell)
-	  } else {
-		clearEditcell()
-	  }
-	}
-  } else {
-	if (onNormalCell) {
-	  editPresentCellService(evt, inCell)
-	}
-  }
-}
-
-function showInputColor(target)
-{
-	let	row = target.closest("tr"),
-		classname = target.title
-
-	if (target.checked || target.value > 1) {
-		row.classList.add(classname)
-	} else {
-		row.classList.remove(classname)
-	}
 }

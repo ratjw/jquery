@@ -92,14 +92,21 @@ export function showService() {
 
 	$dialogService.on("click", clickDialogService)
 
-	$('#servicetbl label.radio').on('mousedown', function(e){
+	$('#servicetbl label:has(input[type=radio])').on('mousedown', function(e){
 	  var radios = $(this).find('input[type=radio]');
 	  var wasChecked = radios.prop('checked');
+
+	  // check radio input name=disease after click but before input event
+	  let inCell = this.closest("td")
+      let qn = inCell.parentElement.lastElementChild.innerHTML
+      let inputDisease = inCell.querySelectorAll("input[name='disease" + qn + "']")
+
+	  radios[0].disease = Array.from(inputDisease).filter(i => i.checked).length
 	  radios[0].turnOff = wasChecked;
 	  radios.prop('checked', !wasChecked);
-	});
+    });
 
-	$('#servicetbl label.radio').on('click', function(e){
+	$('#servicetbl label:has(input[type=radio])').on('click', function(e){
 	  var radios = $(this).find('input[type=radio]');
 	  radios.prop('checked', !radios[0].turnOff);
 	});
@@ -113,17 +120,16 @@ export function reViewService() {
 	let $servicetbl = $("#servicetbl"),
 		$rows = $servicetbl.find("tr"),
 		$servicecells = $("#servicecells"),
-		len = $rows.length
+		len = $rows.length,
 		staffname = "",
-		i = 0, scase = 0,
-		classname = ""
+		i = 0, scase = 0
 
 	$.each( SERVICE, function() {
 		if (this.staffname !== staffname) {
 			staffname = this.staffname
 			scase = 0
 			i++
-			$staff = $rows.eq(i).children("td").eq(CASENUMSV)
+			let	$staff = $rows.eq(i).children("td").eq(CASENUMSV)
 			if ($staff.prop("colSpan") === 1) {
 				$staff.prop("colSpan", QNSV - CASENUMSV)
 					.addClass("serviceStaff")
@@ -138,8 +144,8 @@ export function reViewService() {
 				.appendTo($("#servicetbl").find("tbody"))
 			len++
 		}
-		$row = $rows.eq(i)
-		$cells = $row.children("td")
+		let	$row = $rows.eq(i)
+		let	$cells = $row.children("td")
 		if ($cells.eq(CASENUMSV).prop("colSpan") > 1) {
 			$cells.eq(CASENUMSV).prop("colSpan", 1)
 				.nextUntil($cells.eq(QNSV)).show()
@@ -151,6 +157,7 @@ export function reViewService() {
 	}
 	countAllServices()
 	hoverService()
+	winResizeFix($servicetbl, $("#dialogService"))
 }
 
 jQuery.fn.extend({
