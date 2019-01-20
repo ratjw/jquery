@@ -17,6 +17,7 @@ import { SERVICE, seteditableSV, serviceFromDate } from "./setSERVICE.js"
 import { clickDialogService, hideProfile } from "./clickDialogService.js"
 import { showRecord } from "./showRecord.js"
 import { clearSelection } from "../control/clearSelection.js"
+import { profileHandler } from "./profileHandler.js"
 
 export function showService() {
   let $dialogService = $("#dialogService"),
@@ -58,7 +59,7 @@ export function showService() {
     $servicecells.find("tr").clone()
       .appendTo($servicetbl.find("tbody"))
         .filldataService(this, scase)
-  });
+  })
 
   // close: it is necessary NOT to close the non-visible jQuery dialogs,
   // because these may not have yet been initialized (which results in an error)
@@ -89,36 +90,8 @@ export function showService() {
   countAllServices()
   $servicetbl.fixMe($dialogService)
   hoverService()
-
+  profileHandler()
   $dialogService.on("click", clickDialogService)
-
-  // save previous value to determine increasing or decreasing
-  $('#servicetbl input[type=number]').on('mousedown keydown mousewheel', function(e){
-    // save number radios input before changed
-    if (!e.key || (/\d/.test(Number(e.key)))) {
-      this.prevVal = this.value
-    }
-  });
-
-  // hack for click and unchecked a radio input
-  $('#servicetbl label:has(input[type=radio])').on('mousedown', function(e){
-    var radios = $(this).find('input[type=radio]');
-    var wasChecked = radios.prop('checked');
-
-    // check all disease radios input before changed
-    let inCell = this.closest("td")
-    let qn = inCell.parentElement.lastElementChild.innerHTML
-    let inputDisease = inCell.querySelectorAll("input[name='disease" + qn + "']")
-
-    radios[0].disease = Array.from(inputDisease).filter(i => i.checked).length
-    radios[0].turnOff = wasChecked;
-    radios.prop('checked', !wasChecked);
-  });
-
-  $('#servicetbl label:has(input[type=radio])').on('click', function(e){
-    var radios = $(this).find('input[type=radio]');
-    radios.prop('checked', !radios[0].turnOff);
-  });
 
   //for resizing dialogs in landscape / portrait view
   $(window).on("resize", resizeDialogSV)
@@ -160,13 +133,14 @@ export function reViewService() {
         .nextUntil($cells.eq(QNSV)).show()
     }
     $row.filldataService(this, scase)
-  });
+  })
   if (i < (len - 1)) {
     $rows.slice(i+1).remove()
   }
   countAllServices()
+  $servicetbl.fixMe($("#dialogService"))
   hoverService()
-  winResizeFix($servicetbl, $("#dialogService"))
+  profileHandler()
 }
 
 jQuery.fn.extend({

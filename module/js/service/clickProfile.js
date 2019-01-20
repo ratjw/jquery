@@ -4,10 +4,11 @@ import { savePreviousCellService } from "./savePreviousCellService.js"
 import { editPresentCellService } from "./editPresentCellService.js"
 import { countAllServices } from "./countAllServices.js"
 
-const UPDATECOUNTER = ["disease", "admitted", "operated", "infection", "morbid", "dead"]
-const SERVICECOLOR = ["Readmission", "Reoperation", "Infection", "Morbidity", "Dead"]
+// calc counter in service header
+// "admitted", "operated", use .on('input') in showService
+const UPDATECOUNTER = ["disease", "infection", "morbid", "dead"]
 
-let beforePrevDz = ""
+// use to show disease when operated is up from 0 to 1
 let prevDisease = ""
 
 export function clickProfile(evt, target)
@@ -15,16 +16,16 @@ export function clickProfile(evt, target)
   let inCell = target.closest("td")
 
   if (target.nodeName === "INPUT") {
-    let name = target.name.replace(/\d+/g, "")
+    let nameqn = target.name.split(/(\d+)/)
+	  let name = nameqn[0]
+    let qn = nameqn[1]
+
     if (UPDATECOUNTER.includes(name)) {
-      if (SERVICECOLOR.includes(target.title)) {
+      if (name === "disease") {
+        diseaseToOperation(target, inCell, qn)
+      } else {
         showInputColor(target)
-      } else if (name === "disease") {
-        diseaseOperation(target)
-      }
-      if (name === "operated") {
-        operationDisease(target)
-      }
+	    }
       countAllServices()
     }
     if (inCell !== POINTER) {
@@ -33,15 +34,13 @@ export function clickProfile(evt, target)
       }
       editPresentCellService(evt, inCell)
     }
-    if (prevDisease) { lastDisease = prevDisease }
-    prevDisease = target.checked ? target.value : ""
   }
 }
 
-function showInputColor(target)
+export function showInputColor(target)
 {
-  let row = target.closest("tr"),
-    classname = target.title
+  let row = target.closest("tr")
+  let classname = target.title
 
   if (target.checked || target.value > 1) {
     row.classList.add(classname)
@@ -50,10 +49,8 @@ function showInputColor(target)
   }
 }
 
-function diseaseOperation(target)
+function diseaseToOperation(target, inCell, qn)
 {
-  let inCell = target.closest("td")
-  let qn = inCell.parentElement.lastElementChild.innerHTML
   let inputOperated = inCell.querySelector("input[name='operated" + qn + "']")
   let operatedValue = Number(inputOperated.value)
 
@@ -63,18 +60,21 @@ function diseaseOperation(target)
     }
   } else {
     inputOperated.value = operatedValue - 1
+	  prevDisease = target.value
   }
 }
 
-function operationDisease(target)
+export function operationToDisease(target)
 {
   let inCell = target.closest("td")
-  let qn = inCell.parentElement.lastElementChild.innerHTML
+  let qn = target.name.split(/(\d+)/)[1]
   let inputDisease = inCell.querySelectorAll("input[name='disease" + qn + "']")
+  let disease = Array.from(inputDisease).filter(e => e.checked)
 
   if (target.value === "0") {
+    prevDisease = disease.length ? disease[0].value : ""
     Array.from(inputDisease).forEach(e => e.checked = false)
   } else if (target.value === "1" && target.prevVal === "0") {
-    Array.from(inputDisease).forEach(e => e.checked = e.value === beforePrevDz)
+    Array.from(inputDisease).forEach(e => e.checked = e.value === prevDisease)
   }
 }

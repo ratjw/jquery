@@ -375,13 +375,13 @@ export function fetchUndelete(allCases, oproom, qn, del) {
 
 export function fetchAllDeletedCases() {
   let sql = `sqlReturnData=SELECT editdatetime, b.* 
-                             FROM book b 
-							   LEFT JOIN bookhistory bh ON b.qn = bh.qn 
-                             WHERE editdatetime>DATE_ADD(NOW(), INTERVAL -3 MONTH) 
-							   AND b.deleted>0 
-							   AND bh.action='delete' 
-							 GROUP BY b.qn 
-                             ORDER BY editdatetime DESC;`
+                 FROM book b 
+                   LEFT JOIN bookhistory bh ON b.qn = bh.qn 
+                 WHERE editdatetime>DATE_ADD(NOW(), INTERVAL -3 MONTH) 
+							     AND b.deleted>0 
+							     AND bh.action='delete' 
+							   GROUP BY b.qn 
+                 ORDER BY editdatetime DESC;`
 
 	return postData(MYSQLIPHP, sql)
 }
