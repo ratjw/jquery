@@ -27,8 +27,6 @@ export function countAllServices() {
 		let label = e.previousElementSibling.innerHTML
         if (label) {
 		  let y = Number(document.getElementById(label).innerHTML)
-//		  let NoOp = this.querySelector('input[title="NoOp"]')
-//		  if (NoOp.checked && (label === "Operation")) { y-- }
           document.getElementById(label).innerHTML = x + y
 		}
 	    if (x > 1) {

@@ -40,13 +40,13 @@ export function htmlEquipment()
     } else if (type === "divend") {
 	  equip += `</div>`
     } else if (type === "span") {
-	  equip += `<span class="${width}" id="${id}">${label}</span>`
+	  equip += `<span class="w${width}" id="${id}">${label}</span>`
     } else if (type === "spanInSpan") {
-	  equip += `<span class="${width}">${label}<span id="${id}"></span></span>`
+	  equip += `<span class="w${width}">${label}<span id="${id}"></span></span>`
 	} else if (type === "br") {
 	  equip += `<br>`
 	} else if (type === "radio" || type === "checkbox") {
-	  equip += `<span class="${width}">
+	  equip += `<span class="w${width}">
                   <input type="${type}" name="${name}" id="${id}">
                   <label for="${id}">${label}</label>
                 </span>`
@@ -91,16 +91,16 @@ export function htmldivRecord()
     } else if (labelwidth === "hr") {
 	  record += `<hr>`
     } else if (type === "number") {
-	  record += `<label class="${labelwidth}">
+	  record += `<label class="w${labelwidth}">
 				   <span>${label}</span>
-				   <input class="${inputwidth}" type="${type}" name="${name}"\
+				   <input class="w${inputwidth}" type="${type}" name="${name}"\
 				     title="${title}" value="" min="${min}" max="${max}">
 				 </label>`
 	} else {
-	  record += `<label class="${labelwidth}">
-				   <input class="${inputwidth}" type="${type}" name="${name}"\
+	  record += `<label class="w${labelwidth}">
+				   <input class="w${inputwidth}" type="${type}" name="${name}"\
 				     title="${title}" value="${title}">
-				   <span>${label}</span>
+				   <span style="right:${inputwidth}px">${label}</span>
 				 </label>`
 	}
   })

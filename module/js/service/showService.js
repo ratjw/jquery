@@ -19,189 +19,198 @@ import { showRecord } from "./showRecord.js"
 import { clearSelection } from "../control/clearSelection.js"
 
 export function showService() {
-	let	$dialogService = $("#dialogService"),
-		$servicetbl = $("#servicetbl"),
-		$servicecells = $("#servicecells"),
-		staffname = "",
-		scase = 0,
-		classname = ""
-			
-	let resizeDialogSV = () => {
-		$dialogService.dialog({
-			width: winWidth(95),
-			height: winHeight(95)
-		})
-		winResizeFix($servicetbl, $dialogService)
-	}
+  let $dialogService = $("#dialogService"),
+    $servicetbl = $("#servicetbl"),
+    $servicecells = $("#servicecells"),
+    staffname = "",
+    scase = 0,
+    classname = ""
 
-	$("#monthpicker").hide()
-	$("#servicehead").show()
+  let resizeDialogSV = () => {
+    $dialogService.dialog({
+      width: winWidth(95),
+      height: winHeight(95)
+    })
+    winResizeFix($servicetbl, $dialogService)
+  }
 
-	//delete previous servicetbl lest it accumulates
-	$servicetbl.find("tr").slice(1).remove()
-	$servicetbl.show()
-	seteditableSV(serviceFromDate >= START)
+  $("#monthpicker").hide()
+  $("#servicehead").show()
 
-	$.each( SERVICE, function() {
-		if (this.staffname !== staffname) {
-			staffname = this.staffname
-			scase = 0
-			$servicecells.find("tr").clone()
-				.appendTo($servicetbl.find("tbody"))
-					.children("td").eq(CASENUMSV)
-						.prop("colSpan", QNSV - CASENUMSV)
-							.addClass("serviceStaff")
-								.html(staffname)
-									.siblings().hide()
-		}
-		scase++
-		$servicecells.find("tr").clone()
-			.appendTo($servicetbl.find("tbody"))
-				.filldataService(this, scase)
-	});
+  //delete previous servicetbl lest it accumulates
+  $servicetbl.find("tr").slice(1).remove()
+  $servicetbl.show()
+  seteditableSV(serviceFromDate >= START)
 
-	// close: it is necessary NOT to close the non-visible jQuery dialogs,
-	// because these may not have yet been initialized (which results in an error)
-	$dialogService.dialog({
-		hide: 200,
-		width: winWidth(95),
-		height: winHeight(95),
-		close: function() {
-			refillstaffqueue()
-			refillall()
+  $.each( SERVICE, function() {
+    if (this.staffname !== staffname) {
+      staffname = this.staffname
+      scase = 0
+      $servicecells.find("tr").clone()
+        .appendTo($servicetbl.find("tbody"))
+          .children("td").eq(CASENUMSV)
+            .prop("colSpan", QNSV - CASENUMSV)
+              .addClass("serviceStaff")
+                .html(staffname)
+                  .siblings().hide()
+    }
+    scase++
+    $servicecells.find("tr").clone()
+      .appendTo($servicetbl.find("tbody"))
+        .filldataService(this, scase)
+  });
+
+  // close: it is necessary NOT to close the non-visible jQuery dialogs,
+  // because these may not have yet been initialized (which results in an error)
+  $dialogService.dialog({
+    hide: 200,
+    width: winWidth(95),
+    height: winHeight(95),
+    close: function() {
+      refillstaffqueue()
+      refillall()
             fillConsults()
-			$(".ui-dialog:visible").find(".ui-dialog-content").dialog("close")
-			$(".fixed").remove()
-			hideProfile()
-			$(window).off("resize", resizeDialogSV)
-			$dialogService.off("click", clickDialogService)
-			if (!!POINTER) {
-				savePreviousCellService()
-			}
-			clearEditcell()
-			clearSelection()
-		}
-	})
-	
-	if (/surgery\.rama/.test(location.hostname)) {
-		getAdmitDischargeDate()
-	}
-	countAllServices()
-	$servicetbl.fixMe($dialogService)
-	hoverService()
+      $(".ui-dialog:visible").find(".ui-dialog-content").dialog("close")
+      $(".fixed").remove()
+      hideProfile()
+      $(window).off("resize", resizeDialogSV)
+      $dialogService.off("click", clickDialogService)
+      if (!!POINTER) {
+        savePreviousCellService()
+      }
+      clearEditcell()
+      clearSelection()
+    }
+  })
 
-	$dialogService.on("click", clickDialogService)
+  if (/surgery\.rama/.test(location.hostname)) {
+    getAdmitDischargeDate()
+  }
+  countAllServices()
+  $servicetbl.fixMe($dialogService)
+  hoverService()
 
-	$('#servicetbl label:has(input[type=radio])').on('mousedown', function(e){
-	  var radios = $(this).find('input[type=radio]');
-	  var wasChecked = radios.prop('checked');
+  $dialogService.on("click", clickDialogService)
 
-	  // check radio input name=disease after click but before input event
-	  let inCell = this.closest("td")
-      let qn = inCell.parentElement.lastElementChild.innerHTML
-      let inputDisease = inCell.querySelectorAll("input[name='disease" + qn + "']")
+  // save previous value to determine increasing or decreasing
+  $('#servicetbl input[type=number]').on('mousedown keydown mousewheel', function(e){
+    // save number radios input before changed
+    if (!e.key || (/\d/.test(Number(e.key)))) {
+      this.prevVal = this.value
+    }
+  });
 
-	  radios[0].disease = Array.from(inputDisease).filter(i => i.checked).length
-	  radios[0].turnOff = wasChecked;
-	  radios.prop('checked', !wasChecked);
-    });
+  // hack for click and unchecked a radio input
+  $('#servicetbl label:has(input[type=radio])').on('mousedown', function(e){
+    var radios = $(this).find('input[type=radio]');
+    var wasChecked = radios.prop('checked');
 
-	$('#servicetbl label:has(input[type=radio])').on('click', function(e){
-	  var radios = $(this).find('input[type=radio]');
-	  radios.prop('checked', !radios[0].turnOff);
-	});
+    // check all disease radios input before changed
+    let inCell = this.closest("td")
+    let qn = inCell.parentElement.lastElementChild.innerHTML
+    let inputDisease = inCell.querySelectorAll("input[name='disease" + qn + "']")
 
-	//for resizing dialogs in landscape / portrait view
-	$(window).on("resize", resizeDialogSV)
+    radios[0].disease = Array.from(inputDisease).filter(i => i.checked).length
+    radios[0].turnOff = wasChecked;
+    radios.prop('checked', !wasChecked);
+  });
+
+  $('#servicetbl label:has(input[type=radio])').on('click', function(e){
+    var radios = $(this).find('input[type=radio]');
+    radios.prop('checked', !radios[0].turnOff);
+  });
+
+  //for resizing dialogs in landscape / portrait view
+  $(window).on("resize", resizeDialogSV)
 }
 
 // Use existing DOM table to refresh when editing
 export function reViewService() {
-	let $servicetbl = $("#servicetbl"),
-		$rows = $servicetbl.find("tr"),
-		$servicecells = $("#servicecells"),
-		len = $rows.length,
-		staffname = "",
-		i = 0, scase = 0
+  let $servicetbl = $("#servicetbl"),
+    $rows = $servicetbl.find("tr"),
+    $servicecells = $("#servicecells"),
+    len = $rows.length,
+    staffname = "",
+    i = 0, scase = 0
 
-	$.each( SERVICE, function() {
-		if (this.staffname !== staffname) {
-			staffname = this.staffname
-			scase = 0
-			i++
-			let	$staff = $rows.eq(i).children("td").eq(CASENUMSV)
-			if ($staff.prop("colSpan") === 1) {
-				$staff.prop("colSpan", QNSV - CASENUMSV)
-					.addClass("serviceStaff")
-						.siblings().hide()
-			}
-			$staff.html(staffname)
-		}
-		i++
-		scase++
-		if (i === len) {
-			$("#servicecells").find("tr").clone()
-				.appendTo($("#servicetbl").find("tbody"))
-			len++
-		}
-		let	$row = $rows.eq(i)
-		let	$cells = $row.children("td")
-		if ($cells.eq(CASENUMSV).prop("colSpan") > 1) {
-			$cells.eq(CASENUMSV).prop("colSpan", 1)
-				.nextUntil($cells.eq(QNSV)).show()
-		}
-		$row.filldataService(this, scase)
-	});
-	if (i < (len - 1)) {
-		$rows.slice(i+1).remove()
-	}
-	countAllServices()
-	hoverService()
-	winResizeFix($servicetbl, $("#dialogService"))
+  $.each( SERVICE, function() {
+    if (this.staffname !== staffname) {
+      staffname = this.staffname
+      scase = 0
+      i++
+      let  $staff = $rows.eq(i).children("td").eq(CASENUMSV)
+      if ($staff.prop("colSpan") === 1) {
+        $staff.prop("colSpan", QNSV - CASENUMSV)
+          .addClass("serviceStaff")
+            .siblings().hide()
+      }
+      $staff.html(staffname)
+    }
+    i++
+    scase++
+    if (i === len) {
+      $("#servicecells").find("tr").clone()
+        .appendTo($("#servicetbl").find("tbody"))
+      len++
+    }
+    let  $row = $rows.eq(i)
+    let  $cells = $row.children("td")
+    if ($cells.eq(CASENUMSV).prop("colSpan") > 1) {
+      $cells.eq(CASENUMSV).prop("colSpan", 1)
+        .nextUntil($cells.eq(QNSV)).show()
+    }
+    $row.filldataService(this, scase)
+  });
+  if (i < (len - 1)) {
+    $rows.slice(i+1).remove()
+  }
+  countAllServices()
+  hoverService()
+  winResizeFix($servicetbl, $("#dialogService"))
 }
 
 jQuery.fn.extend({
-	filldataService : function(bookq, scase) {
-		let	row = this[0],
-			cells = row.cells
+  filldataService : function(bookq, scase) {
+    let  row = this[0],
+      cells = row.cells
 
-		if (bookq.hn && isPACS) { cells[HNSV].className = "pacs" }
-		if (bookq.hn) { cells[NAMESV].className = "upload" }
+    if (bookq.hn && isPACS) { cells[HNSV].className = "pacs" }
+    if (bookq.hn) { cells[NAMESV].className = "upload" }
 
-		cells[CASENUMSV].innerHTML = scase
-		cells[HNSV].innerHTML = bookq.hn
-		cells[NAMESV].innerHTML = putNameAge(bookq)
-		cells[DIAGNOSISSV].innerHTML = bookq.diagnosis
-		cells[TREATMENTSV].innerHTML = bookq.treatment
-		cells[ADMISSIONSV].innerHTML = bookq.admission
-		cells[FINALSV].innerHTML = bookq.final
-		while(cells[PROFILESV].firstChild) cells[PROFILESV].firstChild.remove()
-		cells[PROFILESV].appendChild(showRecord(bookq))
-		cells[ADMITSV].innerHTML = putThdate(bookq.admit)
-		cells[OPDATESV].innerHTML = putThdate(bookq.opdate)
-		cells[DISCHARGESV].innerHTML = putThdate(bookq.discharge)
-		cells[QNSV].innerHTML = bookq.qn
+    cells[CASENUMSV].innerHTML = scase
+    cells[HNSV].innerHTML = bookq.hn
+    cells[NAMESV].innerHTML = putNameAge(bookq)
+    cells[DIAGNOSISSV].innerHTML = bookq.diagnosis
+    cells[TREATMENTSV].innerHTML = bookq.treatment
+    cells[ADMISSIONSV].innerHTML = bookq.admission
+    cells[FINALSV].innerHTML = bookq.final
+    while(cells[PROFILESV].firstChild) cells[PROFILESV].firstChild.remove()
+    cells[PROFILESV].appendChild(showRecord(bookq))
+    cells[ADMITSV].innerHTML = putThdate(bookq.admit)
+    cells[OPDATESV].innerHTML = putThdate(bookq.opdate)
+    cells[DISCHARGESV].innerHTML = putThdate(bookq.discharge)
+    cells[QNSV].innerHTML = bookq.qn
 
-		coloring(row)
-	}
+    coloring(row)
+  }
 })
 
 // Simulate hover on icon by changing background pics
 function hoverService()
 {
-	let	tdClass = "td.pacs, td.upload",
-		paleClasses = ["pacs", "upload"],
-		boldClasses = ["pacs2", "upload2"]
+  let  tdClass = "td.pacs, td.upload",
+    paleClasses = ["pacs", "upload"],
+    boldClasses = ["pacs2", "upload2"]
 
-	$(tdClass)
-		.mousemove(function(event) {
-			if (inPicArea(event, this)) {
-				getClass(this, paleClasses, boldClasses)
-			} else {
-				getClass(this, boldClasses, paleClasses)
-			}
-		})
-		.mouseout(function (event) {
-			getClass(this, boldClasses, paleClasses)
-		})
+  $(tdClass)
+    .mousemove(function(event) {
+      if (inPicArea(event, this)) {
+        getClass(this, paleClasses, boldClasses)
+      } else {
+        getClass(this, boldClasses, paleClasses)
+      }
+    })
+    .mouseout(function (event) {
+      getClass(this, boldClasses, paleClasses)
+    })
 }

@@ -22,9 +22,7 @@ function initRecord(bookq, $divRecord)
 
 	$input.each(function() {
 		inputName = this.name
-		this.checked = (this.value && (this.value === bookq[inputName]))
 		this.name = inputName + bookq.qn
-		wide = this.className.replace("w", "") + "px"
 		if (this.type === "number") {
 			if ((inputName === "operated") && (bookq.disease) && (!bookq.operated)) {
 				this.value = 1
@@ -32,7 +30,7 @@ function initRecord(bookq, $divRecord)
 				this.value = bookq[inputName]
 			}
 		} else {
-			this.nextElementSibling.style.right = wide
+			this.checked = (this.value && (this.value === bookq[inputName]))
 		}
 	})
 }

@@ -3,11 +3,12 @@ import { POINTER } from "../control/edit.js"
 import { savePreviousCellService } from "./savePreviousCellService.js"
 import { editPresentCellService } from "./editPresentCellService.js"
 import { countAllServices } from "./countAllServices.js"
-import { getBOOKrowByQN } from "../util/getrows.js"
-import { BOOK } from "../util/variables.js"
 
 const UPDATECOUNTER = ["disease", "admitted", "operated", "infection", "morbid", "dead"]
 const SERVICECOLOR = ["Readmission", "Reoperation", "Infection", "Morbidity", "Dead"]
+
+let beforePrevDz = ""
+let prevDisease = ""
 
 export function clickProfile(evt, target)
 {
@@ -16,19 +17,24 @@ export function clickProfile(evt, target)
   if (target.nodeName === "INPUT") {
     let name = target.name.replace(/\d+/g, "")
     if (UPDATECOUNTER.includes(name)) {
-	  if (SERVICECOLOR.includes(target.title)) {
-	    showInputColor(target)
-	  } else if (name === "disease") {
-		diseaseOperation(target)
-	  }
+      if (SERVICECOLOR.includes(target.title)) {
+        showInputColor(target)
+      } else if (name === "disease") {
+        diseaseOperation(target)
+      }
+      if (name === "operated") {
+        operationDisease(target)
+      }
       countAllServices()
-	}
-	if (inCell !== POINTER) {
-	  if (POINTER) {
-		savePreviousCellService()
-	  }
-	  editPresentCellService(evt, inCell)
-	}
+    }
+    if (inCell !== POINTER) {
+      if (POINTER) {
+       savePreviousCellService()
+      }
+      editPresentCellService(evt, inCell)
+    }
+    if (prevDisease) { lastDisease = prevDisease }
+    prevDisease = target.checked ? target.value : ""
   }
 }
 
@@ -57,5 +63,18 @@ function diseaseOperation(target)
     }
   } else {
     inputOperated.value = operatedValue - 1
+  }
+}
+
+function operationDisease(target)
+{
+  let inCell = target.closest("td")
+  let qn = inCell.parentElement.lastElementChild.innerHTML
+  let inputDisease = inCell.querySelectorAll("input[name='disease" + qn + "']")
+
+  if (target.value === "0") {
+    Array.from(inputDisease).forEach(e => e.checked = false)
+  } else if (target.value === "1" && target.prevVal === "0") {
+    Array.from(inputDisease).forEach(e => e.checked = e.value === beforePrevDz)
   }
 }
