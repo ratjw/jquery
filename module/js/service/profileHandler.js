@@ -4,9 +4,9 @@ import { showInputColor, operationToDisease } from "./clickProfile.js"
 
 export function profileHandler()
 {
-  // save previous value to determine increasing or decreasing
+  // save number radios input before changed
+  // to show prevDisease when operated is 1 from 0, not from other number
   $('#servicetbl input[type=number]').on('mousedown keydown mousewheel', function(e) {
-    // save number radios input before changed
     if (this.value) { this.prevVal = this.value }
   })
   .on('input', function(e) {
@@ -17,19 +17,21 @@ export function profileHandler()
     countAllServices()
   })
 
-  // hack for click and unchecked a radio input
+  // hack for click to uncheck a radio input
   $('#servicetbl label:has(input[type=radio])').on('mousedown', function(e) {
     var radios = $(this).find('input[type=radio]')
     var wasChecked = radios.prop('checked')
 
+    radios[0].turnOff = wasChecked
+    radios.prop('checked', !wasChecked)
+
     // check all disease radios input before changed
+	// to determine whether there was a previous disease or not
     let inCell = this.closest("td")
     let qn = inCell.parentElement.lastElementChild.innerHTML
     let inputDisease = inCell.querySelectorAll("input[name='disease" + qn + "']")
 
     radios[0].beforeDz = Array.from(inputDisease).filter(i => i.checked).length
-    radios[0].turnOff = wasChecked
-    radios.prop('checked', !wasChecked)
   })
   .on('click', function(e) {
     var radios = $(this).find('input[type=radio]')

@@ -3,7 +3,7 @@ import { UndoManager } from "../model/UndoManager.js"
 import {
 	OPDATE, THEATRE, OPROOM, STAFFNAME, QN, LARGESTDATE
 } from "../model/const.js"
-import { fetchPostponeCase } from "../model/fetch.js"
+import { fetchPostponeCase } from "../model/move.js"
 import { getOpdate } from "../util/date.js"
 import { sameDateRoomTableQN } from "../util/getrows.js"
 import { BOOK, updateBOOK } from "../util/variables.js"

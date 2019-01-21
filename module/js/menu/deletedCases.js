@@ -1,5 +1,5 @@
 
-import { fetchAllDeletedCases, fetchUndelete } from "../model/fetch.js"
+import { fetchAllDeletedCases, fetchUndelete } from "../model/search.js"
 import { getOpdate } from "../util/date.js"
 import { getBOOKrowByQN } from "../util/getrows.js"
 import { BOOK, CONSULT, updateBOOK } from "../util/variables.js"

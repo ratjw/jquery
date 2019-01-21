@@ -1,9 +1,9 @@
 
-import { OPDATE, THEATRE, OPROOM, STAFFNAME, QN } from "./const.js"
-import { clearTimer, resetTimerCounter } from "../control/timer.js"
-import { clearEditcell } from "../control/edit.js"
+import { OPDATE, THEATRE, OPROOM, STAFFNAME, QN } from "../model/const.js"
+import { clearTimer, resetTimerCounter } from "./timer.js"
+import { clearEditcell } from "./edit.js"
 import { clearMouseoverTR } from "../menu/moveCase.js"
-import { fetchSortable } from "./fetch.js"
+import { fetchSortable } from "../model/move.js"
 import { calcWaitnum } from "../util/calcWaitnum.js"
 import { getOpdate } from "../util/date.js"
 import { sameDateRoomBOOKRows } from "../util/getrows.js"

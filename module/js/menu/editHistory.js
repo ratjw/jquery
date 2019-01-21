@@ -1,6 +1,6 @@
 
 import { HN } from "../model/const.js"
-import { fetchCaseHistory } from "../model/fetch.js"
+import { fetchCaseHistory } from "../model/search.js"
 import { Alert } from "../util/util.js"
 import { viewCaseHistory } from "../view/viewCaseHistory.js"
 

@@ -1,5 +1,5 @@
 
-import { fetchCaseAll } from "../model/fetch.js"
+import { fetchCaseAll } from "../model/search.js"
 import { Alert } from "../util/util.js"
 import { viewCaseAll } from "../view/viewCaseAll.js"
 

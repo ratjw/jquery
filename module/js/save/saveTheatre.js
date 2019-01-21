@@ -1,6 +1,6 @@
 
 import { OPDATE, THEATRE, OPROOM, CASENUM, QN } from "../model/const.js"
-import { fetchSaveTheatre } from "../model/fetch.js"
+import { fetchSaveTheatre } from "../model/savedata.js"
 import { getOpdate } from "../util/date.js"
 import { sameDateRoomTableQN } from "../util/getrows.js"
 import { updateBOOK } from "../util/variables.js"

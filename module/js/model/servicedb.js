@@ -1,7 +1,7 @@
 
+import { postData, MYSQLIPHP } from "./fetch.js"
 import { USER } from "../main.js"
 import { URIcomponent } from "../util/util.js"
-import { postData, MYSQLIPHP } from "./fetch.js"
 import { serviceFromDate, serviceToDate } from "../service/setSERVICE.js"
 
 const GETIPD	= "php/getipd.php"

@@ -1,7 +1,7 @@
 
 import { UndoManager } from "../model/UndoManager.js"
 import { OPDATE, THEATRE, OPROOM, STAFFNAME, QN } from "../model/const.js"
-import { fetchmoveCase } from "../model/fetch.js"
+import { fetchmoveCase } from "../model/move.js"
 import { calcWaitnum } from "../util/calcWaitnum.js"
 import { getOpdate } from "../util/date.js"
 import { sameDateRoomTableQN } from "../util/getrows.js"

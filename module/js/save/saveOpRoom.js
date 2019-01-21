@@ -1,7 +1,7 @@
 
 import { OPDATE, THEATRE, OPROOM, QN } from "../model/const.js"
 import { OLDCONTENT } from "../control/edit.js"
-import { fetchSaveOpRoom } from "../model/fetch.js"
+import { fetchSaveOpRoom } from "../model/savedata.js"
 import { getOpdate } from "../util/date.js"
 import { sameDateRoomTableQN } from "../util/getrows.js"
 import { updateBOOK } from "../util/variables.js"

@@ -2,7 +2,7 @@
 import { EQUIPMENT, QN } from "../model/const.js"
 import { clearEditcell } from "../control/edit.js"
 import { USER } from "../main.js"
-import { fetchGetEquip, fetchSaveEquip, fetchCancelAllEquip } from "../model/fetch.js"
+import { fetchGetEquip, fetchSaveEquip, fetchCancelAllEquip } from "../model/savedata.js"
 import { putAgeOpdate, putThdate } from "../util/date.js"
 import { getBOOKrowByQN, getTableRowByQN } from "../util/getrows.js"
 import { BOOK, CONSULT, updateBOOK } from "../util/variables.js"

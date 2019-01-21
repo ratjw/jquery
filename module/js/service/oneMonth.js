@@ -1,5 +1,5 @@
 
-import { fetchGetServiceOneMonth } from "../model/fetchService.js"
+import { fetchGetServiceOneMonth } from "../model/servicedb.js"
 import { showService } from "./showService.js"
 import { setSERVICE, setfromDate, settoDate } from "./setSERVICE.js"
 import { showReportToDept } from "./showReportToDept.js"

@@ -1,5 +1,5 @@
 
-import { fetchGetNameHN } from "../model/fetch.js"
+import { fetchGetNameHN } from "../model/savehn.js"
 import { updateBOOK } from "../util/variables.js"
 import { Alert } from "../util/util.js"
 import { viewGetNameHN } from "../view/viewGetNameHN.js"

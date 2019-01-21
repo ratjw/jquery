@@ -1,6 +1,6 @@
 
 import { htmlStafflist } from "../view/html.js"
-import { fetchDoadddata, fetchDoupdatedata, fetchDodeletedata } from "../model/fetch.js"
+import { fetchDoadddata, fetchDoupdatedata, fetchDodeletedata } from "../model/search.js"
 import { updateBOOK, setSTAFF } from "../util/variables.js"
 import { Alert } from "../util/util.js"
 import { viewAddStaff } from "../view/viewAddStaff.js"

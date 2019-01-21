@@ -1,6 +1,6 @@
 
 import { OPDATE, THEATRE, OPROOM, STAFFNAME, QN } from "../model/const.js"
-import { fetchSaveOpTime } from "../model/fetch.js"
+import { fetchSaveOpTime } from "../model/savedata.js"
 import { getOpdate } from "../util/date.js"
 import { sameDateRoomBOOKRows } from "../util/getrows.js"
 import { BOOK, updateBOOK } from "../util/variables.js"

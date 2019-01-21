@@ -4,7 +4,7 @@ import { numDate, putThdate } from "../util/date.js"
 import { getTableRowsByDate } from "../util/getrows.js"
 import { HOLIDAY, setHOLIDAY } from "../util/variables.js"
 import { holiday } from "../view/holiday.js"
-import { fetchSaveHoliday, fetchDelHoliday } from "../model/fetch.js"
+import { fetchSaveHoliday, fetchDelHoliday } from "../model/search.js"
 import { Alert } from "../util/util.js"
 
 const HOLIDAYENGTHAI = {
