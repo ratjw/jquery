@@ -7,10 +7,9 @@ export function profileHandler()
   // save previous value to determine increasing or decreasing
   $('#servicetbl input[type=number]').on('mousedown keydown mousewheel', function(e) {
     // save number radios input before changed
-    if (!e.key || (/\d/.test(Number(e.key)))) {
-      this.prevVal = this.value
-    }
-  }).on('input', function(e) {
+    if (this.value) { this.prevVal = this.value }
+  })
+  .on('input', function(e) {
     if (/operated/.test(this.name)) {
       operationToDisease(this)
     }
@@ -28,12 +27,11 @@ export function profileHandler()
     let qn = inCell.parentElement.lastElementChild.innerHTML
     let inputDisease = inCell.querySelectorAll("input[name='disease" + qn + "']")
 
-    radios[0].disease = Array.from(inputDisease).filter(i => i.checked).length
+    radios[0].beforeDz = Array.from(inputDisease).filter(i => i.checked).length
     radios[0].turnOff = wasChecked
     radios.prop('checked', !wasChecked)
   })
-
-  $('#servicetbl label:has(input[type=radio])').on('click', function(e) {
+  .on('click', function(e) {
     var radios = $(this).find('input[type=radio]')
     radios.prop('checked', !radios[0].turnOff)
   })

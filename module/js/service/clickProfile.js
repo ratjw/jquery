@@ -55,7 +55,7 @@ function diseaseToOperation(target, inCell, qn)
   let operatedValue = Number(inputOperated.value)
 
   if (target.checked) {
-    if (!target.disease) {
+    if (!target.beforeDz) {
       inputOperated.value = operatedValue + 1
     }
   } else {
@@ -69,10 +69,10 @@ export function operationToDisease(target)
   let inCell = target.closest("td")
   let qn = target.name.split(/(\d+)/)[1]
   let inputDisease = inCell.querySelectorAll("input[name='disease" + qn + "']")
-  let disease = Array.from(inputDisease).filter(e => e.checked)
+  let checkedDz = Array.from(inputDisease).filter(e => e.checked)
 
   if (target.value === "0") {
-    prevDisease = disease.length ? disease[0].value : ""
+    prevDisease = checkedDz.length ? checkedDz[0].value : ""
     Array.from(inputDisease).forEach(e => e.checked = false)
   } else if (target.value === "1" && target.prevVal === "0") {
     Array.from(inputDisease).forEach(e => e.checked = e.value === prevDisease)
