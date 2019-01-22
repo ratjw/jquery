@@ -6,23 +6,6 @@ import {
 // SERVICE is retrieved from DB by getServiceOneMonth
 // calSERVE modifies SERVICE at run time, if no user-defined value in DB
 
-// admit : "date"							<- updated by getAdmitDischargeDate in PHP
-// discharge : "date"						<- updated by getAdmitDischargeDate in PHP
-// admitted : "", "1", "2", ...				<- updated by getAdmitDischargeDate in PHP
-// doneby : "", "Staff", "Resident"			<- user-defined only
-// manner : "", "Elective", "Emergency"		<- user-defined only
-// scale : "", "Major", "Minor"				<- user-defined only
-// infection : "", "Infection"				<- user-defined only
-// morbid : "", "Morbidity"					<- user-defined only
-// dead : "", "Dead"						<- user-defined only
-
-// operated : "", "0", "1", "2", ...		<- user-defined "0" is NoOp
-// disease : "", "No", "Brain Tumor",		\
-// 		"Brain Vascular", "CSF related",	 |	if "", will be calc by operationFor
-//		"Trauma", "Spine", "etc"			  > other value is user-defined
-// radiosurgery : "", "No", "Radiosurgery"	 |
-// endovascular : "", "No", "Endovascular"	/
-
 export let SERVICE = [],
   serviceFromDate = "",
   serviceToDate = "",
@@ -47,7 +30,7 @@ function calcSERVE(service)
 			this.endovascular = "Endovascular"
 		}
 
-		if (!this.disease) {
+		if (!this.disease && this.operated !== "0") {
 			let opwhat = operationFor(this)
 
 			this.disease = opwhat
@@ -61,7 +44,6 @@ function calcSERVE(service)
 }
 
 // matched NOOPERATION or no other match, return ""
-// not return "NoOp" which is user-defined and saved into DB
 function operationFor(thisrow)
 {
 	let	Rx = 0, RxNo = 1, Dx = 2, DxNo = 3, 
