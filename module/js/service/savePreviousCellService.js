@@ -128,21 +128,9 @@ function getNewRecord(pointing)
 		let newkey = this.name.replace(/\d+/g, "")
 
 		if (this.type === "radio" || this.type === "checkbox") {
-			if (this.checked) {
-				record[newkey] = this.value
-			} else if ((newkey === "disease")
-				|| (newkey === "radiosurgery")
-				|| (newkey === "endovascular")) {
-				record[newkey] = "No"
-			} else {
-				record[newkey] = ""
-			}
+			record[newkey] = this.checked ? this.value : ""
 		} else if (this.type === "number") {
-			if (this.value) {
-				record[newkey] = this.value
-			} else {
-				record[newkey] = ""
-			}
+			record[newkey] = this.value ? this.value : ""
 		}
 	})
 

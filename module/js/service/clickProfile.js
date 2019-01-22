@@ -8,6 +8,9 @@ import { countAllServices } from "./countAllServices.js"
 // "admitted", "operated", use .on('input') in showService
 const UPDATECOUNTER = ["disease", "infection", "morbid", "dead"]
 
+// user-defined "no" by unchecked click
+const RADIOENDO = ["Radiosurgery", "Endovascular"]
+
 // use to show disease when operated is up from 0 to 1
 let prevDisease = ""
 
@@ -20,7 +23,9 @@ export function clickProfile(evt, target)
 	  let name = nameqn[0]
     let qn = nameqn[1]
 
-    if (UPDATECOUNTER.includes(name)) {
+    if (RADIOENDO.includes(name)) {
+      target.value = target.checked ? name : "no"
+    } else if (UPDATECOUNTER.includes(name)) {
       if (name === "disease") {
         diseaseToOperation(target, inCell, qn)
       } else {
@@ -28,6 +33,7 @@ export function clickProfile(evt, target)
 	    }
       countAllServices()
     }
+
     if (inCell !== POINTER) {
       if (POINTER) {
        savePreviousCellService()

@@ -48,8 +48,12 @@
                                                           (run-time calc by operationFor)
                                                           "" = initially no data
                                                           user-defined no operation is in operated
-  `radiosurgery` varchar(30) NOT NULL DEFAULT '',	   	* "", "Radiosurgery"
-  `endovascular` varchar(30) NOT NULL DEFAULT '',	   	* "", "Endovascular"
+  `radiosurgery` varchar(30) NOT NULL DEFAULT '',	   	* "", "no", "Radiosurgery"
+                                                          "" = initially no data
+                                                          "no"= user-defined no radiosurgery
+  `endovascular` varchar(30) NOT NULL DEFAULT '',	   	* "", "no", "Endovascular"
+                                                          "" = initially no data
+                                                          "no"= user-defined no endovascular
   `infection` varchar(30) NOT NULL DEFAULT '',	     	* "", "Infection" user-defined only
   `morbid` varchar(30) NOT NULL DEFAULT '',			      * "", "Morbidity" user-defined only
   `dead` varchar(30) NOT NULL DEFAULT '',			       	* "", "Dead" user-defined only

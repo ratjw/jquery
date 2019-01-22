@@ -29,7 +29,8 @@ function calcSERVE(service)
 		if (!this.endovascular && isMatched(ENDOVASCULAR, this.treatment)) {
 			this.endovascular = "Endovascular"
 		}
-
+if (this.hn == "5489111")
+	editableSV = editableSV
 		if (!this.disease && this.operated !== "0") {
 			let opwhat = operationFor(this)
 
@@ -81,12 +82,7 @@ function operationFor(thisrow)
 
 function isMatched(keyword, diagtreat)
 {
-	let test = false
-
-	$.each( keyword, function() {
-		return !(test = this.test(diagtreat))
-	})
-	return test
+	return keyword.some(v => v.test(diagtreat))
 }
 
 function isOpfor(keyword, opfor, RxDx, diagRx)
