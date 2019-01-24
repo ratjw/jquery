@@ -1,5 +1,5 @@
 
-import { fetchSearchDB } from "../model/search.js"
+import { fetchSearchDB } from "../model/sqlsearch.js"
 import { Alert, reposition, menustyle } from "../util/util.js"
 import { viewSearchDB } from "../view/viewSearchDB.js"
 import { clearAllEditing } from "../control/clearAllEditing.js"

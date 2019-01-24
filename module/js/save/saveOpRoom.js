@@ -1,9 +1,9 @@
 
 import { OPDATE, THEATRE, OPROOM, QN } from "../model/const.js"
 import { OLDCONTENT } from "../control/edit.js"
-import { fetchSaveOpRoom } from "../model/savedata.js"
+import { fetchSaveOpRoom } from "../model/sqlsavedata.js"
 import { getOpdate } from "../util/date.js"
-import { sameDateRoomTableQN } from "../util/getrows.js"
+import { sameDateRoomTableQNs } from "../util/rowsgetting.js"
 import { updateBOOK } from "../util/variables.js"
 import { Alert } from "../util/util.js"
 import { viewOneDay } from "../view/viewOneDay.js"
@@ -20,10 +20,10 @@ export function saveOpRoom(pointed, newcontent) {
 		allOldCases = [],
 		allNewCases = []
 
-	allOldCases = sameDateRoomTableQN(opdateth, oproom, theatre)
+	allOldCases = sameDateRoomTableQNs(opdateth, oproom, theatre)
 	allOldCases = allOldCases.filter(e => e !== qn)
 
-	allNewCases = sameDateRoomTableQN(opdateth, newcontent, theatre)
+	allNewCases = sameDateRoomTableQNs(opdateth, newcontent, theatre)
 	allNewCases.push(qn)
 
 	let doSaveOpRoom = function() {

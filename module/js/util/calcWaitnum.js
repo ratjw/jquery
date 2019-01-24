@@ -1,21 +1,19 @@
 
-import { OPDATE } from "../model/const.js"
+import { getOpdate } from "../util/date.js"
 import { isConsultsTbl } from "./util.js"
 
 // waitnum is for ordering where there is no oproom, casenum
 // nextWaitNum is undefined in case of new blank row
-//Consults cases have negative waitnum
-export function calcWaitnum(thisOpdate, $prevrow, $nextrow)
+// Consults cases have negative waitnum
+export function calcWaitnum(thisOpdate, prevrow, nextrow)
 {
-  let prevWaitNum = Number($prevrow.prop("title")),
-    nextWaitNum = Number($nextrow.prop("title")),
+  let prevWaitNum = Number(prevrow.waitnum) || 0,
+      nextWaitNum = Number(nextrow.waitnum) || 0,
 
-    $prevRowCell = $prevrow.children("td"),
-    $nextRowCell = $nextrow.children("td"),
-    prevOpdate = $prevRowCell.eq(OPDATE).html(),
-    nextOpdate = $nextRowCell.eq(OPDATE).html(),
-    tableID = $prevrow.closest("table").attr("id"),
-    defaultWaitnum = (isConsultsTbl(tableID))? -1 : 1
+  prevOpdate = getOpdate(prevrow.firstElementChild.innerHTML),
+  nextOpdate = getOpdate(nextrow.firstElementChild.innerHTML),
+  tableID = prevrow.closest("table").id,
+  defaultWaitnum = (isConsultsTbl(tableID))? -1 : 1
 
 	return (prevOpdate !== thisOpdate && thisOpdate !== nextOpdate)
 			? defaultWaitnum

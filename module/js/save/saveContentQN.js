@@ -2,7 +2,7 @@
 import { QN } from "../model/const.js"
 import { updateBOOK } from "../util/variables.js"
 import { OLDCONTENT } from "../control/edit.js"
-import { fetchSaveContentQN } from "../model/savedata.js"
+import { fetchSaveContentQN } from "../model/sqlsavedata.js"
 import { viewSaveContentQN } from "../view/viewSaveContentQN.js"
 import { Alert } from "../util/util.js"
 

@@ -3,10 +3,10 @@ import { OPDATE, THEATRE, OPROOM, STAFFNAME, QN } from "../model/const.js"
 import { clearTimer, resetTimerCounter } from "./timer.js"
 import { clearEditcell } from "./edit.js"
 import { clearMouseoverTR } from "../menu/moveCase.js"
-import { fetchSortable } from "../model/move.js"
+import { fetchSortable } from "../model/sqlmove.js"
 import { calcWaitnum } from "../util/calcWaitnum.js"
 import { getOpdate } from "../util/date.js"
-import { sameDateRoomBOOKRows } from "../util/getrows.js"
+import { getBOOKrowByQN, sameDateRoomBOOKQNs } from "../util/rowsgetting.js"
 import { BOOK, updateBOOK } from "../util/variables.js"
 import { Alert, isConsults, isStaffname } from "../util/util.js"
 import { viewmoveCase } from "../view/viewmoveCase.js"
@@ -48,16 +48,15 @@ export function sortable () {
 			thisplace = ui.placeholder.index()
 		},
 		stop: function(e, ui) {
-			let $item = ui.item,
-				$itemcell = $item.children("td"),
-				receiver = $item.closest('table').attr('id'),
-				moveWaitnum = $item[0].title,
-				moveOpdateth = $itemcell.eq(OPDATE).html(),
-				moveOpdate = getOpdate(moveOpdateth),
-				movetheatre = $itemcell.eq(THEATRE).html(),
-				moveroom = $itemcell.eq(OPROOM).html(),
-				staffname = $itemcell.eq(STAFFNAME).html(),
-				moveqn = $itemcell.eq(QN).html()
+			let item = ui.item[0],
+				receiver = item.closest('table').id,
+				movewaitnum = item.waitnum,
+				moveqn = item.lastElementChild.innerHTML,
+        moverow = getBOOKrowByQN(BOOK, moveqn),
+				moveopdate = moverow.opdate,
+				movetheatre = moverow.theatre,
+				moveroom = moverow.oproom,
+				staffname = moverow.staffname
 
 			// Allow drag to Consults, or same staff name
 			// That is (titlename === "Consults") is allowed
@@ -67,7 +66,7 @@ export function sortable () {
 						&& (receiver === "queuetbl")
 						&& !isConsults()
 						&& !isStaffname(staffname))
-						|| (!$itemcell.eq(QN).html())
+						|| (!moveqn)
 
 			if (illegal) {
 				stopsorting()
@@ -75,26 +74,26 @@ export function sortable () {
 			}
 
 			// Find nearest row by dropping position
-			let $thisdrop
+			let thisdrop
 			let before
-			let $previtem = $item.prev()
-			let $nextitem = $item.next()
+			let previtem = item.previousElementSibling
+			let nextitem = item.nextElementSibling
 
-			if (!$previtem.length || $previtem.has('th').length) {
-				$thisdrop = $nextitem
+			if (!previtem || previtem.querySelector('th')) {
+				thisdrop = nextitem
 				before = 1
 			} else {
-				if (!$nextitem.length || $nextitem.has('th').length) {
-					$thisdrop = $previtem
+				if (!nextitem || nextitem.querySelector('th')) {
+					thisdrop = previtem
 					before = 0
 				} else {
 					// Determine that the user intend to drop on which row
 					//ui.offset (without '()') = helper position
 					let helpertop = ui.offset.top
-					let helperheight = $item.height()
+					let helperheight = item.offsetHeight
 					let helpercenter = helpertop + helperheight/2
 
-					let placeholdertop = $item.offset().top
+					let placeholdertop = item.getBoundingClientRect().top
 					let placeholderheight = ui.placeholder.height()
 					let placeholdercenter = placeholdertop + placeholderheight/2
 					let placeholderbottom = placeholdertop + placeholderheight
@@ -105,11 +104,11 @@ export function sortable () {
 					let nearest = Math.min(nearprev, nearplace, nearnext)
 
 					if (nearest === nearprev) {
-						$thisdrop = $previtem
+						thisdrop = previtem
 						before = 0
 					} 
 					if (nearest === nearnext) {
-						$thisdrop = $nextitem
+						thisdrop = nextitem
 						before = 1
 					}
 					if (nearest === nearplace) {
@@ -118,53 +117,47 @@ export function sortable () {
 							return false
 						}
 						if (prevplace < thisplace) {
-							$thisdrop = $previtem
+							thisdrop = previtem
 							before = 0
 						} else {
-							$thisdrop = $nextitem
+							thisdrop = nextitem
 							before = 1
 						}
 					}
 				}
 			}
 
-			let $thiscell = $thisdrop.children("td"),
-				thisOpdateth = $thisdrop.children("td").eq(OPDATE).html(),
-				thisOpdate = getOpdate(thisOpdateth),
-				thistheatre = $thiscell.eq(THEATRE).html(),
-				thisroom = $thiscell.eq(OPROOM).html(),
-				thisqn = $thiscell.eq(QN).html(),
+      let thisOpdate = getOpdate(thisdrop.firstElementChild.innerHTML),
+  			thisqn = thisdrop.lastElementChild.innerHTML,
+        thisrow = getBOOKrowByQN(BOOK, thisqn) || [],
+				thistheatre = thisrow.theatre || "",
+				thisroom = thisrow.oproom || null,
 
-				newWaitnum = calcWaitnum(thisOpdateth, $previtem, $nextitem),
+				newWaitnum = calcWaitnum(thisOpdate, previtem, nextitem),
 				allNewCases = [],
-				allOldCases = [],
-				sql = ""
+				allOldCases = []
 
-			// old = mover
-			// this = dropping place
 			// drop on the same case
 			if (thisqn === moveqn) { return }
 
 			// no room specified and waitnum not changed
-			if (!moveroom && !thisroom && newWaitnum === moveWaitnum) {
+			if (!moveroom && !thisroom && newWaitnum === movewaitnum) {
 				return
 			}
 
-			allOldCases = sameDateRoomBOOKRows(BOOK, moveOpdate, moveroom, movetheatre)
-			allNewCases = sameDateRoomBOOKRows(BOOK, thisOpdate, thisroom, thistheatre)
-
-			let moverow = allOldCases.find(e => e.qn === moveqn)
+			allOldCases = sameDateRoomBOOKQNs(BOOK, moverow)
+			allNewCases = sameDateRoomBOOKQNs(BOOK, thisrow)
 
 			// remove itself from old sameDateRoom
-			allOldCases = allOldCases.filter(e => e.qn !== moveqn);
+			allOldCases = allOldCases.filter(e => e !== moveqn)
 
-			// new === old
-			if (!!allNewCases.find(e => e.qn === moveqn)) {
+			// remove itself from new if new === old
+			if (allNewCases.find(e => e === moveqn)) {
 				allNewCases = allOldCases
 				allOldCases = []
 			}
 
-			// insert itself into new sameDateRoom after the clicked row
+			// insert itself into new sameDateRoom before/after the clicked row
 			let index = allNewCases.indexOf(thisqn)
 			before
 			? allNewCases.splice(index, 0, moveqn)
@@ -183,8 +176,8 @@ export function sortable () {
 /*			let argModelUndo = {
 				movelist: allNewCases,
 				newlist: allOldCases,
-				waitnum: moveWaitnum,
-				opdate: moveOpdate,
+				waitnum: movewaitnum,
+				opdate: moveopdate,
 				theatre: movetheatre,
 				moveroom: thisroom,
 				thisroom: moveroom,
@@ -196,7 +189,7 @@ export function sortable () {
 				fetchSortable(argModelDo).then(response => {
 					let hasData = function () {
 						updateBOOK(response)
-						viewmoveCase(moveOpdate, thisOpdate, staffname)
+						viewmoveCase(moveopdate, thisOpdate, staffname)
 						hoverMain()
 					}
 
@@ -224,7 +217,7 @@ export function sortable () {
 }
 
 let stopsorting = function () {
-	// Return to original place so that viewOneDay(moveOpdate)
+	// Return to original place so that viewOneDay(moveopdate)
 	// will not render this row in wrong position
 	$("#tbl tbody, #queuetbl tbody").sortable( "cancel" )
 

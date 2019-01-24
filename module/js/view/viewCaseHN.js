@@ -5,7 +5,7 @@ import { isConsultsTbl, getMaxQN } from "../util/util.js"
 import { refillall } from "./fill.js"
 import { fillConsults } from "./fillConsults.js"
 import { BOOK, CONSULT, isPACS } from "../util/variables.js"
-import { getBOOKrowByQN } from "../util/getrows.js"
+import { getBOOKrowByQN } from "../util/rowsgetting.js"
 import { putNameAge } from "../util/date.js"
 import { viewOneDay } from "./viewOneDay.js"
 

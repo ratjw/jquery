@@ -1,5 +1,5 @@
 
-import { getTableRowByQN } from "../util/getrows.js"
+import { getTableRowByQN } from "../util/rowsgetting.js"
 import {isSplit } from "../util/util.js"
 
 // Both main and staff tables

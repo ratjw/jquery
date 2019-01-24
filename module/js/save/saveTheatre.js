@@ -1,8 +1,8 @@
 
 import { OPDATE, THEATRE, OPROOM, CASENUM, QN } from "../model/const.js"
-import { fetchSaveTheatre } from "../model/savedata.js"
+import { fetchSaveTheatre } from "../model/sqlsavedata.js"
 import { getOpdate } from "../util/date.js"
-import { sameDateRoomTableQN } from "../util/getrows.js"
+import { sameDateRoomTableQNs } from "../util/rowsgetting.js"
 import { updateBOOK } from "../util/variables.js"
 import { Alert } from "../util/util.js"
 import { viewOneDay } from "../view/viewOneDay.js"
@@ -20,10 +20,10 @@ export function saveTheatre(pointed, newcontent)
 		allOldCases = [],
 		allNewCases = []
 
-	allOldCases = sameDateRoomTableQN(opdateth, oproom, theatre)
+	allOldCases = sameDateRoomTableQNs(opdateth, oproom, theatre)
 	allOldCases = allOldCases.filter(e => e !== qn)
 
-	allNewCases = sameDateRoomTableQN(opdateth, oproom, newcontent)
+	allNewCases = sameDateRoomTableQNs(opdateth, oproom, newcontent)
 	if (casenum) {
 		allNewCases.splice(casenum-1, 0, qn)
 	} else {

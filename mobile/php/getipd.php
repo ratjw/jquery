@@ -18,29 +18,25 @@ require_once "mysqli.php";
 	}
 
 	$update = false;
-	for ($i = 0; $i < count($case); $i++)
+	foreach ($case as $eachcase)
 	{
-		$hn = $case[$i]["hn"];
-		$qn = $case[$i]["qn"];
+		$hn = $eachcase["hn"];
+		$qn = $eachcase["qn"];
 
 		$ipd = getipd($hn);
 
-		$oldAdmit = $case[$i][admit];
-		$oldDischarge = $case[$i][discharge];
+		$oldAdmit = $eachcase[admit];
+		$oldDischarge = $eachcase[discharge];
 
 		$newAdmit = getIPDdate($ipd[effectivestartdate]);
 		$newDischarge = getIPDdate($ipd[effectiveenddate]);
-		if ($newAdmit > $to || $newDischarge < $from) {
-			$newAdmit = null;
-			$newDischarge = null;
-		}
 
 		$admit = "";
 		$discharge = "";
-		if ($oldAdmit < $newAdmit) {
-			$admit = "admit='$newAdmit',";
+		if (($newAdmit >= $from) && ($newAdmit <= $to) && ($oldAdmit < $newAdmit)) {
+			$admit = "admit='$newAdmit',admitted=admitted+1,";
 		}
-		if ($oldDischarge < $newDischarge) {
+		if (($newDischarge >= $from) && ($newDischarge <= $to) && ($oldDischarge < $newDischarge)) {
 				$discharge = "discharge='$newDischarge',";
 		}
 		if ($admit || $discharge) {

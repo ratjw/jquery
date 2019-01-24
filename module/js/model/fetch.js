@@ -1,5 +1,4 @@
 
-// const
 export const MYSQLIPHP	= "php/mysqli.php"
 
 export async function postData(url = ``, data) {

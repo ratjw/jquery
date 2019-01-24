@@ -8,7 +8,7 @@ import { resetTimer, resetTimerCounter } from "./timer.js"
 import { setClickMenu } from "../menu/setClickMenu.js"
 import { setClickSetting } from "./setClickSetting.js"
 import { setClickService } from "../service/serviceReview.js"
-import { fetchStart } from "../model/update.js"
+import { fetchStart } from "../model/sqlupdate.js"
 import { sortable } from "./sort.js"
 import { clearSelection } from "./clearSelection.js"
 import { fillall } from "../view/fill.js"
@@ -49,7 +49,6 @@ function success(response) {
   dialogServiceEvent()
   wrapperEvent()
   documentEvent()
-  fillConsults()
   setClickMenu()
   setClickSetting()
   setClickService()
@@ -68,7 +67,7 @@ function failed(response) {
 	Alert(title, error + "No localStorage backup")
 }
 
-// Display everyday on main table 1 month back, and 2 years ahead
+// Display everyday on main table 1 month back, to 20 days ahead
 let makeStart = function() {		
 	// Start with 1st date of last month
 	let	tableID = "tbl",
@@ -85,7 +84,7 @@ let makeStart = function() {
 	fillall(book, table, START, until)
 }
 
-// Display everyday on main table 1 month back, and 2 years ahead
+// Display everyday on main table 20 days ahead, to 2 years ahead
 let makeFinish = function() {		
 	// Start with 1st date of last month
 	let	tableID = "tbl",
@@ -106,7 +105,8 @@ let makeFinish = function() {
 		todate = today.getDate(),
 		until = ISOdate((new Date(nextyear, month, todate)))
 
-	fillall(book, table, start, until, table.rows.length-1)
+	fillall(book, table, start, until)
+  fillConsults()
 }
 
 function dialogServiceEvent()

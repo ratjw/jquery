@@ -17,26 +17,22 @@ import { hoverMain } from "./hoverMain.js"
 // Consults and dialogAll tables use this too
 // START date imported from util.js
 // until date is the last row of the table, not of the book
-export function fillall(book, table, start, until, num=0) {
+export function fillall(book, table, start, until) {
 	let tbody = table.getElementsByTagName("tbody")[0],
 		rows = table.rows,
 		head = table.rows[0],
 		date = start,
 		madedate,
-		bookq = book.find(e => e.opdate >= start),
-		bookx = book.find(e => e.opdate >= LARGESTDATE),
-		q = book.indexOf(bookq),
-		x = book.indexOf(bookx)
+		q = book.findIndex(e => e.opdate >= start),
+		x = book.findIndex(e => e.opdate >= LARGESTDATE)
 
 	// Get rid of LARGESTDATE cases
-	// Consult cases have no LARGESTDATE, findStartRowInBOOK returns x = -1
+	// Consult cases have no LARGESTDATE, findIndex returns x = -1
 	if (x >= 0) {
 		book = book.slice(0, x)
 	}
 
-	// i for rows in table (with head as the first row)
-	let i = num,
-		blen = book.length
+	let blen = book.length
 
 	for (q; q < blen; q++)
 	{	
@@ -47,12 +43,15 @@ export function fillall(book, table, start, until, num=0) {
 			{
 				// make a blank row for each day which is not in book
 				makenextrow(table, date)	// insertRow
-				i++
-				
 				madedate = date
 			}
 			date = nextdays(date, 1)
 			if (date > until) {
+        if (((new Date(date)).getDay())%7 === 1)
+        {
+          let clone = head.cloneNode(true)
+          tbody.appendChild(clone)
+        }
 				return
 			}
 
@@ -61,12 +60,10 @@ export function fillall(book, table, start, until, num=0) {
 			{
 				let clone = head.cloneNode(true)
 				tbody.appendChild(clone)
-				i++
 			}
 		}
 		makenextrow(table, date)
-		i++
-		filldata(book[q], rows[i])
+		filldata(book[q], rows[table.rows.length-1])
 		madedate = date
 	}
 
@@ -114,7 +111,7 @@ export function filldata(bookq, row)
 {
 	let cells = row.cells
 
-	row.title = bookq.waitnum
+	row.waitnum = bookq.waitnum
 	if (bookq.hn && isPACS) { cells[HN].className = "pacs" }
 	if (bookq.patient) { cells[PATIENT].className = "upload" }
 
@@ -203,7 +200,7 @@ jQuery.fn.extend({
 	filldataQueue : function(q) {
 		let cells = this[0].cells
 		
-		this[0].title = q.waitnum
+		this[0].waitnum = q.waitnum
 		addColor(this, q.opdate)
 		q.hn && isPACS && (cells[HN].className = "pacs")
 		q.patient && (cells[PATIENT].className = "upload")

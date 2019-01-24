@@ -1,3 +1,10 @@
+/* to let table scrollable while dragging */
+html, body {
+    height: 100%;
+    overflow: hidden;
+    margin: 0px;
+}
+
 #wrapper {
 	height: 100%;
 	width: 100%;
@@ -51,6 +58,9 @@ td img {
 	height: 32px;
 	width: 40px;
 }
+td img.imgpale {
+	filter: opacity(30%);
+}
 
 #queuewrapper {
 	float: right;
@@ -64,24 +74,39 @@ td img {
 	border-left: solid 2px snow;
 }
 
-#tbl td:first-child,
-#tbl td:nth-child(2),
-#tbl td:nth-child(3),
+#tbl.showColumn2 th:nth-child(2){ width: 30px; font-size: xx-small; }
+#tbl th:nth-child(2) { width: 0px; font-size: 0px; }
+#tbl th:nth-child(3),
+#tbl th:nth-child(4),
 #tbl td:nth-child(4),
-#tbl td:nth-child(5),
+#tbl th:nth-child(5),
+#queuetbl th:nth-child(3),
+#queuetbl th:nth-child(4),
+#queuetbl th:nth-child(5),
+#queuetbl td:nth-child(3),
+#queuetbl td:nth-child(4),
+#queuetbl td:nth-child(5) {
+	font-size: xx-small;
+}
+#tbl.showColumn2 td:nth-child(2) { width: 30px; font-size: xx-small; }
+#tbl td:nth-child(2) { width: 0px; font-size: 0px; }
+
+#tbl td:nth-child(3),
+#tbl td:nth-child(5) {
+	font-size: 14px;
+}
+#tbl td:first-child,
 #tbl td:nth-child(6),
 #tbl td:nth-child(7),
 #tbl td:nth-child(8),
 #queuetbl td:first-child,
-#queuetbl td:nth-child(4),
-#queuetbl td:nth-child(5),
 #queuetbl td:nth-child(6),
 #queuetbl td:nth-child(7),
 #queuetbl td:nth-child(8),
 #servicetbl td:nth-child(2),
-#servicetbl td:nth-child(8),
 #servicetbl td:nth-child(9),
 #servicetbl td:nth-child(10),
+#servicetbl td:nth-child(11),
 #deletedtbl td:nth-child(1),
 #deletedtbl td:nth-child(2),
 #deletedtbl td:nth-child(3),
@@ -98,20 +123,20 @@ td img {
 	font-size: 12px;
 }
 
-#tbl td:first-child,
-#queuetbl td:first-child { min-width: 40px; max-width: 60px; }
-
+#tbl td:nth-child(2),
+#tbl td:nth-child(3),
+#tbl td:nth-child(4),
+#tbl td:nth-child(5),
+#servicetbl td:first-child,
 #historytbl td:nth-child(2),
-#historytbl td:nth-child(3),
-#tbl td:nth-child(2),
-#tbl td:nth-child(3),
-#tbl td:nth-child(4),
-#tbl td:nth-child(5) { text-align: center; }
+#historytbl td:nth-child(3) {
+	text-align: center;
+}
 
-#tbl td:nth-child(2),
-#tbl td:nth-child(3),
-#tbl td:nth-child(4),
-#tbl td:nth-child(5) { min-width: 25px; max-width: 30px; }
+#tbl td:first-child { min-width: 40px; max-width: 60px; }
+#tbl td:nth-child(3) { min-width: 15px; max-width: 20px; }
+#tbl td:nth-child(4) { min-width: 25px; max-width: 30px; }
+#tbl td:nth-child(5) { min-width: 15px; max-width: 20px; }
 #tbl td:nth-child(6) { min-width: 40px; max-width: 60px; }
 #tbl td:nth-child(7) { min-width: 50px; max-width: 70px; }
 #tbl td:nth-child(8) { min-width: 70px; width: 10%; }
@@ -120,25 +145,60 @@ td img {
 #tbl td:nth-child(11) { min-width: 100px; width: 25%; }
 #tbl td:nth-child(12) { min-width: 100px; width: 15%; }
 
-#queuetbl td:nth-child(6) { min-width: 40px; max-width: 60px; }
+#queuetbl td:first-child { min-width: 40px; max-width: 60px; }
 #queuetbl td:nth-child(7) { min-width: 50px; max-width: 70px; }
 #queuetbl td:nth-child(8) { min-width: 70px; width: 10%; }
-#queuetbl td:nth-child(9) { min-width: 200px; width: 25%; }
-#queuetbl td:nth-child(10) { min-width: 200px; width: 25%; }
-#queuetbl td:nth-child(11) { min-width: 100px; width: 15%; }
-#queuetbl td:nth-child(12) { min-width: 100px; width: 15%; }
+#queuetbl td:nth-child(9) { min-width: 200px; width: 20%; }
+#queuetbl td:nth-child(10) { min-width: 200px; width: 20%; }
+#queuetbl td:nth-child(11) { min-width: 100px; width: 20%; }
+#queuetbl td:nth-child(12) { min-width: 100px; width: 20%; }
 
-#servicetbl td:nth-child(1) { width: 15px; }
-#servicetbl td:nth-child(2) { width: 50px; }
-#servicetbl td:nth-child(3) { width: 10%; }
-#servicetbl td:nth-child(4) { width: 15%; }
-#servicetbl td:nth-child(5) { width: 15%; }
-#servicetbl td:nth-child(6) { width: 25%; }
-#servicetbl td:nth-child(7) { width: 25%; }
-#servicetbl td:nth-child(8) { width: 200px; }
-#servicetbl td:nth-child(9) { width: 40px; }
-#servicetbl td:nth-child(10) { width: 40px; }
+#queuetbl {
+	margin-bottom: 100px;
+}
+#queuetbl tr.odd {
+	background-color: #EEEEFF;
+}
+
+#titlebar {
+	height: 40px;
+	background-color: #7799AA;
+}
+
+#titlename {
+	font-size: 20px;
+	font-weight: bold;
+	color: white;
+	width: 100px;
+	line-height: 35px;
+	margin-left: 25px;
+}
+
+#servicetbl th:nth-child(1) { width: 15px; }
+#servicetbl th:nth-child(2) { width: 50px; }
+#servicetbl th:nth-child(3) { width: 10%; }
+#servicetbl th:nth-child(4) { width: 15%; }
+#servicetbl th:nth-child(5) { width: 15%; }
+#servicetbl th:nth-child(6) { width: 25%; }
+#servicetbl th:nth-child(7) { width: 25%; }
+#servicetbl th:nth-child(8),
+#servicetbl td:nth-child(8),
+#dialogService .fixed th:nth-child(8) { width: 0px; font-size: 0px; }
+#servicetbl.showColumn8 th:nth-child(8),
+#servicetbl.showColumn8 td:nth-child(8),
+#dialogService .fixed.showColumn8 th:nth-child(8) { width: 200px; font-size: 14px; }
+#servicetbl th:nth-child(9) { width: 40px; }
+#servicetbl th:nth-child(10) { width: 40px; }
 #servicetbl td:nth-child(11) { width: 40px; }
+
+#servicetbl td.serviceStaff {
+	height: 40px;
+	font-weight: bold;
+	font-size: 16px;
+	text-align: left;
+	padding-left: 10px;
+	background-color: #DDFFFF;
+}
 
 #historytbl td:nth-child(1) { width: 5%; }
 #historytbl td:nth-child(2) { width: 10px; }
@@ -195,6 +255,7 @@ td img {
 #queuetbl th:nth-child(3), #queuetbl td:nth-child(3),
 #queuetbl th:nth-child(4), #queuetbl td:nth-child(4),
 #queuetbl th:nth-child(5), #queuetbl td:nth-child(5),
+#queuetbl th:nth-child(6), #queuetbl td:nth-child(6),
 #tbl th:nth-child(13), #tbl td:nth-child(13),
 #queuetbl th:nth-child(13), #queuetbl td:nth-child(13),
 #servicetbl th:nth-child(12), #servicetbl td:nth-child(12),
@@ -203,14 +264,14 @@ td img {
 #monthpicker button.ui-datepicker-current,
 #monthpicker .ui-datepicker-calendar,
 #monthstart,
-.divRecord,
+.imgclose,
 #dialogReview,
 #dialogEquip,
 #dialogAll, #allcells,
 #dialogDeleted, #deletedcells,
 #dialogHistory, #historycells,
 #dialogFind, #findcells,
-#dialogMoveCase,
+#dialogMoveCaseHN,
 #movetbl td:nth-child(2),
 #movetbl td:nth-child(3),
 #movetbl td:nth-child(10),
@@ -279,9 +340,6 @@ tr#moveto td {
 	padding-bottom: 15px;	
 	border-left: 0px;
 }
-
-#addholiday,
-.delholiday { float: right; }
 
 .leftButton { margin-right: 80px !important; }
 .deleted,
@@ -367,12 +425,81 @@ td.camera2 { background-image: url(pic/general/camera2.png); }
 .Morbidity { background-color: #AAAACC !important; }
 .Dead { background-color: #AAAAAA !important; }
 
-.fixed{
-	top: 0;
-	position: fixed;
-	width: auto;
-	display: none;
-	border: none;
+.divRecord {
+	width: 200px;
+}
+
+.divRecord label {
+  display: inline-block;
+}
+
+.divRecord label.border {
+  position: relative;
+  top: -2px;
+  height: 17px;
+  background-color: white;
+  border-radius: 5px;
+  border: 1px solid #19adc4;
+  padding-left: 4px;
+  margin-left: 4px;
+}
+
+/* -webkit: to disable the default appearance of radio button*/
+.divRecord input {
+  height: 17px;
+  border-radius: 5px;
+  border: 1px solid #19adc4;
+  background-color: white;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+/*no need, if you don't disable default appearance*/
+/*to remove the square border on focus*/
+.divRecord input:focus {
+  outline-color: transparent;
+}
+
+/*no need, if you don't disable default appearance*/
+.divRecord input:checked {
+  background-color: #19adc4;
+}
+
+.divRecord input:checked ~ span {
+  color: white;
+}
+
+.divRecord input[type="number"] {
+  height: 12px;
+  font-size: 12px;
+  position: relative;
+  left: 55px;
+  top: -1px;
+  border: none;
+}
+
+.divRecord label span {
+  display: inline-block;
+  position: relative;
+  font-size: 11px;
+  color: #19adc4;
+  top: -4.5px;
+  width: 0px;
+}
+
+.divRecord label.border span {
+  top: -1px;
+}
+
+.divRecord label input[type="checkbox"] + span {
+  top: -8px;
+}
+
+.divRecord hr {
+  height: 1px;
+  border: 0;
+  border-top: 1px solid #B4E4EC;
+  margin: 3px 10px 0px 5px;
 }
 
 .ui-sortable-helper {
@@ -434,6 +561,13 @@ td.camera2 { background-image: url(pic/general/camera2.png); }
 	border: 0px;
 }
 
+.fixed{
+	position: fixed;
+	width: auto;
+	display: none;
+	border: none;
+}
+
 .floatleft { float: left;}
 .floatright { float: right; }
 .textleft { text-align: left;}
@@ -441,9 +575,8 @@ td.camera2 { background-image: url(pic/general/camera2.png); }
 .textcenter { text-align: center; }
 .inline { display: inline-block; }
 
-.w5 { width:5px !important; }
+.w10 { width:10px !important; }
 .w20 { width:20px !important; }
-.w22 { width:22px !important; }
 .w30 { width:30px !important; }
 .w40 { width:40px !important; }
 .w50 { width:50px !important; }
@@ -451,8 +584,7 @@ td.camera2 { background-image: url(pic/general/camera2.png); }
 .w60 { width:60px !important; }
 .w65 { width:65px !important; }
 .w70 { width:70px !important; }
-.w73 { width:73px !important; }
-.w77 { width:77px !important; }
+.w75 { width:75px !important; }
 .w80 { width:80px !important; }
 .w85 { width:85px !important; }
 .w90 { width:90px !important; }
@@ -469,33 +601,10 @@ td.camera2 { background-image: url(pic/general/camera2.png); }
 .w500 { width:500px !important; }
 .w540 { width:540px !important; }
 
-.margin0 { margin: 0px; }
-.margintop0 { margin-top: 0px; }
-.marginright { margin-right: 100px; }
-.red { color:red; }
-.Aqua { background-color: #00FFFF; }
-.lightAqua { background-color: #AAFFFF; }
+.monthbut { color:white !important; background-color: #00AAFF !important; }
+.yearbut { color:white !important; background-color: #0077BB !important; }
 
-#titlebar {
-	height: 40px;
-	background-color: #7799AA;
-}
-
-#titlename {
-	font-size: 20px;
-	font-weight: bold;
-	color: white;
-	width: 100px;
-	line-height: 35px;
-	margin-left: 25px;
-}
-
-#queuetbl {
-	margin-bottom: 100px;
-}
-
-#historytbl tr:nth-child(odd),
-#queuetbl tr.odd {
+#historytbl tr:nth-child(odd) {
 	background-color: #EEEEFF;
 }
 
@@ -504,10 +613,6 @@ td.camera2 { background-image: url(pic/general/camera2.png); }
 }
 #deletedtbl tr:nth-child(even) {
 	background-color: snow;
-}
-
-#servicetbl td:first-child {
-	text-align: center;
 }
 
 #servicehead {
@@ -522,25 +627,10 @@ td.camera2 { background-image: url(pic/general/camera2.png); }
 	padding: 2px 10px;
 }
 
-#servicetbl td.serviceStaff {
-	height: 40px;
-	font-weight: bold;
-	font-size: 16px;
-	text-align: left;
-	padding-left: 10px;
-	background-color: #DDFFFF;
-}
-
 #monthpicker { margin-left:5px }
 
-#hideProfile {
-	float: right;
-	font-size: 16px;
-	height: 30px;
-	line-height: 20px;
-	padding-top:2px
-}
-#hideProfile img {
+.imgopen,
+.imgclose {
 	float: left;
 	width: 20px;
 }
@@ -557,9 +647,11 @@ td.camera2 { background-image: url(pic/general/camera2.png); }
 #stafflist {
 	font-size: 14px;
 	width: 110px;
+	position: fixed !important;
 }
 
 #staffmenu {
+	width: 100px;
 	box-shadow: 10px 20px 30px slategray;
 }
 
@@ -573,7 +665,43 @@ td.camera2 { background-image: url(pic/general/camera2.png); }
 	white-space: nowrap;
 }
 
-#staffmenu { width: 100px; }
+#reviewtbl {
+	font-weight: bold;
+}
+
+#reviewtbl th.first {
+	width: 150px;
+}
+
+#reviewtbl td {
+	width: 40px;
+	text-align: center;
+}
+
+#reviewtbl td:first-child {
+	text-align: left;
+}
+
+#reviewtbl th.elect {
+	background-color: #33AA77;
+}
+
+#reviewtbl th.emer {
+	background-color: #FF6688;
+}
+
+#reviewtbl tr.nonsurgical td {
+	background-color: LightGray;
+	border-left: solid 1px silver;
+}
+
+#Total {
+	background-color: BurlyWood;
+}
+
+#Grand {
+	background-color: Turquoise;
+}
 
 #dialogEquip {
 	font-size: 14px;
@@ -629,92 +757,6 @@ td.camera2 { background-image: url(pic/general/camera2.png); }
 }
 #buttonLINE:hover {
 	border: 2px solid lightblue;
-}
-
-.divRecord {
-	width: 200px;
-}
-
-.divRecord label {
-  display: inline-block;
-}
-
-.divRecord input {
-  height: 17px;
-  border-radius: 5px;
-  border: 1px solid #19adc4;
-  background-color: white;
-  -webkit-appearance: none; /*to disable the default appearance of radio button*/
-  -moz-appearance: none;
-}
-
-.divRecord input:focus { /*no need, if you don't disable default appearance*/
-  outline-color: transparent; /*to remove the square border on focus*/
-}
-
-.divRecord input:checked { /*no need, if you don't disable default appearance*/
-  background-color: #19adc4;
-}
-
-.divRecord input:checked ~ span {
-  color: white;
-}
-
-.divRecord label span {
-  position: relative;
-  font-size: 11px;
-  color: #19adc4;
-  top: -4.5px;
-  width: 0px;
-}
-
-.divRecord label input[type="checkbox"] + span {
-  top: -8px;
-}
-
-.divRecord hr {
-  height: 1px;
-  border: 0;
-  border-top: 1px solid #B4E4EC;
-  margin: 3px 10px 0px 5px;
-}
-
-#reviewtbl {
-	font-weight: bold;
-}
-
-#reviewtbl th.first {
-	width: 150px;
-}
-
-#reviewtbl td {
-	width: 40px;
-	text-align: center;
-}
-
-#reviewtbl td:first-child {
-	text-align: left;
-}
-
-#reviewtbl th.elect {
-	background-color: #33AA77;
-}
-
-#reviewtbl th.emer {
-	background-color: #FF6688;
-}
-
-.nonsurgical td {
-	background-color: LightGray;
-	border-left: solid 1px silver;
-}
-
-#Total {
-	background-color: BurlyWood;
-}
-
-#Grand {
-	background-color: Turquoise;
 }
 
 #dialogReadme {
@@ -811,53 +853,4 @@ td.camera2 { background-image: url(pic/general/camera2.png); }
 		position: relative;
 		font-size: 14px;
 	}
-}
-
-@media print { 
-	BODY {
-		overflow: visible;
-	}
-
-	#dialogEquip {
-		font-size: 16px;
-		font-family: sans-serif;
-		background-color: white;
-		border: 0px;
-		margin-top: 50px;
-		margin-left: 50px;
-		padding-left: 0px;
-	}
-
-	.pale {
-		color: #D3D3D3;
-		font-weight: 300;
-	}
-
-	input, input[type=checkbox] { 
-		border: 0px; 
-	}
-
-	input[type=radio] + label {
-		color: #FFFFFF;
-		background-color: white;
-	}
-
-	input[type=radio]:checked + label {
-		color: #000000;
-		border: 2px; 
-	}
-
-	input[type=checkbox] + label {
-		color: #FFFFFF;
-		background-color: white;
-	}
-
-	input[type=checkbox]:checked + label {
-		color: #000000;
-		border: 2px black; 
-	}
-
-	div, span { 
-		display:inline-block; 
-	} 
 }

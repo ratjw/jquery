@@ -3,7 +3,7 @@ import {
 	OPDATE, STAFFNAME, HN, PATIENT, DIAGNOSIS, TREATMENT, CONTACT, QN
 } from "../model/const.js"
 import { OLDCONTENT, clearEditcell } from "../control/edit.js"
-import { fetchMoveCaseHN, fetchCopyCaseHN } from "../model/savehn.js"
+import { fetchMoveCaseHN, fetchCopyCaseHN } from "../model/sqlsavehn.js"
 import { getOpdate, putThdate, putNameAge } from "../util/date.js"
 import { updateBOOK } from "../util/variables.js"
 import { Alert, winWidth } from "../util/util.js"

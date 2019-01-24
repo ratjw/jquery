@@ -1,7 +1,7 @@
 
 import { OPDATE } from "../model/const.js"
 import { clearEditcell } from "./edit.js"
-import { fetchChangeOncall } from "../model/update.js"
+import { fetchChangeOncall } from "../model/sqlupdate.js"
 import { getOpdate } from "../util/date.js"
 import { setONCALL } from "../util/variables.js"
 import { reposition, menustyle, Alert } from "../util/util.js"

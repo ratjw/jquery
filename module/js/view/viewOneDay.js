@@ -2,7 +2,7 @@
 import { OPDATE, STAFFNAME, HN, PATIENT, LARGESTDATE } from "../model/const.js"
 import { putThdate } from "../util/date.js"
 import { rowDecoration } from "./rowDecoration.js"
-import { getBOOKRowsByDate, getTableRowsByDate } from "../util/getrows.js"
+import { getBOOKRowsByDate, getTableRowsByDate } from "../util/rowsgetting.js"
 import { showStaffOnCall } from "./fillConsults.js"
 import { filldata } from "./fill.js"
 import { BOOK } from "../util/variables.js"

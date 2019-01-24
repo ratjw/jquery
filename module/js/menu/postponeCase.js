@@ -3,9 +3,9 @@ import { UndoManager } from "../model/UndoManager.js"
 import {
 	OPDATE, THEATRE, OPROOM, STAFFNAME, QN, LARGESTDATE
 } from "../model/const.js"
-import { fetchPostponeCase } from "../model/move.js"
+import { fetchPostponeCase } from "../model/sqlmove.js"
 import { getOpdate } from "../util/date.js"
-import { sameDateRoomTableQN } from "../util/getrows.js"
+import { sameDateRoomTableQNs } from "../util/rowsgetting.js"
 import { BOOK, updateBOOK } from "../util/variables.js"
 import { Alert } from "../util/util.js"
 import { viewPostponeCase } from "../view/viewPostponeCase.js"
@@ -30,11 +30,11 @@ export function postponeCase()
 		allCases = []
 
 	if (oproom) {
-		allCases = sameDateRoomTableQN(opdateth, oproom, theatre)
+		allCases = sameDateRoomTableQNs(opdateth, oproom, theatre)
 	}
 
 	let doPostponeCase = function (waitnum, thisdate) {
-		fetchPostponeCase(allCases, waitnum, thisdate, qn).then(response => {
+		fetchPostponeCase(allCases, waitnum, thisdate, oproom, qn).then(response => {
 			let hasData = function () {
 				updateBOOK(response)
 				viewPostponeCase(opdate, thisdate, staffname, qn)

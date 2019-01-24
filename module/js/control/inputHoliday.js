@@ -1,10 +1,10 @@
 
 import { DIAGNOSIS, THAIMONTH } from "../model/const.js"
 import { numDate, putThdate } from "../util/date.js"
-import { getTableRowsByDate } from "../util/getrows.js"
+import { getTableRowsByDate } from "../util/rowsgetting.js"
 import { HOLIDAY, setHOLIDAY } from "../util/variables.js"
 import { holiday } from "../view/holiday.js"
-import { fetchSaveHoliday, fetchDelHoliday } from "../model/search.js"
+import { fetchSaveHoliday, fetchDelHoliday } from "../model/sqlsearch.js"
 import { Alert } from "../util/util.js"
 
 const HOLIDAYENGTHAI = {

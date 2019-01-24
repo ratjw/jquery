@@ -6,8 +6,8 @@ import {
 	POINTER, OLDCONTENT, getNewcontent, editcellLocation, renewEditcell
 } from "./edit.js"
 import { clearAllEditing } from "./clearAllEditing.js"
-import { fetchdoUpdate, fetchGetUpdate, fetchSaveOnChange } from "../model/update.js"
-import { fetchGetUpdateService, fetchSaveOnChangeService } from "../model/servicedb.js"
+import { fetchdoUpdate, fetchGetUpdate, fetchSaveOnChange } from "../model/sqlupdate.js"
+import { fetchGetUpdateService, fetchSaveOnChangeService } from "../model/sqlservice.js"
 import { saveProfileService } from "../service/savePreviousCellService.js"
 import { setSERVICE } from "../service/setSERVICE.js"
 import { reViewService } from "../service/showService.js"

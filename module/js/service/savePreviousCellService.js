@@ -3,8 +3,8 @@ import {
   FINALSV, PROFILESV, ADMITSV, OPDATESV, DISCHARGESV, QNSV
 } from "../model/const.js"
 import { POINTER, OLDCONTENT, getNewcontent } from "../control/edit.js"
-import { fetchSaveService } from "../model/servicedb.js"
-import { getBOOKrowByQN } from "../util/getrows.js"
+import { fetchSaveService } from "../model/sqlservice.js"
+import { getBOOKrowByQN } from "../util/rowsgetting.js"
 import { updateBOOK } from "../util/variables.js"
 import { URIcomponent, Alert } from "../util/util.js"
 import { reViewService } from "./showService.js"

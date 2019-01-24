@@ -1,9 +1,9 @@
 
-import { UndoManager } from "../model/UndoManager.js"
+//import { UndoManager } from "../model/UndoManager.js"
 import { OPDATE, THEATRE, OPROOM, STAFFNAME, QN } from "../model/const.js"
-import { fetchDeleteCase } from "../model/search.js"
+import { fetchDeleteCase } from "../model/sqlsearch.js"
 import { getOpdate } from "../util/date.js"
-import { sameDateRoomTableQN } from "../util/getrows.js"
+import { sameDateRoomTableQNs } from "../util/rowsgetting.js"
 import { updateBOOK } from "../util/variables.js"
 import { Alert } from "../util/util.js"
 import { viewDeleteCase } from "../view/viewDeleteCase.js"
@@ -30,11 +30,12 @@ export function delCase() {
 
 	if (!qn) {
 		$row.remove()
+	  clearSelection()
 		return
 	}
 
 	if (oproom) {
-		allCases = sameDateRoomTableQN(opdateth, oproom, theatre)
+		allCases = sameDateRoomTableQNs(opdateth, oproom, theatre)
 	}
 
 	let deleteCase = function (del) {

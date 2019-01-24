@@ -1,7 +1,7 @@
 
-import { fetchAllDeletedCases, fetchUndelete } from "../model/search.js"
+import { fetchAllDeletedCases, fetchUndelete } from "../model/sqlsearch.js"
 import { getOpdate } from "../util/date.js"
-import { getBOOKrowByQN } from "../util/getrows.js"
+import { getBOOKrowByQN } from "../util/rowsgetting.js"
 import { BOOK, CONSULT, updateBOOK } from "../util/variables.js"
 import { Alert, reposition } from "../util/util.js"
 import { viewOneDay } from "../view/viewOneDay.js"

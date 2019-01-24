@@ -1,8 +1,8 @@
 
 import { OPDATE, THEATRE, OPROOM, STAFFNAME, QN } from "../model/const.js"
-import { fetchSaveOpTime } from "../model/savedata.js"
+import { fetchSaveOpTime } from "../model/sqlsavedata.js"
 import { getOpdate } from "../util/date.js"
-import { sameDateRoomBOOKRows } from "../util/getrows.js"
+import { getBOOKrowByQN, sameDateRoomBOOKQNs } from "../util/rowsgetting.js"
 import { BOOK, updateBOOK } from "../util/variables.js"
 import { Alert } from "../util/util.js"
 import { viewOneDay } from "../view/viewOneDay.js"
@@ -10,19 +10,18 @@ import { viewSplit } from "../view/viewSplit.js"
 
 export function saveOpTime(pointed, newcontent)
 {
-	let	$cell = $(pointed).closest("tr").find("td"),
-		opdateth = $cell[OPDATE].innerHTML,
-		opdate = getOpdate(opdateth),
-		theatre = $cell[THEATRE].innerHTML,
-		oproom = $cell[OPROOM].innerHTML,
-		staffname = $cell[STAFFNAME].innerHTML,
-		qn = $cell[QN].innerHTML
+	let	qn = pointed.closest('tr').lastElementChild.innerHTML,
+    row = getBOOKrowByQN(BOOK, qn),
+		opdate = row.opdate,
+		theatre = row.theatre,
+		oproom = row.oproom,
+		staffname = row.staffname
 
 	// valid time 00.00 - 23.59 or ""
 	if (newcontent && !/^([0-1][0-9]|2[0-3])\.([0-5][0-9])$/.test(newcontent)) { return }
 
-	let allCases = sameDateRoomBOOKRows(BOOK, opdate, oproom, theatre)
-	allCases.find(e => e.qn === qn).optime = newcontent
+	let allCases = sameDateRoomBOOKRows(BOOK, row)
+	    allCases.find(e => e.qn === qn).optime = newcontent
 	let timeCases = allCases.filter(e => e.optime !== "")
 	let notimeCases = allCases.filter(e => e.optime === "")
 
@@ -44,5 +43,14 @@ export function saveOpTime(pointed, newcontent)
 		typeof response === "object"
 		? hasData()
 		: Alert ("saveOpTime", response)
+	})
+}
+
+function sameDateRoomBOOKRows(book, row)
+{
+	return book.filter(q => {
+		return q.opdate === row.opdate
+			 &&	q.theatre === row.theatre
+			 &&	q.oproom === row.oproom
 	})
 }

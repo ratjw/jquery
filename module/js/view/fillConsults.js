@@ -10,7 +10,9 @@ export function fillConsults()
   let rows = table.rows
   let tlen = rows.length
   let today = ISOdate(new Date())
-  let lastopdate = numDate(rows[tlen-1].cells[OPDATE].innerHTML)
+  let lastopdate = rows[tlen-1].querySelector('th')
+       ? numDate(rows[tlen-2].cells[OPDATE].innerHTML)
+       : numDate(rows[tlen-1].cells[OPDATE].innerHTML)
   let staffoncall = STAFF.filter(staff => (staff.oncall === "1"))
   let slen = staffoncall.length
   let nextrow = 1

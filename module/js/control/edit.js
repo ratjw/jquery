@@ -5,7 +5,7 @@ import {
 	DIAGNOSISSV, TREATMENTSV, ADMISSIONSV, FINALSV
 } from "../model/const.js"
 import { resetTimer, resetTimerCounter } from "./timer.js"
-import { getTableRowByQN } from "../util/getrows.js"
+import { getTableRowByQN } from "../util/rowsgetting.js"
 import { reposition } from "../util/util.js"
 import { savePreviousCellService } from "../service/savePreviousCellService.js"
 import { editPresentCellService } from "../service/editPresentCellService.js"
@@ -23,9 +23,9 @@ export let OLDCONTENT = ""
 // get current content in the editing cell
 export function getNewcontent() {
 	let editcell = document.getElementById("editcell")
-	let spin = document.getElementById("spin")
+	let spin = document.querySelectorAll("#spin")
 
-	if (!!spin) { return spin.value }
+	if (spin.length) { return spin[0].value || spin[1].value }
 
 	return getHtmlText(editcell)
 }

@@ -1,9 +1,9 @@
 
 import { OPDATE, THEATRE, OPROOM, QN } from "../model/const.js"
 import { OLDCONTENT, clearEditcell } from "../control/edit.js"
-import { fetchSaveCaseNum } from "../model/savedata.js"
+import { fetchSaveCaseNum } from "../model/sqlsavedata.js"
 import { getOpdate } from "../util/date.js"
-import { sameDateRoomTableQN } from "../util/getrows.js"
+import { sameDateRoomTableQNs } from "../util/rowsgetting.js"
 import { updateBOOK } from "../util/variables.js"
 import { Alert } from "../util/util.js"
 import { viewOneDay } from "../view/viewOneDay.js"
@@ -21,7 +21,7 @@ export function saveCaseNum(pointed, newcontent)
 		allCases = []
 
 	// must have oproom, if no, can't be clicked
-	allCases = sameDateRoomTableQN(opdateth, oproom, theatre)
+	allCases = sameDateRoomTableQNs(opdateth, oproom, theatre)
 	allCases = allCases.filter(e => e !== qn)
 
 	let doSaveCaseNum = function() {

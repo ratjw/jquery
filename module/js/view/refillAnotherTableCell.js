@@ -3,7 +3,7 @@ import {
 	OPROOM, CASENUM, STAFFNAME, HN, PATIENT, DIAGNOSIS,
 	TREATMENT, CONTACT
 } from "../model/const.js"
-import { getBOOKrowByQN, getTableRowByQN } from "../util/getrows.js"
+import { getBOOKrowByQN, getTableRowByQN } from "../util/rowsgetting.js"
 import { putNameAge } from "../util/date.js"
 import { BOOK } from "../util/variables.js"
 
