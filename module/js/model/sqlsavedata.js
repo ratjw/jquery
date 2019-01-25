@@ -175,7 +175,7 @@ function sqlNewTheatre(theatre, casenum, qn)
 // if no oproom, will have no casenum too
 function sqlNewRoom(oproom, casenum, qn)
 {
-  return `UPDATE book SET oproom=${oproom},casenum=${casenum},editor='${USER}'
+  return `UPDATE book SET oproom=${oproom},optime='',casenum=${casenum},editor='${USER}'
 				WHERE qn=${qn};`
 }
 

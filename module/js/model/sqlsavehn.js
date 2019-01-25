@@ -50,7 +50,7 @@ function sqlInsertHN(pointed, waiting, wanting)
 	// new row, calculate waitnum
 	// store waitnum in row waitnum
 	let waitnum = calcWaitnum(opdate, row.previousElementSibling, row.nextElementSibling)
-	$row[0].waitnum = waitnum
+	row.waitnum = waitnum
 
 	return `INSERT INTO book
 		(waitnum,opdate,hn,patient,dob,staffname,diagnosis,treatment,contact,editor)

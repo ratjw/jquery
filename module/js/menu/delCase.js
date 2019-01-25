@@ -3,7 +3,7 @@
 import { OPDATE, THEATRE, OPROOM, STAFFNAME, QN } from "../model/const.js"
 import { fetchDeleteCase } from "../model/sqlsearch.js"
 import { getOpdate } from "../util/date.js"
-import { sameDateRoomTableQNs } from "../util/rowsgetting.js"
+import { sameDateRoomBOOKQNs } from "../util/rowsgetting.js"
 import { updateBOOK } from "../util/variables.js"
 import { Alert } from "../util/util.js"
 import { viewDeleteCase } from "../view/viewDeleteCase.js"
@@ -15,34 +15,31 @@ import { addrow } from "./addnewrow.js"
 // Remove the row if more than one case on that date, or on staff table
 // Just blank the row if there is only one case
 export function delCase() {
-	let	$selected = $(".selected"),
-		tableID = $selected.closest('table').attr('id'),
-		$row = $selected.closest('tr'),
-		$prevrow = $row.prev(),
-		$cell = $row.find("td"),
-		opdateth = $cell.eq(OPDATE).html(),
-		opdate = getOpdate(opdateth),
-		staffname = $cell.eq(STAFFNAME).html(),
-		qn = $cell.eq(QN).html(),
-		theatre = $cell.eq(THEATRE).html(),
-		oproom = $cell.eq(OPROOM).html(),
+	let	selected = document.querySelector(".selected"),
+		tableID = selected.closest('table').id,
+    table = document.getElementById(tableID),
+		row = selected.closest('tr'),
+		prevrow = row.previousElementSibling,
+		opdate = row.opdate,
+		qn = row.qn,
+		oproom = row.oproom,
 		allCases = []
 
 	if (!qn) {
-		$row.remove()
+		table.deleteRow(row.rowIndex)
 	  clearSelection()
 		return
 	}
 
 	if (oproom) {
-		allCases = sameDateRoomTableQNs(opdateth, oproom, theatre)
+		allCases = sameDateRoomBOOKQNs(opdate, row)
 	}
 
 	let deleteCase = function (del) {
 		fetchDeleteCase(allCases, oproom, qn, del).then(response => {
 			let hasData = function () {
 				updateBOOK(response)
-				viewDeleteCase(tableID, $row, opdate, staffname)
+				viewDeleteCase(tableID, row)
 			}
 
 			typeof response === "object"

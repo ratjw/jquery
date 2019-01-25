@@ -21,12 +21,11 @@ export function addnewrow() {
 	})*/
 }
 
-// "tbl" copy title, Date, Room Time
-// "queuetbl" copy title, Date, Room Time, Staff
 export function addrow($row) {
 	let $clone = $row.clone()
 
-	$clone.removeClass("selected")
+	$clone[0].opdate = $row[0].opdate
+  $clone.removeClass("selected")
 		.insertAfter($row)
 			.find("td").eq(HN).removeClass("pacs")
 			.parent().find("td").eq(PATIENT).removeClass("upload")

@@ -76,7 +76,7 @@ export function showService() {
       hideProfile()
       $(window).off("resize", resizeDialogSV)
       $dialogService.off("click", clickDialogService)
-      if (!!POINTER) {
+      if (POINTER) {
         savePreviousCellService()
       }
       clearEditcell()

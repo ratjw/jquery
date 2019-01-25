@@ -85,7 +85,7 @@ let makeStart = function() {
 }
 
 // Display everyday on main table 20 days ahead, to 2 years ahead
-let makeFinish = function() {		
+let makeFinish = function() {
 	// Start with 1st date of last month
 	let	tableID = "tbl",
 		table = document.getElementById(tableID),

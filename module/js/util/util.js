@@ -209,3 +209,15 @@ export function Alert(title, message) {
 		height: 230
 	}).fadeIn();
 }
+
+export function deleteAttr(row)
+{
+	delete row.waitnum
+	delete row.theatre
+	delete row.oproom
+	delete row.optime
+	delete row.casenum
+  delete row.hn
+	delete row.staffname
+	delete row.qn
+}

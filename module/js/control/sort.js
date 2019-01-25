@@ -1,5 +1,4 @@
 
-import { OPDATE, THEATRE, OPROOM, STAFFNAME, QN } from "../model/const.js"
 import { clearTimer, resetTimerCounter } from "./timer.js"
 import { clearEditcell } from "./edit.js"
 import { clearMouseoverTR } from "../menu/moveCase.js"
@@ -48,25 +47,23 @@ export function sortable () {
 			thisplace = ui.placeholder.index()
 		},
 		stop: function(e, ui) {
-			let item = ui.item[0],
-				receiver = item.closest('table').id,
-				movewaitnum = item.waitnum,
-				moveqn = item.lastElementChild.innerHTML,
+			let moveitem = ui.item[0],
+				receiver = moveitem.closest('table').id,
+				moveqn = moveitem.lastElementChild.innerHTML,
         moverow = getBOOKrowByQN(BOOK, moveqn),
 				moveopdate = moverow.opdate,
-				movetheatre = moverow.theatre,
-				moveroom = moverow.oproom,
 				staffname = moverow.staffname
 
 			// Allow drag to Consults, or same staff name
 			// That is (titlename === "Consults") is allowed
 			// To another staff name is not allowed
 			// Not allow to drag a blank line
-			let illegal = ((sender === "tbl")
+			let illegal = !moveqn
+            || ((sender === "tbl")
 						&& (receiver === "queuetbl")
 						&& !isConsults()
 						&& !isStaffname(staffname))
-						|| (!moveqn)
+						
 
 			if (illegal) {
 				stopsorting()
@@ -76,8 +73,8 @@ export function sortable () {
 			// Find nearest row by dropping position
 			let thisdrop
 			let before
-			let previtem = item.previousElementSibling
-			let nextitem = item.nextElementSibling
+			let previtem = moveitem.previousElementSibling
+			let nextitem = moveitem.nextElementSibling
 
 			if (!previtem || previtem.querySelector('th')) {
 				thisdrop = nextitem
@@ -90,10 +87,10 @@ export function sortable () {
 					// Determine that the user intend to drop on which row
 					//ui.offset (without '()') = helper position
 					let helpertop = ui.offset.top
-					let helperheight = item.offsetHeight
+					let helperheight = moveitem.offsetHeight
 					let helpercenter = helpertop + helperheight/2
 
-					let placeholdertop = item.getBoundingClientRect().top
+					let placeholdertop = moveitem.getBoundingClientRect().top
 					let placeholderheight = ui.placeholder.height()
 					let placeholdercenter = placeholdertop + placeholderheight/2
 					let placeholderbottom = placeholdertop + placeholderheight
@@ -127,26 +124,25 @@ export function sortable () {
 				}
 			}
 
-      let thisOpdate = getOpdate(thisdrop.firstElementChild.innerHTML),
-  			thisqn = thisdrop.lastElementChild.innerHTML,
-        thisrow = getBOOKrowByQN(BOOK, thisqn) || [],
-				thistheatre = thisrow.theatre || "",
-				thisroom = thisrow.oproom || null,
-
-				newWaitnum = calcWaitnum(thisOpdate, previtem, nextitem),
+      let thisqn = thisdrop.lastElementChild.innerHTML,
 				allNewCases = [],
-				allOldCases = []
+				allOldCases = [],
+        thisrow = {},
+        thisopdate
 
 			// drop on the same case
 			if (thisqn === moveqn) { return }
 
-			// no room specified and waitnum not changed
-			if (!moveroom && !thisroom && newWaitnum === movewaitnum) {
-				return
-			}
+      if (thisqn) {
+        thisrow = getBOOKrowByQN(BOOK, thisqn)
+      } else {
+        thisrow.opdate = getOpdate(thisdrop.firstElementChild.innerHTML)
+      }
+      thisopdate = thisrow.opdate
 
-			allOldCases = sameDateRoomBOOKQNs(BOOK, moverow)
-			allNewCases = sameDateRoomBOOKQNs(BOOK, thisrow)
+			moverow.waitnum = calcWaitnum(thisopdate, previtem, nextitem)
+      allOldCases = sameDateRoomBOOKQNs(BOOK, moverow)
+      allNewCases = thisrow ? sameDateRoomBOOKQNs(BOOK, thisrow) : []
 
 			// remove itself from old sameDateRoom
 			allOldCases = allOldCases.filter(e => e !== moveqn)
@@ -163,33 +159,12 @@ export function sortable () {
 			? allNewCases.splice(index, 0, moveqn)
 			: allNewCases.splice(index + 1, 0, moveqn)
 
-			let argModelDo = {
-				movelist: allOldCases,
-				newlist: allNewCases,
-				waitnum: newWaitnum,
-				opdate: thisOpdate,
-				theatre: thistheatre,
-				moveroom: moveroom,
-				thisroom: thisroom,
-				qn: moveqn
-			}
-/*			let argModelUndo = {
-				movelist: allNewCases,
-				newlist: allOldCases,
-				waitnum: movewaitnum,
-				opdate: moveopdate,
-				theatre: movetheatre,
-				moveroom: thisroom,
-				thisroom: moveroom,
-				qn: moveqn
-			}
-*/
 			// after sorting, must attach hover to the changed DOM elements
-			let doSorting = function(argModelDo) {
-				fetchSortable(argModelDo).then(response => {
+			let doSorting = function() {
+				fetchSortable(allOldCases, allNewCases, moverow, thisrow).then(response => {
 					let hasData = function () {
 						updateBOOK(response)
-						viewmoveCase(moveopdate, thisOpdate, staffname)
+						viewmoveCase(moveopdate, thisopdate, staffname)
 						hoverMain()
 					}
 
@@ -199,7 +174,7 @@ export function sortable () {
 				}).catch(error => {})
 			}
 
-			doSorting(argModelDo)
+			doSorting()
 /*
 			// make undo-able
 			UndoManager.add({

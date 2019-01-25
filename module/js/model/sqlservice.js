@@ -62,7 +62,7 @@ function sqlRecord(pointing, setRecord, qn)
 	let sql = ""
 
 	$.each(setRecord, function(column, content) {
-		if (column === "disease" && content === "NoOp") {
+		if (column === "disease" && content === "") {
 			sql += sqlDefaults(qn)			
 		}
 		sql += sqlItem(column, content, qn)

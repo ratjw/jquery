@@ -1,36 +1,40 @@
 
-import { OPDATE, HN, PATIENT, STAFFNAME } from "../model/const.js"
+import { OPDATE, HN, PATIENT } from "../model/const.js"
 import { viewOneDay } from "./viewOneDay.js"
 import { viewSplit } from "./viewSplit.js"
 import { getOpdate } from "../util/date.js"
-import { isConsults } from "../util/util.js"
+import { isConsults, deleteAttr } from "../util/util.js"
 import { showStaffOnCall } from "./fillConsults.js"
 
-export function viewDeleteCase(tableID, $row, opdate, staffname) {
-	viewOneDay(opdate)
+export function viewDeleteCase(tableID, row) {
+	let opdate = row.opdate
+  let table = document.getElementById(tableID)
+
+  viewOneDay(opdate)
 	tableID === "tbl"
-	? viewSplit(staffname)
+	? viewSplit(row.staffname)
 	: isConsults()
-	? deleteRow($row, opdate)
-	: $row.remove()
+	? delRow(row, opdate)
+	: table.deleteRow(row.rowIndex)
 }
 
-// Method to remove or just blank the row, used in main and Consults tables
-let deleteRow = function ($row, opdate) {
-	let prevDate = $row.prev().children("td").eq(OPDATE).html(),
-		nextDate = $row.next().children("td").eq(OPDATE).html()
+let delRow = function (row, opdate) {
+	let prevDate = row.previousElementSibling.opdate,
+		nextDate = row.nextElementSibling.opdate,
+    table = row.closest('table'),
+    index = row.rowIndex,
+    lastrow = table.rows.length === (index + 1)
 
-	prevDate = getOpdate(prevDate)
-	nextDate = getOpdate(nextDate)
-
-	if (prevDate === opdate
-		|| nextDate === opdate
-		|| $row.closest("tr").is(":last-child")) {
-			$row.remove()
+	if (prevDate === opdate || nextDate === opdate || lastrow) {
+			table.deleteRow()
 	} else {
-		$row.children("td").eq(OPDATE).siblings().html("")
-		$row.children("td").eq(HN).removeClass("pacs")
-		$row.children("td").eq(PATIENT).removeClass("upload")
-		$row.children('td').eq(STAFFNAME).html(showStaffOnCall(opdate))
+    let row = opdateTblRows[0]
+    let cells = Array.from(row.children)
+
+    cells.filter(e => e.cellIndex !== OPDATE).forEach(e => e.innerHTML = "")
+		row.cells[HN].classList.remove("pacs")
+		row.cells[PATIENT].classList.remove("upload")
+		showStaffOnCall(opdate)
+    deleteAttr(row)
 	}
 }

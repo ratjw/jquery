@@ -25,7 +25,11 @@ export function getNewcontent() {
 	let editcell = document.getElementById("editcell")
 	let spin = document.querySelectorAll("#spin")
 
-	if (spin.length) { return spin[0].value || spin[1].value }
+	if (spin.length === 1) {
+    return spin[0].value
+  } else if (spin.length > 1) {
+    return spin[1].value
+  }
 
 	return getHtmlText(editcell)
 }

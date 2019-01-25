@@ -21,9 +21,8 @@ export function getBOOKRowsByDate(book, opdate)
 export function getTableRowsByDate(opdateth)
 {
 	if (!opdateth) { return [] }
-	return $("#tbl tr").filter(function() {
-		return this.cells[OPDATE].innerHTML === opdateth;
-	})
+	return Array.from(document.querySelectorAll("#tbl tr"))
+            .filter(e => e.cells[OPDATE].innerHTML === opdateth)
 }
 
 export function sameDateRoomBOOKQNs(book, row)

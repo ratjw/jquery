@@ -14,6 +14,8 @@ export function rowDecoration(row, date)
   let  cells = row.cells
 
   row.className = dayName(NAMEOFDAYFULL, date) || "nodate"
+  row.opdate = date
+
   cells[OPDATE].innerHTML = putThdate(date)
   cells[OPDATE].className = dayName(NAMEOFDAYABBR, date)
   cells[DIAGNOSIS].style.backgroundImage = holiday(date)

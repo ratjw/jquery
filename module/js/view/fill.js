@@ -26,7 +26,10 @@ export function fillall(book, table, start, until) {
 		q = book.findIndex(e => e.opdate >= start),
 		x = book.findIndex(e => e.opdate >= LARGESTDATE)
 
-	// Get rid of LARGESTDATE cases
+	// truncate former cases
+  book = book.slice(q)
+
+  // Get rid of LARGESTDATE cases
 	// Consult cases have no LARGESTDATE, findIndex returns x = -1
 	if (x >= 0) {
 		book = book.slice(0, x)
@@ -34,10 +37,9 @@ export function fillall(book, table, start, until) {
 
 	let blen = book.length
 
-	for (q; q < blen; q++)
-	{	
+	book.forEach(bookq => {	
 		// step over each day that is not in QBOOK
-		while (date < book[q].opdate)
+		while (date < bookq.opdate)
 		{
 			if (date !== madedate)
 			{
@@ -54,7 +56,6 @@ export function fillall(book, table, start, until) {
         }
 				return
 			}
-
 			// make table head row before every Monday
 			if ((new Date(date).getDay())%7 === 1)
 			{
@@ -63,9 +64,9 @@ export function fillall(book, table, start, until) {
 			}
 		}
 		makenextrow(table, date)
-		filldata(book[q], rows[table.rows.length-1])
+		filldata(bookq, rows[table.rows.length-1])
 		madedate = date
-	}
+	})
 
 	while (date < until)
 	{
@@ -78,7 +79,7 @@ export function fillall(book, table, start, until) {
 			tbody.appendChild(clone)
 		}
 		// make a blank row
-		makenextrow(table, date)	// insertRow
+		makenextrow(table, date)
 	}
 	hoverMain()
 }
@@ -107,26 +108,27 @@ let makenextrow = function (table, date) {
 	rowDecoration(row, date)
 }
 
-export function filldata(bookq, row)
+export function filldata(q, row)
 {
 	let cells = row.cells
 
-	row.waitnum = bookq.waitnum
-	if (bookq.hn && isPACS) { cells[HN].className = "pacs" }
-	if (bookq.patient) { cells[PATIENT].className = "upload" }
+	row.waitnum = q.waitnum
 
-	cells[THEATRE].innerHTML = bookq.theatre
-	cells[OPROOM].innerHTML = bookq.oproom || ""
-	cells[OPTIME].innerHTML = bookq.optime
-	cells[CASENUM].innerHTML = bookq.casenum || ""
-	cells[STAFFNAME].innerHTML = bookq.staffname
-	cells[HN].innerHTML = bookq.hn
-	cells[PATIENT].innerHTML = putNameAge(bookq)
-	cells[DIAGNOSIS].innerHTML = bookq.diagnosis
-	cells[TREATMENT].innerHTML = bookq.treatment
-	cells[EQUIPMENT].innerHTML = viewEquip(bookq.equipment)
-	cells[CONTACT].innerHTML = bookq.contact
-	cells[QN].innerHTML = bookq.qn
+	if (q.hn && isPACS) { cells[HN].className = "pacs" }
+	if (q.patient) { cells[PATIENT].className = "upload" }
+
+	cells[THEATRE].innerHTML = q.theatre
+	cells[OPROOM].innerHTML = q.oproom || ""
+	cells[OPTIME].innerHTML = q.optime
+	cells[CASENUM].innerHTML = q.casenum || ""
+	cells[STAFFNAME].innerHTML = q.staffname
+	cells[HN].innerHTML = q.hn
+	cells[PATIENT].innerHTML = putNameAge(q)
+	cells[DIAGNOSIS].innerHTML = q.diagnosis
+	cells[TREATMENT].innerHTML = q.treatment
+	cells[EQUIPMENT].innerHTML = viewEquip(q.equipment)
+	cells[CONTACT].innerHTML = q.contact
+	cells[QN].innerHTML = q.qn
 }
 
 export function staffqueue(staffname) {
@@ -198,9 +200,18 @@ export function refillstaffqueue() {
 
 jQuery.fn.extend({
 	filldataQueue : function(q) {
-		let cells = this[0].cells
+		let row = this[0]
+		let cells = row.cells
 		
-		this[0].waitnum = q.waitnum
+		row.waitnum = q.waitnum
+		row.theatre = q.theatre
+		row.oproom = q.oproom || ""
+		row.optime = q.optime
+		row.casenum = q.casenum || ""
+    row.hn = q.hn
+		row.staffname = q.staffname
+		row.qn = q.qn
+
 		addColor(this, q.opdate)
 		q.hn && isPACS && (cells[HN].className = "pacs")
 		q.patient && (cells[PATIENT].className = "upload")

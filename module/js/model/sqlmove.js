@@ -3,43 +3,6 @@ import { postData, MYSQLIPHP } from "./fetch.js"
 import { USER } from "../main.js"
 import { updateCasenum, sqlCaseNum } from "./sqlsavedata.js"
 
-export function fetchSortable(arg)
-{
-	let allOldCases = arg.movelist,
-		allNewCases = arg.newlist,
-		newWaitnum = arg.waitnum,
-		thisOpdate = arg.opdate,
-		theatre = arg.theatre,
-		moveroom = arg. moveroom,
-		thisroom = arg.thisroom,
-		moveqn = arg.qn,
-		sql = "sqlReturnbook="
-
-	if (allOldCases.length && moveroom) {
-		sql += updateCasenum(allOldCases)
-	}
-
-	if (allNewCases.length) {
-	  for (let i=0; i<allNewCases.length; i++) {
-	    sql += (allNewCases[i] === moveqn)
-	      ? thisroom
-	        ? sqlMover(newWaitnum, thisOpdate, theatre, thisroom, i + 1, moveqn)
-	        : sqlMover(newWaitnum, thisOpdate, theatre, null, null, moveqn)
-	      : thisroom
-	        ? sqlCaseNum(i + 1, allNewCases[i])
-	        : sqlCaseNum(null, allNewCases[i])
-		}
-	} else {
-		sql += sqlMover(newWaitnum, thisOpdate, theatre, null, null, moveqn)
-	}
-
-	if (!allOldCases.length && !allNewCases.length) {
-		sql += sqlMover(newWaitnum, thisOpdate, theatre, null, null, moveqn)
-	}
-
-	return postData(MYSQLIPHP, sql);
-}
-
 export function fetchPostponeCase(allCases, waitnum, thisdate, oproom, qn) {
 	let sql = `sqlReturnbook=UPDATE book SET opdate='${thisdate}',
 				waitnum=${waitnum},theatre='',oproom=null,casenum=null,
@@ -65,19 +28,46 @@ export function fetchmoveCase(arg) {
 
 	if (moveroom) { sql += updateCasenum(allOldCases) }
 
-	for (let i=0; i<allNewCases.length; i++) {
-		if (allNewCases[i] === qn) {
+	allNewCases.forEach((e, i) => {
+		if (e === qn) {
 			thisroom
 			? sql += sqlMover(waitnum, thisdate, theatre, thisroom, i + 1, qn)
 			: sql += sqlMover(waitnum, thisdate, theatre, null, null, qn)
 		} else {
 			thisroom
-			? sql += sqlCaseNum(i + 1, allNewCases[i])
-			: sql += sqlCaseNum(null, allNewCases[i])
+			? sql += sqlCaseNum(i + 1, e)
+			: sql += sqlCaseNum(null, e)
 		}
-	}
+	})
 
 	return postData(MYSQLIPHP, sql)
+}
+
+export function fetchSortable(allOldCases, allNewCases, moverow, thisrow)
+{
+	let newWaitnum = moverow.waitnum,
+		moveroom = moverow.oproom,
+		moveqn = moverow.qn,
+		thisOpdate = thisrow.opdate,
+		theatre = thisrow.theatre || "",
+		thisroom = thisrow.oproom || null,
+		sql = "sqlReturnbook="
+
+	if (allOldCases.length && moveroom) {
+		sql += updateCasenum(allOldCases)
+	}
+
+	allNewCases.forEach((e, i) => {
+    sql += (e === moveqn)
+      ? thisroom
+        ? sqlMover(newWaitnum, thisOpdate, theatre, thisroom, i + 1, moveqn)
+        : sqlMover(newWaitnum, thisOpdate, theatre, null, null, moveqn)
+      : thisroom
+        ? sqlCaseNum(i + 1, e)
+        : sqlCaseNum(null, e)
+  })
+
+	return postData(MYSQLIPHP, sql);
 }
 
 // if no oproom, will have no casenum too
