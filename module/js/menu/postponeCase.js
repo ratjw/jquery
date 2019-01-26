@@ -15,7 +15,7 @@ import { clearSelection } from "../control/clearSelection.js"
 // but was shown blank date on screen
 export function postponeCase()
 {
-	let	selected = document.querySelectorAll(".selected"),
+	let	selected = document.querySelector(".selected"),
 		tableID = selected.closest('table').id,
 		row = selected.closest('tr'),
 		opdate = row.opdate,
@@ -57,7 +57,7 @@ export function postponeCase()
 	})*/
 }
 
-// The second parameter (, 0) ensure a default value if arrayAfter.map is empty
+// The second parameter (, 0) ensure a default value if arrayAfter .map is empty
 function getLargestWaitnum(staffname)
 {
 	let dateStaff = BOOK.filter(function(patient) {

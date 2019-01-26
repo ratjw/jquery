@@ -1,4 +1,11 @@
 
+/* to do!!!!!!!!!!!!!
+Search Exact Phrases       +
+Exclude a word             -
+Search in sepific column   :
+Forgotten words            *
+*/
+
 import { fetchSearchDB } from "../model/sqlsearch.js"
 import { Alert, reposition, menustyle } from "../util/util.js"
 import { viewSearchDB } from "../view/viewSearchDB.js"
