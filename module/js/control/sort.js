@@ -5,7 +5,7 @@ import { clearMouseoverTR } from "../menu/moveCase.js"
 import { fetchSortable } from "../model/sqlmove.js"
 import { calcWaitnum } from "../util/calcWaitnum.js"
 import { getOpdate } from "../util/date.js"
-import { getBOOKrowByQN, sameDateRoomBOOKQNs } from "../util/rowsgetting.js"
+import { getBOOKrowByQN, sameDateRoomTableQNs } from "../util/rowsgetting.js"
 import { BOOK, updateBOOK } from "../util/variables.js"
 import { Alert, isConsults, isStaffname } from "../util/util.js"
 import { viewmoveCase } from "../view/viewmoveCase.js"
@@ -49,10 +49,9 @@ export function sortable () {
 		stop: function(e, ui) {
 			let moveitem = ui.item[0],
 				receiver = moveitem.closest('table').id,
-				moveqn = moveitem.lastElementChild.innerHTML,
-        moverow = getBOOKrowByQN(BOOK, moveqn),
-				moveopdate = moverow.opdate,
-				staffname = moverow.staffname
+				moveqn = moveitem.qn,
+				moveopdate = moveitem.opdate,
+				staffname = moveitem.staffname
 
 			// Allow drag to Consults, or same staff name
 			// That is (titlename === "Consults") is allowed
@@ -124,25 +123,17 @@ export function sortable () {
 				}
 			}
 
-      let thisqn = thisdrop.lastElementChild.innerHTML,
-				allNewCases = [],
+      let allNewCases = [],
 				allOldCases = [],
-        thisrow = {},
-        thisopdate
+				thisopdate = thisdrop.opdate,
+        thisqn = thisdrop.qn
 
 			// drop on the same case
 			if (thisqn === moveqn) { return }
 
-      if (thisqn) {
-        thisrow = getBOOKrowByQN(BOOK, thisqn)
-      } else {
-        thisrow.opdate = getOpdate(thisdrop.firstElementChild.innerHTML)
-      }
-      thisopdate = thisrow.opdate
-
-			moverow.waitnum = calcWaitnum(thisopdate, previtem, nextitem)
-      allOldCases = sameDateRoomBOOKQNs(BOOK, moverow)
-      allNewCases = thisrow ? sameDateRoomBOOKQNs(BOOK, thisrow) : []
+			moveitem.waitnum = calcWaitnum(thisopdate, previtem, nextitem)
+      allOldCases = sameDateRoomTableQNs(moveitem)
+      allNewCases = sameDateRoomTableQNs(thisdrop)
 
 			// remove itself from old sameDateRoom
 			allOldCases = allOldCases.filter(e => e !== moveqn)
@@ -161,7 +152,7 @@ export function sortable () {
 
 			// after sorting, must attach hover to the changed DOM elements
 			let doSorting = function() {
-				fetchSortable(allOldCases, allNewCases, moverow, thisrow).then(response => {
+				fetchSortable(allOldCases, allNewCases, moveitem, thisdrop).then(response => {
 					let hasData = function () {
 						updateBOOK(response)
 						viewmoveCase(moveopdate, thisopdate, staffname)

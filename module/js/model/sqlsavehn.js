@@ -27,21 +27,17 @@ export function fetchCopyCaseHN(pointed, waiting, wanting)
 
 function sqlCaseHN(pointed, waiting, wanting)
 {
-	let	qn = $(pointed).closest('tr').children("td")[QN].innerHTML
-
-	if (!qn) {
-		return sqlInsertHN(pointed, waiting, wanting)
+	if (pointed.closest('tr').qn) {
+		return sqlUpdateHN(qn, waiting, wanting)
 	} else {
-		return sqlUpdateHN(pointed, waiting, wanting)
+		return sqlInsertHN(pointed, waiting, wanting)
 	}
 }
 
 function sqlInsertHN(pointed, waiting, wanting)
 {
 	let	row = pointed.closest("tr"),
-		opdateth = row.firstElementChild.innerHTML,
-		opdate = getOpdate(opdateth),
-		qn = row.lastElementChild.innerHTML,
+		opdate = row.opdate,
 
 		hn = waiting.hn,
 		patient = waiting.patient,
@@ -60,14 +56,9 @@ function sqlInsertHN(pointed, waiting, wanting)
 		'${USER}');`
 }
 
-function sqlUpdateHN(pointed, waiting, wanting)
+function sqlUpdateHN(qn, waiting, wanting)
 {
-	let	row = pointed.closest('tr'),
-		opdateth = row.firstElementChild.innerHTML,
-		opdate = getOpdate(opdateth),
-		qn = row.lastElementChild.innerHTML,
-
-		hn = waiting.hn,
+	let hn = waiting.hn,
 		patient = waiting.patient,
 		dob = waiting.dob
 
@@ -86,13 +77,12 @@ function sqlUpdateHN(pointed, waiting, wanting)
 export function fetchGetNameHN(pointed, content)
 {
 	let row = pointed.closest('tr'),
-      opdate = getOpdate(row.firstElementChild.innerHTML),
-      qn = row.lastElementChild.innerHTML,
-      thisrow = getBOOKrowByQN(BOOK, thisqn) || [],
-      staffname = thisrow.staffname,
-		  diagnosis = thisrow.diagnosis,
-	  	treatment = thisrow.treatment,
-	  	contact = thisrow.contact,
+      opdate = row.opdate,
+      qn = row.qn,
+      staffname = row.staffname,
+		  diagnosis = row.diagnosis,
+	  	treatment = row.treatment,
+	  	contact = row.contact,
   		waitnum = 0
 
 	// if new case, calculate waitnum

@@ -12,6 +12,7 @@ import { rowDecoration } from "./rowDecoration.js"
 import { viewEquip } from "./viewEquip.js"
 import { splitPane } from "./splitPane.js"
 import { hoverMain } from "./hoverMain.js"
+import { setRowData, blankRowData } from "../model/rowdata.js"
 
 // Render Main table
 // Consults and dialogAll tables use this too
@@ -106,14 +107,14 @@ let makenextrow = function (table, date) {
 
 	row = tbody.appendChild(row)
 	rowDecoration(row, date)
+  blankRowData(row, date)
 }
 
 export function filldata(q, row)
 {
 	let cells = row.cells
 
-	row.waitnum = q.waitnum
-
+  setRowData(row, q)
 	if (q.hn && isPACS) { cells[HN].className = "pacs" }
 	if (q.patient) { cells[PATIENT].className = "upload" }
 
@@ -202,19 +203,11 @@ jQuery.fn.extend({
 	filldataQueue : function(q) {
 		let row = this[0]
 		let cells = row.cells
-		
-		row.waitnum = q.waitnum
-		row.theatre = q.theatre
-		row.oproom = q.oproom || ""
-		row.optime = q.optime
-		row.casenum = q.casenum || ""
-    row.hn = q.hn
-		row.staffname = q.staffname
-		row.qn = q.qn
 
 		addColor(this, q.opdate)
 		q.hn && isPACS && (cells[HN].className = "pacs")
 		q.patient && (cells[PATIENT].className = "upload")
+    setRowData(row, q)
 
 		cells[OPDATE].innerHTML = putThdate(q.opdate)
 		cells[OPROOM].innerHTML = q.oproom || ""
@@ -231,7 +224,7 @@ jQuery.fn.extend({
 })
 
 // Same date cases have same color
-// In LARGESTDATE, prevdate = "" but q.opdate = LARGESTDATE
+// In LARGESTDATE, prevdate is "" but q.opdate is LARGESTDATE
 // So LARGESTDATE cases are !samePrevDate, thus has alternate colors
 // clear the color of NAMEOFDAYFULL row that is moved to non-color opdate
 function addColor($this, bookqOpdate) 

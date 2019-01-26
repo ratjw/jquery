@@ -13,17 +13,16 @@ import { rowDecoration } from "../view/rowDecoration.js"
 // May have other columns before, thus has qn already
 export function saveCaseHN(pointed, waiting)
 {
-	let	wanting = $.extend({}, waiting),
-		tableID = $(pointed).closest("table").attr("id"),
-		$row = $(pointed).closest('tr'),
-		$cells = $row.children("td"),
-		opdateth = $cells[OPDATE].innerHTML,
-		opdate = getOpdate(opdateth),
-		staffname = $cells[STAFFNAME].innerHTML,
-		diagnosis = $cells[DIAGNOSIS].innerHTML,
-		treatment = $cells[TREATMENT].innerHTML,
-		contact = $cells[CONTACT].innerHTML,
-		qn = $cells[QN].innerHTML,
+let	wanting = {...waiting},
+		tableID = pointed.closest("table").id,
+		row = pointed.closest('tr'),
+    cells = row.cells,
+		opdate = row.opdate,
+		staffname = row.staffname,
+		diagnosis = row.diagnosis,
+		treatment = row.treatment,
+		contact = row.contact,
+		qn = row.qn,
 
 		hn = waiting.hn,
 		patient = waiting.patient,
@@ -81,7 +80,7 @@ export function saveCaseHN(pointed, waiting)
 				text: "ยกเลิก ไม่ทำอะไร",
 				click: function() {
 					$dialogMoveCaseHN.dialog("close")
-					$cells[HN].innerHTML = OLDCONTENT
+					cells[HN].innerHTML = OLDCONTENT
 				}
 			}
 		],
@@ -95,7 +94,7 @@ export function saveCaseHN(pointed, waiting)
 		fetchMoveCaseHN(pointed, waiting, wanting).then(response => {
 			let hasData = function () {
 				updateBOOK(response)
-				viewMoveCaseHN(tableID, qn, $cells, waiting.opdate)
+				viewMoveCaseHN(tableID, qn, cells, waiting.opdate)
 			}
 			let noData = function () {
 				Alert("saveCaseHN", response)
@@ -114,7 +113,7 @@ export function saveCaseHN(pointed, waiting)
 		fetchCopyCaseHN(pointed, waiting, wanting).then(response => {
 			let hasData = function () {
 				updateBOOK(response)
-				viewCopyCaseHN(tableID, qn, $cells)
+				viewCopyCaseHN(tableID, qn, cells)
 			}
 			let noData = function () {
 				Alert("saveCaseHN", response)
@@ -131,17 +130,17 @@ export function saveCaseHN(pointed, waiting)
 
 jQuery.fn.extend({
 	filldataWaiting : function(bookq) {
-		let	$cells = this.find("td")
+		let	row = this[0],
+      cells = row.cells
 
-		rowDecoration(this[0], bookq.opdate)
+		rowDecoration(row, bookq.opdate)
 
-		$cells[OPDATE].innerHTML = putThdate(bookq.opdate)
-		$cells[STAFFNAME].innerHTML = bookq.staffname
-		$cells[HN].innerHTML = bookq.hn
-		$cells[PATIENT].innerHTML = putNameAge(bookq)
-		$cells[DIAGNOSIS].innerHTML = bookq.diagnosis
-		$cells[TREATMENT].innerHTML = bookq.treatment
-		$cells[CONTACT].innerHTML = bookq.contact
-		$cells[QN].innerHTML = bookq.qn
+		cells[STAFFNAME].innerHTML = bookq.staffname
+		cells[HN].innerHTML = bookq.hn
+		cells[PATIENT].innerHTML = putNameAge(bookq)
+		cells[DIAGNOSIS].innerHTML = bookq.diagnosis
+		cells[TREATMENT].innerHTML = bookq.treatment
+		cells[CONTACT].innerHTML = bookq.contact
+		cells[QN].innerHTML = bookq.qn
 	}
 })

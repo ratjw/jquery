@@ -62,6 +62,7 @@ export function editcellEvent()
 		let keycode = event.which || window.event.keyCode
 
 		// not resize after non-char was pressed
+		if (keycode === 27)	{ clearAllEditing() }
 		if (keycode < 32)	{ return }
 
 		POINTER.innerHTML = $editcell.html()
@@ -272,6 +273,7 @@ export function clearEditcell() {
 	OLDCONTENT = ""
 	$editcell.html("")
 	$editcell.hide()
+  $('.ui-spinner').remove()
 }
 
 // TRIM excess spaces at begin, mid, end

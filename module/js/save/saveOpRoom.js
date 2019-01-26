@@ -11,20 +11,18 @@ import { viewSplit } from "../view/viewSplit.js"
 import { UndoManager } from "../model/UndoManager.js"
 
 export function saveOpRoom(pointed, newcontent) {
-	let $cell = $(pointed).closest('tr').children("td"),
-		opdateth = $cell[OPDATE].innerHTML,
-		opdate = getOpdate(opdateth),
-		theatre = $cell[THEATRE].innerHTML,
-		oproom = $cell[OPROOM].innerHTML,
-		qn = $cell[QN].innerHTML,
-		allOldCases = [],
-		allNewCases = []
+	let row = pointed.closest('tr'),
+		opdate = row.opdate,
+		oproom = row.oproom,
+		qn = row.qn
 
-	allOldCases = sameDateRoomTableQNs(opdateth, oproom, theatre)
+	let allOldCases = sameDateRoomTableQNs(row)
 	allOldCases = allOldCases.filter(e => e !== qn)
 
-	allNewCases = sameDateRoomTableQNs(opdateth, newcontent, theatre)
-	allNewCases.push(qn)
+  row.oproom = newcontent
+  let allNewCases = sameDateRoomTableQNs(row)
+  allNewCases.splice(allNewCases.indexOf(qn), 1)
+  allNewCases.push(qn)
 
 	let doSaveOpRoom = function() {
 		fetchSaveOpRoom(allOldCases, allNewCases, oproom, newcontent, qn).then(response => {

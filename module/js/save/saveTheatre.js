@@ -10,20 +10,19 @@ import { viewSplit } from "../view/viewSplit.js"
 
 export function saveTheatre(pointed, newcontent)
 {
-	let	$cell = $(pointed).closest("tr").find("td"),
-		opdateth = $cell[OPDATE].innerHTML,
-		opdate = getOpdate(opdateth),
-		theatre = $cell[THEATRE].innerHTML,
-		oproom = $cell[OPROOM].innerHTML,
-		casenum = $cell[CASENUM].innerHTML,
-		qn = $cell[QN].innerHTML,
+	let	row = pointed.closest("tr"),
+		opdate = row.opdate,
+		theatre = row.theatre,
+		oproom = row.oproom,
+		casenum = row.casenum,
+		qn = row.qn,
 		allOldCases = [],
 		allNewCases = []
 
-	allOldCases = sameDateRoomTableQNs(opdateth, oproom, theatre)
+	allOldCases = sameDateRoomTableQNs(opdate, oproom, theatre)
 	allOldCases = allOldCases.filter(e => e !== qn)
 
-	allNewCases = sameDateRoomTableQNs(opdateth, oproom, newcontent)
+	allNewCases = sameDateRoomTableQNs(opdate, oproom, newcontent)
 	if (casenum) {
 		allNewCases.splice(casenum-1, 0, qn)
 	} else {

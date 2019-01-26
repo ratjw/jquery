@@ -3,8 +3,9 @@ import { OPDATE, HN, PATIENT } from "../model/const.js"
 import { viewOneDay } from "./viewOneDay.js"
 import { viewSplit } from "./viewSplit.js"
 import { getOpdate } from "../util/date.js"
-import { isConsults, deleteAttr } from "../util/util.js"
+import { isConsults } from "../util/util.js"
 import { showStaffOnCall } from "./fillConsults.js"
+import { blankRowData } from "../model/rowdata.js"
 
 export function viewDeleteCase(tableID, row) {
 	let opdate = row.opdate
@@ -35,6 +36,6 @@ let delRow = function (row, opdate) {
 		row.cells[HN].classList.remove("pacs")
 		row.cells[PATIENT].classList.remove("upload")
 		showStaffOnCall(opdate)
-    deleteAttr(row)
+    blankRowData(row, opdate)
 	}
 }

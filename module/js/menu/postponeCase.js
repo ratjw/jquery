@@ -11,26 +11,23 @@ import { Alert } from "../util/util.js"
 import { viewPostponeCase } from "../view/viewPostponeCase.js"
 import { clearSelection } from "../control/clearSelection.js"
 
-// Undefined date booking has opdate = LARGESTDATE
+// Undefined date booking has opdate set to LARGESTDATE
 // but was shown blank date on screen
 export function postponeCase()
 {
-	let	$selected = $(".selected"),
-		tableID = $selected.closest('table').attr('id'),
-		$row = $selected.closest('tr'),
-		$cell = $row.find("td"),
-		opdateth = $cell.eq(OPDATE).html(),
-		opdate = getOpdate(opdateth),
-		staffname = $cell.eq(STAFFNAME).html(),
-		qn = $cell.eq(QN).html(),
-		theatre = $cell.eq(THEATRE).html(),
-		oproom = $cell.eq(OPROOM).html(),
-		oldwaitnum = $row[0].title,
+	let	selected = document.querySelectorAll(".selected"),
+		tableID = selected.closest('table').id,
+		row = selected.closest('tr'),
+		opdate = row.opdate,
+		oproom = row.oproom,
+		staffname = row.staffname,
+		qn = row.qn,
+		oldwaitnum = row.waitnum,
 		newwaitnum = getLargestWaitnum(staffname) + 1,
 		allCases = []
 
 	if (oproom) {
-		allCases = sameDateRoomTableQNs(opdateth, oproom, theatre)
+		allCases = sameDateRoomTableQNs(row)
 	}
 
 	let doPostponeCase = function (waitnum, thisdate) {

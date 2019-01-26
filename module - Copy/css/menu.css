@@ -1,0 +1,137 @@
+#cssmenu {
+  font-size: 14px;
+  text-align: left;
+  line-height: 15px;
+}
+#cssmenu > ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  background: #ffffff;
+  border: 1px solid #ece6e8;
+  border-bottom: 3px solid #d9ced2;
+  border-radius: 2px;
+}
+#cssmenu > ul li#responsive-tab {
+  display: none;
+  /* Hide for large screens */
+}
+#cssmenu > ul li {
+  display: inline-block;
+  position: relative;
+}
+#cssmenu > ul li:hover ul {
+  display: block;
+}
+#cssmenu > ul li.hassub a {
+  background-image: url('images/caret.png');
+  background-repeat: no-repeat;
+  background-position: 100% -100%;
+}
+#cssmenu > ul li ul {
+  display: none;
+  position: absolute;
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+  background: #ffffff;
+  border: 1px solid #ece6e8;
+  border-bottom: 3px solid #d9ced2;
+  border-top: 0 none;
+  line-height: 3px;
+  z-index: 1;
+}
+#cssmenu ul li#postpone ul,
+#cssmenu ul li#delete ul {
+  line-height: normal;
+}
+#cssmenu > ul li a {
+  display: block;
+  padding: 12px 10px 12px 10px;
+  text-decoration: none;
+  color: gray;
+  text-shadow: 0px 1px 0px #fff;
+}
+#cssmenu > ul li#EXCEL a,
+#cssmenu > ul li#LINE a {
+  width: 30px;
+  height: 20px;
+  text-align: center;
+  padding-top: 7px;
+}
+#cssmenu > ul li img {
+  width: 25px;
+  height: 25px;
+}
+#cssmenu > ul li.disabled img {
+  filter: opacity(30%);
+}
+
+#cssmenu > ul li a:hover {
+  background: #d80041;
+  color: #fff;
+  text-shadow: 0px 1px 0px #000;
+}
+#cssmenu > ul li.disabled a {
+  pointer-events: none;
+  cursor: default;
+  color: #CCCCCC;
+}
+#cssmenu ul li.disabled ul li {
+  display: none;
+}
+#cssmenu ul li ul li a {
+  padding: 12px 7px 12px 7px;
+}
+
+@media (max-width: 600px) {
+  #cssmenu > ul {
+    width: 100%;
+  }
+  #cssmenu > ul li#responsive-tab {
+    display: block;
+  }
+  #cssmenu > ul li#responsive-tab a {
+    background: url('images/menu.png') no-repeat;
+    background-position: 95% -35%;
+  }
+  #cssmenu > ul li#responsive-tab a:hover {
+    background-color: #d80041;
+    background-position: 95% 135%;
+  }
+  #cssmenu > ul li {
+    display: none;
+  }
+  #cssmenu > ul li.right {
+    float: none;
+  }
+  #cssmenu > ul li {
+    position: relative;
+  }
+  #cssmenu > ul li ul {
+    display: block;
+    position: static;
+    width: 100%;
+    background: #ffffff;
+    border: 0 none;
+  }
+  #cssmenu > ul li ul li {
+    display: block !important;
+  }
+  #cssmenu > ul li ul li a span {
+    display: block;
+    padding-left: 24px;
+  }
+  #cssmenu > ul li > a {
+    background-image: none;
+  }
+}
+/* Make sure they show even if hidden in mobile view by JS */
+@media (min-width: 600px) {
+  #cssmenu > ul > li.collapsed {
+    display: inline-block !important;
+  }
+  #cssmenu > ul ul li.collapsed {
+    display: block !important;
+  }
+}

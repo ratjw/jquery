@@ -6,7 +6,7 @@ import { getBOOKRowsByDate, getTableRowsByDate } from "../util/rowsgetting.js"
 import { showStaffOnCall } from "./fillConsults.js"
 import { filldata } from "./fill.js"
 import { BOOK } from "../util/variables.js"
-import { deleteAttr } from "../util/util.js"
+import { setRowData, blankRowData } from "../model/rowdata.js"
 
 // Used for main table ("tbl") only, no LARGESTDATE
 // others would refill entire table
@@ -34,13 +34,15 @@ export function viewOneDay(opdate) {
 			}
 		}
 		opdateBOOKrows.forEach((e, i) => {
-			rowDecoration(opdateTblRows[i], e.opdate)
-			filldata(e, opdateTblRows[i])
-			staff = opdateTblRows[i].cells[STAFFNAME].innerHTML
+      let row = opdateTblRows[i]
+			rowDecoration(row, e.opdate)
+      setRowData(row, e)
+			filldata(e, row)
+			staff = row.cells[STAFFNAME].innerHTML
 
 			// on call <p style..>staffname</p>
 			if (staff && /<p[^>]*>.*<\/p>/.test(staff)) {
-				opdateTblRows[i].cells[STAFFNAME].innerHTML = ""
+				row.cells[STAFFNAME].innerHTML = ""
 			}
 		})
 	} else {
@@ -57,6 +59,6 @@ export function viewOneDay(opdate) {
 		cells[PATIENT].classList.remove("upload")
 		rowDecoration(row, opdate)
 		showStaffOnCall(opdate)
-    deleteAttr(row)
+    blankRowData(row, opdate)
 	}
 }
