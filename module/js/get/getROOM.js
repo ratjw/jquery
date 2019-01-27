@@ -9,7 +9,6 @@ export function getROOM(pointing)
 	let	editcell = document.getElementById("editcell")
 	let	html = '<input id="spin" type="number">'
 	let	oldval = pointing.innerHTML
-	let	newval = null
 
 	if ( !patient ) {
 		savePreviousCell()
@@ -20,5 +19,5 @@ export function getROOM(pointing)
 	createEditcell(pointing)
 	editcell.style.width = "40px"
 	editcell.innerHTML = html
-  spinNumber($("#spin"), oldval, newval)
+  spinNumber($("#spin"), oldval)
 }

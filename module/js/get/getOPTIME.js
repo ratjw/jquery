@@ -16,5 +16,5 @@ export function getOPTIME(pointing)
 	createEditcell(pointing)
 	editcell.style.width = "65px"
 	editcell.innerHTML = html
-  spinTime($("#spin"), oldtime, newtime)
+  spinTime($("#spin"), oldtime)
 }

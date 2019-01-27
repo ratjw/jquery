@@ -1,6 +1,8 @@
 
-export function spinNumber($spin, oldval, newval)
+export function spinNumber($spin, oldval)
 {
+  let newval = null
+
 	$spin.css("width", 37)
 	$spin.val(oldval)
 	$spin.spinner({
@@ -22,8 +24,10 @@ export function spinNumber($spin, oldval, newval)
 	$spin.focus()
 }
 
-export function spinTime($spin, oldtime, newtime)
+export function spinTime($spin, oldtime)
 {
+  let newtime = ""
+
 	$spin.css("width", 60)
 	$spin.spinner({
 		min: 0,

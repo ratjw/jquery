@@ -11,12 +11,14 @@ export function viewDeleteCase(tableID, row) {
 	let opdate = row.opdate
   let table = document.getElementById(tableID)
 
-  viewOneDay(opdate)
-	tableID === "tbl"
-	? viewSplit(row.staffname)
-	: isConsults()
-	? delRow(row, opdate)
-	: table.deleteRow(row.rowIndex)
+	if (tableID === "tbl") {
+    viewOneDay(opdate)
+    viewSplit(row.staffname)
+  } else if (isConsults()) {
+    delRow(row, opdate)
+  } else {
+    table.deleteRow(row.rowIndex)
+  }
 }
 
 let delRow = function (row, opdate) {
@@ -29,10 +31,9 @@ let delRow = function (row, opdate) {
 	if (prevDate === opdate || nextDate === opdate || lastrow) {
 			table.deleteRow()
 	} else {
-    let row = opdateTblRows[0]
     let cells = Array.from(row.children)
 
-    cells.filter(e => e.cellIndex !== OPDATE).forEach(e => e.innerHTML = "")
+    cells.filter(e => e !== row.firstElementChild).forEach(e => e.innerHTML = "")
 		row.cells[HN].classList.remove("pacs")
 		row.cells[PATIENT].classList.remove("upload")
 		showStaffOnCall(opdate)

@@ -19,7 +19,7 @@ import { setRowData, blankRowData } from "../model/rowdata.js"
 // START date imported from util.js
 // until date is the last row of the table, not of the book
 export function fillall(book, table, start, until) {
-	let tbody = table.getElementsByTagName("tbody")[0],
+	let tbody = table.querySelector("tbody"),
 		rows = table.rows,
 		head = table.rows[0],
 		date = start,
@@ -37,6 +37,8 @@ export function fillall(book, table, start, until) {
 	}
 
 	let blen = book.length
+  // No case
+  if (!blen) { book.push({"opdate" : START}) }
 
 	book.forEach(bookq => {	
 		// step over each day that is not in QBOOK
@@ -101,7 +103,7 @@ export function refillall() {
 
 // create and decorate new row
 let makenextrow = function (table, date) {
-	let tbody = table.getElementsByTagName("tbody")[0],
+	let tbody = table.querySelector("tbody"),
 		tblcells = document.getElementById("tblcells"),
 		row = tblcells.rows[0].cloneNode(true)
 
@@ -141,15 +143,23 @@ export function staffqueue(staffname) {
 	// delete previous queuetbl lest it accumulates
 	$queuetbl.find('tr').slice(1).remove()
 
-	let staffConsults = function () {
+	let staffConsults = () => {
 
 		// No case from server
-		!consult.length && consult.push({"opdate" : START})
+		if (consult.length) { consult.push({"opdate" : START}) }
+    if (!queuetbl.length) {
+      let table = document.getElementById("tbl")
+      let head = table.rows[0]
+      let clone = head.cloneNode(true)
+      let tbody = queuetbl.querySelector("tbody")
+      tbody.appendChild(clone)
+    }
 
 		// render as main table, not as staff table
 		fillall(consult, queuetbl, START, todate)
 	}
-	let staffCases = function () {
+
+	let staffCases = () => {
 		$.each( BOOK, function() {
 			this.staffname === staffname && this.opdate >= todate &&
 				$('#tblcells tr').clone()
@@ -171,17 +181,19 @@ export function staffqueue(staffname) {
 export function refillstaffqueue() {
 	let todate = ISOdate(new Date()),
 		staffname = $('#titlename').html(),
-		book = BOOK
-	let staffConsults = function () {
+		book = BOOK,
+    consult = CONSULT
+
+	let staffConsults = () => {
 		let table = document.getElementById("queuetbl")
 
 		// Consults table is rendered same as fillall
 		$('#queuetbl tr').slice(1).remove()
-		!book.length && book.push({"opdate" : START})
+		!consult.length && consult.push({"opdate" : START})
 
-		fillall(book, table, START, todate)
+		fillall(consult, table, START, todate)
 	}
-	let staffCases = function () {
+	let staffCases = () => {
 		let i = 0
 		$.each( book, function(q, each) {
 			if ((this.opdate >= todate) && (this.staffname === staffname)) {

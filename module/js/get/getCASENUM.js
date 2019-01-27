@@ -12,7 +12,6 @@ export function getCASENUM(pointing)
 	let	editcell = document.getElementById("editcell")
 	let	html = '<input id="spin">'
 	let	oldval = pointing.innerHTML
-	let	newval = null
 
 	if ( !qn || !oproom ) {
 		savePreviousCell()
@@ -23,5 +22,5 @@ export function getCASENUM(pointing)
 	createEditcell(pointing)
 	editcell.style.width = "40px"
 	editcell.innerHTML = html
-  spinNumber($("#spin"), oldval, newval)
+  spinNumber($("#spin"), oldval)
 }
