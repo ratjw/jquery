@@ -3,7 +3,7 @@ import {
   FINALSV, PROFILESV, ADMITSV, OPDATESV, DISCHARGESV, QNSV
 } from "../model/const.js"
 import { POINTER, OLDCONTENT, getNewcontent } from "../control/edit.js"
-import { fetchSaveService } from "../model/sqlservice.js"
+import { sqlSaveService } from "../model/sqlservice.js"
 import { getBOOKrowByQN } from "../util/rowsgetting.js"
 import { updateBOOK } from "../util/variables.js"
 import { URIcomponent, Alert } from "../util/util.js"
@@ -66,7 +66,7 @@ function saveService(pointed, column, newcontent) {
 		qn = row.cells[QNSV].innerHTML
 
 	let doSaveService = function (newdata, olddata) {
-		fetchSaveService(pointed, column, newdata, qn).then(response => {
+		sqlSaveService(pointed, column, newdata, qn).then(response => {
 			let hasResponse = function () {
 				updateBOOK(response)
 

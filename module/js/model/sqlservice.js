@@ -6,7 +6,7 @@ import { serviceFromDate, serviceToDate } from "../service/setSERVICE.js"
 
 const GETIPD	= "php/getipd.php"
 
-export function fetchSaveOnChangeService(column, content, qn)
+export function sqlSaveOnChangeService(column, content, qn)
 {
 	let sql = sqlColumn(column, URIcomponent(content), qn)
 			+ sqlOneMonth()
@@ -14,19 +14,19 @@ export function fetchSaveOnChangeService(column, content, qn)
 	return postData(MYSQLIPHP, sql)
 }
 
-export function fetchGetServiceOneMonth() {
+export function sqlGetServiceOneMonth() {
 	let sql = "sqlReturnData=" + sqlOneMonth()
 
 	return postData(MYSQLIPHP, sql)
 }
 
-export function fetchGetIPD() {
+export function sqlGetIPD() {
 	let sql = `from=${serviceFromDate}&to=${serviceToDate}&sql=` + sqlOneMonth()
 
 	return postData(GETIPD, sql)
 }
 
-export function fetchSaveService(pointed, column, content, qn) {
+export function sqlSaveService(pointed, column, content, qn) {
 	let sql = "sqlReturnService="
 	
 	if (column) {
@@ -40,7 +40,7 @@ export function fetchSaveService(pointed, column, content, qn) {
 	return postData(MYSQLIPHP, sql);
 }
 
-export function fetchGetUpdateService()
+export function sqlGetUpdateService()
 {
   let sql = "sqlReturnService=" + sqlOneMonth()
 

@@ -33,5 +33,5 @@ export function addrow(row) {
 	row.after(clone)
 	clearSelection()
 	createEditcell(cells[HN])
-  blankRowData(clone, row.opdate)
+  blankRowData(clone, row.dataset.opdate)
 }

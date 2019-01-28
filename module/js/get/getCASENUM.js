@@ -7,8 +7,8 @@ import { spinNumber } from "../util/spinner.js"
 export function getCASENUM(pointing)
 {
 	let	row = pointing.closest("tr")
-	let	oproom = row.oproom
-	let	qn = row.qn
+	let	oproom = row.dataset.oproom
+	let	qn = row.dataset.qn
 	let	editcell = document.getElementById("editcell")
 	let	html = '<input id="spin">'
 	let	oldval = pointing.innerHTML

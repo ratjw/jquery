@@ -38,12 +38,11 @@ export function viewCopyCaseHN(tableID, qn, row)
 function fillCellsHN(tableID, qn, row)
 {
 	let	book = (isConsultsTbl(tableID)) ? CONSULT : BOOK
-  let cells = row.cells
 
 	// New case input
 	if (!qn) {
 		qn = getMaxQN(book)
-		cells[QN].innerHTML = qn
+		row.dataset.qn = qn
 	}
 
 	let bookq = getBOOKrowByQN(book, qn)

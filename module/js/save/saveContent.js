@@ -7,7 +7,7 @@ import { saveContentNoQN } from "./saveContentNoQN.js"
 export function saveContent(pointed, column, newcontent) {
 	let qn = $(pointed).siblings("td").last().html()
 
-	// just for show instantly
+	// show instantly, no re-render after save to DB
 	pointed.innerHTML = newcontent
 
 	// take care of white space, double qoute, single qoute, and back slash

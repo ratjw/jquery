@@ -1,7 +1,7 @@
 
 //import { UndoManager } from "../model/UndoManager.js"
 import { OPDATE, THEATRE, OPROOM, STAFFNAME, QN } from "../model/const.js"
-import { fetchDeleteCase } from "../model/sqlsearch.js"
+import { sqlDeleteCase } from "../model/sqlsearch.js"
 import { getOpdate } from "../util/date.js"
 import { sameDateRoomTableQNs } from "../util/rowsgetting.js"
 import { updateBOOK } from "../util/variables.js"
@@ -18,9 +18,9 @@ export function delCase() {
 	let	selected = document.querySelector(".selected"),
 		row = selected.closest('tr'),
 		prevrow = row.previousElementSibling,
-		opdate = row.opdate,
-		qn = row.qn,
-		oproom = row.oproom,
+		opdate = row.dataset.opdate,
+		qn = row.dataset.qn,
+		oproom = row.dataset.oproom,
 		allCases = []
 
 	if (!qn) {
@@ -34,7 +34,7 @@ export function delCase() {
 	}
 
 	let deleteCase = function (del) {
-		fetchDeleteCase(allCases, oproom, qn, del).then(response => {
+		sqlDeleteCase(allCases, oproom, qn, del).then(response => {
 			let hasData = function () {
 				updateBOOK(response)
 				viewDeleteCase(row)

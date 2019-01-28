@@ -2,7 +2,7 @@
 import { clearTimer, resetTimerCounter } from "./timer.js"
 import { clearEditcell } from "./edit.js"
 import { clearMouseoverTR } from "../menu/moveCase.js"
-import { fetchSortable } from "../model/sqlmove.js"
+import { sqlSortable } from "../model/sqlmove.js"
 import { calcWaitnum } from "../util/calcWaitnum.js"
 import { getOpdate } from "../util/date.js"
 import { getBOOKrowByQN, sameDateRoomTableQNs } from "../util/rowsgetting.js"
@@ -49,9 +49,9 @@ export function sortable () {
 		stop: function(e, ui) {
 			let moveitem = ui.item[0],
 				receiver = moveitem.closest('table').id,
-				moveqn = moveitem.qn,
-				moveopdate = moveitem.opdate,
-				staffname = moveitem.staffname
+				moveqn = moveitem.dataset.qn,
+				moveopdate = moveitem.dataset.opdate,
+				staffname = moveitem.dataset.staffname
 
 			// Allow drag to Consults, or same staff name
 			// That is (titlename === "Consults") is allowed
@@ -125,13 +125,13 @@ export function sortable () {
 
       let allNewCases = [],
 				allOldCases = [],
-				thisopdate = thisdrop.opdate,
-        thisqn = thisdrop.qn
+				thisopdate = thisdrop.dataset.opdate,
+        thisqn = thisdrop.dataset.qn
 
 			// drop on the same case
 			if (thisqn === moveqn) { return }
 
-			moveitem.waitnum = calcWaitnum(thisopdate, previtem, nextitem)
+			moveitem.dataset.waitnum = calcWaitnum(thisopdate, previtem, nextitem)
       allOldCases = sameDateRoomTableQNs(moveitem)
       allNewCases = sameDateRoomTableQNs(thisdrop)
 
@@ -152,7 +152,7 @@ export function sortable () {
 
 			// after sorting, must attach hover to the changed DOM elements
 			let doSorting = function() {
-				fetchSortable(allOldCases, allNewCases, moveitem, thisdrop).then(response => {
+				sqlSortable(allOldCases, allNewCases, moveitem, thisdrop).then(response => {
 					let hasData = function () {
 						updateBOOK(response)
 						viewmoveCase(moveopdate, thisopdate, staffname)

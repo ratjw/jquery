@@ -2,7 +2,7 @@
 import { postData, MYSQLIPHP } from "./fetch.js"
 import { USER } from "../main.js"
 
-export function fetchGetEquip(qn)	{
+export function sqlGetEquip(qn)	{
 
 	let sql = `sqlReturnData=SELECT editor,editdatetime\
 								FROM bookhistory\
@@ -12,7 +12,7 @@ export function fetchGetEquip(qn)	{
 	return postData(MYSQLIPHP, sql)
 }
 
-export function fetchSaveEquip(equipment, qn) {
+export function sqlSaveEquip(equipment, qn) {
 	let sql = `sqlReturnbook=UPDATE book\
 							SET equipment='${equipment}',\
 								editor='${USER}'\
@@ -21,7 +21,7 @@ export function fetchSaveEquip(equipment, qn) {
 	return postData(MYSQLIPHP, sql);
 }
 
-export function fetchCancelAllEquip(qn)
+export function sqlCancelAllEquip(qn)
 {
 	sql = `sqlReturnbook=UPDATE book SET equipment='',editor='${USER}'\
 							WHERE qn='${qn}';`

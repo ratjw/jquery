@@ -1,6 +1,6 @@
 
 import { htmlStafflist } from "../view/html.js"
-import { fetchDoadddata, fetchDoupdatedata, fetchDodeletedata } from "../model/sqlsearch.js"
+import { sqlDoadddata, sqlDoupdatedata, sqlDodeletedata } from "../model/sqlsearch.js"
 import { updateBOOK, setSTAFF } from "../util/variables.js"
 import { Alert } from "../util/util.js"
 import { viewAddStaff } from "../view/viewAddStaff.js"
@@ -22,7 +22,7 @@ export function addStaff()
 
 export function doadddata()
 {
-	fetchDoadddata().then(response => {
+	sqlDoadddata().then(response => {
 		let hasData = function () {
 			updateBOOK(response)
 			showAddStaff(response)
@@ -37,7 +37,7 @@ export function doadddata()
 export function doupdatedata()
 {
   if (confirm("ต้องการแก้ไขข้อมูลนี้")) {
-	fetchDoupdatedata().then(response => {
+	sqlDoupdatedata().then(response => {
 		let hasData = function () {
 			updateBOOK(response)
 			showAddStaff(response)
@@ -53,7 +53,7 @@ export function doupdatedata()
 export function dodeletedata()
 {
   if (confirm("ต้องการลบข้อมูลนี้หรือไม่")) {
-	fetchDodeletedata().then(response => {
+	sqlDodeletedata().then(response => {
 		let hasData = function () {
 			updateBOOK(response)
 			showAddStaff(response)

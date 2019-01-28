@@ -10,18 +10,19 @@ import { refillAnotherTableCell } from "./refillAnotherTableCell.js"
 import { reCreateEditcell } from "../control/edit.js"
 
 export function viewGetNameHN(pointed) {
-	let tableID = $(pointed).closest("table").attr("id"),
-		$cells = $(pointed).closest('tr').children("td"),
-		cellindex = pointed.cellIndex,
-		staffname = $cells[STAFFNAME].innerHTML,
-		qn = $cells[QN].innerHTML,
+	let tableID = pointed.closest("table").id,
+		row = pointed.closest('tr'),
+		opdate = row.dataset.opdate,
+		staffname = row.dataset.staffname,
+		qn = row.dataset.qn,
 		noqn = !qn,
+		cellindex = pointed.cellIndex,
 		book = (isConsultsTbl(tableID)) ? CONSULT : BOOK
 
 	// New case input
 	if (noqn) {
 		qn = getMaxQN(book)
-		$cells[QN].innerHTML = qn
+		row.dataset.qn = qn
 	}
 
 	let bookq = getBOOKrowByQN(book, qn)

@@ -3,7 +3,7 @@ import {
 	OPDATE, STAFFNAME, HN, PATIENT, DIAGNOSIS, TREATMENT, CONTACT, QN
 } from "../model/const.js"
 import { OLDCONTENT, clearEditcell } from "../control/edit.js"
-import { fetchMoveCaseHN, fetchCopyCaseHN } from "../model/sqlsavehn.js"
+import { sqlMoveCaseHN, sqlCopyCaseHN } from "../model/sqlsavehn.js"
 import { getOpdate, putThdate, putNameAge } from "../util/date.js"
 import { updateBOOK } from "../util/variables.js"
 import { Alert, winWidth } from "../util/util.js"
@@ -16,13 +16,13 @@ export function saveCaseHN(pointed, waiting)
 let	wanting = {...waiting},
 		tableID = pointed.closest("table").id,
 		row = pointed.closest('tr'),
-    cells = row.cells,
-		opdate = row.opdate,
-		staffname = row.staffname,
-		diagnosis = row.diagnosis,
-		treatment = row.treatment,
-		contact = row.contact,
-		qn = row.qn,
+    cells = row.dataset.cells,
+		opdate = row.dataset.opdate,
+		staffname = row.dataset.staffname,
+		diagnosis = row.dataset.diagnosis,
+		treatment = row.dataset.treatment,
+		contact = row.dataset.contact,
+		qn = row.dataset.qn,
 
 		hn = waiting.hn,
 		patient = waiting.patient,
@@ -91,7 +91,7 @@ let	wanting = {...waiting},
 
 	function moveCaseHN()
 	{
-		fetchMoveCaseHN(pointed, waiting, wanting).then(response => {
+		sqlMoveCaseHN(pointed, waiting, wanting).then(response => {
 			let hasData = function () {
 				updateBOOK(response)
 				viewMoveCaseHN(tableID, qn, row, waiting.opdate)
@@ -110,7 +110,7 @@ let	wanting = {...waiting},
 
 	function copyCaseHN()
 	{
-		fetchCopyCaseHN(pointed, waiting, wanting).then(response => {
+		sqlCopyCaseHN(pointed, waiting, wanting).then(response => {
 			let hasData = function () {
 				updateBOOK(response)
 				viewCopyCaseHN(tableID, qn, row)
@@ -141,6 +141,5 @@ jQuery.fn.extend({
 		cells[DIAGNOSIS].innerHTML = bookq.diagnosis
 		cells[TREATMENT].innerHTML = bookq.treatment
 		cells[CONTACT].innerHTML = bookq.contact
-		cells[QN].innerHTML = bookq.qn
 	}
 })

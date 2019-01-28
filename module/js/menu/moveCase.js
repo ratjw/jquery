@@ -1,7 +1,7 @@
 
 import { UndoManager } from "../model/UndoManager.js"
 import { OPDATE, THEATRE, OPROOM, STAFFNAME, QN } from "../model/const.js"
-import { fetchmoveCase } from "../model/sqlmove.js"
+import { sqlmoveCase } from "../model/sqlmove.js"
 import { calcWaitnum } from "../util/calcWaitnum.js"
 import { getOpdate } from "../util/date.js"
 import { getBOOKrowByQN, sameDateRoomTableQNs } from "../util/rowsgetting.js"
@@ -33,19 +33,19 @@ function clickDate(event, selected, cell)
 {
 	let	moveqn = selected.lastElementChild.innerHTML,
     moverow = getBOOKrowByQN(BOOK, moveqn),
-		moveOpdate = moverow.opdate,
-		movestaffname = moverow.staffname,
-		moveWaitnum = moverow.waitnum,
-		movetheatre = moverow.theatre,
-		moveroom = moverow.oproom,
+		moveOpdate = moverow.dataset.opdate,
+		movestaffname = moverow.dataset.staffname,
+		moveWaitnum = moverow.dataset.waitnum,
+		movetheatre = moverow.dataset.theatre,
+		moveroom = moverow.dataset.oproom,
 
 		tblrow = cell.closest("tr"),
 		thisOpdateth = tblrow.firstElementChild.innerHTML,
 		thisOpdate = getOpdate(thisOpdateth),
 		thisqn = tblrow.lastElementChild.innerHTML,
     thisrow = getBOOKrowByQN(BOOK, thisqn) || [],
-		thistheatre = thisrow.theatre,
-		thisroom = thisrow.oproom,
+		thistheatre = thisrow.dataset.theatre,
+		thisroom = thisrow.dataset.oproom,
 		thisWaitnum = calcWaitnum(thisOpdate, tblrow, tblrow.nextElementSibling),
 		allOldCases,
 		allNewCases,
@@ -79,7 +79,7 @@ function clickDate(event, selected, cell)
 	}
 
 	let domoveCase = function (waitnum, movedate, thisdate, oproom) {
-		fetchmoveCase(arg).then(response => {
+		sqlmoveCase(arg).then(response => {
 			let hasData = function () {
 				updateBOOK(response)
 				viewmoveCase(movedate, thisdate, movestaffname)

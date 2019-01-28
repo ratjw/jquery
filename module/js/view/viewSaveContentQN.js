@@ -9,12 +9,12 @@ import { getOpdate } from "../util/date.js"
 
 export function viewSaveContentQN(pointed, column, oldcontent) {
 	let	cellindex = pointed.cellIndex,
-		tableID = $(pointed).closest("table").attr("id"),
-		$cells = $(pointed).closest('tr').children("td"),
-		opdate = getOpdate($cells[OPDATE].innerHTML),
-		staffname = $cells[STAFFNAME].innerHTML,
-		qn = $cells[QN].innerHTML,
-		titlename = $('#titlename').html()
+		tableID = pointed.closest("table").id,
+		row = pointed.closest('tr'),
+		opdate = row.dataset.opdate,
+		staffname = row.dataset.staffname,
+		qn = row.dataset.qn,
+		titlename = document.getElementById('titlename').innerHTML
 
 	let onMaintable = function () {
 

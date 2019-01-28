@@ -10,7 +10,7 @@ import { URIcomponent } from "../util/util.js"
 
 const GETNAMEHN	= "php/getnamehn.php"
 
-export function fetchMoveCaseHN(pointed, waiting, wanting)
+export function sqlMoveCaseHN(pointed, waiting, wanting)
 {
 	let	sql = `sqlReturnbook=UPDATE book SET deleted=1,editor='${USER}'
 				WHERE qn=${waiting.qn};` + sqlCaseHN(pointed, waiting, wanting)
@@ -18,7 +18,7 @@ export function fetchMoveCaseHN(pointed, waiting, wanting)
 	return postData(MYSQLIPHP, sql);
 }
 
-export function fetchCopyCaseHN(pointed, waiting, wanting)
+export function sqlCopyCaseHN(pointed, waiting, wanting)
 {
 	let	sql = "sqlReturnbook=" + sqlCaseHN(pointed, waiting, wanting)
 
@@ -37,7 +37,7 @@ function sqlCaseHN(pointed, waiting, wanting)
 function sqlInsertHN(pointed, waiting, wanting)
 {
 	let	row = pointed.closest("tr"),
-		opdate = row.opdate,
+		opdate = row.dataset.opdate,
 
 		hn = waiting.hn,
 		patient = waiting.patient,
@@ -46,7 +46,7 @@ function sqlInsertHN(pointed, waiting, wanting)
 	// new row, calculate waitnum
 	// store waitnum in row waitnum
 	let waitnum = calcWaitnum(opdate, row.previousElementSibling, row.nextElementSibling)
-	row.waitnum = waitnum
+	row.dataset.waitnum = waitnum
 
 	return `INSERT INTO book
 		(waitnum,opdate,hn,patient,dob,staffname,diagnosis,treatment,contact,editor)
@@ -74,22 +74,22 @@ function sqlUpdateHN(qn, waiting, wanting)
 		WHERE qn=${qn};`
 }
 
-export function fetchGetNameHN(pointed, content)
+export function sqlGetNameHN(pointed, content)
 {
 	let row = pointed.closest('tr'),
-      opdate = row.opdate,
-      qn = row.qn,
-      staffname = row.staffname,
-		  diagnosis = row.diagnosis,
-	  	treatment = row.treatment,
-	  	contact = row.contact,
+      opdate = row.dataset.opdate,
+      qn = row.dataset.qn,
+      staffname = row.dataset.staffname,
+		  diagnosis = row.dataset.diagnosis,
+	  	treatment = row.dataset.treatment,
+	  	contact = row.dataset.contact,
   		waitnum = 0
 
 	// if new case, calculate waitnum
 	// store waitnum in row waitnum
 	if (!qn) {
 		waitnum = calcWaitnum(opdate, row.previousElementSibling, row.nextElementSibling)
-		$row[0].waitnum = waitnum	
+		$row[0].dataset.waitnum = waitnum	
 	}
 
 	let sql = `hn=${content}\

@@ -12,26 +12,26 @@ import { UndoManager } from "../model/UndoManager.js"
 
 export function saveOpRoom(pointed, newcontent) {
 	let row = pointed.closest('tr'),
-		opdate = row.opdate,
-		oproom = row.oproom,
-		qn = row.qn
+		opdate = row.dataset.opdate,
+		oproom = row.dataset.oproom,
+		qn = row.dataset.qn
 
 	let allOldCases = sameDateRoomTableQNs(row)
 	allOldCases = allOldCases.filter(e => e !== qn)
 
-  row.oproom = newcontent
+  row.dataset.oproom = newcontent
   let allNewCases = sameDateRoomTableRows(row)
 
-	let timeCases = allNewCases.filter(e => e.optime !== "")
-	let notimeCases = allNewCases.filter(e => e.optime === "")
+	let timeCases = allNewCases.filter(e => e.dataset.optime !== "")
+	let notimeCases = allNewCases.filter(e => e.dataset.optime === "")
 
 	timeCases = timeCases.sort((e1, e2) => {
-    if (e1.optime >= e2.optime) return 1
+    if (e1.dataset.optime >= e2.dataset.optime) return 1
     return -1
   })
 
-	let timeQNs = Array.from(timeCases, e => e.qn)
-	let notimeQNs = Array.from(notimeCases, e => e.qn)
+	let timeQNs = Array.from(timeCases, e => e.dataset.qn)
+	let notimeQNs = Array.from(notimeCases, e => e.dataset.qn)
 	allNewCases = timeQNs.concat(notimeQNs)
 
 	let doSaveOpRoom = function() {

@@ -3,7 +3,7 @@ import { postData, MYSQLIPHP } from "./fetch.js"
 import { USER } from "../main.js"
 import { updateCasenum, sqlCaseNum } from "./sqlSaveCaseNum.js"
 
-export function fetchPostponeCase(allCases, waitnum, thisdate, oproom, qn) {
+export function sqlPostponeCase(allCases, waitnum, thisdate, oproom, qn) {
 	let sql = `sqlReturnbook=UPDATE book SET opdate='${thisdate}',
 				waitnum=${waitnum},theatre='',oproom=null,casenum=null,
 				optime='',editor='${USER}' WHERE qn=${qn};`
@@ -15,7 +15,7 @@ export function fetchPostponeCase(allCases, waitnum, thisdate, oproom, qn) {
 	return postData(MYSQLIPHP, sql)
 }
 
-export function fetchmoveCase(arg) {
+export function sqlmoveCase(arg) {
 	let sql = "sqlReturnbook=",
 		allOldCases = arg.allOldCases,
 		allNewCases = arg.allNewCases,
@@ -43,14 +43,14 @@ export function fetchmoveCase(arg) {
 	return postData(MYSQLIPHP, sql)
 }
 
-export function fetchSortable(allOldCases, allNewCases, moverow, thisrow)
+export function sqlSortable(allOldCases, allNewCases, moverow, thisrow)
 {
-	let newWaitnum = moverow.waitnum,
-		moveroom = moverow.oproom,
-		moveqn = moverow.qn,
-		thisOpdate = thisrow.opdate,
-		theatre = thisrow.theatre || "",
-		thisroom = thisrow.oproom || null,
+	let newWaitnum = moverow.dataset.waitnum,
+		moveroom = moverow.dataset.oproom,
+		moveqn = moverow.dataset.qn,
+		thisOpdate = thisrow.dataset.opdate,
+		theatre = thisrow.dataset.theatre || "",
+		thisroom = thisrow.dataset.oproom || null,
 		sql = "sqlReturnbook="
 
 	if (allOldCases.length && moveroom) {

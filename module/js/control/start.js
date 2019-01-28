@@ -8,7 +8,7 @@ import { resetTimer, resetTimerCounter } from "./timer.js"
 import { setClickMenu } from "../menu/setClickMenu.js"
 import { setClickSetting } from "./setClickSetting.js"
 import { setClickService } from "../service/serviceReview.js"
-import { fetchStart } from "../model/sqlupdate.js"
+import { sqlStart } from "../model/sqlupdate.js"
 import { sortable } from "./sort.js"
 import { clearSelection } from "./clearSelection.js"
 import { fillall } from "../view/fill.js"
@@ -21,7 +21,7 @@ import { htmlStafflist, htmlEquipment, htmldivRecord } from "../view/html.js"
 
 // For staff & residents with login id / password from Get_staff_detail
 export function userStaff() {
-	fetchStart().then(response => {
+	sqlStart().then(response => {
 		typeof response === "object"
 		? success(response)
 		: failed(response)

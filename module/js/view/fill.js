@@ -27,9 +27,6 @@ export function fillall(book, table, start, until) {
 		q = book.findIndex(e => e.opdate >= start),
 		x = book.findIndex(e => e.opdate >= LARGESTDATE)
 
-	// truncate former cases
-  book = book.slice(q)
-
   // Get rid of LARGESTDATE cases
 	// Consult cases have no LARGESTDATE, findIndex returns x = -1
 	if (x >= 0) {
@@ -40,9 +37,9 @@ export function fillall(book, table, start, until) {
   // No case
   if (!blen) { book.push({"opdate" : START}) }
 
-	book.forEach(bookq => {	
+	for (q; q < blen; q++) {
 		// step over each day that is not in QBOOK
-		while (date < bookq.opdate)
+		while (date < book[q].opdate)
 		{
 			if (date !== madedate)
 			{
@@ -67,9 +64,9 @@ export function fillall(book, table, start, until) {
 			}
 		}
 		makenextrow(table, date)
-		filldata(bookq, rows[table.rows.length-1])
+		filldata(book[q], rows[table.rows.length-1])
 		madedate = date
-	})
+	}
 
 	while (date < until)
 	{
@@ -131,7 +128,6 @@ export function filldata(q, row)
 	cells[TREATMENT].innerHTML = q.treatment
 	cells[EQUIPMENT].innerHTML = viewEquip(q.equipment)
 	cells[CONTACT].innerHTML = q.contact
-	cells[QN].innerHTML = q.qn
 }
 
 export function staffqueue(staffname) {
@@ -231,7 +227,6 @@ jQuery.fn.extend({
 		cells[TREATMENT].innerHTML = q.treatment
 		cells[EQUIPMENT].innerHTML = viewEquip(q.equipment)
 		cells[CONTACT].innerHTML = q.contact
-		cells[QN].innerHTML = q.qn
 	}
 })
 

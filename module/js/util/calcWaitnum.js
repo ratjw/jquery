@@ -7,8 +7,8 @@ import { isConsultsTbl } from "./util.js"
 // Consults cases have negative waitnum
 export function calcWaitnum(thisOpdate, prevrow, nextrow)
 {
-  let prevWaitNum = Number(prevrow.waitnum) || 0,
-      nextWaitNum = Number(nextrow.waitnum) || 0,
+  let prevWaitNum = Number(prevrow.dataset.waitnum) || 0,
+      nextWaitNum = Number(nextrow.dataset.waitnum) || 0,
 
   prevOpdate = getOpdate(prevrow.firstElementChild.innerHTML),
   nextOpdate = getOpdate(nextrow.firstElementChild.innerHTML),

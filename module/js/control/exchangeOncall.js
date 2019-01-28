@@ -1,7 +1,7 @@
 
 import { OPDATE } from "../model/const.js"
 import { clearEditcell } from "./edit.js"
-import { fetchChangeOncall } from "../model/sqlupdate.js"
+import { sqlChangeOncall } from "../model/sqlupdate.js"
 import { getOpdate } from "../util/date.js"
 import { setONCALL } from "../util/variables.js"
 import { reposition, menustyle, Alert } from "../util/util.js"
@@ -31,7 +31,7 @@ export function exchangeOncall(pointing)
 
 function changeOncall(pointing, opdate, staffname)
 {
-  fetchChangeOncall(pointing, opdate, staffname).then(response => {
+  sqlChangeOncall(pointing, opdate, staffname).then(response => {
     if (typeof response === "object") {
       pointing.innerHTML = htmlwrap(staffname)
       setONCALL(response)

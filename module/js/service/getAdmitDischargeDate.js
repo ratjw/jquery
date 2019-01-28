@@ -1,13 +1,13 @@
 
 import { ADMISSIONSV, ADMITSV, DISCHARGESV } from "../model/const.js"
-import { fetchGetIPD } from "../model/sqlservice.js"
+import { sqlGetIPD } from "../model/sqlservice.js"
 import { updateBOOK } from "../util/variables.js"
 import { setSERVICE, SERVICE } from "./setSERVICE.js"
 import { putThdate } from "../util/date.js"
 
 export function getAdmitDischargeDate() {
 
-	fetchGetIPD().then(response => {
+	sqlGetIPD().then(response => {
 		if (typeof response === "object") {
 			updateBOOK(response)
 			setSERVICE(response.SERVICE)

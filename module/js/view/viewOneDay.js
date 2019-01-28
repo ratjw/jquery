@@ -25,7 +25,7 @@ export function viewOneDay(opdate) {
     }
     while (opdateTblRows.length < bookRows) {
       let clone = opdateTblRows[0].cloneNode(true)
-      clone.opdate = opdate
+      clone.dataset.opdate = opdate
       opdateTblRows[0].after(clone)
       opdateTblRows = getTableRowsByDate(opdate)
     }

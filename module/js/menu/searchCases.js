@@ -6,7 +6,7 @@ Search in sepific column   :
 Forgotten words            *
 */
 
-import { fetchSearchDB } from "../model/sqlsearch.js"
+import { sqlSearchDB } from "../model/sqlsearch.js"
 import { Alert, reposition, menustyle } from "../util/util.js"
 import { viewSearchDB } from "../view/viewSearchDB.js"
 import { clearAllEditing } from "../control/clearAllEditing.js"
@@ -79,7 +79,7 @@ export function searchDB()
   search += (search && staffname ? ", " : "") + staffname
   search += (search && others ? ", " : "") + others
   if (search) {
-	fetchSearchDB(hn, staffname, others).then(response => {
+	sqlSearchDB(hn, staffname, others).then(response => {
 		typeof response === "object"
 		? viewSearchDB(response, search)
 		: Alert("Search: " + search, response)

@@ -82,7 +82,7 @@ export function operationToDisease(target)
   if (target.value === "0") {
     prevDisease = checkedDz.length ? checkedDz[0].value : ""
     Array.from(inputDisease).forEach(e => e.checked = false)
-  } else if (target.value === "1" && target.prevVal === "0") {
+  } else if (target.value > "0" && target.prevVal === "0") {
     Array.from(inputDisease).forEach(e => e.checked = e.value === prevDisease)
   }
 }

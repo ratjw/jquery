@@ -4,7 +4,7 @@ import { numDate, putThdate } from "../util/date.js"
 import { getTableRowsByDate } from "../util/rowsgetting.js"
 import { HOLIDAY, setHOLIDAY } from "../util/variables.js"
 import { holiday } from "../view/holiday.js"
-import { fetchSaveHoliday, fetchDelHoliday } from "../model/sqlsearch.js"
+import { sqlSaveHoliday, sqlDelHoliday } from "../model/sqlsearch.js"
 import { Alert } from "../util/util.js"
 
 const HOLIDAYENGTHAI = {
@@ -159,7 +159,7 @@ export function delHoliday(that)
 			rows = getTableRowsByDate(vdate),
 			holidayEng = getHolidayEng(vname)
 
-		fetchDelHoliday(vdate, holidayEng).then(response => {
+		sqlDelHoliday(vdate, holidayEng).then(response => {
 			let hasData = function () {
 				setHOLIDAY(response)
 				$(rows).each(function() {
@@ -184,7 +184,7 @@ function saveHoliday()
 
 	if (!vdate || !vname) { return }
 
-	fetchSaveHoliday(vdate, vname).then(response => {
+	sqlSaveHoliday(vdate, vname).then(response => {
 		let hasData = function () {
 			setHOLIDAY(response)
 			holidayInputBack($("#holidateth").closest("tr"))

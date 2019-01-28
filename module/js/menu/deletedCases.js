@@ -1,5 +1,5 @@
 
-import { fetchAllDeletedCases, fetchUndelete } from "../model/sqlsearch.js"
+import { sqlAllDeletedCases, sqlUndelete } from "../model/sqlsearch.js"
 import { getOpdate } from "../util/date.js"
 import { getBOOKrowByQN } from "../util/rowsgetting.js"
 import { BOOK, CONSULT, updateBOOK } from "../util/variables.js"
@@ -11,7 +11,7 @@ import { scrolltoThisCase } from "../view/scrolltoThisCase.js"
 
 export function deletedCases()
 {
-	fetchAllDeletedCases().then(response => {
+	sqlAllDeletedCases().then(response => {
 		if (typeof response === "object") {
 			viewDeletedCases(response)
 			$(".toUndelete").off("click").on("click", function () {
@@ -48,9 +48,9 @@ function toUndelete(thisdate, deleted)
       qn = $thiscase.eq(UNDELQN).html(),
 
       delrow = getBOOKrowByQN(deleted, qn),
-      waitnum = delrow.waitnum || 1,
-      oproom = delrow.oproom,
-      casenum = delrow.casenum,
+      waitnum = delrow.dataset.waitnum || 1,
+      oproom = delrow.dataset.oproom,
+      casenum = delrow.dataset.casenum,
 
       book = (waitnum < 0)? CONSULT : BOOK,
       allCases = sameDateRoomBookQN(book, opdate, oproom),
@@ -73,7 +73,7 @@ function toUndelete(thisdate, deleted)
 
 export function doUndel(allCases, opdate, oproom, staffname, qn, del) {
 
-	fetchUndelete(allCases, oproom, qn, del).then(response => {
+	sqlUndelete(allCases, oproom, qn, del).then(response => {
 		let hasData = function () {
 			updateBOOK(response)
 			viewOneDay(opdate)
@@ -94,7 +94,7 @@ function sameDateRoomBookQN(book, opdate, room)
 	if (!room) { return [] }
 
 	var sameRoom = book.filter(row => {
-		return row.opdate === opdate && Number(row.oproom) === Number(room);
+		return row.dataset.opdate === opdate && Number(row.dataset.oproom) === Number(room);
 	})
 	$.each(sameRoom, function(i) {
 		sameRoom[i] = this.qn

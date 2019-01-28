@@ -2,7 +2,7 @@
 import { QN } from "../model/const.js"
 import { updateBOOK } from "../util/variables.js"
 import { OLDCONTENT } from "../control/edit.js"
-import { fetchSaveContentQN } from "../model/sqlSaveContent.js"
+import { sqlSaveContentQN } from "../model/sqlSaveContent.js"
 import { viewSaveContentQN } from "../view/viewSaveContentQN.js"
 import { Alert } from "../util/util.js"
 
@@ -18,11 +18,10 @@ import { Alert } from "../util/util.js"
 // consults are not apparent on main table, no remote effect
 export function saveContentQN(pointed, column, newcontent)
 {
-	let $cells = $(pointed).closest('tr').children("td"),
-		qn = $cells[QN].innerHTML
+	let qn = pointed.closest('tr').dataset.qn
 
 	let doSaveContentQN = function () {
-		fetchSaveContentQN(column, newcontent, qn).then(response => {
+		sqlSaveContentQN(column, newcontent, qn).then(response => {
 			let hasData = function () {
 				updateBOOK(response)
 				viewSaveContentQN(pointed, column, OLDCONTENT)
@@ -37,7 +36,7 @@ export function saveContentQN(pointed, column, newcontent)
 		}).catch(error => {})
 	}
 /*	let undoSaveContentQN = function () {
-		fetchSaveContentQN(column, OLDCONTENT, qn).then(response => {
+		sqlSaveContentQN(column, OLDCONTENT, qn).then(response => {
 			let hasData = function () {
 				updateBOOK(response)
 				viewSaveContentQN(pointed, column, newcontent)

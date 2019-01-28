@@ -8,11 +8,11 @@ import { refillstaffqueue } from "./fill.js"
 import { getOpdate } from "../util/date.js"
 
 export function viewSaveContentNoQN(pointed, column) {
-	let tableID = $(pointed).closest("table").attr("id"),
-		$cells = $(pointed).closest('tr').children("td"),
-		opdate = getOpdate($cells[OPDATE].innerHTML),
-		staffname = $cells[STAFFNAME].innerHTML,
-		qn = $cells[QN].innerHTML,
+	let tableID = pointed.closest("table").id,
+		row = pointed.closest('tr'),
+		opdate = row.dataset.opdate,
+		staffname = row.dataset.staffname,
+		qn = row.dataset.qn,
 
 		// find qn of new case input in that row, either tbl or queuetbl
 		// fill qn in the blank QN
@@ -21,7 +21,7 @@ export function viewSaveContentNoQN(pointed, column) {
 	let onMaintable = function () {
 		// delete staffoncall
 		if (/(<([^>]+)>)/i.test(staffname)) {
-			$cells[STAFFNAME].innerHTML = ""
+			row.cells[STAFFNAME].innerHTML = ""
 		} else {
 			// Remote effect from editing on tbl to queuetbl
 			// Staffqueue is showing, re-render to have new case of this staffname
@@ -37,11 +37,11 @@ export function viewSaveContentNoQN(pointed, column) {
 		// consults are not apparent on tbl, no remote effect from editing on queuetbl
 		// Remote effect from editing on queuetbl to tbl
 		// view the entire day, not just refillAnotherTableCell
-		!isConsults() && viewOneDay(opdate)
+		if (!isConsults()) { viewOneDay(opdate) }
 	}
 
-	qn = Math.max.apply(Math, $.map(q => q.qn ))
-	$cells.eq(QN).html(qn)
+	qn = Math.max.apply(Math, book.map(q => q.qn))
+	row.dataset.qn = qn
 
 	tableID === 'tbl' ? onMaintable() : onStafftable()
 }

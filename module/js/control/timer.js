@@ -6,8 +6,8 @@ import {
 	POINTER, OLDCONTENT, getNewcontent, editcellLocation, renewEditcell
 } from "./edit.js"
 import { clearAllEditing } from "./clearAllEditing.js"
-import { fetchdoUpdate, fetchGetUpdate, fetchSaveOnChange } from "../model/sqlupdate.js"
-import { fetchGetUpdateService, fetchSaveOnChangeService } from "../model/sqlservice.js"
+import { sqldoUpdate, sqlGetUpdate, sqlSaveOnChange } from "../model/sqlupdate.js"
+import { sqlGetUpdateService, sqlSaveOnChangeService } from "../model/sqlservice.js"
 import { saveProfileService } from "../service/savePreviousCellService.js"
 import { setSERVICE } from "../service/setSERVICE.js"
 import { reViewService } from "../service/showService.js"
@@ -80,7 +80,7 @@ let onChange = function () {
 // timestamp is this client last save to server
 function doUpdate()
 {
-  fetchdoUpdate().then(response => {
+  sqldoUpdate().then(response => {
     if (typeof response === "object") {
       if (timestamp < response[0].timestamp) {
         getUpdate()
@@ -95,7 +95,7 @@ function doUpdate()
 function getUpdate()
 {
   if (dialogServiceShowing()) {
-    fetchGetUpdateService().then(response => {
+    sqlGetUpdateService().then(response => {
       if (typeof response === "object") {
         updateBOOK(response)
 		setSERVICE(response.SERVICE)
@@ -106,7 +106,7 @@ function getUpdate()
       }
     })
   }	else {
-    fetchGetUpdate().then(response => {
+    sqlGetUpdate().then(response => {
       if (typeof response === "object") {
         updateBOOK(response)
         viewGetUpdate()
@@ -151,7 +151,7 @@ function saveOnChange(POINTER, index, content, qn)
 
   if (!column) { return false }
 
-  fetchSaveOnChange(column, content, qn).then(response => {
+  sqlSaveOnChange(column, content, qn).then(response => {
     if (typeof response === "object") {
       updateBOOK(response)
     } else {
@@ -178,7 +178,7 @@ function saveOnChangeService(POINTER, index, content, qn)
   if (index === PROFILESV) { saveProfileService(POINTER) }
   if (!column) { return false }
 
-  fetchSaveOnChangeService(column, content, qn).then(response => {
+  sqlSaveOnChangeService(column, content, qn).then(response => {
     if (typeof response === "object") {
       updateBOOK(response)
     } else {

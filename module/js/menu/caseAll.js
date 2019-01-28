@@ -1,11 +1,11 @@
 
-import { fetchCaseAll } from "../model/sqlsearch.js"
+import { sqlCaseAll } from "../model/sqlsearch.js"
 import { Alert } from "../util/util.js"
 import { viewCaseAll } from "../view/viewCaseAll.js"
 
 // All cases (exclude the deleted ones)
 export function caseAll() {
-	fetchCaseAll().then(response => {
+	sqlCaseAll().then(response => {
 		typeof response === "object"
 		? viewCaseAll(response)
 		: Alert("caseAll", response)

@@ -1,32 +1,34 @@
 
 export function setRowData(row, q)
 {
-  row.opdate = q.opdate
-  row.waitnum = q.waitnum
-  row.theatre = q.theatre
-  row.oproom = q.oproom
-  row.optime = q.optime
-  row.casenum = q.casenum
-  row.hn = q.hn
-  row.staffname = q.staffname
-	row.diagnosis = q.diagnosis
-	row.treatment = q.treatment
-	row.contact = q.contact
-  row.qn = q.qn
+  row.dataset.opdate = q.opdate
+  row.dataset.waitnum = q.waitnum
+  row.dataset.theatre = q.theatre
+  row.dataset.oproom = q.oproom || ""
+  row.dataset.optime = q.optime
+  row.dataset.casenum = q.casenum || ""
+  row.dataset.staffname = q.staffname
+  row.dataset.hn = q.hn
+  row.dataset.patient = q.patient
+	row.dataset.diagnosis = q.diagnosis
+	row.dataset.treatment = q.treatment
+	row.dataset.contact = q.contact
+  row.dataset.qn = q.qn
 }
 
 export function blankRowData(row, opdate)
 {
-  row.opdate = opdate
-  row.waitnum = null
-  row.theatre = ""
-  row.oproom = null
-  row.optime = ""
-  row.casenum = null
-  row.hn = ""
-  row.staffname = ""
-	row.diagnosis = ""
-	row.treatment = ""
-	row.contact = ""
-  row.qn = ""
+  row.dataset.opdate = opdate
+  row.dataset.waitnum = ""
+  row.dataset.theatre = ""
+  row.dataset.oproom = ""
+  row.dataset.optime = ""
+  row.dataset.casenum = ""
+  row.dataset.staffname = ""
+  row.dataset.hn = ""
+  row.dataset.patient = ""
+	row.dataset.diagnosis = ""
+	row.dataset.treatment = ""
+	row.dataset.contact = ""
+  row.dataset.qn = ""
 }

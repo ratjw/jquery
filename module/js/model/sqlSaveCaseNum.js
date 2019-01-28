@@ -2,7 +2,7 @@
 import { postData, MYSQLIPHP } from "./fetch.js"
 import { USER } from "../main.js"
 
-export function fetchSaveCaseNum(allCases, casenum, qn)
+export function sqlSaveCaseNum(allCases, casenum, qn)
 {
 	let sql = "sqlReturnbook="
 

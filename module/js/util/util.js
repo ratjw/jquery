@@ -38,8 +38,8 @@ export function isConsultsTbl(tableID)
 
 export function getMaxQN(book)
 {
-	var qn = Math.max.apply(Math, $.map(book, function(row, i) {
-			return row.qn
+	var qn = Math.max.apply(Math, $.map(book, function(q, i) {
+			return q.qn
 		}))
 	return String(qn)
 }

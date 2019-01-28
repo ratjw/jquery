@@ -1,6 +1,6 @@
 
 import { HN } from "../model/const.js"
-import { fetchCaseHistory } from "../model/sqlsearch.js"
+import { sqlCaseHistory } from "../model/sqlsearch.js"
 import { Alert } from "../util/util.js"
 import { viewCaseHistory } from "../view/viewCaseHistory.js"
 
@@ -10,7 +10,7 @@ export function editHistory()
 		row = selected.closest('tr'),
 		hn = row.cells[HN].innerHTML
 
-	fetchCaseHistory(hn).then(response => {
+	sqlCaseHistory(hn).then(response => {
 		typeof response === "object"
 		? viewCaseHistory(row, hn, response)
 		: Alert("caseHistory", response)

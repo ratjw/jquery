@@ -7,16 +7,13 @@ import { getOpdate } from "../util/date.js"
 // Menu for all cases -> staffqueue, service, all deleted, search, readme
 export function oneRowMenu()
 {
-	let	$selected = $(".selected"),
-		tableID = $selected.closest('table').attr('id'),
-		$row = $selected.closest('tr'),
-		prevDate = $row.prev().find("td").eq(OPDATE).html() || "",
-		$cell = $row.find("td"),
-		opdateth = $cell.eq(OPDATE).html(),
-		opdate = getOpdate(opdateth),
-		staffname = $cell.eq(STAFFNAME).html(),
-		patient = $cell.eq(PATIENT).html(),
-		qn = $cell.eq(QN).html(),
+	let	selected = document.querySelector(".selected"),
+		row = selected.closest('tr'),
+		prevDate = row.previousElement.dataset.opdate,
+		opdate = row.dataset.opdate,
+		staffname = row.dataset.staffname,
+		patient = row.dataset.patient,
+		qn = row.dataset.qn,
 		notLARGE = (opdate !== LARGESTDATE)
 
 	enable(qn, "#addrow")
@@ -31,7 +28,7 @@ export function oneRowMenu()
 
 	enable(qn, "#history")
 
-	let Delete = qn || prevDate === opdateth
+	let Delete = qn || prevDate === opdate
 	if (Delete) {
 		$("#delcase").html("<b>Confirm Delete </b><br>" + patient)
 	}

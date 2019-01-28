@@ -3,7 +3,7 @@ import { UndoManager } from "../model/UndoManager.js"
 import {
 	OPDATE, THEATRE, OPROOM, STAFFNAME, QN, LARGESTDATE
 } from "../model/const.js"
-import { fetchPostponeCase } from "../model/sqlmove.js"
+import { sqlPostponeCase } from "../model/sqlmove.js"
 import { getOpdate } from "../util/date.js"
 import { sameDateRoomTableQNs } from "../util/rowsgetting.js"
 import { BOOK, updateBOOK } from "../util/variables.js"
@@ -18,11 +18,11 @@ export function postponeCase()
 	let	selected = document.querySelector(".selected"),
 		tableID = selected.closest('table').id,
 		row = selected.closest('tr'),
-		opdate = row.opdate,
-		oproom = row.oproom,
-		staffname = row.staffname,
-		qn = row.qn,
-		oldwaitnum = row.waitnum,
+		opdate = row.dataset.opdate,
+		oproom = row.dataset.oproom,
+		staffname = row.dataset.staffname,
+		qn = row.dataset.qn,
+		oldwaitnum = row.dataset.waitnum,
 		newwaitnum = getLargestWaitnum(staffname) + 1,
 		allCases = []
 
@@ -31,7 +31,7 @@ export function postponeCase()
 	}
 
 	let doPostponeCase = function (waitnum, thisdate) {
-		fetchPostponeCase(allCases, waitnum, thisdate, oproom, qn).then(response => {
+		sqlPostponeCase(allCases, waitnum, thisdate, oproom, qn).then(response => {
 			let hasData = function () {
 				updateBOOK(response)
 				viewPostponeCase(opdate, thisdate, staffname, qn)
@@ -60,9 +60,9 @@ export function postponeCase()
 // The second parameter (, 0) ensure a default value if arrayAfter .map is empty
 function getLargestWaitnum(staffname)
 {
-	let dateStaff = BOOK.filter(function(patient) {
-		return patient.staffname === staffname && patient.opdate === LARGESTDATE
+	let dateStaff = BOOK.filter(function(q) {
+		return (q.staffname === staffname) && (q.opdate === LARGESTDATE)
 	})
 
-	return Math.max(...dateStaff.map(patient => patient.waitnum), 0)
+	return Math.max(...dateStaff.map(q => q.waitnum), 0)
 }

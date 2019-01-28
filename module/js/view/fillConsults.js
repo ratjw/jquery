@@ -11,8 +11,8 @@ export function fillConsults()
   let tlen = rows.length
   let today = ISOdate(new Date())
   let lastopdate = rows[tlen-1].querySelector('th')
-       ? numDate(rows[tlen-2].cells[OPDATE].innerHTML)
-       : numDate(rows[tlen-1].cells[OPDATE].innerHTML)
+       ? rows[tlen-2].dataset.opdate
+       : rows[tlen-1].dataset.opdate
   let staffoncall = STAFF.filter(staff => (staff.oncall === "1"))
   let slen = staffoncall.length
   let nextrow = 1
@@ -38,7 +38,7 @@ export function fillConsults()
   index = index % slen
   while (dateoncall <= lastopdate) {
     oncallRow = findOncallRow(rows, nextrow, tlen, dateoncall)
-    if (oncallRow && !oncallRow.cells[QN].innerHTML) {
+    if (oncallRow && !oncallRow.dataset.qn) {
       oncallRow.cells[STAFFNAME].innerHTML = htmlwrap(staffoncall[index].staffname)
     }
     nextrow = oncallRow.rowIndex + 1
@@ -52,7 +52,7 @@ export function fillConsults()
     dateoncall = oncall.dateoncall
     if (dateoncall > today) {
       oncallRow = findOncallRow(rows, nextrow, tlen, dateoncall)
-      if (oncallRow && !oncallRow.cells[QN].innerHTML) {
+      if (oncallRow && !oncallRow.dataset.qn) {
         oncallRow.cells[STAFFNAME].innerHTML = htmlwrap(oncall.staffname)
       }
       nextrow = oncallRow.rowIndex + 1
@@ -62,10 +62,8 @@ export function fillConsults()
 
 function findOncallRow(rows, nextrow, tlen, dateoncall)
 {
-  let opdateth = dateoncall && thDate(dateoncall)
-
   for (let i = nextrow; i < tlen; i++) {
-    if (rows[i].cells[OPDATE].innerHTML === opdateth) {
+    if (rows[i].dataset.opdate === dateoncall) {
       return rows[i]
     }
   }

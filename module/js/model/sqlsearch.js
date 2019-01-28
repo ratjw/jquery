@@ -6,13 +6,13 @@ import { STAFF } from "../util/variables.js"
 
 const SEARCH	= "php/search.php"
 
-export function fetchSearchDB(hn, staffname, others) {
+export function sqlSearchDB(hn, staffname, others) {
 	let sql = `hn=${hn}&staffname=${staffname}&others=${others}`
 
 	return postData(SEARCH, sql)
 }
 
-export function fetchUndelete(allCases, oproom, qn, del) {
+export function sqlUndelete(allCases, oproom, qn, del) {
   let sql = "sqlReturnbook="
 
   allCases.forEach((item, i) => {
@@ -28,7 +28,7 @@ export function fetchUndelete(allCases, oproom, qn, del) {
   return postData(MYSQLIPHP, sql);
 }
 
-export function fetchAllDeletedCases() {
+export function sqlAllDeletedCases() {
   let sql = `sqlReturnData=SELECT editdatetime, b.* 
                 FROM book b 
                     LEFT JOIN bookhistory bh ON b.qn = bh.qn 
@@ -40,13 +40,13 @@ export function fetchAllDeletedCases() {
   return postData(MYSQLIPHP, sql)
 }
 
-export function fetchCaseAll() {
+export function sqlCaseAll() {
 	let sql = `sqlReturnData=SELECT * FROM book WHERE deleted=0 ORDER BY opdate;`
 
 	return postData(MYSQLIPHP, sql)
 }
 
-export function fetchCaseHistory(hn) {
+export function sqlCaseHistory(hn) {
 	let sql = `sqlReturnData=SELECT * FROM bookhistory 
 				WHERE qn in (SELECT qn FROM book WHERE hn='${hn}') 
 				ORDER BY editdatetime DESC;`
@@ -55,7 +55,7 @@ export function fetchCaseHistory(hn) {
 }
 
 // In database, not actually delete the case but SET deleted=1
-export function fetchDeleteCase(allCases, oproom, qn, del) {
+export function sqlDeleteCase(allCases, oproom, qn, del) {
 	let sql = `sqlReturnbook=UPDATE book SET deleted=${del},editor='${USER}' WHERE qn=${qn};`
 
 	if (allCases.length && oproom) {
@@ -66,7 +66,7 @@ export function fetchDeleteCase(allCases, oproom, qn, del) {
 	return postData(MYSQLIPHP, sql)
 }
 
-export function fetchDoadddata()
+export function sqlDoadddata()
 {
 	let vname = document.getElementById("sname").value
 	let vspecialty = document.getElementById("specialty").value
@@ -78,7 +78,7 @@ export function fetchDoadddata()
 	return postData(MYSQLIPHP, sql)
 }
 
-export function fetchDoupdatedata()
+export function sqlDoupdatedata()
 {
     let vname = document.getElementById("sname").value
     let vspecialty = document.getElementById("specialty").value
@@ -90,7 +90,7 @@ export function fetchDoupdatedata()
 	return postData(MYSQLIPHP, sql)
 }
 
-export function fetchDodeletedata()
+export function sqlDodeletedata()
 {
     let vsnumber = document.getElementById("snumber").value
 	let sql = `sqlReturnStaff=DELETE FROM staff WHERE number=${vsnumber};`
@@ -98,7 +98,7 @@ export function fetchDodeletedata()
 	return postData(MYSQLIPHP, sql)
 }
 
-export function fetchSaveHoliday(vdate, vname)
+export function sqlSaveHoliday(vdate, vname)
 {
   let sql=`sqlReturnData=INSERT INTO holiday (holidate,dayname)
 							VALUES('${vdate}','${vname}');
@@ -107,7 +107,7 @@ export function fetchSaveHoliday(vdate, vname)
   return postData(MYSQLIPHP, sql)
 }
 
-export function fetchDelHoliday(vdate, holidayEng)
+export function sqlDelHoliday(vdate, holidayEng)
 {
   let sql=`sqlReturnData=DELETE FROM holiday
 						  WHERE holidate='${vdate}' AND dayname='${holidayEng}');

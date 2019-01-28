@@ -1,7 +1,7 @@
 
 import { OPDATE, THEATRE, OPROOM, QN } from "../model/const.js"
 import { OLDCONTENT, clearEditcell } from "../control/edit.js"
-import { fetchSaveCaseNum } from "../model/sqlSaveCaseNum.js"
+import { sqlSaveCaseNum } from "../model/sqlSaveCaseNum.js"
 import { getOpdate } from "../util/date.js"
 import { sameDateRoomTableQNs } from "../util/rowsgetting.js"
 import { updateBOOK } from "../util/variables.js"
@@ -13,8 +13,8 @@ import { UndoManager } from "../model/UndoManager.js"
 export function saveCaseNum(pointed, newcontent)
 {
 	let row = pointed.closest("tr"),
-		opdate = row.opdate,
-		qn = row.qn,
+		opdate = row.dataset.opdate,
+		qn = row.dataset.qn,
 		allCases = []
 
 	// must have oproom, if no, can't be clicked
@@ -22,7 +22,7 @@ export function saveCaseNum(pointed, newcontent)
 	allCases = allCases.filter(e => e !== qn)
 
 	let doSaveCaseNum = function() {
-		fetchSaveCaseNum(allCases, newcontent, qn).then(response => {
+		sqlSaveCaseNum(allCases, newcontent, qn).then(response => {
 			let hasData = function () {
 				updateBOOK(response)
 				viewOneDay(opdate)
@@ -39,7 +39,7 @@ export function saveCaseNum(pointed, newcontent)
 		}).catch(error => {})
 	}
 	let undoSaveCaseNum = function() {
-		fetchSaveCaseNum(allCases, OLDCONTENT, qn).then(response => {
+		sqlSaveCaseNum(allCases, OLDCONTENT, qn).then(response => {
 			let hasData = function () {
 				updateBOOK(response)
 				viewOneDay(opdate)

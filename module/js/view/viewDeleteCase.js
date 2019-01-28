@@ -9,11 +9,11 @@ import { blankRowData } from "../model/rowdata.js"
 
 export function viewDeleteCase(row) {
   let tableID = row.closest('table').id
-  let opdate = row.opdate
+  let opdate = row.dataset.opdate
 
   viewOneDay(opdate)
   if (tableID === "tbl") {
-    viewSplit(row.staffname)
+    viewSplit(row.dataset.staffname)
   } else if (isConsults()) {
     delRow(row, opdate)
   } else {

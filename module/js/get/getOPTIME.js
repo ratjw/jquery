@@ -11,7 +11,7 @@ export function getOPTIME(pointing)
 
 
 	// no case
-	if (!pointing.parentElement.qn) { return }
+	if (!pointing.parentElement.dataset.qn) { return }
 
 	createEditcell(pointing)
 	editcell.style.width = "65px"

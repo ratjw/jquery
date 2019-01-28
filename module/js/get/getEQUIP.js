@@ -2,7 +2,7 @@
 import { EQUIPMENT, QN } from "../model/const.js"
 import { clearEditcell } from "../control/edit.js"
 import { USER } from "../main.js"
-import { fetchGetEquip, fetchSaveEquip, fetchCancelAllEquip } from "../model/sqlGetEquip.js"
+import { sqlGetEquip, sqlSaveEquip, sqlCancelAllEquip } from "../model/sqlGetEquip.js"
 import { putAgeOpdate, putThdate } from "../util/date.js"
 import { getBOOKrowByQN, getTableRowByQN } from "../util/rowsgetting.js"
 import { BOOK, CONSULT, updateBOOK } from "../util/variables.js"
@@ -18,7 +18,7 @@ let bookqEquip,
 
 export function getEQUIP(pointing)
 {
-	let qn = pointing.closest('tr').cells[QN].innerHTML
+	let qn = pointing.closest('tr').dataset.qn
 
 	if (!qn) { return }
 
@@ -159,7 +159,7 @@ function clearShunt()
 
 function getEditedBy()
 {
-	fetchGetEquip(thisqn).then(response => {
+	sqlGetEquip(thisqn).then(response => {
 		let hasData = function () {
 			let Editedby = ""
 			$.each(response, function(key, val) {
@@ -215,11 +215,11 @@ let Checklistequip = function () {
 
 	// escape the \ (escape) and ' (single quote) for sql string, not for JSON
 	equipment = equipment.replace(/\\/g,"\\\\").replace(/'/g,"\\'")
-	fetchSaveEquip(equipment, thisqn).then(response => {
+	sqlSaveEquip(equipment, thisqn).then(response => {
 		let showup = function () {
 			updateBOOK(response)
 			let row = getTableRowByQN("tbl", thisqn)
-			$(row).find("td").eq(EQUIPMENT).html(viewEquipJSON(equipJSON))
+			row.querySelectorAll("td")[EQUIPMENT].innerHTML = viewEquipJSON(equipJSON)
 			$dialogEquip.dialog('close')
 		}
 		let rollback = function () {
@@ -243,7 +243,7 @@ let Checklistequip = function () {
 
 function cancelAllEquip()
 {
-	fetchCancelAllEquip(thisqn).then(response => {
+	sqlCancelAllEquip(thisqn).then(response => {
 		let hasData = function () {
 			updateBOOK(response)
 			delelteAllEquip(response)

@@ -1,5 +1,5 @@
 
-import { fetchGetServiceOneMonth } from "../model/sqlservice.js"
+import { sqlGetServiceOneMonth } from "../model/sqlservice.js"
 import { showService } from "./showService.js"
 import { setSERVICE, setfromDate, settoDate } from "./setSERVICE.js"
 import { showReportToDept } from "./showReportToDept.js"
@@ -25,7 +25,7 @@ export function oneMonth(begin)
 	setfromDate(begin)
 	settoDate($.datepicker.formatDate("yy-mm-dd", end))
 
-	fetchGetServiceOneMonth().then(response => {
+	sqlGetServiceOneMonth().then(response => {
 		if (typeof response === "object") {
 			setSERVICE(response)
 			showService()
