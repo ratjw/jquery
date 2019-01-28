@@ -111,12 +111,16 @@ let keyin = function (evt, keycode) {
 let mainTable9 = function (evt, editable, Shift) {
 	clearMenu()
 	savePreviousCell()
-	let thiscell = Shift
-			? findPrevcell(editable, POINTER)
-			: findNextcell(editable, POINTER)
-	thiscell
-		? editPresentCell(evt, thiscell)
-		: clearEditcell()
+	if (!POINTER || POINTER.cellIndex > 7) {
+    let thiscell = Shift
+        ? findPrevcell(editable, POINTER)
+        : findNextcell(editable, POINTER)
+    thiscell
+      ? editPresentCell(evt, thiscell)
+      : clearEditcell()
+	} else {
+		clearEditcell()
+	}
 }
 
 let serviceTable9 = function (evt, editable, Shift) {
@@ -133,10 +137,14 @@ let mainTable13 = function (evt, editable, Shift, Ctrl) {
 	clearMenu()
 	if (Shift || Ctrl) { return }
 	savePreviousCell()
-	let thiscell = findNextRow(editable, POINTER)
-	thiscell && !$("#spin").is(":visible")
-		? editPresentCell(evt, thiscell)
-		: clearEditcell()
+	if (!POINTER || POINTER.cellIndex > 7) {
+    let thiscell = findNextRow(editable, POINTER)
+    thiscell && !$("#spin").is(":visible")
+      ? editPresentCell(evt, thiscell)
+      : clearEditcell()
+	} else {
+		clearEditcell()
+	}
 }
 
 let serviceTable13 = function (evt, editable, Shift, Ctrl) {

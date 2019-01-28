@@ -135,22 +135,23 @@ function wrapperEvent()
     if ($(target).closest('#cssmenu').length) {
       return
     }
+
     if ($stafflist.is(":visible")) {
       if (!$(target).closest('#stafflist').length) {
         $stafflist.hide();
         clearEditcell()
       }
     }
+
     if (target.nodeName === "P") {
       target = target.closest('td')
-    }
-    else if (target.nodeName === "IMG") {
+    } else if (target.nodeName === "IMG") {
       target = target.closest("td")
     }
-    else if (target.nodeName === "TD") {
+
+    if (target.nodeName === "TD") {
       clicktable(event, target)
-    }
-    else {
+    } else {
       clearAllEditing()
     }
 

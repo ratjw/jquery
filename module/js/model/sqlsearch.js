@@ -1,6 +1,6 @@
 
 import { postData, MYSQLIPHP } from "./fetch.js"
-import { updateCasenum, sqlCaseNum } from "./sqlsavedata.js"
+import { updateCasenum, sqlCaseNum } from "./sqlSaveCaseNum.js"
 import { USER } from "../main.js"
 import { STAFF } from "../util/variables.js"
 

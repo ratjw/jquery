@@ -94,7 +94,7 @@ let	wanting = {...waiting},
 		fetchMoveCaseHN(pointed, waiting, wanting).then(response => {
 			let hasData = function () {
 				updateBOOK(response)
-				viewMoveCaseHN(tableID, qn, cells, waiting.opdate)
+				viewMoveCaseHN(tableID, qn, row, waiting.opdate)
 			}
 			let noData = function () {
 				Alert("saveCaseHN", response)
@@ -113,7 +113,7 @@ let	wanting = {...waiting},
 		fetchCopyCaseHN(pointed, waiting, wanting).then(response => {
 			let hasData = function () {
 				updateBOOK(response)
-				viewCopyCaseHN(tableID, qn, cells)
+				viewCopyCaseHN(tableID, qn, row)
 			}
 			let noData = function () {
 				Alert("saveCaseHN", response)

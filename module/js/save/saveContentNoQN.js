@@ -1,6 +1,6 @@
 
 import { updateBOOK } from "../util/variables.js"
-import { fetchSaveContentNoQN } from "../model/sqlsavedata.js"
+import { fetchSaveContentNoQN } from "../model/sqlSaveContent.js"
 import { viewSaveContentNoQN } from "../view/viewSaveContentNoQN.js"
 import { OLDCONTENT } from "../control/edit.js"
 import { Alert } from "../util/util.js"

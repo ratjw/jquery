@@ -7,36 +7,34 @@ import { isConsults } from "../util/util.js"
 import { showStaffOnCall } from "./fillConsults.js"
 import { blankRowData } from "../model/rowdata.js"
 
-export function viewDeleteCase(tableID, row) {
-	let opdate = row.opdate
-  let table = document.getElementById(tableID)
+export function viewDeleteCase(row) {
+  let tableID = row.closest('table').id
+  let opdate = row.opdate
 
-	if (tableID === "tbl") {
-    viewOneDay(opdate)
+  viewOneDay(opdate)
+  if (tableID === "tbl") {
     viewSplit(row.staffname)
   } else if (isConsults()) {
     delRow(row, opdate)
   } else {
-    table.deleteRow(row.rowIndex)
+    row.remove()
   }
 }
 
 let delRow = function (row, opdate) {
-	let prevDate = row.previousElementSibling.opdate,
-		nextDate = row.nextElementSibling.opdate,
+  let prevDate = row.previousElementSibling.opdate,
+    nextDate = row.nextElementSibling.opdate,
     table = row.closest('table'),
     index = row.rowIndex,
     lastrow = table.rows.length === (index + 1)
 
-	if (prevDate === opdate || nextDate === opdate || lastrow) {
-			table.deleteRow()
-	} else {
-    let cells = Array.from(row.children)
-
-    cells.filter(e => e !== row.firstElementChild).forEach(e => e.innerHTML = "")
-		row.cells[HN].classList.remove("pacs")
-		row.cells[PATIENT].classList.remove("upload")
-		showStaffOnCall(opdate)
+  if ((prevDate === opdate) || (nextDate === opdate) || lastrow) {
+    row.remove()
+  } else {
+	  Array.from(row.querySelectorAll("td:not(:first-child)")).forEach(e => e.innerHTML = "")
+    row.cells[HN].classList.remove("pacs")
+    row.cells[PATIENT].classList.remove("upload")
+    showStaffOnCall(opdate)
     blankRowData(row, opdate)
-	}
+  }
 }

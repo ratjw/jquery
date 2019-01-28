@@ -18,38 +18,25 @@ export function getBOOKRowsByDate(book, opdate)
 }
 
 // main table (#tbl) only
-export function getTableRowsByDate(opdateth)
+export function getTableRowsByDate(opdate)
 {
-	if (!opdateth) { return [] }
 	return Array.from(document.querySelectorAll("#tbl tr"))
-            .filter(e => e.cells[OPDATE].innerHTML === opdateth)
-}
-
-export function sameDateRoomBOOKQNs(book, row)
-{
-	return book.filter(q => {
-		return q.opdate === row.opdate
-			 &&	q.theatre === row.theatre
-			 &&	q.oproom === row.oproom
-	}).map(e => e.qn)
+            .filter(e => e.opdate === opdate)
 }
 
 // main table (#tbl) only
+// remove empty value
 export function sameDateRoomTableQNs(row)
+{
+	return sameDateRoomTableRows(row).map(e => e.qn).filter(e => e)
+}
+
+// main table (#tbl) only
+export function sameDateRoomTableRows(row)
 {
 	return Array.from(document.querySelectorAll('#tbl tr')).filter(e => {
 		return e.opdate === row.opdate
 			&& e.theatre === row.theatre
 			&& e.oproom === row.oproom;
-	}).map(e => e.qn).filter(e => e)
-  // remove empty value
-}
-
-export function sameDateRoomBOOKRows(book, row)
-{
-	return book.filter(q => {
-		return q.opdate === row.opdate
-			 &&	q.theatre === row.theatre
-			 &&	q.oproom === row.oproom
 	})
 }

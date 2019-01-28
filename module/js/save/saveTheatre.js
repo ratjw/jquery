@@ -1,6 +1,6 @@
 
 import { OPDATE, THEATRE, OPROOM, CASENUM, QN } from "../model/const.js"
-import { fetchSaveTheatre } from "../model/sqlsavedata.js"
+import { sqlSaveTheatre } from "../model/sqlSaveTheatre.js"
 import { getOpdate } from "../util/date.js"
 import { sameDateRoomTableQNs } from "../util/rowsgetting.js"
 import { updateBOOK } from "../util/variables.js"
@@ -12,24 +12,25 @@ export function saveTheatre(pointed, newcontent)
 {
 	let	row = pointed.closest("tr"),
 		opdate = row.opdate,
-		theatre = row.theatre,
 		oproom = row.oproom,
 		casenum = row.casenum,
 		qn = row.qn,
 		allOldCases = [],
 		allNewCases = []
 
-	allOldCases = sameDateRoomTableQNs(opdate, oproom, theatre)
+	allOldCases = sameDateRoomTableQNs(row)
 	allOldCases = allOldCases.filter(e => e !== qn)
 
-	allNewCases = sameDateRoomTableQNs(opdate, oproom, newcontent)
+	row.theatre = newcontent
+  allNewCases = sameDateRoomTableQNs(row)
+  allNewCases.splice(allNewCases.indexOf(qn), 1)
 	if (casenum) {
 		allNewCases.splice(casenum-1, 0, qn)
 	} else {
 		allNewCases.push(qn)
 	}
 
-	fetchSaveTheatre(allOldCases, allNewCases, newcontent, oproom, qn).then(response => {
+	sqlSaveTheatre(allOldCases, allNewCases, newcontent, oproom, qn).then(response => {
 		let hasData = function () {
 			updateBOOK(response)
 			viewOneDay(opdate)

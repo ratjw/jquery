@@ -1,7 +1,7 @@
 
 import { postData, MYSQLIPHP } from "./fetch.js"
 import { USER } from "../main.js"
-import { updateCasenum, sqlCaseNum } from "./sqlsavedata.js"
+import { updateCasenum, sqlCaseNum } from "./sqlSaveCaseNum.js"
 
 export function fetchPostponeCase(allCases, waitnum, thisdate, oproom, qn) {
 	let sql = `sqlReturnbook=UPDATE book SET opdate='${thisdate}',

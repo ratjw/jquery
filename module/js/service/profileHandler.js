@@ -4,8 +4,8 @@ import { showInputColor, operationToDisease } from "./clickProfile.js"
 
 export function profileHandler()
 {
-  // save number radios input before changed
-  // to show prevDisease when operated is 1 from 0, not from other number
+  // before radio input value changed, save what the number it change from  
+  // when operated is 1, show prevDisease if changed from 0, not from other number
   $('#servicetbl input[type=number]').on('mousedown keydown mousewheel', function(e) {
     if (this.value) { this.prevVal = this.value }
   })

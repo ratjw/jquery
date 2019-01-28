@@ -2,7 +2,7 @@
 import { EQUIPMENT, QN } from "../model/const.js"
 import { clearEditcell } from "../control/edit.js"
 import { USER } from "../main.js"
-import { fetchGetEquip, fetchSaveEquip, fetchCancelAllEquip } from "../model/sqlsavedata.js"
+import { fetchGetEquip, fetchSaveEquip, fetchCancelAllEquip } from "../model/sqlGetEquip.js"
 import { putAgeOpdate, putThdate } from "../util/date.js"
 import { getBOOKrowByQN, getTableRowByQN } from "../util/rowsgetting.js"
 import { BOOK, CONSULT, updateBOOK } from "../util/variables.js"
@@ -178,12 +178,12 @@ function checkEquip()
 {
 	let equip = false
 
-	$( "#dialogEquip input:not(#copay), #dialogEquip textarea" ).each( function() {
-		if (this.checked) {
+  document.querySelectorAll('#dialogEquip input:not(#copay), #dialogEquip textarea').forEach(e => {
+		if (e.checked) {
 			equip = true
 			return false
-		} else if (this.type === "text" || this.type === "textarea") {
-			if (this.value) {
+		} else if (e.type === "text" || e.type === "textarea") {
+			if (e.value) {
 				equip = true
 				return false
 			}
@@ -198,12 +198,12 @@ let Checklistequip = function () {
 		equipment = "",
 		sql = ""
 
-	$( "#dialogEquip input, #dialogEquip textarea" ).each( function() {
-		if (this.checked) {
-			equipJSON[this.id] = "checked"
-		} else if (this.type === "text" || this.type === "textarea") {
-			if (this.value) {
-				equipJSON[this.id] = this.value
+  document.querySelectorAll('#dialogEquip input, #dialogEquip textarea').forEach(e => {
+		if (e.checked) {
+			equipJSON[e.id] = "checked"
+		} else if (e.type === "text" || e.type === "textarea") {
+			if (e.value) {
+				equipJSON[e.id] = e.value
 			}
 		}
 	})
@@ -230,10 +230,10 @@ let Checklistequip = function () {
 			$('#dialogEquip input').val('')
 			$('#dialogEquip textarea').val('')
 			bookqEquip &&
-				$.each(JSON.parse(bookqEquip), function(key, val) {
+				Object.entries(JSON.parse(bookqEquip)).each(([key, val]) => {
 					val === 'checked'
-					? $("#"+ key).prop("checked", true)	// radio and checkbox
-					: $("#"+ key).val(val)	// fill <input> && <textarea>
+					? document.getElementById("#"+ key).checked = true
+					: document.getElementById("#"+ key).value = val
 				});
 		};
 

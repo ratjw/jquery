@@ -1,7 +1,7 @@
 
 import { OPDATE, THEATRE, OPROOM, QN } from "../model/const.js"
 import { OLDCONTENT, clearEditcell } from "../control/edit.js"
-import { fetchSaveCaseNum } from "../model/sqlsavedata.js"
+import { fetchSaveCaseNum } from "../model/sqlSaveCaseNum.js"
 import { getOpdate } from "../util/date.js"
 import { sameDateRoomTableQNs } from "../util/rowsgetting.js"
 import { updateBOOK } from "../util/variables.js"

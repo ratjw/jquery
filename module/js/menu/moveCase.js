@@ -4,7 +4,7 @@ import { OPDATE, THEATRE, OPROOM, STAFFNAME, QN } from "../model/const.js"
 import { fetchmoveCase } from "../model/sqlmove.js"
 import { calcWaitnum } from "../util/calcWaitnum.js"
 import { getOpdate } from "../util/date.js"
-import { getBOOKrowByQN, sameDateRoomBOOKQNs } from "../util/rowsgetting.js"
+import { getBOOKrowByQN, sameDateRoomTableQNs } from "../util/rowsgetting.js"
 import { BOOK, updateBOOK } from "../util/variables.js"
 import { Alert } from "../util/util.js"
 import { viewmoveCase } from "../view/viewmoveCase.js"
@@ -51,8 +51,8 @@ function clickDate(event, selected, cell)
 		allNewCases,
 		thisindex
 
-  allOldCases = sameDateRoomBOOKQNs(BOOK, moverow)
-  allNewCases = sameDateRoomBOOKQNs(BOOK, thisrow)
+  allOldCases = sameDateRoomTableQNs(BOOK, moverow)
+  allNewCases = sameDateRoomTableQNs(BOOK, thisrow)
 
   // remove itself from old sameDateRoom
   allOldCases = allOldCases.filter(e => e !== moveqn)

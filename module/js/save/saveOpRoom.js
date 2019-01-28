@@ -1,9 +1,9 @@
 
 import { OPDATE, THEATRE, OPROOM, QN } from "../model/const.js"
 import { OLDCONTENT } from "../control/edit.js"
-import { fetchSaveOpRoom } from "../model/sqlsavedata.js"
+import { sqlSaveOpRoom } from "../model/sqlSaveOpRoom.js"
 import { getOpdate } from "../util/date.js"
-import { sameDateRoomTableQNs } from "../util/rowsgetting.js"
+import { sameDateRoomTableQNs, sameDateRoomTableRows } from "../util/rowsgetting.js"
 import { updateBOOK } from "../util/variables.js"
 import { Alert } from "../util/util.js"
 import { viewOneDay } from "../view/viewOneDay.js"
@@ -20,12 +20,22 @@ export function saveOpRoom(pointed, newcontent) {
 	allOldCases = allOldCases.filter(e => e !== qn)
 
   row.oproom = newcontent
-  let allNewCases = sameDateRoomTableQNs(row)
-  allNewCases.splice(allNewCases.indexOf(qn), 1)
-  allNewCases.push(qn)
+  let allNewCases = sameDateRoomTableRows(row)
+
+	let timeCases = allNewCases.filter(e => e.optime !== "")
+	let notimeCases = allNewCases.filter(e => e.optime === "")
+
+	timeCases = timeCases.sort((e1, e2) => {
+    if (e1.optime >= e2.optime) return 1
+    return -1
+  })
+
+	let timeQNs = Array.from(timeCases, e => e.qn)
+	let notimeQNs = Array.from(notimeCases, e => e.qn)
+	allNewCases = timeQNs.concat(notimeQNs)
 
 	let doSaveOpRoom = function() {
-		fetchSaveOpRoom(allOldCases, allNewCases, oproom, newcontent, qn).then(response => {
+		sqlSaveOpRoom(allOldCases, allNewCases, oproom, newcontent, qn).then(response => {
 			let hasData = function () {
 				updateBOOK(response)
 				viewOneDay(opdate)
@@ -40,7 +50,7 @@ export function saveOpRoom(pointed, newcontent) {
 
 
 	let undoSaveOpRoom = function() {
-		fetchSaveOpRoom(allNewCases, allOldCases, OLDCONTENT, qn).then(response => {
+		sqlSaveOpRoom(allNewCases, allOldCases, OLDCONTENT, qn).then(response => {
 			let hasData = function () {
 				updateBOOK(response)
 				viewOneDay(opdate)
