@@ -28,8 +28,8 @@
   `final` varchar(5000) NOT NULL DEFAULT '',
   `equipment` varchar(2000) NOT NULL DEFAULT '',
   `contact` varchar(1000) NOT NULL DEFAULT '',
-  `admit` date DEFAULT NULL,                          * web service via SOAP
-  `discharge` date DEFAULT NULL,                      * GetEncounterDetailByMRNENCTYPE($hn, "IMP")
+  `admit` date DEFAULT NULL,                          *\ web service via SOAP
+  `discharge` date DEFAULT NULL,                      */ GetEncounterDetailByMRNENCTYPE($hn, "IMP")
                                                           in getipd.php used by getAdmitDischargeDate
   `admitted` varchar(2) NOT NULL DEFAULT '',         * "", "0" "1", "2", ...
                                                           "" = IND (initially no data)

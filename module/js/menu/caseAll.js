@@ -1,5 +1,5 @@
 
-import { sqlCaseAll } from "../model/sqlsearch.js"
+import { sqlCaseAll } from "../model/sqlCaseAll.js"
 import { Alert } from "../util/util.js"
 import { viewCaseAll } from "../view/viewCaseAll.js"
 

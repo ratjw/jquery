@@ -1,6 +1,6 @@
 
 import { HN } from "../model/const.js"
-import { sqlCaseHistory } from "../model/sqlsearch.js"
+import { sqlCaseHistory } from "../model/sqlCaseHistory.js"
 import { Alert } from "../util/util.js"
 import { viewCaseHistory } from "../view/viewCaseHistory.js"
 

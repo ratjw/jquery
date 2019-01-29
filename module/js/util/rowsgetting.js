@@ -12,11 +12,6 @@ export function getTableRowByQN(tableID, qn)
 				.find(row => row.dataset.qn === qn)
 }
 
-export function getBOOKRowsByDate(book, opdate)
-{
-	return book.filter(q => q.opdate === opdate)
-}
-
 // main table (#tbl) only
 export function getTableRowsByDate(opdate)
 {

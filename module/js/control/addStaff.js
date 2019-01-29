@@ -1,6 +1,6 @@
 
 import { htmlStafflist } from "../view/html.js"
-import { sqlDoadddata, sqlDoupdatedata, sqlDodeletedata } from "../model/sqlsearch.js"
+import { sqlDoadddata, sqlDoupdatedata, sqlDodeletedata } from "../model/sqlDoadddata.js"
 import { updateBOOK, setSTAFF } from "../util/variables.js"
 import { Alert } from "../util/util.js"
 import { viewAddStaff } from "../view/viewAddStaff.js"

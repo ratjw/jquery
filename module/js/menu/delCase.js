@@ -1,14 +1,14 @@
 
 //import { UndoManager } from "../model/UndoManager.js"
 import { OPDATE, THEATRE, OPROOM, STAFFNAME, QN } from "../model/const.js"
-import { sqlDeleteCase } from "../model/sqlsearch.js"
+import { sqlDeleteCase } from "../model/sqlDeleteCase.js"
 import { getOpdate } from "../util/date.js"
 import { sameDateRoomTableQNs } from "../util/rowsgetting.js"
 import { updateBOOK } from "../util/variables.js"
 import { Alert } from "../util/util.js"
 import { viewDeleteCase } from "../view/viewDeleteCase.js"
 import { clearSelection } from "../control/clearSelection.js"
-import { doUndel } from "./deletedCases.js"
+import { doUndel } from "./allDeletedCases.js"
 import { addrow } from "./addnewrow.js"
 
 // not actually delete the case but set deleted = 1
@@ -52,7 +52,7 @@ export function delCase() {
 /*	UndoManager.add({
 		undo: function() {
 			if (qn) {
-				doUndel(allCases, opdate, staffname, qn, 0)
+				doUndel(allCases, opdate, oproom, staffname, qn, 0)
 			} else {
 				addrow($prevrow)
 			}

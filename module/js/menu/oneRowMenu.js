@@ -9,7 +9,7 @@ export function oneRowMenu()
 {
 	let	selected = document.querySelector(".selected"),
 		row = selected.closest('tr'),
-		prevDate = row.previousElement.dataset.opdate,
+		prevDate = row.previousElementSibling.dataset.opdate,
 		opdate = row.dataset.opdate,
 		staffname = row.dataset.staffname,
 		patient = row.dataset.patient,

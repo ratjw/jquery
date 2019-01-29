@@ -2,9 +2,10 @@
 import { rowDecoration } from "./rowDecoration.js"
 import { putThdate } from "../util/date.js"
 import { winWidth, winHeight, winResizeFix } from "../util/util.js"
+import { toUndelete } from "../menu/allDeletedCases.js"
 
 // Make dialog box dialogDeleted containing historytbl
-export function viewDeletedCases(deleted) {
+export function viewAllDeletedCases(deleted) {
   let $deletedtbl = $('#deletedtbl'),
     $deletedtr = $('#deletedcells tr')
 
@@ -34,10 +35,6 @@ export function viewDeletedCases(deleted) {
   })
   $deletedtbl.fixMe($dialogDeleted);
 
-  let $undelete = $("#undelete")
-  $undelete.hide()
-  $undelete.off("click").on("click", () => $('#undelete').hide() )
-
   //for resizing dialogs in landscape / portrait view
   $(window).on("resize", resizeDeleted )
 
@@ -56,16 +53,33 @@ export function viewDeletedCases(deleted) {
       $deletedtr.clone()
         .appendTo($deletedtbl.find('tbody'))
           .filldataDeleted(this)
-    });
+    })
+
+    // #undelete is the div to show span and closeclick
+    // #undel is the span >Undelete< for click receiver
+    // .toUndelete is attached to the first cell of every row
+    let $undelete = $("#undelete")
+    $undelete.hide()
+    $undelete.off("click").on("click", () => $undelete.hide() )
+    $(".toUndelete").off("click").on("click", function () {
+      toUndelete(this, deleted)
+    })
   }, 100)
 }
 
 jQuery.fn.extend({
 	filldataDeleted : function(q) {
-		let cells = this[0].cells
+		let row = this[0]
 
-		rowDecoration(this[0], q.opdate)
-		cells[0].classList.add("toUndelete")
+    row.dataset.waitnum = q.waitnum,
+    row.dataset.opdate = q.opdate,
+    row.dataset.oproom = q.oproom,
+    row.dataset.casenum = q.casenum,
+    row.dataset.staffname = q.staffname,
+    row.dataset.qn = q.qn,
+
+		rowDecoration(row, q.opdate)
+		row.cells[0].classList.add("toUndelete")
 
 ;		[	putThdate(q.opdate),
 			q.staffname,
@@ -77,6 +91,6 @@ jQuery.fn.extend({
 			q.editor,
 			q.editdatetime,
 			q.qn
-		].forEach((item, i) => { cells[i].innerHTML = item })
+		].forEach((item, i) => { row.cells[i].innerHTML = item })
 	}
 })

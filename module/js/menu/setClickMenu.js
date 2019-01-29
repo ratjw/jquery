@@ -1,7 +1,7 @@
 
 import { searchCases, searchDB } from "./searchCases.js"
 import { caseAll } from "./caseAll.js"
-import { deletedCases } from "./deletedCases.js"
+import { allDeletedCases } from "./allDeletedCases.js"
 import { readme } from "./readme.js"
 import { addnewrow } from "./addnewrow.js"
 import { postponeCase } from "./postponeCase.js"
@@ -14,7 +14,7 @@ import { sendtoLINE, toLINE } from "./sendtoLINE.js"
 let onclick = {
 	"clicksearchCases": searchCases,
 	"clickcaseAll": caseAll,
-	"clickdeletedCases": deletedCases,
+	"clickallDeletedCases": allDeletedCases,
 	"clickreadme": readme,
 	"addrow": addnewrow,
 	"postponecase": postponeCase,

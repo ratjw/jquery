@@ -2,7 +2,7 @@
 import { OPDATE, STAFFNAME, HN, PATIENT, LARGESTDATE } from "../model/const.js"
 import { putThdate } from "../util/date.js"
 import { rowDecoration } from "./rowDecoration.js"
-import { getBOOKRowsByDate, getTableRowsByDate } from "../util/rowsgetting.js"
+import { getTableRowsByDate } from "../util/rowsgetting.js"
 import { showStaffOnCall } from "./fillConsults.js"
 import { filldata } from "./fill.js"
 import { BOOK } from "../util/variables.js"
@@ -57,4 +57,9 @@ export function viewOneDay(opdate) {
     showStaffOnCall(opdate)
     blankRowData(row, opdate)
   }
+}
+
+function getBOOKRowsByDate(book, opdate)
+{
+	return book.filter(q => q.opdate === opdate)
 }

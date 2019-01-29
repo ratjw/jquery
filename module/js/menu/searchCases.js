@@ -6,7 +6,7 @@ Search in sepific column   :
 Forgotten words            *
 */
 
-import { sqlSearchDB } from "../model/sqlsearch.js"
+import { sqlSearchDB } from "../model/sqlSearchDB.js"
 import { Alert, reposition, menustyle } from "../util/util.js"
 import { viewSearchDB } from "../view/viewSearchDB.js"
 import { clearAllEditing } from "../control/clearAllEditing.js"

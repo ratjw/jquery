@@ -29,7 +29,6 @@ let	wanting = {...waiting},
 		dob = waiting.dob,
 
 		$dialogMoveCaseHN = $("#dialogMoveCaseHN"),
-		$movetbl = $("#movetbl"),
 		$movefrom = $("#movefrom").next(),
 		$moveto = $("#moveto").next(),
 		tblcells = $("#tblcells tr").html()
