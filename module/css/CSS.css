@@ -62,6 +62,13 @@ td img.imgpale {
 	filter: opacity(30%);
 }
 
+td.consult:nth-child(8)::before { 
+  color: #999999;
+  font-size: 12px;
+  content: 'Consult\A'attr(data-consult);
+  white-space: pre;
+}
+
 #queuewrapper {
 	float: right;
 }
@@ -74,8 +81,11 @@ td img.imgpale {
 	border-left: solid 2px snow;
 }
 
-#tbl.showColumn2 th:nth-child(2){ width: 30px; font-size: xx-small; }
-#tbl th:nth-child(2) { width: 0px; font-size: 0px; }
+#tbl.showColumn2 th:nth-child(2),
+#tbl.showColumn2 td:nth-child(2) { width: 30px; font-size: xx-small; }
+#tbl th:nth-child(2),
+#tbl td:nth-child(2) { width: 0px; font-size: 0px; }
+
 #tbl th:nth-child(3),
 #tbl th:nth-child(4),
 #tbl td:nth-child(4),
@@ -89,14 +99,14 @@ td img.imgpale {
 	font-size: xx-small;
   padding: 0px;
 }
-#tbl.showColumn2 td:nth-child(2) { width: 30px; font-size: xx-small; }
-#tbl td:nth-child(2) { width: 0px; font-size: 0px; }
+
+#queuetbl tr.nodate td:first-child::before {
+  font-size: 14px;
+  content: attr(data-waitnum);
+}
 
 #tbl td:nth-child(3),
-#tbl td:nth-child(5) {
-	font-size: 14px;
-  padding: 0px;
-}
+#tbl td:nth-child(5) { font-size: 14px; padding: 0px; }
 #tbl td:first-child,
 #tbl td:nth-child(6),
 #tbl td:nth-child(7),
@@ -157,9 +167,6 @@ td img.imgpale {
 
 #queuetbl {
 	margin-bottom: 100px;
-}
-#queuetbl tr.odd {
-	background-color: #EEEEFF;
 }
 
 #titlebar {
@@ -254,7 +261,6 @@ td img.imgpale {
 #queuetbl th:nth-child(3), #queuetbl td:nth-child(3),
 #queuetbl th:nth-child(4), #queuetbl td:nth-child(4),
 #queuetbl th:nth-child(5), #queuetbl td:nth-child(5),
-#queuetbl th:nth-child(6), #queuetbl td:nth-child(6),
 #dialogService, #servicecells,
 #monthpicker button.ui-datepicker-current,
 #monthpicker .ui-datepicker-calendar,
@@ -263,7 +269,7 @@ td img.imgpale {
 #dialogReview,
 #dialogEquip,
 #dialogAll, #allcells,
-#dialogDeleted, #deletedcells,
+#dialogAllDeleted, #deletedcells,
 #dialogHistory, #historycells,
 #dialogFind, #findcells,
 #dialogMoveCaseHN,
@@ -358,14 +364,19 @@ tr.marker {
 
 tr.moveCase {
 	animation: blink1 .5s step-end infinite alternate;
-	border: dashed 3px lightblue;
+	background-color: pink !important;
+}
+
+tr.copyCase {
+	animation: blink1 .5s step-end infinite alternate;
+	background-color: lightblue !important;
 }
 
 @keyframes blink2 { 
    50% { border-color: royalblue; } 
 }
 
-/* mark where moveCase will be pasted */
+/* mark where move/copy case will be pasted */
 tr.pasteDate {
 	animation: blink2 .5s step-end infinite alternate;
 	border-bottom: solid 3px skyblue;

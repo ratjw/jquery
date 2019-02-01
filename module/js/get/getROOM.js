@@ -5,7 +5,7 @@ import { spinNumber } from "../util/spinner.js"
 
 export function getROOM(pointing)
 {
-	let	patient = pointing.parentElement.lastElementChild.innerHTML
+	let	patient = pointing.parentElement.dataset.qn
 	let	editcell = document.getElementById("editcell")
 	let	html = '<input id="spin" type="number">'
 	let	oldval = pointing.innerHTML

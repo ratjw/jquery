@@ -1,6 +1,6 @@
 
 import { clearEditcell } from "./edit.js"
-import { clearMouseoverTR } from "../menu/moveCase.js"
+import { clearMouseoverTR } from "../util/util.js"
 import { clearSelection } from "./clearSelection.js"
 
 export function clearAllEditing()

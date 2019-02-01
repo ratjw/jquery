@@ -70,7 +70,14 @@ export function editcellEvent()
     reposition($editcell, "center", "center", POINTER)
   })
 }
-
+/*
+  document.querySelector("#editcell").dispatchEvent(new KeyboardEvent("keypress", {
+    keyCode: 13,
+    shiftKeyArg: true,
+    bubbles: true,
+    cancelable: true
+  }))
+*/
 // function declaration (definition ) : public
 // function expression (literal) : local
 

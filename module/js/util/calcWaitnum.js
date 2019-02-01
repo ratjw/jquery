@@ -12,16 +12,22 @@ export function calcWaitnum(thisOpdate, prevrow, nextrow)
 
   prevOpdate = getOpdate(prevrow.firstElementChild.innerHTML),
   nextOpdate = getOpdate(nextrow.firstElementChild.innerHTML),
-  tableID = prevrow.closest("table").id,
-  defaultWaitnum = (isConsultsTbl(tableID))? -1 : 1
+  defaultwaitnum = defaultWaitnum(prevrow)
 
 	return (prevOpdate !== thisOpdate && thisOpdate !== nextOpdate)
-			? defaultWaitnum
+			? defaultwaitnum
 			: (prevOpdate === thisOpdate && thisOpdate !== nextOpdate)
-			? prevWaitNum + defaultWaitnum
+			? prevWaitNum + defaultwaitnum
 			: (prevOpdate !== thisOpdate && thisOpdate === nextOpdate)
-			? nextWaitNum ? nextWaitNum / 2 : defaultWaitnum
+			? nextWaitNum ? nextWaitNum / 2 : defaultwaitnum
 			: nextWaitNum
 			? ((prevWaitNum + nextWaitNum) / 2)
-			: (prevWaitNum + defaultWaitnum)
+			: (prevWaitNum + defaultwaitnum)
+}
+
+export function defaultWaitnum(row)
+{
+  let tableID = row.closest('table')
+
+  return (isConsultsTbl(tableID))? -1 : 1
 }

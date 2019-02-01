@@ -6,7 +6,7 @@ import { getTableRowsByDate } from "../util/rowsgetting.js"
 import { showStaffOnCall } from "./fillConsults.js"
 import { filldata } from "./fill.js"
 import { BOOK } from "../util/variables.js"
-import { setRowData, blankRowData } from "../model/rowdata.js"
+import { blankRowData } from "../model/rowdata.js"
 
 // Used for main table ("tbl") only, no LARGESTDATE
 // others would refill entire table
@@ -32,14 +32,8 @@ export function viewOneDay(opdate) {
     opdateBOOKrows.forEach((e, i) => {
       let row = opdateTblRows[i]
       rowDecoration(row, e.opdate)
-      setRowData(row, e)
-      filldata(e, row)
+      filldata(row, e)
       staff = row.cells[STAFFNAME].innerHTML
-
-      // on call <p style..>staffname</p>
-      if (staff && /<p[^>]*>.*<\/p>/.test(staff)) {
-        row.cells[STAFFNAME].innerHTML = ""
-      }
     })
   } else {
     while (opdateTblRows.length > 1) {

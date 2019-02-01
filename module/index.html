@@ -20,7 +20,7 @@
 
 <table id="capture">
   <tbody>
-	 <tr>
+   <tr>
      <th>Date</th>
      <th>OR</th>
      <th>ห้อง</th>
@@ -33,7 +33,7 @@
      <th>Treatment</th>
      <th>Equipment</th>
      <th>Contact</th>
-	 </tr>
+   </tr>
   </tbody>
 </table>
 
@@ -41,14 +41,14 @@
   <div id="cssmenu">
    <ul>
     <li class="hassub">
-     <a nohref><span>Staff</span></a>
+     <a><span>Staff</span></a>
      <ul id="staffmenu"></ul>
     </li>
     <li>
-	 <a id="clickserviceReview"><span>Service Review</span></a>
+     <a id="clickserviceReview"><span>Service Review</span></a>
     </li>
     <li class="hassub">
-     <a nohref><span>Search</span></a>
+     <a><span>Search</span></a>
      <ul class="w170">
       <li>
        <a id="clicksearchCases"><span>Search Cases by Words</span></a>
@@ -61,33 +61,45 @@
       </li>
      </ul>
     </li>
-    <li class="floatright"><a id="clickreadme"><span>Readme</span></a></li>
-    <li class="floatright hassub"><a nohref><span>Setting</span></a>
-     <ul class="w120">
-      <li><a id="clickaddStaff"><span>Staff Setting</span></a></li>
-      <li><a id="clicksetHoliday"><span>Holiday Setting</span></a></li>
-     </ul>
+    <li id="addrow">
+      <a id="clickaddnewrow"><span>Add</span></a>
     </li>
-    <li id="addrow"><a id="clickaddnewrow"><span>Add</span></a></li>
     <li id="postpone">
-     <a nohref><span>Postpone</span></a>
+     <a><span>Postpone</span></a>
      <ul>
       <li>
-	    <a id="clickpostponeCase"><span id="postponecase"></span></a>
+        <a><span id="postponecase"></span></a>
       </li>
      </ul>
     </li>
     <li id="moveCase">
-	  <a id="clickmoveCase"><span>Move</span></a>
-	</li>
+      <a><span>Move</span></a>
+    </li>
+    <li id="copyCase">
+      <a><span>Copy</span></a>
+    </li>
     <li id="history">
      <a id="clickeditHistory"><span>Tracking</span></a>
     </li>
-    <li id="delete"><a nohref><span>Delete</span></a>
+    <li id="delete">
+     <a><span>Delete</span></a>
      <ul>
       <li>
-	    <a><span id="delcase"></span></a>
-	  </li>
+        <a><span id="delcase"></span></a>
+      </li>
+     </ul>
+    </li>
+    <li class="floatright">
+      <a id="clickreadme"><span>Readme</span></a>
+    </li>
+    <li class="floatright hassub"><a><span>Setting</span></a>
+     <ul class="w120">
+      <li>
+        <a id="clickaddStaff"><span>Staff Setting</span></a>
+      </li>
+      <li>
+        <a id="clicksetHoliday"><span>Holiday Setting</span></a>
+      </li>
      </ul>
     </li>
     <li id="EXCEL" class="floatright">
@@ -128,12 +140,26 @@
 
  <div id="queuewrapper">
   <div id="titlebar">
-	<span id="titlename"></span>
-	<span class="ui-icon ui-icon-closethick" id="clickclosequeue"></span>
+  <span id="titlename"></span>
+  <span class="ui-icon ui-icon-closethick" id="clickclosequeue"></span>
   </div> 
   <div id="queuecontainer">
     <table id="queuetbl">
      <tbody>
+      <tr>
+       <th>Date</th>
+       <th>OR</th>
+       <th>Rm</th>
+       <th>Time</th>
+       <th>№</th>
+       <th>Staff</th>
+       <th>HN</th>
+       <th>Patient</th>
+       <th>Diagnosis</th>
+       <th>Treatment</th>
+       <th>Equipment</th>
+       <th>Contact</th>
+      </tr>
      </tbody>
     </table>
   </div>
@@ -144,18 +170,18 @@
 <table id="tblcells">
  <tbody>
   <tr>
-	<td data-title="Date"></td>
-	<td data-title="Theatre"></td>
-	<td data-title="Room"></td>
-	<td data-title="Time"></td>
-	<td data-title="Case"></td>
-	<td data-title="Staff"></td>
-	<td data-title="HN"></td>
-	<td data-title="Patient"></td>
-	<td data-title="Diagnosis"></td>
-	<td data-title="Treatment"></td>
-	<td data-title="Equipment"></td>
-	<td data-title="Contact"></td>
+  <td data-title="Date"></td>
+  <td data-title="Theatre"></td>
+  <td data-title="Room"></td>
+  <td data-title="Time"></td>
+  <td data-title="Case"></td>
+  <td data-title="Staff"></td>
+  <td data-title="HN"></td>
+  <td data-title="Patient"></td>
+  <td data-title="Diagnosis"></td>
+  <td data-title="Treatment"></td>
+  <td data-title="Equipment"></td>
+  <td data-title="Contact"></td>
   </tr>
  </tbody>
 </table>
@@ -168,17 +194,17 @@
 <div id="dialogService">
   <div id="servicehead">
     <div>
-	  <span class="item">Admission : <span id="Admission"></span></span>
-	  <span class="item">Discharge : <span id="Discharge"></span></span>
-	  <span class="item">Operation : <span id="Operation"></span></span>
-	  <span class="item Morbidity">Morbidity : <span id="Morbidity"></span></span>
-	</div>
-	<div>
-	  <span class="item Readmission">Re-admission : <span id="Readmission"></span></span>
-	  <span class="item Infection">Infection SSI : <span id="Infection"></span></span>
-	  <span class="item Reoperation">Re-operation : <span id="Reoperation"></span></span>
-	  <span class="item Dead">Dead : <span id="Dead"></span></span>
-	</div>
+    <span class="item">Admission : <span id="Admission"></span></span>
+    <span class="item">Discharge : <span id="Discharge"></span></span>
+    <span class="item">Operation : <span id="Operation"></span></span>
+    <span class="item Morbidity">Morbidity : <span id="Morbidity"></span></span>
+  </div>
+  <div>
+    <span class="item Readmission">Re-admission : <span id="Readmission"></span></span>
+    <span class="item Infection">Infection SSI : <span id="Infection"></span></span>
+    <span class="item Reoperation">Re-operation : <span id="Reoperation"></span></span>
+    <span class="item Dead">Dead : <span id="Dead"></span></span>
+  </div>
   </div>
   <br>
   <button id="exportService">Export to xls</button>
@@ -198,10 +224,10 @@
      <th>Admission Status</th>
      <th>Final Status</th>
      <th>
-	    <img class="imgopen" src="css/pic/general/openpane.png">
-	    <img class="imgclose" src="css/pic/general/closepane.png">
-	    Profile
-	   </th>
+      <img class="imgopen" src="css/pic/general/openpane.png">
+      <img class="imgclose" src="css/pic/general/closepane.png">
+      Profile
+     </th>
      <th>Admit</th>
      <th>Date</th>
      <th>D/C</th>
@@ -281,14 +307,14 @@
    </tr>
    <tr>
      <td><b>etc.</b>
-		<small>(Lesionectomy, Tracheostomy, MVD, Change Batt., Sural n. Bx)</small>
-	 </td>
+    <small>(Lesionectomy, Tracheostomy, MVD, Change Batt., Sural n. Bx)</small>
+   </td>
      <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
    </tr>
    <tr class="notcount">
-	 <th colspan="9">
-		Non-surgical <small>(not included in total operation)</small>
-	 </th>
+   <th colspan="9">
+    Non-surgical <small>(not included in total operation)</small>
+   </th>
    </tr>
   <tr class="notcount nonsurgical">
      <td>Radiosurgery</td>
@@ -318,18 +344,18 @@
  <table id="historytbl">
   <thead>
    <tr>
-	<th>Date</th>
-	<th>Rm</th>
-	<th>№</th>
-	<th>Staff</th>
-	<th>Diagnosis</th>
-	<th>Treatment</th>
-	<th>Equipment</th>
-	<th>Admission Status</th>
-	<th>Final Status</th>
-	<th>Contact</th>
-	<th>Editor</th>
-	<th>Edited When</th>
+  <th>Date</th>
+  <th>Rm</th>
+  <th>№</th>
+  <th>Staff</th>
+  <th>Diagnosis</th>
+  <th>Treatment</th>
+  <th>Equipment</th>
+  <th>Admission Status</th>
+  <th>Final Status</th>
+  <th>Contact</th>
+  <th>Editor</th>
+  <th>Edited When</th>
    </tr>
   </thead>
   <tbody>
@@ -356,19 +382,19 @@
   </tbody>
 </table>
 
-<div id="dialogDeleted">
+<div id="dialogAllDeleted">
  <table id="deletedtbl">
   <thead>
    <tr>
-	<th>Date</th>
-	<th>Staff</th>
-	<th>HN</th>
-	<th>Patient</th>
-	<th>Diagnosis</th>
-	<th>Treatment</th>
-	<th>Contact</th>
-	<th>Editor</th>
-	<th>Edited When</th>
+  <th>Date</th>
+  <th>Staff</th>
+  <th>HN</th>
+  <th>Patient</th>
+  <th>Diagnosis</th>
+  <th>Treatment</th>
+  <th>Contact</th>
+  <th>Editor</th>
+  <th>Edited When</th>
    </tr>
   </thead>
   <tbody>
@@ -383,15 +409,15 @@
 <table id="deletedcells">
   <tbody>
    <tr>
-	<td data-title="Date"></td>
-	<td data-title="Staff"></td>
-	<td data-title="HN"></td>
-	<td data-title="Patient"></td>
-	<td data-title="Diagnosis"></td>
-	<td data-title="Treatment"></td>
-	<td data-title="Contact"></td>
-	<td data-title="Editor"></td>
-	<td data-title="Edited When"></td>
+  <td data-title="Date"></td>
+  <td data-title="Staff"></td>
+  <td data-title="HN"></td>
+  <td data-title="Patient"></td>
+  <td data-title="Diagnosis"></td>
+  <td data-title="Treatment"></td>
+  <td data-title="Contact"></td>
+  <td data-title="Editor"></td>
+  <td data-title="Edited When"></td>
    </tr>
   </tbody>
 </table>
@@ -400,16 +426,16 @@
  <table id="alltbl">
   <thead>
    <tr>
-	<th>Date</th>
-	<th>Staff</th>
-	<th>HN</th>
-	<th>Patient</th>
-	<th>Diagnosis</th>
-	<th>Treatment</th>
-	<th>Equipment</th>
-	<th>Admission Status</th>
-	<th>Final Status</th>
-	<th>Contact</th>
+  <th>Date</th>
+  <th>Staff</th>
+  <th>HN</th>
+  <th>Patient</th>
+  <th>Diagnosis</th>
+  <th>Treatment</th>
+  <th>Equipment</th>
+  <th>Admission Status</th>
+  <th>Final Status</th>
+  <th>Contact</th>
    </tr>
   </thead>
   <tbody>
@@ -435,37 +461,37 @@
 </table>
 
 <div id="dialogInput" class="dialogBox">
-	<span>HN:</span>
-	<input type="text" name="hn" maxlength="7">
-	<br>
-	<br>
-	<span>Staff:</span>
-	<input type="text" name="staffname">
-	<br>
-	<br>
-	<span>Others:</span>
-	<br>
-	<input type="text" name="others"
-		placeholder="Dx, Rx, Adm & Final Status">
-	<br>
-	<br>
-	<img src="css/pic/general/find.png" id="clicksearchDB">
+  <span>HN:</span>
+  <input type="text" name="hn" maxlength="7">
+  <br>
+  <br>
+  <span>Staff:</span>
+  <input type="text" name="staffname">
+  <br>
+  <br>
+  <span>Others:</span>
+  <br>
+  <input type="text" name="others"
+    placeholder="Dx, Rx, Adm & Final Status">
+  <br>
+  <br>
+  <img src="css/pic/general/find.png" id="clicksearchDB">
 </div>
 
 <div id="dialogFind">
   <table id="findtbl">
   <thead>
    <tr>
-	<th>Date</th>
-	<th>Staff</th>
-	<th>HN</th>
-	<th>Patient</th>
-	<th>Diagnosis</th>
-	<th>Treatment</th>
-	<th>Equipment</th>
-	<th>Admission Status</th>
-	<th>Final Status</th>
-	<th>Contact</th>
+  <th>Date</th>
+  <th>Staff</th>
+  <th>HN</th>
+  <th>Patient</th>
+  <th>Diagnosis</th>
+  <th>Treatment</th>
+  <th>Equipment</th>
+  <th>Admission Status</th>
+  <th>Final Status</th>
+  <th>Contact</th>
    </tr>
   </thead>
   <tbody>
@@ -493,22 +519,22 @@
 <div id="dialogStaff">
   <table id="stafftbl">
    <thead>
-	<tr>
-	  <td>Name : <input type="text" id="sname" size="10"></td>
-	  <td>Specialty : <select id="specialty"><option></option></select></td>
-	  <td>Date Oncall : <input type="text" id="soncall" size="10" readonly>
-						 <input id="snumber" type="hidden">
-	  </td>
-	</tr>
-	<tr>
-	  <td><button id="clickdoadddata">AddStaff</button></td>
-	  <td><button id="clickdoupdatedata">UpdateStaff</button></td>
-	  <td><button id="clickdodeletedata">DeleteStaff</button></td>
-	</tr>
+  <tr>
+    <td>Name : <input type="text" id="sname" size="10"></td>
+    <td>Specialty : <select id="specialty"><option></option></select></td>
+    <td>Date Oncall : <input type="text" id="soncall" size="10" readonly>
+             <input id="snumber" type="hidden">
+    </td>
+  </tr>
+  <tr>
+    <td><button id="clickdoadddata">AddStaff</button></td>
+    <td><button id="clickdoupdatedata">UpdateStaff</button></td>
+    <td><button id="clickdodeletedata">DeleteStaff</button></td>
+  </tr>
     <tr>
-	  <th>Staff</th>
-	  <th>Specialty</th>
-	  <th>Start Date Oncall</th>
+    <th>Staff</th>
+    <th>Specialty</th>
+    <th>Start Date Oncall</th>
     </tr>
    </thead>
    <tbody>
@@ -542,31 +568,31 @@
 
 <table id="holidaycells">
   <tbody>
-	<tr>
-	  <td></td>
-	  <td></td>
-	  <td><button class="delholiday">-</button></td>
-	</tr>
+  <tr>
+    <td></td>
+    <td></td>
+    <td><button class="delholiday">-</button></td>
+  </tr>
   </tbody>
 </table>
 
 <table id="holidayInput">
   <tbody>
-	<tr>
+  <tr>
      <td><input type="text" id="holidateth" class="w75" readonly></td>
      <td><select id="holidayname" class="w150"></select></td>
      <td><button class="delholiday">-</button></td>
-	</tr>
+  </tr>
   </tbody>
 </table>
 
 <div id="dialogMoveCaseHN">
   <table id="movetbl">
   <tbody>
-	<tr id="movefrom"><td>มีแล้วใน Waiting List</td></tr>
-	<tr></tr>
-	<tr id="moveto"><td>ต้องการ</td></tr>
-	<tr></tr>
+  <tr id="movefrom"><td>มีแล้วใน Waiting List</td></tr>
+  <tr></tr>
+  <tr id="moveto"><td>ต้องการ</td></tr>
+  <tr></tr>
   </tbody>
   </table>
 </div>

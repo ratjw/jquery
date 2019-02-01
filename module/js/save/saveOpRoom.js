@@ -1,5 +1,4 @@
 
-import { OPDATE, THEATRE, OPROOM, QN } from "../model/const.js"
 import { OLDCONTENT } from "../control/edit.js"
 import { sqlSaveOpRoom } from "../model/sqlSaveOpRoom.js"
 import { getOpdate } from "../util/date.js"

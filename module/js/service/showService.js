@@ -1,7 +1,7 @@
 
 import {
   CASENUMSV, HNSV, NAMESV, DIAGNOSISSV, TREATMENTSV, ADMISSIONSV,
-  FINALSV, PROFILESV, ADMITSV, OPDATESV, DISCHARGESV, QNSV
+  FINALSV, PROFILESV, ADMITSV, OPDATESV, DISCHARGESV
 } from "../model/const.js"
 import { POINTER, clearEditcell } from "../control/edit.js"
 import { START, putThdate, putNameAge } from "../util/date.js"
@@ -50,7 +50,7 @@ export function showService() {
       $servicecells.find("tr").clone()
         .appendTo($servicetbl.find("tbody"))
           .children("td").eq(CASENUMSV)
-            .prop("colSpan", QNSV - CASENUMSV)
+            .prop("colSpan", DISCHARGESV - CASENUMSV)
               .addClass("serviceStaff")
                 .html(staffname)
                   .siblings().hide()
@@ -113,7 +113,7 @@ export function reViewService() {
       i++
       let  $staff = $rows.eq(i).children("td").eq(CASENUMSV)
       if ($staff.prop("colSpan") === 1) {
-        $staff.prop("colSpan", QNSV - CASENUMSV)
+        $staff.prop("colSpan", DISCHARGESV - CASENUMSV)
           .addClass("serviceStaff")
             .siblings().hide()
       }
@@ -130,7 +130,7 @@ export function reViewService() {
     let  $cells = $row.children("td")
     if ($cells.eq(CASENUMSV).prop("colSpan") > 1) {
       $cells.eq(CASENUMSV).prop("colSpan", 1)
-        .nextUntil($cells.eq(QNSV)).show()
+        .nextUntil($cells.eq(DISCHARGESV)).show()
     }
     $row.filldataService(this, scase)
   })
@@ -163,8 +163,8 @@ jQuery.fn.extend({
     cells[ADMITSV].innerHTML = putThdate(bookq.admit)
     cells[OPDATESV].innerHTML = putThdate(bookq.opdate)
     cells[DISCHARGESV].innerHTML = putThdate(bookq.discharge)
-    cells[QNSV].innerHTML = bookq.qn
 
+    row.dataset.qn = bookq.qn
     coloring(row)
   }
 })

@@ -1,16 +1,15 @@
 
 import {
-	OPDATE, STAFFNAME, HN, PATIENT, DIAGNOSIS, TREATMENT, CONTACT, QN
+	STAFFNAME, HN, PATIENT, DIAGNOSIS, TREATMENT, CONTACT
 } from "../model/const.js"
 import { OLDCONTENT, clearEditcell } from "../control/edit.js"
 import { sqlMoveCaseHN, sqlCopyCaseHN } from "../model/sqlsavehn.js"
 import { getOpdate, putThdate, putNameAge } from "../util/date.js"
 import { updateBOOK } from "../util/variables.js"
 import { Alert, winWidth } from "../util/util.js"
-import { viewMoveCaseHN, viewCopyCaseHN } from "../view/viewCaseHN.js"
+import { viewMoveCaseHN, viewCopyCaseHN } from "../view/viewMoveCaseHN.js"
 import { rowDecoration } from "../view/rowDecoration.js"
 
-// May have other columns before, thus has qn already
 export function saveCaseHN(pointed, waiting)
 {
 let	wanting = {...waiting},
@@ -23,6 +22,7 @@ let	wanting = {...waiting},
 		treatment = row.dataset.treatment,
 		contact = row.dataset.contact,
 		qn = row.dataset.qn,
+    noqn = !qn,
 
 		hn = waiting.hn,
 		patient = waiting.patient,
@@ -33,8 +33,10 @@ let	wanting = {...waiting},
 		$moveto = $("#moveto").next(),
 		tblcells = $("#tblcells tr").html()
 
-	// not use staffoncall in patient's data
+	// disregard if it's staffoncall
 	if (/(<([^>]+)>)/i.test(staffname)) { staffname = "" }
+
+  // May have other columns before, thus has some values already
 	wanting.opdate = opdate
 	wanting.patient = patient
 	wanting.dob = dob

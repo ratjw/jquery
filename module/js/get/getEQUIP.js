@@ -1,17 +1,17 @@
 
-import { EQUIPMENT, QN } from "../model/const.js"
+import { EQUIPMENT } from "../model/const.js"
 import { clearEditcell } from "../control/edit.js"
 import { USER } from "../main.js"
 import { sqlGetEquip, sqlSaveEquip, sqlCancelAllEquip } from "../model/sqlGetEquip.js"
 import { putAgeOpdate, putThdate } from "../util/date.js"
-import { getBOOKrowByQN, getTableRowByQN } from "../util/rowsgetting.js"
+import { getTableRowByQN } from "../util/rowsgetting.js"
 import { BOOK, CONSULT, updateBOOK } from "../util/variables.js"
 import { Alert, isConsultsTbl } from "../util/util.js"
 import { viewEquipJSON } from "../view/viewEquip.js"
 
 const NAMEOFDAYTHAI	= ["อาทิตย์", "จันทร์", "อังคาร", "พุธ", "พฤหัส", "ศุกร์", "เสาร์"]
 
-let bookqEquip,
+let rowEquip,
 	JsonEquip,
 	thisqn,
 	$dialogEquip = $('#dialogEquip')
@@ -23,29 +23,29 @@ export function getEQUIP(pointing)
 	if (!qn) { return }
 
 	let tableID = pointing.closest('table').id,
+		row = pointing.closest('tr'),
 		book = isConsultsTbl(tableID)? CONSULT : BOOK,
-		bookq = getBOOKrowByQN(book, qn),
 		height = window.innerHeight,
 		thisEquip = {
-			oproom: bookq.oproom || "",
-			casenum: bookq.casenum || "",
-			optime: bookq.optime,
-			opday: NAMEOFDAYTHAI[(new Date(bookq.opdate)).getDay()],
-			opdate: putThdate(bookq.opdate),
-			staffname: bookq.staffname,
-			hn: bookq.hn,
-			patientname: bookq.patient,
-			age: putAgeOpdate(bookq.dob, bookq.opdate),
-			diagnosis: bookq.diagnosis,
-			treatment: bookq.treatment
+			oproom: row.dataset.oproom || "",
+			casenum: row.dataset.casenum || "",
+			optime: row.dataset.optime,
+			opday: NAMEOFDAYTHAI[(new Date(row.dataset.opdate)).getDay()],
+			opdateth: putThdate(row.dataset.opdate),
+			staffname: row.dataset.staffname,
+			hn: row.dataset.hn,
+			patientname: row.dataset.patient,
+			age: putAgeOpdate(row.dataset.dob, row.dataset.opdate),
+			diagnosis: row.dataset.diagnosis,
+			treatment: row.dataset.treatment
 		}
 
 	for (let key in thisEquip) {
 		document.getElementById(key).innerHTML = thisEquip[key]
 	}
 
-	bookqEquip = bookq.equipment
-	JsonEquip = bookqEquip? JSON.parse(bookqEquip) : {}
+	rowEquip = row.dataset.equipment
+	JsonEquip = rowEquip? JSON.parse(rowqEquip) : {}
 	thisqn = qn
 
 	// clear all previous dialog values
@@ -209,7 +209,7 @@ let Checklistequip = function () {
 	})
 
 	equipment = JSON.stringify(equipJSON)
-	if (equipment === bookqEquip) {
+	if (equipment === rowEquip) {
 		return
 	}
 
@@ -229,8 +229,8 @@ let Checklistequip = function () {
 			// Roll back
 			$('#dialogEquip input').val('')
 			$('#dialogEquip textarea').val('')
-			bookqEquip &&
-				Object.entries(JSON.parse(bookqEquip)).each(([key, val]) => {
+			rowEquip &&
+				Object.entries(JSON.parse(rowEquip)).each(([key, val]) => {
 					val === 'checked'
 					? document.getElementById("#"+ key).checked = true
 					: document.getElementById("#"+ key).value = val
@@ -251,7 +251,7 @@ function cancelAllEquip()
 
 		typeof response === "object"
 		? hasData()
-		: restoreAllEquip(response, bookqEquip, JsonEquip)
+		: restoreAllEquip(response, rowEquip, JsonEquip)
 
 	}).catch(error => {})
 }
@@ -264,7 +264,7 @@ function delelteAllEquip(qn)
 	$("#dialogEquip").dialog('close')
 }
 
-function restoreAllEquip(response, bookqEquip, JsonEquip)
+function restoreAllEquip(response, rowEquip, JsonEquip)
 {
 	// Error update server
 	// Roll back. If old form has equips, fill checked & texts
@@ -273,7 +273,7 @@ function restoreAllEquip(response, bookqEquip, JsonEquip)
 	Alert("cancelAllEquip", response)
 	$('#dialogEquip input').val('')
 	$('#dialogEquip textarea').val('')
-	if ( bookqEquip ) {
+	if ( rowEquip ) {
 		$.each(JsonEquip, function(key, val) {
 			if (val === 'checked') {
 				$("#"+ key).prop("checked", true)

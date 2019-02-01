@@ -36,6 +36,14 @@ export function isConsultsTbl(tableID)
 	return queuetbl && isConsults()
 }
 
+export function getTitlename(tableID)
+{
+  if (isSplit() && !isConsultsTbl(tableID)) {
+	  return document.getElementById('titlename').innerHTML
+  }
+  return ""
+}
+
 export function getMaxQN(book)
 {
 	var qn = Math.max.apply(Math, $.map(book, function(q, i) {
@@ -208,4 +216,25 @@ export function Alert(title, message) {
 		minWidth: 400,
 		height: 230
 	}).fadeIn();
+}
+
+export function clearMouseoverTR()
+{
+	$("#tbl tr:has('td'), #queuetbl tr:has('td')")
+		.off("mouseover")
+		.off("mouseout")
+		.off("click")
+	$(".pasteDate").removeClass("pasteDate")
+	$(".moveCase").removeClass("moveCase")
+	$(".copyCase").removeClass("copyCase")
+}
+
+// The second parameter (, 0) ensure a default value if arrayAfter .map is empty
+export function getLargestWaitnum(book, staffname)
+{
+	let dateStaff = book.filter(function(q) {
+		return (q.staffname === staffname) && (q.opdate === LARGESTDATE)
+	})
+
+	return Math.max(...dateStaff.map(q => q.waitnum), 0)
 }

@@ -1,13 +1,11 @@
 
 import { UndoManager } from "../model/UndoManager.js"
-import {
-	OPDATE, THEATRE, OPROOM, STAFFNAME, QN, LARGESTDATE
-} from "../model/const.js"
-import { sqlPostponeCase } from "../model/sqlmove.js"
+import { LARGESTDATE } from "../model/const.js"
+import { sqlPostponeCase } from "../model/sqlPostponeCase.js"
 import { getOpdate } from "../util/date.js"
 import { sameDateRoomTableQNs } from "../util/rowsgetting.js"
 import { BOOK, updateBOOK } from "../util/variables.js"
-import { Alert } from "../util/util.js"
+import { Alert, getLargestWaitnum } from "../util/util.js"
 import { viewPostponeCase } from "../view/viewPostponeCase.js"
 import { clearSelection } from "../control/clearSelection.js"
 
@@ -23,18 +21,21 @@ export function postponeCase()
 		staffname = row.dataset.staffname,
 		qn = row.dataset.qn,
 		oldwaitnum = row.dataset.waitnum,
-		newwaitnum = getLargestWaitnum(staffname) + 1,
+		newwaitnum = Math.ceil(getLargestWaitnum(BOOK, movestaffname)) + 1,
 		allCases = []
 
 	if (oproom) {
 		allCases = sameDateRoomTableQNs(row)
 	}
 
-	let doPostponeCase = function (waitnum, thisdate) {
-		sqlPostponeCase(allCases, waitnum, thisdate, oproom, qn).then(response => {
+	doPostponeCase(newwaitnum, LARGESTDATE)
+  clearSelection()
+
+	function doPostponeCase(waitnum, thisdate) {
+		sqlPostponeCase(allCases, row, thisdate).then(response => {
 			let hasData = function () {
 				updateBOOK(response)
-				viewPostponeCase(opdate, thisdate, staffname, qn)
+				viewPostponeCase(row, thisdate)
 			}
 
 			typeof response === "object"
@@ -42,12 +43,8 @@ export function postponeCase()
 			: Alert ("postponeCase", response)
 		}).catch(error => {})
 	}
-
-    clearSelection()
-
-	doPostponeCase(newwaitnum, LARGESTDATE)
-
-/*	UndoManager.add({
+/*
+	UndoManager.add({
 		undo: function() {
 			doPostponeCase(oldwaitnum, opdate)
 		},
@@ -55,14 +52,4 @@ export function postponeCase()
 			doPostponeCase(newwaitnum, LARGESTDATE)
 		}
 	})*/
-}
-
-// The second parameter (, 0) ensure a default value if arrayAfter .map is empty
-function getLargestWaitnum(staffname)
-{
-	let dateStaff = BOOK.filter(function(q) {
-		return (q.staffname === staffname) && (q.opdate === LARGESTDATE)
-	})
-
-	return Math.max(...dateStaff.map(q => q.waitnum), 0)
 }

@@ -1,9 +1,9 @@
 
-import { OPDATE, STAFFNAME, PATIENT, QN, LARGESTDATE } from "../model/const.js"
+import { LARGESTDATE } from "../model/const.js"
 import { getOpdate } from "../util/date.js"
 
 // disabled some menu-items for the current row
-// Menu for the current row -> addrow, postpone, moveCase, equip, history of editing, del
+// Menu for the current row -> addrow, postpone, moveCase, copyCase, tracking, del
 // Menu for all cases -> staffqueue, service, all deleted, search, readme
 export function oneRowMenu()
 {
@@ -25,6 +25,8 @@ export function oneRowMenu()
 	enable(postpone, "#postpone")
 
 	enable(qn, "#moveCase")
+
+	enable(qn, "#copyCase")
 
 	enable(qn, "#history")
 

@@ -28,7 +28,7 @@ export function profileHandler()
     // check all disease radios input before changed
 	// to determine whether there was a previous disease or not
     let inCell = this.closest("td")
-    let qn = inCell.parentElement.lastElementChild.innerHTML
+    let qn = inCell.parentElement.dataset.qn
     let inputDisease = inCell.querySelectorAll("input[name='disease" + qn + "']")
 
     radios[0].beforeDz = Array.from(inputDisease).filter(i => i.checked).length

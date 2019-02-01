@@ -1,5 +1,4 @@
 
-import { QN } from "../model/const.js"
 import { updateBOOK } from "../util/variables.js"
 import { OLDCONTENT } from "../control/edit.js"
 import { sqlSaveContentQN } from "../model/sqlSaveContent.js"
@@ -35,6 +34,9 @@ export function saveContentQN(pointed, column, newcontent)
 			typeof response === "object" ? hasData() : noData()
 		}).catch(error => {})
 	}
+
+	doSaveContentQN()
+
 /*	let undoSaveContentQN = function () {
 		sqlSaveContentQN(column, OLDCONTENT, qn).then(response => {
 			let hasData = function () {
@@ -51,8 +53,6 @@ export function saveContentQN(pointed, column, newcontent)
 		}).catch(error => {})
 	}
 */
-	doSaveContentQN()
-
 	// make undo-able
 /*	UndoManager.add({
 		undo: function() {

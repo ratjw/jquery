@@ -29,7 +29,7 @@ function calcSERVE(service)
 		if (!this.endovascular && isMatched(ENDOVASCULAR, this.treatment)) {
 			this.endovascular = "Endovascular"
 		}
-if (this.hn == "5489111")
+if (this.hn === "5489111")
 	editableSV = editableSV
 		if (!this.disease && this.operated !== "0") {
 			let opwhat = operationFor(this)

@@ -17,7 +17,9 @@ export function rowDecoration(row, date)
 
   cells[OPDATE].innerHTML = putThdate(date)
   cells[OPDATE].className = dayName(NAMEOFDAYABBR, date)
-  cells[DIAGNOSIS].style.backgroundImage = holiday(date)
+  if (date < LARGESTDATE) {
+    cells[DIAGNOSIS].style.backgroundImage = holiday(date)
+  }
 }
 
 function dayName(DAYNAME, date)

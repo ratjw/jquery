@@ -1,6 +1,6 @@
 import {
   CASENUMSV, HNSV, NAMESV, DIAGNOSISSV, TREATMENTSV, ADMISSIONSV,
-  FINALSV, PROFILESV, ADMITSV, OPDATESV, DISCHARGESV, QNSV
+  FINALSV, PROFILESV, ADMITSV, OPDATESV, DISCHARGESV
 } from "../model/const.js"
 import { POINTER, OLDCONTENT, getNewcontent } from "../control/edit.js"
 import { sqlSaveService } from "../model/sqlservice.js"
@@ -61,9 +61,8 @@ let saveContentService = function (pointed, column, content) {
 }
 
 function saveService(pointed, column, newcontent) {
-	let $row = $(pointed).closest("tr"),
-		row = $row[0],
-		qn = row.cells[QNSV].innerHTML
+	let row = pointed.closest("tr"),
+		qn = row.dataset.qn
 
 	let doSaveService = function (newdata, olddata) {
 		sqlSaveService(pointed, column, newdata, qn).then(response => {
@@ -76,9 +75,9 @@ function saveService(pointed, column, newcontent) {
 				let newlen = SERVICE.length
 				if (oldlen !== newlen) {
 					reViewService()
-				}
-
-				coloring(bookq)
+				} else {
+          coloring(row)
+        }
 				countAllServices()
 			},
 			noResponse = function () {
@@ -144,7 +143,7 @@ function getNewRecord(pointing)
 
 function getDiff(pointing, newRecord)
 {
-	let qn = pointing.parentNode.lastElementChild.innerHTML,
+	let qn = pointing.parentNode.dataset.qn,
 		bookq = getBOOKrowByQN(SERVICE, qn),
 		record = {}
 

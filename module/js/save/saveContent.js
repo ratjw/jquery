@@ -5,7 +5,7 @@ import { saveContentNoQN } from "./saveContentNoQN.js"
 
 // use only "pointed" to save data
 export function saveContent(pointed, column, newcontent) {
-	let qn = $(pointed).siblings("td").last().html()
+	let qn = pointed.closest("tr").dataset.qn
 
 	// show instantly, no re-render after save to DB
 	pointed.innerHTML = newcontent

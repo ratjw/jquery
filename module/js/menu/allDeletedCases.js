@@ -1,7 +1,6 @@
 
 import { sqlAllDeletedCases, sqlUndelete } from "../model/sqlAllDeletedCases.js"
 import { getOpdate } from "../util/date.js"
-import { getBOOKrowByQN } from "../util/rowsgetting.js"
 import { BOOK, CONSULT, updateBOOK } from "../util/variables.js"
 import { Alert, reposition } from "../util/util.js"
 import { viewOneDay } from "../view/viewOneDay.js"
@@ -67,7 +66,7 @@ export function doUndel(allCases, opdate, oproom, staffname, qn, del) {
 		: Alert("doUndel", response)
 	}).catch(error => {})
 
-	$('#dialogDeleted').dialog("close")
+	$('#dialogAllDeleted').dialog("close")
 }
 
 function sameDateRoomBookQNs(book, opdate, oproom)

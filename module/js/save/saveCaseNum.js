@@ -1,5 +1,4 @@
 
-import { OPDATE, THEATRE, OPROOM, QN } from "../model/const.js"
 import { OLDCONTENT, clearEditcell } from "../control/edit.js"
 import { sqlSaveCaseNum } from "../model/sqlSaveCaseNum.js"
 import { getOpdate } from "../util/date.js"

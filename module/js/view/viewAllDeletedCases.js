@@ -3,8 +3,9 @@ import { rowDecoration } from "./rowDecoration.js"
 import { putThdate } from "../util/date.js"
 import { winWidth, winHeight, winResizeFix } from "../util/util.js"
 import { toUndelete } from "../menu/allDeletedCases.js"
+import { setAllDeletedRowdata } from "../model/rowdata.js"
 
-// Make dialog box dialogDeleted containing historytbl
+// Make dialog box dialogAllDeleted containing historytbl
 export function viewAllDeletedCases(deleted) {
   let $deletedtbl = $('#deletedtbl'),
     $deletedtr = $('#deletedcells tr')
@@ -16,12 +17,12 @@ export function viewAllDeletedCases(deleted) {
   $.each( deleted, function(i) {
     $deletedtr.clone()
       .appendTo($deletedtbl.find('tbody'))
-        .filldataDeleted(this)
+        .filldataAllDeleted(this)
     return i < 20;
   });
 
-  let $dialogDeleted = $("#dialogDeleted")
-  $dialogDeleted.dialog({
+  let $dialogAllDeleted = $("#dialogAllDeleted")
+  $dialogAllDeleted.dialog({
     title: "All Deleted Cases",
     closeOnEscape: true,
     modal: true,
@@ -33,17 +34,17 @@ export function viewAllDeletedCases(deleted) {
       $(".fixed").remove()
     }
   })
-  $deletedtbl.fixMe($dialogDeleted);
+  $deletedtbl.fixMe($dialogAllDeleted);
 
   //for resizing dialogs in landscape / portrait view
   $(window).on("resize", resizeDeleted )
 
   function resizeDeleted() {
-    $dialogDeleted.dialog({
+    $dialogAllDeleted.dialog({
       width: winWidth(95),
       height: winHeight(95)
     })
-    winResizeFix($deletedtbl, $dialogDeleted)
+    winResizeFix($deletedtbl, $dialogAllDeleted)
   }
 
   // display the rest
@@ -52,7 +53,7 @@ export function viewAllDeletedCases(deleted) {
       if (i < 21) return
       $deletedtr.clone()
         .appendTo($deletedtbl.find('tbody'))
-          .filldataDeleted(this)
+          .filldataAllDeleted(this)
     })
 
     // #undelete is the div to show span and closeclick
@@ -68,16 +69,10 @@ export function viewAllDeletedCases(deleted) {
 }
 
 jQuery.fn.extend({
-	filldataDeleted : function(q) {
+	filldataAllDeleted : function(q) {
 		let row = this[0]
 
-    row.dataset.waitnum = q.waitnum,
-    row.dataset.opdate = q.opdate,
-    row.dataset.oproom = q.oproom,
-    row.dataset.casenum = q.casenum,
-    row.dataset.staffname = q.staffname,
-    row.dataset.qn = q.qn,
-
+    setAllDeletedRowdata(row, q)
 		rowDecoration(row, q.opdate)
 		row.cells[0].classList.add("toUndelete")
 

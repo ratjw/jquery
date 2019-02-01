@@ -1,6 +1,4 @@
 
-//import { UndoManager } from "../model/UndoManager.js"
-import { OPDATE, THEATRE, OPROOM, STAFFNAME, QN } from "../model/const.js"
 import { sqlDeleteCase } from "../model/sqlDeleteCase.js"
 import { getOpdate } from "../util/date.js"
 import { sameDateRoomTableQNs } from "../util/rowsgetting.js"

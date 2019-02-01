@@ -8,7 +8,7 @@ export function clearSelection()
 
 export function disableOneRowMenu()
 {
-	let ids = ["#addrow", "#postpone", "#moveCase", "#history", "#delete"]
+	let ids = ["#addrow", "#postpone", "#moveCase", "#copyCase", "#history", "#delete"]
 
 	ids.forEach(function(each) {
 		$(each).addClass("disabled")

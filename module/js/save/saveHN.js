@@ -13,6 +13,7 @@ export function saveHN(pointed, content) {
 	let	todate = ISOdate(new Date())
 	let waiting = BOOK.find(q => (q.opdate > todate) && (q.hn === content))
 
+  // already having case in waiting list
 	if (waiting) {
 		saveCaseHN(pointed, waiting)
 	} else {

@@ -5,7 +5,7 @@ import {
 import {
 	POINTER, OLDCONTENT, getNewcontent, createEditcell, clearEditcell
 } from "./edit.js"
-import { clearMouseoverTR } from "../menu/moveCase.js"
+import { clearMouseoverTR } from "../util/util.js"
 import { clearSelection } from "./clearSelection.js"
 
 import { saveTheatre } from "../save/saveTheatre.js"
@@ -67,7 +67,7 @@ export function editPresentCell(evt, pointing) {
 	switch(column)
 	{
 		case OPDATE: selectRow(evt, pointing); break
-		case THEATRE: getTHEATRE(evt, pointing); break
+		case THEATRE: createEditcell(pointing); break
 		case OPROOM: getROOM(pointing); break
 		case OPTIME: getOPTIME(pointing); break
 		case CASENUM: getCASENUM(pointing); break

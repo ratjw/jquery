@@ -2,6 +2,7 @@
 import { postData, MYSQLIPHP } from "./fetch.js"
 import { USER } from "../main.js"
 import { calcWaitnum } from "../util/calcWaitnum.js"
+import { isConsults } from "../util/util.js"
 
 export function sqlSaveContentQN(column, content, qn) {
 	let sql = `sqlReturnbook=UPDATE book\
@@ -14,17 +15,16 @@ export function sqlSaveContentNoQN(pointed, column, content) {
 	let	row = pointed.closest("tr"),
 		tableID = row.closest("table").id,
 		opdate = row.dataset.opdate,
-		qn = row.dataset.qn,
-		staffname = row.dataset.staffname,
+    staffname = row.dataset.staffname,
 		sql1 = "",
 		sql,
 		waitnum = calcWaitnum(opdate, row.previousElementSibling, row.nextElementSibling)
 		// new case, calculate waitnum
 
-	// store waitnum in row waitnum
-	row.dataset.waitnum = waitnum
-
 	if ((tableID === "queuetbl") && (column !== "staffname")) {
+		if (!isConsults()) {
+      staffname = document.getElementById('titlename').innerHTML
+    }
 		sql1 = "staffname='" + staffname + "',"
 	}
 

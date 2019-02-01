@@ -1,12 +1,10 @@
 
 import { postData, MYSQLIPHP } from "./fetch.js"
-import {
-	OPDATE, STAFFNAME, DIAGNOSIS, TREATMENT, CONTACT, QN
-} from "./const.js"
 import { USER } from "../main.js"
-import { calcWaitnum } from "../util/calcWaitnum.js"
+import { calcWaitnum, defaultWaitnum } from "../util/calcWaitnum.js"
 import { getOpdate } from "../util/date.js"
-import { URIcomponent } from "../util/util.js"
+import { URIcomponent, getTitlename } from "../util/util.js"
+import { BOOK } from "../util/variables.js"
 
 const GETNAMEHN	= "php/getnamehn.php"
 
@@ -27,46 +25,50 @@ export function sqlCopyCaseHN(pointed, waiting, wanting)
 
 function sqlCaseHN(pointed, waiting, wanting)
 {
-	if (pointed.closest('tr').qn) {
-		return sqlUpdateHN(qn, waiting, wanting)
+  let tableID = pointed.closest('table').id,
+    qn = pointed.closest('tr').qn
+
+	if (qn) {
+		return sqlUpdateHN(tableID, qn, waiting, wanting)
 	} else {
-		return sqlInsertHN(pointed, waiting, wanting)
+		return sqlInsertHN(tableID, pointed, waiting, wanting)
 	}
 }
 
-function sqlInsertHN(pointed, waiting, wanting)
+function sqlInsertHN(tableID, pointed, waiting, wanting)
 {
-	let	row = pointed.closest("tr"),
+  let row = pointed.closest("tr"),
 		opdate = row.dataset.opdate,
 
 		hn = waiting.hn,
 		patient = waiting.patient,
-		dob = waiting.dob
+		dob = waiting.dob,
+    staffname = getTitlename(tableID),
 
-	// new row, calculate waitnum
-	// store waitnum in row waitnum
-	let waitnum = calcWaitnum(opdate, row.previousElementSibling, row.nextElementSibling)
-	row.dataset.waitnum = waitnum
+    // new row, calculate waitnum
+    // store waitnum in row waitnum
+	  waitnum = calcWaitnum(opdate, row.previousElementSibling, row.nextElementSibling)
 
 	return `INSERT INTO book
 		(waitnum,opdate,hn,patient,dob,staffname,diagnosis,treatment,contact,editor)
 		VALUES (${waitnum},'${opdate}','${hn}','${patient}','${dob}',
-		'${wanting.staffname}','${URIcomponent(wanting.diagnosis)}',
+		'${wanting.staffname || staffname}','${URIcomponent(wanting.diagnosis)}',
 		'${URIcomponent(wanting.treatment)}','${URIcomponent(wanting.contact)}',
 		'${USER}');`
 }
 
-function sqlUpdateHN(qn, waiting, wanting)
+function sqlUpdateHN(tableID, qn, waiting, wanting)
 {
 	let hn = waiting.hn,
 		patient = waiting.patient,
-		dob = waiting.dob
+		dob = waiting.dob,
+    staffname = getTitlename(tableID)
 
 	return `UPDATE book
 		SET hn='${hn}',
 			patient='${patient}',
 			dob='${dob}',
-			staffname='${wanting.staffname}',
+			staffname='${wanting.staffname || staffname}',
 			diagnosis='${URIcomponent(wanting.diagnosis)}',
 			treatment='${URIcomponent(wanting.treatment)}',
 			contact='${URIcomponent(wanting.contact)}',
@@ -74,33 +76,41 @@ function sqlUpdateHN(qn, waiting, wanting)
 		WHERE qn=${qn};`
 }
 
+// ** to do ** search hn from DB
 export function sqlGetNameHN(pointed, content)
 {
-	let row = pointed.closest('tr'),
-      opdate = row.dataset.opdate,
-      qn = row.dataset.qn,
-      staffname = row.dataset.staffname,
-		  diagnosis = row.dataset.diagnosis,
-	  	treatment = row.dataset.treatment,
-	  	contact = row.dataset.contact,
-  		waitnum = 0
+	let tableID = pointed.closest('table').id,
+    oldcase = BOOK.reverse().find(q => q.hn === content),
+	  oldstaffname = getTitlename(tableID),
+	  olddiagnosis = '',
+	 	oldtreatment = '',
+	 	oldcontact = ''
+
+  if (oldcase) {
+	  oldstaffname = oldcase.staffname || oldstaffname
+	  olddiagnosis = oldcase.diagnosis
+	 	oldtreatment = oldcase.treatment
+	 	oldcontact = oldcase.contact
+  }
+
+  let row = pointed.closest('tr'),
+    opdate = row.dataset.opdate,
+    qn = row.dataset.qn,
+    staffname = row.dataset.staffname || oldstaffname,
+    diagnosis = row.dataset.diagnosis || olddiagnosis,
+    treatment = row.dataset.treatment || oldtreatment,
+    contact = row.dataset.contact || oldcontact,
+    waitnum = defaultWaitnum(row),
+    prevrow = row.previousElementSibling,
+    nextrow = row.nextElementSibling
 
 	// if new case, calculate waitnum
 	// store waitnum in row waitnum
 	if (!qn) {
-		waitnum = calcWaitnum(opdate, row.previousElementSibling, row.nextElementSibling)
-		$row[0].dataset.waitnum = waitnum	
+		waitnum = calcWaitnum(opdate, prevrow, nextrow)
 	}
 
-	let sql = `hn=${content}\
-				&waitnum=${waitnum}\
-				&opdate=${opdate}\
-				&staffname=${staffname}\
-				&diagnosis=${diagnosis}\
-				&treatment=${treatment}\
-				&contact=${contact}\
-				&qn=${qn}\
-				&editor=${USER}`
+	let sql = `hn=${content}&waitnum=${waitnum}&opdate=${opdate}&staffname=${staffname}&diagnosis=${diagnosis}&treatment=${treatment}&contact=${contact}&qn=${qn}&editor=${USER}`
 
 	return postData(GETNAMEHN, sql)
 }

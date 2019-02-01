@@ -1,8 +1,7 @@
 
-import { OPDATE, THEATRE, OPROOM, STAFFNAME, QN } from "../model/const.js"
 import { sqlSaveOpTime } from "../model/sqlSaveOpTime.js"
 import { getOpdate } from "../util/date.js"
-import { getBOOKrowByQN, sameDateRoomTableRows } from "../util/rowsgetting.js"
+import { sameDateRoomTableRows } from "../util/rowsgetting.js"
 import { updateBOOK } from "../util/variables.js"
 import { Alert } from "../util/util.js"
 import { viewOneDay } from "../view/viewOneDay.js"

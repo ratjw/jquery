@@ -1,60 +1,49 @@
 
-import { OPDATE, STAFFNAME, QN } from "../model/const.js"
 import { reCreateEditcell } from "../control/edit.js"
 import { viewOneDay } from "./viewOneDay.js"
 import { isSplit, isConsults } from "../util/util.js"
-import { refillAnotherTableCell } from "./refillAnotherTableCell.js"
+import { refillAnotherTablerow } from "./refillAnotherTablerow.js"
 import { refillstaffqueue } from "./fill.js"
 import { getOpdate } from "../util/date.js"
+import { getBOOKrowByQN } from "../util/rowsgetting.js"
+import { filldata } from "./fill.js"
+import { BOOK } from "../util/variables.js"
 
 export function viewSaveContentQN(pointed, column, oldcontent) {
-	let	cellindex = pointed.cellIndex,
-		tableID = pointed.closest("table").id,
+	let	tableID = pointed.closest("table").id,
 		row = pointed.closest('tr'),
 		opdate = row.dataset.opdate,
 		staffname = row.dataset.staffname,
 		qn = row.dataset.qn,
+    bookq = getBOOKrowByQN(BOOK, qn),
 		titlename = document.getElementById('titlename').innerHTML
 
-	let onMaintable = function () {
-
-		// Remote effect from editing on tbl to queuetbl
-		// Staffqueue is showing
-		if (isSplit()) {
-
-			// this staffname is changed to another staff or to this staffname
-			if ((oldcontent === titlename) || (pointed.innerHTML === titlename)) {
-					refillstaffqueue()
-			} else {
-				// input is not staffname, but on this titlename row
-				if (titlename === staffname) {
-					refillAnotherTableCell('queuetbl', cellindex, qn)
-				}
-			}
-		}
-	}
-
-	let onStafftable = function () {
-
-		// staffname is changed to other staff => re-render
-		if ((column === "staffname") && !isConsults()) {
-			refillstaffqueue()
-		}
-
-		// consults are not apparent on tbl, no remote effect from editing on queuetbl
-		// Remote effect from editing on queuetbl to tbl
-		// view corresponding row
-		if (!isConsults()) {
-			refillAnotherTableCell('tbl', cellindex, qn)
-		}
-	}
+  filldata(row, bookq)
 
 	if ((column === "oproom") || (column === "casenum")) {
 		viewOneDay(opdate)
 		refillstaffqueue()
 	}
 
-	tableID === 'tbl' ? onMaintable() : onStafftable()
+	if (tableID === 'tbl') {
+		// Remote effect from editing on tbl to queuetbl
+		if (isSplit()) {
+			// this staffname is changed to another staff or to this staffname
+			if ((oldcontent === titlename) || (pointed.innerHTML === titlename)) {
+					refillstaffqueue()
+			} else {
+				// input is not staffname, but on this titlename row
+				if (titlename === staffname) {
+					refillAnotherTablerow('queuetbl', qn)
+				}
+			}
+		}
+	} else {
+		// consults are not apparent on tbl, no remote effect from editing on queuetbl
+		if (!isConsults()) {
+			refillAnotherTablerow('tbl', qn)
+		}
+	}
 
 	reCreateEditcell()
 }

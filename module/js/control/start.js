@@ -1,4 +1,5 @@
 
+import { THEATRE } from "../model/const.js"
 import { addStaff } from "./addStaff.js"
 import { clicktable } from "./clicktable.js"
 import { exchangeOncall } from "./exchangeOncall.js"
@@ -21,13 +22,13 @@ import { htmlStafflist, htmlEquipment, htmldivRecord } from "../view/html.js"
 
 // For staff & residents with login id / password from Get_staff_detail
 export function userStaff() {
-	sqlStart().then(response => {
-		typeof response === "object"
-		? success(response)
-		: failed(response)
-	}).catch(error => {})
+  sqlStart().then(response => {
+    typeof response === "object"
+    ? success(response)
+    : failed(response)
+  }).catch(error => {})
 
-	document.oncontextmenu = () => false
+  document.oncontextmenu = () => false
 }
 
 // Success return from server
@@ -38,6 +39,7 @@ function success(response) {
   sortable()
   makeStart()
   scrolltoToday()
+  fillConsults()
 
   // setting up html
   htmlEquipment()
@@ -55,65 +57,36 @@ function success(response) {
   clearSelection()
   overrideJqueryUI()
   resetTimer()
-
-  setTimeout( makeFinish, 1000)
 }
 
 // *** plan -> offline browsing by service worker ***
 function failed(response) {
-	let title = "Server Error",
-		error = error + "<br><br>Response from server has no data"
+  let title = "Server Error",
+    error = error + "<br><br>Response from server has no data"
 
-	Alert(title, error + "No localStorage backup")
+  Alert(title, error + "No localStorage backup")
 }
 
-// Display everyday on main table 1 month back, to 20 days ahead
-let makeStart = function() {		
-	// Start with 1st date of last month
-	let	tableID = "tbl",
-		table = document.getElementById(tableID),
-		book = BOOK
+// Display everyday on main table 1 month back, to 2 years ahead
+let makeStart = function() {    
+  // Start with 1st date of last month
+  let  tableID = "tbl",
+    table = document.getElementById(tableID),
+    book = BOOK,
+     today = new Date(),
+    nextyear = today.getFullYear() + 2,
+    month = today.getMonth(),
+    todate = today.getDate(),
+    until = ISOdate((new Date(nextyear, month, todate)))
 
-	// No case from server
-	if (book.length === 0) { book.push({"opdate" : START}) }
-
-	// Fill until 20 days from now
-	let	end = new Date().setDate(new Date().getDate() + 20),
-		until = ISOdate(new Date(end))
-
-	fillall(book, table, START, until)
-}
-
-// Display everyday on main table 20 days ahead, to 2 years ahead
-let makeFinish = function() {
-	// Start with 1st date of last month
-	let	tableID = "tbl",
-		table = document.getElementById(tableID),
-		book = BOOK
-
-	// No case from server
-	if (book.length === 0) {
-		book.push({"opdate" : START})
-	}
-
-	// Fill until 2 year from now
-	let	today = new Date(),
-		begin = today.setDate(today.getDate() + 21),
-		start = ISOdate(new Date(begin)),
-		nextyear = today.getFullYear() + 2,
-		month = today.getMonth(),
-		todate = today.getDate(),
-		until = ISOdate((new Date(nextyear, month, todate)))
-
-	fillall(book, table, start, until)
-  fillConsults()
+  fillall(book, table, START, until)
 }
 
 function dialogServiceEvent()
 {
-	document.getElementById("dialogService").addEventListener("wheel", resetTimerCounter)
-	
-	document.getElementById("dialogService").addEventListener("mousemove", resetTimerCounter)
+  document.getElementById("dialogService").addEventListener("wheel", resetTimerCounter)
+  
+  document.getElementById("dialogService").addEventListener("mousemove", resetTimerCounter)
 }
 
 function wrapperEvent()
@@ -147,6 +120,15 @@ function wrapperEvent()
       target = target.closest('td')
     } else if (target.nodeName === "IMG") {
       target = target.closest("td")
+    }
+
+    if (target.cellIndex === THEATRE) {
+      let tbl = document.getElementById("tbl")
+      if (tbl.querySelectorAll("th")[THEATRE].offsetWidth < 10) {
+        tbl.classList.add("showColumn2")
+      } else if (target.nodeName === "TH") {
+        tbl.classList.remove("showColumn2")
+      }
     }
 
     if (target.nodeName === "TD") {
@@ -202,14 +184,13 @@ function documentEvent()
 
   $(document).contextmenu( event => {
     let target = event.target
-    let oncall = /<p[^>]*>.*<\/p>/.test(target.outerHTML)
+    let oncall = target.dataset.consult
 
     if (oncall) {
-      if (event.ctrlKey) {
-        exchangeOncall(target)
-      }
-      else if (event.altKey) {
+      if (event.altKey) {
         addStaff(target)
+      } else {
+        exchangeOncall(target)
       }
       event.preventDefault()
     }

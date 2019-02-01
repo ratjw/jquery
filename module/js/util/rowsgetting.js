@@ -1,15 +1,13 @@
 
-import { OPDATE, THEATRE, OPROOM, QN } from "../model/const.js"
-
 export function getBOOKrowByQN(book, qn) {  
-	return book.find(q => q.qn === qn )
+	return book.find(q => Number(q.qn) === Number(qn) )
 }
 
 export function getTableRowByQN(tableID, qn)
 {
 	return $("#"+tableID+" tr:has(td)")
 				.toArray()
-				.find(row => row.dataset.qn === qn)
+				.find(row => Number(row.dataset.qn) === Number(qn))
 }
 
 // main table (#tbl) only

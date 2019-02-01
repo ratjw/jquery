@@ -1,5 +1,4 @@
 
-import { OPDATE, THEATRE, OPROOM, CASENUM, QN } from "../model/const.js"
 import { sqlSaveTheatre } from "../model/sqlSaveTheatre.js"
 import { getOpdate } from "../util/date.js"
 import { sameDateRoomTableQNs } from "../util/rowsgetting.js"

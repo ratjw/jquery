@@ -1,5 +1,5 @@
 
-import { OPDATE, HN, PATIENT } from "../model/const.js"
+import { HN, PATIENT } from "../model/const.js"
 import { viewOneDay } from "./viewOneDay.js"
 import { viewSplit } from "./viewSplit.js"
 import { getOpdate } from "../util/date.js"
@@ -8,16 +8,15 @@ import { showStaffOnCall } from "./fillConsults.js"
 import { blankRowData } from "../model/rowdata.js"
 
 export function viewDeleteCase(row) {
-  let tableID = row.closest('table').id
-  let opdate = row.dataset.opdate
+  let tableID = row.closest('table').id,
+    opdate = row.dataset.opdate,
+    staffname = row.dataset.staffname
 
   viewOneDay(opdate)
   if (tableID === "tbl") {
-    viewSplit(row.dataset.staffname)
-  } else if (isConsults()) {
-    delRow(row, opdate)
+    viewSplit(staffname)
   } else {
-    row.remove()
+    delRow(row, opdate)
   }
 }
 

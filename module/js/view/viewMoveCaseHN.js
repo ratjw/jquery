@@ -1,5 +1,4 @@
 
-import { STAFFNAME, HN, PATIENT, DIAGNOSIS, TREATMENT, CONTACT, QN } from "../model/const.js"
 import { refillstaffqueue } from "./fill.js"
 import { isConsultsTbl, getMaxQN } from "../util/util.js"
 import { refillall } from "./fill.js"
@@ -8,11 +7,15 @@ import { BOOK, CONSULT, isPACS } from "../util/variables.js"
 import { getBOOKrowByQN } from "../util/rowsgetting.js"
 import { putNameAge } from "../util/date.js"
 import { viewOneDay } from "./viewOneDay.js"
-import { setRowData } from "../model/rowdata.js"
+import { setGetNameHNRowData } from "../model/rowdata.js"
+import { filldata } from "./fill.js"
 
 export function viewMoveCaseHN(tableID, qn, row, opdate)
 {
-	fillCellsHN(tableID, qn, row)
+	let	book = (isConsultsTbl(tableID)) ? CONSULT : BOOK
+	let bookq = getBOOKrowByQN(book, qn)
+
+  filldata(row, bookq)
 
 	if (tableID === 'tbl') {
 		viewOneDay(opdate)
@@ -25,18 +28,6 @@ export function viewMoveCaseHN(tableID, qn, row, opdate)
 
 export function viewCopyCaseHN(tableID, qn, row)
 {
-	fillCellsHN(tableID, qn, row)
-
-	if (tableID === 'tbl') {
-		refillstaffqueue()
-	} else {
-		refillall()
-		fillConsults()
-	}
-}
-
-function fillCellsHN(tableID, qn, row)
-{
 	let	book = (isConsultsTbl(tableID)) ? CONSULT : BOOK
 
 	// New case input
@@ -47,14 +38,12 @@ function fillCellsHN(tableID, qn, row)
 
 	let bookq = getBOOKrowByQN(book, qn)
 
-  setRowData(row, bookq)
+  filldata(row, bookq)
 
-	if (isPACS) { cells[HN].className = "pacs" }
-	cells[PATIENT].className = "upload"
-	cells[STAFFNAME].innerHTML = bookq.staffname
-	cells[HN].innerHTML = bookq.hn
-	cells[PATIENT].innerHTML = putNameAge(bookq)
-	cells[DIAGNOSIS].innerHTML = bookq.diagnosis
-	cells[TREATMENT].innerHTML = bookq.treatment
-	cells[CONTACT].innerHTML = bookq.contact
+	if (tableID === 'tbl') {
+		refillstaffqueue()
+	} else {
+		refillall()
+		fillConsults()
+	}
 }
