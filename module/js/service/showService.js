@@ -23,6 +23,7 @@ export function showService() {
   let $dialogService = $("#dialogService"),
     $servicetbl = $("#servicetbl"),
     $servicecells = $("#servicecells"),
+    clen = $servicecells.find('tr td').length,
     staffname = "",
     scase = 0,
     classname = ""
@@ -50,7 +51,7 @@ export function showService() {
       $servicecells.find("tr").clone()
         .appendTo($servicetbl.find("tbody"))
           .children("td").eq(CASENUMSV)
-            .prop("colSpan", DISCHARGESV - CASENUMSV)
+            .prop("colSpan", clen)
               .addClass("serviceStaff")
                 .html(staffname)
                   .siblings().hide()
@@ -102,7 +103,8 @@ export function reViewService() {
   let $servicetbl = $("#servicetbl"),
     $rows = $servicetbl.find("tr"),
     $servicecells = $("#servicecells"),
-    len = $rows.length,
+    rlen = $rows.length,
+    clen = $rows.find('td').length,
     staffname = "",
     i = 0, scase = 0
 
@@ -113,7 +115,7 @@ export function reViewService() {
       i++
       let  $staff = $rows.eq(i).children("td").eq(CASENUMSV)
       if ($staff.prop("colSpan") === 1) {
-        $staff.prop("colSpan", DISCHARGESV - CASENUMSV)
+        $staff.prop("colSpan", clen)
           .addClass("serviceStaff")
             .siblings().hide()
       }
@@ -121,10 +123,10 @@ export function reViewService() {
     }
     i++
     scase++
-    if (i === len) {
+    if (i === rlen) {
       $("#servicecells").find("tr").clone()
         .appendTo($("#servicetbl").find("tbody"))
-      len++
+      rlen++
     }
     let  $row = $rows.eq(i)
     let  $cells = $row.children("td")
@@ -134,7 +136,7 @@ export function reViewService() {
     }
     $row.filldataService(this, scase)
   })
-  if (i < (len - 1)) {
+  if (i < (rlen - 1)) {
     $rows.slice(i+1).remove()
   }
   countAllServices()
