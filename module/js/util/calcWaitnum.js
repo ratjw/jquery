@@ -27,7 +27,7 @@ export function calcWaitnum(thisOpdate, prevrow, nextrow)
 
 export function defaultWaitnum(row)
 {
-  let tableID = row.closest('table')
+  let tableID = row.closest('table').id
 
   return (isConsultsTbl(tableID))? -1 : 1
 }

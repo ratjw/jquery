@@ -31,6 +31,5 @@ export function sqlSaveOpRoom(allOldCases, allNewCases, oldoproom, newoproom, qn
 
 function sqlNewRoom(oproom, casenum, qn)
 {
-  return `UPDATE book SET oproom=${oproom},casenum=${casenum},\
-          editor='${USER}' WHERE qn=${qn};`
+  return `UPDATE book SET oproom=${oproom},casenum=${casenum},editor='${USER}' WHERE qn=${qn};`
 }

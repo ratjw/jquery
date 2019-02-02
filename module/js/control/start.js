@@ -146,7 +146,7 @@ function documentEvent()
   // Prevent the Backspace key from navigating back.
   // Esc to cancel everything
   $(document).keydown(event => {
-    let keycode = event.which || window.Event.keyCode,
+    let keycode = event.which,
       ctrl = event.ctrlKey,
       shift = event.shiftKey,
       home = keycode === 36,
@@ -164,21 +164,6 @@ function documentEvent()
     else if (esc) {
       clearAllEditing()
     }
-    // ctrl+shift+Home to see last entries of local and server
-/*    else if (home && ctrl && shift) {
-      // Merge data to server
-      latestEntry()
-      event.preventDefault()
-    }
-    else if (y && ctrl) {
-      UndoManager.redo()
-      event.preventDefault()
-    }
-    else if (z && ctrl) {
-      UndoManager.undo()
-      event.preventDefault()
-    }
-*/
     resetTimerCounter()
   });
 

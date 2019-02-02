@@ -47,7 +47,7 @@ export function editcellEvent()
     resetTimer();
     event.stopPropagation()
   }).keydown(event => {
-    let keycode = event.which || window.Event.keyCode
+    let keycode = event.which
 
     keyin(event, keycode, POINTER)
     resetTimerCounter()
@@ -96,16 +96,6 @@ let keyin = function (evt, keycode) {
       return
     case 13:
       if (Shift || Ctrl) { return }
-/*
-      document.querySelector("#editcell").dispatchEvent(new KeyboardEvent("keypress", {
-        keyCode: 13,
-        shiftKey: true
-      }))
-      $("#editcell").trigger(jQuery.Event("keypress", {
-        keyCode: 13,
-        shiftKey: true
-      }))
-*/
       servicetbl
       ? serviceTable13(evt, editable, Shift, Ctrl)
       : mainTable13(evt, editable, Shift, Ctrl)

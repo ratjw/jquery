@@ -5,8 +5,7 @@ import { calcWaitnum } from "../util/calcWaitnum.js"
 import { isConsults } from "../util/util.js"
 
 export function sqlSaveContentQN(column, content, qn) {
-	let sql = `sqlReturnbook=UPDATE book\
-				SET ${column}='${content}',editor='${USER}' WHERE qn=${qn};`
+	let sql = `sqlReturnbook=UPDATE book SET ${column}='${content}',editor='${USER}' WHERE qn=${qn};`
 
 	return postData(MYSQLIPHP, sql);
 }
@@ -28,12 +27,7 @@ export function sqlSaveContentNoQN(pointed, column, content) {
 		sql1 = "staffname='" + staffname + "',"
 	}
 
-	sql = `sqlReturnbook=INSERT INTO book\
-         SET waitnum=${waitnum},\
-             opdate='${opdate}',\
-             ${sql1}\
-             ${column}='${content}',\
-             editor='${USER}';`
+	sql = `sqlReturnbook=INSERT INTO book SET waitnum=${waitnum},opdate='${opdate}',${sql1}${column}='${content}',editor='${USER}';`
 
 	return postData(MYSQLIPHP, sql);
 }

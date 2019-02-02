@@ -26,7 +26,7 @@ export function sqlCopyCaseHN(pointed, waiting, wanting)
 function sqlCaseHN(pointed, waiting, wanting)
 {
   let tableID = pointed.closest('table').id,
-    qn = pointed.closest('tr').qn
+    qn = pointed.closest('tr').dataset.qn
 
 	if (qn) {
 		return sqlUpdateHN(tableID, qn, waiting, wanting)

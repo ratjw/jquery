@@ -93,13 +93,11 @@ export function htmldivRecord()
     } else if (type === "number") {
 	  record += `<label class="w${labelwidth}">
 				   <span>${label}</span>
-				   <input class="w${inputwidth}" type="${type}" name="${name}"\
-				     title="${title}" value="" min="${min}" max="${max}">
+				   <input class="w${inputwidth}" type="${type}" name="${name}" title="${title}" value="" min="${min}" max="${max}">
 				 </label>`
 	} else {
 	  record += `<label class="w${labelwidth}">
-				   <input class="w${inputwidth}" type="${type}" name="${name}"\
-				     title="${title}" value="${title}">
+				   <input class="w${inputwidth}" type="${type}" name="${name}" title="${title}" value="${title}">
 				   <span style="right:${inputwidth}px">${label}</span>
 				 </label>`
 	}

@@ -24,8 +24,7 @@ export function sqlSaveOpTime(allCases, oproom, optime, qn)
 
 function sqlNewTime(optime, casenum, qn)
 {
-  return `UPDATE book SET optime='${optime}',casenum=${casenum},editor='${USER}'\
-				  WHERE qn=${qn};`
+  return `UPDATE book SET optime='${optime}',casenum=${casenum},editor='${USER}' WHERE qn=${qn};`
 }
 
 function sqlNewTimeNoRoom(optime, qn)

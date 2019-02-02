@@ -84,8 +84,7 @@ jQuery.fn.extend({
 			q.treatment,
 			q.contact,
 			q.editor,
-			q.editdatetime,
-			q.qn
+			q.editdatetime
 		].forEach((item, i) => { row.cells[i].innerHTML = item })
 	}
 })

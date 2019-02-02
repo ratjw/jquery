@@ -29,6 +29,5 @@ export function sqlSaveTheatre(allOldCases, allNewCases, theatre, oproom, qn)
 function sqlNewTheatre(theatre, casenum, qn)
 {
 	return `UPDATE book
-				  SET theatre='${theatre}',casenum=${casenum},editor='${USER}'\
-				  WHERE qn=${qn};`
+				  SET theatre='${theatre}',casenum=${casenum},editor='${USER}' WHERE qn=${qn};`
 }

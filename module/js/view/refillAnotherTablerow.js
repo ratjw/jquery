@@ -1,6 +1,7 @@
 
 import { getBOOKrowByQN, getTableRowByQN } from "../util/rowsgetting.js"
 import { filldata } from "./fill.js"
+import { BOOK } from "../util/variables.js"
 
 // view corresponding cell in another table
 export function refillAnotherTablerow(tableID, qn) {
