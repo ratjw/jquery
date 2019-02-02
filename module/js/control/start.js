@@ -146,7 +146,7 @@ function documentEvent()
   // Prevent the Backspace key from navigating back.
   // Esc to cancel everything
   $(document).keydown(event => {
-    let keycode = event.which || window.event.keyCode,
+    let keycode = event.which || window.Event.keyCode,
       ctrl = event.ctrlKey,
       shift = event.shiftKey,
       home = keycode === 36,

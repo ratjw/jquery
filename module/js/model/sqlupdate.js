@@ -1,6 +1,7 @@
 
 import { postData, MYSQLIPHP } from "./fetch.js"
 import { URIcomponent } from "../util/util.js"
+import { USER } from "../main.js"
 
 export function sqlStart() {
 	return postData(MYSQLIPHP, "start=''");

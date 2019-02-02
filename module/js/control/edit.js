@@ -47,7 +47,7 @@ export function editcellEvent()
     resetTimer();
     event.stopPropagation()
   }).keydown(event => {
-    let keycode = event.which || window.event.keyCode
+    let keycode = event.which || window.Event.keyCode
 
     keyin(event, keycode, POINTER)
     resetTimerCounter()
@@ -59,7 +59,7 @@ export function editcellEvent()
       return
     }
 
-    let keycode = event.which || window.event.keyCode
+    let keycode = event.which || window.Event.keyCode
 
     // not resize after non-char was pressed
     if (keycode === 27)  { clearAllEditing() }
@@ -70,14 +70,7 @@ export function editcellEvent()
     reposition($editcell, "center", "center", POINTER)
   })
 }
-/*
-  document.querySelector("#editcell").dispatchEvent(new KeyboardEvent("keypress", {
-    keyCode: 13,
-    shiftKeyArg: true,
-    bubbles: true,
-    cancelable: true
-  }))
-*/
+
 // function declaration (definition ) : public
 // function expression (literal) : local
 
@@ -91,17 +84,28 @@ let keyin = function (evt, keycode) {
 
   switch(keycode)
   {
-    case 27: 
+    case 27:
       clearAllEditing()
       evt.preventDefault()
       return
-    case 9: 
+    case 9:
       servicetbl
       ? serviceTable9(evt, editable, Shift)
       : mainTable9(evt, editable, Shift)
       evt.preventDefault()
       return
-    case 13: 
+    case 13:
+      if (Shift || Ctrl) { return }
+/*
+      document.querySelector("#editcell").dispatchEvent(new KeyboardEvent("keypress", {
+        keyCode: 13,
+        shiftKey: true
+      }))
+      $("#editcell").trigger(jQuery.Event("keypress", {
+        keyCode: 13,
+        shiftKey: true
+      }))
+*/
       servicetbl
       ? serviceTable13(evt, editable, Shift, Ctrl)
       : mainTable13(evt, editable, Shift, Ctrl)
@@ -115,7 +119,6 @@ let keyin = function (evt, keycode) {
 }
 
 let mainTable9 = function (evt, editable, Shift) {
-  clearMenu()
   savePreviousCell()
   if (!POINTER || POINTER.cellIndex > 7) {
     let thiscell = Shift
@@ -140,8 +143,6 @@ let serviceTable9 = function (evt, editable, Shift) {
 }
 
 let mainTable13 = function (evt, editable, Shift, Ctrl) {
-  clearMenu()
-  if (Shift || Ctrl) { return }
   savePreviousCell()
   if (!POINTER || POINTER.cellIndex > 7) {
     let thiscell = findNextRow(editable, POINTER)
@@ -155,7 +156,6 @@ let mainTable13 = function (evt, editable, Shift, Ctrl) {
 }
 
 let serviceTable13 = function (evt, editable, Shift, Ctrl) {
-  if (Shift || Ctrl) { return }
   savePreviousCellService()
   let thiscell = findNextRow(editable, POINTER)
   thiscell
@@ -298,9 +298,4 @@ let getHtmlText = function (cell) {
     HTMLNOBR    = /(<((?!br)[^>]+)>)/ig
 
   return cell && cell.innerHTML.replace(HTMLTRIM, '').replace(HTMLNOBR, '')
-}
-
-let clearMenu = function() {
-  $('#menu').hide();
-  $('#stafflist').hide();
 }

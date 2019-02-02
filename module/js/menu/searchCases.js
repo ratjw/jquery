@@ -41,7 +41,7 @@ export function searchCases()
     }
   })
   .keydown(event => {
-    let keycode = event.which || window.event.keyCode
+    let keycode = event.which || window.Event.keyCode
     if (keycode === 13) { searchDB() }
   })
 }
