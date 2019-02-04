@@ -359,7 +359,7 @@ tr.marker {
 }
 
 @keyframes blink1 { 
-   50% { border-color: skyblue; } 
+   50% { background-color: skyblue; } 
 }
 
 tr.moveCase {

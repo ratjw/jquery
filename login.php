@@ -11,7 +11,7 @@
 		$servername = "surgery.rama.mahidol.ac.th";
 		$wsdl="http://appcenter/webservice/patientservice.wsdl";
 		$resultz = "";
-		$error = "";
+		$error = "ปปป";
 
 		if (preg_match('/^\d{6}$/', $userid)) {
 			if (strpos($_SERVER["SERVER_NAME"], $servername) !== false) {

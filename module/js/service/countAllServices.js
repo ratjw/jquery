@@ -14,26 +14,28 @@ export function countAllServices() {
   $rows.each(function() {
     if (this.querySelector('td.serviceStaff')) { return true }
 
-	if (this.cells[DISCHARGESV].innerHTML) { document.getElementById("Discharge").innerHTML++ }
+  if (this.cells[DISCHARGESV].innerHTML) { document.getElementById("Discharge").innerHTML++ }
 
     let complication = []
+    // COMPLICATION is titles of the last 5 buttons in profile record
     COMPLICATION.forEach(e => {
-	  complication.push(this.querySelector('input[title="' + e + '"]'))
+      complication.push(this.querySelector('input[title="' + e + '"]'))
     })
 
+    // buttons Readmission and Reoperation are number inputs
     complication.forEach(e => {
       let x = Number(e.value)
-	  if (x) {
-		let label = e.previousElementSibling.innerHTML
+      if (x) {
+        let label = e.previousElementSibling.innerHTML
         if (label) {
-		  let y = Number(document.getElementById(label).innerHTML)
+          let y = Number(document.getElementById(label).innerHTML)
           document.getElementById(label).innerHTML = x + y
-		}
-	    if (x > 1) {
+        }
+        if (x > 1) {
           let z = Number(document.getElementById(e.title).innerHTML)
           document.getElementById(e.title).innerHTML = x - 1 + z
         }
-     }
+      }
       if (e.checked) {
         document.getElementById(e.title).innerHTML++
       }
