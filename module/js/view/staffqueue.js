@@ -1,11 +1,11 @@
-
+ 
 import {
   OPDATE, THEATRE, OPROOM, OPTIME, CASENUM, STAFFNAME, HN, PATIENT,
   DIAGNOSIS, TREATMENT, EQUIPMENT, CONTACT, LARGESTDATE
 } from "../model/const.js"
 import { START, ISOdate, nextdays, putNameAge } from "../util/date.js"
 import { BOOK, CONSULT, isPACS } from "../util/variables.js"
-import { viewEquip } from "./viewEquip.js"
+import { viewEquipNoImg } from "./viewEquip.js"
 import { setRowData, blankRowData } from "../model/rowdata.js"
 import { isSplit } from "../util/util.js"
 import { splitPane } from "./splitPane.js"
@@ -84,6 +84,7 @@ function fillEachStaff(book, table)
     madedate = date
   }
 
+  reNumberNodateRows()
   hoverMain()
 }
 
@@ -94,9 +95,6 @@ export function filldataQueue(row, q)
   setRowData(row, q)
   if (q.hn && isPACS) { cells[HN].className = "pacs" }
   if (q.patient) { cells[PATIENT].className = "upload" }
-  if (row.className === 'nodate') {
-    row.cells[OPDATE].dataset.waitnum = row.dataset.waitnum
-  }
 
   cells[THEATRE].innerHTML = q.theatre
   cells[OPROOM].innerHTML = q.oproom || ""
@@ -107,6 +105,17 @@ export function filldataQueue(row, q)
   cells[PATIENT].innerHTML = putNameAge(q)
   cells[DIAGNOSIS].innerHTML = q.diagnosis
   cells[TREATMENT].innerHTML = q.treatment
-  cells[EQUIPMENT].innerHTML = viewEquip(q.equipment)
+  cells[EQUIPMENT].innerHTML = viewEquipNoImg(q.equipment)
   cells[CONTACT].innerHTML = q.contact
+}
+
+function reNumberNodateRows()
+{
+  let queuetbl = document.getElementById('queuetbl'),
+    nodates = Array.from(queuetbl.querySelectorAll('tr')).filter(e => e.className === 'nodate')
+
+  nodates.forEach((row, i) => {
+    row.cells[OPDATE].dataset.number = i + 1
+  })
+
 }

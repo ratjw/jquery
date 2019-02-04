@@ -155,7 +155,7 @@ export function sortable () {
 				sqlSortable(allOldCases, allNewCases, moveitem, thisdrop).then(response => {
 					let hasData = function () {
 						updateBOOK(response)
-						viewmoveCase(moveopdate, thisopdate, staffname)
+						viewmoveCase(moveitem, thisdrop)
 						hoverMain()
 					}
 
