@@ -7,7 +7,7 @@ import { putAgeOpdate, putThdate } from "../util/date.js"
 import { getTableRowByQN } from "../util/rowsgetting.js"
 import { BOOK, CONSULT, updateBOOK } from "../util/variables.js"
 import { Alert, isConsultsTbl } from "../util/util.js"
-import { viewEquipJSON } from "../view/viewEquip.js"
+import { viewEquip } from "../view/viewEquip.js"
 
 const NAMEOFDAYTHAI	= ["อาทิตย์", "จันทร์", "อังคาร", "พุธ", "พฤหัส", "ศุกร์", "เสาร์"]
 
@@ -219,7 +219,7 @@ let Checklistequip = function () {
 		let showup = function () {
 			updateBOOK(response)
 			let row = getTableRowByQN("tbl", thisqn)
-			row.querySelectorAll("td")[EQUIPMENT].innerHTML = viewEquipJSON(equipJSON)
+			row.querySelectorAll("td")[EQUIPMENT].innerHTML = viewEquip(equipJSON)
 			$dialogEquip.dialog('close')
 		}
 		let rollback = function () {

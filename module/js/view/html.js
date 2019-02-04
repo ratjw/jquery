@@ -1,6 +1,6 @@
 
 import { EQUIPSHEET, RECORDSHEET } from "../model/const.js"
-import { staffqueue } from "../view/fill.js"
+import { staffqueue } from "../view/staffqueue.js"
 import { STAFF } from "../util/variables.js"
 
 // stafflist for enter name in Staff column

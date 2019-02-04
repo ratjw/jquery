@@ -5,9 +5,12 @@ import {
 } from "../model/const.js"
 import { POINTER, clearEditcell } from "../control/edit.js"
 import { START, putThdate, putNameAge } from "../util/date.js"
-import { getClass, inPicArea,  winWidth, winHeight, winResizeFix } from "../util/util.js"
+import {
+  getClass, inPicArea, isSplit,  winWidth, winHeight, winResizeFix
+} from "../util/util.js"
 import { isPACS } from "../util/variables.js"
-import { refillall, refillstaffqueue } from "../view/fill.js"
+import { refillall } from "../view/fill.js"
+import { refillstaffqueue } from "../view/staffqueue.js"
 import { fillConsults } from "../view/fillConsults.js"
 import { coloring } from "./coloring.js"
 import { countAllServices } from "./countAllServices.js"
@@ -69,9 +72,9 @@ export function showService() {
     width: winWidth(95),
     height: winHeight(95),
     close: function() {
-      refillstaffqueue()
+      if (isSplit()) { refillstaffqueue() }
       refillall()
-            fillConsults()
+      fillConsults()
       $(".ui-dialog:visible").find(".ui-dialog-content").dialog("close")
       $(".fixed").remove()
       hideProfile()

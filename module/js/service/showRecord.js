@@ -24,7 +24,9 @@ function initRecord(bookq, $divRecord)
 		inputName = this.name
 		this.name = inputName + bookq.qn
 		if (this.type === "number") {
-			if ((inputName === "operated") && (bookq.disease) && (!bookq.operated)) {
+			if ((inputName === "admitted") && (bookq.admit) && (!bookq.admitted)) {
+				this.value = 1
+			} else if ((inputName === "operated") && (bookq.disease) && (!bookq.operated)) {
 				this.value = 1
 			} else {
 				this.value = bookq[inputName]

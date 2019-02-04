@@ -34,7 +34,7 @@ require_once "mysqli.php";
 		$admit = "";
 		$discharge = "";
 		if (($newAdmit >= $from) && ($newAdmit <= $to) && ($oldAdmit < $newAdmit)) {
-			$admit = "admit='$newAdmit',admitted=admitted+1,";
+			$admit = "admit='$newAdmit',";
 		}
 		if (($newDischarge >= $from) && ($newDischarge <= $to) && ($oldDischarge < $newDischarge)) {
 				$discharge = "discharge='$newDischarge',";
