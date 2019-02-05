@@ -14,7 +14,7 @@ import { sortable } from "./sort.js"
 import { clearSelection } from "./clearSelection.js"
 import { fillall } from "../view/fill.js"
 import { fillConsults } from "../view/fillConsults.js"
-import { START, ISOdate, thDate } from "../util/date.js"
+import { START, ISOdate, thDate, scrolltoToday } from "../util/date.js"
 import { BOOK, updateBOOK } from "../util/variables.js"
 import { Alert } from "../util/util.js"
 import { UndoManager } from "../model/UndoManager.js"
@@ -38,7 +38,7 @@ function success(response) {
   // call sortable before render, otherwise it renders very slowly
   sortable()
   makeStart()
-  scrolltoToday()
+  scrolltoToday('tbl')
   fillConsults()
 
   // setting up html
@@ -212,18 +212,6 @@ function doPrevent(evt)
     }
   }
   return doPrevent
-}
-
-function scrolltoToday()
-{
-  let today = new Date(),
-    todate = ISOdate(today),
-    todateth = thDate(todate)
-  $('#tblcontainer').scrollTop(0)
-  let thishead = $("#tbl tr:contains(" + todateth + ")")[0]
-  $('#tblcontainer').animate({
-    scrollTop: thishead.offsetTop
-  }, 300);
 }
 
 // allow the dialog title to contain HTML

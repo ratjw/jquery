@@ -3,7 +3,7 @@ import {
   OPDATE, THEATRE, OPROOM, OPTIME, CASENUM, STAFFNAME, HN, PATIENT,
   DIAGNOSIS, TREATMENT, EQUIPMENT, CONTACT, LARGESTDATE
 } from "../model/const.js"
-import { START, ISOdate, nextdays, putNameAge } from "../util/date.js"
+import { START, ISOdate, nextdays, putNameAge, scrolltoToday } from "../util/date.js"
 import { BOOK, CONSULT, isPACS } from "../util/variables.js"
 import { viewEquipNoImg } from "./viewEquip.js"
 import { setRowData, blankRowData } from "../model/rowdata.js"
@@ -30,6 +30,7 @@ export function staffqueue(staffname) {
 
   fillConsults('queuetbl')
   hoverMain()
+  scrolltoToday('queuetbl')
 }
 
 // Use existing DOM table

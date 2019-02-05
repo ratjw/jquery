@@ -21,17 +21,17 @@ export function postponeCase()
 		staffname = row.dataset.staffname,
 		qn = row.dataset.qn,
 		oldwaitnum = row.dataset.waitnum,
-		newwaitnum = Math.ceil(getLargestWaitnum(BOOK, movestaffname)) + 1,
 		allCases = []
 
 	if (oproom) {
 		allCases = sameDateRoomTableQNs(row)
 	}
 
-	doPostponeCase(newwaitnum, LARGESTDATE)
+	row.dataset.waitnum = Math.ceil(getLargestWaitnum(BOOK, staffname)) + 1
+	doPostponeCase(LARGESTDATE)
   clearSelection()
 
-	function doPostponeCase(waitnum, thisdate) {
+	function doPostponeCase(thisdate) {
 		sqlPostponeCase(allCases, row, thisdate).then(response => {
 			let hasData = function () {
 				updateBOOK(response)

@@ -55,8 +55,8 @@ td {
 
 /* used in Equipment column */
 td img {
-	height: 32px;
-	width: 40px;
+	height: 25px;
+	width: 25px;
 }
 td img.imgpale {
 	filter: opacity(30%);

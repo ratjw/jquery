@@ -118,3 +118,17 @@ function getAge (birth, toDate) {
 
 	return years ? ageyears : months ? agemonths : agedays;
 }
+
+export function scrolltoToday(tableID)
+{
+  let today = new Date(),
+    todate = ISOdate(today),
+    table = document.getElementById(tableID),
+    container = table.closest('div'),
+    thisrow = Array.from(table.querySelectorAll('tr')).find(e => e.dataset.opdate === todate)
+
+  container.scrollTop = 0
+  $(container).animate({
+    scrollTop: thisrow.offsetTop
+  }, 300);
+}

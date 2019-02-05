@@ -75,7 +75,7 @@ function showConsults(rows, lastopdate)
   index = index % slen
   while (dateoncall <= lastopdate) {
     oncallRow = findOncallRow(rows, nextrow, tlen, dateoncall)
-    if (oncallRow && !oncallRow.dataset.qn) {
+    if (oncallRow && !oncallRow.dataset.patient) {
       dataAttr(oncallRow.cells[PATIENT], staffoncall[index].staffname)
     }
     nextrow = oncallRow.rowIndex + 1
@@ -89,7 +89,7 @@ function showConsults(rows, lastopdate)
     dateoncall = oncall.dateoncall
     if (dateoncall > today) {
       oncallRow = findOncallRow(rows, nextrow, tlen, dateoncall)
-      if (oncallRow && !oncallRow.dataset.qn) {
+      if (oncallRow && !oncallRow.dataset.patient) {
         dataAttr(oncallRow.cells[PATIENT], oncall.staffname)
       }
       nextrow = oncallRow.rowIndex + 1
