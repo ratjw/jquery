@@ -1,5 +1,5 @@
 
-import { updateBOOK } from "../util/variables.js"
+import { updateBOOK } from "../util/updateBOOK.js"
 import { sqlSaveContentNoQN } from "../model/sqlSaveContent.js"
 import { viewSaveContentNoQN } from "../view/viewSaveContentNoQN.js"
 import { OLDCONTENT } from "../control/edit.js"
@@ -10,7 +10,7 @@ export function saveContentNoQN(pointed, column, newcontent)
 	sqlSaveContentNoQN(pointed, column, newcontent).then(response => {
 		let hasData = function () {
 			updateBOOK(response)
-			viewSaveContentNoQN(pointed, column)
+//			viewSaveContentNoQN(pointed, column)
 		}
 		let noData = function () {
 			Alert("saveContentNoQN", response)

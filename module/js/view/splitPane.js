@@ -1,11 +1,11 @@
 
 export let splitPane = function () {
-	let scrolledTop = document.getElementById("tblcontainer").scrollTop,
-		tohead = findVisibleHead('#tbl'),
+	let scrolledTop = document.getElementById("maincontainer").scrollTop,
+		tohead = findVisibleHead('#maintbl'),
 		menuHeight = $("#cssmenu").height(),
 		titleHeight = $("#titlebar").height()
 
-	$("#tblwrapper").css({
+	$("#mainwrapper").css({
 		"height": "100%" - menuHeight,
 		"width": "50%"
 	})
@@ -14,11 +14,11 @@ export let splitPane = function () {
 		"width": "50%"
 	})
 	$("#queuecontainer").css({
-		"height": $("#tblcontainer").height() - titleHeight
+		"height": $("#maincontainer").height() - titleHeight
 	})
 
-	initResize($("#tblwrapper"))
-	$('.ui-resizable-e').css('height', $("#tbl").css("height"))
+	initResize($("#mainwrapper"))
+	$('.ui-resizable-e').css('height', $("#maintbl").css("height"))
 
 	document.getElementById("clickclosequeue").onclick = closequeue
 }
@@ -56,11 +56,11 @@ let initResize = function ($wrapper) {
 }
 
 function closequeue() {
-	let scrolledTop = document.getElementById("tblcontainer").scrollTop,
-		tohead = findVisibleHead('#tbl')
+	let scrolledTop = document.getElementById("maincontainer").scrollTop,
+		tohead = findVisibleHead('#maintbl')
 	
 	$("#queuewrapper").hide()
-	$("#tblwrapper").css({
+	$("#mainwrapper").css({
 		"height": "100%" - $("#cssmenu").height(),
 		"width": "100%"
 	})

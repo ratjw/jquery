@@ -4,13 +4,13 @@ import { createEditcell, clearEditcell } from "../control/edit.js"
 
 export function getTHEATRE(evt, pointing)
 {
-  let $tbl = $("#tbl")
+  let $maintbl = $("#maintbl")
  
-  if ($tbl.find("th")[THEATRE].offsetWidth < 10) {
-    $tbl.addClass("showColumn2")
+  if ($maintbl.find("th")[THEATRE].offsetWidth < 10) {
+    $maintbl.addClass("showColumn2")
     createEditcell(pointing)
   } else if (pointing.nodeName) {
-    $tbl.removeClass("showColumn2")
+    $maintbl.removeClass("showColumn2")
     clearEditcell()
   } else {
     createEditcell(pointing)

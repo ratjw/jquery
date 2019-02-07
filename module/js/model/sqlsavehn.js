@@ -4,7 +4,7 @@ import { USER } from "../main.js"
 import { calcWaitnum, defaultWaitnum } from "../util/calcWaitnum.js"
 import { getOpdate } from "../util/date.js"
 import { URIcomponent, getTitlename } from "../util/util.js"
-import { BOOK } from "../util/variables.js"
+import { BOOK } from "../util/updateBOOK.js"
 
 const GETNAMEHN	= "php/getnamehn.php"
 

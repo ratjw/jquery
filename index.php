@@ -43,10 +43,6 @@ h4 {
 </HEAD>
 <BODY onload="login()">
 
-<?php
-	$error = "";
-?>
-
 <p id="logo"><img src="logoRama.png"></p>
 
 <div id="login">
@@ -71,7 +67,7 @@ h4 {
 	</form>
 </div>
 
-<h4> <?php echo $error; ?> </h4>
+<h4> <?php echo (!empty($_GET['error']) ? $_GET['error'] : ''); ?> </h4>
 
 </BODY>
 </HTML>

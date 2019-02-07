@@ -1,36 +1,8 @@
 
 import { PATIENT, LARGESTDATE } from "../model/const.js"
-import { ISOdate, nextdays, numDate, thDate } from "../util/date.js"
-import { ONCALL, STAFF } from "../util/variables.js"
+import { ISOdate, nextdays, numDate, thDate, START } from "../util/date.js"
+import { ONCALL, STAFF } from "../util/updateBOOK.js"
 import {isSplit } from "../util/util.js"
-
-export function fillConsults(tableID = 'tbl')
-{
-  let rows = document.getElementById(tableID).rows,
-    tlen = rows.length,
-    lastopdate
-
-  if (tableID === 'tbl') {
-    if (rows[tlen-1].querySelector('th')) {
-      lastopdate = rows[tlen-2].dataset.opdate
-    } else {
-      lastopdate = rows[tlen-1].dataset.opdate
-    }
-  } else if (tableID === 'queuetbl') {
-    let rowopdate = Array.from(rows).find(e => e.dataset.opdate === LARGESTDATE)
-    if (rowopdate) {
-      lastopdate = rowopdate.previousElementSibling.dataset.opdate
-    } else {
-      if (rows[tlen-1].querySelector('th')) {
-        lastopdate = rows[tlen-2].dataset.opdate
-      } else {
-        lastopdate = rows[tlen-1].dataset.opdate
-      }
-    }
-  }
-
-  showConsults(rows, lastopdate)
-}
 
 // refill after deleted or written over
 export function showStaffOnCall(opdate)
@@ -46,54 +18,39 @@ export function dataAttr(pointing, staffname)
   pointing.classList.add("consult")
 }
 
-function showConsults(rows, lastopdate)
+// The staff who has latest startoncall date, is to start
+export function fillConsults(tableID = 'maintbl')
 {
-  let tlen = rows.length,
-    today = ISOdate(new Date()),
+  let table = document.getElementById(tableID),
+    saturdays = table.querySelectorAll("tr.Saturday"),
+    firstsat = saturdays[0].dataset.opdate,
     staffoncall = STAFF.filter(staff => (staff.oncall === "1")),
     slen = staffoncall.length,
-    nextrow = 1,
-    index = 0,
     start = staffoncall.filter(staff => staff.startoncall)
       .reduce((a, b) => a.startoncall > b.startoncall ? a : b, 0),
     dateoncall = start.startoncall,
     staffstart = start.staffname,
-    oncallRow = {}
+    sindex = staffoncall.findIndex(e => e.staffname === staffstart)
 
-  // The staff who has latest startoncall date, is to start
-  while ((index < slen) && (staffoncall[index].staffname !== staffstart)) {
-    index++
-  }
-
-  // find first date immediately after today, to begin
-  while (dateoncall <= today) {
+  // find first date to begin
+  while (dateoncall < firstsat) {
     dateoncall = nextdays(dateoncall, 7)
-    index++
+    sindex = (sindex + 1) % slen
   }
 
-  // write staffoncall if no patient
-  index = index % slen
-  while (dateoncall <= lastopdate) {
-    oncallRow = findOncallRow(rows, nextrow, tlen, dateoncall)
-    if (oncallRow && !oncallRow.dataset.patient) {
-      dataAttr(oncallRow.cells[PATIENT], staffoncall[index].staffname)
-    }
-    nextrow = oncallRow.rowIndex + 1
-    dateoncall = nextdays(dateoncall, 7)
-    index = (index + 1) % slen
-  }
+  Array.from(saturdays).forEach(e => {
+    dataAttr(e.cells[PATIENT], staffoncall[sindex].staffname)
+    sindex = (sindex + 1) % slen
+  })
 
   // write substitute oncall
-  nextrow = 1
   ONCALL.forEach(oncall => {
     dateoncall = oncall.dateoncall
-    if (dateoncall > today) {
-      oncallRow = findOncallRow(rows, nextrow, tlen, dateoncall)
-      if (oncallRow && !oncallRow.dataset.patient) {
-        dataAttr(oncallRow.cells[PATIENT], oncall.staffname)
+    Array.from(saturdays).forEach(e => {
+      if (e.dataset.opdate === dateoncall) {
+        dataAttr(e.cells[PATIENT], oncall.staffname)
       }
-      nextrow = oncallRow.rowIndex + 1
-    }
+    })
   })
 }
 

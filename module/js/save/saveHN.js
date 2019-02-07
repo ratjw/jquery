@@ -2,7 +2,7 @@
 import { saveCaseHN } from "./saveCaseHN.js"
 import { saveNameHN } from "./saveNameHN.js"
 import { ISOdate } from "../util/date.js"
-import { BOOK } from "../util/variables.js"
+import { BOOK } from "../util/updateBOOK.js"
 
 export function saveHN(pointed, content) {
 	if (!/^\d{7}$/.test(content)) {

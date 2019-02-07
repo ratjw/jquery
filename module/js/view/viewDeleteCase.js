@@ -13,7 +13,7 @@ export function viewDeleteCase(row) {
     staffname = row.dataset.staffname
 
   viewOneDay(opdate)
-  if (tableID === "tbl") {
+  if (tableID === "maintbl") {
     viewSplit(staffname)
   } else {
     delRow(row, opdate)

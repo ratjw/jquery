@@ -1,7 +1,7 @@
 
 import { ADMISSIONSV, ADMITSV, DISCHARGESV } from "../model/const.js"
 import { sqlGetIPD } from "../model/sqlservice.js"
-import { updateBOOK } from "../util/variables.js"
+import { updateBOOK } from "../util/updateBOOK.js"
 import { setSERVICE, SERVICE } from "./setSERVICE.js"
 import { putThdate } from "../util/date.js"
 

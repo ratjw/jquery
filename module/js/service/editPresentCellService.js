@@ -6,7 +6,7 @@ import {
 import {
 	OLDCONTENT, clearEditcell, createEditcell, editcellSaveData
 } from "../control/edit.js"
-import { isPACS } from "../util/variables.js"
+import { isPACS } from "../util/updateBOOK.js"
 import { inPicArea } from "../util/util.js"
 import { showUpload } from "../get/showUpload.js"
 import { editableSV } from "./setSERVICE.js"

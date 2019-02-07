@@ -4,7 +4,7 @@ import { LARGESTDATE } from "../model/const.js"
 import { viewOneDay } from "./viewOneDay.js"
 import { scrolltoThisCase } from "./scrolltoThisCase.js"
 import { getBOOKrowByQN } from "../util/rowsgetting.js"
-import { BOOK } from "../util/variables.js"
+import { BOOK } from "../util/updateBOOK.js"
 import { filldata } from "./fill.js"
 
 export function viewPostponeCase(row, thisdate)

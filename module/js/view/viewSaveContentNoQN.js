@@ -3,7 +3,7 @@ import { STAFFNAME } from "../model/const.js"
 import { viewSplit } from "./viewSplit.js"
 import { viewOneDay } from "./viewOneDay.js"
 import { isConsults, isConsultsTbl } from "../util/util.js"
-import { BOOK, CONSULT } from "../util/variables.js"
+import { BOOK, CONSULT } from "../util/updateBOOK.js"
 import { refillstaffqueue } from "./staffqueue.js"
 import { getOpdate } from "../util/date.js"
 import { getBOOKrowByQN } from "../util/rowsgetting.js"
@@ -22,12 +22,12 @@ export function viewSaveContentNoQN(pointed, column) {
 
   filldata(row, bookq)
 
-	if (tableID === 'tbl') {
-    // Remote effect from editing on tbl to queuetbl
+	if (tableID === 'maintbl') {
+    // Remote effect from editing on maintbl to queuetbl
     viewSplit(staffname)
   } else {
 		if (!isConsults()) {
-      // consults are not apparent on tbl, no remote effect from editing on queuetbl
+      // consults are not apparent on maintbl, no remote effect from editing on queuetbl
       viewOneDay(opdate)
     }
   }

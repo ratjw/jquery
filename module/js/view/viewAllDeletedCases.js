@@ -3,7 +3,7 @@ import { rowDecoration } from "./rowDecoration.js"
 import { putThdate } from "../util/date.js"
 import { winWidth, winHeight, winResizeFix } from "../util/util.js"
 import { toUndelete } from "../menu/allDeletedCases.js"
-import { setAllDeletedRowdata } from "../model/rowdata.js"
+import { setRowData } from "../model/rowdata.js"
 
 // Make dialog box dialogAllDeleted containing historytbl
 export function viewAllDeletedCases(deleted) {
@@ -72,7 +72,7 @@ jQuery.fn.extend({
 	filldataAllDeleted : function(q) {
 		let row = this[0]
 
-    setAllDeletedRowdata(row, q)
+    setRowData(row, q)
 		rowDecoration(row, q.opdate)
 		row.cells[0].classList.add("toUndelete")
 

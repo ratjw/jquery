@@ -12,13 +12,13 @@ html, body {
 	font-family: sans-serif;
 }
 
-#tblwrapper {
+#mainwrapper {
 	float: left;
 	height: 100%;
 	width: 100%;
 }
 
-#tblcontainer {
+#maincontainer {
 	height: 95%;
 	width: 100%;
 	overflow: scroll;
@@ -62,7 +62,7 @@ td img.imgpale {
 	filter: opacity(30%);
 }
 
-td.consult:nth-child(8)::before { 
+td.consult:nth-child(8)::after { 
   color: #999999;
   font-size: 12px;
   content: 'สัปดาห์ Consult\A'attr(data-consult);
@@ -81,15 +81,15 @@ td.consult:nth-child(8)::before {
 	border-left: solid 2px snow;
 }
 
-#tbl.showColumn2 th:nth-child(2),
-#tbl.showColumn2 td:nth-child(2) { width: 30px; font-size: xx-small; }
-#tbl th:nth-child(2),
-#tbl td:nth-child(2) { width: 0px; font-size: 0px; }
+#maintbl.showColumn2 th:nth-child(2),
+#maintbl.showColumn2 td:nth-child(2) { width: 30px; font-size: xx-small; }
+#maintbl th:nth-child(2),
+#maintbl td:nth-child(2) { width: 0px; font-size: 0px; }
 
-#tbl th:nth-child(3),
-#tbl th:nth-child(4),
-#tbl td:nth-child(4),
-#tbl th:nth-child(5),
+#maintbl th:nth-child(3),
+#maintbl th:nth-child(4),
+#maintbl td:nth-child(4),
+#maintbl th:nth-child(5),
 #queuetbl th:nth-child(3),
 #queuetbl th:nth-child(4),
 #queuetbl th:nth-child(5),
@@ -105,12 +105,12 @@ td.consult:nth-child(8)::before {
   content: attr(data-number);
 }
 
-#tbl td:nth-child(3),
-#tbl td:nth-child(5) { font-size: 14px; padding: 0px; }
-#tbl td:first-child,
-#tbl td:nth-child(6),
-#tbl td:nth-child(7),
-#tbl td:nth-child(8),
+#maintbl td:nth-child(3),
+#maintbl td:nth-child(5) { font-size: 14px; padding: 0px; }
+#maintbl td:first-child,
+#maintbl td:nth-child(6),
+#maintbl td:nth-child(7),
+#maintbl td:nth-child(8),
 #queuetbl td:first-child,
 #queuetbl td:nth-child(6),
 #queuetbl td:nth-child(7),
@@ -135,27 +135,27 @@ td.consult:nth-child(8)::before {
 	font-size: 12px;
 }
 
-#tbl td:nth-child(2),
-#tbl td:nth-child(3),
-#tbl td:nth-child(4),
-#tbl td:nth-child(5),
+#maintbl td:nth-child(2),
+#maintbl td:nth-child(3),
+#maintbl td:nth-child(4),
+#maintbl td:nth-child(5),
 #servicetbl td:first-child,
 #historytbl td:nth-child(2),
 #historytbl td:nth-child(3) {
 	text-align: center;
 }
 
-#tbl td:first-child { min-width: 40px; max-width: 60px; }
-#tbl td:nth-child(3) { min-width: 15px; max-width: 20px; }
-#tbl td:nth-child(4) { min-width: 25px; max-width: 30px; }
-#tbl td:nth-child(5) { min-width: 15px; max-width: 20px; }
-#tbl td:nth-child(6) { min-width: 40px; max-width: 60px; }
-#tbl td:nth-child(7) { min-width: 50px; max-width: 70px; }
-#tbl td:nth-child(8) { min-width: 70px; width: 10%; }
-#tbl td:nth-child(9) { min-width: 200px; width: 15%; }
-#tbl td:nth-child(10) { min-width: 200px; width: 15%; }
-#tbl td:nth-child(11) { min-width: 100px; width: 25%; }
-#tbl td:nth-child(12) { min-width: 100px; width: 15%; }
+#maintbl td:first-child { min-width: 40px; max-width: 60px; }
+#maintbl td:nth-child(3) { min-width: 15px; max-width: 20px; }
+#maintbl td:nth-child(4) { min-width: 25px; max-width: 30px; }
+#maintbl td:nth-child(5) { min-width: 15px; max-width: 20px; }
+#maintbl td:nth-child(6) { min-width: 40px; max-width: 60px; }
+#maintbl td:nth-child(7) { min-width: 50px; max-width: 70px; }
+#maintbl td:nth-child(8) { min-width: 70px; width: 10%; }
+#maintbl td:nth-child(9) { min-width: 200px; width: 15%; }
+#maintbl td:nth-child(10) { min-width: 200px; width: 15%; }
+#maintbl td:nth-child(11) { min-width: 100px; width: 25%; }
+#maintbl td:nth-child(12) { min-width: 100px; width: 15%; }
 
 #queuetbl td:first-child { min-width: 40px; max-width: 60px; }
 #queuetbl td:nth-child(7) { min-width: 50px; max-width: 70px; }
@@ -801,18 +801,18 @@ td.upload2 { background-image: url(pic/general/upload2.png); }
  
 	tr { border: 1px solid #ccc; }
 
-	#tbl td:first-child,
-	#tbl td:nth-child(2),
-	#tbl td:nth-child(3),
-	#tbl td:nth-child(4),
-	#tbl td:nth-child(5),
-	#tbl td:nth-child(6),
-	#tbl td:nth-child(7),
-	#tbl td:nth-child(8),
-	#tbl td:nth-child(9),
-	#tbl td:nth-child(10),
-	#tbl td:nth-child(11),
-	#tbl td:nth-child(12) { width: auto; }
+	#maintbl td:first-child,
+	#maintbl td:nth-child(2),
+	#maintbl td:nth-child(3),
+	#maintbl td:nth-child(4),
+	#maintbl td:nth-child(5),
+	#maintbl td:nth-child(6),
+	#maintbl td:nth-child(7),
+	#maintbl td:nth-child(8),
+	#maintbl td:nth-child(9),
+	#maintbl td:nth-child(10),
+	#maintbl td:nth-child(11),
+	#maintbl td:nth-child(12) { width: auto; }
 
 	td { 
 		/* Behave  like a "row" */

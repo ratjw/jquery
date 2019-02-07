@@ -7,7 +7,7 @@ export function scrolltoThisCase(qn)
 {
   let showtbl, showqueuetbl
 
-  showtbl = locateFound("tblcontainer", "tbl", qn)
+  showtbl = locateFound("maincontainer", "maintbl", qn)
   if (isSplit()) {
     showqueuetbl = locateFound("queuecontainer", "queuetbl", qn)
   }

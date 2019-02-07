@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<HTML>
+<HEAD>
+<meta charset="utf-8"/>
+<title>Neurosurgery Service</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link href="css/css.css" rel="stylesheet">
+<link href="css/menu.css" rel="stylesheet">
+<link href="css/jquery-ui.min.css" rel="stylesheet">
+
+<script src="js/html2canvas.js"></script>
+<script src="js/jquery-3.3.1.min.js"></script>
+<script src="js/jquery.mousewheel.min.js"></script>
+<script src="js/jquery-ui.min.js"></script>
+<script src="js/main.js" type="module"></script>
+
+</HEAD>
+<BODY>
+
+<table id="capture">
+  <tbody>
+   <tr>
+     <th>Date</th>
+     <th>OR</th>
+     <th>ห้อง</th>
+     <th>เวลา</th>
+     <th>ลำดับ</th>
+     <th>Staff</th>
+     <th>HN</th>
+     <th>Patient</th>
+     <th>Diagnosis</th>
+     <th>Treatment</th>
+     <th>Equipment</th>
+     <th>Contact</th>
+   </tr>
+  </tbody>
+</table>
+
+<div id="wrapper">
+  <div id="cssmenu">
+   <ul>
+    <li class="hassub">
+     <a>Staff</a>
+     <ul id="staffmenu"></ul>
+    </li>
+    <li>
+     <a id="clickserviceReview">Service Review</a>
+    </li>
+    <li class="hassub">
+     <a>Search</a>
+     <ul class="w170">
+      <li>
+       <a id="clicksearchCases">Search Cases by Words</a>
+      </li>
+      <li>
+       <a id="clickcaseAll">All Saved Cases</a>
+      </li>
+      <li>
+       <a id="clickallDeletedCases">All Deleted Cases</a>
+      </li>
+     </ul>
+    </li>
+    <li id="addrow">
+      <a id="clickaddnewrow">Add</a>
+    </li>
+    <li id="postpone">
+     <a>Postpone</a>
+     <ul>
+      <li>
+        <a id="postponecase"></a>
+      </li>
+     </ul>
+    </li>
+    <li id="moveCase">
+      <a>Move</a>
+    </li>
+    <li id="copyCase">
+      <a>Copy</a>
+    </li>
+    <li id="history">
+     <a id="clickeditHistory">Tracking</a>
+    </li>
+    <li id="delete">
+     <a>Delete</a>
+     <ul>
+      <li>
+        <a id="delcase"></a>
+      </li>
+     </ul>
+    </li>
+    <li class="floatright">
+      <a id="clickreadme">Readme</a>
+    </li>
+    <li class="floatright hassub"><a>Setting</a>
+     <ul class="w120">
+      <li>
+        <a id="clickaddStaff">Staff Setting</a>
+      </li>
+      <li>
+        <a id="clicksetHoliday">Holiday Setting</a>
+      </li>
+     </ul>
+    </li>
+    <li id="EXCEL" class="floatright">
+     <a id="clicksendtoExcel">
+      <img src="css/pic/general/Excel.png">
+     </a>
+    </li>
+    <li id="LINE" class="floatright">
+     <a id="clicksendtoLINE">
+      <img src="css/pic/general/LINE.png">
+     </a>
+    </li>
+   </ul>
+  </div>
+
+  <div id="tblwrapper">
+   <div id="tblcontainer">
+    <table id="tbl">
+     <tbody>
+      <tr>
+       <th>Date</th>
+       <th>OR</th>
+       <th>Rm</th>
+       <th>Time</th>
+       <th>№</th>
+       <th>Staff</th>
+       <th>HN</th>
+       <th>Patient</th>
+       <th>Diagnosis</th>
+       <th>Treatment</th>
+       <th>Equipment</th>
+       <th>Contact</th>
+      </tr>
+     </tbody>
+    </table>
+   </div>
+  </div>
+
+ <div id="queuewrapper">
+  <div id="titlebar">
+  <span id="titlename"></span>
+  <span class="ui-icon ui-icon-closethick" id="clickclosequeue"></span>
+  </div> 
+  <div id="queuecontainer">
+    <table id="queuetbl">
+     <tbody>
+      <tr>
+       <th>Date</th>
+       <th>OR</th>
+       <th>Rm</th>
+       <th>Time</th>
+       <th>№</th>
+       <th>Staff</th>
+       <th>HN</th>
+       <th>Patient</th>
+       <th>Diagnosis</th>
+       <th>Treatment</th>
+       <th>Equipment</th>
+       <th>Contact</th>
+      </tr>
+     </tbody>
+    </table>
+  </div>
+ </div>
+</div>
+
+<!-- Used as cells template -->
+<table id="tblcells">
+ <tbody>
+  <tr>
+  <td data-title="Date"></td>
+  <td data-title="Theatre"></td>
+  <td data-title="Room"></td>
+  <td data-title="Time"></td>
+  <td data-title="Case"></td>
+  <td data-title="Staff"></td>
+  <td data-title="HN"></td>
+  <td data-title="Patient"></td>
+  <td data-title="Diagnosis"></td>
+  <td data-title="Treatment"></td>
+  <td data-title="Equipment"></td>
+  <td data-title="Contact"></td>
+  </tr>
+ </tbody>
+</table>
+
+<div id="dialogNotify">
+  <textarea placeholder="พิมพ์ข้อความ"></textarea>
+  <button id="buttonLINE"></button>
+</div>
+
+<div id="dialogService">
+  <div id="servicehead">
+    <div>
+    <span class="item">Admission : <span id="Admission"></span></span>
+    <span class="item">Discharge : <span id="Discharge"></span></span>
+    <span class="item">Operation : <span id="Operation"></span></span>
+    <span class="item Morbidity">Morbidity : <span id="Morbidity"></span></span>
+  </div>
+  <div>
+    <span class="item Readmission">Re-admission : <span id="Readmission"></span></span>
+    <span class="item Infection">Infection SSI : <span id="Infection"></span></span>
+    <span class="item Reoperation">Re-operation : <span id="Reoperation"></span></span>
+    <span class="item Dead">Dead : <span id="Dead"></span></span>
+  </div>
+  </div>
+  <br>
+  <button id="exportService">Export to xls</button>
+  <button id="reportService">Report to Dept.</button>
+  <br>
+  <br>
+  <div id="monthpicker"></div>
+  <div id="monthstart"></div>
+  <table id="servicetbl">
+   <thead>
+    <tr>
+     <th>№</th>
+     <th>HN</th>
+     <th>Patient</th>
+     <th>Diagnosis</th>
+     <th>Treatment</th>
+     <th>Admission Status</th>
+     <th>Final Status</th>
+     <th>
+      <img class="imgopen" src="css/pic/general/openpane.png">
+      <img class="imgclose" src="css/pic/general/closepane.png">
+      Profile
+     </th>
+     <th>Admit</th>
+     <th>Date</th>
+     <th>D/C</th>
+    </tr>
+   </thead>
+   <tbody>
+   </tbody>
+  </table>
+
+  <div id="profileRecord">
+   <div class="divRecord dialogBox">
+   </div>
+  </div>
+</div>
+<!-- dialogService ends here -->
+
+<!--template for "servicetbl"-->
+<table id="servicecells">
+  <tbody>
+   <tr>
+    <td data-title="№"></td>
+    <td data-title="HN"></td>
+    <td data-title="Patient"></td>
+    <td data-title="Diagnosis"></td>
+    <td data-title="Treatment"></td>
+    <td data-title="Admission Status"></td>
+    <td data-title="Final Status"></td>
+    <td data-title="Profile"></td>
+    <td data-title="Admit"></td>
+    <td data-title="Date"></td>
+    <td data-title="D/C"></td>
+   </tr>
+  </tbody>
+</table>
+
+<div id="dialogReview" class="dialogBox">
+ <table id="reviewtbl">
+  <thead>
+   <tr>
+     <th rowspan="3" class="first">OPERATION</th>
+     <th colspan="4">STAFF</th>
+     <th colspan="4">RESIDENT</th>
+   </tr>
+   <tr>
+     <th colspan="2">MAJOR</th>
+     <th colspan="2">MINOR</th>
+     <th colspan="2">MAJOR</th>
+     <th colspan="2">MINOR</th>
+   </tr>
+   <tr>
+     <th class="elect">Elect</th><th class="emer">Emer</th>
+     <th class="elect">Elect</th><th class="emer">Emer</th>
+     <th class="elect">Elect</th><th class="emer">Emer</th>
+     <th class="elect">Elect</th><th class="emer">Emer</th>
+   </tr>
+  </thead>
+  <tbody>
+   <tr>
+     <td>Brain tumor</td>
+     <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+   </tr>
+   <tr>
+     <td>Brain Vascular</td>
+     <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+   </tr>
+   <tr>
+     <td>CSF related</td>
+     <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+   </tr>
+   <tr>
+     <td>Trauma</td>
+     <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+   </tr>
+   <tr>
+     <td>Spine++</td>
+     <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+   </tr>
+   <tr>
+     <td><b>etc.</b>
+    <small>(Lesionectomy, Tracheostomy, MVD, Change Batt., Sural n. Bx)</small>
+   </td>
+     <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+   </tr>
+   <tr class="notcount">
+   <th colspan="9">
+    Non-surgical <small>(not included in total operation)</small>
+   </th>
+   </tr>
+  <tr class="notcount nonsurgical">
+     <td>Radiosurgery</td>
+     <td></td><td></td>
+   </tr>
+   <tr class="notcount nonsurgical">
+     <td>Endovascular</td>
+     <td></td><td></td>
+   </tr>
+   <tr class="notcount nonsurgical">
+     <td><small>Not Operation, Not RS, Not Endovascular</small></td>
+     <td></td><td></td>
+   </tr>
+   <tr id="Total" class="notcount">
+     <td>Total Operation</td>
+     <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+   </tr>
+   <tr id="Grand" class="notcount">
+     <td>Grand Total</td>
+     <td colspan="2"></td><td colspan="2"></td><td colspan="2"></td><td colspan="2">
+   </tr>
+  </tbody>
+ </table>
+</div>
+
+<div id="dialogHistory">
+ <table id="historytbl">
+  <thead>
+   <tr>
+  <th>Date</th>
+  <th>Rm</th>
+  <th>№</th>
+  <th>Staff</th>
+  <th>Diagnosis</th>
+  <th>Treatment</th>
+  <th>Equipment</th>
+  <th>Admission Status</th>
+  <th>Final Status</th>
+  <th>Contact</th>
+  <th>Editor</th>
+  <th>Edited When</th>
+   </tr>
+  </thead>
+  <tbody>
+  </tbody>
+ </table>
+</div>
+
+<table id="historycells">
+  <tbody>
+   <tr>
+    <td data-title="Date"></td>
+    <td data-title="Room"></td>
+    <td data-title="Case"></td>
+    <td data-title="Staff"></td>
+    <td data-title="Diagnosis"></td>
+    <td data-title="Treatment"></td>
+    <td data-title="Equipment"></td>
+    <td data-title="Admission Status"></td>
+    <td data-title="Final Status"></td>
+    <td data-title="Contact"></td>
+    <td data-title="Editor"></td>
+    <td data-title="Edited When"></td>
+   </tr>
+  </tbody>
+</table>
+
+<div id="dialogAllDeleted">
+ <table id="deletedtbl">
+  <thead>
+   <tr>
+  <th>Date</th>
+  <th>Staff</th>
+  <th>HN</th>
+  <th>Patient</th>
+  <th>Diagnosis</th>
+  <th>Treatment</th>
+  <th>Contact</th>
+  <th>Editor</th>
+  <th>Edited When</th>
+   </tr>
+  </thead>
+  <tbody>
+  </tbody>
+ </table>
+ <div id="undelete">
+   <span id="undel">Undelete</span>
+   <span class="ui-icon ui-icon-circle-close" id="closeUndel"></span>
+ </div>
+</div>
+
+<table id="deletedcells">
+  <tbody>
+   <tr>
+  <td data-title="Date"></td>
+  <td data-title="Staff"></td>
+  <td data-title="HN"></td>
+  <td data-title="Patient"></td>
+  <td data-title="Diagnosis"></td>
+  <td data-title="Treatment"></td>
+  <td data-title="Contact"></td>
+  <td data-title="Editor"></td>
+  <td data-title="Edited When"></td>
+   </tr>
+  </tbody>
+</table>
+
+<div id="dialogAll">
+ <table id="alltbl">
+  <thead>
+   <tr>
+  <th>Date</th>
+  <th>Staff</th>
+  <th>HN</th>
+  <th>Patient</th>
+  <th>Diagnosis</th>
+  <th>Treatment</th>
+  <th>Equipment</th>
+  <th>Admission Status</th>
+  <th>Final Status</th>
+  <th>Contact</th>
+   </tr>
+  </thead>
+  <tbody>
+  </tbody>
+ </table>
+</div>
+
+<table id="allcells">
+  <tbody>
+   <tr>
+    <td data-title="Date"></td>
+    <td data-title="Staff"></td>
+    <td data-title="HN"></td>
+    <td data-title="Patient"></td>
+    <td data-title="Diagnosis"></td>
+    <td data-title="Treatment"></td>
+    <td data-title="Equipment"></td>
+    <td data-title="Admission Status"></td>
+    <td data-title="Final Status"></td>
+    <td data-title="Contact"></td>
+   </tr>
+  </tbody>
+</table>
+
+<div id="dialogInput" class="dialogBox">
+  <span>HN:</span>
+  <input type="text" name="hn" maxlength="7">
+  <br>
+  <br>
+  <span>Staff:</span>
+  <input type="text" name="staffname">
+  <br>
+  <br>
+  <span>Others:</span>
+  <br>
+  <input type="text" name="others"
+    placeholder="Dx, Rx, Adm & Final Status">
+  <br>
+  <br>
+  <img src="css/pic/general/find.png" id="clicksearchDB">
+</div>
+
+<div id="dialogFind">
+  <table id="findtbl">
+  <thead>
+   <tr>
+  <th>Date</th>
+  <th>Staff</th>
+  <th>HN</th>
+  <th>Patient</th>
+  <th>Diagnosis</th>
+  <th>Treatment</th>
+  <th>Equipment</th>
+  <th>Admission Status</th>
+  <th>Final Status</th>
+  <th>Contact</th>
+   </tr>
+  </thead>
+  <tbody>
+  </tbody>
+  </table>
+</div>
+
+<table id="findcells">
+  <tbody>
+   <tr>
+    <td data-title="Date"></td>
+    <td data-title="Staff"></td>
+    <td data-title="HN"></td>
+    <td data-title="Patient"></td>
+    <td data-title="Diagnosis"></td>
+    <td data-title="Treatment"></td>
+    <td data-title="Equipment"></td>
+    <td data-title="Admission Status"></td>
+    <td data-title="Final Status"></td>
+    <td data-title="Contact"></td>
+   </tr>
+  </tbody>
+</table>
+
+<div id="dialogStaff">
+  <table id="stafftbl">
+   <thead>
+  <tr>
+    <td>Name : <input type="text" id="sname" size="10"></td>
+    <td>Specialty : <select id="specialty"><option></option></select></td>
+    <td>Date Oncall : <input type="text" id="soncall" size="10" readonly>
+             <input id="snumber" type="hidden">
+    </td>
+  </tr>
+  <tr>
+    <td><button id="clickdoadddata">AddStaff</button></td>
+    <td><button id="clickdoupdatedata">UpdateStaff</button></td>
+    <td><button id="clickdodeletedata">DeleteStaff</button></td>
+  </tr>
+    <tr>
+    <th>Staff</th>
+    <th>Specialty</th>
+    <th>Start Date Oncall</th>
+    </tr>
+   </thead>
+   <tbody>
+   </tbody>
+  </table>
+</div>
+
+<table id="staffcells">
+  <tbody>
+   <tr>
+    <td data-title="Staff"></td>
+    <td data-title="Specialty"></td>
+    <td data-title="Start Date Oncall"></td>
+   </tr>
+  </tbody>
+</table>
+
+<div id="dialogHoliday">
+ <table id="holidaytbl">
+  <thead>
+   <tr>
+    <th>Date</th>
+    <th>Holiday Name</th>
+    <th><button id="addholiday">+</button></th>
+   </tr>
+  </thead>
+  <tbody>
+  </tbody>
+ </table>
+</div>
+
+<table id="holidaycells">
+  <tbody>
+  <tr>
+    <td></td>
+    <td></td>
+    <td><button class="delholiday">-</button></td>
+  </tr>
+  </tbody>
+</table>
+
+<table id="holidayInput">
+  <tbody>
+  <tr>
+     <td><input type="text" id="holidateth" class="w75" readonly></td>
+     <td><select id="holidayname" class="w150"></select></td>
+     <td><button class="delholiday">-</button></td>
+  </tr>
+  </tbody>
+</table>
+
+<div id="dialogMoveCaseHN">
+  <table id="movetbl">
+  <tbody>
+  <tr id="movefrom"><td>มีแล้วใน Waiting List</td></tr>
+  <tr></tr>
+  <tr id="moveto"><td>ต้องการ</td></tr>
+  <tr></tr>
+  </tbody>
+  </table>
+</div>
+
+<ul id="stafflist"></ul>
+<ul id="oncallList"></ul>
+
+<div id="dialogAlert"></div>
+
+<div id="editcell" contenteditable="true"></div>
+
+<div id="dialogEquip" class="dialogBox"></div>
+
+<div id="dialogReadme"></div>
+
+<!-- For IE that not support <a download>, used in Export to Excel -->
+<iframe id="txtArea1"></iframe>
+
+</BODY>
+</HTML>

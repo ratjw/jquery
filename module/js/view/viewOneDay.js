@@ -5,14 +5,14 @@ import { rowDecoration } from "./rowDecoration.js"
 import { getTableRowsByDate } from "../util/rowsgetting.js"
 import { showStaffOnCall } from "./fillConsults.js"
 import { filldata } from "./fill.js"
-import { BOOK } from "../util/variables.js"
+import { BOOK } from "../util/updateBOOK.js"
 import { blankRowData } from "../model/rowdata.js"
 
-// Used for main table ("tbl") only, no LARGESTDATE
+// Used for main table ("maintbl") only, no LARGESTDATE
 // others would refill entire table
 export function viewOneDay(opdate) {
   if (opdate === LARGESTDATE) { return }
-  let table = document.getElementById('tbl'),
+  let table = document.getElementById('maintbl'),
     opdateBOOKrows = getBOOKRowsByDate(BOOK, opdate),
     opdateTblRows = getTableRowsByDate(opdate),
     bookRows = opdateBOOKrows.length,

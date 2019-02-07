@@ -8,8 +8,8 @@ import { START, putThdate, putNameAge } from "../util/date.js"
 import {
   getClass, inPicArea, isSplit,  winWidth, winHeight, winResizeFix
 } from "../util/util.js"
-import { isPACS } from "../util/variables.js"
-import { refillall } from "../view/fill.js"
+import { isPACS } from "../util/updateBOOK.js"
+import { refillmaintbl } from "../view/fill.js"
 import { refillstaffqueue } from "../view/staffqueue.js"
 import { fillConsults } from "../view/fillConsults.js"
 import { coloring } from "./coloring.js"
@@ -73,7 +73,7 @@ export function showService() {
     height: winHeight(95),
     close: function() {
       if (isSplit()) { refillstaffqueue() }
-      refillall()
+      refillmaintbl()
       fillConsults()
       $(".ui-dialog:visible").find(".ui-dialog-content").dialog("close")
       $(".fixed").remove()

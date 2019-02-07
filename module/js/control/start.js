@@ -12,10 +12,10 @@ import { setClickService } from "../service/serviceReview.js"
 import { sqlStart } from "../model/sqlupdate.js"
 import { sortable } from "./sort.js"
 import { clearSelection } from "./clearSelection.js"
-import { fillall } from "../view/fill.js"
+import { fillmain } from "../view/fill.js"
 import { fillConsults } from "../view/fillConsults.js"
 import { START, ISOdate, thDate, scrolltoToday } from "../util/date.js"
-import { BOOK, updateBOOK } from "../util/variables.js"
+import { BOOK, updateBOOK } from "../util/updateBOOK.js"
 import { Alert } from "../util/util.js"
 import { UndoManager } from "../model/UndoManager.js"
 import { htmlStafflist, htmlEquipment, htmldivRecord } from "../view/html.js"
@@ -37,8 +37,8 @@ function success(response) {
 
   // call sortable before render, otherwise it renders very slowly
   sortable()
-  makeStart()
-  scrolltoToday('tbl')
+  fillmain()
+  scrolltoToday('maintbl')
   fillConsults()
 
   // setting up html
@@ -65,21 +65,6 @@ function failed(response) {
     error = error + "<br><br>Response from server has no data"
 
   Alert(title, error + "No localStorage backup")
-}
-
-// Display everyday on main table 1 month back, to 2 years ahead
-let makeStart = function() {    
-  // Start with 1st date of last month
-  let  tableID = "tbl",
-    table = document.getElementById(tableID),
-    book = BOOK,
-     today = new Date(),
-    nextyear = today.getFullYear() + 2,
-    month = today.getMonth(),
-    todate = today.getDate(),
-    until = ISOdate((new Date(nextyear, month, todate)))
-
-  fillall(book, table, START, until)
 }
 
 function dialogServiceEvent()
@@ -123,11 +108,11 @@ function wrapperEvent()
     }
 
     if (target.cellIndex === THEATRE) {
-      let tbl = document.getElementById("tbl")
-      if (tbl.querySelectorAll("th")[THEATRE].offsetWidth < 10) {
-        tbl.classList.add("showColumn2")
+      let maintbl = document.getElementById("maintbl")
+      if (maintbl.querySelectorAll("th")[THEATRE].offsetWidth < 10) {
+        maintbl.classList.add("showColumn2")
       } else if (target.nodeName === "TH") {
-        tbl.classList.remove("showColumn2")
+        maintbl.classList.remove("showColumn2")
       }
     }
 
@@ -182,9 +167,9 @@ function documentEvent()
   })
 
   window.addEventListener('resize', () => {
-    $("#tblwrapper").css("height", window.innerHeight - $("#cssmenu").height())
+    $("#mainwrapper").css("height", window.innerHeight - $("#cssmenu").height())
     $("#queuecontainer").css({
-      "height": $("#tblwrapper").height() - $("#titlebar").height()
+      "height": $("#mainwrapper").height() - $("#titlebar").height()
     })
   })
 }

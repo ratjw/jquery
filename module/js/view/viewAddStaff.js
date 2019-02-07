@@ -1,5 +1,5 @@
 
-import { STAFF } from "../util/variables.js"
+import { STAFF } from "../util/updateBOOK.js"
 
 const SPECIALTY = [
 	"breast",

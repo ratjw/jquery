@@ -4,13 +4,13 @@ import {
   DIAGNOSIS, TREATMENT, EQUIPMENT, CONTACT, LARGESTDATE
 } from "../model/const.js"
 import { START, ISOdate, nextdays, putNameAge, scrolltoToday } from "../util/date.js"
-import { BOOK, CONSULT, isPACS } from "../util/variables.js"
+import { BOOK, isPACS } from "../util/updateBOOK.js"
 import { viewEquipNoImg } from "./viewEquip.js"
 import { setRowData, blankRowData } from "../model/rowdata.js"
 import { isSplit } from "../util/util.js"
 import { splitPane } from "./splitPane.js"
 import { hoverMain } from "./hoverMain.js"
-import { fillall, makenextrow } from "./fill.js"
+import { fillconsultsTbl, refillDatedCases, makenextrow } from "./fill.js"
 import { fillConsults } from "./fillConsults.js"
 
 export function staffqueue(staffname) {
@@ -22,10 +22,9 @@ export function staffqueue(staffname) {
   $('#titlename').html(staffname)
 
   if (staffname === "Consults") {
-    fillall(CONSULT, queuetbl, START, todate)
+    fillconsultsTbl()
   } else {
-    let book = BOOK.filter(e => e.staffname === staffname)
-    fillEachStaff(book, queuetbl)
+    fillEachStaff(staffname)
   }
 
   fillConsults('queuetbl')
@@ -35,21 +34,34 @@ export function staffqueue(staffname) {
 
 // Use existing DOM table
 export function refillstaffqueue() {
-  let staffname = $('#titlename').html()
+  let  table = document.getElementById("queuetbl"),
+    staffname = $('#titlename').html(),
+    book
 
-  staffqueue(staffname)
+  if (staffname === "Consults") {
+    book = CONSULT
+  } else {
+    book = BOOK.filter(e => e.staffname === staffname)
+  }
+
+  refillDatedCases(table, book)
 }
 
-function fillEachStaff(book, table)
+function fillEachStaff(staffname)
 {
-  let tbody = table.querySelector("tbody"),
+  let table = document.getElementById("queuetbl"),
+    tbody = table.querySelector("tbody"),
     rows = table.rows,
     head = table.rows[0],
-    date = START,
-    madedate,
+
+    book = BOOK.filter(e => e.staffname === staffname),
     q = book.findIndex(e => e.opdate >= START),
     blen = book.length,
-    row
+
+    date = START,
+    madedate,
+    qdate,
+    clone
 
   // No case
   if (!blen) { book.push({"opdate" : START}) }
@@ -59,37 +71,35 @@ function fillEachStaff(book, table)
     Array.from(table.querySelectorAll('tr')).slice(1).forEach(e => e.remove())
   }
 
+  // from START to end of waiting list with opdate
   for (q; q < blen; q++) {
-    if (book[q].opdate < LARGESTDATE) {
+    qdate = book[q].opdate
+    if (qdate < LARGESTDATE) {
       // step over each day that is not in QBOOK
-      while (date < book[q].opdate)
-      {
-        if (date !== madedate)
-        {
-          // make a blank row for each day which is not in book
-          makenextrow(table, date)  // insertRow
+      while (date < qdate) {
+         // make a blank row for each day which is not in book
+       if (date !== madedate) {
+          makenextrow(table, date)
           madedate = date
         }
         date = nextdays(date, 1)
         // make table head row before every Monday
-        if ((new Date(date).getDay())%7 === 1)
-        {
-          let clone = head.cloneNode(true)
+        if ((new Date(date).getDay())%7 === 1) {
+          clone = head.cloneNode(true)
           tbody.appendChild(clone)
         }
       }
     }
-    makenextrow(table, book[q].opdate)
-    row = rows[table.rows.length-1]
-    filldataQueue(row, book[q])
+
+    makenextrow(table, qdate)
+    filldataQueue(rows[table.rows.length-1], book[q])
     madedate = date
   }
 
   reNumberNodateRows()
-  hoverMain()
 }
 
-export function filldataQueue(row, q)
+function filldataQueue(row, q)
 {
   let cells = row.cells
 

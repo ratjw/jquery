@@ -244,24 +244,27 @@ let showEditcell = function ($pointing, height, width) {
   $editcell.focus()
 }
 
-// after DOM refresh by refillall, POINTER remains in its row but its parent is null
+// after DOM refresh by refillmaintbl, POINTER remains in its row but its parent is null
 // must get qn to find current row position
 export function renewEditcell()
 {
+  if (!POINTER) { return }
+
   let whereisEditcell = editcellLocation()
-  let id = (whereisEditcell === "tblcontainer")
-         ? "tbl"
+  let id = (whereisEditcell === "maincontainer")
+         ? "maintbl"
      : (whereisEditcell === "queuecontainer")
      ? "queuetbl"
      : (whereisEditcell === "dialogService")
      ? "servicetbl"
      : ""
-  let qn = $(POINTER).siblings(":last").html()
+  let qn = POINTER.closest("tr").dataset.qn
   let row = id && qn && getTableRowByQN(id, qn)
-  let cell = POINTER.cellIndex
+  let rindex = POINTER.closest('tr').rowIndex
+  let cindex = POINTER.cellIndex
 
-  if (row) {
-    let pointing = row.cells[cell]
+  if (row && (row.rowIndex !== rindex)) {
+    let pointing = row.cells[cindex]
     createEditcell(pointing)
   }
 }

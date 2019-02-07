@@ -2,7 +2,7 @@
 import { sqlSaveOpTime } from "../model/sqlSaveOpTime.js"
 import { getOpdate } from "../util/date.js"
 import { sameDateRoomTableRows } from "../util/rowsgetting.js"
-import { updateBOOK } from "../util/variables.js"
+import { updateBOOK } from "../util/updateBOOK.js"
 import { Alert } from "../util/util.js"
 import { viewOneDay } from "../view/viewOneDay.js"
 import { viewSplit } from "../view/viewSplit.js"
@@ -34,8 +34,8 @@ export function saveOpTime(pointed, newcontent)
 	sqlSaveOpTime(allQNs, oproom, newcontent, qn).then(response => {
 		let hasData = function () {
 			updateBOOK(response)
-			viewOneDay(row.dataset.opdate)
-			viewSplit(row.dataset.staffname)
+//			viewOneDay(row.dataset.opdate)
+//			viewSplit(row.dataset.staffname)
 		}
 
 		typeof response === "object"

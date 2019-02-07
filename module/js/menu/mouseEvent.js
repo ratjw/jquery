@@ -4,7 +4,7 @@ import { clickDate } from "./clickDate.js"
 // initiate mouseover and underline the row to move to
 export function mouseEvent(selected)
 {
-	let $allRows = $("#tbl tr:has('td'), #queuetbl tr:has('td')")
+	let $allRows = $("#maintbl tr:has('td'), #queuetbl tr:has('td')")
 
 	$allRows.mouseover(function() {
 		$(this).addClass("pasteDate")

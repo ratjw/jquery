@@ -1,9 +1,9 @@
 
 import { isSplit, isStaffname, isConsults, isConsultsTbl, getMaxQN } from "../util/util.js"
-import { BOOK, CONSULT, isPACS } from "../util/variables.js"
+import { BOOK, CONSULT, isPACS } from "../util/updateBOOK.js"
 import { getBOOKrowByQN } from "../util/rowsgetting.js"
 import { putNameAge } from "../util/date.js"
-import { refillall, filldata } from "./fill.js"
+import { refillmaintbl, filldata } from "./fill.js"
 import { fillConsults } from "./fillConsults.js"
 import { refillAnotherTablerow } from "./refillAnotherTablerow.js"
 import { reCreateEditcell } from "../control/edit.js"
@@ -28,19 +28,19 @@ export function viewGetNameHN(pointed) {
   filldata(row, bookq)
 
 	// Both cases remote effect -> refill corresponding cell
-	// no need to refillall main table because new case row was already there
+	// no need to refillmaintbl because new case row was already there
 	// Consults cases are not shown in main table
-	if (tableID === 'tbl') {
+	if (tableID === 'maintbl') {
 		if (isSplit() && isStaffname(staffname)) {
 			refillAnotherTablerow('queuetbl', cellindex, qn)
 		}
 	} else {
 		if (!isConsults()) {
 			if (noqn) {
-				refillall()
+				refillmaintbl()
 				fillConsults()
 			} else {
-				refillAnotherTablerow('tbl', cellindex, qn)
+				refillAnotherTablerow('maintbl', cellindex, qn)
 			}
 		}
 	}

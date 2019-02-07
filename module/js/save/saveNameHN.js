@@ -1,6 +1,6 @@
 
 import { sqlGetNameHN } from "../model/sqlsavehn.js"
-import { updateBOOK } from "../util/variables.js"
+import { updateBOOK } from "../util/updateBOOK.js"
 import { Alert } from "../util/util.js"
 import { viewGetNameHN } from "../view/viewGetNameHN.js"
 
@@ -9,7 +9,7 @@ export function saveNameHN(pointed, content)
 	sqlGetNameHN(pointed, content).then(response => {
 		let hasData = function () {
 			updateBOOK(response)
-			viewGetNameHN(pointed)
+//			viewGetNameHN(pointed)
 		}
 		let noData = function () {
 			Alert("saveNameHN", response)

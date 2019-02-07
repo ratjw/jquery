@@ -5,7 +5,7 @@ import { USER } from "../main.js"
 import { sqlGetEquip, sqlSaveEquip, sqlCancelAllEquip } from "../model/sqlGetEquip.js"
 import { putAgeOpdate, putThdate } from "../util/date.js"
 import { getTableRowByQN } from "../util/rowsgetting.js"
-import { BOOK, CONSULT, updateBOOK } from "../util/variables.js"
+import { BOOK, CONSULT, updateBOOK } from "../util/updateBOOK.js"
 import { Alert, isConsultsTbl } from "../util/util.js"
 import { viewEquipJSON } from "../view/viewEquip.js"
 
@@ -218,7 +218,7 @@ let Checklistequip = function () {
 	sqlSaveEquip(equipment, thisqn).then(response => {
 		let showup = function () {
 			updateBOOK(response)
-			let row = getTableRowByQN("tbl", thisqn)
+			let row = getTableRowByQN("maintbl", thisqn)
 			row.querySelectorAll("td")[EQUIPMENT].innerHTML = viewEquipJSON(equipJSON)
 			$dialogEquip.dialog('close')
 		}
@@ -258,7 +258,7 @@ function cancelAllEquip()
 
 function delelteAllEquip(qn)
 {
-	let $row = getTableRowByQN("tbl", qn)
+	let $row = getTableRowByQN("maintbl", qn)
 
 	$row.find("td").eq(EQUIPMENT).html('')
 	$("#dialogEquip").dialog('close')

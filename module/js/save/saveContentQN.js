@@ -1,5 +1,5 @@
 
-import { updateBOOK } from "../util/variables.js"
+import { updateBOOK } from "../util/updateBOOK.js"
 import { OLDCONTENT } from "../control/edit.js"
 import { sqlSaveContentQN } from "../model/sqlSaveContent.js"
 import { viewSaveContentQN } from "../view/viewSaveContentQN.js"
@@ -23,7 +23,7 @@ export function saveContentQN(pointed, column, newcontent)
 		sqlSaveContentQN(column, newcontent, qn).then(response => {
 			let hasData = function () {
 				updateBOOK(response)
-				viewSaveContentQN(pointed, column, OLDCONTENT)
+//				viewSaveContentQN(pointed, column, OLDCONTENT)
 			}
 			let noData = function () {
 				Alert("saveContentQN", response)

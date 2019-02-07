@@ -1,6 +1,6 @@
 
 import { sqlmoveCase } from "../model/sqlmoveCase.js"
-import { updateBOOK } from "../util/variables.js"
+import { updateBOOK } from "../util/updateBOOK.js"
 import { Alert } from "../util/util.js"
 import { viewmoveCase } from "../view/viewmoveCase.js"
 import { calcWaitnum } from "../util/calcWaitnum.js"
@@ -14,7 +14,7 @@ export function domoveCase(allOldCases, allNewCases, moverow, thisrow)
   sqlmoveCase(allOldCases, allNewCases, moverow, thisrow).then(response => {
     let hasData = function () {
       updateBOOK(response)
-      viewmoveCase(moverow, thisrow)
+//      viewmoveCase(moverow, thisrow)
     }
 
     typeof response === "object"

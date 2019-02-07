@@ -2,7 +2,7 @@
 //--- constants ---------------------
 
 export const
-//tbl, queuetbl
+//maintbl, queuetbl
 OPDATE		= 0,
 THEATRE		= 1,
 OPROOM		= 2,

@@ -6,7 +6,7 @@ import { sqlSortable } from "../model/sqlSortable.js"
 import { calcWaitnum } from "../util/calcWaitnum.js"
 import { getOpdate } from "../util/date.js"
 import { sameDateRoomTableQNs } from "../util/rowsgetting.js"
-import { BOOK, updateBOOK } from "../util/variables.js"
+import { BOOK, updateBOOK } from "../util/updateBOOK.js"
 import { Alert, isConsults, isStaffname } from "../util/util.js"
 import { viewmoveCase } from "../view/viewmoveCase.js"
 import { hoverMain } from "../view/hoverMain.js"
@@ -18,13 +18,13 @@ export function sortable () {
 		thisplace,
 		sender
 
-	$("#tbl tbody, #queuetbl tbody").sortable({
+	$("#maintbl tbody, #queuetbl tbody").sortable({
 		items: "tr",
-		connectWith: "#tbl tbody, #queuetbl tbody",
+		connectWith: "#maintbl tbody, #queuetbl tbody",
 		forceHelperSize: true,
 		forcePlaceholderSize: true,
-		revert: true,
-		delay: 150,
+//		revert: true,
+//		delay: 150,
 		cancel: "tr:has('th')",
 		start: function(e, ui){
 			clearTimer()
@@ -58,7 +58,7 @@ export function sortable () {
 			// To another staff name is not allowed
 			// Not allow to drag a blank line
 			let illegal = !moveqn
-            || ((sender === "tbl")
+            || ((sender === "maintbl")
 						&& (receiver === "queuetbl")
 						&& !isConsults()
 						&& !isStaffname(staffname))
@@ -138,7 +138,7 @@ export function sortable () {
 			// remove itself from old sameDateRoom
 			allOldCases = allOldCases.filter(e => e !== moveqn)
 
-			// remove itself from new if new === old
+			// In case of new is the same date room as old
 			if (allNewCases.find(e => e === moveqn)) {
 				allNewCases = allOldCases
 				allOldCases = []
@@ -155,8 +155,8 @@ export function sortable () {
 				sqlSortable(allOldCases, allNewCases, moveitem, thisdrop).then(response => {
 					let hasData = function () {
 						updateBOOK(response)
-						viewmoveCase(moveitem, thisdrop)
-						hoverMain()
+//						viewmoveCase(moveitem, thisdrop)
+//						hoverMain()
 					}
 
 					typeof response === "object"
@@ -185,7 +185,7 @@ export function sortable () {
 let stopsorting = function () {
 	// Return to original place so that viewOneDay(moveopdate)
 	// will not render this row in wrong position
-	$("#tbl tbody, #queuetbl tbody").sortable( "cancel" )
+	$("#maintbl tbody, #queuetbl tbody").sortable( "cancel" )
 
 	// before sorting, timer was stopped by clearTimer
 	resetTimerCounter()

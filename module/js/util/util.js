@@ -16,7 +16,7 @@ export function URIcomponent(content) {
 
 export function isSplit()
 {  
-	return $("#queuewrapper").css("display") === "block"
+	return queuewrapper.style.display === "block"
 }
 
 export function isStaffname(staffname)
@@ -222,7 +222,7 @@ export function Alert(title, message) {
 
 export function clearMouseoverTR()
 {
-	$("#tbl tr:has('td'), #queuetbl tr:has('td')")
+	$("#maintbl tr:has('td'), #queuetbl tr:has('td')")
 		.off("mouseover")
 		.off("mouseout")
 		.off("click")

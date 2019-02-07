@@ -4,7 +4,7 @@ import { LARGESTDATE } from "../model/const.js"
 import { sqlPostponeCase } from "../model/sqlPostponeCase.js"
 import { getOpdate } from "../util/date.js"
 import { sameDateRoomTableQNs } from "../util/rowsgetting.js"
-import { BOOK, updateBOOK } from "../util/variables.js"
+import { BOOK, updateBOOK } from "../util/updateBOOK.js"
 import { Alert, getLargestWaitnum } from "../util/util.js"
 import { viewPostponeCase } from "../view/viewPostponeCase.js"
 import { clearSelection } from "../control/clearSelection.js"
@@ -35,7 +35,7 @@ export function postponeCase()
 		sqlPostponeCase(allCases, row, thisdate).then(response => {
 			let hasData = function () {
 				updateBOOK(response)
-				viewPostponeCase(row, thisdate)
+//				viewPostponeCase(row, thisdate)
 			}
 
 			typeof response === "object"

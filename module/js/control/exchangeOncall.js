@@ -3,7 +3,7 @@ import { OPDATE } from "../model/const.js"
 import { clearEditcell } from "./edit.js"
 import { sqlChangeOncall } from "../model/sqlupdate.js"
 import { getOpdate } from "../util/date.js"
-import { setONCALL } from "../util/variables.js"
+import { setONCALL } from "../util/updateBOOK.js"
 import { reposition, menustyle, Alert } from "../util/util.js"
 import { dataAttr } from "../view/fillConsults.js"
 

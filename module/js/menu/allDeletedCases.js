@@ -1,7 +1,7 @@
 
 import { sqlAllDeletedCases, sqlUndelete } from "../model/sqlAllDeletedCases.js"
 import { getOpdate } from "../util/date.js"
-import { BOOK, CONSULT, updateBOOK } from "../util/variables.js"
+import { BOOK, CONSULT, updateBOOK } from "../util/updateBOOK.js"
 import { Alert, reposition } from "../util/util.js"
 import { viewOneDay } from "../view/viewOneDay.js"
 import { viewSplit } from "../view/viewSplit.js"
@@ -56,8 +56,8 @@ export function doUndel(allCases, opdate, oproom, staffname, qn, del) {
 	sqlUndelete(allCases, oproom, qn, del).then(response => {
 		let hasData = function () {
 			updateBOOK(response)
-			viewOneDay(opdate)
-			viewSplit(staffname)
+//			viewOneDay(opdate)
+//			viewSplit(staffname)
 			scrolltoThisCase(qn)
 		};
 

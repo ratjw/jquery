@@ -11,7 +11,7 @@
 		$servername = "surgery.rama.mahidol.ac.th";
 		$wsdl="http://appcenter/webservice/patientservice.wsdl";
 		$resultz = "";
-		$error = "ปปป";
+		$error = "";
 
 		if (preg_match('/^\d{6}$/', $userid)) {
 			if (strpos($_SERVER["SERVER_NAME"], $servername) !== false) {
@@ -36,13 +36,16 @@
 			// Pass the login but other than S, R, N
 			else if (preg_match('/^\w{1}$/', $resultz)) {
 				$error = "Unauthorized";
+        header("location:index.php?error=$error");
 			}
 			// Fail the login
 			else {
 				$error = "Incorrect password or username";
+        header("location:index.php?error=$error");
 			}
 		} else {
 			$error = "Invalid username";
+      header("location:index.php?error=$error");
 		}
 	}
 ?>

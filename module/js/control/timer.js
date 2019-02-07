@@ -11,9 +11,9 @@ import { sqlGetUpdateService, sqlSaveOnChangeService } from "../model/sqlservice
 import { saveProfileService } from "../service/savePreviousCellService.js"
 import { setSERVICE } from "../service/setSERVICE.js"
 import { reViewService } from "../service/showService.js"
-import { timestamp, updateBOOK } from "../util/variables.js"
+import { timestamp, updateBOOK } from "../util/updateBOOK.js"
 import { Alert, isSplit } from "../util/util.js"
-import { refillall } from "../view/fill.js"
+import { refillmaintbl } from "../view/fill.js"
 import { refillstaffqueue } from "../view/staffqueue.js"
 import { fillConsults } from "../view/fillConsults.js"
 
@@ -62,7 +62,7 @@ let onChange = function () {
   let newcontent = getNewcontent(),
       index = POINTER.cellIndex,
       whereisEditcell = editcellLocation(),
-	  qn = $(POINTER).siblings(":last").html()
+	    qn = POINTER.closest("tr").dataset.qn
 
   if (OLDCONTENT === newcontent) {
     return false
@@ -99,9 +99,10 @@ function getUpdate()
     sqlGetUpdateService().then(response => {
       if (typeof response === "object") {
         updateBOOK(response)
-		setSERVICE(response.SERVICE)
-		reViewService()
-		viewGetUpdate()
+        setSERVICE(response.SERVICE)
+        reViewService()
+	renewEditcell()
+//        viewGetUpdate()
       } else {
         Alert ("getUpdateWithService", response)
       }
@@ -110,7 +111,8 @@ function getUpdate()
     sqlGetUpdate().then(response => {
       if (typeof response === "object") {
         updateBOOK(response)
-        viewGetUpdate()
+	renewEditcell()
+//        viewGetUpdate()
       } else {
         Alert ("getUpdate", response)
       }
@@ -124,7 +126,8 @@ function onIdling()
 {
     if (idleCounter && !(idleCounter % 6)) {
       clearAllEditing()
-      viewGetUpdate()
+	renewEditcell()
+//      viewGetUpdate()
     } else if (idleCounter > 59) {
       history.back()
     }
@@ -134,7 +137,7 @@ function onIdling()
 
 function viewGetUpdate()
 {
-	refillall()
+	refillmaintbl()
 	fillConsults()
 	if (isSplit()) { refillstaffqueue() }
 	renewEditcell()

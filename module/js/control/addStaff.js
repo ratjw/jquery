@@ -1,7 +1,7 @@
 
 import { htmlStafflist } from "../view/html.js"
 import { sqlDoadddata, sqlDoupdatedata, sqlDodeletedata } from "../model/sqlDoadddata.js"
-import { updateBOOK, setSTAFF } from "../util/variables.js"
+import { updateBOOK, setSTAFF } from "../util/updateBOOK.js"
 import { Alert } from "../util/util.js"
 import { viewAddStaff } from "../view/viewAddStaff.js"
 import { fillConsults } from "../view/fillConsults.js"

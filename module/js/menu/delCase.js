@@ -2,7 +2,7 @@
 import { sqlDeleteCase } from "../model/sqlDeleteCase.js"
 import { getOpdate } from "../util/date.js"
 import { sameDateRoomTableQNs } from "../util/rowsgetting.js"
-import { updateBOOK } from "../util/variables.js"
+import { updateBOOK } from "../util/updateBOOK.js"
 import { Alert } from "../util/util.js"
 import { viewDeleteCase } from "../view/viewDeleteCase.js"
 import { clearSelection } from "../control/clearSelection.js"
@@ -35,7 +35,7 @@ export function delCase() {
 		sqlDeleteCase(allCases, oproom, qn, del).then(response => {
 			let hasData = function () {
 				updateBOOK(response)
-				viewDeleteCase(row)
+//				viewDeleteCase(row)
 			}
 
 			typeof response === "object"

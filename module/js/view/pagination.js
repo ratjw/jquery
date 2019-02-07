@@ -7,7 +7,7 @@ import { viewEquip } from "./viewEquip.js"
 import { ISOdate, thDate, nextdays, putThdate } from "../util/date.js"
 import { winWidth, winHeight, winResizeFix } from "../util/util.js"
 
-export function pagination($dialog, $tbl, book, search)
+export function pagination($dialog, $maintbl, book, search)
 {
   let  beginday = book[0].opdate,
     lastday = findLastDateInBOOK(book),
@@ -76,7 +76,7 @@ export function pagination($dialog, $tbl, book, search)
   })
 
   showOneWeek(book, firstday, 0)
-  $tbl.fixMe($dialog)
+  $maintbl.fixMe($dialog)
 
   //for resizing dialogs in landscape / portrait view
   $(window).on("resize", resizeDialog )
@@ -149,7 +149,7 @@ export function pagination($dialog, $tbl, book, search)
       title: search + " : " + Mon + " - " + Sun
     })
     // delete previous table lest it accumulates
-    $tbl.find('tr').slice(1).remove()
+    $maintbl.find('tr').slice(1).remove()
 
     if (Monday) {
       let  $row, row, cells,
@@ -159,7 +159,7 @@ export function pagination($dialog, $tbl, book, search)
       $.each( bookOneWeek, function() {
         while (this.opdate > date) {
           if (nocase) {
-            $row = $('#allcells tr').clone().appendTo($tbl.find('tbody'))
+            $row = $('#allcells tr').clone().appendTo($maintbl.find('tbody'))
             row = $row[0]
             cells = row.cells
             rowDecoration(row, date)
@@ -168,13 +168,13 @@ export function pagination($dialog, $tbl, book, search)
           nocase = true
         }
         $('#allcells tr').clone()
-          .appendTo($tbl.find('tbody'))
+          .appendTo($maintbl.find('tbody'))
             .filldataAllcases(this)
         nocase = false
       })
       date = nextdays(date, 1)
       while (date <= Sunday) {
-        $row = $('#allcells tr').clone().appendTo($tbl.find('tbody'))
+        $row = $('#allcells tr').clone().appendTo($maintbl.find('tbody'))
         row = $row[0]
         cells = row.cells
         rowDecoration(row, date)
@@ -183,7 +183,7 @@ export function pagination($dialog, $tbl, book, search)
     } else {
       $.each( bookOneWeek, function() {
         $('#allcells tr').clone()
-          .appendTo($tbl.find('tbody'))
+          .appendTo($maintbl.find('tbody'))
             .filldataAllcases(this)
       });
     }
@@ -194,7 +194,7 @@ export function pagination($dialog, $tbl, book, search)
       width: winWidth(95),
       height: winHeight(95)
     })
-    winResizeFix($tbl, $dialog)
+    winResizeFix($maintbl, $dialog)
   }
 }
 

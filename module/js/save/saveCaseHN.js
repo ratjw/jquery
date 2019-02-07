@@ -5,7 +5,7 @@ import {
 import { OLDCONTENT, clearEditcell } from "../control/edit.js"
 import { sqlMoveCaseHN, sqlCopyCaseHN } from "../model/sqlsavehn.js"
 import { getOpdate, putThdate, putNameAge } from "../util/date.js"
-import { updateBOOK } from "../util/variables.js"
+import { updateBOOK } from "../util/updateBOOK.js"
 import { Alert, winWidth } from "../util/util.js"
 import { viewMoveCaseHN, viewCopyCaseHN } from "../view/viewMoveCaseHN.js"
 import { rowDecoration } from "../view/rowDecoration.js"
@@ -95,7 +95,7 @@ let	wanting = {...waiting},
 		sqlMoveCaseHN(pointed, waiting, wanting).then(response => {
 			let hasData = function () {
 				updateBOOK(response)
-				viewMoveCaseHN(tableID, qn, row, waiting.opdate)
+//				viewMoveCaseHN(tableID, qn, row, waiting.opdate)
 			}
 			let noData = function () {
 				Alert("saveCaseHN", response)

@@ -1,7 +1,7 @@
 
 import { EQUIPSHEET, RECORDSHEET } from "../model/const.js"
 import { staffqueue } from "../view/staffqueue.js"
-import { STAFF } from "../util/variables.js"
+import { STAFF } from "../util/updateBOOK.js"
 
 // stafflist for enter name in Staff column
 // staffmenu for dropdown sub-menu
@@ -10,10 +10,10 @@ export function htmlStafflist() {
       staffmenu = ''
   STAFF.forEach(each => {
     stafflist += `<li><div>${each.staffname}</div></li>`
-    staffmenu += `<li><a class="clickStaff ${each.staffname}">
+    staffmenu += `<li class="w100"><a class="clickStaff ${each.staffname}">
                  <span>${each.staffname}</span></a></li>`
   })
-  staffmenu += `<li><a class="clickStaff Consults"><span>Consults</span></a></li>`
+  staffmenu += `<li class="w100"><a class="clickStaff Consults"><span>Consults</span></a></li>`
   document.getElementById("stafflist").innerHTML = stafflist
   document.getElementById("staffmenu").innerHTML = staffmenu
 

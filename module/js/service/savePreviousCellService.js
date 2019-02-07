@@ -5,7 +5,7 @@ import {
 import { POINTER, OLDCONTENT, getNewcontent } from "../control/edit.js"
 import { sqlSaveService } from "../model/sqlservice.js"
 import { getBOOKrowByQN } from "../util/rowsgetting.js"
-import { updateBOOK } from "../util/variables.js"
+import { updateBOOK } from "../util/updateBOOK.js"
 import { URIcomponent, Alert } from "../util/util.js"
 import { reViewService } from "./showService.js"
 import { coloring } from "./coloring.js"

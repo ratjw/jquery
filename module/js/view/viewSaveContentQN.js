@@ -7,7 +7,7 @@ import { refillstaffqueue } from "./staffqueue.js"
 import { getOpdate } from "../util/date.js"
 import { getBOOKrowByQN } from "../util/rowsgetting.js"
 import { filldata } from "./fill.js"
-import { BOOK } from "../util/variables.js"
+import { BOOK } from "../util/updateBOOK.js"
 
 export function viewSaveContentQN(pointed, column, oldcontent) {
 	let	tableID = pointed.closest("table").id,
@@ -25,8 +25,8 @@ export function viewSaveContentQN(pointed, column, oldcontent) {
 		refillstaffqueue()
 	}
 
-	if (tableID === 'tbl') {
-		// Remote effect from editing on tbl to queuetbl
+	if (tableID === 'maintbl') {
+		// Remote effect from editing on maintbl to queuetbl
 		if (isSplit()) {
 			// this staffname is changed to another staff or to this staffname
 			if ((oldcontent === titlename) || (pointed.innerHTML === titlename)) {
@@ -39,9 +39,9 @@ export function viewSaveContentQN(pointed, column, oldcontent) {
 			}
 		}
 	} else {
-		// consults are not apparent on tbl, no remote effect from editing on queuetbl
+		// consults are not apparent on maintbl, no remote effect from editing on queuetbl
 		if (!isConsults()) {
-			refillAnotherTablerow('tbl', qn)
+			refillAnotherTablerow('maintbl', qn)
 		}
 	}
 
