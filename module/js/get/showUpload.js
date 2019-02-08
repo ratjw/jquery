@@ -4,7 +4,7 @@
 let uploadWindow = null
 
 export function showUpload(hn, patient) {
-	uploadWindow && !uploadWindow.closed && uploadWindow.close();
-	uploadWindow = window.open("../Upload/index.html", "_blank")
-	uploadWindow.hnName = {"hn": hn, "patient": patient}
+  uploadWindow && !uploadWindow.closed && uploadWindow.close();
+  uploadWindow = window.open("../Upload/index.html", "_blank")
+  uploadWindow.hnName = {"hn": hn, "patient": patient}
 }

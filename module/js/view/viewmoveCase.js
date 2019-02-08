@@ -8,10 +8,10 @@ export function viewmoveCase(moverow, thisrow)
     thisdate = thisrow.dataset.opdate,
     staffname = moverow.dataset.staffname
 
-	viewOneDay(movedate)
+  viewOneDay(movedate)
 
-	if (movedate !== thisdate) {
-		viewOneDay(thisdate)
-	}
-	viewSplit(staffname) 
+  if (movedate !== thisdate) {
+    viewOneDay(thisdate)
+  }
+  viewSplit(staffname) 
 }

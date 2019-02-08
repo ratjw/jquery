@@ -10,11 +10,11 @@
 export const isPACS = /10.6./.test(window.location)
 
 export let BOOK = [],
-	CONSULT = [],
-	STAFF = [],
-	ONCALL = [],
-	HOLIDAY = [],
-	timestamp = ""
+  CONSULT = [],
+  STAFF = [],
+  ONCALL = [],
+  HOLIDAY = [],
+  timestamp = ""
 
 export function setONCALL(oncall) { ONCALL = oncall }
 export function setSTAFF(staff) { STAFF = staff }
@@ -29,12 +29,12 @@ import { renewEditcell } from "../control/edit.js"
 // Two main data for tables (BOOK, CONSULT) and a timestamp
 // QTIME = datetime of last fetching : $mysqli->query("SELECT now();")
 export function updateBOOK(response) {
-	if (response.BOOK) { BOOK = response.BOOK }
-	if (response.CONSULT) { CONSULT = response.CONSULT }
-	if (response.STAFF) { STAFF = response.STAFF }
-	if (response.ONCALL) { ONCALL = response.ONCALL }
-	if (response.HOLIDAY) { HOLIDAY = response.HOLIDAY }
-	if (response.QTIME) { timestamp = response.QTIME }
+  if (response.BOOK) { BOOK = response.BOOK }
+  if (response.CONSULT) { CONSULT = response.CONSULT }
+  if (response.STAFF) { STAFF = response.STAFF }
+  if (response.ONCALL) { ONCALL = response.ONCALL }
+  if (response.HOLIDAY) { HOLIDAY = response.HOLIDAY }
+  if (response.QTIME) { timestamp = response.QTIME }
 
   if (isSplit()) { refillstaffqueue() }
   if (maintbl.rows.length > 1) { refillmaintbl() }

@@ -22,54 +22,54 @@ export function addStaff()
 
 export function doadddata()
 {
-	sqlDoadddata().then(response => {
-		let hasData = function () {
-			updateBOOK(response)
-			showAddStaff(response)
-		}
+  sqlDoadddata().then(response => {
+    let hasData = function () {
+      updateBOOK(response)
+      showAddStaff(response)
+    }
 
-		typeof response === "object"
-		? hasData()
-		: Alert ("dodeletedata", response)
-	})
+    typeof response === "object"
+    ? hasData()
+    : Alert ("dodeletedata", response)
+  })
 }
 
 export function doupdatedata()
 {
   if (confirm("ต้องการแก้ไขข้อมูลนี้")) {
-	sqlDoupdatedata().then(response => {
-		let hasData = function () {
-			updateBOOK(response)
-			showAddStaff(response)
-		}
+  sqlDoupdatedata().then(response => {
+    let hasData = function () {
+      updateBOOK(response)
+      showAddStaff(response)
+    }
 
-		typeof response === "object"
-		? hasData()
-		: Alert ("dodeletedata", response)
-	})
+    typeof response === "object"
+    ? hasData()
+    : Alert ("dodeletedata", response)
+  })
   }
 } // end of function doupdatedata
 
 export function dodeletedata()
 {
   if (confirm("ต้องการลบข้อมูลนี้หรือไม่")) {
-	sqlDodeletedata().then(response => {
-		let hasData = function () {
-			updateBOOK(response)
-			showAddStaff(response)
-		}
+  sqlDodeletedata().then(response => {
+    let hasData = function () {
+      updateBOOK(response)
+      showAddStaff(response)
+    }
 
-		typeof response === "object"
-		? hasData()
-		: Alert ("dodeletedata", response)
-	})
+    typeof response === "object"
+    ? hasData()
+    : Alert ("dodeletedata", response)
+  })
   }
 }
 
 function showAddStaff(response)
 {
-	setSTAFF(response.STAFF)
-	htmlStafflist()
-	fillConsults()
-	addStaff()
+  setSTAFF(response.STAFF)
+  htmlStafflist()
+  fillConsults()
+  addStaff()
 }

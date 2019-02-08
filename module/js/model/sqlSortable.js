@@ -5,19 +5,19 @@ import { sqlMover } from "./sqlMover.js"
 
 export function sqlSortable(allOldCases, allNewCases, moverow, thisrow)
 {
-	let newWaitnum = moverow.dataset.waitnum,
-		moveroom = moverow.dataset.oproom,
-		moveqn = moverow.dataset.qn,
-		thisOpdate = thisrow.dataset.opdate,
-		theatre = thisrow.dataset.theatre || "",
-		thisroom = thisrow.dataset.oproom || null,
-		sql = "sqlReturnbook="
+  let newWaitnum = moverow.dataset.waitnum,
+    moveroom = moverow.dataset.oproom,
+    moveqn = moverow.dataset.qn,
+    thisOpdate = thisrow.dataset.opdate,
+    theatre = thisrow.dataset.theatre || "",
+    thisroom = thisrow.dataset.oproom || null,
+    sql = "sqlReturnbook="
 
-	if (allOldCases.length && moveroom) {
-		sql += updateCasenum(allOldCases)
-	}
+  if (allOldCases.length && moveroom) {
+    sql += updateCasenum(allOldCases)
+  }
 
-	allNewCases.forEach((e, i) => {
+  allNewCases.forEach((e, i) => {
     sql += (e === moveqn)
       ? thisroom
         ? sqlMover(newWaitnum, thisOpdate, theatre, thisroom, i + 1, moveqn)
@@ -27,5 +27,5 @@ export function sqlSortable(allOldCases, allNewCases, moverow, thisrow)
         : sqlCaseNum(null, e)
   })
 
-	return postData(MYSQLIPHP, sql);
+  return postData(MYSQLIPHP, sql);
 }

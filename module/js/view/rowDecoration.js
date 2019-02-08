@@ -4,10 +4,10 @@ import { putThdate } from "../util/date.js"
 import { holiday } from "./holiday.js"
 
 // for row, and 1st column colors
-const NAMEOFDAYFULL	= ["Sunday", "Monday", "Tuesday",
-	"Wednesday", "Thursday", "Friday", "Saturday"
+const NAMEOFDAYFULL  = ["Sunday", "Monday", "Tuesday",
+  "Wednesday", "Thursday", "Friday", "Saturday"
 ]
-const NAMEOFDAYABBR	= ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+const NAMEOFDAYABBR  = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
 
 export function rowDecoration(row, date)
 {
@@ -24,7 +24,7 @@ export function rowDecoration(row, date)
 
 function dayName(DAYNAME, date)
 {
-	return date === LARGESTDATE
-		? ""
-		: DAYNAME[(new Date(date)).getDay()]
+  return date === LARGESTDATE
+    ? ""
+    : DAYNAME[(new Date(date)).getDay()]
 }

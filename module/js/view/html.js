@@ -18,10 +18,10 @@ export function htmlStafflist() {
   document.getElementById("staffmenu").innerHTML = staffmenu
 
   document.querySelectorAll(".clickStaff").forEach(function(item) {
-	item.onclick = function() {
-		let staffname = item.className.split(" ")[1]
-		staffqueue(staffname)
-	}
+  item.onclick = function() {
+    let staffname = item.className.split(" ")[1]
+    staffqueue(staffname)
+  }
   })
 }
 
@@ -36,29 +36,29 @@ export function htmlEquipment()
     id = item[3]
     label = item[4]
     if (type === "divbegin") {
-	  equip += `<div title="${name}">`
+    equip += `<div title="${name}">`
     } else if (type === "divend") {
-	  equip += `</div>`
+    equip += `</div>`
     } else if (type === "span") {
-	  equip += `<span class="w${width}" id="${id}">${label}</span>`
+    equip += `<span class="w${width}" id="${id}">${label}</span>`
     } else if (type === "spanInSpan") {
-	  equip += `<span class="w${width}">${label}<span id="${id}"></span></span>`
-	} else if (type === "br") {
-	  equip += `<br>`
-	} else if (type === "radio" || type === "checkbox") {
-	  equip += `<span class="w${width}">
+    equip += `<span class="w${width}">${label}<span id="${id}"></span></span>`
+  } else if (type === "br") {
+    equip += `<br>`
+  } else if (type === "radio" || type === "checkbox") {
+    equip += `<span class="w${width}">
                   <input type="${type}" name="${name}" id="${id}">
                   <label for="${id}">${label}</label>
                 </span>`
-	} else if (type === "text") {
-	  equip += `<span>
+  } else if (type === "text") {
+    equip += `<span>
                   <input type="${type}" class="${name}" id="${id}" placeholder="${label}">
                 </span>`
-	} else if (type === "textarea") {
-	  equip += `<span>
+  } else if (type === "textarea") {
+    equip += `<span>
                   <textarea id="${id}" placeholder="${label}"></textarea>
                 </span>`
-	}
+  }
   })
 
   document.getElementById("dialogEquip").innerHTML = equip
@@ -71,10 +71,10 @@ export function htmldivRecord()
   let record = "",
       labelwidth = "",
       inputwidth = "",
-	  type = "",
-	  name = "",
-	  title = "",
-	  label = ""
+    type = "",
+    name = "",
+    title = "",
+    label = ""
 
   RECORDSHEET.forEach(function(item) {
     let labelwidth = item[0],
@@ -87,20 +87,20 @@ export function htmldivRecord()
         max = item[7] || ""
 
     if (labelwidth === "br") {
-	  record += `<br>`
+    record += `<br>`
     } else if (labelwidth === "hr") {
-	  record += `<hr>`
+    record += `<hr>`
     } else if (type === "number") {
-	  record += `<label class="w${labelwidth}">
-				   <span>${label}</span>
-				   <input class="w${inputwidth}" type="${type}" name="${name}" title="${title}" value="" min="${min}" max="${max}">
-				 </label>`
-	} else {
-	  record += `<label class="w${labelwidth}">
-				   <input class="w${inputwidth}" type="${type}" name="${name}" title="${title}" value="${title}">
-				   <span style="right:${inputwidth}px">${label}</span>
-				 </label>`
-	}
+    record += `<label class="w${labelwidth}">
+           <span>${label}</span>
+           <input class="w${inputwidth}" type="${type}" name="${name}" title="${title}" value="" min="${min}" max="${max}">
+         </label>`
+  } else {
+    record += `<label class="w${labelwidth}">
+           <input class="w${inputwidth}" type="${type}" name="${name}" title="${title}" value="${title}">
+           <span style="right:${inputwidth}px">${label}</span>
+         </label>`
+  }
   })
 
   document.querySelector("#profileRecord .divRecord").innerHTML = record

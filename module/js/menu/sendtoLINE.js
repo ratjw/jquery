@@ -1,7 +1,7 @@
 
 import { USER } from "../main.js"
 
-const LINEBOT	= "line/lineBot.php"
+const LINEBOT  = "line/lineBot.php"
 const LINENOTIFY = "line/lineNotify.php"
 
 export function sendtoLINE()

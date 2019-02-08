@@ -99,28 +99,28 @@ function makeDialogFound($dialogFind, $findtbl, found, search)
 }
 
 jQuery.fn.extend({
-	filldataFind : function(q) {
-		let cells = this[0].cells
+  filldataFind : function(q) {
+    let cells = this[0].cells
 
 
-		if (Number(q.deleted)) {
-		  this.addClass("deleted")
-		} else {
-		  rowDecoration(this[0], q.opdate)
-		}
-		q.hn && isPACS && (cells[2].className = "pacs")
-		q.patient && (cells[3].className = "upload")
+    if (Number(q.deleted)) {
+      this.addClass("deleted")
+    } else {
+      rowDecoration(this[0], q.opdate)
+    }
+    q.hn && isPACS && (cells[2].className = "pacs")
+    q.patient && (cells[3].className = "upload")
 
-;		[	putThdate(q.opdate),
-			q.staffname,
-			q.hn,
-			q.patient,
-			q.diagnosis,
-			q.treatment,
-			viewEquip(q.equipment),
-			q.admission,
-			q.final,
-			q.contact
-		].forEach((item, i) => { cells[i].innerHTML = item })
-	}
+;    [  putThdate(q.opdate),
+      q.staffname,
+      q.hn,
+      q.patient,
+      q.diagnosis,
+      q.treatment,
+      viewEquip(q.equipment),
+      q.admission,
+      q.final,
+      q.contact
+    ].forEach((item, i) => { cells[i].innerHTML = item })
+  }
 })

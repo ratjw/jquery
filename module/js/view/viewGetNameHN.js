@@ -9,41 +9,41 @@ import { refillAnotherTablerow } from "./refillAnotherTablerow.js"
 import { reCreateEditcell } from "../control/edit.js"
 
 export function viewGetNameHN(pointed) {
-	let tableID = pointed.closest("table").id,
-		row = pointed.closest('tr'),
-		staffname = row.dataset.staffname,
-		qn = row.dataset.qn,
-		noqn = !qn,
-		cellindex = pointed.cellIndex,
-		book = (isConsultsTbl(tableID)) ? CONSULT : BOOK
+  let tableID = pointed.closest("table").id,
+    row = pointed.closest('tr'),
+    staffname = row.dataset.staffname,
+    qn = row.dataset.qn,
+    noqn = !qn,
+    cellindex = pointed.cellIndex,
+    book = (isConsultsTbl(tableID)) ? CONSULT : BOOK
 
-	// New case input
-	if (noqn) {
-		qn = getMaxQN(book)
-		row.dataset.qn = qn
-	}
+  // New case input
+  if (noqn) {
+    qn = getMaxQN(book)
+    row.dataset.qn = qn
+  }
 
-	let bookq = getBOOKrowByQN(book, qn)
+  let bookq = getBOOKrowByQN(book, qn)
 
   filldata(row, bookq)
 
-	// Both cases remote effect -> refill corresponding cell
-	// no need to refillmaintbl because new case row was already there
-	// Consults cases are not shown in main table
-	if (tableID === 'maintbl') {
-		if (isSplit() && isStaffname(staffname)) {
-			refillAnotherTablerow('queuetbl', cellindex, qn)
-		}
-	} else {
-		if (!isConsults()) {
-			if (noqn) {
-				refillmaintbl()
-				fillConsults()
-			} else {
-				refillAnotherTablerow('maintbl', cellindex, qn)
-			}
-		}
-	}
+  // Both cases remote effect -> refill corresponding cell
+  // no need to refillmaintbl because new case row was already there
+  // Consults cases are not shown in main table
+  if (tableID === 'maintbl') {
+    if (isSplit() && isStaffname(staffname)) {
+      refillAnotherTablerow('queuetbl', cellindex, qn)
+    }
+  } else {
+    if (!isConsults()) {
+      if (noqn) {
+        refillmaintbl()
+        fillConsults()
+      } else {
+        refillAnotherTablerow('maintbl', cellindex, qn)
+      }
+    }
+  }
 
-	reCreateEditcell()
+  reCreateEditcell()
 }

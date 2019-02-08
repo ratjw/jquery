@@ -13,25 +13,25 @@ import { sendtoExcel } from "./sendtoExcel.js"
 import { sendtoLINE, toLINE } from "./sendtoLINE.js"
 
 let onclick = {
-	"clicksearchCases": searchCases,
-	"clickcaseAll": caseAll,
-	"clickallDeletedCases": allDeletedCases,
-	"clickreadme": readme,
-	"addrow": addnewrow,
-	"postponecase": postponeCase,
-	"moveCase": moveCase,
-	"copyCase": copyCase,
-	"clickeditHistory": editHistory,
-	"delcase": delCase,
-	"clicksendtoExcel": sendtoExcel,
-	"clicksendtoLINE": sendtoLINE,
-	"buttonLINE": toLINE,
-	"clicksearchDB": searchDB
+  "clicksearchCases": searchCases,
+  "clickcaseAll": caseAll,
+  "clickallDeletedCases": allDeletedCases,
+  "clickreadme": readme,
+  "addrow": addnewrow,
+  "postponecase": postponeCase,
+  "moveCase": moveCase,
+  "copyCase": copyCase,
+  "clickeditHistory": editHistory,
+  "delcase": delCase,
+  "clicksendtoExcel": sendtoExcel,
+  "clicksendtoLINE": sendtoLINE,
+  "buttonLINE": toLINE,
+  "clicksearchDB": searchDB
 }
 
 export function setClickMenu()
 {
-	$.each(onclick, function(key, val) {
-		document.getElementById(key).onclick = val
-	})
+  $.each(onclick, function(key, val) {
+    document.getElementById(key).onclick = val
+  })
 }

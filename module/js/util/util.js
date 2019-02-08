@@ -16,131 +16,131 @@ export function URIcomponent(content) {
 
 export function isSplit()
 {  
-	return queuewrapper.style.display === "block"
+  return queuewrapper.style.display === "block"
 }
 
 export function isStaffname(staffname)
 {  
-	return $('#titlename').html() === staffname
+  return $('#titlename').html() === staffname
 }
 
 // The table is Consults table
 export function isConsults()
 {  
-	return $('#titlename').html() === "Consults"
+  return $('#titlename').html() === "Consults"
 }
 
 // This is on the split table and is Consults table
 export function isConsultsTbl(tableID)
 {  
-	var queuetbl = tableID === "queuetbl"
+  var queuetbl = tableID === "queuetbl"
 
-	return queuetbl && isConsults()
+  return queuetbl && isConsults()
 }
 
 export function getTitlename(tableID)
 {
   if (isSplit() && !isConsultsTbl(tableID)) {
-	  return document.getElementById('titlename').innerHTML
+    return document.getElementById('titlename').innerHTML
   }
   return ""
 }
 
 export function getMaxQN(book)
 {
-	var qn = Math.max.apply(Math, $.map(book, function(q, i) {
-			return q.qn
-		}))
-	return String(qn)
+  var qn = Math.max.apply(Math, $.map(book, function(q, i) {
+      return q.qn
+    }))
+  return String(qn)
 }
 
 export function getClass(thiscell, fromClass, toClass)
 {
-	let	classname = thiscell.className,
-		classes = classname.split(" "),
-		oldClass = checkMatch(classes, fromClass)
+  let  classname = thiscell.className,
+    classes = classname.split(" "),
+    oldClass = checkMatch(classes, fromClass)
 
-	if (oldClass) {
-		let hasIndex = fromClass.indexOf(oldClass),
-			newClass = toClass[hasIndex]
-		thiscell.className = classname.replace(oldClass, newClass)
-	}
+  if (oldClass) {
+    let hasIndex = fromClass.indexOf(oldClass),
+      newClass = toClass[hasIndex]
+    thiscell.className = classname.replace(oldClass, newClass)
+  }
 }
 
 function checkMatch(classes, oldClasses)
 {
-	for (let i=0; i<classes.length; i++) {
-		for (let j=0; j<oldClasses.length; j++) {
-			if (classes[i] === oldClasses[j]) {
-				return classes[i]
-			}
-		}
-	}
+  for (let i=0; i<classes.length; i++) {
+    for (let j=0; j<oldClasses.length; j++) {
+      if (classes[i] === oldClasses[j]) {
+        return classes[i]
+      }
+    }
+  }
 }
 
 export function winWidth(percent) {
-	return window.innerWidth * percent / 100
+  return window.innerWidth * percent / 100
 }
 
 export function winHeight(percent) {
-	return window.innerHeight * percent / 100
+  return window.innerHeight * percent / 100
 }
 
 export function reposition($me, mypos, atpos, target, within) {
-	$me.show()
-	$me.position({
-		my: mypos,
-		at: atpos,
-		of: target,
-		within: within
-	})
+  $me.show()
+  $me.position({
+    my: mypos,
+    at: atpos,
+    of: target,
+    within: within
+  })
 }
 
 // Shadow down when menu is below target row (high on screen)
 // Shadow up when menu is higher than target row (low on screen)
 export function menustyle($me, target)
 {
-	let shadow = ($me.offset().top > $(target).offset().top)
-					? '10px 20px 30px slategray'
-					: '10px -20px 30px slategray'
-	$me.css({
-		boxShadow: shadow
-	})
+  let shadow = ($me.offset().top > $(target).offset().top)
+          ? '10px 20px 30px slategray'
+          : '10px -20px 30px slategray'
+  $me.css({
+    boxShadow: shadow
+  })
 }
 
 $.fn.fixMe = function($container) {
-	let $this = $(this),
-		$t_fixed,
-		pad = $container.css("paddingLeft")
-	init();
-	$container.off("scroll").on("scroll", scrollFixed);
+  let $this = $(this),
+    $t_fixed,
+    pad = $container.css("paddingLeft")
+  init();
+  $container.off("scroll").on("scroll", scrollFixed);
 
-	function init() {
-		$t_fixed = $this.clone();
-		$t_fixed.attr("id", "fixed")
-		$t_fixed.find("tbody").remove().end()
-				.addClass("fixed").insertBefore($this);
-		$container.scrollTop(0)
-		resizeFix();
-		reposition($t_fixed, "left top", "left+" + pad + " top", $container)
-		$t_fixed.hide()
-	}
-	function resizeFix() {
-		$t_fixed.find("th").each(function(index) {
-			$(this).css("width",$this.find("th").eq(index).width() + "px");
-		});
-	}
-	function scrollFixed() {
-		let offset = $(this).scrollTop(),
-		tableTop = $this[0].offsetTop,
-		tableBottom = tableTop + $this.height() - $this.find("thead").height();
-		if(offset < tableTop || offset > tableBottom) {
-			$t_fixed.hide();
-		}
-		else if (offset >= tableTop && offset <= tableBottom && $t_fixed.is(":hidden")) {
-			$t_fixed.show();
-		}
-	}
+  function init() {
+    $t_fixed = $this.clone();
+    $t_fixed.attr("id", "fixed")
+    $t_fixed.find("tbody").remove().end()
+        .addClass("fixed").insertBefore($this);
+    $container.scrollTop(0)
+    resizeFix();
+    reposition($t_fixed, "left top", "left+" + pad + " top", $container)
+    $t_fixed.hide()
+  }
+  function resizeFix() {
+    $t_fixed.find("th").each(function(index) {
+      $(this).css("width",$this.find("th").eq(index).width() + "px");
+    });
+  }
+  function scrollFixed() {
+    let offset = $(this).scrollTop(),
+    tableTop = $this[0].offsetTop,
+    tableBottom = tableTop + $this.height() - $this.find("thead").height();
+    if(offset < tableTop || offset > tableBottom) {
+      $t_fixed.hide();
+    }
+    else if (offset >= tableTop && offset <= tableBottom && $t_fixed.is(":hidden")) {
+      $t_fixed.show();
+    }
+  }
 };
 
 $.fn.refixMe = function($original) {
@@ -160,15 +160,15 @@ function resizeFixed($fix, $this)
 }
 
 export function winResizeFix($this, $container) {
-	let $fix = $("#fixed"),
-		hide = $fix.css("display") === "none",
-		pad = $container.css("paddingLeft")
+  let $fix = $("#fixed"),
+    hide = $fix.css("display") === "none",
+    pad = $container.css("paddingLeft")
 
-	$fix.find("th").each(function(index) {
-		$(this).css("width",$this.find("th").eq(index).width() + "px");
-	});
-	reposition($fix, "left top", "left+" + pad + " top", $container)
-	hide && $fix.hide()
+  $fix.find("th").each(function(index) {
+    $(this).css("width",$this.find("th").eq(index).width() + "px");
+  });
+  reposition($fix, "left top", "left+" + pad + " top", $container)
+  hide && $fix.hide()
 }
 
 export function inPicArea(evt, pointing) {
@@ -203,40 +203,40 @@ function picArea(pointing) {
 
 // Make dialog box dialogAlert containing error message
 export function Alert(title, message) {
-	let $dialogAlert = $("#dialogAlert")
+  let $dialogAlert = $("#dialogAlert")
 
-	$dialogAlert.css({
-		"fontSize":" 14px",
-		"textAlign" : "center"
-	})
-	$dialogAlert.html(message)
-	$dialogAlert.dialog({
-		title: title,
-		closeOnEscape: true,
-		modal: true,
-		hide: 200,
-		minWidth: 400,
-		height: 230
-	}).fadeIn();
+  $dialogAlert.css({
+    "fontSize":" 14px",
+    "textAlign" : "center"
+  })
+  $dialogAlert.html(message)
+  $dialogAlert.dialog({
+    title: title,
+    closeOnEscape: true,
+    modal: true,
+    hide: 200,
+    minWidth: 400,
+    height: 230
+  }).fadeIn();
 }
 
 export function clearMouseoverTR()
 {
-	$("#maintbl tr:has('td'), #queuetbl tr:has('td')")
-		.off("mouseover")
-		.off("mouseout")
-		.off("click")
-	$(".pasteDate").removeClass("pasteDate")
-	$(".moveCase").removeClass("moveCase")
-	$(".copyCase").removeClass("copyCase")
+  $("#maintbl tr:has('td'), #queuetbl tr:has('td')")
+    .off("mouseover")
+    .off("mouseout")
+    .off("click")
+  $(".pasteDate").removeClass("pasteDate")
+  $(".moveCase").removeClass("moveCase")
+  $(".copyCase").removeClass("copyCase")
 }
 
 // The second parameter (, 0) ensure a default value if arrayAfter .map is empty
 export function getLargestWaitnum(book, staffname)
 {
-	let dateStaff = book.filter(function(q) {
-		return (q.staffname === staffname) && (q.opdate === LARGESTDATE)
-	})
+  let dateStaff = book.filter(function(q) {
+    return (q.staffname === staffname) && (q.opdate === LARGESTDATE)
+  })
 
-	return Math.max(...dateStaff.map(q => q.waitnum), 0)
+  return Math.max(...dateStaff.map(q => q.waitnum), 0)
 }

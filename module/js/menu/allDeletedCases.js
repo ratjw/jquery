@@ -10,13 +10,13 @@ import { scrolltoThisCase } from "../view/scrolltoThisCase.js"
 
 export function allDeletedCases()
 {
-	sqlAllDeletedCases().then(response => {
-		if (typeof response === "object") {
-			viewAllDeletedCases(response)
-		} else {
-			Alert("allDeletedCases", response)
-		}
-	}).catch(error => {})
+  sqlAllDeletedCases().then(response => {
+    if (typeof response === "object") {
+      viewAllDeletedCases(response)
+    } else {
+      Alert("allDeletedCases", response)
+    }
+  }).catch(error => {})
 }
 
 export function toUndelete(thisdate, deleted) 
@@ -38,42 +38,42 @@ export function toUndelete(thisdate, deleted)
 
     allCases.splice(casenum, 0, qn)
 
-	doUndel(allCases, opdate, oproom, staffname, qn, 0)
+  doUndel(allCases, opdate, oproom, staffname, qn, 0)
 
-/*	UndoManager.add({
-		undo: function() {
-			doUndel(allCases, opdate, oproom, staffname, qn, 1)
-		},
-		redo: function() {
-			doUndel(allCases, opdate, oproom, staffname, qn, 0)
-		}
-	})*/
+/*  UndoManager.add({
+    undo: function() {
+      doUndel(allCases, opdate, oproom, staffname, qn, 1)
+    },
+    redo: function() {
+      doUndel(allCases, opdate, oproom, staffname, qn, 0)
+    }
+  })*/
   })
 }
 
 export function doUndel(allCases, opdate, oproom, staffname, qn, del) {
 
-	sqlUndelete(allCases, oproom, qn, del).then(response => {
-		let hasData = function () {
-			updateBOOK(response)
-//			viewOneDay(opdate)
-//			viewSplit(staffname)
-			scrolltoThisCase(qn)
-		};
+  sqlUndelete(allCases, oproom, qn, del).then(response => {
+    let hasData = function () {
+      updateBOOK(response)
+//      viewOneDay(opdate)
+//      viewSplit(staffname)
+      scrolltoThisCase(qn)
+    };
 
-		typeof response === "object"
-		? hasData()
-		: Alert("doUndel", response)
-	}).catch(error => {})
+    typeof response === "object"
+    ? hasData()
+    : Alert("doUndel", response)
+  }).catch(error => {})
 
-	$('#dialogAllDeleted').dialog("close")
+  $('#dialogAllDeleted').dialog("close")
 }
 
 function sameDateRoomBookQNs(book, opdate, oproom)
 {
-	if (!oproom) { return [] }
+  if (!oproom) { return [] }
 
-	return book.filter(q => {
-		return q.opdate === opdate && Number(q.oproom) === Number(oproom);
-	}).map(e => e.qn)
+  return book.filter(q => {
+    return q.opdate === opdate && Number(q.oproom) === Number(oproom);
+  }).map(e => e.qn)
 }

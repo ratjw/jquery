@@ -80,11 +80,11 @@ export function searchDB()
   search += (search && staffname ? ", " : "") + staffname
   search += (search && others ? ", " : "") + others
   if (search) {
-	sqlSearchDB(hn, staffname, others).then(response => {
-		typeof response === "object"
-		? viewSearchDB(response, search)
-		: Alert("Search: " + search, response)
-	}).catch(error => {})
+  sqlSearchDB(hn, staffname, others).then(response => {
+    typeof response === "object"
+    ? viewSearchDB(response, search)
+    : Alert("Search: " + search, response)
+  }).catch(error => {})
   } else {
     Alert("Search: ''", "<br><br>No Result")
   }

@@ -12,7 +12,7 @@ export function pagination($dialog, $maintbl, book, search)
   let  beginday = book[0].opdate,
     lastday = findLastDateInBOOK(book),
     firstday = getPrevMonday(),
-	offset = 0
+  offset = 0
 
   $dialog.dialog({
     title: search,
@@ -204,17 +204,17 @@ jQuery.fn.extend({
       cells = row.cells,
       date = q.opdate
 
-;	[	putThdate(date),
-		q.staffname,
-		q.hn,
-		q.patient,
-		q.diagnosis,
-		q.treatment,
-		viewEquip(q.equipment),
-		q.admission,
-		q.final,
-		q.contact
-	].forEach((item, i) => { cells[i].innerHTML = item })
+;  [  putThdate(date),
+    q.staffname,
+    q.hn,
+    q.patient,
+    q.diagnosis,
+    q.treatment,
+    viewEquip(q.equipment),
+    q.admission,
+    q.final,
+    q.contact
+  ].forEach((item, i) => { cells[i].innerHTML = item })
 
     rowDecoration(row, date)
   }
@@ -222,8 +222,8 @@ jQuery.fn.extend({
 
 function findLastDateInBOOK(book)
 {
-	let bookq = book.find(e => e.opdate === LARGESTDATE)
-	let q = book.indexOf(bookq)
+  let bookq = book.find(e => e.opdate === LARGESTDATE)
+  let q = book.indexOf(bookq)
 
-	return book[q-1].opdate
+  return book[q-1].opdate
 }

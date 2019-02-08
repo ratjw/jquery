@@ -13,50 +13,50 @@ import { addrow } from "./addnewrow.js"
 // Remove the row if more than one case on that date, or on staff table
 // Just blank the row if there is only one case
 export function delCase() {
-	let	selected = document.querySelector(".selected"),
-		row = selected.closest('tr'),
-		prevrow = row.previousElementSibling,
-		opdate = row.dataset.opdate,
-		qn = row.dataset.qn,
-		oproom = row.dataset.oproom,
-		allCases = []
+  let  selected = document.querySelector(".selected"),
+    row = selected.closest('tr'),
+    prevrow = row.previousElementSibling,
+    opdate = row.dataset.opdate,
+    qn = row.dataset.qn,
+    oproom = row.dataset.oproom,
+    allCases = []
 
-	if (!qn) {
-		row.remove()
-	  clearSelection()
-		return
-	}
+  if (!qn) {
+    row.remove()
+    clearSelection()
+    return
+  }
 
-	if (oproom) {
-		allCases = sameDateRoomTableQNs(opdate, row)
-	}
+  if (oproom) {
+    allCases = sameDateRoomTableQNs(row)
+  }
 
-	let deleteCase = function (del) {
-		sqlDeleteCase(allCases, oproom, qn, del).then(response => {
-			let hasData = function () {
-				updateBOOK(response)
-//				viewDeleteCase(row)
-			}
+  let deleteCase = function (del) {
+    sqlDeleteCase(allCases, oproom, qn, del).then(response => {
+      let hasData = function () {
+        updateBOOK(response)
+//        viewDeleteCase(row)
+      }
 
-			typeof response === "object"
-			? hasData()
-			: Alert ("delCase", response)
-		}).catch(error => {})
-	}
+      typeof response === "object"
+      ? hasData()
+      : Alert ("delCase", response)
+    }).catch(error => {})
+  }
 
-	clearSelection()
-	deleteCase(1)
+  clearSelection()
+  deleteCase(1)
 
-/*	UndoManager.add({
-		undo: function() {
-			if (qn) {
-				doUndel(allCases, opdate, oproom, staffname, qn, 0)
-			} else {
-				addrow($prevrow)
-			}
-		},
-		redo: function() {
-			deleteCase(1)
-		}
-	})*/
+/*  UndoManager.add({
+    undo: function() {
+      if (qn) {
+        doUndel(allCases, opdate, oproom, staffname, qn, 0)
+      } else {
+        addrow($prevrow)
+      }
+    },
+    redo: function() {
+      deleteCase(1)
+    }
+  })*/
 }

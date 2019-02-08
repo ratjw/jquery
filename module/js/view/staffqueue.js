@@ -3,38 +3,41 @@ import {
   OPDATE, THEATRE, OPROOM, OPTIME, CASENUM, STAFFNAME, HN, PATIENT,
   DIAGNOSIS, TREATMENT, EQUIPMENT, CONTACT, LARGESTDATE
 } from "../model/const.js"
-import { START, ISOdate, nextdays, putNameAge, scrolltoToday } from "../util/date.js"
-import { BOOK, isPACS } from "../util/updateBOOK.js"
+import { START, ISOdate, nextdays, putNameAge } from "../util/date.js"
+import { BOOK, CONSULT, isPACS } from "../util/updateBOOK.js"
 import { viewEquipNoImg } from "./viewEquip.js"
 import { setRowData, blankRowData } from "../model/rowdata.js"
 import { isSplit } from "../util/util.js"
 import { splitPane } from "./splitPane.js"
 import { hoverMain } from "./hoverMain.js"
-import { fillconsultsTbl, refillDatedCases, makenextrow } from "./fill.js"
+import { fillDatedCases, refillDatedCases, makenextrow } from "./fill.js"
 import { fillConsults } from "./fillConsults.js"
+import { scrolltoToday } from "./scrolltoThisCase.js"
 
 export function staffqueue(staffname) {
-  let todate = ISOdate(new Date()),
-    queuetbl = document.getElementById('queuetbl')
+  let table = document.getElementById("queuetbl"),
+    book = CONSULT,
+    until = ISOdate(new Date())
 
   // Not yet split window
   if (!isSplit()) { splitPane() }
   $('#titlename').html(staffname)
 
   if (staffname === "Consults") {
-    fillconsultsTbl()
+    fillDatedCases(table, book, until)
   } else {
-    fillEachStaff(staffname)
+    book = BOOK.filter(e => e.staffname === staffname),
+    fillEachStaff(table, book, staffname)
   }
 
   fillConsults('queuetbl')
-  hoverMain()
   scrolltoToday('queuetbl')
+  hoverMain()
 }
 
 // Use existing DOM table
 export function refillstaffqueue() {
-  let  table = document.getElementById("queuetbl"),
+  let table = document.getElementById("queuetbl"),
     staffname = $('#titlename').html(),
     book
 
@@ -45,16 +48,15 @@ export function refillstaffqueue() {
   }
 
   refillDatedCases(table, book)
+  reNumberNodateRows()
 }
 
-function fillEachStaff(staffname)
+function fillEachStaff(table, book, staffname)
 {
-  let table = document.getElementById("queuetbl"),
-    tbody = table.querySelector("tbody"),
+  let tbody = table.querySelector("tbody"),
     rows = table.rows,
     head = table.rows[0],
 
-    book = BOOK.filter(e => e.staffname === staffname),
     q = book.findIndex(e => e.opdate >= START),
     blen = book.length,
 
@@ -77,8 +79,8 @@ function fillEachStaff(staffname)
     if (qdate < LARGESTDATE) {
       // step over each day that is not in QBOOK
       while (date < qdate) {
-         // make a blank row for each day which is not in book
-       if (date !== madedate) {
+        // make a blank row for each day which is not in book
+        if (date !== madedate) {
           makenextrow(table, date)
           madedate = date
         }

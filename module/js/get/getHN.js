@@ -6,14 +6,14 @@ import { PACS } from "./PACS.js"
 
 export function getHN(evt, pointing)
 {
-	if (pointing.innerHTML) {
-		clearEditcell()
-		if (isPACS) {
-			if (inPicArea(evt, pointing)) {
-				PACS(pointing.innerHTML)
-			}
-		}
-	} else {
-		createEditcell(pointing)
-	}
+  if (pointing.innerHTML) {
+    clearEditcell()
+    if (isPACS) {
+      if (inPicArea(evt, pointing)) {
+        PACS(pointing.innerHTML)
+      }
+    }
+  } else {
+    createEditcell(pointing)
+  }
 }

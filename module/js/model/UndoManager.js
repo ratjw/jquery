@@ -1,110 +1,110 @@
 
 export let UndoManager = (function () {
 
-	let commands = [],
-		index = -1,
-		limit = 0,
-		isExecuting = false,
-		callback,
-		
-		// functions
-		execute;
+  let commands = [],
+    index = -1,
+    limit = 0,
+    isExecuting = false,
+    callback,
+    
+    // functions
+    execute;
 
-	execute = function(command, action) {
-		if (!command || typeof command[action] !== "function") {
-			return this;
-		}
-		isExecuting = true;
+  execute = function(command, action) {
+    if (!command || typeof command[action] !== "function") {
+      return this;
+    }
+    isExecuting = true;
 
-		command[action]();
+    command[action]();
 
-		isExecuting = false;
-		return this;
-	};
+    isExecuting = false;
+    return this;
+  };
 
-	return {
+  return {
 
-		// Add a command to the queue.
-		add: function (command) {
-			if (isExecuting) {
-				return this;
-			}
-			// if we are here after having called undo,
-			// invalidate items higher on the stack
-			commands.splice(index + 1, commands.length - index);
+    // Add a command to the queue.
+    add: function (command) {
+      if (isExecuting) {
+        return this;
+      }
+      // if we are here after having called undo,
+      // invalidate items higher on the stack
+      commands.splice(index + 1, commands.length - index);
 
-			commands.push(command);
-			
-			// if limit is set, remove items from the start
-			if (limit && commands.length > limit) {
-				removeFromTo(commands, 0, -(limit+1));
-			}
-			
-			// set the current index to the end
-			index = commands.length - 1;
-			if (callback) {
-				callback();
-			}
-			return this;
-		},
+      commands.push(command);
+      
+      // if limit is set, remove items from the start
+      if (limit && commands.length > limit) {
+        removeFromTo(commands, 0, -(limit+1));
+      }
+      
+      // set the current index to the end
+      index = commands.length - 1;
+      if (callback) {
+        callback();
+      }
+      return this;
+    },
 
-		// Pass a function to be called on undo and redo actions.
-		setCallback: function (callbackFunc) {
-			callback = callbackFunc;
-		},
+    // Pass a function to be called on undo and redo actions.
+    setCallback: function (callbackFunc) {
+      callback = callbackFunc;
+    },
 
-		// Perform undo: call the undo function at the current index
-		// and decrease the index by 1.
-		undo: function () {
-			let command = commands[index];
-			if (!command) {
-				return this;
-			}
-			execute(command, "undo");
-			index -= 1;
-			if (callback) {
-				callback();
-			}
-			return this;
-		},
+    // Perform undo: call the undo function at the current index
+    // and decrease the index by 1.
+    undo: function () {
+      let command = commands[index];
+      if (!command) {
+        return this;
+      }
+      execute(command, "undo");
+      index -= 1;
+      if (callback) {
+        callback();
+      }
+      return this;
+    },
 
-		// Perform redo: call the redo function at the next index
-		// and increase the index by 1.
-		redo: function () {
-			let command = commands[index + 1];
-			if (!command) {
-				return this;
-			}
-			execute(command, "redo");
-			index += 1;
-			if (callback) {
-				callback();
-			}
-			return this;
-		},
+    // Perform redo: call the redo function at the next index
+    // and increase the index by 1.
+    redo: function () {
+      let command = commands[index + 1];
+      if (!command) {
+        return this;
+      }
+      execute(command, "redo");
+      index += 1;
+      if (callback) {
+        callback();
+      }
+      return this;
+    },
 
-		// Clears the memory, losing all stored states. Reset the index.
-		clear: function () {
-			let prev_size = commands.length;
+    // Clears the memory, losing all stored states. Reset the index.
+    clear: function () {
+      let prev_size = commands.length;
 
-			commands = [];
-			index = -1;
+      commands = [];
+      index = -1;
 
-			if (callback && (prev_size > 0)) {
-				callback();
-			}
-		},
+      if (callback && (prev_size > 0)) {
+        callback();
+      }
+    },
 
-		hasUndo: function () {
-			return index !== -1;
-		},
+    hasUndo: function () {
+      return index !== -1;
+    },
 
-		hasRedo: function () {
-			return index < (commands.length - 1);
-		},
+    hasRedo: function () {
+      return index < (commands.length - 1);
+    },
 
-		getIndex: function() {
-			return index;
-		}
-	};
+    getIndex: function() {
+      return index;
+    }
+  };
 })();

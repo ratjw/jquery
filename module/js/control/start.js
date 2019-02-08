@@ -14,11 +14,12 @@ import { sortable } from "./sort.js"
 import { clearSelection } from "./clearSelection.js"
 import { fillmain } from "../view/fill.js"
 import { fillConsults } from "../view/fillConsults.js"
-import { START, ISOdate, thDate, scrolltoToday } from "../util/date.js"
+import { START, ISOdate, thDate } from "../util/date.js"
 import { BOOK, updateBOOK } from "../util/updateBOOK.js"
 import { Alert } from "../util/util.js"
 import { UndoManager } from "../model/UndoManager.js"
 import { htmlStafflist, htmlEquipment, htmldivRecord } from "../view/html.js"
+import { scrolltoToday } from "../view/scrolltoThisCase.js"
 
 // For staff & residents with login id / password from Get_staff_detail
 export function userStaff() {
@@ -88,7 +89,7 @@ function wrapperEvent()
     let $stafflist = $('#stafflist')
 
     resetTimerCounter()
-    $(".marker").removeClass("marker")
+   $(".marker").removeClass("marker")
 
     if ($(target).closest('#cssmenu').length) {
       return

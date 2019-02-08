@@ -55,5 +55,5 @@ export function viewOneDay(opdate) {
 
 function getBOOKRowsByDate(book, opdate)
 {
-	return book.filter(q => q.opdate === opdate)
+  return book.filter(q => q.opdate === opdate)
 }

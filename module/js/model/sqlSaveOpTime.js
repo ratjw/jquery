@@ -5,21 +5,21 @@ import { updateCasenum, sqlCaseNum } from "./sqlSaveCaseNum.js"
 
 export function sqlSaveOpTime(allCases, oproom, optime, qn)
 {
-	let sql = "sqlReturnbook="
+  let sql = "sqlReturnbook="
 
-	allCases.forEach((e, i) => {
-	  if (oproom) {
-		  if (e === qn) {
+  allCases.forEach((e, i) => {
+    if (oproom) {
+      if (e === qn) {
         sql += sqlNewTime(optime, i + 1, qn)
       } else {
-  			sql += sqlCaseNum(i + 1, e)
+        sql += sqlCaseNum(i + 1, e)
       }
     } else {
       sql += sqlNewTimeNoRoom(optime, qn)
     }
-	})
+  })
 
-	return postData(MYSQLIPHP, sql)
+  return postData(MYSQLIPHP, sql)
 }
 
 function sqlNewTime(optime, casenum, qn)

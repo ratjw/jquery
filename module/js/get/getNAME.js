@@ -5,11 +5,11 @@ import { showUpload } from "./showUpload.js"
 
 export function getNAME(evt, pointing)
 {
-	let hn = pointing.previousElementSibling.innerHTML
-	let patient = pointing.innerHTML
+  let hn = pointing.previousElementSibling.innerHTML
+  let patient = pointing.innerHTML
 
-	if (inPicArea(evt, pointing)) {
-		showUpload(hn, patient)
-	}
-	clearEditcell()
+  if (inPicArea(evt, pointing)) {
+    showUpload(hn, patient)
+  }
+  clearEditcell()
 }

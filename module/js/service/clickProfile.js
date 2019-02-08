@@ -20,7 +20,7 @@ export function clickProfile(evt, target)
 
   if (target.nodeName === "INPUT") {
     let nameqn = target.name.split(/(\d+)/)
-	  let name = nameqn[0]
+    let name = nameqn[0]
     let qn = nameqn[1]
 
     if (RADIOENDO.includes(name)) {
@@ -30,7 +30,7 @@ export function clickProfile(evt, target)
         diseaseToOperation(target, inCell, qn)
       } else {
         showInputColor(target)
-	    }
+      }
       countAllServices()
     }
 
@@ -68,7 +68,7 @@ function diseaseToOperation(target, inCell, qn)
     }
   } else {
     inputOperated.value = operatedValue - 1
-	  prevDisease = target.value
+    prevDisease = target.value
   }
 }
 

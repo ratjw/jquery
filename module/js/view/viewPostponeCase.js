@@ -14,12 +14,12 @@ export function viewPostponeCase(row, thisdate)
     qn = row.dataset.qn,
     bookq = getBOOKrowByQN(BOOK, qn)
 
-	if (opdate !== LARGESTDATE) { viewOneDay(opdate) }
-	if (thisdate !== LARGESTDATE) { viewOneDay(thisdate) }
+  if (opdate !== LARGESTDATE) { viewOneDay(opdate) }
+  if (thisdate !== LARGESTDATE) { viewOneDay(thisdate) }
 
-	// moveCase of this staffname's case, re-render
-	viewSplit(staffname)
+  // moveCase of this staffname's case, re-render
+  viewSplit(staffname)
 
   filldata(row, bookq)
-	scrolltoThisCase(qn)
+  scrolltoThisCase(qn)
 }

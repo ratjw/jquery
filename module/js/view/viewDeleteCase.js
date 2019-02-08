@@ -30,7 +30,7 @@ let delRow = function (row, opdate) {
   if ((prevDate === opdate) || (nextDate === opdate) || lastrow) {
     row.remove()
   } else {
-	  Array.from(row.querySelectorAll("td:not(:first-child)")).forEach(e => e.innerHTML = "")
+    Array.from(row.querySelectorAll("td:not(:first-child)")).forEach(e => e.innerHTML = "")
     row.cells[HN].classList.remove("pacs")
     row.cells[PATIENT].classList.remove("upload")
     showStaffOnCall(opdate)

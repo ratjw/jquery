@@ -69,22 +69,22 @@ export function viewAllDeletedCases(deleted) {
 }
 
 jQuery.fn.extend({
-	filldataAllDeleted : function(q) {
-		let row = this[0]
+  filldataAllDeleted : function(q) {
+    let row = this[0]
 
     setRowData(row, q)
-		rowDecoration(row, q.opdate)
-		row.cells[0].classList.add("toUndelete")
+    rowDecoration(row, q.opdate)
+    row.cells[0].classList.add("toUndelete")
 
-;		[	putThdate(q.opdate),
-			q.staffname,
-			q.hn,
-			q.patient,
-			q.diagnosis,
-			q.treatment,
-			q.contact,
-			q.editor,
-			q.editdatetime
-		].forEach((item, i) => { row.cells[i].innerHTML = item })
-	}
+;    [  putThdate(q.opdate),
+      q.staffname,
+      q.hn,
+      q.patient,
+      q.diagnosis,
+      q.treatment,
+      q.contact,
+      q.editor,
+      q.editdatetime
+    ].forEach((item, i) => { row.cells[i].innerHTML = item })
+  }
 })

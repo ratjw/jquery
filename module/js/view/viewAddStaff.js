@@ -2,23 +2,23 @@
 import { STAFF } from "../util/updateBOOK.js"
 
 const SPECIALTY = [
-	"breast",
-	"cvt",
-	"general",
-	"hepatobiliary",
-	"neurosurgery",
-	"pediatrics",
-	"plastic",
-	"trauma",
-	"urology",
-	"vascular"
+  "breast",
+  "cvt",
+  "general",
+  "hepatobiliary",
+  "neurosurgery",
+  "pediatrics",
+  "plastic",
+  "trauma",
+  "urology",
+  "vascular"
 ]
 
 const STAFFPROFILE = {
-	sname: "staffname",
-	specialty: "specialty",
-	soncall: "startoncall",
-	snumber: "number"
+  sname: "staffname",
+  specialty: "specialty",
+  soncall: "startoncall",
+  snumber: "number"
 }
 
 export function viewAddStaff()
@@ -40,21 +40,21 @@ export function viewAddStaff()
   });
 
   $(".clickgetval").off("click").on("click", function() {
-	  getval(this.title)
+    getval(this.title)
   })
 }
 
 jQuery.fn.extend({
   filldataStaff : function (i, q) {
     let row = this[0]
-	let cells = row.cells
+  let cells = row.cells
 
-	row.title = i
-	row.className = "clickgetval"
+  row.title = i
+  row.className = "clickgetval"
 
-	cells[0].innerHTML = q.staffname
-	cells[1].innerHTML = q.specialty
-	cells[2].innerHTML = q.startoncall
+  cells[0].innerHTML = q.staffname
+  cells[1].innerHTML = q.specialty
+  cells[2].innerHTML = q.startoncall
   }
 })
 

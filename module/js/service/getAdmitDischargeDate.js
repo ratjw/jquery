@@ -7,34 +7,34 @@ import { putThdate } from "../util/date.js"
 
 export function getAdmitDischargeDate() {
 
-	sqlGetIPD().then(response => {
-		if (typeof response === "object") {
-			updateBOOK(response)
-			setSERVICE(response.SERVICE)
-			fillAdmitDischargeDate()
-		}
-	}).catch(error => {})
+  sqlGetIPD().then(response => {
+    if (typeof response === "object") {
+      updateBOOK(response)
+      setSERVICE(response.SERVICE)
+      fillAdmitDischargeDate()
+    }
+  }).catch(error => {})
 }
 
 let fillAdmitDischargeDate = function () {
-	let i = 0,
-		staffname = "",
-		$rows = $("#servicetbl tr")
+  let i = 0,
+    staffname = "",
+    $rows = $("#servicetbl tr")
 
-	$.each( SERVICE, function() {
-		if (this.staffname !== staffname) {
-			staffname = this.staffname
-			i++
-		}
-		i++
-		let $thisRow = $rows.eq(i),
-			$cells = $thisRow.children("td")
+  $.each( SERVICE, function() {
+    if (this.staffname !== staffname) {
+      staffname = this.staffname
+      i++
+    }
+    i++
+    let $thisRow = $rows.eq(i),
+      $cells = $thisRow.children("td")
 
-		if (this.admit && this.admit !== $cells.eq(ADMITSV).html()) {
-			$cells.eq(ADMITSV).html(putThdate(this.admit))
-		}
-		if (this.discharge && this.discharge !== $cells.eq(DISCHARGESV).html()) {
-			$cells.eq(DISCHARGESV).html(putThdate(this.discharge))
-		}
-	});
+    if (this.admit && this.admit !== $cells.eq(ADMITSV).html()) {
+      $cells.eq(ADMITSV).html(putThdate(this.admit))
+    }
+    if (this.discharge && this.discharge !== $cells.eq(DISCHARGESV).html()) {
+      $cells.eq(DISCHARGESV).html(putThdate(this.discharge))
+    }
+  });
 }

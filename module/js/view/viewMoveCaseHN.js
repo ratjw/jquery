@@ -11,38 +11,38 @@ import { filldata } from "./fill.js"
 
 export function viewMoveCaseHN(tableID, qn, row, opdate)
 {
-	let	book = (isConsultsTbl(tableID)) ? CONSULT : BOOK
-	let bookq = getBOOKrowByQN(book, qn)
+  let  book = (isConsultsTbl(tableID)) ? CONSULT : BOOK
+  let bookq = getBOOKrowByQN(book, qn)
 
   filldata(row, bookq)
 
-	if (tableID === 'maintbl') {
-		viewOneDay(opdate)
-		refillstaffqueue()
-	} else {
-		refillmaintbl()
-		fillConsults()
-	}
+  if (tableID === 'maintbl') {
+    viewOneDay(opdate)
+    refillstaffqueue()
+  } else {
+    refillmaintbl()
+    fillConsults()
+  }
 }
 
 export function viewCopyCaseHN(tableID, qn, row)
 {
-	let	book = (isConsultsTbl(tableID)) ? CONSULT : BOOK
+  let  book = (isConsultsTbl(tableID)) ? CONSULT : BOOK
 
-	// New case input
-	if (!qn) {
-		qn = getMaxQN(book)
-		row.dataset.qn = qn
-	}
+  // New case input
+  if (!qn) {
+    qn = getMaxQN(book)
+    row.dataset.qn = qn
+  }
 
-	let bookq = getBOOKrowByQN(book, qn)
+  let bookq = getBOOKrowByQN(book, qn)
 
   filldata(row, bookq)
 
-	if (tableID === 'maintbl') {
-		refillstaffqueue()
-	} else {
-		refillmaintbl()
-		fillConsults()
-	}
+  if (tableID === 'maintbl') {
+    refillstaffqueue()
+  } else {
+    refillmaintbl()
+    fillConsults()
+  }
 }

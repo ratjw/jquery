@@ -135,7 +135,7 @@ let serviceTable9 = function (evt, editable, Shift) {
 let mainTable13 = function (evt, editable, Shift, Ctrl) {
   savePreviousCell()
   if (!POINTER || POINTER.cellIndex > 7) {
-    let thiscell = findNextRow(editable, POINTER)
+    let thiscell = findThisCellNextRow(editable, POINTER)
     thiscell && !$("#spin").is(":visible")
       ? editPresentCell(evt, thiscell)
       : clearEditcell()
@@ -147,7 +147,7 @@ let mainTable13 = function (evt, editable, Shift, Ctrl) {
 
 let serviceTable13 = function (evt, editable, Shift, Ctrl) {
   savePreviousCellService()
-  let thiscell = findNextRow(editable, POINTER)
+  let thiscell = findThisCellNextRow(editable, POINTER)
   thiscell
     ? editPresentCellService(evt, thiscell)
     : clearEditcell()
@@ -197,6 +197,22 @@ let findNextRow = function (editable, pointing) {
   // Service Table cell may invisible due to colspan
   do {
     $nextcell = $nextcell.parent().next().children().eq(editable[0])
+  }
+  while ($nextcell.length && ((!$nextcell.is(':visible'))
+    || ($nextcell.get(0).nodeName === "TH")))
+
+  return $nextcell.length && $nextcell[0]
+}
+
+let findThisCellNextRow = function (editable, pointing) {
+  let $nextcell = $(pointing),
+    thiscell = editable.find(e => e === pointing.cellIndex)
+
+  // go to next row corresponding editable
+  // $nextcell.length = 0 when reach end of table
+  // Service Table cell may invisible due to colspan
+  do {
+    $nextcell = $nextcell.parent().next().children().eq(thiscell)
   }
   while ($nextcell.length && ((!$nextcell.is(':visible'))
     || ($nextcell.get(0).nodeName === "TH")))

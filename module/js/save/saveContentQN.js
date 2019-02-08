@@ -17,49 +17,49 @@ import { Alert } from "../util/util.js"
 // consults are not apparent on main table, no remote effect
 export function saveContentQN(pointed, column, newcontent)
 {
-	let qn = pointed.closest('tr').dataset.qn
+  let qn = pointed.closest('tr').dataset.qn
 
-	let doSaveContentQN = function () {
-		sqlSaveContentQN(column, newcontent, qn).then(response => {
-			let hasData = function () {
-				updateBOOK(response)
-//				viewSaveContentQN(pointed, column, OLDCONTENT)
-			}
-			let noData = function () {
-				Alert("saveContentQN", response)
-				pointed.innerHTML = OLDCONTENT
-				// return to previous content
-			}
+  let doSaveContentQN = function () {
+    sqlSaveContentQN(column, newcontent, qn).then(response => {
+      let hasData = function () {
+        updateBOOK(response)
+//        viewSaveContentQN(pointed, column, OLDCONTENT)
+      }
+      let noData = function () {
+        Alert("saveContentQN", response)
+        pointed.innerHTML = OLDCONTENT
+        // return to previous content
+      }
 
-			typeof response === "object" ? hasData() : noData()
-		}).catch(error => {})
-	}
+      typeof response === "object" ? hasData() : noData()
+    }).catch(error => {})
+  }
 
-	doSaveContentQN()
+  doSaveContentQN()
 
-/*	let undoSaveContentQN = function () {
-		sqlSaveContentQN(column, OLDCONTENT, qn).then(response => {
-			let hasData = function () {
-				updateBOOK(response)
-				viewSaveContentQN(pointed, column, newcontent)
-			}
-			let noData = function () {
-				Alert("saveContentQN", response)
-				pointed.innerHTML = newcontent
-				// return to previous content
-			}
+/*  let undoSaveContentQN = function () {
+    sqlSaveContentQN(column, OLDCONTENT, qn).then(response => {
+      let hasData = function () {
+        updateBOOK(response)
+        viewSaveContentQN(pointed, column, newcontent)
+      }
+      let noData = function () {
+        Alert("saveContentQN", response)
+        pointed.innerHTML = newcontent
+        // return to previous content
+      }
 
-			typeof response === "object" ? hasData() : noData()
-		}).catch(error => {})
-	}
+      typeof response === "object" ? hasData() : noData()
+    }).catch(error => {})
+  }
 */
-	// make undo-able
-/*	UndoManager.add({
-		undo: function() {
-			undoSaveContentQN()
-		},
-		redo: function() {
-			doSaveContentQN()
-		}
-	})*/
+  // make undo-able
+/*  UndoManager.add({
+    undo: function() {
+      undoSaveContentQN()
+    },
+    redo: function() {
+      doSaveContentQN()
+    }
+  })*/
 }

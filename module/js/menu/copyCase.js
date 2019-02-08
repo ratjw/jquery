@@ -4,8 +4,8 @@ import { mouseEvent } from "./mouseEvent.js"
 // Mark the case
 export function copyCase()
 {
-	let	selected = document.querySelector(".selected")
-	let	moveCase = document.querySelector(".moveCase")
+  let  selected = document.querySelector(".selected")
+  let  moveCase = document.querySelector(".moveCase")
 
   if (selected ) {
     mouseEvent(selected)

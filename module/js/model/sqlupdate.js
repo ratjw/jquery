@@ -4,13 +4,13 @@ import { URIcomponent } from "../util/util.js"
 import { USER } from "../main.js"
 
 export function sqlStart() {
-	return postData(MYSQLIPHP, "start=''");
+  return postData(MYSQLIPHP, "start=''");
 }
 
 export function sqlChangeOncall(pointing, opdate, staffname)
 {
   let sql = `sqlReturnStaff=INSERT INTO oncall (dateoncall, staffname, edittime)
-			 VALUES ('${opdate}','${staffname}',NOW());`
+       VALUES ('${opdate}','${staffname}',NOW());`
 
   return postData(MYSQLIPHP, sql);
 }
@@ -31,9 +31,9 @@ export function sqlGetUpdate()
 
 export function sqlSaveOnChange(column, content, qn)
 {
-	let sql = `sqlReturnbook=UPDATE book
-				SET ${column}='${URIcomponent(content)}',editor='${USER}'
-				WHERE qn=${qn};`
+  let sql = `sqlReturnbook=UPDATE book
+        SET ${column}='${URIcomponent(content)}',editor='${USER}'
+        WHERE qn=${qn};`
 
-	return postData(MYSQLIPHP, sql)
+  return postData(MYSQLIPHP, sql)
 }

@@ -6,9 +6,9 @@ import {
 import {
   START, ISOdate, nextdays, numDate, thDate, putThdate, putNameAge
 } from "../util/date.js"
-import { BOOK, CONSULT, isPACS } from "../util/updateBOOK.js"
+import { BOOK, isPACS } from "../util/updateBOOK.js"
 import { rowDecoration } from "./rowDecoration.js"
-import { viewEquip } from "./viewEquip.js"
+import { viewEquip, viewEquipNoImg } from "./viewEquip.js"
 import { hoverMain } from "./hoverMain.js"
 import { setRowData, blankRowData } from "../model/rowdata.js"
 
@@ -36,23 +36,17 @@ export function fillmain()
 
 // Used after serviceReview and in idling update
 export function refillmaintbl() {
-  let  table = document.getElementById("maintbl")
+  let  table = document.getElementById("maintbl"),
 
-  refillDatedCases(table, BOOK)
+    x = BOOK.findIndex(e => e.opdate >= LARGESTDATE),
+    book = BOOK.slice(0, x)
+
+  refillDatedCases(table, book)
   hoverMain()
   // For new row added to this table
 }
 
-export function fillconsultsTbl()
-{
-  let table = document.getElementById("queuetbl"),
-    book = CONSULT,
-    until = ISOdate(new Date())
-
-  fillDatedCases(table, book, until)
-}
-
-function fillDatedCases(table, book, until)
+export function fillDatedCases(table, book, until)
 {
   let tbody = table.querySelector("tbody"),
     rows = table.rows,
@@ -109,54 +103,78 @@ function fillDatedCases(table, book, until)
   }
 }
 
-// try to use existing DOM table
+// use existing DOM table
 export function refillDatedCases(table, book)
 {
   let tbody = table.querySelector("tbody"),
     rows = table.rows,
     head = table.rows[0],
+    tblcells = document.getElementById("tblcells"),
+    tblrow,
     row,
     rowdate,
     prevdate,
-    tblcells = document.getElementById("tblcells"),
-    tblrow,
+    i,
 
     q = book.findIndex(e => e.opdate >= START),
-    blen = book.length,
-    bookdate,
-    i
+    bookdate
 
   // rows.length may change during looping, due to moving a case to/from blank row
   for (i = 0; i < rows.length; i++) {
+    if (rows[i].querySelector('th')) { continue }
+    if (q >= book.length) {
+      if (table.id === 'queuetbl') {
+        while (i < rows.length) {
+          table.deleteRow(i)
+          rows = table.rows
+        }
+      }
+      break
+    }
+
     row = rows[i]
     rowdate = row.dataset.opdate
     bookdate = book[q].opdate
-
-    if (row.querySelector('th')) { continue }
 
     if (rowdate === bookdate) {
       fillrowdata(row, book[q])
       q++
     } else if (rowdate < bookdate) {
       prevdate = rows[i-1].dataset.opdate
-      if (rows[i].dataset.opdate === prevdate) {
+      if (rowdate === prevdate) {
         row.remove()
+        rows = table.rows
         i--
       } else if (row.dataset.qn) {
         blankRowData(row, rowdate)
         unfillrowdata(row, rowdate)
       }
     } else {
-      i = i - 1
-      if (rows[i].dataset.opdate === book[q].opdate) {
+      row = rows[i-1]
+      rowdate = row.dataset.opdate
+      if (rowdate < bookdate) {
         tblrow = tblcells.rows[0].cloneNode(true)
-        rows[i].after(tblrow)
-        i++
-        rowDecoration(rows[i], book[q].opdate)
-        filldata(rows[i], book[q])
+        row.after(tblrow)
+        rows = table.rows
+        rowdate = nextdays(rowdate, 1)
+        rowDecoration(rows[i], rowdate)
+      } else if (rowdate === bookdate) {
+        tblrow = tblcells.rows[0].cloneNode(true)
+        row.after(tblrow)
+        rows = table.rows
+        row = rows[i]
+        rowDecoration(row, rowdate)
+        filldata(row, book[q])
         q++
-      } 
+      }
     }
+  }
+
+  while (q < book.length) {
+    makenextrow(table, book[q].opdate)
+    fillrowdata(rows[i], book[q])
+    i++
+    q++
   }
 }
 
@@ -240,7 +258,7 @@ function fillrowdata(row, q)
   }
   if (rowdata.equipment !== q.equipment) {
     rowdata.equipment = q.equipment
-    row.cells[EQUIPMENT].innerHTML = q.equipment
+    row.cells[EQUIPMENT].innerHTML = viewEquipNoImg(q.equipment)
   }
   if (rowdata.contact !== q.contact) {
     rowdata.contact = q.contact

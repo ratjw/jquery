@@ -14,15 +14,15 @@ export function calcWaitnum(thisOpdate, prevrow, nextrow)
   nextOpdate = nextrow ? nextrow.dataset.opdate : prevOpdate,
   defaultwaitnum = defaultWaitnum(prevrow)
 
-	return (prevOpdate !== thisOpdate && thisOpdate !== nextOpdate)
-			? defaultwaitnum
-			: (prevOpdate === thisOpdate && thisOpdate !== nextOpdate)
-			? prevWaitNum + defaultwaitnum
-			: (prevOpdate !== thisOpdate && thisOpdate === nextOpdate)
-			? nextWaitNum ? nextWaitNum / 2 : defaultwaitnum
-			: nextWaitNum
-			? ((prevWaitNum + nextWaitNum) / 2)
-			: (prevWaitNum + defaultwaitnum)
+  return (prevOpdate !== thisOpdate && thisOpdate !== nextOpdate)
+      ? defaultwaitnum
+      : (prevOpdate === thisOpdate && thisOpdate !== nextOpdate)
+      ? prevWaitNum + defaultwaitnum
+      : (prevOpdate !== thisOpdate && thisOpdate === nextOpdate)
+      ? nextWaitNum ? nextWaitNum / 2 : defaultwaitnum
+      : nextWaitNum
+      ? ((prevWaitNum + nextWaitNum) / 2)
+      : (prevWaitNum + defaultwaitnum)
 }
 
 export function defaultWaitnum(row)

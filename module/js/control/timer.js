@@ -1,9 +1,9 @@
 import {
-	DIAGNOSIS, TREATMENT, CONTACT,
-	DIAGNOSISSV, TREATMENTSV, ADMISSIONSV, FINALSV, PROFILESV
+  DIAGNOSIS, TREATMENT, CONTACT,
+  DIAGNOSISSV, TREATMENTSV, ADMISSIONSV, FINALSV, PROFILESV
 } from "../model/const.js"
 import {
-	POINTER, OLDCONTENT, getNewcontent, editcellLocation, renewEditcell
+  POINTER, OLDCONTENT, getNewcontent, editcellLocation, renewEditcell
 } from "./edit.js"
 import { clearAllEditing } from "./clearAllEditing.js"
 import { sqldoUpdate, sqlGetUpdate, sqlSaveOnChange } from "../model/sqlupdate.js"
@@ -23,34 +23,34 @@ let timer = 0
 let idleCounter = 0
 
 export function clearTimer() {
-	clearTimeout(timer)
+  clearTimeout(timer)
 }
 
 // poke server every 10 sec.
 export function resetTimer() {
-	clearTimeout(timer)
-	timer = setTimeout( updating, 10000)
+  clearTimeout(timer)
+  timer = setTimeout( updating, 10000)
 }
 
 export function resetTimerCounter()
 {
-	resetTimer();
-	idleCounter = 0
+  resetTimer();
+  idleCounter = 0
 }
 
 // While idling every 10 sec., get updated by itself and another clients
 // 1. Visible editcell
-// 	1.1 Editcell changed (update itself and from another client on the way)
-//	1.2 Editcell not changed, check updated from another client
+//   1.1 Editcell changed (update itself and from another client on the way)
+//  1.2 Editcell not changed, check updated from another client
 // 2. Not visible editcell, get update from another client
 function updating() {
-	if (onChange()) {
-		idleCounter = 0
-	} else {
-		doUpdate()
-	}
+  if (onChange()) {
+    idleCounter = 0
+  } else {
+    doUpdate()
+  }
 
-	resetTimer()
+  resetTimer()
 }
 
 // savePreviousCell and return with true (changed) or false (not changed)
@@ -62,7 +62,7 @@ let onChange = function () {
   let newcontent = getNewcontent(),
       index = POINTER.cellIndex,
       whereisEditcell = editcellLocation(),
-	    qn = POINTER.closest("tr").dataset.qn
+      qn = POINTER.closest("tr").dataset.qn
 
   if (OLDCONTENT === newcontent) {
     return false
@@ -87,7 +87,7 @@ function doUpdate()
         getUpdate()
       } else {
         onIdling()
-	  }
+    }
     }
   })
 }
@@ -101,17 +101,17 @@ function getUpdate()
         updateBOOK(response)
         setSERVICE(response.SERVICE)
         reViewService()
-	renewEditcell()
+  renewEditcell()
 //        viewGetUpdate()
       } else {
         Alert ("getUpdateWithService", response)
       }
     })
-  }	else {
+  }  else {
     sqlGetUpdate().then(response => {
       if (typeof response === "object") {
         updateBOOK(response)
-	renewEditcell()
+  renewEditcell()
 //        viewGetUpdate()
       } else {
         Alert ("getUpdate", response)
@@ -126,7 +126,7 @@ function onIdling()
 {
     if (idleCounter && !(idleCounter % 6)) {
       clearAllEditing()
-	renewEditcell()
+  renewEditcell()
 //      viewGetUpdate()
     } else if (idleCounter > 59) {
       history.back()
@@ -137,10 +137,10 @@ function onIdling()
 
 function viewGetUpdate()
 {
-	refillmaintbl()
-	fillConsults()
-	if (isSplit()) { refillstaffqueue() }
-	renewEditcell()
+  refillmaintbl()
+  fillConsults()
+  if (isSplit()) { refillstaffqueue() }
+  renewEditcell()
 }
 
 function saveOnChange(POINTER, index, content, qn)

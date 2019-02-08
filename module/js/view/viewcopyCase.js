@@ -4,7 +4,7 @@ import { viewSplit } from "./viewSplit.js"
 
 export function viewcopyCase(moverow, thisrow)
 {
-	viewOneDay(thisrow.dataset.opdate)
+  viewOneDay(thisrow.dataset.opdate)
 
-	viewSplit(moverow.dataset.staffname) 
+  viewSplit(moverow.dataset.staffname) 
 }

@@ -10,39 +10,39 @@ import { Alert } from "../util/util.js"
 // ===> last date of this month
 export function oneMonth(begin)
 {
-	let date = new Date(begin),
-		end = new Date(date.getFullYear(), date.getMonth()+1, 0),
-		$dialogService = $("#dialogService"),
-		$monthpicker = $("#monthpicker"),
-		$exportService = $("#exportService"),
-		$reportService = $("#reportService"),
-		inputval = $monthpicker.val(),
-		titledate = inputval.slice(0, -4) + (Number(inputval.slice(-4)) + 543),
-		title = "Service Neurosurgery เดือน " + titledate
+  let date = new Date(begin),
+    end = new Date(date.getFullYear(), date.getMonth()+1, 0),
+    $dialogService = $("#dialogService"),
+    $monthpicker = $("#monthpicker"),
+    $exportService = $("#exportService"),
+    $reportService = $("#reportService"),
+    inputval = $monthpicker.val(),
+    titledate = inputval.slice(0, -4) + (Number(inputval.slice(-4)) + 543),
+    title = "Service Neurosurgery เดือน " + titledate
 
-	$dialogService.dialog({ title: title })
+  $dialogService.dialog({ title: title })
 
-	setfromDate(begin)
-	settoDate($.datepicker.formatDate("yy-mm-dd", end))
+  setfromDate(begin)
+  settoDate($.datepicker.formatDate("yy-mm-dd", end))
 
-	sqlGetServiceOneMonth().then(response => {
-		if (typeof response === "object") {
-			setSERVICE(response)
-			showService()
-		} else {
-			Alert("getServiceOneMonth", response)
-		}
-	}).catch(error => {})
+  sqlGetServiceOneMonth().then(response => {
+    if (typeof response === "object") {
+      setSERVICE(response)
+      showService()
+    } else {
+      Alert("getServiceOneMonth", response)
+    }
+  }).catch(error => {})
 
-	$exportService.show()
-	$exportService.on("click", event => {
-		event.preventDefault()
-		exportServiceToExcel()
-	})
+  $exportService.show()
+  $exportService.on("click", event => {
+    event.preventDefault()
+    exportServiceToExcel()
+  })
 
-	$reportService.show()
-	$reportService.on("click", event => {
-		event.preventDefault()
-		showReportToDept(title)
-	})
+  $reportService.show()
+  $reportService.on("click", event => {
+    event.preventDefault()
+    showReportToDept(title)
+  })
 }

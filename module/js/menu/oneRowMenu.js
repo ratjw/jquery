@@ -7,45 +7,45 @@ import { getOpdate } from "../util/date.js"
 // Menu for all cases -> staffqueue, service, all deleted, search, readme
 export function oneRowMenu()
 {
-	let	selected = document.querySelector(".selected"),
-		row = selected.closest('tr'),
-		prevDate = row.previousElementSibling.dataset.opdate,
-		opdate = row.dataset.opdate,
-		staffname = row.dataset.staffname,
-		patient = row.dataset.patient,
-		qn = row.dataset.qn,
-		notLARGE = (opdate !== LARGESTDATE)
+  let  selected = document.querySelector(".selected"),
+    row = selected.closest('tr'),
+    prevDate = row.previousElementSibling.dataset.opdate,
+    opdate = row.dataset.opdate,
+    staffname = row.dataset.staffname,
+    patient = row.dataset.patient,
+    qn = row.dataset.qn,
+    notLARGE = (opdate !== LARGESTDATE)
 
-	enable(qn, "#addrow")
+  enable(qn, "#addrow")
 
-	let postpone = qn && staffname && notLARGE
-	if (postpone) {
-		$("#postponecase").html("<b>Confirm เลื่อน ไม่กำหนดวัน  </b><br>" + patient)
-	}
-	enable(postpone, "#postpone")
+  let postpone = qn && staffname && notLARGE
+  if (postpone) {
+    $("#postponecase").html("<b>Confirm เลื่อน ไม่กำหนดวัน  </b><br>" + patient)
+  }
+  enable(postpone, "#postpone")
 
-	enable(qn, "#moveCase")
+  enable(qn, "#moveCase")
 
-	enable(qn, "#copyCase")
+  enable(qn, "#copyCase")
 
-	enable(qn, "#history")
+  enable(qn, "#history")
 
-	let Delete = qn || prevDate === opdate
-	if (Delete) {
-		$("#delcase").html("<b>Confirm Delete </b><br>" + patient)
-	}
-	enable(Delete, "#delete")
+  let Delete = qn || prevDate === opdate
+  if (Delete) {
+    $("#delcase").html("<b>Confirm Delete </b><br>" + patient)
+  }
+  enable(Delete, "#delete")
 
-	enable(true, "#EXCEL")
+  enable(true, "#EXCEL")
 
-	enable(true, "#LINE")
+  enable(true, "#LINE")
 }
 
 function enable(able, id)
 {
-	if (able) {
-		$(id).removeClass("disabled")
-	} else {
-		$(id).addClass("disabled")
-	}
+  if (able) {
+    $(id).removeClass("disabled")
+  } else {
+    $(id).addClass("disabled")
+  }
 }

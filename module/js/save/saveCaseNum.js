@@ -11,59 +11,59 @@ import { UndoManager } from "../model/UndoManager.js"
 
 export function saveCaseNum(pointed, newcontent)
 {
-	let row = pointed.closest("tr"),
-		opdate = row.dataset.opdate,
-		qn = row.dataset.qn,
-		allCases = []
+  let row = pointed.closest("tr"),
+    opdate = row.dataset.opdate,
+    qn = row.dataset.qn,
+    allCases = []
 
-	// must have oproom, if no, can't be clicked
-	allCases = sameDateRoomTableQNs(row)
-	allCases = allCases.filter(e => e !== qn)
+  // must have oproom, if no, can't be clicked
+  allCases = sameDateRoomTableQNs(row)
+  allCases = allCases.filter(e => e !== qn)
 
-	let doSaveCaseNum = function() {
-		sqlSaveCaseNum(allCases, newcontent, qn).then(response => {
-			let hasData = function () {
-				updateBOOK(response)
-//				viewOneDay(opdate)
-//				viewSplit(staffname)
-			}
-			let noData = function() {
-				Alert ("saveCaseNum", response)
-				clearEditcell()
-			}
+  let doSaveCaseNum = function() {
+    sqlSaveCaseNum(allCases, newcontent, qn).then(response => {
+      let hasData = function () {
+        updateBOOK(response)
+//        viewOneDay(opdate)
+//        viewSplit(staffname)
+      }
+      let noData = function() {
+        Alert ("saveCaseNum", response)
+        clearEditcell()
+      }
 
-			typeof response === "object"
-			? hasData()
-			: noData()
-		}).catch(error => {})
-	}
-	let undoSaveCaseNum = function() {
-		sqlSaveCaseNum(allCases, OLDCONTENT, qn).then(response => {
-			let hasData = function () {
-				updateBOOK(response)
-				viewOneDay(opdate)
-				viewSplit(staffname)
-			}
-			let noData = function() {
-				Alert ("saveCaseNum", response)
-				clearEditcell()
-			}
+      typeof response === "object"
+      ? hasData()
+      : noData()
+    }).catch(error => {})
+  }
+  let undoSaveCaseNum = function() {
+    sqlSaveCaseNum(allCases, OLDCONTENT, qn).then(response => {
+      let hasData = function () {
+        updateBOOK(response)
+        viewOneDay(opdate)
+        viewSplit(staffname)
+      }
+      let noData = function() {
+        Alert ("saveCaseNum", response)
+        clearEditcell()
+      }
 
-			typeof response === "object"
-			? hasData()
-			: noData()
-		}).catch(error => {})
-	}
-	
-	doSaveCaseNum()
+      typeof response === "object"
+      ? hasData()
+      : noData()
+    }).catch(error => {})
+  }
+  
+  doSaveCaseNum()
 
-	// make undo-able
-/*	UndoManager.add({
-		undo: function() {
-			undoSaveCaseNum()
-		},
-		redo: function() {
-			doSaveCaseNum()
-		}
-	})*/
+  // make undo-able
+/*  UndoManager.add({
+    undo: function() {
+      undoSaveCaseNum()
+    },
+    redo: function() {
+      doSaveCaseNum()
+    }
+  })*/
 }
