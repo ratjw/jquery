@@ -11,6 +11,7 @@ import { Alert, isConsults, isStaffname } from "../util/util.js"
 import { viewmoveCase } from "../view/viewmoveCase.js"
 import { hoverMain } from "../view/hoverMain.js"
 import { rowDecoration } from "../view/rowDecoration.js"
+import { clearAllEditing } from "./clearAllEditing.js"
 
 // Sortable 2 windows connected with each other
 // Trace placeholder to determine moving up or down
@@ -28,11 +29,8 @@ export function sortable () {
 //    delay: 150,
     cancel: "tr:has('th')",
     start: function(e, ui){
-      $(".marker").removeClass("marker")
       clearTimer()
-      $('#stafflist').hide()
-      clearEditcell()
-      clearMouseoverTR()
+      clearAllEditing()
       ui.placeholder.innerHeight(ui.item.outerHeight())
       prevplace = ui.placeholder.index()
       thisplace = ui.placeholder.index()
