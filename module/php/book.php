@@ -18,7 +18,7 @@ function book($mysqli)
   $staff = array();
 
   $sql = "SELECT waitnum,opdate,oproom,optime,casenum,theatre,staffname,hn,
-            patient,dob,diagnosis,treatment,equipment,contact,qn,editor
+            patient,dob,diagnosis,treatment,equipment,contact,qn
           FROM book 
           WHERE opdate >= DATE_FORMAT(CURDATE()-INTERVAL 1 MONTH,'%Y-%m-01')
             AND deleted = 0 AND waitnum > 0
@@ -34,7 +34,7 @@ function book($mysqli)
   }
 
   $sql = "SELECT waitnum,opdate,oproom,optime,casenum,theatre,staffname,hn,
-            patient,dob,diagnosis,treatment,equipment,contact,qn,editor
+            patient,dob,diagnosis,treatment,equipment,contact,qn
           FROM book 
           WHERE opdate >= DATE_FORMAT(CURDATE()-INTERVAL 1 MONTH,'%Y-%m-01')
             AND deleted = 0 AND waitnum < 0

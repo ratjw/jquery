@@ -71,17 +71,14 @@ export function sortable () {
 
       // Find nearest row by dropping position
       let thisdrop
-      let before
       let previtem = moveitem.previousElementSibling
       let nextitem = moveitem.nextElementSibling
 
       if (!previtem || previtem.querySelector('th')) {
         thisdrop = nextitem
-        before = 1
       } else {
         if (!nextitem || nextitem.querySelector('th')) {
           thisdrop = previtem
-          before = 0
         } else {
           // Determine that the user intend to drop on which row
           //ui.offset (without '()') = helper position
@@ -101,24 +98,14 @@ export function sortable () {
 
           if (nearest === nearprev) {
             thisdrop = previtem
-            before = 0
-          } 
-          if (nearest === nearnext) {
+          } else if (nearest === nearnext) {
             thisdrop = nextitem
-            before = 1
-          }
-          if (nearest === nearplace) {
+          } else if (nearest === nearplace) {
             if ((prevplace === thisplace) && (sender === receiver)) {
               stopsorting()
               return false
             }
-            if (prevplace < thisplace) {
-              thisdrop = previtem
-              before = 0
-            } else {
-              thisdrop = nextitem
-              before = 1
-            }
+            thisdrop =  (prevplace < thisplace) ? previtem : nextitem
           }
         }
       }
@@ -140,21 +127,11 @@ export function sortable () {
       allOldCases = sameDateRoomTableQNs(moveitem)
       allNewCases = sameDateRoomTableQNs(thisdrop)
 
-      // remove itself from old sameDateRoom
-//      allOldCases = allOldCases.filter(e => e !== moveqn)
-
       // In case of new is the same date room as old
       if (allOldCases.find(e => e === moveqn)) {
         allNewCases = allOldCases
         allOldCases = []
       }
-//      else {
-        // insert itself into new sameDateRoom before/after the dropped row
-//        let index = allNewCases.indexOf(thisqn)
-//        before
-//        ? allNewCases.splice(index, 0, moveqn)
-//        : allNewCases.splice(index + 1, 0, moveqn)
-//      }
 
       // after sorting, must attach hover to the changed DOM elements
       let doSorting = function() {
@@ -189,11 +166,7 @@ export function sortable () {
 }
 
 let stopsorting = function () {
-  // Return to original place so that viewOneDay(moveopdate)
-  // will not render this row in wrong position
-//  $("#maintbl tbody, #queuetbl tbody").sortable( "cancel" )
-
-  // before sorting, timer was stopped by clearTimer
+  // before sorting, timer was stopped in start: function
   resetTimerCounter()
 
   //  after sorting, editcell was placed at row 0 column 1
