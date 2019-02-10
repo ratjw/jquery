@@ -14,9 +14,8 @@ import { locateFound } from "../view/scrolltoThisCase.js"
 // but was shown blank date on screen
 export function postponeCase()
 {
-  let  selected = document.querySelector(".selected"),
-    tableID = selected.closest('table').id,
-    row = selected.closest('tr'),
+  let row = document.querySelector(".selected"),
+    tableID = row.closest('table').id,
     opdate = row.dataset.opdate,
     oproom = row.dataset.oproom,
     staffname = row.dataset.staffname,
@@ -25,7 +24,7 @@ export function postponeCase()
     allCases = []
 
   if (oproom) {
-    allCases = sameDateRoomTableQNs(row)
+    allCases = sameDateRoomTableQNs(tableID, row)
   }
 
   row.dataset.waitnum = Math.ceil(getLargestWaitnum(BOOK, staffname)) + 1

@@ -7,8 +7,7 @@ import { getOpdate } from "../util/date.js"
 // Menu for all cases -> staffqueue, service, all deleted, search, readme
 export function oneRowMenu()
 {
-  let  selected = document.querySelector(".selected"),
-    row = selected.closest('tr'),
+  let row = document.querySelector(".selected"),
     prevDate = row.previousElementSibling.dataset.opdate,
     opdate = row.dataset.opdate,
     staffname = row.dataset.staffname,

@@ -2,7 +2,7 @@
 import { STAFFNAME } from "../model/const.js"
 import { viewSplit } from "./viewSplit.js"
 import { viewOneDay } from "./viewOneDay.js"
-import { isConsults, isConsultsTbl } from "../util/util.js"
+import { isConsults, isOnConsultsTbl } from "../util/util.js"
 import { BOOK, CONSULT } from "../util/updateBOOK.js"
 import { refillstaffqueue } from "./staffqueue.js"
 import { getOpdate } from "../util/date.js"
@@ -15,7 +15,7 @@ export function viewSaveContentNoQN(pointed, column) {
   let opdate = row.dataset.opdate
 
     // see whether it's consult or normal case, to find qn of that case
-  let book = (isConsultsTbl(tableID))? CONSULT : BOOK
+  let book = (isOnConsultsTbl(tableID))? CONSULT : BOOK
   let qn = Math.max.apply(Math, book.map(q => q.qn))
   let bookq = getBOOKrowByQN(book, qn)
   let staffname = bookq.staffname

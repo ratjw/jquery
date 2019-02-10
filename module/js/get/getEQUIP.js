@@ -6,7 +6,7 @@ import { sqlGetEquip, sqlSaveEquip, sqlCancelAllEquip } from "../model/sqlGetEqu
 import { putAgeOpdate, putThdate } from "../util/date.js"
 import { getTableRowByQN } from "../util/rowsgetting.js"
 import { BOOK, CONSULT, updateBOOK } from "../util/updateBOOK.js"
-import { Alert, isConsultsTbl } from "../util/util.js"
+import { Alert, isOnConsultsTbl } from "../util/util.js"
 import { viewEquipJSON } from "../view/viewEquip.js"
 
 const NAMEOFDAYTHAI  = ["อาทิตย์", "จันทร์", "อังคาร", "พุธ", "พฤหัส", "ศุกร์", "เสาร์"]
@@ -24,7 +24,7 @@ export function getEQUIP(pointing)
 
   let tableID = pointing.closest('table').id,
     row = pointing.closest('tr'),
-    book = isConsultsTbl(tableID)? CONSULT : BOOK,
+    book = isOnConsultsTbl(tableID)? CONSULT : BOOK,
     height = window.innerHeight,
     thisEquip = {
       oproom: row.dataset.oproom || "",

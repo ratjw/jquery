@@ -11,23 +11,23 @@ export function getTableRowByQN(tableID, qn)
 }
 
 // main table (#maintbl) only
-export function getTableRowsByDate(opdate)
+export function getTableRowsByDate(tableID, opdate)
 {
-  return Array.from(document.querySelectorAll("#maintbl tr"))
+  return Array.from(document.querySelectorAll(`#${tableID} tr`))
             .filter(e => e.dataset.opdate === opdate)
 }
 
 // main table (#maintbl) only
 // remove empty value
-export function sameDateRoomTableQNs(row)
+export function sameDateRoomTableQNs(tableID, row)
 {
-  return sameDateRoomTableRows(row).map(e => e.dataset.qn).filter(e => e)
+  return sameDateRoomTableRows(tableID, row).map(e => e.dataset.qn).filter(e => e)
 }
 
 // main table (#maintbl) only
-export function sameDateRoomTableRows(row)
+export function sameDateRoomTableRows(tableID, row)
 {
-  return Array.from(document.querySelectorAll('#maintbl tr')).filter(e => {
+  return Array.from(document.querySelectorAll(`#${tableID} tr`)).filter(e => {
     return e.dataset.opdate === row.dataset.opdate
       && e.dataset.theatre === row.dataset.theatre
       && e.dataset.oproom === row.dataset.oproom;

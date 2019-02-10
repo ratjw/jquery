@@ -11,6 +11,7 @@ import { rowDecoration } from "./rowDecoration.js"
 import { viewEquip, viewEquipNoImg } from "./viewEquip.js"
 import { hoverMain } from "./hoverMain.js"
 import { setRowData, blankRowData } from "../model/rowdata.js"
+import { isOnStaffnameTbl } from "../util/util.js"
 
 // Render Main table
 // Consults and dialogAll tables use this too
@@ -27,10 +28,11 @@ export function fillmain()
     nextyear = today.getFullYear() + 2,
     month = today.getMonth(),
     todate = today.getDate(),
-    until = ISOdate((new Date(nextyear, month, todate)))
+    until = ISOdate((new Date(nextyear, month, todate))),
 
-  fillDatedCases(table, book, until)
+    date = fillDatedCases(table, book)
 
+  fillBlankDates(table, date, until)
   hoverMain()
 }
 
@@ -39,14 +41,16 @@ export function refillmaintbl() {
   let  table = document.getElementById("maintbl"),
 
     x = BOOK.findIndex(e => e.opdate >= LARGESTDATE),
-    book = BOOK.slice(0, x)
+    book = BOOK.slice(0, x),
 
-  refillDatedCases(table, book)
+    date = refillDatedCases(table, book)
+
+  fillBlankDates(table, date, until)
   hoverMain()
   // For new row added to this table
 }
 
-export function fillDatedCases(table, book, until)
+export function fillDatedCases(table, book)
 {
   let tbody = table.querySelector("tbody"),
     rows = table.rows,
@@ -71,19 +75,21 @@ export function fillDatedCases(table, book, until)
   // from START to end of waiting list with opdate
   for (q; q < blen; q++) {
     qdate = book[q].opdate
+    if (qdate < LARGESTDATE) {
 
-    // step over each day that is not in QBOOK
-    while (date < qdate) {
-      // make a blank row for each day which is not in book
-      if (date !== madedate) {
-        makenextrow(table, date)
-        madedate = date
-      }
-      date = nextdays(date, 1)
-      // make table head row before every Monday
-      if ((new Date(date).getDay())%7 === 1) {
-        clone = head.cloneNode(true)
-        tbody.appendChild(clone)
+      // step over each day that is not in QBOOK
+      while (date < qdate) {
+        // make a blank row for each day which is not in book
+        if (date !== madedate) {
+          makenextrow(table, date)
+          madedate = date
+        }
+        date = nextdays(date, 1)
+        // make table head row before every Monday
+        if ((new Date(date).getDay())%7 === 1) {
+          clone = head.cloneNode(true)
+          tbody.appendChild(clone)
+        }
       }
     }
 
@@ -91,7 +97,98 @@ export function fillDatedCases(table, book, until)
     filldata(rows[table.rows.length-1], book[q])
     madedate = date
   }
-    
+
+  return date
+}
+
+// use existing DOM table
+// fill the missing date, remove the wrong placed date
+// newrowdate is the date that was skipped
+export function refillDatedCases(table, book)
+{
+  let tbody = table.querySelector("tbody"),
+    rows = table.rows,
+    head = rows[0],
+    thisrow = rows[1].cloneNode(true),
+    thisrowdate,
+    prevrow,
+    prevrowdate,
+    newrowdate,
+    i,
+
+    q = book.findIndex(e => e.opdate >= START),
+    bookdate
+
+  thisrow.dataset.opdate = nextdays(START, -1)
+
+  // rows.length may change during looping, due to moving a case to/from blank thisrow
+  for (i = 0; i < rows.length; i++) {
+    if (rows[i].querySelector('th')) {
+      continue
+    }
+
+    if (q >= book.length) {
+      Array.from(table.querySelectorAll('tr')).slice(i).forEach(e => e.remove())
+      return thisrowdate
+    }
+
+    prevrow = thisrow
+    prevrowdate = prevrow.dataset.opdate
+    thisrow = rows[i]
+    thisrowdate = thisrow.dataset.opdate
+    newrowdate = nextdays(prevrowdate, 1)
+
+    // a wrong placed row
+    if (prevrowdate > thisrowdate) {
+      thisrow.remove()
+      thisrow = rows[i]
+    } else if (newrowdate < thisrowdate) {
+      makenewrow(table, thisrow, newrowdate)
+      rows = table.rows
+      thisrow = rows[i]
+      blankRowData(thisrow, newrowdate)
+    }
+
+    thisrowdate = thisrow.dataset.opdate
+    bookdate = book[q].opdate
+
+    if (thisrowdate === bookdate) {
+      fillrowdata(thisrow, book[q])
+      q++
+    } else if (thisrowdate < bookdate) {
+      if (thisrowdate === prevrowdate) {
+        thisrow.remove()
+        rows = table.rows
+        i--
+        thisrow = rows[i]
+      } else if (thisrow.dataset.qn) {
+        blankRowData(thisrow, thisrowdate)
+        unfillrowdata(thisrow, thisrowdate)
+      }
+    } else {
+      if (prevrowdate === bookdate) {
+        makenewrow(table, thisrow, prevrowdate)
+        filldata(rows[i], book[q])
+        q++
+        rows = table.rows
+        thisrow = rows[i]
+      }
+    }
+  }
+
+  while (q < book.length) {
+    makenextrow(table, book[q].opdate)
+    fillrowdata(rows[i], book[q])
+    i++
+    q++
+  }
+}
+
+export function fillBlankDates(table, date, until)
+{
+  let tbody = table.querySelector("tbody"),
+    head = table.rows[0]
+
   // from end of waiting list with opdate to 2 years
   while (date < until) {
     date = nextdays(date, 1)
@@ -103,79 +200,13 @@ export function fillDatedCases(table, book, until)
   }
 }
 
-// use existing DOM table
-export function refillDatedCases(table, book)
+function makenewrow(table, thisrow, date)
 {
-  let tbody = table.querySelector("tbody"),
-    rows = table.rows,
-    head = table.rows[0],
-    tblcells = document.getElementById("tblcells"),
-    tblrow,
-    row,
-    rowdate,
-    prevdate,
-    i,
+  let tblcells = document.getElementById("tblcells"),
+    tblrow = tblcells.rows[0].cloneNode(true),
+    newrow = table.insertBefore(tblrow, thisrow)
 
-    q = book.findIndex(e => e.opdate >= START),
-    bookdate
-
-  // rows.length may change during looping, due to moving a case to/from blank row
-  for (i = 0; i < rows.length; i++) {
-    if (rows[i].querySelector('th')) { continue }
-    if (q >= book.length) {
-      if (table.id === 'queuetbl') {
-        while (i < rows.length) {
-          table.deleteRow(i)
-          rows = table.rows
-        }
-      }
-      break
-    }
-
-    row = rows[i]
-    rowdate = row.dataset.opdate
-    bookdate = book[q].opdate
-
-    if (rowdate === bookdate) {
-      fillrowdata(row, book[q])
-      q++
-    } else if (rowdate < bookdate) {
-      prevdate = rows[i-1].dataset.opdate
-      if (rowdate === prevdate) {
-        row.remove()
-        rows = table.rows
-        i--
-      } else if (row.dataset.qn) {
-        blankRowData(row, rowdate)
-        unfillrowdata(row, rowdate)
-      }
-    } else {
-      row = rows[i-1]
-      rowdate = row.dataset.opdate
-      if (rowdate < bookdate) {
-        tblrow = tblcells.rows[0].cloneNode(true)
-        row.after(tblrow)
-        rows = table.rows
-        rowdate = nextdays(rowdate, 1)
-        rowDecoration(rows[i], rowdate)
-      } else if (rowdate === bookdate) {
-        tblrow = tblcells.rows[0].cloneNode(true)
-        row.after(tblrow)
-        rows = table.rows
-        row = rows[i]
-        rowDecoration(row, rowdate)
-        filldata(row, book[q])
-        q++
-      }
-    }
-  }
-
-  while (q < book.length) {
-    makenextrow(table, book[q].opdate)
-    fillrowdata(rows[i], book[q])
-    i++
-    q++
-  }
+  rowDecoration(newrow, date)
 }
 
 // create and decorate new row
@@ -191,7 +222,8 @@ export function makenextrow(table, date) {
 
 export function filldata(row, q)
 {
-  let cells = row.cells
+  let tableID = row.closest('table').id,
+    cells = row.cells
 
   setRowData(row, q)
   if (q.hn && isPACS) { cells[HN].className = "pacs" }
@@ -206,7 +238,9 @@ export function filldata(row, q)
   cells[PATIENT].innerHTML = putNameAge(q)
   cells[DIAGNOSIS].innerHTML = q.diagnosis
   cells[TREATMENT].innerHTML = q.treatment
-  cells[EQUIPMENT].innerHTML = viewEquip(q.equipment)
+  cells[EQUIPMENT].innerHTML = isOnStaffnameTbl(tableID)
+                             ? viewEquipNoImg(q.equipment)
+                             : viewEquip(q.equipment)
   cells[CONTACT].innerHTML = q.contact
 }
 
@@ -269,7 +303,7 @@ function fillrowdata(row, q)
   }
 }
 
-function unfillrowdata(row, date)
+export function unfillrowdata(row, date)
 {
   row.cells[THEATRE].innerHTML = ""
   row.cells[OPROOM].innerHTML = ""

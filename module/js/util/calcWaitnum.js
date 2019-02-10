@@ -1,5 +1,5 @@
 
-import { isConsultsTbl } from "./util.js"
+import { isOnConsultsTbl } from "./util.js"
 
 // waitnum is for ordering where there is no oproom, casenum
 // nextrow is null in case of the last row
@@ -29,5 +29,5 @@ export function defaultWaitnum(row)
 {
   let tableID = row.closest('table').id
 
-  return (isConsultsTbl(tableID))? -1 : 1
+  return (isOnConsultsTbl(tableID))? -1 : 1
 }

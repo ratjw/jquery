@@ -14,20 +14,20 @@ export function viewOneDay(opdate) {
   if (opdate === LARGESTDATE) { return }
   let table = document.getElementById('maintbl'),
     opdateBOOKrows = getBOOKRowsByDate(BOOK, opdate),
-    opdateTblRows = getTableRowsByDate(opdate),
+    opdateTblRows = getTableRowsByDate('maintbl', opdate),
     bookRows = opdateBOOKrows.length,
     $cells, staff
 
   if (bookRows) {
     while (opdateTblRows.length > bookRows) {
       table.deleteRow(opdateTblRows[0].rowIndex)
-      opdateTblRows = getTableRowsByDate(opdate)
+      opdateTblRows = getTableRowsByDate('maintbl', opdate)
     }
     while (opdateTblRows.length < bookRows) {
       let clone = opdateTblRows[0].cloneNode(true)
       clone.dataset.opdate = opdate
       opdateTblRows[0].after(clone)
-      opdateTblRows = getTableRowsByDate(opdate)
+      opdateTblRows = getTableRowsByDate('maintbl', opdate)
     }
     opdateBOOKrows.forEach((e, i) => {
       let row = opdateTblRows[i]
@@ -38,7 +38,7 @@ export function viewOneDay(opdate) {
   } else {
     while (opdateTblRows.length > 1) {
       table.deleteRow(opdateTblRows[0].rowIndex)
-      opdateTblRows = getTableRowsByDate(opdate)
+      opdateTblRows = getTableRowsByDate('maintbl', opdate)
     }
 
     let row = opdateTblRows[0]

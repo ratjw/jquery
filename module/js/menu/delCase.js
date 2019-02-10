@@ -13,8 +13,8 @@ import { addrow } from "./addnewrow.js"
 // Remove the row if more than one case on that date, or on staff table
 // Just blank the row if there is only one case
 export function delCase() {
-  let  selected = document.querySelector(".selected"),
-    row = selected.closest('tr'),
+  let row = document.querySelector(".selected"),
+    tableID = row.closest('table'),
     prevrow = row.previousElementSibling,
     opdate = row.dataset.opdate,
     qn = row.dataset.qn,
@@ -28,7 +28,7 @@ export function delCase() {
   }
 
   if (oproom) {
-    allCases = sameDateRoomTableQNs(row)
+    allCases = sameDateRoomTableQNs(tableID, row)
   }
 
   let deleteCase = function (del) {

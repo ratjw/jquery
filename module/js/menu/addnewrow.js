@@ -6,9 +6,8 @@ import { createEditcell } from "../control/edit.js"
 import { blankRowData } from "../model/rowdata.js"
 
 export function addnewrow() {
-  let  selected = document.querySelector(".selected"),
-    tableID = selected.closest('table').id,
-    row = selected.closest('tr')
+  let row = document.querySelector(".selected"),
+    tableID = row.closest('table').id
 
   addrow(row)
 

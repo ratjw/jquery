@@ -5,8 +5,7 @@ import { viewCaseHistory } from "../view/viewCaseHistory.js"
 
 export function editHistory()
 {
-  let  selected = document.querySelector(".selected"),
-    row = selected.closest('tr'),
+  let row = document.querySelector(".selected"),
     hn = row.dataset.hn
 
   sqlCaseHistory(hn).then(response => {

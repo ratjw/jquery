@@ -9,14 +9,15 @@ import { viewSplit } from "../view/viewSplit.js"
 
 export function saveOpTime(pointed, newcontent)
 {
-  let  row = pointed.closest('tr'),
+  let tableID = row.closest('table'),
+    row = pointed.closest('tr'),
     oproom = row.dataset.oproom,
     qn = row.dataset.qn
 
   // valid time 00.00 - 23.59 or ""
   if (newcontent && !/^([0-1][0-9]|2[0-3])\.([0-5][0-9])$/.test(newcontent)) { return }
 
-  let allCases = sameDateRoomTableRows(row)
+  let allCases = sameDateRoomTableRows(tableID, row)
   allCases.find(e => e.dataset.qn === qn).dataset.optime = newcontent
 
   let timeCases = allCases.filter(e => e.dataset.optime !== "")

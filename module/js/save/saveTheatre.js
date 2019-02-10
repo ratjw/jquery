@@ -9,7 +9,8 @@ import { viewSplit } from "../view/viewSplit.js"
 
 export function saveTheatre(pointed, newcontent)
 {
-  let  row = pointed.closest("tr"),
+  let tableID = row.closest('table'),
+    row = pointed.closest('tr'),
     opdate = row.dataset.opdate,
     oproom = row.dataset.oproom,
     casenum = row.dataset.casenum,
@@ -17,11 +18,11 @@ export function saveTheatre(pointed, newcontent)
     allOldCases = [],
     allNewCases = []
 
-  allOldCases = sameDateRoomTableQNs(row)
+  allOldCases = sameDateRoomTableQNs(tableID, row)
   allOldCases = allOldCases.filter(e => e !== qn)
 
   row.dataset.theatre = newcontent
-  allNewCases = sameDateRoomTableQNs(row)
+  allNewCases = sameDateRoomTableQNs(tableID, row)
   allNewCases.splice(allNewCases.indexOf(qn), 1)
   if (casenum) {
     allNewCases.splice(casenum-1, 0, qn)

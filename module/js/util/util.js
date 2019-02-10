@@ -24,23 +24,26 @@ export function isStaffname(staffname)
   return $('#titlename').html() === staffname
 }
 
-// The table is Consults table
+export function isOnStaffnameTbl(tableID)
+{  
+  return (tableID === "queuetbl") && !isConsults()
+}
+
+// The Consults table is beeing shown
 export function isConsults()
 {  
   return $('#titlename').html() === "Consults"
 }
 
 // This is on the split table and is Consults table
-export function isConsultsTbl(tableID)
+export function isOnConsultsTbl(tableID)
 {  
-  var queuetbl = tableID === "queuetbl"
-
-  return queuetbl && isConsults()
+  return (tableID === "queuetbl") && isConsults()
 }
 
 export function getTitlename(tableID)
 {
-  if (isSplit() && !isConsultsTbl(tableID)) {
+  if (isSplit() && !isOnConsultsTbl(tableID)) {
     return document.getElementById('titlename').innerHTML
   }
   return ""

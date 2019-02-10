@@ -7,8 +7,10 @@ import { docopyCase } from "./docopyCase.js"
 
 export function clickDate(moverow, cell)
 {
-  let moveqn = moverow.dataset.qn,
+  let moveTableID = moverow.closest('table.id'),
+    moveqn = moverow.dataset.qn,
 
+    thisTableID = thisrow.closest('table').id
     thisrow = cell.closest("tr"),
     thisqn = thisrow.dataset.qn,
     allOldCases,
@@ -18,8 +20,8 @@ export function clickDate(moverow, cell)
   // click the same case
   if (thisqn === moveqn) { return }
 
-  allOldCases = sameDateRoomTableQNs(moverow)
-  allNewCases = sameDateRoomTableQNs(thisrow)
+  allOldCases = sameDateRoomTableQNs(moveTableID, moverow)
+  allNewCases = sameDateRoomTableQNs(thisTableID, thisrow)
 
   // remove itself from old sameDateRoom
   allOldCases = allOldCases.filter(e => e !== moveqn)

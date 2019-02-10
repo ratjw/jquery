@@ -1,5 +1,5 @@
 
-import { isSplit, isStaffname, isConsults, isConsultsTbl, getMaxQN } from "../util/util.js"
+import { isSplit, isStaffname, isConsults, isOnConsultsTbl, getMaxQN } from "../util/util.js"
 import { BOOK, CONSULT, isPACS } from "../util/updateBOOK.js"
 import { getBOOKrowByQN } from "../util/rowsgetting.js"
 import { putNameAge } from "../util/date.js"
@@ -15,7 +15,7 @@ export function viewGetNameHN(pointed) {
     qn = row.dataset.qn,
     noqn = !qn,
     cellindex = pointed.cellIndex,
-    book = (isConsultsTbl(tableID)) ? CONSULT : BOOK
+    book = (isOnConsultsTbl(tableID)) ? CONSULT : BOOK
 
   // New case input
   if (noqn) {

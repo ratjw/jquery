@@ -10,16 +10,17 @@ import { viewSplit } from "../view/viewSplit.js"
 import { UndoManager } from "../model/UndoManager.js"
 
 export function saveOpRoom(pointed, newcontent) {
-  let row = pointed.closest('tr'),
+  let tableID = row.closest('table'),
+    row = pointed.closest('tr'),
     opdate = row.dataset.opdate,
     oproom = row.dataset.oproom,
     qn = row.dataset.qn
 
-  let allOldCases = sameDateRoomTableQNs(row)
+  let allOldCases = sameDateRoomTableQNs(tableID, row)
   allOldCases = allOldCases.filter(e => e !== qn)
 
   row.dataset.oproom = newcontent
-  let allNewCases = sameDateRoomTableRows(row)
+  let allNewCases = sameDateRoomTableRows(tableID, row)
 
   let timeCases = allNewCases.filter(e => e.dataset.optime !== "")
   let notimeCases = allNewCases.filter(e => e.dataset.optime === "")

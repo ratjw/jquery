@@ -156,7 +156,7 @@ export function delHoliday(that)
       vdateth = $cell[0].innerHTML,
       vdate = numDate(vdateth),
       vname = $cell[1].innerHTML.replace(/<button.*$/, ""),
-      rows = getTableRowsByDate(vdate),
+      rows = getTableRowsByDate('maintbl', vdate),
       holidayEng = getHolidayEng(vname)
 
     sqlDelHoliday(vdate, holidayEng).then(response => {
@@ -180,7 +180,7 @@ function saveHoliday()
   let  vdateth = document.getElementById("holidateth").value,
     vdate = numDate(vdateth),
     vname = document.getElementById("holidayname").value,
-    rows = getTableRowsByDate(vdate)
+    rows = getTableRowsByDate('maintbl', vdate)
 
   if (!vdate || !vname) { return }
 

@@ -11,13 +11,14 @@ import { UndoManager } from "../model/UndoManager.js"
 
 export function saveCaseNum(pointed, newcontent)
 {
-  let row = pointed.closest("tr"),
+  let tableID = row.closest('table'),
+    row = pointed.closest('tr'),
     opdate = row.dataset.opdate,
     qn = row.dataset.qn,
     allCases = []
 
   // must have oproom, if no, can't be clicked
-  allCases = sameDateRoomTableQNs(row)
+  allCases = sameDateRoomTableQNs(tableID, row)
   allCases = allCases.filter(e => e !== qn)
 
   let doSaveCaseNum = function() {

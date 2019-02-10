@@ -12,12 +12,15 @@ import { viewmoveCase } from "../view/viewmoveCase.js"
 import { hoverMain } from "../view/hoverMain.js"
 import { rowDecoration } from "../view/rowDecoration.js"
 import { clearAllEditing } from "./clearAllEditing.js"
+import { unfillrowdata } from "../view/fill.js"
+import { blankRowData } from "../model/rowdata.js"
 
 // Sortable 2 windows connected with each other
 // Trace placeholder to determine moving up or down
 export function sortable () {
   let prevplace,
     thisplace,
+    prevrow,
     sender
 
   $("#maintbl tbody, #queuetbl tbody").sortable({
@@ -34,6 +37,7 @@ export function sortable () {
       ui.placeholder.innerHeight(ui.item.outerHeight())
       prevplace = ui.placeholder.index()
       thisplace = ui.placeholder.index()
+      prevrow = ui.item[0].previousElementSibling
       sender = ui.item.closest('table').attr('id')
     },
     // Make scroll only the window that placeholder is in
@@ -118,20 +122,29 @@ export function sortable () {
       // drop on the same case
       if (thisqn === moveqn) { return }
 
-      // make it look alike thisdrop for sameDateRoom function
+      let clone = moveitem.cloneNode(true),
+        prevopdate = moveitem.previousElementSibling.dataset.opdate,
+        nextopdate = moveitem.nextElementSibling.dataset.opdate,
+        single = (prevopdate !== moveopdate) && (nextopdate !== moveopdate)
+
+      // make moveitem look alike thisdrop for sameDateRoom function
       moveitem.dataset.waitnum = calcWaitnum(thisopdate, previtem, nextitem)
       moveitem.dataset.opdate = thisdrop.dataset.opdate
       moveitem.dataset.oproom = thisdrop.dataset.oproom
       rowDecoration(moveitem, moveitem.dataset.opdate)
 
-      allOldCases = sameDateRoomTableQNs(moveitem)
-      allNewCases = sameDateRoomTableQNs(thisdrop)
+      allOldCases = sameDateRoomTableQNs(sender, clone)
+      allNewCases = sameDateRoomTableQNs(receiver, thisdrop)
 
       // In case of new is the same date room as old
       if (allOldCases.find(e => e === moveqn)) {
         allNewCases = allOldCases
         allOldCases = []
       }
+
+      if (single) { prevrow.after(clone) }
+      blankRowData(clone, moveopdate)
+      unfillrowdata(clone, moveopdate)
 
       // after sorting, must attach hover to the changed DOM elements
       let doSorting = function() {
