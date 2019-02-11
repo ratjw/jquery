@@ -1,12 +1,9 @@
 
-import { UndoManager } from "../model/UndoManager.js"
 import { LARGESTDATE } from "../model/const.js"
 import { sqlPostponeCase } from "../model/sqlPostponeCase.js"
-import { getOpdate } from "../util/date.js"
 import { sameDateRoomTableQNs } from "../util/rowsgetting.js"
 import { BOOK, updateBOOK } from "../util/updateBOOK.js"
 import { Alert, getLargestWaitnum, isSplit } from "../util/util.js"
-import { viewPostponeCase } from "../view/viewPostponeCase.js"
 import { clearSelection } from "../control/clearSelection.js"
 import { locateFound } from "../view/scrolltoThisCase.js"
 
@@ -35,10 +32,9 @@ export function postponeCase()
     sqlPostponeCase(allCases, row, thisdate).then(response => {
       let hasData = function () {
         updateBOOK(response)
-if (isSplit()) {
-  locateFound('queuecontainer', 'queuetbl', qn)
-}
-//        viewPostponeCase(row, thisdate)
+        if (isSplit()) {
+          locateFound('queuecontainer', 'queuetbl', qn)
+        }
       }
 
       typeof response === "object"
@@ -46,13 +42,4 @@ if (isSplit()) {
       : Alert ("postponeCase", response)
     }).catch(error => {})
   }
-/*
-  UndoManager.add({
-    undo: function() {
-      doPostponeCase(oldwaitnum, opdate)
-    },
-    redo: function() {
-      doPostponeCase(newwaitnum, LARGESTDATE)
-    }
-  })*/
 }

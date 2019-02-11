@@ -2,7 +2,6 @@
 import { sqlmoveCase } from "../model/sqlmoveCase.js"
 import { updateBOOK } from "../util/updateBOOK.js"
 import { Alert } from "../util/util.js"
-import { viewmoveCase } from "../view/viewmoveCase.js"
 import { calcWaitnum } from "../util/calcWaitnum.js"
 
 export function domoveCase(allOldCases, allNewCases, moverow, thisrow)
@@ -14,21 +13,10 @@ export function domoveCase(allOldCases, allNewCases, moverow, thisrow)
   sqlmoveCase(allOldCases, allNewCases, moverow, thisrow).then(response => {
     let hasData = function () {
       updateBOOK(response)
-//      viewmoveCase(moverow, thisrow)
     }
 
     typeof response === "object"
     ? hasData()
     : Alert ("moveCase", response)
   }).catch(error => {})
-/*
-  UndoManager.add({
-    undo: function() {
-      domoveCase(moveWaitnum, thisopdate, moveOpdate, moveroom)
-    },
-    redo: function() {
-      domoveCase(thisWaitnum, moveOpdate, thisopdate, thisroom)
-    }
-  })
-*/
 }

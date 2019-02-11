@@ -4,14 +4,14 @@ import {
   DIAGNOSIS, TREATMENT, EQUIPMENT, CONTACT, LARGESTDATE
 } from "../model/const.js"
 import {
-  START, ISOdate, nextdays, numDate, thDate, putThdate, putNameAge
+  START, ISOdate, nextdays, putNameAge, verifyDates
 } from "../util/date.js"
 import { BOOK, isPACS } from "../util/updateBOOK.js"
 import { rowDecoration } from "./rowDecoration.js"
 import { viewEquip, viewEquipNoImg } from "./viewEquip.js"
 import { hoverMain } from "./hoverMain.js"
 import { setRowData, blankRowData } from "../model/rowdata.js"
-import { isOnStaffnameTbl } from "../util/util.js"
+import { isOnStaffnameTbl, Alert } from "../util/util.js"
 
 // Render Main table
 // Consults and dialogAll tables use this too
@@ -34,20 +34,6 @@ export function fillmain()
 
   fillBlankDates(table, date, until)
   hoverMain()
-}
-
-// Used after serviceReview and in idling update
-export function refillmaintbl() {
-  let  table = document.getElementById("maintbl"),
-
-    x = BOOK.findIndex(e => e.opdate >= LARGESTDATE),
-    book = BOOK.slice(0, x),
-
-    date = refillDatedCases(table, book)
-
-  fillBlankDates(table, date, until)
-  hoverMain()
-  // For new row added to this table
 }
 
 export function fillDatedCases(table, book)
@@ -94,94 +80,11 @@ export function fillDatedCases(table, book)
     }
 
     makenextrow(table, qdate)
-    filldata(rows[table.rows.length-1], book[q])
+    fillNewrowData(rows[table.rows.length-1], book[q])
     madedate = date
   }
 
   return date
-}
-
-// use existing DOM table
-// fill the missing date, remove the wrong placed date
-// newrowdate is the date that was skipped
-export function refillDatedCases(table, book)
-{
-  let tbody = table.querySelector("tbody"),
-    rows = table.rows,
-    head = rows[0],
-    thisrow = rows[1].cloneNode(true),
-    thisrowdate,
-    prevrow,
-    prevrowdate,
-    newrowdate,
-    i,
-
-    q = book.findIndex(e => e.opdate >= START),
-    bookdate
-
-  thisrow.dataset.opdate = nextdays(START, -1)
-
-  // rows.length may change during looping, due to moving a case to/from blank thisrow
-  for (i = 0; i < rows.length; i++) {
-    if (rows[i].querySelector('th')) {
-      continue
-    }
-
-    if (q >= book.length) {
-      Array.from(table.querySelectorAll('tr')).slice(i).forEach(e => e.remove())
-      return thisrowdate
-    }
-
-    prevrow = thisrow
-    prevrowdate = prevrow.dataset.opdate
-    thisrow = rows[i]
-    thisrowdate = thisrow.dataset.opdate
-    newrowdate = nextdays(prevrowdate, 1)
-
-    // a wrong placed row
-    if (prevrowdate > thisrowdate) {
-      thisrow.remove()
-      thisrow = rows[i]
-    } else if (newrowdate < thisrowdate) {
-      makenewrow(table, thisrow, newrowdate)
-      rows = table.rows
-      thisrow = rows[i]
-      blankRowData(thisrow, newrowdate)
-    }
-
-    thisrowdate = thisrow.dataset.opdate
-    bookdate = book[q].opdate
-
-    if (thisrowdate === bookdate) {
-      fillrowdata(thisrow, book[q])
-      q++
-    } else if (thisrowdate < bookdate) {
-      if (thisrowdate === prevrowdate) {
-        thisrow.remove()
-        rows = table.rows
-        i--
-        thisrow = rows[i]
-      } else if (thisrow.dataset.qn) {
-        blankRowData(thisrow, thisrowdate)
-        unfillrowdata(thisrow, thisrowdate)
-      }
-    } else {
-      if (prevrowdate === bookdate) {
-        makenewrow(table, thisrow, prevrowdate)
-        filldata(rows[i], book[q])
-        q++
-        rows = table.rows
-        thisrow = rows[i]
-      }
-    }
-  }
-
-  while (q < book.length) {
-    makenextrow(table, book[q].opdate)
-    fillrowdata(rows[i], book[q])
-    i++
-    q++
-  }
 }
 
 export function fillBlankDates(table, date, until)
@@ -200,15 +103,6 @@ export function fillBlankDates(table, date, until)
   }
 }
 
-function makenewrow(table, thisrow, date)
-{
-  let tblcells = document.getElementById("tblcells"),
-    tblrow = tblcells.rows[0].cloneNode(true),
-    newrow = table.insertBefore(tblrow, thisrow)
-
-  rowDecoration(newrow, date)
-}
-
 // create and decorate new row
 export function makenextrow(table, date) {
   let tbody = table.querySelector("tbody"),
@@ -220,7 +114,7 @@ export function makenextrow(table, date) {
   blankRowData(row, date)
 }
 
-export function filldata(row, q)
+export function fillNewrowData(row, q)
 {
   let tableID = row.closest('table').id,
     cells = row.cells
@@ -244,7 +138,7 @@ export function filldata(row, q)
   cells[CONTACT].innerHTML = q.contact
 }
 
-function fillrowdata(row, q)
+export function fillOldrowData(row, q)
 {
   let rowdata = row.dataset
 
@@ -303,17 +197,13 @@ function fillrowdata(row, q)
   }
 }
 
-export function unfillrowdata(row, date)
+export function unfillOldrowData(row, opdate)
 {
-  row.cells[THEATRE].innerHTML = ""
-  row.cells[OPROOM].innerHTML = ""
-  row.cells[OPTIME].innerHTML = ""
-  row.cells[CASENUM].innerHTML = ""
-  row.cells[STAFFNAME].innerHTML = ""
-  row.cells[HN].innerHTML = ""
-  row.cells[PATIENT].innerHTML = ""
-  row.cells[DIAGNOSIS].innerHTML = ""
-  row.cells[TREATMENT].innerHTML = ""
-  row.cells[EQUIPMENT].innerHTML = ""
-  row.cells[CONTACT].innerHTML = ""
+  let cells = row.cells
+
+  Array.from(cells).filter(e => e.cellIndex !== OPDATE).forEach(e => e.innerHTML = "")
+  cells[HN].classList.remove("pacs")
+  cells[PATIENT].classList.remove("upload")
+  rowDecoration(row, opdate)
+  blankRowData(row, opdate)
 }

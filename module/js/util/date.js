@@ -118,3 +118,20 @@ function getAge (birth, toDate) {
 
   return years ? ageyears : months ? agemonths : agedays;
 }
+
+export function verifyDates(allDates)
+{
+  let index = allDates.indexOf(LARGESTDATE),
+    len, i
+
+  if (index !== -1) { allDates.splice(index, 1) }
+
+  len = allDates.length
+  for(i=1; i<len; i++) {
+    if (allDates[i] !== nextdays(allDates[i-1], 1)) {
+      return false
+    }
+  }
+
+  return true
+}

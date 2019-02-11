@@ -4,10 +4,9 @@ import {
 } from "../model/const.js"
 import { OLDCONTENT, clearEditcell } from "../control/edit.js"
 import { sqlMoveCaseHN, sqlCopyCaseHN } from "../model/sqlsavehn.js"
-import { getOpdate, putThdate, putNameAge } from "../util/date.js"
+import { putNameAge } from "../util/date.js"
 import { updateBOOK } from "../util/updateBOOK.js"
 import { Alert, winWidth } from "../util/util.js"
-import { viewMoveCaseHN, viewCopyCaseHN } from "../view/viewMoveCaseHN.js"
 import { rowDecoration } from "../view/rowDecoration.js"
 
 export function saveCaseHN(pointed, waiting)
@@ -95,7 +94,6 @@ let  wanting = {...waiting},
     sqlMoveCaseHN(pointed, waiting, wanting).then(response => {
       let hasData = function () {
         updateBOOK(response)
-//        viewMoveCaseHN(tableID, qn, row, waiting.opdate)
       }
       let noData = function () {
         Alert("saveCaseHN", response)
@@ -114,7 +112,6 @@ let  wanting = {...waiting},
     sqlCopyCaseHN(pointed, waiting, wanting).then(response => {
       let hasData = function () {
         updateBOOK(response)
-        viewCopyCaseHN(tableID, qn, row)
       }
       let noData = function () {
         Alert("saveCaseHN", response)

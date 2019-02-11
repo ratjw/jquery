@@ -5,8 +5,7 @@ export function getBOOKrowByQN(book, qn) {
 
 export function getTableRowByQN(tableID, qn)
 {
-  return $("#"+tableID+" tr:has(td)")
-        .toArray()
+  return Array.from(document.querySelectorAll(`#${tableID}`))
         .find(row => Number(row.dataset.qn) === Number(qn))
 }
 

@@ -23,7 +23,7 @@ export function fillConsults(tableID = 'maintbl')
 {
   let table = document.getElementById(tableID),
     saturdays = table.querySelectorAll("tr.Saturday"),
-    firstsat = saturdays[0].dataset.opdate,
+    firstsat = saturdays.length && saturdays[0].dataset.opdate || "",
     staffoncall = STAFF.filter(staff => (staff.oncall === "1")),
     slen = staffoncall.length,
     start = staffoncall.filter(staff => staff.startoncall)

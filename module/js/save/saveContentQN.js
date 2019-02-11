@@ -2,7 +2,6 @@
 import { updateBOOK } from "../util/updateBOOK.js"
 import { OLDCONTENT } from "../control/edit.js"
 import { sqlSaveContentQN } from "../model/sqlSaveContent.js"
-import { viewSaveContentQN } from "../view/viewSaveContentQN.js"
 import { Alert } from "../util/util.js"
 
 // Remote effect from editing on main table to queuetbl
@@ -23,7 +22,6 @@ export function saveContentQN(pointed, column, newcontent)
     sqlSaveContentQN(column, newcontent, qn).then(response => {
       let hasData = function () {
         updateBOOK(response)
-//        viewSaveContentQN(pointed, column, OLDCONTENT)
       }
       let noData = function () {
         Alert("saveContentQN", response)
@@ -36,30 +34,4 @@ export function saveContentQN(pointed, column, newcontent)
   }
 
   doSaveContentQN()
-
-/*  let undoSaveContentQN = function () {
-    sqlSaveContentQN(column, OLDCONTENT, qn).then(response => {
-      let hasData = function () {
-        updateBOOK(response)
-        viewSaveContentQN(pointed, column, newcontent)
-      }
-      let noData = function () {
-        Alert("saveContentQN", response)
-        pointed.innerHTML = newcontent
-        // return to previous content
-      }
-
-      typeof response === "object" ? hasData() : noData()
-    }).catch(error => {})
-  }
-*/
-  // make undo-able
-/*  UndoManager.add({
-    undo: function() {
-      undoSaveContentQN()
-    },
-    redo: function() {
-      doSaveContentQN()
-    }
-  })*/
 }

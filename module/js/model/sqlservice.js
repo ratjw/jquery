@@ -50,11 +50,11 @@ export function sqlGetUpdateService()
 function sqlOneMonth()
 {
   return `SELECT b.* FROM book b left join staff s on b.staffname=s.staffname
-      WHERE opdate BETWEEN '${serviceFromDate}' AND '${serviceToDate}'
-        AND deleted=0
-        AND waitnum<>0
-        AND hn
-      ORDER BY s.number,opdate,oproom,casenum,waitnum;`
+          WHERE opdate BETWEEN '${serviceFromDate}' AND '${serviceToDate}'
+            AND deleted=0
+            AND waitnum<>0
+            AND hn
+          ORDER BY s.number,opdate,oproom,casenum,waitnum;`
 }
 
 function sqlRecord(pointing, setRecord, qn)
@@ -79,8 +79,8 @@ function sqlColumn(column, content, qn)
 function sqlDefaults(qn)
 {
   return `UPDATE book
-      SET doneby='',scale='',manner='',editor='${USER}'
-      WHERE qn=${qn};`
+          SET doneby='',scale='',manner='',editor='${USER}'
+          WHERE qn=${qn};`
 }
 
 function sqlItem(column, content, qn)

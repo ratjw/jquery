@@ -9,8 +9,7 @@ export function sqlStart() {
 
 export function sqlChangeOncall(pointing, opdate, staffname)
 {
-  let sql = `sqlReturnStaff=INSERT INTO oncall (dateoncall, staffname, edittime)
-       VALUES ('${opdate}','${staffname}',NOW());`
+  let sql = `sqlReturnStaff=INSERT INTO oncall (dateoncall, staffname, edittime) VALUES ('${opdate}','${staffname}',NOW());`
 
   return postData(MYSQLIPHP, sql);
 }
@@ -31,9 +30,7 @@ export function sqlGetUpdate()
 
 export function sqlSaveOnChange(column, content, qn)
 {
-  let sql = `sqlReturnbook=UPDATE book
-        SET ${column}='${URIcomponent(content)}',editor='${USER}'
-        WHERE qn=${qn};`
+  let sql = `sqlReturnbook=UPDATE book SET ${column}='${URIcomponent(content)}',editor='${USER}' WHERE qn=${qn};`
 
   return postData(MYSQLIPHP, sql)
 }

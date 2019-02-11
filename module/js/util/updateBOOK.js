@@ -21,8 +21,8 @@ export function setSTAFF(staff) { STAFF = staff }
 export function setHOLIDAY(holiday) { HOLIDAY = holiday }
 
 import { isSplit } from "./util.js"
-import { refillstaffqueue } from "../view/staffqueue.js"
-import { refillmaintbl } from "../view/fill.js"
+import { staffqueue } from "../view/staffqueue.js"
+import { fillmain } from "../view/fill.js"
 import { renewEditcell } from "../control/edit.js"
 
 // Save data got from server
@@ -36,8 +36,7 @@ export function updateBOOK(response) {
   if (response.HOLIDAY) { HOLIDAY = response.HOLIDAY }
   if (response.QTIME) { timestamp = response.QTIME }
 
-  if (isSplit()) { refillstaffqueue() }
-  if (maintbl.rows.length > 1) { refillmaintbl() }
-
+  if (isSplit()) { staffqueue(titlename.innerHTML) }
+  fillmain()
   renewEditcell()
 }

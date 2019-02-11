@@ -1,10 +1,7 @@
 
 import { sqlAllDeletedCases, sqlUndelete } from "../model/sqlAllDeletedCases.js"
-import { getOpdate } from "../util/date.js"
 import { BOOK, CONSULT, updateBOOK } from "../util/updateBOOK.js"
 import { Alert, reposition } from "../util/util.js"
-import { viewOneDay } from "../view/viewOneDay.js"
-import { viewSplit } from "../view/viewSplit.js"
 import { viewAllDeletedCases } from "../view/viewAllDeletedCases.js"
 import { scrolltoThisCase } from "../view/scrolltoThisCase.js"
 
@@ -38,35 +35,19 @@ export function toUndelete(thisdate, deleted)
 
     allCases.splice(casenum, 0, qn)
 
-  doUndel(allCases, opdate, oproom, staffname, qn, 0)
+    sqlUndelete(allCases, oproom, qn, 0).then(response => {
+      let hasData = function () {
+        updateBOOK(response)
+        scrolltoThisCase(qn)
+      };
 
-/*  UndoManager.add({
-    undo: function() {
-      doUndel(allCases, opdate, oproom, staffname, qn, 1)
-    },
-    redo: function() {
-      doUndel(allCases, opdate, oproom, staffname, qn, 0)
-    }
-  })*/
+      typeof response === "object"
+      ? hasData()
+      : Alert("toUndelete", response)
+    }).catch(error => {})
+
+    $('#dialogAllDeleted').dialog("close")
   })
-}
-
-export function doUndel(allCases, opdate, oproom, staffname, qn, del) {
-
-  sqlUndelete(allCases, oproom, qn, del).then(response => {
-    let hasData = function () {
-      updateBOOK(response)
-//      viewOneDay(opdate)
-//      viewSplit(staffname)
-      scrolltoThisCase(qn)
-    };
-
-    typeof response === "object"
-    ? hasData()
-    : Alert("doUndel", response)
-  }).catch(error => {})
-
-  $('#dialogAllDeleted').dialog("close")
 }
 
 function sameDateRoomBookQNs(book, opdate, oproom)

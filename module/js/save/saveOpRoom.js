@@ -1,13 +1,8 @@
 
-import { OLDCONTENT } from "../control/edit.js"
 import { sqlSaveOpRoom } from "../model/sqlSaveOpRoom.js"
-import { getOpdate } from "../util/date.js"
 import { sameDateRoomTableQNs, sameDateRoomTableRows } from "../util/rowsgetting.js"
 import { updateBOOK } from "../util/updateBOOK.js"
 import { Alert } from "../util/util.js"
-import { viewOneDay } from "../view/viewOneDay.js"
-import { viewSplit } from "../view/viewSplit.js"
-import { UndoManager } from "../model/UndoManager.js"
 
 export function saveOpRoom(pointed, newcontent) {
   let tableID = row.closest('table'),
@@ -34,44 +29,13 @@ export function saveOpRoom(pointed, newcontent) {
   let notimeQNs = Array.from(notimeCases, e => e.dataset.qn)
   allNewCases = timeQNs.concat(notimeQNs)
 
-  let doSaveOpRoom = function() {
-    sqlSaveOpRoom(allOldCases, allNewCases, oproom, newcontent, qn).then(response => {
-      let hasData = function () {
-        updateBOOK(response)
-//        viewOneDay(opdate)
-//        viewSplit(staffname)
-      };
+  sqlSaveOpRoom(allOldCases, allNewCases, oproom, newcontent, qn).then(response => {
+    let hasData = function () {
+      updateBOOK(response)
+    };
 
-      typeof response === "object"
-      ? hasData()
-      : Alert ("saveOpRoom", response)
-    }).catch(error => {})
-  }
-
-
-  let undoSaveOpRoom = function() {
-    sqlSaveOpRoom(allNewCases, allOldCases, OLDCONTENT, qn).then(response => {
-      let hasData = function () {
-        updateBOOK(response)
-        viewOneDay(opdate)
-        viewSplit(staffname)
-      };
-
-      typeof response === "object"
-      ? hasData()
-      : Alert ("saveOpRoom", response)
-    }).catch(error => {})
-  }
-  
-  doSaveOpRoom()
-
-  // make undo-able
-/*  UndoManager.add({
-    undo: function() {
-      undoSaveOpRoom()
-    },
-    redo: function() {
-      doSaveOpRoom()
-    }
-  })*/
+    typeof response === "object"
+    ? hasData()
+    : Alert ("saveOpRoom", response)
+  }).catch(error => {})
 }

@@ -10,8 +10,8 @@ const GETNAMEHN  = "php/getnamehn.php"
 
 export function sqlMoveCaseHN(pointed, waiting, wanting)
 {
-  let  sql = `sqlReturnbook=UPDATE book SET deleted=1,editor='${USER}'
-        WHERE qn=${waiting.qn};` + sqlCaseHN(pointed, waiting, wanting)
+  let  sql = `sqlReturnbook=UPDATE book SET deleted=1,editor='${USER}' WHERE qn=${waiting.qn};`
+           + sqlCaseHN(pointed, waiting, wanting)
 
   return postData(MYSQLIPHP, sql);
 }

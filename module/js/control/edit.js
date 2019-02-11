@@ -260,7 +260,7 @@ let showEditcell = function ($pointing, height, width) {
   $editcell.focus()
 }
 
-// after DOM refresh by refillmaintbl, POINTER remains in its row but its parent is null
+// after DOM refresh by fillmain, POINTER remains in its row but its parent is null
 // must get qn to find current row position
 export function renewEditcell()
 {

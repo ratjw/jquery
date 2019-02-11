@@ -8,7 +8,6 @@ export function sqlDeleteCase(allCases, oproom, qn, del) {
   let sql = `sqlReturnbook=UPDATE book SET deleted=${del},editor='${USER}' WHERE qn=${qn};`
 
   if (allCases.length && oproom) {
-    if (del) { allCases = allCases.filter(e => e !== qn) }
     sql += updateCasenum(allCases)
   }
 

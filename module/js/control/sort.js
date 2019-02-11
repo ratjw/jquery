@@ -8,11 +8,9 @@ import { getOpdate } from "../util/date.js"
 import { sameDateRoomTableQNs } from "../util/rowsgetting.js"
 import { BOOK, updateBOOK } from "../util/updateBOOK.js"
 import { Alert, isConsults, isStaffname } from "../util/util.js"
-import { viewmoveCase } from "../view/viewmoveCase.js"
-import { hoverMain } from "../view/hoverMain.js"
 import { rowDecoration } from "../view/rowDecoration.js"
 import { clearAllEditing } from "./clearAllEditing.js"
-import { unfillrowdata } from "../view/fill.js"
+import { unfillOldrowData } from "../view/fill.js"
 import { blankRowData } from "../model/rowdata.js"
 
 // Sortable 2 windows connected with each other
@@ -21,7 +19,9 @@ export function sortable () {
   let prevplace,
     thisplace,
     prevrow,
-    sender
+    nextrow,
+    sender,
+    thisdrop
 
   $("#maintbl tbody, #queuetbl tbody").sortable({
     items: "tr",
@@ -29,7 +29,6 @@ export function sortable () {
     forceHelperSize: true,
     forcePlaceholderSize: true,
     revert: true,
-//    delay: 150,
     cancel: "tr:has('th')",
     start: function(e, ui){
       clearTimer()
@@ -37,8 +36,9 @@ export function sortable () {
       ui.placeholder.innerHeight(ui.item.outerHeight())
       prevplace = ui.placeholder.index()
       thisplace = ui.placeholder.index()
-      prevrow = ui.item[0].previousElementSibling
       sender = ui.item.closest('table').attr('id')
+      prevrow = ui.item[0].previousElementSibling
+      nextrow = ui.item[0].nextElementSibling.nextElementSibling
     },
     // Make scroll only the window that placeholder is in
     over: function(e, ui) {
@@ -46,7 +46,7 @@ export function sortable () {
       ui.item.data('sortableItem').overflowOffset = ui.placeholder.closest("div").offset();
     },
     // For determination of up or down
-    change: function(e, ui){
+    change: function(e, ui) {
       prevplace = thisplace
       thisplace = ui.placeholder.index()
     },
@@ -70,11 +70,10 @@ export function sortable () {
 
       if (illegal) {
         stopsorting()
-        return false
+        return
       }
 
       // Find nearest row by dropping position
-      let thisdrop
       let previtem = moveitem.previousElementSibling
       let nextitem = moveitem.nextElementSibling
 
@@ -107,7 +106,7 @@ export function sortable () {
           } else if (nearest === nearplace) {
             if ((prevplace === thisplace) && (sender === receiver)) {
               stopsorting()
-              return false
+              return
             }
             thisdrop =  (prevplace < thisplace) ? previtem : nextitem
           }
@@ -120,12 +119,19 @@ export function sortable () {
         thisqn = thisdrop.dataset.qn
 
       // drop on the same case
-      if (thisqn === moveqn) { return }
+      if (thisqn === moveqn) {
+        stopsorting()
+        return
+      }
 
-      let clone = moveitem.cloneNode(true),
-        prevopdate = moveitem.previousElementSibling.dataset.opdate,
-        nextopdate = moveitem.nextElementSibling.dataset.opdate,
-        single = (prevopdate !== moveopdate) && (nextopdate !== moveopdate)
+      // clonemoveitem in case of if it's the only one row, replace it
+      // otherwise the date is skipped
+      // clonethisdrop in case of it may be removed
+      let clonemoveitem = moveitem.cloneNode(true),
+        clonethisdrop = thisdrop.cloneNode(true),
+        prevopdate = prevrow && prevrow.dataset.opdate,
+        nextopdate = nextrow && nextrow.dataset.opdate,
+        single = (prevopdate !== moveopdate) && (moveopdate !== nextopdate)
 
       // make moveitem look alike thisdrop for sameDateRoom function
       moveitem.dataset.waitnum = calcWaitnum(thisopdate, previtem, nextitem)
@@ -133,7 +139,7 @@ export function sortable () {
       moveitem.dataset.oproom = thisdrop.dataset.oproom
       rowDecoration(moveitem, moveitem.dataset.opdate)
 
-      allOldCases = sameDateRoomTableQNs(sender, clone)
+      allOldCases = sameDateRoomTableQNs(sender, clonemoveitem)
       allNewCases = sameDateRoomTableQNs(receiver, thisdrop)
 
       // In case of new is the same date room as old
@@ -142,17 +148,26 @@ export function sortable () {
         allOldCases = []
       }
 
-      if (single) { prevrow.after(clone) }
-      blankRowData(clone, moveopdate)
-      unfillrowdata(clone, moveopdate)
+      if (single) {
+        let next = prevrow.nextElementSibling
+        if (next) {
+          while (prevrow.dataset.opdate === next.dataset.opdate) {
+            prevrow = next
+            if (!(next = next.nextElementSibling)) break
+          }
+        }
+        prevrow.after(clonemoveitem)
+      }
+      blankRowData(clonemoveitem, moveopdate)
+      unfillOldrowData(clonemoveitem, moveopdate)
+
+      if (!thisqn) { thisdrop.remove() }
 
       // after sorting, must attach hover to the changed DOM elements
       let doSorting = function() {
-        sqlSortable(allOldCases, allNewCases, moveitem, thisdrop).then(response => {
+        sqlSortable(allOldCases, allNewCases, moveitem, clonethisdrop).then(response => {
           let hasData = function () {
             updateBOOK(response)
-//            viewmoveCase(moveitem, thisdrop)
-//            hoverMain()
           }
 
           typeof response === "object"
@@ -162,27 +177,20 @@ export function sortable () {
       }
 
       doSorting()
-/*
-      // make undo-able
-      UndoManager.add({
-        undo: function() {
-          doSorting(argModelUndo)
-        },
-        redo: function() {
-          doSorting(argModelDo)
-        }
-      })
-*/
-      stopsorting()
+      resetTimerCounter()
+      clearEditcell()
     }
   })
 }
 
 let stopsorting = function () {
+	// Return to original place
+	$("#tbl tbody, #queuetbl tbody").sortable( "cancel" )
+
   // before sorting, timer was stopped in start: function
   resetTimerCounter()
 
   //  after sorting, editcell was placed at row 0 column 1
   //  and display at placeholder position in entire width
-  $('#editcell').hide()
+  clearEditcell()
 }

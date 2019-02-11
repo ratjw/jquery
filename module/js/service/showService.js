@@ -9,8 +9,8 @@ import {
   getClass, inPicArea, isSplit,  winWidth, winHeight, winResizeFix
 } from "../util/util.js"
 import { isPACS } from "../util/updateBOOK.js"
-import { refillmaintbl } from "../view/fill.js"
-import { refillstaffqueue } from "../view/staffqueue.js"
+import { fillmain } from "../view/fill.js"
+import { staffqueue } from "../view/staffqueue.js"
 import { fillConsults } from "../view/fillConsults.js"
 import { coloring } from "./coloring.js"
 import { countAllServices } from "./countAllServices.js"
@@ -72,8 +72,8 @@ export function showService() {
     width: winWidth(95),
     height: winHeight(95),
     close: function() {
-      if (isSplit()) { refillstaffqueue() }
-      refillmaintbl()
+      if (isSplit()) { staffqueue(titlename.innerHTML) }
+      fillmain()
       fillConsults()
       $(".ui-dialog:visible").find(".ui-dialog-content").dialog("close")
       $(".fixed").remove()

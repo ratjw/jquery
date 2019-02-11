@@ -34,11 +34,10 @@ export function userStaff() {
 
 // Success return from server
 function success(response) {
-  updateBOOK(response)
 
   // call sortable before render, otherwise it renders very slowly
   sortable()
-  fillmain()
+  updateBOOK(response)
   scrolltoToday('maintbl')
   fillConsults()
 

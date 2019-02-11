@@ -2,7 +2,6 @@
 import { sqlcopyCase } from "../model/sqlcopyCase.js"
 import { updateBOOK } from "../util/updateBOOK.js"
 import { Alert } from "../util/util.js"
-import { viewcopyCase } from "../view/viewcopyCase.js"
 import { calcWaitnum } from "../util/calcWaitnum.js"
 
 export function docopyCase(allNewCases, moverow, thisrow)
@@ -14,7 +13,6 @@ export function docopyCase(allNewCases, moverow, thisrow)
   sqlcopyCase(allNewCases, moverow, thisrow).then(response => {
     let hasData = function () {
       updateBOOK(response)
-//      viewcopyCase(moverow, thisrow)
     }
 
     typeof response === "object"

@@ -13,8 +13,8 @@ import { setSERVICE } from "../service/setSERVICE.js"
 import { reViewService } from "../service/showService.js"
 import { timestamp, updateBOOK } from "../util/updateBOOK.js"
 import { Alert, isSplit } from "../util/util.js"
-import { refillmaintbl } from "../view/fill.js"
-import { refillstaffqueue } from "../view/staffqueue.js"
+import { fillmain } from "../view/fill.js"
+import { staffqueue } from "../view/staffqueue.js"
 import { fillConsults } from "../view/fillConsults.js"
 
 // timer is just an id number of setTimeout, not the clock object
@@ -137,9 +137,9 @@ function onIdling()
 
 function viewGetUpdate()
 {
-  refillmaintbl()
+  fillmain()
   fillConsults()
-  if (isSplit()) { refillstaffqueue() }
+  if (isSplit()) { staffqueue(titlename.innerHTML) }
   renewEditcell()
 }
 
