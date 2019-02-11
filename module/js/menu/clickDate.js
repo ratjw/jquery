@@ -10,8 +10,8 @@ export function clickDate(moverow, cell)
   let moveTableID = moverow.closest('table.id'),
     moveqn = moverow.dataset.qn,
 
-    thisTableID = thisrow.closest('table').id
     thisrow = cell.closest("tr"),
+    thisTableID = thisrow.closest('table').id,
     thisqn = thisrow.dataset.qn,
     allOldCases,
     allNewCases,

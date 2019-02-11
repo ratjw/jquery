@@ -4,7 +4,7 @@ import { USER } from "../main.js"
 import { sqlCaseNum } from "./sqlSaveCaseNum.js"
 import { sqlMover } from "./sqlMover.js"
 import { LARGESTDATE } from "../model/const.js"
-import { getLargestWaitnum } from "../util/util.js"
+import { getLargestWaitnum, URIcomponent } from "../util/util.js"
 
 export function sqlcopyCase(allNewCases, moverow, thisrow) {
   let sql = "sqlReturnbook=",
@@ -41,22 +41,23 @@ export function sqlcopyCase(allNewCases, moverow, thisrow) {
 
 function sqlInsert(row)
 {
-  let dob = row.dataset.dob,
+  let r = row.dataset,
+    dob = r.dob,
     sql1 = dob ? `'${dob}'` : null
 
   return `INSERT INTO book SET
-    waitnum=${row.dataset.waitnum},
-    opdate='${row.dataset.opdate}',
-    theatre='${row.dataset.theatre}',
-    oproom=${row.dataset.oproom},
-    optime='${row.dataset.optime}',
-    casenum=${row.dataset.casenum},
-    staffname='${row.dataset.staffname}',
-    hn='${row.dataset.hn}',
-    patient='${row.dataset.patient}',
+    waitnum=${r.waitnum},
+    opdate='${r.opdate}',
+    theatre='${URIcomponent(r.theatre)}',
+    oproom=${r.oproom},
+    optime='${r.optime}',
+    casenum=${r.casenum},
+    staffname='${r.staffname}',
+    hn='${r.hn}',
+    patient='${URIcomponent(r.patient)}',
     dob=${sql1},
-    diagnosis='${row.dataset.diagnosis}',
-    treatment='${row.dataset.treatment}',
-    contact='${row.dataset.contact}',
+    diagnosis='${URIcomponent(r.diagnosis)}',
+    treatment='${URIcomponent(r.treatment)}',
+    contact='${URIcomponent(r.contact)}',
     editor='${USER}';`
 }
