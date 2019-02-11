@@ -765,19 +765,6 @@ td.upload2 { background-image: url(pic/general/upload2.png); }
 	border: 2px solid lightblue;
 }
 
-#dialogReadme {
-	line-height: 150%;
-	font-size: 14px;
-	color: black;
-	background-color: white;
-}
-
-#dialogReadme h3 {
-	padding: 0px;
-	margin: 0px;
-	background-color: yellow;
-}
-
 #spin {
 	height: 20px;
 	width: 35px;
