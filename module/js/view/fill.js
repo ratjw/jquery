@@ -87,6 +87,40 @@ export function fillDatedCases(table, book)
   return date
 }
 
+export function refillDatedCases(table, oldbook, newbook)
+{
+  let oldgroup = groupBy(oldbook, 'opdate'),
+    newgroup = groupBy(newbook, 'opdate'),
+    oldarray = Array.from(oldgroup),
+    newarray = Array.from(newgroup),
+    i = 0,
+
+  allDiff = newarray.reduce((result, opdate) => {
+    if (oldarray.includes(2))
+  })
+
+  Object.entries(newgroup).forEach(([newopdate, newcases]) => {
+    oldgroup[i]
+  })
+}
+
+let groupBy = function(items, key) {
+  return items.reduce((result, item) => {
+    (result[item[key]] = result[item[key]] || []).push(item)
+    return result
+  }, {})
+}
+
+let diff = function(o1, o2) {
+  return Object.keys(o2).reduce((diff, key) => {
+    if (o1[key] === o2[key]) return diff
+    return {
+      ...diff,
+      [key]: o2[key]
+    }
+  }, {})
+}
+
 export function fillBlankDates(table, date, until)
 {
   let tbody = table.querySelector("tbody"),
