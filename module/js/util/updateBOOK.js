@@ -7,7 +7,7 @@
 // timestamp is the last time access from this client to the server
 // can't check PACS (always unauthorized 401 with Firefox)
 
-export const isPACS = /10.6./.test(window.location)
+export const isPACS = /10\.6./.test(window.location) || /surgery\.rama/.test(window.location)
 
 export let BOOK = [],
   CONSULT = [],
