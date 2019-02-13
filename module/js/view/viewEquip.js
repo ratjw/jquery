@@ -109,11 +109,9 @@ function viewEquipImage(equipJSON)
   })
 
   // remove duplicated pics
-  equipPics = equipPics.filter(function(pic, pos) {
-    return equipPics.indexOf(pic) === pos;
-  })
+  equipPics = [...new Set(equipPics)]
 
-  // display 6 pics:- pale the not-checked ones
+  // display 6 pics: pale the not-checked ones
   EQUIPICONSHOWN.forEach((item) => {
     if (equipPics.includes(item)) {
     img += `<img src="css/pic/equip/${item}.jpg"> `
