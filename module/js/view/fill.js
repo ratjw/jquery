@@ -1,17 +1,13 @@
 
-import {
-  OPDATE, THEATRE, OPROOM, OPTIME, CASENUM, STAFFNAME, HN, PATIENT,
-  DIAGNOSIS, TREATMENT, EQUIPMENT, CONTACT, LARGESTDATE
-} from "../model/const.js"
-import {
-  START, ISOdate, nextdays, putNameAge, verifyDates
-} from "../util/date.js"
-import { BOOK, isPACS } from "../util/updateBOOK.js"
+import { LARGESTDATE } from "../model/const.js"
+import { START, ISOdate, nextdays } from "../util/date.js"
+import { BOOK } from "../util/updateBOOK.js"
 import { rowDecoration } from "./rowDecoration.js"
 import { viewEquip, viewEquipNoImg } from "./viewEquip.js"
 import { hoverMain } from "./hoverMain.js"
-import { setRowData, blankRowData } from "../model/rowdata.js"
-import { isOnStaffnameTbl, Alert } from "../util/util.js"
+import { blankRowData } from "../model/rowdata.js"
+import { viewOneDay } from "./viewOneDay.js"
+import { fillNewrowData } from "./fillNewrowData.js"
 
 // Render Main table
 // Consults and dialogAll tables use this too
@@ -91,16 +87,14 @@ export function refillDatedCases(table, oldbook, newbook)
 {
   let oldgroup = groupBy(oldbook, 'opdate'),
     newgroup = groupBy(newbook, 'opdate'),
-    oldarray = Array.from(oldgroup),
-    newarray = Array.from(newgroup),
-    i = 0,
+    oldDiff = objectDiff(newgroup, oldgroup),
+    newDiff = objectDiff(oldgroup, newgroup),
+    allDiff
 
-  allDiff = newarray.reduce((result, opdate) => {
-    if (oldarray.includes(2))
-  })
-
-  Object.entries(newgroup).forEach(([newopdate, newcases]) => {
-    oldgroup[i]
+  Object.keys(oldDiff).forEach(key => oldDiff[key] = [])
+  allDiff = Object.assign({}, oldDiff, newDiff)
+  Object.entries(allDiff).forEach(([opdate, rows]) => {
+    viewOneDay(table, opdate, rows)
   })
 }
 
@@ -111,9 +105,10 @@ let groupBy = function(items, key) {
   }, {})
 }
 
-let diff = function(o1, o2) {
+let objectDiff = function(o1, o2) {
   return Object.keys(o2).reduce((diff, key) => {
-    if (o1[key] === o2[key]) return diff
+    if (JSON.stringify({key: o1[key]}) === JSON.stringify({key: o2[key]}))
+      return diff
     return {
       ...diff,
       [key]: o2[key]
@@ -146,98 +141,4 @@ export function makenextrow(table, date) {
   row = tbody.appendChild(row)
   rowDecoration(row, date)
   blankRowData(row, date)
-}
-
-export function fillNewrowData(row, q)
-{
-  let tableID = row.closest('table').id,
-    cells = row.cells
-
-  setRowData(row, q)
-  if (q.hn && isPACS) { cells[HN].className = "pacs" }
-  if (q.patient) { cells[PATIENT].className = "upload" }
-
-  cells[THEATRE].innerHTML = q.theatre
-  cells[OPROOM].innerHTML = q.oproom || ""
-  cells[OPTIME].innerHTML = q.optime
-  cells[CASENUM].innerHTML = q.casenum || ""
-  cells[STAFFNAME].innerHTML = q.staffname
-  cells[HN].innerHTML = q.hn
-  cells[PATIENT].innerHTML = putNameAge(q)
-  cells[DIAGNOSIS].innerHTML = q.diagnosis
-  cells[TREATMENT].innerHTML = q.treatment
-  cells[EQUIPMENT].innerHTML = isOnStaffnameTbl(tableID)
-                             ? viewEquipNoImg(q.equipment)
-                             : viewEquip(q.equipment)
-  cells[CONTACT].innerHTML = q.contact
-}
-
-export function fillOldrowData(row, q)
-{
-  let rowdata = row.dataset
-
-  if (rowdata.waitnum !== q.waitnum) {
-    rowdata.waitnum = q.waitnum
-  }
-  if (rowdata.theatre !== q.theatre) {
-    rowdata.theatre = q.theatre
-    row.cells[THEATRE].innerHTML = q.theatre
-  }
-  if (rowdata.oproom !== (q.oproom || "")) {
-    rowdata.oproom = q.oproom || ""
-    row.cells[OPROOM].innerHTML = q.oproom || ""
-  }
-  if (rowdata.optime !== q.optime) {
-    rowdata.optime = q.optime
-    row.cells[OPTIME].innerHTML = q.optime
-  }
-  if (rowdata.casenum !== (q.casenum || "")) {
-    rowdata.casenum = q.casenum || ""
-    row.cells[CASENUM].innerHTML = q.casenum || ""
-  }
-  if (rowdata.staffname !== q.staffname) {
-    rowdata.staffname = q.staffname
-    row.cells[STAFFNAME].innerHTML = q.staffname
-  }
-  if (rowdata.hn !== q.hn) {
-    rowdata.hn = q.hn
-    row.cells[HN].innerHTML = q.hn
-  }
-  if (rowdata.patient !== q.patient) {
-    rowdata.patient = q.patient
-    row.cells[PATIENT].innerHTML = q.patient
-  }
-  if (rowdata.dob !== (q.dob || "")) {
-    rowdata.dob = q.dob || ""
-  }
-  if (rowdata.diagnosis !== q.diagnosis) {
-    rowdata.diagnosis = q.diagnosis
-    row.cells[DIAGNOSIS].innerHTML = q.diagnosis
-  }
-  if (rowdata.treatment !== q.treatment) {
-    rowdata.treatment = q.treatment
-    row.cells[TREATMENT].innerHTML = q.treatment
-  }
-  if (rowdata.equipment !== q.equipment) {
-    rowdata.equipment = q.equipment
-    row.cells[EQUIPMENT].innerHTML = viewEquipNoImg(q.equipment)
-  }
-  if (rowdata.contact !== q.contact) {
-    rowdata.contact = q.contact
-    row.cells[CONTACT].innerHTML = q.contact
-  }
-  if (rowdata.qn !== q.qn) {
-    rowdata.qn = q.qn
-  }
-}
-
-export function unfillOldrowData(row, opdate)
-{
-  let cells = row.cells
-
-  Array.from(cells).filter(e => e.cellIndex !== OPDATE).forEach(e => e.innerHTML = "")
-  cells[HN].classList.remove("pacs")
-  cells[PATIENT].classList.remove("upload")
-  rowDecoration(row, opdate)
-  blankRowData(row, opdate)
 }

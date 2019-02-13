@@ -10,7 +10,7 @@ import { BOOK, updateBOOK } from "../util/updateBOOK.js"
 import { Alert, isConsults, isStaffname } from "../util/util.js"
 import { rowDecoration } from "../view/rowDecoration.js"
 import { clearAllEditing } from "./clearAllEditing.js"
-import { unfillOldrowData } from "../view/fill.js"
+import { unfillOldrowData } from "../view/fillNewrowData.js"
 import { blankRowData } from "../model/rowdata.js"
 
 // Sortable 2 windows connected with each other

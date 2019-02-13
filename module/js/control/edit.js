@@ -228,7 +228,7 @@ export function createEditcell(pointing)
   let context = getHtmlText(pointing).replace(/Consult<br>.*$/, "")
 
   $("#editcell").html(context)
-  showEditcell($pointing, height, width)
+  showEditcell(pointing, height, width)
   editcellSaveData(pointing, context)
 }
 
@@ -247,17 +247,27 @@ export function editcellSaveData(pointing, content) {
   OLDCONTENT = content
 }
 
-let showEditcell = function ($pointing, height, width) {
-  let $editcell = $("#editcell")
+let showEditcell = function (pointing, height, width) {
+  let editcell = document.querySelector("#editcell"),
+    css = getComputedStyle(pointing),
+    container,
+    left,
+    right
 
-  $editcell.css({
-    height: height,
-    width: width,
-    fontSize: $pointing.css("fontSize")
-  })
-  $editcell.appendTo($pointing.closest('div'))
-  reposition($editcell, "left center", "left center", $pointing)
-  $editcell.focus()
+  editcell.style.height = height
+  editcell.style.width = width
+  editcell.style.fontSize = css.fontSize
+  pointing.closest('div').appendChild(editcell)
+  reposition($(editcell), "left center", "left center", pointing)
+  container = editcell.parentElement.closest('div')
+  left = editcell.offsetLeft - container.scrollLeft
+  right = left + editcell.offsetWidth
+  if (left < 0) {
+    container.scrollLeft += left
+  } else if (right > container.clientWidth) {
+    container.scrollLeft = right
+  }
+  editcell.focus()
 }
 
 // after DOM refresh by fillmain, POINTER remains in its row but its parent is null
@@ -291,13 +301,14 @@ export function editcellLocation()
 }
 
 export function clearEditcell() {
-  let $editcell = $("#editcell")
+  let editcell = document.getElementById("editcell"),
+    spinner = document.querySelector('.ui-spinner')
 
   POINTER = ""
   OLDCONTENT = ""
-  $editcell.html("")
-  $editcell.hide()
-  $('.ui-spinner').remove()
+  editcell.innerHTML = ""
+  editcell.style.display = "none"
+  spinner && spinner.remove()
 }
 
 // TRIM excess spaces at begin, mid, end

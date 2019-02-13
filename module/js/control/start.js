@@ -38,6 +38,7 @@ function success(response) {
   // call sortable before render, otherwise it renders very slowly
   sortable()
   updateBOOK(response)
+  fillmain()
   scrolltoToday('maintbl')
   fillConsults()
 
