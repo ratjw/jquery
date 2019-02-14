@@ -251,8 +251,9 @@ let showEditcell = function (pointing, height, width) {
   let editcell = document.querySelector("#editcell"),
     css = getComputedStyle(pointing),
     container,
-    left,
-    right
+    leftCont,
+    leftEdit,
+    rightEdit
 
   editcell.style.height = height
   editcell.style.width = width
@@ -260,12 +261,13 @@ let showEditcell = function (pointing, height, width) {
   pointing.closest('div').appendChild(editcell)
   reposition($(editcell), "left center", "left center", pointing)
   container = editcell.parentElement.closest('div')
-  left = editcell.offsetLeft - container.scrollLeft
-  right = left + editcell.offsetWidth
-  if (left < 0) {
-    container.scrollLeft += left
-  } else if (right > container.clientWidth) {
-    container.scrollLeft = right
+  leftCont = container.offsetLeft
+  leftEdit = editcell.offsetLeft - leftCont - container.scrollLeft
+  rightEdit = leftEdit + editcell.offsetWidth
+  if (leftEdit < 0) {
+    container.scrollLeft += leftEdit
+  } else if (rightEdit > container.clientWidth) {
+    container.scrollLeft = rightEdit
   }
   editcell.focus()
 }
