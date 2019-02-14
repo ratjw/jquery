@@ -80,6 +80,23 @@ export function getEQUIP(pointing)
   }
 
   clearEditcell()
+  clickRadioInput()
+}
+
+// hack for click to uncheck a radio input
+function clickRadioInput()
+{
+  $('#dialogEquip label:has(input[type=radio])').off('mousedown').on('mousedown', function(e) {
+    var radios = $(this).find('input[type=radio]')
+    var wasChecked = radios.prop('checked')
+
+    radios[0].turnOff = wasChecked
+    radios.prop('checked', !wasChecked)
+  })
+  .off('click').on('click', function(e) {
+    var radios = $(this).find('input[type=radio]')
+    radios.prop('checked', !radios[0].turnOff)
+  })
 }
 
 function showNonEditableEquip()

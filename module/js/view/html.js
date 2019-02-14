@@ -47,8 +47,10 @@ export function htmlEquipment()
     equip += `<br>`
   } else if (type === "radio" || type === "checkbox") {
     equip += `<span class="w${width}">
-                  <input type="${type}" name="${name}" id="${id}">
-                  <label for="${id}">${label}</label>
+                  <label for="${id}">
+                    <input type="${type}" name="${name}" id="${id}">
+                    ${label}
+                  </label>
                 </span>`
   } else if (type === "text") {
     equip += `<span>
