@@ -80,7 +80,6 @@ export function getEQUIP(pointing)
   }
 
   clearEditcell()
-  clickRadioInput()
 }
 
 // hack for click to uncheck a radio input
@@ -146,6 +145,7 @@ let showEditableEquip = function () {
 
 function disableInput()
 {
+  $('#dialogEquip label:has(input[type=radio])').off('mousedown')
   $('#dialogEquip input').prop('disabled', true)
   $('#dialogEquip textarea').prop('disabled', true)
   $('#clearPosition').off('click')
@@ -160,6 +160,7 @@ function enableInput()
   $('#dialogEquip textarea').prop('disabled', false)
   $('#clearPosition').off("click").on("click", clearPosition)
   $('#clearShunt').off("click").on("click", clearShunt)
+  clickRadioInput()
 }
 
 function clearPosition()
