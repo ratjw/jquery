@@ -398,21 +398,21 @@ tr.Thursday { background-color: #FFF7EE; }
 tr.Friday { background-color: #E7F7FF; }
 tr.Saturday { background-color: #E7E7FF; }
 
-td.Sun { background-color: #F099BB; }
-td.Mon { background-color: #F0F0BB; }
-td.Tue { background-color: #F0CCEE; }
-td.Wed { background-color: #CCF0CC; }
-td.Thu { background-color: #F0DDBB; }
-td.Fri { background-color: #BBDDF0; }
-td.Sat { background-color: #CCBBF0; }
+tr.Sunday td:first-child { background-color: #F099BB; }
+tr.Monday td:first-child { background-color: #F0F0BB; }
+tr.Tuesday td:first-child { background-color: #F0CCEE; }
+tr.Wednesday td:first-child { background-color: #CCF0CC; }
+tr.Thursday td:first-child { background-color: #F0DDBB; }
+tr.Friday td:first-child { background-color: #BBDDF0; }
+tr.Saturday td:first-child { background-color: #CCBBF0; }
 
-td.Sun:before { content: "อาทิตย์ "; }
-td.Mon:before { content: "จันทร์ "; }
-td.Tue:before { content: "อังคาร "; }
-td.Wed:before { content: "พุธ "; }
-td.Thu:before { content: "พฤหัส "; }
-td.Fri:before { content: "ศุกร์ "; }
-td.Sat:before { content: "เสาร์ "; }
+tr.Sunday td:first-child::before { content: "อาทิตย์ "; }
+tr.Monday td:first-child::before { content: "จันทร์ "; }
+tr.Tuesday td:first-child::before { content: "อังคาร "; }
+tr.Wednesday td:first-child::before { content: "พุธ "; }
+tr.Thursday td:first-child::before { content: "พฤหัส "; }
+tr.Friday td:first-child::before { content: "ศุกร์ "; }
+tr.Saturday td:first-child::before { content: "เสาร์ "; }
 
 td.pacs { background-image: url(pic/general/pacs.png); }
 td.pacs2 { background-image: url(pic/general/pacs2.png); }

@@ -7,16 +7,14 @@ import { holiday } from "./holiday.js"
 const NAMEOFDAYFULL  = ["Sunday", "Monday", "Tuesday",
   "Wednesday", "Thursday", "Friday", "Saturday"
 ]
-const NAMEOFDAYABBR  = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
 
 export function rowDecoration(row, date)
 {
   let  cells = row.cells
 
-  row.className = dayName(NAMEOFDAYFULL, date) || "nodate"
+  row.classList.add(dayName(NAMEOFDAYFULL, date) || "nodate")
 
   cells[OPDATE].innerHTML = putThdate(date)
-  cells[OPDATE].className = dayName(NAMEOFDAYABBR, date)
   if (date < LARGESTDATE) {
     cells[DIAGNOSIS].style.backgroundImage = holiday(date) || 'none'
   }
