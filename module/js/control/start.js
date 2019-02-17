@@ -58,6 +58,32 @@ function success(response) {
   clearSelection()
   overrideJqueryUI()
   resetTimer()
+//  serverSentEvent()
+}
+
+function serverSentEvent()
+{
+  let evtSource = new EventSource('./php/sse.php')
+  console.log(evtSource.withCredentials)
+  console.log(evtSource.readyState)
+  console.log(evtSource.url)
+
+  evtSource.onopen = function() {
+    console.log("Connection to server opened.")
+  }
+
+  evtSource.onmessage = function(e) {
+    console.log(e.data)
+  }
+
+  evtSource.onerror = function() {
+    console.log("EventSource failed.")
+  }
+
+  maintbl.onclick = function() {
+    console.log('Connection closed')
+    evtSource.close()
+  }
 }
 
 // *** plan -> offline browsing by service worker ***
@@ -97,7 +123,7 @@ function wrapperEvent()
 
     if ($stafflist.is(":visible")) {
       if (!$(target).closest('#stafflist').length) {
-        $stafflist.hide();
+        $stafflist.hide()
         clearEditcell()
       }
     }
@@ -151,7 +177,7 @@ function documentEvent()
       clearAllEditing()
     }
     resetTimerCounter()
-  });
+  })
 
   $(document).contextmenu( event => {
     let target = event.target
@@ -206,9 +232,9 @@ function overrideJqueryUI()
   $.widget("ui.dialog", $.extend({}, $.ui.dialog.prototype, {
     _title: function(title) {
         if (!this.options.title ) {
-            title.html("&#160;");
+            title.html("&#160;")
         } else {
-            title.html(this.options.title);
+            title.html(this.options.title)
         }
     }
   }))

@@ -1,5 +1,5 @@
 
-import { addStaff, doadddata, doupdatedata, dodeletedata } from "./addStaff.js"
+import { addStaff, doAddStaff, doUpdateStaff, doDeleteStaff } from "./addStaff.js"
 
 import { inputHoliday, addHoliday, delHoliday } from "./inputHoliday.js"
 
@@ -8,9 +8,9 @@ export function setClickSetting()
   let onclick = {
     "clickaddStaff": addStaff,
     "clicksetHoliday": inputHoliday,
-    "clickdoadddata": doadddata,
-    "clickdoupdatedata": doupdatedata,
-    "clickdodeletedata": dodeletedata,
+    "clickdoAddStaff": doAddStaff,
+    "clickdoUpdateStaff": doUpdateStaff,
+    "clickdoDeleteStaff": doDeleteStaff,
     "addholiday": addHoliday
   }
 

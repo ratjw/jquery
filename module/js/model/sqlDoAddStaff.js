@@ -1,7 +1,7 @@
 
 import { postData, MYSQLIPHP } from "./fetch.js"
 
-export function sqlDoadddata()
+export function sqlDoAddStaff()
 {
   let vname = document.getElementById("sname").value
   let vspecialty = document.getElementById("specialty").value
@@ -13,7 +13,7 @@ export function sqlDoadddata()
   return postData(MYSQLIPHP, sql)
 }
 
-export function sqlDoupdatedata()
+export function sqlDoUpdateStaff()
 {
     let vname = document.getElementById("sname").value
     let vspecialty = document.getElementById("specialty").value
@@ -25,7 +25,7 @@ export function sqlDoupdatedata()
   return postData(MYSQLIPHP, sql)
 }
 
-export function sqlDodeletedata()
+export function sqlDoDeleteStaff()
 {
     let vsnumber = document.getElementById("snumber").value
   let sql = `sqlReturnStaff=DELETE FROM staff WHERE number=${vsnumber};`

@@ -39,7 +39,7 @@ require_once "book.php";
 		echo returnData($mysqli, $_POST['sqlReturnData']);
 	}
 
-	// start.js (doadddata)
+	// start.js (doAddStaff)
 	else if (isset($_POST['sqlReturnStaff'])) {
 		echo returnStaff($mysqli, $_POST['sqlReturnStaff']);
 	}

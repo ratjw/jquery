@@ -1,6 +1,6 @@
 
 import { htmlStafflist } from "../view/html.js"
-import { sqlDoadddata, sqlDoupdatedata, sqlDodeletedata } from "../model/sqlDoadddata.js"
+import { sqlDoAddStaff, sqlDoUpdateStaff, sqlDoDeleteStaff } from "../model/sqlDoAddStaff.js"
 import { updateBOOK, setSTAFF } from "../util/updateBOOK.js"
 import { Alert } from "../util/util.js"
 import { viewAddStaff } from "../view/viewAddStaff.js"
@@ -20,9 +20,9 @@ export function addStaff()
   viewAddStaff()
 }
 
-export function doadddata()
+export function doAddStaff()
 {
-  sqlDoadddata().then(response => {
+  sqlDoAddStaff().then(response => {
     let hasData = function () {
       updateBOOK(response)
       showAddStaff(response)
@@ -30,14 +30,14 @@ export function doadddata()
 
     typeof response === "object"
     ? hasData()
-    : Alert ("dodeletedata", response)
+    : Alert ("doDeleteStaff", response)
   })
 }
 
-export function doupdatedata()
+export function doUpdateStaff()
 {
   if (confirm("ต้องการแก้ไขข้อมูลนี้")) {
-  sqlDoupdatedata().then(response => {
+  sqlDoUpdateStaff().then(response => {
     let hasData = function () {
       updateBOOK(response)
       showAddStaff(response)
@@ -45,15 +45,15 @@ export function doupdatedata()
 
     typeof response === "object"
     ? hasData()
-    : Alert ("dodeletedata", response)
+    : Alert ("doDeleteStaff", response)
   })
   }
-} // end of function doupdatedata
+} // end of function doUpdateStaff
 
-export function dodeletedata()
+export function doDeleteStaff()
 {
   if (confirm("ต้องการลบข้อมูลนี้หรือไม่")) {
-  sqlDodeletedata().then(response => {
+  sqlDoDeleteStaff().then(response => {
     let hasData = function () {
       updateBOOK(response)
       showAddStaff(response)
@@ -61,7 +61,7 @@ export function dodeletedata()
 
     typeof response === "object"
     ? hasData()
-    : Alert ("dodeletedata", response)
+    : Alert ("doDeleteStaff", response)
   })
   }
 }
