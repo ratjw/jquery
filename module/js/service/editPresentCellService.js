@@ -4,7 +4,7 @@ import {
   FINALSV, PROFILESV, ADMITSV, OPDATESV, DISCHARGESV
 } from "../model/const.js"
 import {
-  OLDCONTENT, clearEditcell, createEditcell, editcellSaveData
+  clearEditcell, createEditcell, editcellSaveData
 } from "../control/edit.js"
 import { isPACS } from "../util/updateBOOK.js"
 import { inPicArea } from "../util/util.js"

@@ -3,19 +3,21 @@ import { sqlSaveOpRoom } from "../model/sqlSaveOpRoom.js"
 import { sameDateRoomTableQNs, sameDateRoomTableRows } from "../util/rowsgetting.js"
 import { updateBOOK } from "../util/updateBOOK.js"
 import { Alert } from "../util/util.js"
+import { OLDCONTENT } from "../control/edit.js"
 
 export function saveOpRoom(pointed, newcontent) {
-  let tableID = row.closest('table'),
-    row = pointed.closest('tr'),
+  let row = pointed.closest('tr'),
+    tableID = row.closest('table').id,
     opdate = row.dataset.opdate,
     oproom = row.dataset.oproom,
-    qn = row.dataset.qn
+    qn = row.dataset.qn,
+    allOldCases = sameDateRoomTableQNs(tableID, row)
 
-  let allOldCases = sameDateRoomTableQNs(tableID, row)
   allOldCases = allOldCases.filter(e => e !== qn)
 
   row.dataset.oproom = newcontent
   let allNewCases = sameDateRoomTableRows(tableID, row)
+  row.dataset.oproom = OLDCONTENT
 
   let timeCases = allNewCases.filter(e => e.dataset.optime !== "")
   let notimeCases = allNewCases.filter(e => e.dataset.optime === "")

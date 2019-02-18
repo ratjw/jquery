@@ -11,7 +11,7 @@ import { sqlGetUpdateService, sqlSaveOnChangeService } from "../model/sqlservice
 import { saveProfileService } from "../service/savePreviousCellService.js"
 import { setSERVICE } from "../service/setSERVICE.js"
 import { reViewService } from "../service/showService.js"
-import { timestamp, updateBOOK } from "../util/updateBOOK.js"
+import { TIMESTAMP, updateBOOK } from "../util/updateBOOK.js"
 import { Alert, isSplit } from "../util/util.js"
 import { fillmain } from "../view/fill.js"
 import { staffqueue } from "../view/staffqueue.js"
@@ -21,10 +21,6 @@ import { fillConsults } from "../view/fillConsults.js"
 // idleCounter is number of cycles of idle setTimeout
 let timer = 0
 let idleCounter = 0
-
-export function clearTimer() {
-  clearTimeout(timer)
-}
 
 // poke server every 10 sec.
 export function resetTimer() {
@@ -38,6 +34,10 @@ export function resetTimerCounter()
   idleCounter = 0
 }
 
+export function clearTimer() {
+  clearTimeout(timer)
+}
+
 // While idling every 10 sec., get updated by itself and another clients
 // 1. Visible editcell
 //   1.1 Editcell changed (update itself and from another client on the way)
@@ -47,7 +47,7 @@ function updating() {
   if (onChange()) {
     idleCounter = 0
   } else {
-    doUpdate()
+    onIdling()
   }
 
   resetTimer()
@@ -75,72 +75,18 @@ let onChange = function () {
   }
 }
 
-// Check data changed in server
-// if some changes in database from other users (while this user is idling),
-// then sync data of editcell with underlying table cell
-// timestamp is this client last save to server
-function doUpdate()
-{
-  sqldoUpdate().then(response => {
-    if (typeof response === "object") {
-      if (timestamp < response[0].timestamp) {
-        getUpdate()
-      } else {
-        onIdling()
-    }
-    }
-  })
-}
-
-// There is some changes in database from other users
-function getUpdate()
-{
-  if (dialogServiceShowing()) {
-    sqlGetUpdateService().then(response => {
-      if (typeof response === "object") {
-        updateBOOK(response)
-        setSERVICE(response.SERVICE)
-        reViewService()
-  renewEditcell()
-//        viewGetUpdate()
-      } else {
-        Alert ("getUpdateWithService", response)
-      }
-    })
-  }  else {
-    sqlGetUpdate().then(response => {
-      if (typeof response === "object") {
-        updateBOOK(response)
-  renewEditcell()
-//        viewGetUpdate()
-      } else {
-        Alert ("getUpdate", response)
-      }
-    })
-  }
-}
-
 // if not being editing on screen (idling) 1 minute, clear editing setup
 // if idling 10 minutes, logout
 function onIdling()
 {
     if (idleCounter && !(idleCounter % 6)) {
       clearAllEditing()
-  renewEditcell()
-//      viewGetUpdate()
+      renewEditcell()
     } else if (idleCounter > 59) {
       history.back()
     }
 
     idleCounter += 1
-}
-
-function viewGetUpdate()
-{
-  fillmain()
-  fillConsults()
-  if (isSplit()) { staffqueue(titlename.innerHTML) }
-  renewEditcell()
 }
 
 function saveOnChange(POINTER, index, content, qn)

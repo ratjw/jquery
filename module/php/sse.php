@@ -2,18 +2,15 @@
 include "connect.php";
 require_once "book.php";
 
-header('X-Accel-Buffering: no');
 header('Cache-Control: no-cache');
 header("Content-Type: text/event-stream");
-
-//fastcgi_keep_conn on; //# < solution
-
-//proxy_buffering off;
-//gzip off;
 
 $oldtimestamp = 0;
 $newtimestamp = 0;
 
+// must set win 32 at
+// Configuration Editor -> (Collection)' Element -> Name > FastCGI -> Properties -> responseBufferLimit -> 0
+// fastCGI Activity Timout and Request Timeout
 while (!connection_aborted()) {
   set_time_limit(10);
 
@@ -24,19 +21,11 @@ while (!connection_aborted()) {
   $newtimestamp = $rowi[0];
 
   if($oldtimestamp < $newtimestamp) {
-    echo 'data: ' . json_encode(book($mysqli)) . "$i\n\n";
-    echo "PHP_EOL . PHP_EOL";
     $oldtimestamp = $newtimestamp;
-  } else {
-    echo "data: $newtimestamp " . 'json_encode(book($mysqli))' . "$i\n\n";
-    echo "PHP_EOL . PHP_EOL";
+    echo 'data: ' . json_encode(book($mysqli)) . "\n\n";
+    ob_flush();
+    flush();
   }
 
-  // flush the output buffer and send echoed messages to the browser
-  ob_end_flush();
-  flush();
-
-  // sleep for 1 second before running the loop again
   sleep(1);
-
 }

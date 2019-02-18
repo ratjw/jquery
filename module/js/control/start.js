@@ -15,7 +15,7 @@ import { clearSelection } from "./clearSelection.js"
 import { fillmain } from "../view/fill.js"
 import { fillConsults } from "../view/fillConsults.js"
 import { START, ISOdate, thDate } from "../util/date.js"
-import { BOOK, updateBOOK } from "../util/updateBOOK.js"
+import { BOOK, TIMESTAMP, updateBOOK } from "../util/updateBOOK.js"
 import { Alert } from "../util/util.js"
 import { UndoManager } from "../model/UndoManager.js"
 import { htmlStafflist, htmlEquipment, htmldivRecord } from "../view/html.js"
@@ -58,7 +58,7 @@ function success(response) {
   clearSelection()
   overrideJqueryUI()
   resetTimer()
-//  serverSentEvent()
+  serverSentEvent()
 }
 
 function serverSentEvent()
@@ -73,16 +73,15 @@ function serverSentEvent()
   }
 
   evtSource.onmessage = function(e) {
-    console.log(e.data)
+    let data = JSON.parse(e.data)
+    if (data.QTIME > TIMESTAMP) {
+      updateBOOK(data)
+      renewEditcell()
+    }
   }
 
   evtSource.onerror = function() {
     console.log("EventSource failed.")
-  }
-
-  maintbl.onclick = function() {
-    console.log('Connection closed')
-    evtSource.close()
   }
 }
 

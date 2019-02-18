@@ -225,7 +225,7 @@ export function createEditcell(pointing)
   let $pointing = $(pointing)
   let height = $pointing.height() + "px"
   let width = $pointing.width() + "px"
-  let context = getHtmlText(pointing).replace(/Consult<br>.*$/, "")
+  let context = getHtmlText(pointing)
 
   $("#editcell").html(context)
   showEditcell(pointing, height, width)
