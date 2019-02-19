@@ -6,16 +6,11 @@ import {
   POINTER, OLDCONTENT, getNewcontent, editcellLocation, renewEditcell
 } from "./edit.js"
 import { clearAllEditing } from "./clearAllEditing.js"
-import { sqldoUpdate, sqlGetUpdate, sqlSaveOnChange } from "../model/sqlupdate.js"
-import { sqlGetUpdateService, sqlSaveOnChangeService } from "../model/sqlservice.js"
+import { sqlSaveOnChange } from "../model/sqlupdate.js"
+import { sqlSaveOnChangeService } from "../model/sqlservice.js"
 import { saveProfileService } from "../service/savePreviousCellService.js"
-import { setSERVICE } from "../service/setSERVICE.js"
-import { reViewService } from "../service/showService.js"
-import { TIMESTAMP, updateBOOK } from "../util/updateBOOK.js"
-import { Alert, isSplit } from "../util/util.js"
-import { fillmain } from "../view/fill.js"
-import { staffqueue } from "../view/staffqueue.js"
-import { fillConsults } from "../view/fillConsults.js"
+import { updateBOOK } from "../util/updateBOOK.js"
+import { Alert } from "../util/util.js"
 
 // timer is just an id number of setTimeout, not the clock object
 // idleCounter is number of cycles of idle setTimeout
@@ -59,19 +54,17 @@ let onChange = function () {
   // When editcell is not pointing, there must be no change by this editor
   if (!POINTER) { return false }
 
-  let newcontent = getNewcontent(),
-      index = POINTER.cellIndex,
-      whereisEditcell = editcellLocation(),
-      qn = POINTER.closest("tr").dataset.qn
+  let content = getNewcontent(),
+      whereisEditcell = editcellLocation()
 
-  if (OLDCONTENT === newcontent) {
+  if (OLDCONTENT === content) {
     return false
   }
 
   if (whereisEditcell === "dialogService") {
-    return saveOnChangeService(POINTER, index, newcontent, qn)
+    return saveOnChangeService(content)
   } else {
-    return saveOnChange(POINTER, index, newcontent, qn)
+    return saveOnChange(content)
   }
 }
 
@@ -89,9 +82,11 @@ function onIdling()
     idleCounter += 1
 }
 
-function saveOnChange(POINTER, index, content, qn)
+function saveOnChange(content)
 {
-  let column = index === DIAGNOSIS
+  let index = POINTER.cellIndex,
+      qn = POINTER.closest("tr").dataset.qn,
+      column = index === DIAGNOSIS
                 ? "diagnosis"
                 : index === TREATMENT
                 ? "treatment"
@@ -113,9 +108,11 @@ function saveOnChange(POINTER, index, content, qn)
   return true
 }
 
-function saveOnChangeService(POINTER, index, content, qn)
+function saveOnChangeService(content)
 {
-  let column = index === DIAGNOSISSV
+  let index = POINTER.cellIndex,
+      qn = POINTER.closest("tr").dataset.qn,
+      column = index === DIAGNOSISSV
                 ? "diagnosis"
                 : index === TREATMENTSV
                 ? "treatment"
@@ -138,11 +135,4 @@ function saveOnChangeService(POINTER, index, content, qn)
 
   POINTER.innerHTML = content
   return true
-}
-
-function dialogServiceShowing()
-{
-  let $dialogService = $("#dialogService")
-
-  return $dialogService.hasClass('ui-dialog-content') && $dialogService.dialog('isOpen')
 }
