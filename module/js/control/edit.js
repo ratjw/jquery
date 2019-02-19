@@ -288,13 +288,10 @@ export function renewEditcell()
      : ""
   let qn = POINTER.closest("tr").dataset.qn
   let row = id && qn && getTableRowByQN(id, qn)
-  let rindex = POINTER.closest('tr').rowIndex
   let cindex = POINTER.cellIndex
+  let pointing = row.cells[cindex]
 
-  if (row && (row.rowIndex !== rindex)) {
-    let pointing = row.cells[cindex]
-    createEditcell(pointing)
-  }
+  createEditcell(pointing)
 }
 
 export function editcellLocation()

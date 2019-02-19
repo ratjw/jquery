@@ -98,9 +98,9 @@ function getUpdate()
     fetchGetUpdateService().then(response => {
       if (typeof response === "object") {
         updateBOOK(response)
-		setSERVICE(response.SERVICE)
-		reViewService()
-		viewGetUpdate()
+        setSERVICE(response.SERVICE)
+        reViewService()
+        viewGetUpdate()
       } else {
         Alert ("getUpdateWithService", response)
       }

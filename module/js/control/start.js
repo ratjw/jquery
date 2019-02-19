@@ -4,7 +4,7 @@ import { addStaff } from "./addStaff.js"
 import { clicktable } from "./clicktable.js"
 import { exchangeOncall } from "./exchangeOncall.js"
 import { clearAllEditing } from "./clearAllEditing.js"
-import { editcellEvent, clearEditcell } from "./edit.js"
+import { editcellEvent, clearEditcell, renewEditcell } from "./edit.js"
 import { resetTimer, resetTimerCounter } from "./timer.js"
 import { setClickMenu } from "../menu/setClickMenu.js"
 import { setClickSetting } from "./setClickSetting.js"
@@ -20,6 +20,9 @@ import { Alert } from "../util/util.js"
 import { UndoManager } from "../model/UndoManager.js"
 import { htmlStafflist, htmlEquipment, htmldivRecord } from "../view/html.js"
 import { scrolltoToday } from "../view/scrolltoThisCase.js"
+import { sqlGetServiceOneMonth } from "../model/sqlservice.js"
+import { setSERVICE } from "../service/setSERVICE.js"
+import { reViewService } from "../service/showService.js"
 
 // For staff & residents with login id / password from Get_staff_detail
 export function userStaff() {
@@ -59,30 +62,6 @@ function success(response) {
   overrideJqueryUI()
   resetTimer()
   serverSentEvent()
-}
-
-function serverSentEvent()
-{
-  let evtSource = new EventSource('./php/sse.php')
-  console.log(evtSource.withCredentials)
-  console.log(evtSource.readyState)
-  console.log(evtSource.url)
-
-  evtSource.onopen = function() {
-    console.log("Connection to server opened.")
-  }
-
-  evtSource.onmessage = function(e) {
-    let data = JSON.parse(e.data)
-    if (data.QTIME > TIMESTAMP) {
-      updateBOOK(data)
-      renewEditcell()
-    }
-  }
-
-  evtSource.onerror = function() {
-    console.log("EventSource failed.")
-  }
 }
 
 // *** plan -> offline browsing by service worker ***
@@ -237,4 +216,48 @@ function overrideJqueryUI()
         }
     }
   }))
+}
+
+function serverSentEvent()
+{
+  let evtSource = new EventSource('./php/sse.php')
+  console.log(evtSource.withCredentials)
+  console.log(evtSource.readyState)
+  console.log(evtSource.url)
+
+  evtSource.onopen = function() {
+    console.log("Connection to server opened.")
+  }
+
+  evtSource.onmessage = function(e) {
+    let data = JSON.parse(e.data)
+    if (data.QTIME > TIMESTAMP) {
+      if (dialogServiceShowing()) {
+        sqlGetServiceOneMonth().then(response => {
+          if (typeof response === "object") {
+            setSERVICE(response)
+            reViewService()
+            renewEditcell()
+            updateBOOK(data)
+          } else {
+            Alert ("getUpdateService", response)
+          }
+        })
+      } else {
+        updateBOOK(data)
+        renewEditcell()
+      }
+    }
+  }
+
+  evtSource.onerror = function() {
+    console.log("EventSource failed.")
+  }
+}
+
+function dialogServiceShowing()
+{
+  let $dialogService = $("#dialogService")
+
+  return $dialogService.hasClass('ui-dialog-content') && $dialogService.dialog('isOpen')
 }
