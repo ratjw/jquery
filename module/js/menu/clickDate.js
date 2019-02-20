@@ -7,7 +7,7 @@ import { docopyCase } from "./docopyCase.js"
 
 export function clickDate(moverow, cell)
 {
-  let moveTableID = moverow.closest('table.id'),
+  let moveTableID = moverow.closest('table').id,
     moveqn = moverow.dataset.qn,
 
     thisrow = cell.closest("tr"),

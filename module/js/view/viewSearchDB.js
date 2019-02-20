@@ -109,7 +109,7 @@ jQuery.fn.extend({
       rowDecoration(this[0], q.opdate)
     }
     q.hn && isPACS && (cells[2].className = "pacs")
-    q.patient && (cells[3].className = "upload")
+//    q.patient && (cells[3].className = "upload")
 
 ;    [  putThdate(q.opdate),
       q.staffname,

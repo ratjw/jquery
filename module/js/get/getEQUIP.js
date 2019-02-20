@@ -236,8 +236,6 @@ let Checklistequip = function () {
   sqlSaveEquip(equipment, thisqn).then(response => {
     let showup = function () {
       updateBOOK(response)
-      let row = getTableRowByQN("maintbl", thisqn)
-      row.querySelectorAll("td")[EQUIPMENT].innerHTML = viewEquipJSON(equipJSON)
       $dialogEquip.dialog('close')
     }
     let rollback = function () {

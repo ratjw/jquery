@@ -8,7 +8,7 @@ import { isPACS } from "../util/updateBOOK.js"
 import { rowDecoration } from "./rowDecoration.js"
 import { viewEquip, viewEquipNoImg } from "./viewEquip.js"
 import { setRowData, blankRowData } from "../model/rowdata.js"
-import { isOnStaffnameTbl, Alert } from "../util/util.js"
+import { isOnStaffnameTbl } from "../util/util.js"
 
 export function fillNewrowData(row, q)
 {
@@ -17,7 +17,7 @@ export function fillNewrowData(row, q)
 
   setRowData(row, q)
   if (q.hn && isPACS) { cells[HN].className = "pacs" }
-  if (q.patient) { cells[PATIENT].className = "upload" }
+//  if (q.patient) { cells[PATIENT].className = "upload" }
 
   cells[THEATRE].innerHTML = q.theatre
   cells[OPROOM].innerHTML = q.oproom || ""
@@ -36,7 +36,8 @@ export function fillNewrowData(row, q)
 
 export function fillOldrowData(row, q)
 {
-  let rowdata = row.dataset
+  let tableID = row.closest('table').id,
+    rowdata = row.dataset
 
   if (rowdata.waitnum !== q.waitnum) {
     rowdata.waitnum = q.waitnum
@@ -82,7 +83,9 @@ export function fillOldrowData(row, q)
   }
   if (rowdata.equipment !== q.equipment) {
     rowdata.equipment = q.equipment
-    row.cells[EQUIPMENT].innerHTML = viewEquipNoImg(q.equipment)
+    row.cells[EQUIPMENT].innerHTML = isOnStaffnameTbl(tableID)
+                             ? viewEquipNoImg(q.equipment)
+                             : viewEquip(q.equipment)
   }
   if (rowdata.contact !== q.contact) {
     rowdata.contact = q.contact

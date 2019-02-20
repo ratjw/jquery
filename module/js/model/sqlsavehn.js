@@ -81,16 +81,16 @@ export function sqlGetNameHN(pointed, content)
 {
   let tableID = pointed.closest('table').id,
     oldcase = BOOK.reverse().find(q => q.hn === content),
-    oldstaffname = getTitlename(tableID),
+    oldstaffname = tableID === 'queuetbl' ? getTitlename(tableID) : '',
     olddiagnosis = '',
-     oldtreatment = '',
-     oldcontact = ''
+    oldtreatment = '',
+    oldcontact = ''
 
   if (oldcase) {
     oldstaffname = oldcase.staffname || oldstaffname
     olddiagnosis = oldcase.diagnosis
-     oldtreatment = oldcase.treatment
-     oldcontact = oldcase.contact
+    oldtreatment = oldcase.treatment
+    oldcontact = oldcase.contact
   }
 
   let row = pointed.closest('tr'),

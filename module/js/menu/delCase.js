@@ -10,7 +10,7 @@ import { clearSelection } from "../control/clearSelection.js"
 // Just blank the row if there is only one case
 export function delCase() {
   let row = document.querySelector(".selected"),
-    tableID = row.closest('table'),
+    tableID = row.closest('table').id,
     prevrow = row.previousElementSibling,
     opdate = row.dataset.opdate,
     qn = row.dataset.qn,

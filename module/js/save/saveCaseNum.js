@@ -7,7 +7,7 @@ import { Alert } from "../util/util.js"
 
 export function saveCaseNum(pointed, newcontent)
 {
-  let tableID = row.closest('table'),
+  let tableID = pointed.closest('table').id,
     row = pointed.closest('tr'),
     opdate = row.dataset.opdate,
     qn = row.dataset.qn,
