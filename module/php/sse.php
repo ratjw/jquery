@@ -8,8 +8,9 @@ header("Content-Type: text/event-stream");
 $oldtimestamp = 0;
 $newtimestamp = 0;
 
-// must set win 32 at
-// Configuration Editor -> (Collection)' Element -> Name > FastCGI -> Properties -> responseBufferLimit -> 0
+// must set iis in win 32 at
+// Configuration Editor -> system.webServer/handlers -> (Collection)' Element -> Name >
+// FastCGI -> Properties -> responseBufferLimit -> 0
 // fastCGI Activity Timout and Request Timeout
 while (!connection_aborted()) {
   set_time_limit(10);
