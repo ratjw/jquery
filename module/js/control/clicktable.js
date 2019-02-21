@@ -6,6 +6,8 @@ import {
   POINTER, OLDCONTENT, getNewcontent, createEditcell, clearEditcell
 } from "./edit.js"
 import { clearMouseoverTR } from "../util/util.js"
+
+import { clearAllEditing } from "./clearAllEditing.js"
 import { clearSelection } from "./clearSelection.js"
 
 import { saveTheatre } from "../save/saveTheatre.js"
@@ -22,7 +24,6 @@ import { getOPTIME } from "../get/getOPTIME.js"
 import { getCASENUM } from "../get/getCASENUM.js"
 import { getSTAFFNAME } from "../get/getSTAFFNAME.js"
 import { getHN } from "../get/getHN.js"
-import { getNAME } from "../get/getNAME.js"
 import { getEQUIP } from "../get/getEQUIP.js"
 
 // Click on main or staff table
@@ -60,7 +61,7 @@ export function savePreviousCell() {
 }
 
 // Set up editcell for keyin or menu/spinner selection
-// redirect click to openPACS or file upload
+// redirect click to openPACS
 export function editPresentCell(evt, pointing) {
   let column = pointing && pointing.cellIndex
 
@@ -73,7 +74,7 @@ export function editPresentCell(evt, pointing) {
     case CASENUM: getCASENUM(pointing); break
     case STAFFNAME: getSTAFFNAME(pointing); break
     case HN: getHN(evt, pointing); break
-    case PATIENT: getNAME(evt, pointing); break
+    case PATIENT: clearAllEditing(); break
     case DIAGNOSIS: createEditcell(pointing); break
     case TREATMENT: createEditcell(pointing); break
     case EQUIPMENT: getEQUIP(pointing); break

@@ -57,30 +57,6 @@ export function getMaxQN(book)
   return String(qn)
 }
 
-export function getClass(thiscell, fromClass, toClass)
-{
-  let  classname = thiscell.className,
-    classes = classname.split(" "),
-    oldClass = checkMatch(classes, fromClass)
-
-  if (oldClass) {
-    let hasIndex = fromClass.indexOf(oldClass),
-      newClass = toClass[hasIndex]
-    thiscell.className = classname.replace(oldClass, newClass)
-  }
-}
-
-function checkMatch(classes, oldClasses)
-{
-  for (let i=0; i<classes.length; i++) {
-    for (let j=0; j<oldClasses.length; j++) {
-      if (classes[i] === oldClasses[j]) {
-        return classes[i]
-      }
-    }
-  }
-}
-
 export function winWidth(percent) {
   return window.innerWidth * percent / 100
 }
@@ -202,6 +178,26 @@ function picArea(pointing) {
     left: left,
     right: right
   }
+}
+
+// Simulate hover on icon by changing background pics
+export function hoverPicArea()
+{
+  let  tdClass = "td.pacs",
+    pale = ["pacs"],
+    bold = ["pacs2"]
+
+  $(tdClass)
+    .mousemove(function(event) {
+      if (inPicArea(event, this)) {
+        this.classList.replace(pale, bold)
+      } else {
+        this.classList.replace(bold, pale)
+      }
+    })
+    .mouseout(function (event) {
+      this.classList.replace(bold, pale)
+    })
 }
 
 // Make dialog box dialogAlert containing error message

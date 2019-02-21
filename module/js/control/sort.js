@@ -26,6 +26,7 @@ export function sortable () {
   $("#maintbl tbody, #queuetbl tbody").sortable({
     items: "tr",
     connectWith: "#maintbl tbody, #queuetbl tbody",
+    delay: 150,
     forceHelperSize: true,
     forcePlaceholderSize: true,
     revert: true,

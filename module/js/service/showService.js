@@ -5,9 +5,7 @@ import {
 } from "../model/const.js"
 import { POINTER, clearEditcell } from "../control/edit.js"
 import { START, putThdate, putNameAge } from "../util/date.js"
-import {
-  getClass, inPicArea, isSplit,  winWidth, winHeight, winResizeFix
-} from "../util/util.js"
+import { isSplit,  winWidth, winHeight, winResizeFix } from "../util/util.js"
 import { isPACS } from "../util/updateBOOK.js"
 import { fillmain } from "../view/fill.js"
 import { staffqueue } from "../view/staffqueue.js"
@@ -93,7 +91,7 @@ export function showService() {
   }
   countAllServices()
   $servicetbl.fixMe($dialogService)
-  hoverService()
+  hoverPicArea()
   profileHandler()
   $dialogService.on("click", clickDialogService)
 
@@ -144,7 +142,7 @@ export function reViewService() {
   }
   countAllServices()
   $servicetbl.fixMe($("#dialogService"))
-  hoverService()
+  hoverPicArea()
   profileHandler()
 }
 
@@ -154,7 +152,6 @@ jQuery.fn.extend({
       cells = row.cells
 
     if (bookq.hn && isPACS) { cells[HNSV].className = "pacs" }
-    if (bookq.hn) { cells[NAMESV].className = "upload" }
 
     cells[CASENUMSV].innerHTML = scase
     cells[HNSV].innerHTML = bookq.hn
@@ -173,23 +170,3 @@ jQuery.fn.extend({
     coloring(row)
   }
 })
-
-// Simulate hover on icon by changing background pics
-function hoverService()
-{
-  let  tdClass = "td.pacs, td.upload",
-    paleClasses = ["pacs", "upload"],
-    boldClasses = ["pacs2", "upload2"]
-
-  $(tdClass)
-    .mousemove(function(event) {
-      if (inPicArea(event, this)) {
-        getClass(this, paleClasses, boldClasses)
-      } else {
-        getClass(this, boldClasses, paleClasses)
-      }
-    })
-    .mouseout(function (event) {
-      getClass(this, boldClasses, paleClasses)
-    })
-}

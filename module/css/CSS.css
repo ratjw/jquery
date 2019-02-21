@@ -416,8 +416,6 @@ tr.Saturday td:first-child::before { content: "เสาร์ "; }
 
 td.pacs { background-image: url(pic/general/pacs.png); }
 td.pacs2 { background-image: url(pic/general/pacs2.png); }
-td.upload { background-image: url(pic/general/upload.png); }
-td.upload2 { background-image: url(pic/general/upload2.png); }
 
 .Reoperation td:nth-child(5),
 .Reoperation { background-color: #CCCCAA !important; }

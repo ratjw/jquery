@@ -1,6 +1,5 @@
 
 import { PACS } from "../get/PACS.js"
-import { showUpload } from "../get/showUpload.js"
 import { rowDecoration } from "./rowDecoration.js"
 import { OPDATE } from "../model/const.js"
 import { viewEquip } from "./viewEquip.js"
@@ -77,12 +76,6 @@ function makeDialogFound($dialogFind, $findtbl, found, search)
       PACS(this.innerHTML)
     }
   })
-  $dialogFind.find('.upload').off("click").on("click", function() {
-    let patient = this.innerHTML
-    let hn = this.previousElementSibling.innerHTML
-
-    hn && showUpload(hn, patient)
-  })
 
   //scroll to todate when there many cases
   let today = new Date(),
@@ -109,7 +102,6 @@ jQuery.fn.extend({
       rowDecoration(this[0], q.opdate)
     }
     q.hn && isPACS && (cells[2].className = "pacs")
-//    q.patient && (cells[3].className = "upload")
 
 ;    [  putThdate(q.opdate),
       q.staffname,

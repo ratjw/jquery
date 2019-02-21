@@ -1,32 +1,17 @@
 
 import { UndoManager } from "../model/UndoManager.js"
-import { HN, PATIENT } from "../model/const.js"
+import { HN } from "../model/const.js"
 import { clearSelection } from "../control/clearSelection.js"
 import { createEditcell } from "../control/edit.js"
 import { blankRowData } from "../model/rowdata.js"
 
 export function addnewrow() {
   let row = document.querySelector(".selected"),
-    tableID = row.closest('table').id
-
-  addrow(row)
-
-/*  UndoManager.add({
-    undo: function() {
-      $row.next().remove()
-    },
-    redo: function() {
-      addrow($row)
-    }
-  })*/
-}
-
-export function addrow(row) {
-  let clone = row.cloneNode(true)
-  let cells = clone.querySelectorAll("td")
+    tableID = row.closest('table').id,
+    clone = row.cloneNode(true),
+    cells = clone.querySelectorAll("td")
 
   cells[HN].classList.remove("pacs")
-  cells[PATIENT].classList.remove("upload")
   Array.from(clone.querySelectorAll("td:not(:first-child)")).forEach(e => e.innerHTML = "")
   row.classList.remove("selected")
   row.after(clone)

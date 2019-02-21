@@ -8,7 +8,6 @@ import {
 } from "../control/edit.js"
 import { isPACS } from "../util/updateBOOK.js"
 import { inPicArea } from "../util/util.js"
-import { showUpload } from "../get/showUpload.js"
 import { editableSV } from "./setSERVICE.js"
 import { PACS } from "../get/PACS.js"
 
@@ -25,7 +24,7 @@ export function editPresentCellService(evt, pointing) {
       getHNSV(evt, pointing)
       break
     case NAMESV:
-      getNAMESV(evt, pointing)
+      clearEditcell()
       break
     case DIAGNOSISSV:
     case TREATMENTSV:
@@ -51,16 +50,5 @@ function getHNSV(evt, pointing)
     if (inPicArea(evt, pointing)) {
       PACS(pointing.innerHTML)
     }
-  }
-}
-
-function getNAMESV(evt, pointing)
-{
-  let hn = pointing.previousElementSibling
-  let patient = pointing.innerHTML
-
-  clearEditcell()
-  if (inPicArea(evt, pointing)) {
-    showUpload(hn, patient)
   }
 }

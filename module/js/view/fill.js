@@ -4,7 +4,7 @@ import { START, ISOdate, nextdays } from "../util/date.js"
 import { BOOK } from "../util/updateBOOK.js"
 import { rowDecoration } from "./rowDecoration.js"
 import { viewEquip, viewEquipNoImg } from "./viewEquip.js"
-import { hoverMain } from "./hoverMain.js"
+import { hoverPicArea } from "../util/util.js"
 import { blankRowData } from "../model/rowdata.js"
 import { viewOneDay } from "./viewOneDay.js"
 import { fillNewrowData } from "./fillNewrowData.js"
@@ -29,7 +29,7 @@ export function fillmain()
     date = fillDatedCases(table, book)
 
   fillBlankDates(table, date, until)
-  hoverMain()
+  hoverPicArea()
 }
 
 export function fillDatedCases(table, book)

@@ -1,6 +1,5 @@
 
 import { PACS } from "../get/PACS.js"
-import { showUpload } from "../get/showUpload.js"
 import { rowDecoration } from "./rowDecoration.js"
 import { LARGESTDATE } from "../model/const.js"
 import { viewEquip } from "./viewEquip.js"
@@ -85,12 +84,6 @@ export function pagination($dialog, $maintbl, book, search)
     if (isPACS) {
       PACS(this.innerHTML)
     }
-  })
-  $dialog.find('.upload').on("click", function() {
-    let hn = this.previousElementSibling.innerHTML
-    let patient = this.innerHTML
-
-    showUpload(hn, patient)
   })
 
   function showOneWeek(book, Monday, offset)

@@ -8,7 +8,7 @@ import { isPACS } from "../util/updateBOOK.js"
 import { rowDecoration } from "./rowDecoration.js"
 import { viewEquip, viewEquipNoImg } from "./viewEquip.js"
 import { setRowData, blankRowData } from "../model/rowdata.js"
-import { isOnStaffnameTbl } from "../util/util.js"
+import { isOnStaffnameTbl, hoverPicArea } from "../util/util.js"
 
 export function fillNewrowData(row, q)
 {
@@ -17,7 +17,6 @@ export function fillNewrowData(row, q)
 
   setRowData(row, q)
   if (q.hn && isPACS) { cells[HN].className = "pacs" }
-//  if (q.patient) { cells[PATIENT].className = "upload" }
 
   cells[THEATRE].innerHTML = q.theatre
   cells[OPROOM].innerHTML = q.oproom || ""
@@ -102,7 +101,6 @@ export function unfillOldrowData(row, opdate)
 
   Array.from(cells).filter(e => e.cellIndex !== OPDATE).forEach(e => e.innerHTML = "")
   cells[HN].classList.remove("pacs")
-  cells[PATIENT].classList.remove("upload")
   rowDecoration(row, opdate)
   blankRowData(row, opdate)
 }
