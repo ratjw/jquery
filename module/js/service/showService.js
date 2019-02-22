@@ -19,6 +19,7 @@ import { clickDialogService, hideProfile } from "./clickDialogService.js"
 import { showRecord } from "./showRecord.js"
 import { clearSelection } from "../control/clearSelection.js"
 import { profileHandler } from "./profileHandler.js"
+import { hoverPicArea } from "../util/util.js"
 
 export function showService() {
   let $dialogService = $("#dialogService"),
